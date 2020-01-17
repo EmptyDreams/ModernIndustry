@@ -1,0 +1,13 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "cube_all",
+        "textures": {
+            "all": "mi:blocks/copper_ore_block"
+        }
+    },
+   "variants": {
+        "inventory": [{  }],
+        "normal": [{ }]
+   }
+}
