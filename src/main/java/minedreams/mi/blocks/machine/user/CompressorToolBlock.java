@@ -3,12 +3,11 @@ package minedreams.mi.blocks.machine.user;
 import java.util.Random;
 
 import minedreams.mi.ModernIndustry;
-import minedreams.mi.api.electricity.info.IEleInfo;
+import minedreams.mi.api.electricity.block.MachineBlock;
 import minedreams.mi.api.electricity.info.LinkInfo;
-import minedreams.mi.blocks.register.BlockAutoRegister;
-import minedreams.mi.blocks.register.BlockBaseT;
-import minedreams.mi.blocks.register.BlockRegister;
-import minedreams.mi.blocks.te.EUCompressor;
+import minedreams.mi.register.block.BlockAutoRegister;
+import minedreams.mi.register.block.BlockRegister;
+import minedreams.mi.blocks.te.user.EUCompressor;
 import minedreams.mi.api.gui.GuiLoader;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -36,7 +35,7 @@ import net.minecraft.world.World;
  */
 @BlockAutoRegister(registryName = CompressorToolBlock.NAME,
 			name = BlockRegister.COMPRESSOR_TBLOCK)
-public class CompressorToolBlock extends BlockBaseT implements IEleInfo {
+public class CompressorToolBlock extends MachineBlock {
 	
 	/** 方块内部名称 */
 	public static final String NAME = "compressor_tblock";
@@ -79,32 +78,29 @@ public class CompressorToolBlock extends BlockBaseT implements IEleInfo {
 	@Override
 	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
 		if (!worldIn.isRemote) {
-		            IBlockState iblockstate = worldIn.getBlockState(pos.north());
-		            IBlockState iblockstate1 = worldIn.getBlockState(pos.south());
-		            IBlockState iblockstate2 = worldIn.getBlockState(pos.west());
-		            IBlockState iblockstate3 = worldIn.getBlockState(pos.east());
-		            EnumFacing enumfacing = state.getValue(FACING);
-		            if (enumfacing == EnumFacing.NORTH && iblockstate.isFullBlock() && !iblockstate1.isFullBlock())
-		            {
-		                enumfacing = EnumFacing.SOUTH;
-		            }
-		            else if (enumfacing == EnumFacing.SOUTH && iblockstate1.isFullBlock() && !iblockstate.isFullBlock())
-		            {
-		                enumfacing = EnumFacing.NORTH;
-		            }
-		            else if (enumfacing == EnumFacing.WEST && iblockstate2.isFullBlock() && !iblockstate3.isFullBlock())
-		            {
-		                enumfacing = EnumFacing.EAST;
-		            }
-		            else if (enumfacing == EnumFacing.EAST && iblockstate3.isFullBlock() && !iblockstate2.isFullBlock())
-		            {
-		                enumfacing = EnumFacing.WEST;
-		            }
-		            
-		            worldIn.setBlockState(pos, state.withProperty(FACING, enumfacing)
-				                                       .withProperty(WORKING, false)
-				                                       .withProperty(EMPTY, false), 2);
-	        }
+		    IBlockState iblockstate = worldIn.getBlockState(pos.north());
+		    IBlockState iblockstate1 = worldIn.getBlockState(pos.south());
+		    IBlockState iblockstate2 = worldIn.getBlockState(pos.west());
+		    IBlockState iblockstate3 = worldIn.getBlockState(pos.east());
+		    EnumFacing enumfacing = state.getValue(FACING);
+		    if (enumfacing == EnumFacing.NORTH &&
+				        iblockstate.isFullBlock() && !iblockstate1.isFullBlock()) {
+		        enumfacing = EnumFacing.SOUTH;
+		    } else if (enumfacing == EnumFacing.SOUTH &&
+				        iblockstate1.isFullBlock() && !iblockstate.isFullBlock()) {
+		        enumfacing = EnumFacing.NORTH;
+		    } else if (enumfacing == EnumFacing.WEST &&
+				        iblockstate2.isFullBlock() && !iblockstate3.isFullBlock()) {
+		        enumfacing = EnumFacing.EAST;
+		    } else if (enumfacing == EnumFacing.EAST &&
+				        iblockstate3.isFullBlock() && !iblockstate2.isFullBlock()) {
+		        enumfacing = EnumFacing.WEST;
+		    }
+		    
+		    worldIn.setBlockState(pos, state.withProperty(FACING, enumfacing)
+		                                      .withProperty(WORKING, false)
+		                                      .withProperty(EMPTY, false), 2);
+		}
 	}
 	
 	/** 当方块被玩家破坏的时候掉落方块中的物品 */
@@ -148,15 +144,13 @@ public class CompressorToolBlock extends BlockBaseT implements IEleInfo {
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		EnumFacing enumfacing = EnumFacing.getHorizontal(meta & 0b0011);
-	        boolean burning = (meta & 0b0100) == 0b0100;
-	        boolean isEmtpy = (meta & 0b1000) == 0b1000;
-	        if (enumfacing.getAxis() == EnumFacing.Axis.Y)
-	        {
-	            enumfacing = EnumFacing.NORTH;
-	        }
-	
-	        return getDefaultState().withProperty(FACING, enumfacing)
-	        		.withProperty(WORKING, burning).withProperty(EMPTY, isEmtpy);
+	    boolean burning = (meta & 0b0100) == 0b0100;
+	    boolean isEmtpy = (meta & 0b1000) == 0b1000;
+	    if (enumfacing.getAxis() == EnumFacing.Axis.Y) {
+	        enumfacing = EnumFacing.NORTH;
+	    }
+	    return getDefaultState().withProperty(FACING, enumfacing)
+	    		.withProperty(WORKING, burning).withProperty(EMPTY, isEmtpy);
 	}
 	
 	/** 
@@ -169,7 +163,7 @@ public class CompressorToolBlock extends BlockBaseT implements IEleInfo {
 		return state.getValue(FACING).getHorizontalIndex()
 				       | (state.getValue(WORKING) ? 0b0100 : 0b0000)
 				       | (state.getValue(EMPTY) ? 0b1000 : 0b0000);
-        }
+	}
 	
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
@@ -180,4 +174,5 @@ public class CompressorToolBlock extends BlockBaseT implements IEleInfo {
 	public boolean canLink(LinkInfo info, boolean nowIsExist, boolean fromIsExist) {
 		return true;
 	}
+	
 }

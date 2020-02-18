@@ -1,4 +1,4 @@
-package minedreams.mi.blocks.te;
+package minedreams.mi.register.te;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

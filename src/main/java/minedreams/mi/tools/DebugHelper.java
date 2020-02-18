@@ -1,10 +1,15 @@
 package minedreams.mi.tools;
 
 import java.util.Collection;
+import java.util.Set;
 
 import static minedreams.mi.api.net.WaitList.checkNull;
 
 import minedreams.mi.api.electricity.ElectricityTransfer;
+import minedreams.mi.api.net.MessageBase;
+import minedreams.mi.api.net.WaitList;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * 用于各个类的调试
@@ -13,6 +18,35 @@ import minedreams.mi.api.electricity.ElectricityTransfer;
  * @version V1.0
  */
 public final class DebugHelper {
+	
+	/**
+	 * 打印客户端等待列表的信息
+	 */
+	@SideOnly(Side.CLIENT)
+	public static void printWaitListClientMessage() {
+		StringBuilder sb = new StringBuilder("WaitList{ size=").append(WaitList.getAmount()).append('\n');
+		WaitList.toString(sb);
+		sb.append('}');
+		MISysInfo.print(sb);
+	}
+	
+	/**
+	 * 打印电线连接的上一个及下一个电线，只在服务端打印
+	 */
+	public static void printETLink(ElectricityTransfer et) {
+		if (et.getWorld().isRemote) return;
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n位于[")
+		  .append(et.getPos())
+		  .append(']')
+		  .append("的电缆连接信息：\n")
+		  .append("\tnext:[")
+		  .append(et.getNext())
+		  .append("]\n\tprev:[")
+		  .append(et.getPrev())
+		  .append("]");
+		MISysInfo.print(sb);
+	}
 	
 	/**
 	 * 检查数组中是否含有true

@@ -85,11 +85,19 @@ public final class EleUtils {
 					return 40;
 				case "hopper": return 50;
 			}
-		} else if (block instanceof IEleInfo) {
+		} else if (block instanceof IEleInfo) {/*
 			Electricity ele;
 			if (te == null) ele = (Electricity) world.getTileEntity(pos);
 			else ele = (Electricity) te;
-			return ele.getEnergy().getEnergy();
+			if (ele instanceof ElectricityTransfer) {
+				ElectricityTransfer et = (ElectricityTransfer) ele;
+				return ElectricityTransfer.EETransfer.calculationLoss(et);
+			} else if (ele instanceof ElectricityUser) {
+				ElectricityUser user = (ElectricityUser) ele;
+				return user.getEnergy();
+			} else {
+				return 0;
+			}*/
 		}
 		return 0;
 	}

@@ -1,8 +1,8 @@
-package minedreams.mi.items.register;
+package minedreams.mi.register.item;
 
 import javax.annotation.Nonnull;
 
-import minedreams.mi.AutoRegister;
+import minedreams.mi.register.AutoRegister;
 import minedreams.mi.tools.MISysInfo;
 import minedreams.mi.ModernIndustry;
 import minedreams.mi.api.craftguide.CraftGuide;

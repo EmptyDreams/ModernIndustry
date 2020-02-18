@@ -2,7 +2,7 @@ package minedreams.mi.proxy;
 
 import javax.annotation.Nonnull;
 
-import minedreams.mi.AutoRegister;
+import minedreams.mi.register.AutoRegister;
 import minedreams.mi.blocks.world.WorldAutoCreater;
 import minedreams.mi.api.gui.GuiLoader;
 import minedreams.mi.api.net.NetworkLoader;
@@ -23,7 +23,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void preInit(@Nonnull FMLPreInitializationEvent event){
 		ASM = event.getAsmData();
-		new AutoRegister();
+		AutoRegister.init();
 		super.preInit(event);
 		new WorldAutoCreater();
 		new GuiLoader();

@@ -4,6 +4,7 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 
+import minedreams.mi.register.block.BlockItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;

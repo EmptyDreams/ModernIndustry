@@ -9,7 +9,7 @@ import static minedreams.mi.items.tools.MI_Tool.COPPER_ARMOR;
 import static net.minecraft.inventory.EntityEquipmentSlot.CHEST;
 import static net.minecraft.inventory.EntityEquipmentSlot.LEGS;
 
-import minedreams.mi.items.register.ItemRegister;
+import minedreams.mi.register.item.ItemRegister;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;

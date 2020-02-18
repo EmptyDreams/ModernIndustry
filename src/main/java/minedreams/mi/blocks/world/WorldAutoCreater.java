@@ -1,6 +1,6 @@
 package minedreams.mi.blocks.world;
 
-import minedreams.mi.AutoRegister.Blocks;
+import minedreams.mi.register.AutoRegister.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.terraingen.OreGenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

@@ -1,30 +1,30 @@
-item.copper_item.name=a
-item.copper_powder_item.name=a
-item.tin_item.name=a
-item.tin_powder_item.name=a
+item.copper_item.name=Copper
+item.copper_powder_item.name=Copper Powder
+item.tin_item.name=Tin
+item.tin_powder_item.name=Tin Powder
 
-item.copper_pickaxe_tool.name=a
-item.copper_axe_tool.name=a
-item.copper_shovel_tool.name=a
-item.copper_sword_tool.name=a
-item.copper_hoe_tool.name=a
+item.copper_pickaxe_tool.name=Copper Pickaxe
+item.copper_axe_tool.name=Copper Axe
+item.copper_shovel_tool.name=Copper Shovel
+item.copper_sword_tool.name=Copper Sword
+item.copper_hoe_tool.name=Copper Hoe
 
 item.copper_head.name=a
 item.copper_chest.name=a
 item.copper_leg.name=a
 item.copper_boot.name=a
 
-item.wireinfo_viewer.name=a
+item.wireinfo_viewer.name=Wire Info Viewer
 
-tile.copper_ore_block.name=a
-tile.tin_ore_block.name=a
+tile.copper_ore_block.name=Copper Ore
+tile.tin_ore_block.name=Tin Ore
 
-tile.compressor_tblock.name=a
+tile.compressor_tblock.name=Compressor
 
-item.wire_copper.name=a
+item.wire_copper.name=Copper Wire
 
-itemGroup.mi_item=a
-itemGroup.mi_block=a
-itemGroup.mi_tool=a
-itmeGroup.mi_debug=a
-itmeGroup.mi_wire=a
+itemGroup.mi_item=MI Items
+itemGroup.mi_block=MI Blocks
+itemGroup.mi_tool=MI Tools
+itmeGroup.mi_debug=MI Debug
+itmeGroup.mi_wire=MI Wires

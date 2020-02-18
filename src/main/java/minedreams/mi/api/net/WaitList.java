@@ -5,7 +5,6 @@ import java.util.*;
 import minedreams.mi.api.electricity.Electricity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -22,56 +21,61 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @Mod.EventBusSubscriber
 public class WaitList {
 	
+	/** 已经传输的信息总数 */
+	private static int amount = 0;
+	
 	@SubscribeEvent
 	public static void runAtTickEndClient(TickEvent.ClientTickEvent event) {
 		reClient();
-		sendAll(true);
-	}
-	
-	@SubscribeEvent
-	public static void runAtTickEndService(TickEvent.ServerTickEvent event) {
-		sendAll(false);
 	}
 	
 	/** 存储客户端待处理的消息 */
-	public static final Set<MessageBase> client = new LinkedHashSet<>();
+	private static Set<MessageBase> client = new LinkedHashSet<>();
+	/** 操作client时的锁，因为client可变，所以重新建立一个常量 */
+	private static final Object CLIENT_LOCK = new Object();
 	
-	/** 存储客户端待发送的数据 */
-	private static final Set<MessageBase> clientMessage = new LinkedHashSet<>();
+	/** 获取已经执行的信息总数 */
+	public static int getAmount() {
+		return amount;
+	}
 	
-	/** 存储服务端待发送的数据 */
-	private static final Map<IMessage, Set<EntityPlayerMP>> serviceMessage = new LinkedHashMap<>();
+	public static void addMessageToClientList(MessageBase base) {
+		synchronized (CLIENT_LOCK) {
+			checkNull(base, "base");
+			client.add(base);
+		}
+	}
+	
+	public static void toString(StringBuilder sb) {
+		synchronized (CLIENT_LOCK) {
+			for (MessageBase base : client) {
+				sb.append('\t').append(base).append('\n');
+			}
+		}
+	}
 	
 	/**
 	 * 尝试清空client消息列表，只能在客户端调用
 	 */
 	@SideOnly(Side.CLIENT)
 	public static void reClient() {
-		if (net.minecraft.client.Minecraft.getMinecraft().world == null) return;
-		client.forEach(mb -> {
-			Electricity et = (Electricity) net.minecraft.client.Minecraft
-					                               .getMinecraft().world.getTileEntity(mb.getPos());
-			if (et != null) et.reveive(mb.getMessageList());
-		});
-		client.clear();
-	}
-	
-	/**
-	 * 发送所有消息
-	 */
-	private static void sendAll(boolean isClient) {
-		if (isClient) {
-			synchronized (clientMessage) {
-				for (IMessage im : clientMessage) NetworkLoader.instance().sendToServer(im);
-				clientMessage.clear();
-			}
-		} else {
-			synchronized (serviceMessage) {
-				for (Map.Entry<IMessage, Set<EntityPlayerMP>> entry : serviceMessage.entrySet()) {
-					entry.getValue().forEach(player -> NetworkLoader.instance().sendTo(entry.getKey(), player));
+		if (net.minecraft.client.Minecraft.getMinecraft().world == null) {
+			amount = 0;
+			return;
+		}
+		Set<MessageBase> clientMessage = new LinkedHashSet<>();
+		synchronized (CLIENT_LOCK) {
+			client.forEach(mb -> {
+				Electricity et = (Electricity) net.minecraft.client.Minecraft
+						                               .getMinecraft().world.getTileEntity(mb.getPos());
+				if (et == null) {
+					clientMessage.add(mb);
+				} else {
+					++amount;
+					et.reveive(mb.getMessageList());
 				}
-				serviceMessage.clear();
-			}
+			});
+			client = clientMessage;
 		}
 	}
 	
@@ -79,69 +83,19 @@ public class WaitList {
 	 * 发送信息到客户端
 	 *
 	 * @param message 要发送的信息
-	 * @param world 世界对象
-	 * @param name 指定玩家的名称
-	 *
-	 * @throws NullPointerException 如果message和player任意一个为null
-	 * @throws IllegalArgumentException 如果name中的玩家不在世界中存在
-	 */
-	public static void sendToClient(IMessage message, World world, String... name) {
-		if (name == null) throw new NullPointerException("name == null");
-		if (message == null) throw new NullPointerException("message == null");
-		checkNull(message, "message");
-		checkNull(world, "world");
-		checkNull(name, "name");
-		
-		EntityPlayerMP[] players = new EntityPlayerMP[name.length];
-		EntityPlayer temp;
-		for (int i = 0; i < name.length; ++i) {
-			temp = world.getPlayerEntityByName(name[i]);
-			if (temp == null) throw new IllegalArgumentException("name[" + i + "]：" + name[i] + "-该玩家不存在");
-			players[i] = (EntityPlayerMP) temp;
-		}
-		sendToClient(message, players);
-	}
-	
-	/**
-	 * 发送信息到客户端
-	 *
-	 * @param message 要发送的信息
-	 * @param player 指定玩家
+	 * @param players 指定玩家
 	 *
 	 * @throws NullPointerException 如果message和player任意一个为null
 	 * @throws IllegalArgumentException 如果player不能强制转换为EntityPlayerMP[]
 	 */
-	public static void sendToClient(IMessage message, EntityPlayer... player) {
-		checkNull(player, "player");
+	public static void sendToClient(IMessage message, EntityPlayer... players) {
+		checkNull(players, "players");
 		checkNull(message, "message");
-		if (!(player instanceof EntityPlayerMP[]))
-			throw new IllegalArgumentException("player应该可以被强制转换为EntityPlayerMP");
-		sendToClient(message, (EntityPlayerMP[]) player);
-	}
-	
-	/**
-	 * 发送信息到客户端
-	 *
-	 * @param message 要发送的信息
-	 * @param player 指定玩家
-	 *
-	 * @throws NullPointerException 如果message和player任意一个为null
-	 * @throws IllegalArgumentException 如果player中的元素不能强制转换为EntityPlayerMP
-	 */
-	public static void sendToClient(IMessage message, Set<? extends EntityPlayer> player) {
-		checkNull(player, "player");
-		checkNull(message, "message");
-		Set<EntityPlayerMP> set = serviceMessage.containsKey(message) ?
-				                          serviceMessage.get(message) : new LinkedHashSet<>();
-		player.forEach(p -> {
-			if (p instanceof EntityPlayerMP) {
-				set.add((EntityPlayerMP) p);
-			} else {
-				throw new IllegalArgumentException("player：" + p);
-			}
-		});
-		synchronized (serviceMessage) {
-			serviceMessage.put(message, set);
+		
+		for (EntityPlayer player : players) {
+			if (!(player instanceof EntityPlayerMP))
+				throw new IllegalArgumentException("player应该可以被强制转换为EntityPlayerMP");
+			NetworkLoader.instance().sendTo(message, (EntityPlayerMP) player);
 		}
 	}
 	
@@ -154,43 +108,32 @@ public class WaitList {
 	 * @throws NullPointerException 如果message和player任意一个为null
 	 * @throws IllegalArgumentException 如果player中的元素不能强制转换为EntityPlayerMP
 	 */
-	public static void sendToClient(IMessage message, List<? extends EntityPlayer> player) {
+	public static void sendToClient(IMessage message, Iterable<? extends EntityPlayer> player) {
 		checkNull(player, "player");
 		checkNull(message, "message");
-		Set<EntityPlayerMP> set = serviceMessage.containsKey(message) ?
-				                          serviceMessage.get(message) : new LinkedHashSet<>();
 		player.forEach(p -> {
 			if (p instanceof EntityPlayerMP) {
-				set.add((EntityPlayerMP) p);
+				NetworkLoader.instance().sendTo(message, (EntityPlayerMP) p);
 			} else {
 				throw new IllegalArgumentException("player：" + p);
 			}
 		});
-		synchronized (serviceMessage) {
-			serviceMessage.put(message, set);
-		}
 	}
 	
 	/**
 	 * 发送信息到客户端
 	 *
 	 * @param message 要发送的信息
-	 * @param player 指定玩家
+	 * @param players 指定玩家
 	 *
 	 * @throws NullPointerException 如果message和player任意一个为null
 	 */
-	public static void sendToClient(IMessage message, EntityPlayerMP... player) {
+	public static void sendToClient(IMessage message, EntityPlayerMP... players) {
 		checkNull(message, "message");
-		checkNull(player, "player");
-		if (serviceMessage.containsKey(message)) {
-			Collections.addAll(serviceMessage.get(message), player);
-		} else {
-			Set<EntityPlayerMP> set = new LinkedHashSet<>();
-			Collections.addAll(set, player);
-			synchronized (serviceMessage) {
-				serviceMessage.put(message, set);
-			}
-		}
+		checkNull(players, "players");
+		
+		for (EntityPlayerMP player : players)
+			NetworkLoader.instance().sendTo(message, player);
 	}
 	
 	/**
@@ -202,9 +145,7 @@ public class WaitList {
 	@SideOnly(Side.CLIENT)
 	public static void sendToService(MessageBase message) {
 		if (message == null) throw new NullPointerException("message == null");
-		synchronized (clientMessage) {
-			clientMessage.add(message);
-		}
+		NetworkLoader.instance().sendToServer(message);
 	}
 	
 	/**
@@ -229,15 +170,6 @@ public class WaitList {
 	 */
 	public static void checkNull(Object object, String name) {
 		if (object == null) throw new NullPointerException(name + " == null");
-	}
-	
-	private final static class Lists<T> extends LinkedList<T> {
-		@Override
-		public boolean add(T o) {
-			synchronized (client) {
-				return super.add(o);
-			}
-		}
 	}
 	
 }

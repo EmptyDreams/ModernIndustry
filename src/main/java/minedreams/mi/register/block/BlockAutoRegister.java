@@ -1,4 +1,4 @@
-package minedreams.mi.blocks.register;
+package minedreams.mi.register.block;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -60,7 +60,7 @@ public @interface BlockAutoRegister {
 	
 	/**
 	 * 注册物品所用的函数地址，如果为自动注册则为
-	 * minedreams.mi.blocks.register.BlockAutoRegister.class
+	 * minedreams.mi.register.block.BlockAutoRegister.class
 	 */
 	Class<?> register() default BlockAutoRegister.class;
 	

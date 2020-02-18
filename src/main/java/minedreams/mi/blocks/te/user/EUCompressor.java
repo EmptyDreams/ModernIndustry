@@ -1,19 +1,20 @@
-package minedreams.mi.blocks.te;
+package minedreams.mi.blocks.te.user;
 
 import minedreams.mi.api.craftguide.CraftGuide;
 import minedreams.mi.api.craftguide.CraftGuideItems;
 import minedreams.mi.api.craftguide.CraftGuideManager;
 import minedreams.mi.api.electricity.ElectricityUser;
 import minedreams.mi.api.electricity.info.BiggerVoltage;
-import minedreams.mi.api.electricity.info.ElectricityEnergy;
+import minedreams.mi.api.electricity.info.EnumBiggerVoltage;
+import minedreams.mi.api.electricity.info.EnumVoltage;
 import minedreams.mi.blocks.machine.user.CompressorToolBlock;
-import minedreams.mi.blocks.register.BlockRegister;
+import minedreams.mi.register.block.BlockRegister;
+import minedreams.mi.register.te.AutoTileEntity;
+import minedreams.mi.tools.MISysInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -29,8 +30,6 @@ import static minedreams.mi.blocks.machine.user.CompressorToolBlock.EMPTY;
 @AutoTileEntity(CompressorToolBlock.NAME)
 public class EUCompressor extends ElectricityUser {
 	
-	/** 当前方块的对象 */
-	Block block = BlockRegister.getBlock(BlockRegister.COMPRESSOR_TBLOCK);
 	/** 已工作时间 */
 	private int workingTime = 0;
 	/** 三个物品框<br>
@@ -47,13 +46,13 @@ public class EUCompressor extends ElectricityUser {
 	};
 	
 	public EUCompressor() {
-		setBiggerMaxTime(200);
-		setBiggerVoltageOperate(new BiggerVoltage(3, BiggerVoltage.EnumBiggerVoltage.FIRE));
-		setEnergy(1000);
+		setBiggerMaxTime(100);
+		setBiggerVoltageOperate(new BiggerVoltage(3, EnumBiggerVoltage.FIRE));
+		setEnergy(200);
 	}
 	
 	@Override
-	public boolean useElectricity(int energy, int voltage) {
+	public boolean useElectricity(Object info, int energy, EnumVoltage voltage) {
 		//检查输入框是否合法 如果不合法则清零工作时间并结束函数
 		CraftGuide cgi = isLawful();
 		ItemStack itemStack = item.extractItem(0, 1, true);
@@ -80,15 +79,14 @@ public class EUCompressor extends ElectricityUser {
 	}
 	
 	@Override
-	public boolean run() {
+	public Object run() {
 		CraftGuide cgi = isLawful();
-		if (cgi != null) markEle();
-		return true;
-	}
-	
-	@Override
-	public boolean isOverload(ElectricityEnergy now) {
-		return false;
+		if (cgi != null) return NO_HAVE_INFO;
+		IBlockState state = world.getBlockState(pos)
+				                    .withProperty(EMPTY, isEmpty()).withProperty(WORKING, false);
+		world.setBlockState(pos, state);
+		world.markBlockRangeForRenderUpdate(pos, pos);
+		return null;
 	}
 	
 	/** 判断输入是否合法 */
@@ -153,21 +151,6 @@ public class EUCompressor extends ElectricityUser {
 		data.setTag("items", item.serializeNBT());
 		data.setInteger("workingTime", workingTime);
 		return data;
-	}
-	
-	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return oldState.getBlock() != newSate.getBlock();
-	}
-	
-	@Override
-	public boolean canUse(int voltage) {
-		return ElectricityEnergy.isEquals(voltage, getMinVoltage(), getMaxVoltage());
-	}
-	
-	@Override
-	public boolean canUse(int energy, int voltage) {
-		return canUse(voltage) && energy >= getMe();
 	}
 	
 	public static class SlotMI extends SlotItemHandler {

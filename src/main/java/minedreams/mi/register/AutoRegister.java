@@ -1,19 +1,22 @@
-package minedreams.mi;
+package minedreams.mi.register;
+
+import static minedreams.mi.ModernIndustry.MODID;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import minedreams.mi.blocks.te.AutoTileEntity;
-import minedreams.mi.blocks.register.BlockAutoRegister;
-import minedreams.mi.blocks.register.BlockRegister;
-import minedreams.mi.blocks.wire.WireCopper;
+import minedreams.mi.ModernIndustry;
+import minedreams.mi.register.te.AutoTileEntity;
+import minedreams.mi.register.block.BlockAutoRegister;
+import minedreams.mi.register.block.BlockRegister;
 import minedreams.mi.blocks.world.OreCreat;
 import minedreams.mi.blocks.world.WorldCreater;
-import minedreams.mi.items.register.AutoItemRegister;
-import minedreams.mi.items.register.ItemRegister;
+import minedreams.mi.register.item.AutoItemRegister;
+import minedreams.mi.register.item.ItemRegister;
 import minedreams.mi.items.tools.ToolRegister;
 import minedreams.mi.proxy.ClientProxy;
 import minedreams.mi.proxy.CommonProxy;
@@ -21,14 +24,32 @@ import minedreams.mi.tools.MISysInfo;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
+ * 自动注册的总类，自动注册的功能由init()函数完成，该类的运行架构如下：
+ * <pre>
+ *         开始---->>注册debug物品---->>注册{@link BlockRegister}类中的方块
+ *                                                 |
+ *                                                 ↓
+ * 注册被{@link OreCreat}注解的矿石生成器<<----注册被{@link BlockAutoRegister}注解的方块
+ *            |
+ *            ↓
+ * 注册被{@link AutoTileEntity}注解的TE---->>注册{@link ItemRegister}类中的物品
+ *                                            |
+ *                                            ↓
+ * 注册被{@link AutoItemRegister}注解的物品<<----注册{@link ToolRegister}类中的物品
+ *                |
+ *                ↓
+ * 运行被{@link RegisterManager}注解的注册管理类
+ * </pre>
+ *
  * @author EmptyDremas
- * @version 1.1
+ * @version 2.0
  */
 public final class AutoRegister {
 	
@@ -52,12 +73,15 @@ public final class AutoRegister {
 		public static final ArrayList<Item> autoItems = new ArrayList<>();
 	}
 	
-	static {
+	public static boolean isRun = false;
+	
+	public static void init() {
+		if (isRun) return;
+		isRun = true;
 		//是否为客户端
 		final boolean client = FMLCommonHandler.instance().getSide().isClient();
 		
 		try {
-			MISysInfo.print((WireCopper.BLOCK.getBlockItem() != null) ? "提前加载方块数据......" : null);
 			//注册debug物品
 			addAutoItem(ModernIndustry.DEBUG);
 			
@@ -109,6 +133,7 @@ public final class AutoRegister {
 				}
 			}
 			
+			//矿石生成
 			classSet = ASM.getAll(OreCreat.class.getName());
 			if (classSet != null) {
 				Block b;
@@ -124,12 +149,13 @@ public final class AutoRegister {
 				}
 			}
 			
+			//注册TE
 			classSet = ASM.getAll(AutoTileEntity.class.getName());
 			if (classSet != null) {
 				for (ASMData data : classSet) {
 					valueMap = data.getAnnotationInfo();
 					GameRegistry.registerTileEntity((Class<? extends TileEntity>) Class.forName(data.getClassName()),
-							NAME + valueMap.get("value"));
+							new ResourceLocation(MODID, (String) valueMap.get("value")));
 				}
 			}
 			
@@ -168,9 +194,34 @@ public final class AutoRegister {
 					addAutoItem(item, name);
 				}
 			}
+			
+			//注册管理类
+			classSet = ASM.getAll(RegisterManager.class.getName());
+			for (ASMData data : classSet) {
+				Method method = Class.forName(data.getClassName()).getDeclaredMethod("register");
+				method.setAccessible(true);
+				method.invoke(null);
+			}
+		} catch (IllegalAccessException e) {
+			MISysInfo.err("需要的函数不可见，原因可能是：",
+							"用户提供的需初始化的类没有提供可视的构造函数");
+			throw new RuntimeException(e);
+		} catch (NoSuchMethodException e) {
+			MISysInfo.err("没有找到对应的方法，原因可能可能是：",
+					              "用户的类使用了RegisterManager注解却未在类中定义static register()");
+			throw new RuntimeException(e);
+		} catch (NullPointerException e) {
+			MISysInfo.err("反射过程中发生了空指针错误，原因可能是：\n",
+							"\t1).本程序内部错误\n",
+							"\t2).用户修改本程序导致反射过程中出现空指针");
+			throw e;
+		} catch (ClassNotFoundException e) {
+			MISysInfo.err("反射过程中寻找类时出现错误，原因可能是：\n",
+							"\t1).用户或程序内部的类因为某些原因被卸载\n",
+							"\t2).用户提供的类路径错误");
+			throw new RuntimeException(e);
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("在反射过程中发生了意料之外的错误！");
+			throw new RuntimeException("发生了未知错误！", e);
 		}
 	}
 	
@@ -217,6 +268,11 @@ public final class AutoRegister {
 	/** 添加一个物品 */
 	public static void addItem(Item item, String name) {
 		Items.items.put(name, item);
+	}
+	
+	/** 添加一个物品 */
+	public static void addItem(Item item) {
+		addItem(item, item.getRegistryName().getResourcePath());
 	}
 	
 }

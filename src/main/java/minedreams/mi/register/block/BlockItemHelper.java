@@ -1,4 +1,4 @@
-package minedreams.mi.blocks.register;
+package minedreams.mi.register.block;
 
 import net.minecraft.item.Item;
 

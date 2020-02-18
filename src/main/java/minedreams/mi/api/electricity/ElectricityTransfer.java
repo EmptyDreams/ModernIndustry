@@ -1,69 +1,60 @@
 package minedreams.mi.api.electricity;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
+import minedreams.mi.api.electricity.cache.WireLinkInfo;
+import minedreams.mi.api.electricity.clock.OverloadCounter;
+import minedreams.mi.api.electricity.info.*;
+import minedreams.mi.api.net.WaitList;
+import minedreams.mi.api.net.info.InfoBooleans;
 import minedreams.mi.tools.MISysInfo;
-import minedreams.mi.api.electricity.info.ElectricityEnergy;
-import minedreams.mi.api.electricity.info.WireLinkInfo;
 import minedreams.mi.api.net.message.MessageList;
-import minedreams.mi.blocks.te.AutoTileEntity;
-import minedreams.mi.blocks.wire.WireBlock;
+import minedreams.mi.register.te.AutoTileEntity;
+import minedreams.mi.api.electricity.block.TransferBlock;
 import minedreams.mi.tools.Tools;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 /**
- * 电力传输设备的父级TE，最典型的例子是{@link minedreams.mi.blocks.te.TileEntityWire}
+ * 电力传输设备的TE
  *
  * @author EmptyDremas
  * @version 1.0
  */
 @AutoTileEntity("PARENT_ELECTRICITY_TRANSFER")
-public abstract class ElectricityTransfer extends Electricity {
+public class ElectricityTransfer extends Electricity {
 	
-	/**
-	 * 更新线路信息，此方法内部使用instanceof判断方块类型并通过强转调用
-	 * {@link #updateLinkInfo(ElectricityMaker)}或{@link #updateLinkInfo(ElectricityTransfer)}
-	 * @param te 新连接的方块
-	 */
-	protected final void updateLinkInfo(TileEntity te) {
-		if (te instanceof ElectricityMaker) updateLinkInfo((ElectricityMaker) te);
-		else if (te instanceof ElectricityTransfer) updateLinkInfo((ElectricityTransfer) te);
+	/** 计数器 */
+	public final OverloadCounter COUNTER = new OverloadCounter() {
+		@Override
+		public void overload() {
+			World world = getWorld();
+			BlockPos pos = getPos();
+			for (int i = 0; i < 2; ++i) {
+				world.setBlockState(pos, Blocks.FIRE.getDefaultState());
+				world.markBlockRangeForRenderUpdate(pos, pos);
+				pos = Tools.randomPos(world, pos, Tools.ALL);
+				if (pos == null) break;
+			}
+		}
+	};
+	
+	public ElectricityTransfer() { }
+	
+	public ElectricityTransfer(int meMax, int biggerMaxTime, boolean isInsulation) {
+		this.meMax = meMax;
+		this.biggerMaxTime = biggerMaxTime;
+		this.isInsulation = isInsulation;
 	}
-	
-	/**
-	 * 更新线路发电机坐标信息，此方法在连接发电机时必须调用
-	 * @param em 新连接的发电机
-	 */
-	protected final void updateLinkInfo(ElectricityMaker em) {
-		infos.makers.add(em);
-		em.link(this);
-	}
-	
-	/**
-	 * 更新线路连接信息，此方法在连接新电线时必须调用
-	 * @param et 新连接的电线
-	 */
-	protected final void updateLinkInfo(ElectricityTransfer et) {
-		infos.transfers.add(et);
-	}
-	
-	/**
-	 * 更新电路连接信息，此方法在断开发电机时必须调用
-	 * @param em 要删除的发电机
-	 */
-	protected final void deleteLinkInfo(ElectricityMaker em) { infos.makers.remove(em); }
-	
-	/**
-	 * 更新电路连接信息，此方法在断开电线连接时必须调用
-	 * @param et 要删除的电线
-	 */
-	protected final void deleteLinkInfo(ElectricityTransfer et) { infos.transfers.remove(et); }
 	
 	//六个方向是否连接
 	protected boolean up = false;
@@ -77,82 +68,182 @@ public abstract class ElectricityTransfer extends Electricity {
 	/** 连接的下一根电线 */
 	protected ElectricityTransfer prev;
 	/** 已经连接的方块 */
-	protected final Map<EnumFacing, TileEntity> linkBlock = new HashMap<EnumFacing, TileEntity>(6);
+	protected final Map<EnumFacing, TileEntity> linkBlock = new HashMap<>(6);
 	/** 最大电流量 */
-	protected int meMax = 50000;
-	/** 存储线路信息 */
-	private WireLinkInfo infos = new WireLinkInfo();
+	protected int meMax = 5000;
+	/** 当前电流量 */
+	private int me = 0;
 	/** 是否绝缘 */
 	protected boolean isInsulation = false;
-	
 	/** 电力损耗指数，指数越大损耗越多 */
 	protected int loss = 0;
-	
-	public final void setInfos(WireLinkInfo infos) {
-		this.infos = infos;
-	}
+	/** 所属电路缓存 */
+	WireLinkInfo cache = new WireLinkInfo();
 	
 	/**
 	 * 判断一个方块能否连接当前电线
 	 * @param ele 要连接的方块
 	 */
-	abstract public boolean canLink(TileEntity ele);
+	public final boolean canLink(TileEntity ele) {
+		if (ele == null) return false;
+		
+		if (ele instanceof ElectricityTransfer) {
+			if (ele.equals(next) || ele.equals(prev)) return true;
+			return next == null || prev == null;
+		}
+		
+		if (ele instanceof Electricity) {
+			EnumFacing facing = Tools.whatFacing(getPos(), ele.getPos());
+			return linkBlock.getOrDefault(facing, null) == null;
+		}
+		return !isInsulation() && EleUtils.canLinkMinecraft(ele.getBlockType());
+	}
 	
 	/**
 	 * 获取下一根电线
-	 * @param ele 调用该方法的运输设备
+	 * @param ele 调用该方法的运输设备，当{@link #getLinkAmount()} <= 1时可以为null
+	 *
+	 * @throws IllegalArgumentException 如果 ele == null 且 {@link #getLinkAmount()} > 1
 	 */
-	abstract public ElectricityTransfer next(ElectricityTransfer ele);
+	public final ElectricityTransfer next(ElectricityTransfer ele) {
+		if (ele == null) {
+			if (next == null) {
+				if (prev == null) return null;
+				return prev;
+			}
+			if (prev == null) return next;
+			throw new IllegalArgumentException("ele == null，信息不足！");
+		} else {
+			if (next != null && next.equals(ele)) return prev;
+			if (prev != null && prev.equals(ele)) return next;
+			return null;
+		}
+	}
+	
+	@Override
+	protected final void sonRun() { }
+	
+	/** 在客户端存储电线连接数量 */
+	private int _amount = 0;
 	
 	/**
-	 * 强制连接一个方块. 这个方块可能是用电器也可能是传输设备或原版方块，
+	 * 获取已经连接的电线的数量
+	 */
+	public int getLinkAmount() {
+		if (world.isRemote) {
+			return _amount;
+		} else {
+			if (next == null) {
+				if (prev == null) return 0;
+				return 1;
+			}
+			if (prev == null) return 1;
+			return 2;
+		}
+	}
+	
+	/**
+	 * 获取电线连接的所有发电机
+	 * @return 返回的列表可以随意修改
+	 */
+	@Nonnull
+	public List<ElectricityMaker> getLinkMaker() {
+		List<ElectricityMaker> list = new ArrayList<>(6);
+		for (TileEntity entity : linkBlock.values()) {
+			if (entity instanceof ElectricityMaker) list.add((ElectricityMaker) entity);
+		}
+		return list;
+	}
+	
+	/**
+	 * 连接一个方块. 这个方块可能是用电器也可能是传输设备或原版方块，
 	 * 这个需要用户自行检测，该方法中不应该检查是否允许连接
-	 * @param ele 调用方块
+	 * @param entity 调用方块
 	 * @return 连接成功返回true，否则返回false
 	 */
-	public boolean linkForce(TileEntity ele) {
-		updateLinkInfo(ele);
-		switch (Tools.whatFacing(pos, ele.getPos())) {
-			case DOWN:
-				down = true;
-				break;
-			case UP:
-				up = true;
-				break;
-			case NORTH:
-				north = true;
-				break;
-			case SOUTH:
-				south = true;
-				break;
-			case WEST:
-				west = true;
-				break;
-			default:
-				east = true;
-				break;
+	public boolean link(TileEntity entity) {
+		if (world.isRemote) return false;
+		if (entity == null) return false;
+		if (entity == this) return false;
+		if (entity instanceof ElectricityTransfer) {
+			ElectricityTransfer et = (ElectricityTransfer) entity;
+			if (entity.equals(getNext()) || entity.equals(getPrev())) return true;
+			if (linkForce(et)) {
+				if (et.linkForce(this)) {
+					et.updateLink();
+					markDirty();
+					return true;
+				} else {
+					deleteLink(et.getPos());
+				}
+			} else {
+				return false;
+			}
+		} else {
+			if (!(EleUtils.canLink(new LinkInfo(getWorld(), getPos(), entity.getPos(),
+							getBlockType(), entity.getBlockType()),
+					true, false, isInsulation()))) return false;
+			
+			if (entity instanceof ElectricityUser) {
+				((ElectricityUser) entity).link(this);
+			}
+			
+			EnumFacing facing = Tools.whatFacing(getPos(), entity.getPos());
+			if (getLinkBlock().containsKey(facing)) {
+				if (getLinkBlock().get(facing) != null) return false;
+			}
+			getLinkBlock().put(facing, entity);
+			switch (facing) {
+				case DOWN: setDown(true); break;
+				case UP: setUp(true); break;
+				case SOUTH: setSouth(true); break;
+				case NORTH: setNorth(true); break;
+				case WEST: setWest(true); break;
+				default: setEast(true); break;
+			}
+			markDirty();
+			world.markBlockRangeForRenderUpdate(pos, pos);
 		}
-		markDirty();
 		return true;
 	}
 	
 	/**
-	 * 强制连接一个方块. 这个方块可能是用电器也可能是传输设备或原版方块，
-	 * 这个需要用户自行检测，该方法中不应该检查是否允许连接
+	 * 连接一个方块. 这个方块可能是用电器也可能是传输设备或原版方块，这个需要用户自行检测
 	 * @param pos 调用方块
 	 * @return 连接成功返回true，否则返回false
 	 */
-	abstract public boolean linkForce(BlockPos pos);
-	
-	@Override
-	public boolean isOverload(ElectricityEnergy now) {
-		return EETransfer.calculationLoss(this) + now.getEnergy() > meMax;
+	public final boolean link(BlockPos pos) {
+		return link(pos == null ? null : (TileEntity) world.getTileEntity(pos));
 	}
 	
 	/**
-	 * 根据已经连接的电线更新数据，注意：此方法不会将断开连接的地方设置为false
+	 * 强制连接一个运输设备
+	 *
+	 * @return 是否连接成功
+	 *
+	 * @throws NullPointerException 如果et == null
+	 */
+	public final boolean linkForce(ElectricityTransfer et) {
+		WaitList.checkNull(et, "et");
+		
+		if (next == null) next = et;
+		else if (prev == null) prev = et;
+		else return false;
+		
+		updateLink();
+		return true;
+	}
+	
+	/**
+	 * 根据已经连接的电线更新数据
 	 */
 	public void updateLink() {
+		setEast(false);
+		setWest(false);
+		setNorth(false);
+		setSouth(false);
+		setUp(false);
+		setDown(false);
 		if (next != null) {
 			switch (Tools.whatFacing(pos, next.pos)) {
 				case EAST: setEast(true); break;
@@ -173,13 +264,20 @@ public abstract class ElectricityTransfer extends Electricity {
 				default: setDown(true);
 			}
 		}
+		for (Map.Entry<EnumFacing, TileEntity> entry : linkBlock.entrySet()) {
+			if (entry.getValue() != null) {
+				switch (entry.getKey()) {
+					case EAST: setEast(true); break;
+					case WEST: setWest(true); break;
+					case SOUTH: setSouth(true); break;
+					case NORTH: setNorth(true); break;
+					case UP: setUp(true); break;
+					default: setDown(true);
+				}
+			}
+		}
+		markDirty();
 	}
-	
-	/** 根据state更新内部数据 */
-	abstract public void update(IBlockState state);
-	
-	/** 根据内部数据创建新的state */
-	abstract public IBlockState updateState();
 	
 	/**
 	 * 因为在radFromNBT阶段世界没有加载完毕，调用world.getTileEntity会返回null，
@@ -187,6 +285,7 @@ public abstract class ElectricityTransfer extends Electricity {
 	 * 当cachePos==null的时候标志已经更新，不需要再次更新
 	 */
 	private BlockPos[] cachePos = new BlockPos[2];
+	private EnumFacing[] cacheFacing;
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
@@ -198,21 +297,20 @@ public abstract class ElectricityTransfer extends Electricity {
 		south = compound.getBoolean("south");
 		north = compound.getBoolean("north");
 		
-		
-		int[] is;
 		if (compound.getBoolean("hasNext")) {
-			is = compound.getIntArray("next");
-			cachePos[0] = new BlockPos(is[0], is[1], is[2]);
+			cachePos[0] = Tools.readBlockPos(compound, "next");
 		}
 		if (compound.getBoolean("hasPrev")) {
-			is = compound.getIntArray("prev");
-			cachePos[1] = new BlockPos(is[0], is[1], is[2]);
+			cachePos[1] = Tools.readBlockPos(compound, "prev");
 		}
 		
-		if (compound.getBoolean("infos")) {
-			infos = new WireLinkInfo();
-			infos.read(compound);
+		int size = compound.getInteger("maker_size");
+		cacheFacing = new EnumFacing[size];
+		for (int i = 0; i < size; ++i) {
+			cacheFacing[i] = EnumFacing.getFront(compound.getInteger("maker_facing_" + i));
 		}
+		
+		cache.readFromNBT(compound);
 	}
 	
 	@Override
@@ -228,19 +326,48 @@ public abstract class ElectricityTransfer extends Electricity {
 		compound.setBoolean("hasNext", next != null);
 		compound.setBoolean("hasPrev", prev != null);
 		if (next != null) {
-			compound.setIntArray("next", new int[] { next.pos.getX(), next.pos.getY(), next.pos.getZ()});
+			Tools.writeBlockPos(compound, next.getPos(), "next");
 		}
 		if (prev != null) {
-			compound.setIntArray("prev", new int[] { prev.pos.getX(), prev.pos.getY(), prev.pos.getZ()});
+			Tools.writeBlockPos(compound, prev.getPos(), "prev");
 		}
 		
+		int size = 0;
+		for (Map.Entry<EnumFacing, TileEntity> entry : linkBlock.entrySet()) {
+			if (entry.getValue() instanceof ElectricityMaker) {
+				compound.setInteger("maker_facing_" + size, entry.getKey().getIndex());
+				++size;
+			}
+		}
+		compound.setInteger("maker_size", size);
 		
-		compound.setBoolean("infos", infos.needWrite);
-		if (infos.needWrite) {
-			infos.write(compound);
+		if (cache.isNeedSave()) {
+			cache.setIsNeedSave(false);
+			cache.writeToNBT(compound, this);
 		}
 		
 		return compound;
+	}
+	
+	/**
+	 * 存储已经更新过的玩家列表，因为作者认为单机时长会更多，所以选择1作为默认值。<br>
+	 * 	不同方块不共用此列表且此列表不会离线存储，当玩家离开方块过远或退出游戏等操作导致
+	 * 		方块暂时“删除”后此列表将重置以保证所有玩家可以正常渲染电线方块
+	 */
+	private final List<String> players = new ArrayList<>(1);
+	
+	@Override
+	public void reveive(@Nonnull MessageList list) {
+		InfoBooleans info = (InfoBooleans) list.readInfo("bools");
+		List<Boolean> bools = info.getInfos();
+		up = bools.get(0);
+		down = bools.get(1);
+		east = bools.get(2);
+		west = bools.get(3);
+		south = bools.get(4);
+		north = bools.get(5);
+		_amount = list.readInt("amount");
+		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
 	/**
@@ -254,236 +381,94 @@ public abstract class ElectricityTransfer extends Electricity {
 			if (cachePos != null) {
 				if (cachePos[0] != null) next = (ElectricityTransfer) world.getTileEntity(cachePos[0]);
 				if (cachePos[1] != null) prev = (ElectricityTransfer) world.getTileEntity(cachePos[1]);
+				if (cacheFacing != null) {
+					for (EnumFacing facing : cacheFacing)
+						linkBlock.put(facing, world.getTileEntity(Tools.getBlockPos(pos, facing, 1)));
+				}
+				cache.updateInfo(world);
+				cacheFacing = null;
 				cachePos = null;
 			}
-			infos.update(world);
-		}
-		return null;
-	}
-	
-	@Override
-	public ElectricityEnergy getEnergy() {
-		return ElectricityEnergy.craet((int) energy.me, energy.voltage);
-	}
-	
-	/**
-	 * 从指定发电机方块查找到指定方块的路径
-	 * @param maker 发电机方块
-	 * @param find 要寻找的方块
-	 * @return 经过的路径，若指定连接的方块是ET则包括指定连接的线缆方块，顺序按连接顺序排序，
-	 *          若返回值为空则代表没有找到路径
-	 */
-	public static List<ElectricityTransfer> findETFromBlock(ElectricityMaker maker, Electricity find) {
-		List<ElectricityTransfer> list = null;
-		ElectricityTransfer et;
-		o : for (Electricity e : maker.getLinks()) {
-			if (e instanceof ElectricityTransfer) {
-				List<ElectricityTransfer> temp = new ArrayList<>();
-				et = (ElectricityTransfer) e;
-				temp.add(et);
-				if (e.equals(find)) {
-					if (list == null) list = temp;
-					else if (list.size() > temp.size()) list = temp;
-					continue;
-				}
-				ElectricityTransfer t0 = et.getPrev();
-				if (t0.equals(find)) {
-					temp.add((t0));
-					if (list == null) list = temp;
-					else if (list.size() > temp.size()) list = temp;
-					continue;
-				}
-				ElectricityTransfer et0;
-				for (int l = 0; l < 2; ++l) {
-					while ((et0 = t0.next(et)) != null) {
-						temp.add(et0);
-						if (et0.equals(find)) {
-							if (list == null) list = temp;
-							else if (list.size() > temp.size()) list = temp;
-							continue o;
-						}
-						for (TileEntity t1 : et0.getLinkBlock().values()) {
-							if (find.equals(t1)) {
-								if (list == null) list = temp;
-								else if (list.size() > temp.size()) list = temp;
-								continue o;
-							}
-						}
-					}
-					temp.clear();
-					temp.add(et);
-				}
-			} else if (e.equals(find)) {
-				list = new ArrayList<>(1);
-				break;
-			}
-		}
-		return list;
-	}
-	
-	/** 存储当前电线独立的能量消耗 */
-	private ElectricityMaker.Energy energy = new ElectricityMaker.Energy();
-	
-	/**
-	 * 向当前方块发送电力，<b>此方法应由系统调用！！！</b>
-	 * @param from 调用方块
-	 * @param eet 传输的能量
-	 * @return 总能量详单，包括需要能量的方块的有序列表，排列顺序按照遍历先后排序，
-	 *          该返回值最终会返回null，非空返回值只用于递归过程。
-	 */
-	public EETransfer transTo(Electricity from, EETransfer eet) {
-		//判断条件
-		if (from == null) from = this;
-		else if (from == this) return eet;
-		if (eet == null) eet = new EETransfer(this);
-		
-		//保存需要电力的机器
-		Map<ElectricityTransfer, List<ElectricityUser>> users = new LinkedHashMap<>();
-		//计算需要的能量，当电线没有连接任何用电器时传输损耗计入下一个电线的损耗中
-		energy = new ElectricityMaker.Energy();
-		energy.me += EETransfer.calculationLoss(this);
-		if (linkBlock.size() == 0) {
-			//若没有连接任何方块
-			eet.need += energy.me;
-			ElectricityTransfer et = next(this);
-			if (et == null) return eet;
-			return et.transTo(this, eet);
-		} else {
-			//如果连接的有方块
-			ElectricityUser user;
-			for (TileEntity te : linkBlock.values()) {
-				//若连接的是用电器
-				if (te instanceof ElectricityUser) {
-					user = (ElectricityUser) te;
-					//检查是否需要电力
-					if (user.needEle) {
-						user.needEle = false;
-						//检查电压是否符合，不符合的话增加超载时长，符合的话清零计时
-						if (user.canUse(getVoltage())) {
-							user.biggerTime = 0;
-							if (users.containsKey(this)) {
-								users.get(this).add(user);
-							} else {
-								List<ElectricityUser> u = new ArrayList<>(4);
-								u.add(user);
-								users.put(this, u);
-							}
-						} else {
-							++user.biggerTime;
-						}
-					}
-				}
-				energy.me += EleUtils.energy(world, te.getPos(), te.getBlockType(), te);
-			}
-			eet.need += energy.me;
-			ElectricityTransfer et = next(this);
-			//若存在下一根电线则递归调用
-			//若不存在下一根电线则继续运行并添加标记
-			if (et != null) return et.transTo(this, eet);
-		}
-		
-		//计算路径并添加相关标记
-		List<ElectricityTransfer> list;
-		List<ElectricityUser> notEnough = new ArrayList<>();
-		o : for (ElectricityMaker maker : infos.makers) {
-			switch (maker.output(energy, false)) {
-				case YES:
-					//更新途径的电缆的信息
-					list = findETFromBlock(maker, this);
-					list.forEach(et -> et.nowEE.setEnergy(et.nowEE.getEnergy() + energy.me));
-					users.values().forEach(l -> l.forEach(eu -> {
-						eu.useElectricity(eu.getMe(), eu.getVoltage());
-					}));
-					maker.output(energy, true);
-					break o;
-				case NOT_ENOUGH:
-					//若电力不足以完全支持运行
-					list = findETFromBlock(maker, this);
-					//存储当前电缆连接的用电器
-					List<ElectricityUser> lu;
-					//存储当前需要的电能
-					ElectricityMaker.Energy e = new ElectricityMaker.Energy();
-					e.voltage = energy.voltage;
-					for (ElectricityTransfer et : list) {
-						lu = users.getOrDefault(et, null);
-						double d = e.me;
-						e.me += EETransfer.calculationLoss(this);
-						//若线缆没有连接任何电器则直接进入下一根线缆
-						if (lu == null) continue;
-						//保存当前用电器
-						ElectricityUser eu;
-						//记录需要删除的元素
-						Set<Integer> removes = new HashSet<>();
-						for (int i = 0; i < lu.size(); ++i) {
-							eu = lu.get(i);
-							e.me += EleUtils.energy(world, eu.getPos(), eu.getBlockType(), eu);
-							switch (maker.output(e, false)) {
-								case YES:
-									//若可以完全运行则删除当前元素保证不会重复计算
-									removes.add(i);
-									break;
-								case FAILURE:
-									//若完全不能运行则回滚数据并输出电能
-									e.me = d;
-									maker.output(e, true);
-									e.me = 0;
-									break;
-								case NOT_ENOUGH:
-									notEnough.add(eu);
-									break;
-							}
-						}
-						for (Integer remove : removes) {
-							lu.remove(remove.intValue());
-						}
-					}
-					break;
-				default: break;
+			
+			if (players.size() == world.playerEntities.size()) return null;
+			
+			//新建消息
+			MessageList ml = new MessageList();
+			{
+				/* 存储电线的连接方向 */
+				InfoBooleans bools = new InfoBooleans();
+				
+				bools.add(getUp());
+				bools.add(getDown());
+				bools.add(getEast());
+				bools.add(getWest());
+				bools.add(getSouth());
+				bools.add(getNorth());
+				ml.writeInfo("bools", bools);
+				ml.writeInt("amount", getLinkAmount());
 			}
 			
-		}
-		/*
-			遍历不能完全运行的用电器
-			因为算法问题，不能保证所有用电器能完美的使用可用能源，
-			可能会出现能源分配不均等现象
-		 */
-		ElectricityUser eu;
-		for (ElectricityMaker maker : infos.makers) {
-			Set<Integer> removes = new HashSet<>();
-			for (int i = 0; i < notEnough.size(); ++i) {
-				eu = notEnough.get(i);
-				if (eu.canUse(maker.getMeBox(), maker.getVoltage())) {
-					eu.useElectricity(maker.getMeBox(), maker.getVoltage());
-					removes.add(i);
+			//遍历所有玩家
+			for (EntityPlayer player : world.playerEntities) {
+				//如果玩家已经更新过则跳过
+				if (players.contains(player.getName())) continue;
+				
+				//判断玩家是否在范围之内（判断方法借用World中的代码）
+				double d = player.getDistance(pos.getX(), pos.getY(), pos.getZ());
+				if (d < 4096) {
+					if (player instanceof EntityPlayerMP) {
+						players.add(player.getName());
+						ml.addPlayer((EntityPlayerMP) player);
+					}
 				}
 			}
-			for (Integer remove : removes) {
-				notEnough.remove(remove.intValue());
-			}
+			return ml;
 		}
 		return null;
 	}
 	
 	/**
-	 * 取消所有连接
-	 * @param isDelte 是否取消连接方块对该方块的连接
+	 * 遍历整条线路，以当前电线为起点
+	 * @param run 要运行的指令
 	 */
-	public final void deleteAllLink(boolean isDelte) {
-		if (next != null) {
-			deleteLinkInfo(next);
-			if (isDelte) next.deleteLink(this);
-			next = null;
-		}
-		if (prev != null) {
-			deleteLinkInfo(prev);
-			if (isDelte) prev.deleteLink(this);
-			prev = null;
+	public final void forEachAll(IETForEach run) {
+		if (getLinkAmount() == 1) {
+			forEach(null, run);
+		} else {
+			forEach(next, run, true);
+			forEach(prev, run, false);
 		}
 	}
 	
 	/**
-	 * 删除指定连接，该函数实现与{@link #deleteLink(TileEntity)}功能相同，
-	 * 不过该函数使用坐标判断是否删除而不是使用TE，若pos不在连接列表中，
+	 * 向指定方向遍历线路
+	 * @param prev 上一根电线
+	 * @param run 要运行的内容
+	 */
+	public final void forEach(ElectricityTransfer prev, IETForEach run) {
+		forEach(prev, run, true);
+	}
+	
+	/**
+	 * 向指定方向遍历线路
+	 * @param prev 上一根电线
+	 * @param run 要运行的内容
+	 * @param isNow 是否遍历当前电线
+	 */
+	private void forEach(ElectricityTransfer prev, IETForEach run, boolean isNow) {
+		ElectricityTransfer old = prev;
+		if (isNow && !run.run(this)) return;
+		prev = this;
+		for (ElectricityTransfer et = next(old); !(et == null || et == this); et = et.next(prev), prev = old) {
+			if (et == this) break;
+			old = et;
+			if (run.run(et)) continue;
+			break;
+		}
+	}
+	
+	/**
+	 * 删除指定连接，若pos不在连接列表中，
 	 * 则不会发生任何事情
 	 *
 	 * @param pos 要删除的连接坐标，为null时不会做任何事情
@@ -491,10 +476,8 @@ public abstract class ElectricityTransfer extends Electricity {
 	public final void deleteLink(BlockPos pos) {
 		if (pos == null) return;
 		if (pos.equals((next == null) ? null : next.pos)) {
-			deleteLinkInfo(next);
 			next = null;
 		} else if (pos.equals((prev == null) ? null : prev.pos)) {
-			deleteLinkInfo(prev);
 			prev = null;
 		} else {
 			EnumFacing key = null;
@@ -507,61 +490,28 @@ public abstract class ElectricityTransfer extends Electricity {
 				}
 			}
 			if (te == null) return;
-			if (te instanceof ElectricityMaker) {
-				deleteLinkInfo((ElectricityMaker) te);
-			}
 			linkBlock.remove(key);
 		}
+		updateLink();
+	}
+	
+	@Override
+	public void markDirty() {
+		super.markDirty();
+		players.clear();
 	}
 	
 	/**
-	 * 删除与该电线的特定连接
-	 *
-	 * @param e 要删除的连接，可以为null，为null时不会发生任何事情
-	 *
-	 * @throws IndexOutOfBoundsException e不在连接列表中时抛出
+	 * 设置线路缓存
+	 * @throws NullPointerException 如果 info == null
 	 */
-	public final void deleteLink(TileEntity e) {
-		if (e == null) return;
-		if (e instanceof ElectricityTransfer) {
-			if (e.equals(next)) {
-				deleteLinkInfo(next);
-				next = null;
-			} else if (e.equals(prev)) {
-				deleteLinkInfo(prev);
-				prev = null;
-			} else {
-				if (FMLCommonHandler.instance().getSide().isClient())
-					MISysInfo.err("[" + pos + "未知的连接：" + e.getPos());
-				else
-					throw new IndexOutOfBoundsException("[" + pos + "未知的连接：" + e.getPos());
-			}
-		} else {
-			if (linkBlock.containsValue(e)) {
-				EnumFacing key = null;
-				TileEntity te = null;
-				for (Map.Entry<EnumFacing, TileEntity> m : linkBlock.entrySet()) {
-					if (m.getValue().equals(e)) {
-						key = m.getKey();
-						te = m.getValue();
-						break;
-					}
-				}
-				if (key == null) {
-					throw new IndexOutOfBoundsException("未知的连接：" + e);
-				} else {
-					if (te instanceof ElectricityMaker) {
-						deleteLinkInfo((ElectricityMaker) te);
-					}
-					linkBlock.remove(key);
-				}
-			}
-		}
+	public final void setCache(WireLinkInfo info) {
+		WaitList.checkNull(info, "info");
+		this.cache = info;
 	}
 	
-	/** 获取连接的所有的电线 */
-	public final BlockPos[] getLinks() { return new BlockPos[]{ ((next == null) ? null :
-			                                                       next.pos), ((prev == null) ? null : prev.pos)}; }
+	public final WireLinkInfo getCache() { return cache; }
+	
 	/** 获取连接的方块，不包括传输设备 */
 	public Map<EnumFacing, TileEntity> getLinkBlock() { return linkBlock; }
 	/** 获取上一根电线 */
@@ -580,11 +530,13 @@ public abstract class ElectricityTransfer extends Electricity {
 	public final boolean getSouth() { return south; }
 	/** 获取北方是否连接方块 */
 	public final boolean getNorth() { return north; }
-	/** 获取电力损耗指数 */
-	public final int getLoss() { return loss; }
 	/** 获取是否绝缘 */
 	public final boolean isInsulation() {
-		return ((WireBlock) getBlockType()).isInsulation();
+		return ((TransferBlock) getBlockType()).isInsulation();
+	}
+	/** 获取损耗值 */
+	public final int getLoss(EnumVoltage voltage) {
+		return voltage.getLossIndex() * loss / 2;
 	}
 	/** 设置是否绝缘 */
 	public final void setInsulation(boolean isInsulation) { this.isInsulation = isInsulation; }
@@ -604,6 +556,18 @@ public abstract class ElectricityTransfer extends Electricity {
 	public final void setSouth(boolean value) { south = value; }
 	/** 设置电力损耗指数 */
 	public final void setLoss(int loss) { this.loss = loss; }
+	/** 设置上一个电线 */
+	public final void setPrev(ElectricityTransfer et) { prev = et; }
+	/** 设置下一根电线 */
+	public final void setNext(ElectricityTransfer et) { next = et; }
+	/** 设置最大电流指数 */
+	public final void setMeMax(int max) { meMax = max; }
+	/** 获取最大电流指数 */
+	public final int getMeMax() { return meMax; }
+	/** 获取当前电流量 */
+	public final int getMe() { return me; }
+	/** 通过电流 */
+	public final void transfer(int me) { this.me += me; }
 	
 	@Override
 	public final boolean hasCapability(Capability<?> capability, EnumFacing facing) {
@@ -613,47 +577,6 @@ public abstract class ElectricityTransfer extends Electricity {
 	@Override
 	public final <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		return null;
-	}
-	
-	/**
-	 * 电力传输工具类，其中提供了一些额外的方法与参数
-	 */
-	public final static class EETransfer {
-		
-		/** 存储用电器 */
-		protected Map<ElectricityUser, ElectricityEnergy> users = new LinkedHashMap<>();
-		
-		/** 存储发电机 */
-		protected List<ElectricityMaker> makers = new ArrayList<>();
-		
-		/** 最先调用的ET对象，可以为null */
-		protected final ElectricityTransfer ET;
-		
-		/** 当前方块的ET，用于计算损耗 */
-		protected ElectricityTransfer nowET;
-		
-		/** 电压 */
-		public final double VOLTAGE;
-		
-		/** 已经损失的电能 */
-		public double loss = 0;
-		
-		/** 用户请求的电能 */
-		public int need = 0;
-		
-		/**
-		 * @param et 调用的ET可为null
-		 */
-		public EETransfer(ElectricityTransfer et) {
-			ET = et;
-			VOLTAGE = et.getEnergy().getVoltage();
-		}
-		
-		/** 计算传输设备消耗的电能 */
-		public static double calculationLoss(ElectricityTransfer et) {
-			return ((double) et.getEnergy().getVoltage()) / et.getLoss();
-		}
-		
 	}
 	
 }

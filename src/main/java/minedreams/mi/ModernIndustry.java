@@ -2,7 +2,7 @@ package minedreams.mi;
 
 import javax.annotation.Nonnull;
 
-import minedreams.mi.items.register.ItemRegister;
+import minedreams.mi.register.item.ItemRegister;
 import minedreams.mi.tools.MISysInfo;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -16,8 +16,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import org.apache.logging.log4j.Logger;
 
-import minedreams.mi.blocks.register.BlockRegister;
-import minedreams.mi.blocks.wire.WireCopper;
+import minedreams.mi.register.block.BlockRegister;
+import minedreams.mi.blocks.machine.transfer.WireManager;
 import minedreams.mi.items.tools.ToolRegister;
 import minedreams.mi.proxy.CommonProxy;
 
@@ -66,7 +66,7 @@ public final class ModernIndustry {
 		@Override
 		@Nonnull
 		public ItemStack getTabIconItem() {
-			return WireCopper.BLOCK.getBlockItem().getDefaultInstance();
+			return WireManager.COPPER.getBlockItem().getDefaultInstance();
 		}
 	};
 	//内部物品，用于加载图片

@@ -1,7 +1,7 @@
 package minedreams.mi.gui;
 
 import minedreams.mi.ModernIndustry;
-import minedreams.mi.blocks.te.EUCompressor;
+import minedreams.mi.blocks.te.user.EUCompressor;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -163,7 +163,7 @@ public class CompressorContainer extends Container {
 		    drawTexturedModalRect(offsetX, offsetY, 0, 0, xSize, ySize);
 		    
 		    int textWidth = (int) Math.ceil(22.0 * c.Information[0] / c.Information[1]);
-		    this.drawTexturedModalRect(offsetX + 80, offsetY + 35, 0, 166, textWidth, 16);
+		    drawTexturedModalRect(offsetX + 80, offsetY + 35, 0, 166, textWidth, 16);
 		}
 		
 	}

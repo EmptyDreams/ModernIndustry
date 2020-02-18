@@ -147,6 +147,23 @@ public class MessageBase implements IMessage {
 		});
 	}
 	
+	/**
+	 * 获取消息数量
+	 * @return >= 0
+	 */
+	public int size() {
+		return list.byteArraySize() + list.byteSize() + list.infoSize() +
+				       list.intSize() + list.longSize() + list.shortSize();
+	}
+	
+	@Override
+	public String toString() {
+		return "MessageBase{" +
+				       "dimension=" + dimension +
+				       "size=" + size() +
+				       '}';
+	}
+	
 	//------------------------------处理信息的内部类------------------------------//
 	
 	/**
@@ -156,8 +173,7 @@ public class MessageBase implements IMessage {
 		
 		@Override
 		public IMessage onMessage(MessageBase message, MessageContext ctx) {
-			System.out.println(ctx.side.isClient());
-			WaitList.client.add(message);
+			WaitList.addMessageToClientList(message);
 			return null;
 		}
 	}

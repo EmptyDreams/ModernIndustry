@@ -7,67 +7,49 @@ package minedreams.mi.api.electricity.info;
  */
 public final class BiggerVoltage {
 	
-	/** 效果影响半径，单位：方块 */
-	public final int radius;
+	/** 效果强度 */
+	public final float intensity;
+	/** 过载后的操作 */
 	public final EnumBiggerVoltage EBV;
 	
-	/**
-	 * 影响半径默认为1，操作默认为爆炸
-	 */
-	public BiggerVoltage() {
-		this(1, EnumBiggerVoltage.BOOM);
-	}
+	/* 一下设置爆炸专属 */
+	/** 爆炸伤害 */
+	private int damage = 1;
+	/** 爆炸伤害范围，不包括中心方块 */
+	private int radius = 1;
 	
 	/**
-	 * 操作默认为爆炸
-	 * @param radius 影响半径
-	 */
-	public BiggerVoltage(int radius) {
-		this(radius, EnumBiggerVoltage.BOOM);
-	}
-	
-	/**
-	 * 影响半径默认为1
+	 * @param intensity 强度，对于爆炸是爆炸强度，对于火灾是火灾块数
 	 * @param ebv 操作
 	 */
-	public BiggerVoltage(EnumBiggerVoltage ebv) {
-		this(1, ebv);
-	}
-	
-	/**
-	 * @param radius 影响半径
-	 * @param ebv 操作
-	 */
-	public BiggerVoltage(int radius, EnumBiggerVoltage ebv) {
-		this.radius = (radius > 0) ? radius : 1;
+	public BiggerVoltage(float intensity, EnumBiggerVoltage ebv) {
+		this.intensity = (intensity > 0) ? intensity : 1;
 		this.EBV = ebv;
 	}
 	
 	/**
-	 * 机器过载操作
+	 * 设置爆炸伤害
+	 * @param damage 伤害
+	 *
+	 * @throws IllegalArgumentException 如果 damage < 0
 	 */
-	public enum EnumBiggerVoltage {
-		/** 什么都不做 */
-		NON(0),
-		/** 爆炸 */
-		BOOM(1),
-		/** 引起火灾 */
-		FIRE(2);
-		
-		private final int INDEX;
-		
-		EnumBiggerVoltage(int i) {
-			INDEX = i;
-		}
-		
-		public final int getIndex() {
-			return INDEX;
-		}
-		
-		public static EnumBiggerVoltage getFront(int index) {
-			return values()[index];
-		}
-		
+	public void setBoomDamage(int damage) {
+		if (damage < 0) throw new IllegalArgumentException("damage < 0 : " + damage);
+		this.damage = damage;
 	}
+	
+	/**
+	 * 设置爆炸伤害半径
+	 * @param radius 半径
+	 *
+	 * @throws IllegalArgumentException 如果 radius < 0
+	 */
+	public void setBoomRadius(int radius) {
+		if (radius < 0) throw new IllegalArgumentException("radius < 0 : " + radius);
+		this.radius = radius;
+	}
+	
+	public int getBoomDamage() { return damage; }
+	public int getBoomRadius() { return radius; }
 	
 }

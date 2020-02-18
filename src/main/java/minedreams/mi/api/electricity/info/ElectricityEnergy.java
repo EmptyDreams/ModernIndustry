@@ -13,18 +13,18 @@ public final class ElectricityEnergy {
 	 * 电压<br>
 	 * 未来版本可能开启电压损耗
 	 */
-	private int voltage = 0;
+	private EnumVoltage voltage = EnumVoltage.NON;
 	
 	private ElectricityEnergy() { }
 	
-	public static ElectricityEnergy craet(int energy, int voltage) {
+	public static ElectricityEnergy craet(int energy, EnumVoltage voltage) {
 		ElectricityEnergy ee = new ElectricityEnergy();
 		ee.energy = energy;
 		ee.voltage = voltage;
 		return ee;
 	}
 	
-	public void setVoltage(int voltage) {
+	public void setVoltage(EnumVoltage voltage) {
 		this.voltage = voltage;
 	}
 	
@@ -32,7 +32,7 @@ public final class ElectricityEnergy {
 		this.energy = energy;
 	}
 	
-	public int getVoltage() {
+	public EnumVoltage getVoltage() {
 		return voltage;
 	}
 	
@@ -41,20 +41,20 @@ public final class ElectricityEnergy {
 	}
 	
 	/**
-	 * 判断两个电压/电能是否相等，判断范围是5
+	 * 判断两个电能是否相等，判断范围是5
 	 */
-	public static boolean isEquals(double arg0, double arg1) {
+	public static boolean isEqualsEnergy(double arg0, double arg1) {
 		if (arg0 == arg1) return true;
-		return isEquals(arg0, arg1 - 5, arg1 + 5);
+		return isEqualsEnergy(arg0, arg1 - 5, arg1 + 5);
 	}
 	
 	/**
-	 * 判断电压/电能是否在指定范围内
+	 * 判断电能是否在指定范围内
 	 * @param arg0 要判断的电压
 	 * @param min 最小值
 	 * @param max 最大值
 	 */
-	public static boolean isEquals(double arg0, double min, double max) {
+	public static boolean isEqualsEnergy(double arg0, double min, double max) {
 		return arg0 >= min && arg0 <= max;
 	}
 	

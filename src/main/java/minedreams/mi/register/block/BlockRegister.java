@@ -1,13 +1,13 @@
-package minedreams.mi.blocks.register;
+package minedreams.mi.register.block;
 
-import static minedreams.mi.AutoRegister.Blocks;
+import static minedreams.mi.register.AutoRegister.Blocks;
 
 import java.lang.reflect.InvocationTargetException;
 
 import minedreams.mi.ModernIndustry;
 import minedreams.mi.blocks.ore.OreBlock;
 import minedreams.mi.blocks.world.OreCreat;
-import minedreams.mi.items.register.ItemRegister;
+import minedreams.mi.register.item.ItemRegister;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;

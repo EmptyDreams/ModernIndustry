@@ -1,5 +1,7 @@
 package minedreams.mi.tools;
 
+import java.util.Random;
+
 import static net.minecraft.util.EnumFacing.UP;
 import static net.minecraft.util.EnumFacing.DOWN;
 import static net.minecraft.util.EnumFacing.SOUTH;
@@ -9,10 +11,13 @@ import static net.minecraft.util.EnumFacing.WEST;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 /**
  * 这个类种包含一些常用的工具类方法
@@ -21,15 +26,87 @@ import net.minecraft.util.math.BlockPos;
  */
 public final class Tools {
 	
+	/** 只限水平范围 */
+	public static final int HORIZONTAL = 0;
+	/** 只限垂直范围 */
+	public static final int VERTICAL = 1;
+	/** 不限范围 */
+	public static final int ALL = 2;
+	private static final EnumFacing[] _HORIAONTAL = { NORTH, WEST, SOUTH, EAST };
+	private static final EnumFacing[] _VERTICAL = { UP, DOWN };
+	private static final EnumFacing[] _ALL = { NORTH, WEST, UP, DOWN, SOUTH, EAST };
+	
 	/**
-	 * 查询指定工具的挖掘等级
-	 * @param tool
-	 * @param toolClass
-	 * @return
-	 *//*
-	public static int getHarvestLevel(ItemStack tool, String toolClass) {
-		return ((ItemTool) tool.getItem()).getHarvestLevel(tool, toolClass);
-	}*/
+	 * 从中心方块附近随机查找指定数量的空气坐标
+	 *
+	 * @param world 所在世界
+	 * @param center 中心方块坐标
+	 * @param model 模式
+	 * @return 数组长度与amount一致，其中可能有空值
+	 *
+	 * @throws IllegalArgumentException 如果model不在范围之内
+	 *
+	 * @see #HORIZONTAL
+	 * @see #VERTICAL
+	 * @see #ALL
+	 */
+	public static BlockPos randomPos(World world, BlockPos center, int model) {
+		final Random random = new Random();
+		//最大尝试次数
+		final int allSize;
+		final EnumFacing[] facing;
+		
+		switch (model) {
+			case HORIZONTAL:
+				allSize = 20;
+				facing = _HORIAONTAL;
+				break;
+			case VERTICAL:
+				allSize = 10;
+				facing = _VERTICAL;
+				break;
+			case ALL:
+				allSize = 30;
+				facing = _ALL;
+				break;
+			default: throw new IllegalArgumentException("model[" + model + "]不在范围之内");
+		}
+		
+		BlockPos temp;
+		int index;
+		int t = 0;
+		IBlockState state;
+		do {
+			++t;
+			index = random.nextInt(facing.length);
+			temp = getBlockPos(center, facing[index], 1);
+		} while (t < allSize && !world.isAirBlock(temp) && !Blocks.FIRE.canCatchFire(world, temp, DOWN));
+		
+		return temp;
+	}
+	
+	/**
+	 * 读取坐标
+	 * @param compound 要读取的标签
+	 * @param name 名称
+	 * @return 坐标
+	 */
+	public static BlockPos readBlockPos(NBTTagCompound compound, String name) {
+		return new BlockPos(compound.getInteger(name + "_x"),
+				compound.getInteger(name + "_y"), compound.getInteger(name + "_z"));
+	}
+	
+	/**
+	 * 写入一个坐标到标签中
+	 * @param compound 要写入的标签
+	 * @param pos 坐标
+	 * @param name 名称
+	 */
+	public static void writeBlockPos(NBTTagCompound compound, BlockPos pos, String name) {
+		compound.setInteger(name + "_x", pos.getX());
+		compound.setInteger(name + "_y", pos.getY());
+		compound.setInteger(name + "_z", pos.getZ());
+	}
 	
 	/**
 	 * 判断other在now的哪个方向
@@ -101,6 +178,17 @@ public final class Tools {
 			if (a.equals(t)) return true;
 		}
 		return false;
+	}
+	
+	public static BlockPos getBlockPos(BlockPos pos, EnumFacing facing, int length) {
+		switch (facing) {
+			case DOWN: return pos.down(length);
+			case UP: return pos.up(length);
+			case NORTH: return pos.north(length);
+			case SOUTH: return pos.south(length);
+			case WEST: return pos.west(length);
+			default: return pos.east(length);
+		}
 	}
 	
 	/** 从state数组获取block数组 */
