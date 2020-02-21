@@ -9,6 +9,7 @@ import minedreams.mi.register.block.BlockAutoRegister;
 import minedreams.mi.register.block.BlockRegister;
 import minedreams.mi.blocks.te.user.EUCompressor;
 import minedreams.mi.api.gui.GuiLoader;
+import minedreams.mi.tools.Tools;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -172,7 +173,9 @@ public class CompressorToolBlock extends MachineBlock {
 	
 	@Override
 	public boolean canLink(LinkInfo info, boolean nowIsExist, boolean fromIsExist) {
-		return true;
+		IBlockState state = info.nowState == null ? info.world.getBlockState(info.nowPos) : info.nowState;
+		EnumFacing enumfacing = EnumFacing.getHorizontal(getMetaFromState(state) & 0b0011);
+		return Tools.whatFacing(info.nowPos, info.fromPos) != enumfacing;
 	}
 	
 }

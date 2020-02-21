@@ -3,8 +3,7 @@ package minedreams.mi.register.block;
 import net.minecraft.item.Item;
 
 /**
- * 方块物品辅助注册工具，其中实现方法来返回Item对象来减少
- * Item构造函数的调用
+ * 方块物品辅助注册工具，其中实现方法来返回Item对象来减少Item构造函数的调用
  * @author EmptyDreams
  * @version V1.0
  */

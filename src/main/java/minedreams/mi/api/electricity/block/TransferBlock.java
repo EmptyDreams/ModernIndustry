@@ -109,9 +109,6 @@ abstract public class TransferBlock extends BlockBaseT implements IEleInfo {
 		return new ItemStack(getBlockItem());
 	}
 	
-	/** 是否绝缘 */
-	public boolean isInsulation() { return false; }
-	
 	@Override
 	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
 		TileEntity fromEntity = worldIn.getTileEntity(fromPos);
@@ -149,13 +146,7 @@ abstract public class TransferBlock extends BlockBaseT implements IEleInfo {
 			if (from instanceof ElectricityTransfer) {
 				return ((ElectricityTransfer) from).canLink(now);
 			}
-			if (from instanceof ElectricityMaker || from instanceof ElectricityUser) {
-				return true;
-			}
-			if (now.getLinkAmount() != 2 && !now.isInsulation()) {
-				return EleUtils.canLinkMinecraft(info.nowBlock);
-			}
-			return false;
+			return from instanceof ElectricityMaker || from instanceof ElectricityUser;
 		} else {
 			return now.canLink(from);
 		}

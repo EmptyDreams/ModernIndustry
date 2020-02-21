@@ -11,7 +11,6 @@ import minedreams.mi.tools.Tools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>存储一条电缆线路的缓存信息. 该类只支持离线存储部分数据，
@@ -78,7 +77,7 @@ public final class WireLinkInfo {
 	
 	/**
 	 * 更新内部信息，在更新内部信息前线路中的电线不共享同一个缓存对象
-	 * @param world
+	 * @param world 所在世界
 	 */
 	public void updateInfo(World world) {
 		if (ets == null) return;
@@ -120,7 +119,7 @@ public final class WireLinkInfo {
 				information.start.equals(start) &&
 				information.end.equals(end)) return information.energy;
 		}
-		int c = calculateLine(start, end, voltage);
+		int c = calculateLoss(start, end, voltage);
 		if (c == -1) return -1;
 		writeInfo(start, end, c, voltage);
 		return c;
@@ -133,7 +132,7 @@ public final class WireLinkInfo {
 	 * @param voltage 电压
 	 * @return 损耗电能值，返回-1表示计算失败
 	 */
-	private static int calculateLine(ElectricityTransfer start, ElectricityTransfer end, EnumVoltage voltage) {
+	private static int calculateLoss(ElectricityTransfer start, ElectricityTransfer end, EnumVoltage voltage) {
 		AtomicInteger loss = new AtomicInteger(0);
 		AtomicBoolean has = new AtomicBoolean(false);
 		if (start.getLinkAmount() == 1) {
@@ -180,9 +179,17 @@ public final class WireLinkInfo {
 	}
 	
 	/**
-	 * 清除缓存数据（除发电机数量）
+	 * 重新计算线路缓存信息
+	 * @param transfer 线路中任意一根电线
 	 */
-	public void clear() { CACHE.clear(); }
+	public static void calculateCache(ElectricityTransfer transfer) {
+		WireLinkInfo linkInfo = new WireLinkInfo();
+		transfer.forEachAll(it -> {
+			linkInfo.plusMakerAmount(it.getLinkMaker().size());
+			it.setCache(linkInfo);
+			return true;
+		});
+	}
 	
 	private final Set<Information> CACHE = new HashSet<>();
 	

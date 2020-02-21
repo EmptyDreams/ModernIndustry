@@ -37,10 +37,8 @@ public final class EleUtils {
 	 * @param fromIsExist 调用方块是否存在
 	 * @param isInsulation 是否绝缘，一般情况下非电力传输设备都为绝缘设备，电力传输设备中只有一部分是绝缘设备
 	 */
-	public static boolean canLink(LinkInfo info, boolean nowIsExist, boolean fromIsExist, boolean isInsulation) {
-		if (info.nowBlock.getRegistryName().getResourceDomain().equals("minecraft")) {
-			return (!isInsulation && canLinkMinecraft(info.nowBlock));
-		} else if (info.nowBlock instanceof IEleInfo) {
+	public static boolean canLink(LinkInfo info, boolean nowIsExist, boolean fromIsExist) {
+		if (info.nowBlock instanceof IEleInfo) {
 			return ((IEleInfo) info.nowBlock).canLink(info, nowIsExist, fromIsExist);
 		}
 		return false;

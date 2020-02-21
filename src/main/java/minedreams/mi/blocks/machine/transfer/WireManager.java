@@ -43,7 +43,7 @@ public final class WireManager {
 		@Nullable
 		@Override
 		public ElectricityTransfer createNewTileEntity(World worldIn, int meta) {
-			return new ElectricityTransfer(1000, 200, false);
+			return new ElectricityTransfer(1000, 200);
 		}
 		
 	};

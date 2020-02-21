@@ -8,12 +8,10 @@ import minedreams.mi.api.electricity.clock.OverloadCounter;
 import minedreams.mi.api.electricity.info.*;
 import minedreams.mi.api.net.WaitList;
 import minedreams.mi.api.net.info.InfoBooleans;
-import minedreams.mi.tools.MISysInfo;
 import minedreams.mi.api.net.message.MessageList;
 import minedreams.mi.register.te.AutoTileEntity;
 import minedreams.mi.api.electricity.block.TransferBlock;
 import minedreams.mi.tools.Tools;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -50,10 +48,9 @@ public class ElectricityTransfer extends Electricity {
 	
 	public ElectricityTransfer() { }
 	
-	public ElectricityTransfer(int meMax, int biggerMaxTime, boolean isInsulation) {
+	public ElectricityTransfer(int meMax, int biggerMaxTime) {
 		this.meMax = meMax;
 		this.biggerMaxTime = biggerMaxTime;
-		this.isInsulation = isInsulation;
 	}
 	
 	//六个方向是否连接
@@ -73,8 +70,6 @@ public class ElectricityTransfer extends Electricity {
 	protected int meMax = 5000;
 	/** 当前电流量 */
 	private int me = 0;
-	/** 是否绝缘 */
-	protected boolean isInsulation = false;
 	/** 电力损耗指数，指数越大损耗越多 */
 	protected int loss = 0;
 	/** 所属电路缓存 */
@@ -96,7 +91,7 @@ public class ElectricityTransfer extends Electricity {
 			EnumFacing facing = Tools.whatFacing(getPos(), ele.getPos());
 			return linkBlock.getOrDefault(facing, null) == null;
 		}
-		return !isInsulation() && EleUtils.canLinkMinecraft(ele.getBlockType());
+		return false;
 	}
 	
 	/**
@@ -182,7 +177,7 @@ public class ElectricityTransfer extends Electricity {
 		} else {
 			if (!(EleUtils.canLink(new LinkInfo(getWorld(), getPos(), entity.getPos(),
 							getBlockType(), entity.getBlockType()),
-					true, false, isInsulation()))) return false;
+					true, false))) return false;
 			
 			if (entity instanceof ElectricityUser) {
 				((ElectricityUser) entity).link(this);
@@ -213,7 +208,7 @@ public class ElectricityTransfer extends Electricity {
 	 * @return 连接成功返回true，否则返回false
 	 */
 	public final boolean link(BlockPos pos) {
-		return link(pos == null ? null : (TileEntity) world.getTileEntity(pos));
+		return link(pos == null ? null : world.getTileEntity(pos));
 	}
 	
 	/**
@@ -468,17 +463,31 @@ public class ElectricityTransfer extends Electricity {
 	}
 	
 	/**
-	 * 删除指定连接，若pos不在连接列表中，
-	 * 则不会发生任何事情
-	 *
+	 * 删除指定连接，若pos不在连接列表中，则不会发生任何事情
 	 * @param pos 要删除的连接坐标，为null时不会做任何事情
 	 */
 	public final void deleteLink(BlockPos pos) {
 		if (pos == null) return;
-		if (pos.equals((next == null) ? null : next.pos)) {
-			next = null;
-		} else if (pos.equals((prev == null) ? null : prev.pos)) {
-			prev = null;
+		if (next != null && pos.equals(next.pos)) {
+			if (next.getLinkAmount() == 1) {
+				cache.plusMakerAmount(-next.getLinkMaker().size());
+				next.setCache(null);
+				next = null;
+			} else {
+				next = null;
+				WireLinkInfo.calculateCache(this);
+			}
+			updateLink();
+		} else if (prev != null && pos.equals(prev.pos)) {
+			if (prev.getLinkAmount() == 1) {
+				cache.plusMakerAmount(-prev.getLinkMaker().size());
+				prev.setCache(null);
+				prev = null;
+			} else {
+				prev = null;
+				WireLinkInfo.calculateCache(this);
+			}
+			updateLink();
 		} else {
 			EnumFacing key = null;
 			TileEntity te = null;
@@ -491,8 +500,8 @@ public class ElectricityTransfer extends Electricity {
 			}
 			if (te == null) return;
 			linkBlock.remove(key);
+			updateLink();
 		}
-		updateLink();
 	}
 	
 	@Override
@@ -501,15 +510,9 @@ public class ElectricityTransfer extends Electricity {
 		players.clear();
 	}
 	
-	/**
-	 * 设置线路缓存
-	 * @throws NullPointerException 如果 info == null
-	 */
-	public final void setCache(WireLinkInfo info) {
-		WaitList.checkNull(info, "info");
-		this.cache = info;
-	}
-	
+	/** 设置线路缓存 */
+	public final void setCache(WireLinkInfo info) { this.cache = info; }
+	/** 获取线路缓存 */
 	public final WireLinkInfo getCache() { return cache; }
 	
 	/** 获取连接的方块，不包括传输设备 */
@@ -530,16 +533,10 @@ public class ElectricityTransfer extends Electricity {
 	public final boolean getSouth() { return south; }
 	/** 获取北方是否连接方块 */
 	public final boolean getNorth() { return north; }
-	/** 获取是否绝缘 */
-	public final boolean isInsulation() {
-		return ((TransferBlock) getBlockType()).isInsulation();
-	}
 	/** 获取损耗值 */
 	public final int getLoss(EnumVoltage voltage) {
 		return voltage.getLossIndex() * loss / 2;
 	}
-	/** 设置是否绝缘 */
-	public final void setInsulation(boolean isInsulation) { this.isInsulation = isInsulation; }
 	/** 设置上方是否连接方块 */
 	public final void setUp(boolean value) {
 		up = value;

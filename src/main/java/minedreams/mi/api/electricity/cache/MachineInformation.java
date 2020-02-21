@@ -33,6 +33,7 @@ public class MachineInformation implements Comparable<MachineInformation>, Itera
 	public ElectricityTransfer getStart() { return start; }
 	public ElectricityTransfer getEnd() { return end; }
 	public List<ElectricityTransfer> getPath() { return path; }
+	public int getLoss(EnumVoltage voltage) { return start.getCache().readInfo(start, end, voltage); }
 	
 	/**
 	 * 判断当前缓存是否可用
@@ -57,7 +58,7 @@ public class MachineInformation implements Comparable<MachineInformation>, Itera
 	 */
 	public boolean exist() {
 		World world = maker.getWorld();
-		if (start.isInsulation()) {
+		if (start.isInvalid()) {
 			TileEntity te = world.getTileEntity(start.getPos());
 			if (te instanceof ElectricityTransfer) {
 				start = (ElectricityTransfer) te;
@@ -65,7 +66,7 @@ public class MachineInformation implements Comparable<MachineInformation>, Itera
 				return false;
 			}
 		}
-		if (end.isInsulation()) {
+		if (end.isInvalid()) {
 			TileEntity te = world.getTileEntity(end.getPos());
 			if (te instanceof ElectricityTransfer) {
 				end = (ElectricityTransfer) te;
@@ -96,16 +97,12 @@ public class MachineInformation implements Comparable<MachineInformation>, Itera
 		MachineInformation that = (MachineInformation) o;
 		
 		if (!maker.equals(that.maker)) return false;
-		if (!start.equals(that.start)) return false;
-		return end.equals(that.end);
+		return path.equals(that.path);
 	}
 	
 	@Override
 	public int hashCode() {
-		int result = maker.hashCode();
-		result = 31 * result + start.hashCode();
-		result = 31 * result + end.hashCode();
-		return result;
+		return maker.hashCode();
 	}
 	
 	@Override

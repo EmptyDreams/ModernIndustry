@@ -36,6 +36,12 @@ public class OrdinaryCounter extends OverloadCounter {
 		}
 	}
 	
+	@Override
+	public void plus(int amount) {
+		super.plus(amount);
+		if (getTime() >= ele.getBiggerMaxTime()) overload();
+	}
+	
 	private static Temp temp;
 	private static final class Temp extends Entity {
 		

@@ -92,30 +92,62 @@ public final class EleWorker {
 			
 			MachineCache cache = user.getCache();
 			MachineInformation info = cache.read();
-			int realEnergy = 0;
-			EnumVoltage realVoltage = null;
-			if (info != null) {
+			int realEnergy = 0;         //用电器消耗的能量
+			int loss = 0;               //运输过程中损耗的能量
+			EnumVoltage realVoltage;    //可以提供的最适电压
+			boolean out = false;        //是否选用外来发电机
+			if (info != null) {         //若缓存不为null说明有可用外来发电机
+				//如果外来发电机优于邻接发电机则选用外来发电机
 				if (realMaker == null || info.getMaker().getOutputMax() >= user.getEnergy() ||
 						    (!realMaker.checkOutput(user.getVoltage()) && info.isValidVoltage(user))) {
 					realMaker = info.getMaker();
+					out = true;
+					path.addAll(info.getPath());    //将路径算入总路径中
 				}
 			}
 			
+			//如果此时发电机依然为null说明没有适用的发电机，跳过本次循环
 			if (realMaker == null) continue;
+			//计算可提供的电能
 			if (realMaker.getOutputMax() >= user.getEnergy()) realEnergy = user.getEnergy();
 			else realEnergy = user.getEnergyMin();
 			
-			if (realMaker.checkOutput(user.getVoltage()))
+			//计算可提供的电压
+			if (realMaker.checkOutput(user.getVoltage())) {
 				realVoltage = user.getVoltage();
-			else if (realMaker.getVoltage_min().getVoltage() > user.getVoltage().getVoltage())
+				user.COUNTER.clean();
+			}
+			else if (realMaker.getVoltage_min().getVoltage() > user.getVoltage().getVoltage()) {
 				realVoltage = realMaker.getVoltage_min();
+				user.COUNTER.plus();
+			}
 			else continue;
 			
+			//若选用外部发电机则说明有电能损耗
+			if (out) {
+				//计算电能损耗并更新路径中的电线的数据
+				loss = info.getLoss(realVoltage);
+				transfer(info.getPath(), realEnergy + loss);
+			}
+			
 			realMaker.output(realEnergy, realVoltage, true);
-			user.useElectricity(entry.getValue(), realEnergy, realVoltage);
+			user.useElectricity(entry.getValue(), realEnergy + loss, realVoltage);
 		}
 		
-		
+		//更新缓存信息
+		transfersAmount = path.size();
+		//检查电线是否过载
+		for (ElectricityTransfer transfer : path) {
+			if (transfer.getMe() > transfer.getMeMax()) {
+				transfer.COUNTER.plus();
+				if (transfer.COUNTER.getTime() > transfer.getBiggerMaxTime()) {
+					transfer.COUNTER.overload();
+				} else {
+					transfer.COUNTER.clean();
+				}
+			}
+			transfer.transfer(transfer.getMe());
+		}
 	}
 	
 	/**

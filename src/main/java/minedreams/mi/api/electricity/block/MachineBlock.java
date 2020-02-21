@@ -45,6 +45,8 @@ public abstract class MachineBlock extends BlockBaseT implements IEleInfo {
 			ElectricityMaker maker = (ElectricityMaker) now;
 			if (from instanceof ElectricityUser) {
 				((ElectricityUser) from).link(maker);
+			} else if (from instanceof ElectricityTransfer) {
+				((ElectricityTransfer) from).link(maker);
 			}
 		}
 	}

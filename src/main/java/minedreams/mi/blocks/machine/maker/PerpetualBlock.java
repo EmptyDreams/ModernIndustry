@@ -3,6 +3,7 @@ package minedreams.mi.blocks.machine.maker;
 import javax.annotation.Nullable;
 import java.util.Random;
 
+import minedreams.mi.api.electricity.block.MachineBlock;
 import minedreams.mi.api.electricity.info.IEleInfo;
 import minedreams.mi.api.electricity.info.LinkInfo;
 import minedreams.mi.register.block.BlockAutoRegister;
@@ -19,7 +20,7 @@ import net.minecraft.world.World;
  * @version V1.0
  */
 @BlockAutoRegister(name = 10, registryName = "perpetual")
-public class PerpetualBlock extends BlockBaseT implements IEleInfo {
+public class PerpetualBlock extends MachineBlock implements IEleInfo {
 	
 	private final Item ITEM = new ItemBlock(this).setRegistryName("perpetual");
 	
