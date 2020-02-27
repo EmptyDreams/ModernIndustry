@@ -1,6 +1,10 @@
 package minedreams.mi.tools;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import static net.minecraft.util.EnumFacing.UP;
 import static net.minecraft.util.EnumFacing.DOWN;
@@ -15,6 +19,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -25,6 +30,27 @@ import net.minecraft.world.World;
  * @version V1.0
  */
 public final class Tools {
+	
+	/**
+	 * 遍历指定方块周围的所有TE，不包含TE的不会进行遍历
+	 * @param world 所在世界
+	 * @param pos 中心方块
+	 * @param run 要运行的代码，其中TE只遍历到的TE，EnumFacing指TE相对于中心方块的方向
+	 */
+	public static void forEachAroundTE(World world, BlockPos pos, BiConsumer<? super TileEntity, EnumFacing> run) {
+		TileEntity te = world.getTileEntity(pos.up());
+		if (te != null) run.accept(te, UP);
+		te = world.getTileEntity(pos.down());
+		if (te != null) run.accept(te, DOWN);
+		te = world.getTileEntity(pos.west());
+		if (te != null) run.accept(te, WEST);
+		te = world.getTileEntity(pos.north());
+		if (te != null) run.accept(te, NORTH);
+		te = world.getTileEntity(pos.south());
+		if (te != null) run.accept(te, SOUTH);
+		te = world.getTileEntity(pos.east());
+		if (te != null) run.accept(te, EAST);
+	}
 	
 	/** 只限水平范围 */
 	public static final int HORIZONTAL = 0;

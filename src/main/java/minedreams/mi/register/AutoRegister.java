@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 import minedreams.mi.ModernIndustry;
+import minedreams.mi.api.electricity.trusteeship.EleSrcInputer;
+import minedreams.mi.api.electricity.trusteeship.EleSrcOutputer;
 import minedreams.mi.register.te.AutoTileEntity;
 import minedreams.mi.register.block.BlockAutoRegister;
 import minedreams.mi.register.block.BlockRegister;
@@ -80,6 +82,8 @@ public final class AutoRegister {
 		isRun = true;
 		//是否为客户端
 		final boolean client = FMLCommonHandler.instance().getSide().isClient();
+		
+		new EleSrcOutputer(); new EleSrcInputer();
 		
 		try {
 			//注册debug物品

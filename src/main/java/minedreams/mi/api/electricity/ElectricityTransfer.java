@@ -10,7 +10,6 @@ import minedreams.mi.api.net.WaitList;
 import minedreams.mi.api.net.info.InfoBooleans;
 import minedreams.mi.api.net.message.MessageList;
 import minedreams.mi.register.te.AutoTileEntity;
-import minedreams.mi.api.electricity.block.TransferBlock;
 import minedreams.mi.tools.Tools;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

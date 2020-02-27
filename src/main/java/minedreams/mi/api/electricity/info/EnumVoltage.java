@@ -1,6 +1,6 @@
 package minedreams.mi.api.electricity.info;
 
-import java.util.Comparator;
+import minedreams.mi.api.electricity.interfaces.IVoltage;
 
 /**
  * 存储支持的电压等级
@@ -9,7 +9,7 @@ import java.util.Comparator;
  * @version V1.0
  */
 @SuppressWarnings("unused")
-public enum EnumVoltage {
+public enum EnumVoltage implements IVoltage {
 
 	NON(0, Integer.MAX_VALUE, 0),
 	LOW(10, 50, 1),
@@ -31,10 +31,11 @@ public enum EnumVoltage {
 		INDEX = index;
 	}
 	
+	@Override
 	public int getVoltage() {
 		return VOLTAGE;
 	}
-	
+	@Override
 	public int getLossIndex() {
 		return LOSS;
 	}

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import minedreams.mi.api.electricity.info.EnumVoltage;
 import minedreams.mi.api.electricity.info.OutPutResult;
+import minedreams.mi.api.electricity.interfaces.IVoltage;
 import minedreams.mi.api.net.WaitList;
 import minedreams.mi.register.te.AutoTileEntity;
 import minedreams.mi.tools.Tools;
@@ -69,7 +70,7 @@ public abstract class ElectricityMaker extends Electricity {
 	 * @param isTrue 当isTrue为false时该方法不修改实际数据
 	 * @return OutPutResult 返回输出情况
 	 */
-	public OutPutResult output(int energy, EnumVoltage voltage, boolean isTrue) {
+	public OutPutResult output(int energy, IVoltage voltage, boolean isTrue) {
 		if (isTrue) {
 			if (!(voltage.getVoltage() >= voltage_min.getVoltage() &&
 					      voltage.getVoltage() <= voltage_max.getVoltage())) return OutPutResult.FAILURE;

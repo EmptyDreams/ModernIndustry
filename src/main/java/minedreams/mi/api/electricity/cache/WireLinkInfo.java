@@ -1,14 +1,18 @@
 package minedreams.mi.api.electricity.cache;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import minedreams.mi.api.electricity.ElectricityTransfer;
 import minedreams.mi.api.electricity.info.EnumVoltage;
+import minedreams.mi.api.electricity.info.PathInfo;
+import minedreams.mi.api.electricity.interfaces.IEleInputer;
 import minedreams.mi.api.net.WaitList;
 import minedreams.mi.tools.Tools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -20,7 +24,7 @@ import net.minecraft.world.World;
  * @author EmptyDreams
  * @version V2.0
  */
-public final class WireLinkInfo {
+public final class WireLinkInfo extends EleLineCache {
 	
 	private static final List<BlockPos> NON = new ArrayList<>(0);
 	
@@ -123,6 +127,12 @@ public final class WireLinkInfo {
 		if (c == -1) return -1;
 		writeInfo(start, end, c, voltage);
 		return c;
+	}
+	
+	@Nullable
+	@Override
+	public PathInfo readInfo(TileEntity start, TileEntity user, IEleInputer inputer) {
+		return null;
 	}
 	
 	/**

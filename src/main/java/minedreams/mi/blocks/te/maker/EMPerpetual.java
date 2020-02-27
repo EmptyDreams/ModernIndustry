@@ -1,13 +1,13 @@
 package minedreams.mi.blocks.te.maker;
 
 import minedreams.mi.api.electricity.ElectricityMaker;
-import minedreams.mi.api.electricity.ElectricityTransfer;
-import minedreams.mi.api.electricity.info.ElectricityEnergy;
+import minedreams.mi.register.te.AutoTileEntity;
 
 /**
  * @author EmptyDreams
  * @version V1.0
  */
+@AutoTileEntity("perpetual")
 public class EMPerpetual extends ElectricityMaker {
 	
 	{

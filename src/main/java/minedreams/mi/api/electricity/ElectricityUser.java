@@ -11,6 +11,7 @@ import minedreams.mi.api.electricity.clock.OverloadCounter;
 import minedreams.mi.api.electricity.info.BiggerVoltage;
 import minedreams.mi.api.electricity.info.EnumBiggerVoltage;
 import minedreams.mi.api.electricity.info.EnumVoltage;
+import minedreams.mi.api.electricity.interfaces.IVoltage;
 import minedreams.mi.api.net.WaitList;
 import minedreams.mi.register.te.AutoTileEntity;
 import minedreams.mi.tools.Tools;
@@ -134,7 +135,7 @@ public abstract class ElectricityUser extends Electricity {
 		updateInfo();
 		Object o = run();
 		if (o != null) {
-			EleWorker.addNeedRunUser(this, o);
+			EleWorker.useEleEnergy(this);
 		}
 	}
 	
@@ -165,7 +166,7 @@ public abstract class ElectricityUser extends Electricity {
 	 *
 	 * @return boolean 电力是否被消耗，若返回false则表示电器没有消耗电力，将返回电力损耗
 	 */
-	public abstract boolean useElectricity(Object info, int energy, EnumVoltage voltage);
+	public abstract boolean useElectricity(int energy, IVoltage voltage);
 	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
