@@ -6,8 +6,7 @@ import java.util.Random;
 import minedreams.mi.api.electricity.block.MachineBlock;
 import minedreams.mi.api.electricity.info.IEleInfo;
 import minedreams.mi.api.electricity.info.LinkInfo;
-import minedreams.mi.register.block.BlockAutoRegister;
-import minedreams.mi.blocks.register.BlockBaseT;
+import minedreams.mi.register.block.AutoBlockRegister;
 import minedreams.mi.blocks.te.maker.EMPerpetual;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
@@ -19,7 +18,7 @@ import net.minecraft.world.World;
  * @author EmptyDreams
  * @version V1.0
  */
-@BlockAutoRegister(name = 10, registryName = "perpetual")
+@AutoBlockRegister(name = 10, registryName = "perpetual")
 public class PerpetualBlock extends MachineBlock implements IEleInfo {
 	
 	private final Item ITEM = new ItemBlock(this).setRegistryName("perpetual");

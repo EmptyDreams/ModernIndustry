@@ -7,6 +7,7 @@ import minedreams.mi.api.electricity.info.EnumVoltage;
 import minedreams.mi.api.electricity.info.UseOfInfo;
 import minedreams.mi.api.electricity.interfaces.IEleOutputer;
 import minedreams.mi.api.electricity.interfaces.IVoltage;
+import minedreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -15,6 +16,7 @@ import net.minecraft.util.ResourceLocation;
  * @author EmptyDreams
  * @version V1.0
  */
+@AutoTrusteeshipRegister(EleSrcOutputer.class)
 public class EleSrcOutputer implements IEleOutputer {
 	
 	static {

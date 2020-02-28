@@ -1,10 +1,7 @@
 package minedreams.mi.tools;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import static net.minecraft.util.EnumFacing.UP;
 import static net.minecraft.util.EnumFacing.DOWN;
@@ -16,8 +13,6 @@ import static net.minecraft.util.EnumFacing.WEST;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;

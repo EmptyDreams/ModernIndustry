@@ -2,11 +2,10 @@ package minedreams.mi.api.electricity.trusteeship;
 
 import minedreams.mi.ModernIndustry;
 import minedreams.mi.api.electricity.EleWorker;
-import minedreams.mi.api.electricity.ElectricityTransfer;
 import minedreams.mi.api.electricity.ElectricityUser;
-import minedreams.mi.api.electricity.info.IEleInfo;
 import minedreams.mi.api.electricity.interfaces.IEleInputer;
 import minedreams.mi.api.electricity.interfaces.IVoltage;
+import minedreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -15,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
  * @author EmptyDreams
  * @version V1.0
  */
+@AutoTrusteeshipRegister(EleSrcInputer.class)
 public class EleSrcInputer implements IEleInputer {
 	
 	static {

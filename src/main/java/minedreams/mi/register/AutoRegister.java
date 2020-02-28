@@ -2,7 +2,9 @@ package minedreams.mi.register;
 
 import static minedreams.mi.ModernIndustry.MODID;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,10 +12,15 @@ import java.util.Map;
 import java.util.Set;
 
 import minedreams.mi.ModernIndustry;
+import minedreams.mi.api.electricity.EleWorker;
+import minedreams.mi.api.electricity.interfaces.IEleInputer;
+import minedreams.mi.api.electricity.interfaces.IEleOutputer;
+import minedreams.mi.api.electricity.interfaces.IEleTransfer;
+import minedreams.mi.api.electricity.interfaces.IRegister;
 import minedreams.mi.api.electricity.trusteeship.EleSrcInputer;
 import minedreams.mi.api.electricity.trusteeship.EleSrcOutputer;
+import minedreams.mi.register.block.AutoBlockRegister;
 import minedreams.mi.register.te.AutoTileEntity;
-import minedreams.mi.register.block.BlockAutoRegister;
 import minedreams.mi.register.block.BlockRegister;
 import minedreams.mi.blocks.world.OreCreat;
 import minedreams.mi.blocks.world.WorldCreater;
@@ -22,6 +29,7 @@ import minedreams.mi.register.item.ItemRegister;
 import minedreams.mi.items.tools.ToolRegister;
 import minedreams.mi.proxy.ClientProxy;
 import minedreams.mi.proxy.CommonProxy;
+import minedreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 import minedreams.mi.tools.MISysInfo;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -38,7 +46,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  *         开始---->>注册debug物品---->>注册{@link BlockRegister}类中的方块
  *                                                 |
  *                                                 ↓
- * 注册被{@link OreCreat}注解的矿石生成器<<----注册被{@link BlockAutoRegister}注解的方块
+ * 注册被{@link OreCreat}注解的矿石生成器<<----注册被{@link AutoBlockRegister}注解的方块
  *            |
  *            ↓
  * 注册被{@link AutoTileEntity}注解的TE---->>注册{@link ItemRegister}类中的物品
@@ -47,11 +55,11 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  * 注册被{@link AutoItemRegister}注解的物品<<----注册{@link ToolRegister}类中的物品
  *                |
  *                ↓
- * 运行被{@link RegisterManager}注解的注册管理类
+ * 运行被{@link RegisterManager}注解的注册管理类---->>注册被{@link AutoTrusteeshipRegister}注解的托管
  * </pre>
  *
  * @author EmptyDremas
- * @version 2.0
+ * @version 2.1
  */
 public final class AutoRegister {
 	
@@ -83,136 +91,27 @@ public final class AutoRegister {
 		//是否为客户端
 		final boolean client = FMLCommonHandler.instance().getSide().isClient();
 		
-		new EleSrcOutputer(); new EleSrcInputer();
-		
 		try {
 			//注册debug物品
 			addAutoItem(ModernIndustry.DEBUG);
-			
-			final String NAME = ModernIndustry.MODID + ":";
-			
-			int index = 0;
-			/* BlockRegister类 */
-			Field[] bfs = BlockRegister.class.getFields();
-			for (Field f : bfs) {
-				Object o = f.get(null);
-				if (o instanceof Block) {
-					Block b = (Block) o;
-					Blocks.blocks.put(--index, b);
-					Blocks.autoRegister.add(b);
-					if (f.isAnnotationPresent(OreCreat.class)) {
-						OreCreat oc = f.getAnnotation(OreCreat.class);
-						Blocks.worldCreater.put(b, new WorldCreater(oc, b.getDefaultState()));
-					}
-				}
-			}
-			
 			final ASMDataTable ASM = client ? ClientProxy.getAsm() : CommonProxy.getAsm();
-			Map<String, Object> valueMap;
-			Class<?> nowClass;
 			
-			/* 自动注册方块 */
-			Set<ASMData> classSet = ASM.getAll(BlockAutoRegister.class.getName());
-			if (classSet != null) {
-				for (ASMDataTable.ASMData data : classSet) {
-					valueMap = data.getAnnotationInfo();
-					nowClass = Class.forName(data.getClassName());
-					Block bt = (Block) nowClass.newInstance();
-					bt.setRegistryName(ModernIndustry.MODID, (String) valueMap.get("registryName"));
-					bt.setUnlocalizedName(bt.getRegistryName().getResourcePath());
-					bt.setHardness((float) valueMap.getOrDefault("hardnexx", BlockAutoRegister.HARDNEXX));
-					if ((boolean) valueMap.getOrDefault("tab", BlockAutoRegister.TAB))
-						bt.setCreativeTab(ModernIndustry.TAB_BLOCK);
-					String tool = (String) valueMap.getOrDefault("tool", BlockAutoRegister.TOOL);
-					if (!"".equals(tool)) {
-						bt.setHarvestLevel(tool, (int) valueMap.getOrDefault("level", BlockAutoRegister.LEVEL));
-					}
-					Blocks.blocks.put((int) valueMap.get("name"), bt);
-					
-					Class<?> register = (Class<?>) valueMap.getOrDefault("register", BlockAutoRegister.REGISTER);
-					if (BlockAutoRegister.REGISTER.equals(register))
-						Blocks.autoRegister.add(bt);
-					else
-						Blocks.selfRegister.put(register, bt);
-				}
-			}
-			
-			//矿石生成
-			classSet = ASM.getAll(OreCreat.class.getName());
-			if (classSet != null) {
-				Block b;
-				for (ASMData data : classSet) {
-					valueMap = data.getAnnotationInfo();
-					b = findBlock(valueMap.get("name").toString());
-					if (b == null) {
-						MISysInfo.err("发现了一个没有对应方块的矿石生成器[",
-								valueMap.get("name"), "] -> continue");
-						continue;
-					}
-					Blocks.worldCreater.put(b, new WorldCreater(data, b));
-				}
-			}
-			
-			//注册TE
-			classSet = ASM.getAll(AutoTileEntity.class.getName());
-			if (classSet != null) {
-				for (ASMData data : classSet) {
-					valueMap = data.getAnnotationInfo();
-					GameRegistry.registerTileEntity((Class<? extends TileEntity>) Class.forName(data.getClassName()),
-							new ResourceLocation(MODID, (String) valueMap.get("value")));
-				}
-			}
-			
-			/* ItemRegister类 */
-			Field[] fs = ItemRegister.class.getFields();
-			for (Field f : fs) {
-				Object o = f.get(null);
-		        	if (o instanceof Item) {
-		        		Item i = (Item) o;
-		        		addAutoItem(i);
-		        	}
-			}
-			fs = ToolRegister.class.getFields();
-			for (Field f : fs) {
-				Object o = f.get(null);
-		        	if (o instanceof Item) {
-		        		Item i = (Item) o;
-		        		addAutoItem(i);
-		        	}
-			}
-			
-			classSet = ASM.getAll(AutoItemRegister.class.getName());
-			String ID;
-			String name;
-			Item item;
-			if (classSet != null) {
-				for (ASMData data : classSet) {
-					valueMap = data.getAnnotationInfo();
-					ID = valueMap.getOrDefault("ID", AutoItemRegister.ID).toString();
-					name = valueMap.get("value").toString();
-					nowClass = Class.forName(data.getClassName());
-					item = (Item) nowClass.newInstance();
-					
-					item.setRegistryName(ID, name);
-					item.setUnlocalizedName(name);
-					addAutoItem(item, name);
-				}
-			}
-			
-			//注册管理类
-			classSet = ASM.getAll(RegisterManager.class.getName());
-			for (ASMData data : classSet) {
-				Method method = Class.forName(data.getClassName()).getDeclaredMethod("register");
-				method.setAccessible(true);
-				method.invoke(null);
-			}
+			regBlockRegister();
+			reAutoBlock(ASM);
+			reOreCreater(ASM);
+			reAutoTE(ASM);
+			reItemRegister();
+			reAutoItem(ASM);
+			reRegisterManager(ASM);
+			reAutoTR(ASM);
 		} catch (IllegalAccessException e) {
 			MISysInfo.err("需要的函数不可见，原因可能是：",
 							"用户提供的需初始化的类没有提供可视的构造函数");
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {
-			MISysInfo.err("没有找到对应的方法，原因可能可能是：",
-					              "用户的类使用了RegisterManager注解却未在类中定义static register()");
+			MISysInfo.err("没有找到对应的方法，原因可能可能是：\n",
+					              "1).用户的类使用了RegisterManager注解却未在类中定义static register()\n",
+							      "2).使用@AutoTrusteeshipRegister注解的托管没有提供默认构造函数");
 			throw new RuntimeException(e);
 		} catch (NullPointerException e) {
 			MISysInfo.err("反射过程中发生了空指针错误，原因可能是：\n",
@@ -277,6 +176,169 @@ public final class AutoRegister {
 	/** 添加一个物品 */
 	public static void addItem(Item item) {
 		addItem(item, item.getRegistryName().getResourcePath());
+	}
+	
+	/* 自动注册托管 */
+	private static void reAutoTR(ASMDataTable ASM)
+			throws NoSuchMethodException, IllegalAccessException,
+					       InvocationTargetException, InstantiationException, ClassNotFoundException {
+		Set<ASMData> classSet = ASM.getAll(AutoTrusteeshipRegister.class.getName());
+		for (ASMData data : classSet) {
+			Class<?> register = (Class<?>) data.getAnnotationInfo().getOrDefault("value", null);
+			Constructor<?> con = register.getConstructor();
+			con.setAccessible(true);
+			Object o = con.newInstance();
+			boolean isTrue = false;
+			if (o instanceof IEleTransfer) {
+				EleWorker.registerTransfer((IEleTransfer) o);
+				isTrue = true;
+			}
+			if (o instanceof IEleOutputer) {
+				EleWorker.registerOutputer((IEleOutputer) o);
+				isTrue = true;
+			}
+			if (o instanceof IEleInputer) {
+				EleWorker.registerInputer((IEleInputer) o);
+				isTrue = true;
+			}
+			if (!isTrue) throw new ClassNotFoundException("该类没有实现三个托管中的任意一个：" + o);
+		}
+	}
+	
+	/* 注册管理类 */
+	private static void reRegisterManager(ASMDataTable ASM)
+			throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+		Set<ASMData> classSet = ASM.getAll(RegisterManager.class.getName());
+		for (ASMData data : classSet) {
+			Method method = Class.forName(data.getClassName()).getDeclaredMethod("register");
+			method.setAccessible(true);
+			method.invoke(null);
+		}
+	}
+	
+	/** 自动注册物品 */
+	private static void reAutoItem(ASMDataTable ASM)
+			throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+		Set<ASMData> classSet = ASM.getAll(AutoItemRegister.class.getName());
+		Map<String, Object> valueMap;
+		Class<?> nowClass;
+		String ID;
+		String name;
+		Item item;
+		if (classSet != null) {
+			for (ASMData data : classSet) {
+				valueMap = data.getAnnotationInfo();
+				ID = valueMap.getOrDefault("ID", AutoItemRegister.ID).toString();
+				name = valueMap.get("value").toString();
+				nowClass = Class.forName(data.getClassName());
+				item = (Item) nowClass.newInstance();
+				
+				item.setRegistryName(ID, name);
+				item.setUnlocalizedName(name);
+				addAutoItem(item, name);
+			}
+		}
+	}
+	
+	/* ItemRegister类 */
+	private static void reItemRegister() throws IllegalAccessException {
+		Field[] fs = ItemRegister.class.getFields();
+		for (Field f : fs) {
+			Object o = f.get(null);
+			if (o instanceof Item) {
+				Item i = (Item) o;
+				addAutoItem(i);
+			}
+		}
+		fs = ToolRegister.class.getFields();
+		for (Field f : fs) {
+			Object o = f.get(null);
+			if (o instanceof Item) {
+				Item i = (Item) o;
+				addAutoItem(i);
+			}
+		}
+	}
+	
+	/* 注册TE */
+	private static void reAutoTE(ASMDataTable ASM) throws ClassNotFoundException {
+		Set<ASMData> classSet = ASM.getAll(AutoTileEntity.class.getName());
+		Map<String, Object> valueMap;
+		if (classSet != null) {
+			for (ASMData data : classSet) {
+				valueMap = data.getAnnotationInfo();
+				GameRegistry.registerTileEntity((Class<? extends TileEntity>) Class.forName(data.getClassName()),
+						new ResourceLocation(MODID, (String) valueMap.get("value")));
+			}
+		}
+	}
+	
+	/* 矿石生成器 */
+	private static void reOreCreater(ASMDataTable ASM) {
+		Set<ASMData> classSet = ASM.getAll(OreCreat.class.getName());
+		Map<String, Object> valueMap;
+		if (classSet != null) {
+			Block b;
+			for (ASMData data : classSet) {
+				valueMap = data.getAnnotationInfo();
+				b = findBlock(valueMap.get("name").toString());
+				if (b == null) {
+					MISysInfo.err("发现了一个没有对应方块的矿石生成器[",
+							valueMap.get("name"), "] -> continue");
+					continue;
+				}
+				Blocks.worldCreater.put(b, new WorldCreater(data, b));
+			}
+		}
+	}
+	
+	/* 自动注册方块 */
+	private static void reAutoBlock(ASMDataTable ASM)
+			throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+		Set<ASMData> classSet = ASM.getAll(AutoBlockRegister.class.getName());
+		Map<String, Object> valueMap;
+		Class<?> nowClass;
+		if (classSet != null) {
+			for (ASMDataTable.ASMData data : classSet) {
+				valueMap = data.getAnnotationInfo();
+				nowClass = Class.forName(data.getClassName());
+				Block bt = (Block) nowClass.newInstance();
+				bt.setRegistryName(ModernIndustry.MODID, (String) valueMap.get("registryName"));
+				bt.setUnlocalizedName(bt.getRegistryName().getResourcePath());
+				bt.setHardness((float) valueMap.getOrDefault("hardnexx", AutoBlockRegister.HARDNEXX));
+				if ((boolean) valueMap.getOrDefault("tab", AutoBlockRegister.TAB))
+					bt.setCreativeTab(ModernIndustry.TAB_BLOCK);
+				String tool = (String) valueMap.getOrDefault("tool", AutoBlockRegister.TOOL);
+				if (!"".equals(tool)) {
+					bt.setHarvestLevel(tool, (int) valueMap.getOrDefault("level", AutoBlockRegister.LEVEL));
+				}
+				Blocks.blocks.put((int) valueMap.get("name"), bt);
+				
+				Class<?> register = (Class<?>) valueMap.getOrDefault("register", AutoBlockRegister.REGISTER);
+				if (AutoBlockRegister.REGISTER.equals(register))
+					Blocks.autoRegister.add(bt);
+				else
+					Blocks.selfRegister.put(register, bt);
+			}
+		}
+	}
+	
+	/** BlockRegister类 */
+	private static void regBlockRegister() throws IllegalAccessException {
+		int index = 0;
+		Field[] bfs = BlockRegister.class.getFields();
+		for (Field f : bfs) {
+			Object o = f.get(null);
+			if (o instanceof Block) {
+				Block b = (Block) o;
+				Blocks.blocks.put(--index, b);
+				Blocks.autoRegister.add(b);
+				if (f.isAnnotationPresent(OreCreat.class)) {
+					OreCreat oc = f.getAnnotation(OreCreat.class);
+					Blocks.worldCreater.put(b, new WorldCreater(oc, b.getDefaultState()));
+				}
+			}
+		}
 	}
 	
 }

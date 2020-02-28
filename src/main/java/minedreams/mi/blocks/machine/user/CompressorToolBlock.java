@@ -5,7 +5,7 @@ import java.util.Random;
 import minedreams.mi.ModernIndustry;
 import minedreams.mi.api.electricity.block.MachineBlock;
 import minedreams.mi.api.electricity.info.LinkInfo;
-import minedreams.mi.register.block.BlockAutoRegister;
+import minedreams.mi.register.block.AutoBlockRegister;
 import minedreams.mi.register.block.BlockRegister;
 import minedreams.mi.blocks.te.user.EUCompressor;
 import minedreams.mi.api.gui.GuiLoader;
@@ -34,7 +34,7 @@ import net.minecraft.world.World;
  * @author EmptyDremas
  * @version V1.0
  */
-@BlockAutoRegister(registryName = CompressorToolBlock.NAME,
+@AutoBlockRegister(registryName = CompressorToolBlock.NAME,
 			name = BlockRegister.COMPRESSOR_TBLOCK)
 public class CompressorToolBlock extends MachineBlock {
 	

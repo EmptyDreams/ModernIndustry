@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface BlockAutoRegister {
+public @interface AutoBlockRegister {
 	
 	/**
 	 * 方块名称
@@ -56,12 +56,12 @@ public @interface BlockAutoRegister {
 	 */
 	boolean tab() default TAB;
 	
-	Class<?> REGISTER = BlockAutoRegister.class;
+	Class<?> REGISTER = AutoBlockRegister.class;
 	
 	/**
 	 * 注册物品所用的函数地址，如果为自动注册则为
-	 * minedreams.mi.register.block.BlockAutoRegister.class
+	 * minedreams.mi.register.block.AutoBlockRegister.class
 	 */
-	Class<?> register() default BlockAutoRegister.class;
+	Class<?> register() default AutoBlockRegister.class;
 	
 }
