@@ -1,7 +1,10 @@
 package minedreams.mi.api.electricity;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import minedreams.mi.api.electricity.cache.WireLinkInfo;
 import minedreams.mi.api.electricity.clock.OverloadCounter;

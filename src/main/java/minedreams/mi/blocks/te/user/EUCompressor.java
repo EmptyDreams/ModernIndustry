@@ -1,20 +1,14 @@
 package minedreams.mi.blocks.te.user;
 
-import javax.crypto.spec.IvParameterSpec;
-
 import minedreams.mi.api.craftguide.CraftGuide;
 import minedreams.mi.api.craftguide.CraftGuideItems;
 import minedreams.mi.api.craftguide.CraftGuideManager;
 import minedreams.mi.api.electricity.ElectricityUser;
 import minedreams.mi.api.electricity.info.BiggerVoltage;
 import minedreams.mi.api.electricity.info.EnumBiggerVoltage;
-import minedreams.mi.api.electricity.info.EnumVoltage;
 import minedreams.mi.api.electricity.interfaces.IVoltage;
 import minedreams.mi.blocks.machine.user.CompressorToolBlock;
-import minedreams.mi.register.block.BlockRegister;
 import minedreams.mi.register.te.AutoTileEntity;
-import minedreams.mi.tools.MISysInfo;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

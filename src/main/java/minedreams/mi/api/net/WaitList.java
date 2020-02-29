@@ -1,6 +1,7 @@
 package minedreams.mi.api.net;
 
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import minedreams.mi.api.electricity.Electricity;
 import net.minecraft.entity.player.EntityPlayer;

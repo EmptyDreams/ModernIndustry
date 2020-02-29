@@ -1,6 +1,7 @@
 package minedreams.mi.api.gui;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import minedreams.mi.ModernIndustry;
 import minedreams.mi.gui.CompressorContainer;

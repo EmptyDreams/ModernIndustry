@@ -2,10 +2,6 @@ package minedreams.mi.api.electricity;
 
 import minedreams.mi.api.electricity.info.IEleInfo;
 import minedreams.mi.api.electricity.info.LinkInfo;
-import net.minecraft.block.Block;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 /**
  * 电力系统工具类，其中包含了所有可用的静态函数

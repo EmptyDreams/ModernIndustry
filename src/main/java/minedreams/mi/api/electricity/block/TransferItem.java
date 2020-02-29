@@ -1,28 +1,18 @@
 package minedreams.mi.api.electricity.block;
 
-import minedreams.mi.api.electricity.ElectricityMaker;
-import minedreams.mi.api.electricity.cache.WireLinkInfo;
-import minedreams.mi.tools.MISysInfo;
-import minedreams.mi.api.electricity.EleUtils;
 import minedreams.mi.api.electricity.ElectricityTransfer;
-import minedreams.mi.api.electricity.info.LinkInfo;
-import minedreams.mi.tools.Tools;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 

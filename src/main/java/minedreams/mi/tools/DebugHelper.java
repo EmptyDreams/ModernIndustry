@@ -1,12 +1,10 @@
 package minedreams.mi.tools;
 
 import java.util.Collection;
-import java.util.Set;
 
 import static minedreams.mi.api.net.WaitList.checkNull;
 
 import minedreams.mi.api.electricity.ElectricityTransfer;
-import minedreams.mi.api.net.MessageBase;
 import minedreams.mi.api.net.WaitList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

@@ -1,12 +1,14 @@
 package minedreams.mi.api.net.message;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import minedreams.mi.api.net.info.InfoStrings;
 import minedreams.mi.api.net.info.SimpleImplInfo;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * @author EmptyDreams

@@ -1,8 +1,5 @@
 package minedreams.mi.api.electricity.clock;
 
-import java.util.*;
-
-
 /**
  * 每一个自{@link minedreams.mi.api.electricity.ElectricityTransfer}和
  * {@link minedreams.mi.api.electricity.ElectricityUser}派生的类都含有该计数器，

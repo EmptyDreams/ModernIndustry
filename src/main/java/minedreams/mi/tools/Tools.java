@@ -1,14 +1,14 @@
 package minedreams.mi.tools;
 
-import java.util.Random;
-import java.util.function.BiConsumer;
-
 import static net.minecraft.util.EnumFacing.UP;
 import static net.minecraft.util.EnumFacing.DOWN;
 import static net.minecraft.util.EnumFacing.SOUTH;
 import static net.minecraft.util.EnumFacing.NORTH;
 import static net.minecraft.util.EnumFacing.EAST;
 import static net.minecraft.util.EnumFacing.WEST;
+
+import java.util.Random;
+import java.util.function.BiConsumer;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

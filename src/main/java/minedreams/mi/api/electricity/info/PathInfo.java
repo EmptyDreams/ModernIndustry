@@ -1,6 +1,5 @@
 package minedreams.mi.api.electricity.info;
 
-import java.util.Collection;
 import java.util.List;
 
 import minedreams.mi.api.electricity.interfaces.IEleInputer;
