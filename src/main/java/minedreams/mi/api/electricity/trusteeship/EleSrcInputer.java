@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
  * @author EmptyDreams
  * @version V1.0
  */
-@AutoTrusteeshipRegister(EleSrcInputer.class)
+@AutoTrusteeshipRegister
 public class EleSrcInputer implements IEleInputer {
 	
 	static {

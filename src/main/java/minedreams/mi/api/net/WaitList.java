@@ -3,7 +3,6 @@ package minedreams.mi.api.net;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import minedreams.mi.api.electricity.Electricity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.Mod;
@@ -26,12 +25,18 @@ public class WaitList {
 	private static int amount = 0;
 	
 	@SubscribeEvent
+	public static void runAtTickEndService(TickEvent.ServerTickEvent event) {
+		sendAll(false);
+	}
+	
+	@SubscribeEvent
 	public static void runAtTickEndClient(TickEvent.ClientTickEvent event) {
 		reClient();
+		sendAll(true);
 	}
 	
 	/** 存储客户端待处理的消息 */
-	private static Set<MessageBase> client = new LinkedHashSet<>();
+	private static Set<IMessage> client = new LinkedHashSet<>();
 	/** 操作client时的锁，因为client可变，所以重新建立一个常量 */
 	private static final Object CLIENT_LOCK = new Object();
 	
@@ -49,9 +54,23 @@ public class WaitList {
 	
 	public static void toString(StringBuilder sb) {
 		synchronized (CLIENT_LOCK) {
-			for (MessageBase base : client) {
+			for (IMessage base : client) {
 				sb.append('\t').append(base).append('\n');
 			}
+		}
+	}
+	
+	private static void sendAll(boolean isClient) {
+		if (isClient) {
+			NetworkRegister.forEach(network -> {
+				IMessage message = network.send();
+				if (!(message == null)) sendToService(message);
+			});
+		} else {
+			NetworkRegister.forEach(network -> {
+				IMessage message = network.send();
+				if (!(message == null)) sendToClient(message, ((INetworkHelper) message).getPlayers());
+			});
 		}
 	}
 	
@@ -64,16 +83,17 @@ public class WaitList {
 			amount = 0;
 			return;
 		}
-		Set<MessageBase> clientMessage = new LinkedHashSet<>();
+		Set<IMessage> clientMessage = new LinkedHashSet<>();
 		synchronized (CLIENT_LOCK) {
 			client.forEach(mb -> {
-				Electricity et = (Electricity) net.minecraft.client.Minecraft
-						                               .getMinecraft().world.getTileEntity(mb.getPos());
+				IAutoNetwork<?> et = (IAutoNetwork<?>) net.minecraft.client.Minecraft
+						                               .getMinecraft().world.getTileEntity(
+						                               		((INetworkHelper) mb).getBlockPos());
 				if (et == null) {
 					clientMessage.add(mb);
 				} else {
 					++amount;
-					et.reveive(mb.getMessageList());
+					et._reveive(mb);
 				}
 			});
 			client = clientMessage;
@@ -109,7 +129,7 @@ public class WaitList {
 	 * @throws NullPointerException 如果message和player任意一个为null
 	 * @throws IllegalArgumentException 如果player中的元素不能强制转换为EntityPlayerMP
 	 */
-	public static void sendToClient(IMessage message, Iterable<? extends EntityPlayer> player) {
+	public static void sendToClient(IMessage message, Iterable<? extends EntityPlayerMP> player) {
 		checkNull(player, "player");
 		checkNull(message, "message");
 		player.forEach(p -> {
@@ -144,7 +164,7 @@ public class WaitList {
 	 * @throws NullPointerException 如果message为null
 	 */
 	@SideOnly(Side.CLIENT)
-	public static void sendToService(MessageBase message) {
+	public static void sendToService(IMessage message) {
 		if (message == null) throw new NullPointerException("message == null");
 		NetworkLoader.instance().sendToServer(message);
 	}

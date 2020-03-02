@@ -3,9 +3,9 @@ package minedreams.mi.api.net;
 import java.util.List;
 
 import io.netty.buffer.ByteBuf;
-import minedreams.mi.api.electricity.Electricity;
 import minedreams.mi.api.net.info.SimpleImplInfo;
 import minedreams.mi.api.net.message.MessageList;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -18,7 +18,13 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
  * @author EmptyDreams
  * @version V1.0
  */
-public class MessageBase implements IMessage {
+public class MessageBase implements IMessage, INetworkHelper {
+	
+	public MessageBase() { }
+	public MessageBase(World world, BlockPos pos) {
+		dimension = world.provider.getDimension();
+		this.pos = pos;
+	}
 	
 	/** 存储信息列表 */
 	private MessageList list;
@@ -38,9 +44,12 @@ public class MessageBase implements IMessage {
 	}
 	
 	/** 获取方块坐标 */
-	public BlockPos getPos() {
+	@Override
+	public BlockPos getBlockPos() {
 		return pos;
 	}
+	
+	public Iterable<EntityPlayerMP> getPlayers() { return list.getPlayers(); }
 	
 	/** 设置信息列表 */
 	public void setMessageList(MessageList list) {
@@ -184,10 +193,10 @@ public class MessageBase implements IMessage {
 	public static final class ServiceHandler implements IMessageHandler<MessageBase, IMessage> {
 		@Override
 		public IMessage onMessage(MessageBase message, MessageContext ctx) {
-			Electricity et = (Electricity) FMLCommonHandler.instance().getMinecraftServerInstance()
+			IAutoNetwork<?> et = (IAutoNetwork<?>) FMLCommonHandler.instance().getMinecraftServerInstance()
 					                               .getWorld(message.dimension).getTileEntity(message.pos);
 			WaitList.checkNull(et, "et");
-			et.reveive(message.list);
+			et._reveive(message);
 			return null;
 		}
 	}

@@ -131,7 +131,7 @@ public abstract class ElectricityUser extends Electricity {
 	public final EnumVoltage getVoltage() { return voltage; }
 	
 	@Override
-	protected final void sonRun() {
+	public void update() {
 		updateInfo();
 		Object o = run();
 		if (o != null) {

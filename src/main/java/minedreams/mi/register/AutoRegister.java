@@ -1,7 +1,5 @@
 package minedreams.mi.register;
 
-import static minedreams.mi.ModernIndustry.MODID;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -16,16 +14,16 @@ import minedreams.mi.api.electricity.EleWorker;
 import minedreams.mi.api.electricity.interfaces.IEleInputer;
 import minedreams.mi.api.electricity.interfaces.IEleOutputer;
 import minedreams.mi.api.electricity.interfaces.IEleTransfer;
-import minedreams.mi.register.block.AutoBlockRegister;
-import minedreams.mi.register.te.AutoTileEntity;
-import minedreams.mi.register.block.BlockRegister;
 import minedreams.mi.blocks.world.OreCreat;
 import minedreams.mi.blocks.world.WorldCreater;
-import minedreams.mi.register.item.AutoItemRegister;
-import minedreams.mi.register.item.ItemRegister;
 import minedreams.mi.items.tools.ToolRegister;
 import minedreams.mi.proxy.ClientProxy;
 import minedreams.mi.proxy.CommonProxy;
+import minedreams.mi.register.block.AutoBlockRegister;
+import minedreams.mi.register.block.BlockRegister;
+import minedreams.mi.register.item.AutoItemRegister;
+import minedreams.mi.register.item.ItemRegister;
+import minedreams.mi.register.te.AutoTileEntity;
 import minedreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 import minedreams.mi.tools.MISysInfo;
 import net.minecraft.block.Block;
@@ -36,6 +34,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+
+import static minedreams.mi.ModernIndustry.MODID;
 
 /**
  * 自动注册的总类，自动注册的功能由init()函数完成，该类的运行架构如下：
@@ -181,8 +181,7 @@ public final class AutoRegister {
 					       InvocationTargetException, InstantiationException, ClassNotFoundException {
 		Set<ASMData> classSet = ASM.getAll(AutoTrusteeshipRegister.class.getName());
 		for (ASMData data : classSet) {
-			Class<?> register = (Class<?>) data.getAnnotationInfo().getOrDefault("value", null);
-			Constructor<?> con = register.getConstructor();
+			Constructor<?> con = Class.forName(data.getClassName()).getConstructor();
 			con.setAccessible(true);
 			Object o = con.newInstance();
 			boolean isTrue = false;

@@ -13,10 +13,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 /**
+ * MI提供的缺省输出托管. 使用该托管的方块的TE必须实现{@link ElectricityMaker}
  * @author EmptyDreams
  * @version V1.0
  */
-@AutoTrusteeshipRegister(EleSrcOutputer.class)
+@AutoTrusteeshipRegister
 public class EleSrcOutputer implements IEleOutputer {
 	
 	static {

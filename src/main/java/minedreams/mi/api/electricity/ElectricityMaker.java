@@ -45,7 +45,7 @@ public abstract class ElectricityMaker extends Electricity {
 	}
 	
 	@Override
-	protected final void sonRun() {
+	public void update() {
 		if (meBox < meBoxMax) {
 			input(meBoxMax - meBox);
 		}

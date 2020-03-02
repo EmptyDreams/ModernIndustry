@@ -9,6 +9,9 @@ import java.util.Map;
 import minedreams.mi.api.electricity.cache.WireLinkInfo;
 import minedreams.mi.api.electricity.clock.OverloadCounter;
 import minedreams.mi.api.electricity.info.*;
+import minedreams.mi.api.net.IAutoNetwork;
+import minedreams.mi.api.net.MessageBase;
+import minedreams.mi.api.net.NetworkRegister;
 import minedreams.mi.api.net.WaitList;
 import minedreams.mi.api.net.info.InfoBooleans;
 import minedreams.mi.api.net.message.MessageList;
@@ -31,7 +34,7 @@ import net.minecraftforge.common.capabilities.Capability;
  * @version 1.0
  */
 @AutoTileEntity("PARENT_ELECTRICITY_TRANSFER")
-public class ElectricityTransfer extends Electricity {
+public class ElectricityTransfer extends Electricity implements IAutoNetwork<MessageBase> {
 	
 	/** 计数器 */
 	public final OverloadCounter COUNTER = new OverloadCounter() {
@@ -48,9 +51,12 @@ public class ElectricityTransfer extends Electricity {
 		}
 	};
 	
-	public ElectricityTransfer() { }
+	public ElectricityTransfer() {
+		NetworkRegister.register(this);
+	}
 	
 	public ElectricityTransfer(int meMax, int biggerMaxTime) {
+		this();
 		this.meMax = meMax;
 		this.biggerMaxTime = biggerMaxTime;
 	}
@@ -118,7 +124,7 @@ public class ElectricityTransfer extends Electricity {
 	}
 	
 	@Override
-	protected final void sonRun() { }
+	public void update() { }
 	
 	/** 在客户端存储电线连接数量 */
 	private int _amount = 0;
@@ -354,7 +360,8 @@ public class ElectricityTransfer extends Electricity {
 	private final List<String> players = new ArrayList<>(1);
 	
 	@Override
-	public void reveive(@Nonnull MessageList list) {
+	public void reveive(@Nonnull MessageBase message) {
+		MessageList list = message.getMessageList();
 		InfoBooleans info = (InfoBooleans) list.readInfo("bools");
 		List<Boolean> bools = info.getInfos();
 		up = bools.get(0);
@@ -373,8 +380,8 @@ public class ElectricityTransfer extends Electricity {
 	 * @return null
 	 */
 	@Override
-	public MessageList send(boolean isClient) {
-		if (!isClient) {
+	public MessageBase send() {
+		if (!world.isRemote) {
 			if (cachePos != null) {
 				if (cachePos[0] != null) next = (ElectricityTransfer) world.getTileEntity(cachePos[0]);
 				if (cachePos[1] != null) prev = (ElectricityTransfer) world.getTileEntity(cachePos[1]);
@@ -419,7 +426,9 @@ public class ElectricityTransfer extends Electricity {
 					}
 				}
 			}
-			return ml;
+			MessageBase base = new MessageBase(world, pos);
+			base.setMessageList(ml);
+			return base;
 		}
 		return null;
 	}
