@@ -3,18 +3,19 @@ package minedreams.mi.api.electricity;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import minedreams.mi.api.electricity.cache.WireLinkInfo;
 import minedreams.mi.api.electricity.clock.OverloadCounter;
-import minedreams.mi.api.electricity.info.*;
+import minedreams.mi.api.electricity.info.EnumVoltage;
+import minedreams.mi.api.electricity.info.IETForEach;
+import minedreams.mi.api.electricity.info.LinkInfo;
 import minedreams.mi.api.net.IAutoNetwork;
-import minedreams.mi.api.net.MessageBase;
 import minedreams.mi.api.net.NetworkRegister;
 import minedreams.mi.api.net.WaitList;
-import minedreams.mi.api.net.info.InfoBooleans;
-import minedreams.mi.api.net.message.MessageList;
 import minedreams.mi.register.te.AutoTileEntity;
 import minedreams.mi.tools.Tools;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,7 +35,7 @@ import net.minecraftforge.common.capabilities.Capability;
  * @version 1.0
  */
 @AutoTileEntity("PARENT_ELECTRICITY_TRANSFER")
-public class ElectricityTransfer extends Electricity implements IAutoNetwork<MessageBase> {
+public class ElectricityTransfer extends Electricity implements IAutoNetwork {
 	
 	/** 计数器 */
 	public final OverloadCounter COUNTER = new OverloadCounter() {
@@ -360,17 +361,14 @@ public class ElectricityTransfer extends Electricity implements IAutoNetwork<Mes
 	private final List<String> players = new ArrayList<>(1);
 	
 	@Override
-	public void reveive(@Nonnull MessageBase message) {
-		MessageList list = message.getMessageList();
-		InfoBooleans info = (InfoBooleans) list.readInfo("bools");
-		List<Boolean> bools = info.getInfos();
-		up = bools.get(0);
-		down = bools.get(1);
-		east = bools.get(2);
-		west = bools.get(3);
-		south = bools.get(4);
-		north = bools.get(5);
-		_amount = list.readInt("amount");
+	public void reveive(@Nonnull NBTTagCompound message) {
+		up = message.getBoolean("up");
+		down = message.getBoolean("down");
+		east = message.getBoolean("east");
+		west = message.getBoolean("west");
+		south = message.getBoolean("south");
+		north = message.getBoolean("north");
+		_amount = message.getInteger("amount");
 		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
@@ -380,57 +378,53 @@ public class ElectricityTransfer extends Electricity implements IAutoNetwork<Mes
 	 * @return null
 	 */
 	@Override
-	public MessageBase send() {
-		if (!world.isRemote) {
-			if (cachePos != null) {
-				if (cachePos[0] != null) next = (ElectricityTransfer) world.getTileEntity(cachePos[0]);
-				if (cachePos[1] != null) prev = (ElectricityTransfer) world.getTileEntity(cachePos[1]);
-				if (cacheFacing != null) {
-					for (EnumFacing facing : cacheFacing)
-						linkBlock.put(facing, world.getTileEntity(Tools.getBlockPos(pos, facing, 1)));
-				}
-				cache.updateInfo(world);
-				cacheFacing = null;
-				cachePos = null;
+	public NBTTagCompound send() {
+		if (world.isRemote) return null;
+		if (cachePos != null) {
+			if (cachePos[0] != null) next = (ElectricityTransfer) world.getTileEntity(cachePos[0]);
+			if (cachePos[1] != null) prev = (ElectricityTransfer) world.getTileEntity(cachePos[1]);
+			if (cacheFacing != null) {
+				for (EnumFacing facing : cacheFacing)
+					linkBlock.put(facing, world.getTileEntity(Tools.getBlockPos(pos, facing, 1)));
 			}
-			
-			if (players.size() == world.playerEntities.size()) return null;
-			
-			//新建消息
-			MessageList ml = new MessageList();
-			{
-				/* 存储电线的连接方向 */
-				InfoBooleans bools = new InfoBooleans();
-				
-				bools.add(getUp());
-				bools.add(getDown());
-				bools.add(getEast());
-				bools.add(getWest());
-				bools.add(getSouth());
-				bools.add(getNorth());
-				ml.writeInfo("bools", bools);
-				ml.writeInt("amount", getLinkAmount());
-			}
-			
-			//遍历所有玩家
-			for (EntityPlayer player : world.playerEntities) {
-				//如果玩家已经更新过则跳过
-				if (players.contains(player.getName())) continue;
-				
-				//判断玩家是否在范围之内（判断方法借用World中的代码）
-				double d = player.getDistance(pos.getX(), pos.getY(), pos.getZ());
-				if (d < 4096) {
-					if (player instanceof EntityPlayerMP) {
-						players.add(player.getName());
-						ml.addPlayer((EntityPlayerMP) player);
-					}
-				}
-			}
-			MessageBase base = new MessageBase(world, pos);
-			base.setMessageList(ml);
-			return base;
+			cache.updateInfo(world);
+			cacheFacing = null;
+			cachePos = null;
 		}
-		return null;
+		
+		if (players.size() == world.playerEntities.size()) return null;
+		Set<String> sendPlayers = new HashSet<>();
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setBoolean("up", up);
+		compound.setBoolean("down", down);
+		compound.setBoolean("south", south);
+		compound.setBoolean("north", north);
+		compound.setBoolean("west", west);
+		compound.setBoolean("east", east);
+		
+		//遍历所有玩家
+		for (EntityPlayer player : world.playerEntities) {
+			//如果玩家已经更新过则跳过
+			if (players.contains(player.getName())) continue;
+			
+			//判断玩家是否在范围之内（判断方法借用World中的代码）
+			double d = player.getDistance(pos.getX(), pos.getY(), pos.getZ());
+			if (d < 4096) {
+				if (player instanceof EntityPlayerMP) {
+					players.add(player.getName());
+					sendPlayers.add(player.getName());
+				}
+			}
+		}
+		
+		compound.setInteger("playerAmount", sendPlayers.size());
+		int i = 0;
+		for (String player : sendPlayers) {
+			compound.setString("player" + i, player);
+			++i;
+		}
+		
+		return compound;
 	}
 	
 	/**

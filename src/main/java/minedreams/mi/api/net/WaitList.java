@@ -1,10 +1,13 @@
 package minedreams.mi.api.net;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import minedreams.mi.tools.MISysInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -36,7 +39,7 @@ public class WaitList {
 	}
 	
 	/** 存储客户端待处理的消息 */
-	private static Set<IMessage> client = new LinkedHashSet<>();
+	private static Set<MessageBase> client = new LinkedHashSet<>();
 	/** 操作client时的锁，因为client可变，所以重新建立一个常量 */
 	private static final Object CLIENT_LOCK = new Object();
 	
@@ -63,14 +66,44 @@ public class WaitList {
 	private static void sendAll(boolean isClient) {
 		if (isClient) {
 			NetworkRegister.forEach(network -> {
-				IMessage message = network.send();
-				if (!(message == null)) sendToService(message);
+				NBTTagCompound message = network.send();
+				if (message != null) {
+					message.setIntArray("_pos", new int[] {
+							network.getPos().getX(),
+							network.getPos().getY(),
+							network.getPos().getZ()});
+					message.setInteger("_world", network.getWorld().provider.getDimension());
+					if (!(message == null)) sendToService(new MessageBase(message));
+				}
 			});
 		} else {
-			NetworkRegister.forEach(network -> {
-				IMessage message = network.send();
-				if (!(message == null)) sendToClient(message, ((INetworkHelper) message).getPlayers());
-			});
+			try {
+				NetworkRegister.forEach(network -> {
+					NBTTagCompound message = network.send();
+					if (message != null) {
+						message.setIntArray("_pos", new int[] {
+								network.getPos().getX(),
+								network.getPos().getY(),
+								network.getPos().getZ()});
+						message.setInteger("_world", network.getWorld().provider.getDimension());
+						int amount = message.getInteger("playerAmount");
+						if (amount > 0) {
+							Set<EntityPlayerMP> players = new HashSet<>(amount);
+							for (int i = 0; i < amount; ++i) {
+								EntityPlayerMP player = (EntityPlayerMP) network.getWorld().getPlayerEntityByName(
+										message.getString("player" + i));
+								if (player == null) throw new ClassCastException("指定玩家不存在！[" +
+										                              message.getString("player" + i) + "]");
+								players.add(player);
+							}
+							if (!(message == null)) sendToClient(new MessageBase(message), players);
+						}
+					}
+				});
+			} catch (ClassCastException e) {
+				MISysInfo.err("网络传输名单中存在违规信息！");
+				throw e;
+			}
 		}
 	}
 	
@@ -83,17 +116,17 @@ public class WaitList {
 			amount = 0;
 			return;
 		}
-		Set<IMessage> clientMessage = new LinkedHashSet<>();
+		Set<MessageBase> clientMessage = new LinkedHashSet<>();
 		synchronized (CLIENT_LOCK) {
 			client.forEach(mb -> {
-				IAutoNetwork<?> et = (IAutoNetwork<?>) net.minecraft.client.Minecraft
+				IAutoNetwork et = (IAutoNetwork) net.minecraft.client.Minecraft
 						                               .getMinecraft().world.getTileEntity(
-						                               		((INetworkHelper) mb).getBlockPos());
+						                               		mb.getBlockPos());
 				if (et == null) {
 					clientMessage.add(mb);
 				} else {
 					++amount;
-					et._reveive(mb);
+					et.reveive(mb.getCompound());
 				}
 			});
 			client = clientMessage;
@@ -134,7 +167,7 @@ public class WaitList {
 		checkNull(message, "message");
 		player.forEach(p -> {
 			if (p instanceof EntityPlayerMP) {
-				NetworkLoader.instance().sendTo(message, (EntityPlayerMP) p);
+				NetworkLoader.instance().sendTo(message, p);
 			} else {
 				throw new IllegalArgumentException("player：" + p);
 			}
