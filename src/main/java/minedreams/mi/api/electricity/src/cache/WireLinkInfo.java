@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import minedreams.mi.api.electricity.EleWorker;
 import minedreams.mi.api.electricity.info.EleLineCache;
@@ -18,21 +17,18 @@ import minedreams.mi.api.electricity.interfaces.IEleTransfer;
 import minedreams.mi.api.electricity.interfaces.IVoltage;
 import minedreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import minedreams.mi.api.net.WaitList;
-import minedreams.mi.tools.Tools;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.NotNull;
 
 /**
- * <p>存储一条电缆线路的缓存信息. 该类只支持离线存储部分数据，
- * 所有数据在游戏退出后大部分清除，但在运行时不会从内存中删除。
+ * <p>存储一条电缆线路的缓存信息. 该类不支持离线存储数据，
+ * 所有数据离线清除，载入方块是重新计算所有数据。</p>
  * 在线路合并或拆分时会导致数据重置（除发电机数量外）。
  *
  * @author EmptyDreams
  * @version V2.1
  */
+@SuppressWarnings("unused")
 public final class WireLinkInfo extends EleLineCache {
 	
 	private static final List<BlockPos> NON = new ArrayList<>(0);
@@ -59,54 +55,11 @@ public final class WireLinkInfo extends EleLineCache {
 	public void plusMakerAmount(int amount) { makerAmount += amount; }
 	
 	/**
-	 * 是否可用
-	 * 当{@link #updateInfo(World)}方法未调用时不能保证
-	 * 同一线路使用同一个该类对象，所以通过该方法判定是否可以使用缓存
-	 */
-	public boolean canUse() { return ets == null; }
-	
-	public void writeToNBT(@NotNull NBTTagCompound compound, @NotNull EleSrcCable et) {
-		compound.setInteger("cache_makers_size", makerAmount);
-		AtomicInteger i = new AtomicInteger(0);
-		et.forEachAll((it, isEnd, next) -> {
-			Tools.writeBlockPos(compound, it.getPos(), "cache_transfer_" + i.get());
-			i.set(i.get() + 1);
-			return true;
-		});
-		compound.setInteger("cache_transfer_size", i.get());
-	}
-	
-	private List<BlockPos> ets = NON;
-	
-	public void readFromNBT(@NotNull NBTTagCompound compound) {
-		if (compound.hasKey("cache_makers_size")) {
-			ets = new ArrayList<>();
-			makerAmount = compound.getInteger("cache_makers_size");
-			int size = compound.getInteger("cache_transfer_size");
-			ets = new ArrayList<>(size);
-			for (int i = 0; i < size; ++i) {
-				ets.add(Tools.readBlockPos(compound, "cache_transfer_" + i));
-			}
-		}
-	}
-	
-	/**
-	 * 更新内部信息，在更新内部信息前线路中的电线不共享同一个缓存对象
-	 * @param world 所在世界
-	 */
-	public void updateInfo(World world) {
-		if (ets == null) return;
-		ets.forEach(it -> ((EleSrcCable) world.getTileEntity(it)).setCache(this));
-		ets = null;
-	}
-	
-	/**
-	 * 获取路径损耗的能量，当{@link #canUse()}返回false时无法读取缓存数据只能重新计算，
-	 * 若没有读取到缓存会计算后写入缓存并返回计算结果
+	 * 获取路径损耗的能量
 	 * @param start 起点
 	 * @param user 需求电能的方块
 	 * @param inputer 需求电能的方块的托管
-	 * @return 若返回null表明没有可用路径
+	 * @return 若返回null表明没有可用缓存
 	 */
 	@Nullable
 	@Override
@@ -122,7 +75,7 @@ public final class WireLinkInfo extends EleLineCache {
 	}
 	
 	/**
-	 * 写入缓存数据，当{@link #canUse()}返回false时不会真正写入数据
+	 * 写入缓存数据
 	 * @param info 线路信息
 	 * @throws NullPointerException 如果info == null
 	 */

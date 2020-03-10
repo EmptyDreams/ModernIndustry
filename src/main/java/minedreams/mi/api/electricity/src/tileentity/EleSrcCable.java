@@ -32,6 +32,7 @@ import net.minecraftforge.common.capabilities.Capability;
  * @author EmptyDreams
  * @version V1.0
  */
+@SuppressWarnings("unused")
 @AutoTileEntity("IN_FATHER_ELECTRICITY_TRANSFER")
 public class EleSrcCable extends Electricity implements IAutoNetwork {
 	
@@ -214,6 +215,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 				default: setDown(true);
 			}
 		}
+		markDirty();
 		players.clear();
 	}
 	
@@ -324,10 +326,24 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 	
 	//--------------------常规--------------------//
 	
+	private static final WireLinkInfo CLIENT_CACHE = new WireLinkInfo();
 	@Override
 	public void update() {
 		if (cache == null) {
-			WireLinkInfo.calculateCache(this);
+			if (world.isRemote) cache = CLIENT_CACHE;
+			else {
+				WireLinkInfo.calculateCache(this);
+				if (cachePos != null) {
+					if (cachePos[0] != null) next = world.getTileEntity(cachePos[0]);
+					if (cachePos[1] != null) prev = world.getTileEntity(cachePos[1]);
+					if (cacheFacing != null) {
+						for (EnumFacing facing : cacheFacing)
+							linkedBlocks.add(world.getTileEntity(Tools.getBlockPos(pos, facing, 1)));
+					}
+					cacheFacing = null;
+					cachePos = null;
+				}
+			}
 		}
 	}
 	
@@ -425,17 +441,6 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 	@Override
 	public NBTTagCompound send() {
 		if (world.isRemote) return null;
-		if (cachePos != null) {
-			if (cachePos[0] != null) next = world.getTileEntity(cachePos[0]);
-			if (cachePos[1] != null) prev = world.getTileEntity(cachePos[1]);
-			if (cacheFacing != null) {
-				for (EnumFacing facing : cacheFacing)
-					linkedBlocks.add(world.getTileEntity(Tools.getBlockPos(pos, facing, 1)));
-			}
-			//cache.updateInfo(world);
-			cacheFacing = null;
-			cachePos = null;
-		}
 		
 		if (players.size() == world.playerEntities.size()) return null;
 		Set<String> sendPlayers = new HashSet<>();
