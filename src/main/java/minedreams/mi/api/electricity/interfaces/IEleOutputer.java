@@ -1,13 +1,13 @@
 package minedreams.mi.api.electricity.interfaces;
 
-import minedreams.mi.api.electricity.info.UseOfInfo;
+import minedreams.mi.api.electricity.info.UseInfo;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
 /**
  * 可输出电能的方块的托管接口
  * @author EmptyDreams
- * @version V1.0
+ * @version V1.1
  */
 public interface IEleOutputer extends IRegister {
 	
@@ -21,7 +21,7 @@ public interface IEleOutputer extends IRegister {
 	 * @throws NullPointerException if te == null || voltage == null
 	 * @throws ClassCastException 如果不支持输入的TE
 	 */
-	UseOfInfo output(TileEntity te, int energy, IVoltage voltage, boolean simulation);
+	UseInfo output(TileEntity te, int energy, IVoltage voltage, boolean simulation);
 	
 	/**
 	 * 判断指定方块能否向指定方向输出电能
@@ -30,6 +30,8 @@ public interface IEleOutputer extends IRegister {
 	 * @throws ClassCastException 如果不支持输入的TE
 	 */
 	boolean isAllowable(TileEntity te, EnumFacing facing);
+	
+	boolean isAllowable(TileEntity now, IVoltage voltage);
 	
 	/**
 	 * 获取当前可瞬时输出的电能

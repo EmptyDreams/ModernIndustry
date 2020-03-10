@@ -1,4 +1,4 @@
-package minedreams.mi.api.electricity.info;
+package minedreams.mi.api.electricity.src.info;
 
 /**
  * 存储电压过大时操作

@@ -1,6 +1,6 @@
 package minedreams.mi.blocks.te.maker;
 
-import minedreams.mi.api.electricity.ElectricityMaker;
+import minedreams.mi.api.electricity.src.tileentity.ElectricityMaker;
 import minedreams.mi.register.te.AutoTileEntity;
 
 /**

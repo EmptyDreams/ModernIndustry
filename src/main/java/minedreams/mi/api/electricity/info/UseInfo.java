@@ -7,14 +7,14 @@ import minedreams.mi.api.electricity.interfaces.IVoltage;
  * @author EmptyDreams
  * @version V1.0
  */
-public final class UseOfInfo {
+public final class UseInfo {
 	
 	private IVoltage voltage;
 	private int energy;
 	
-	public UseOfInfo() { }
+	public UseInfo() { }
 	
-	public UseOfInfo(int energy, IVoltage voltage) {
+	public UseInfo(int energy, IVoltage voltage) {
 		this.voltage = voltage;
 		this.energy = energy;
 	}
@@ -23,7 +23,7 @@ public final class UseOfInfo {
 		return voltage;
 	}
 	
-	public UseOfInfo setVoltage(IVoltage voltage) {
+	public UseInfo setVoltage(IVoltage voltage) {
 		this.voltage = voltage;
 		return this;
 	}
@@ -32,7 +32,7 @@ public final class UseOfInfo {
 		return energy;
 	}
 	
-	public UseOfInfo setEnergy(int energy) {
+	public UseInfo setEnergy(int energy) {
 		this.energy = energy;
 		return this;
 	}

@@ -1,13 +1,14 @@
-package minedreams.mi.api.electricity.block;
+package minedreams.mi.api.electricity.src.block;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
 import minedreams.mi.ModernIndustry;
-import minedreams.mi.api.electricity.*;
-import minedreams.mi.api.electricity.info.IEleInfo;
-import minedreams.mi.api.electricity.info.LinkInfo;
+import minedreams.mi.api.electricity.src.tileentity.ElectricityMaker;
+import minedreams.mi.api.electricity.src.tileentity.EleSrcUser;
+import minedreams.mi.api.electricity.src.info.IEleInfo;
+import minedreams.mi.api.electricity.src.info.LinkInfo;
+import minedreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import minedreams.mi.blocks.register.BlockBaseT;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -78,7 +79,7 @@ abstract public class TransferBlock extends BlockBaseT implements IEleInfo {
 	
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-		ElectricityTransfer nbt = (ElectricityTransfer) worldIn.getTileEntity(pos);
+		EleSrcCable nbt = (EleSrcCable) worldIn.getTileEntity(pos);
 		state = state.withProperty(UP, nbt.getUp()).withProperty(DOWN, nbt.getDown())
 							.withProperty(EAST, nbt.getEast()).withProperty(WEST, nbt.getWest())
 							.withProperty(NORTH, nbt.getNorth()).withProperty(SOUTH, nbt.getSouth());
@@ -113,10 +114,10 @@ abstract public class TransferBlock extends BlockBaseT implements IEleInfo {
 		TileEntity fromEntity = worldIn.getTileEntity(fromPos);
 		Block block = fromEntity == null ? worldIn.getBlockState(fromPos).getBlock() : fromEntity.getBlockType();
 		if (block == Blocks.AIR) {
-			ElectricityTransfer tew = (ElectricityTransfer) worldIn.getTileEntity(pos);
+			EleSrcCable tew = (EleSrcCable) worldIn.getTileEntity(pos);
 			tew.deleteLink(fromPos);
 		} else if (fromEntity != null) {
-			ElectricityTransfer tew = (ElectricityTransfer) worldIn.getTileEntity(pos);
+			EleSrcCable tew = (EleSrcCable) worldIn.getTileEntity(pos);
 			tew.link(fromEntity);
 		}
 	}
@@ -129,23 +130,23 @@ abstract public class TransferBlock extends BlockBaseT implements IEleInfo {
 	@Override
 	public boolean canLink(LinkInfo info, boolean nowIsExist, boolean fromIsExist) {
 		TileEntity from = info.fromUser;
-		ElectricityTransfer now = null;
+		EleSrcCable now;
 		
 		TileEntity temp = info.nowUser == null ? info.world.getTileEntity(info.nowPos) : info.nowUser;
 		if (info.nowUser == null && !nowIsExist)
 			throw new IllegalArgumentException("判断信息不足！当前方块不存在时传入参数nowUser不能为null");
-		if (!(temp instanceof ElectricityTransfer))
+		if (!(temp instanceof EleSrcCable))
 			throw new IllegalArgumentException("判断信息错误！当前方块的TE类型应该为"
-					                                   + ElectricityTransfer.class.getSimpleName());
-		now = (ElectricityTransfer) temp;
+					                                   + EleSrcCable.class.getSimpleName());
+		now = (EleSrcCable) temp;
 		
 		if (fromIsExist) {
 			if (from == null) from = info.world.getTileEntity(info.fromPos);
 			if (!now.canLink(from)) return false;
-			if (from instanceof ElectricityTransfer) {
-				return ((ElectricityTransfer) from).canLink(now);
+			if (from instanceof EleSrcCable) {
+				return ((EleSrcCable) from).canLink(now);
 			}
-			return from instanceof ElectricityMaker || from instanceof ElectricityUser;
+			return from instanceof ElectricityMaker || from instanceof EleSrcUser;
 		} else {
 			return now.canLink(from);
 		}
@@ -177,10 +178,5 @@ abstract public class TransferBlock extends BlockBaseT implements IEleInfo {
 	public int quantityDropped(Random random) {
 		return 1;
 	}
-	
-	/** <b>注意：电线放置时需要使用该方法，且放置时meta一定为0 */
-	@Nullable
-	@Override
-	abstract public ElectricityTransfer createNewTileEntity(World worldIn, int meta);
 	
 }

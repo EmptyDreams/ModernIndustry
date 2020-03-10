@@ -1,6 +1,7 @@
-package minedreams.mi.api.electricity.block;
+package minedreams.mi.api.electricity.src.block;
 
-import minedreams.mi.api.electricity.ElectricityTransfer;
+import minedreams.mi.api.electricity.src.tileentity.EleSrcCable;
+import minedreams.mi.tools.Tools;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -21,7 +22,7 @@ import static minedreams.mi.ModernIndustry.MODID;
 /**
  * 普通电线物品
  * @author EmptyDremas
- * @version V1.2
+ * @version V1.2.1
  */
 public final class TransferItem extends ItemBlock {
 	
@@ -60,11 +61,14 @@ public final class TransferItem extends ItemBlock {
             IBlockState iblockstate1 = placeBlockAt(itemstack, player, worldIn, blockPos, this.block.getDefaultState());
             if (iblockstate1 != null) {
             	//更新TileEntity
-	            ElectricityTransfer nbt = ((TransferBlock) this.block).createNewTileEntity(worldIn, 0);
+	            EleSrcCable nbt = (EleSrcCable) ((TransferBlock) this.block).createNewTileEntity(worldIn, 0);
 	            nbt.setWorld(worldIn);
 	            nbt.setPos(blockPos);
 	            nbt.setBlockType(this.block);
 	            if (pos != blockPos) nbt.link(pos);
+	            Tools.forEachAroundTE(worldIn, blockPos, (te, fa) -> {
+	            	if (pos != te.getPos()) nbt.link(te);
+	            });
 	            worldIn.setTileEntity(blockPos, nbt);
             	
                 SoundType soundtype = this.block.getSoundType(iblockstate1, worldIn, blockPos, player);

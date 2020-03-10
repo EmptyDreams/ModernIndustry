@@ -3,9 +3,9 @@ package minedreams.mi.blocks.machine.maker;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-import minedreams.mi.api.electricity.block.MachineBlock;
-import minedreams.mi.api.electricity.info.IEleInfo;
-import minedreams.mi.api.electricity.info.LinkInfo;
+import minedreams.mi.api.electricity.src.block.MachineBlock;
+import minedreams.mi.api.electricity.src.info.IEleInfo;
+import minedreams.mi.api.electricity.src.info.LinkInfo;
 import minedreams.mi.register.block.AutoBlockRegister;
 import minedreams.mi.blocks.te.maker.EMPerpetual;
 import net.minecraft.block.material.Material;

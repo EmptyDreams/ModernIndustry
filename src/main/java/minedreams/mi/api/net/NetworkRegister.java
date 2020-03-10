@@ -17,7 +17,7 @@ public final class NetworkRegister {
 	
 	static final List<IAutoNetwork> NETWORKS = new ArrayList<>();
 	
-	static void forEach(Consumer<? super IAutoNetwork> consumer) {
+	static synchronized void forEach(Consumer<? super IAutoNetwork> consumer) {
 		IAutoNetwork network;
 		for (int i = 0; i < NETWORKS.size(); ++i) {
 			network = NETWORKS.get(i);
@@ -36,7 +36,7 @@ public final class NetworkRegister {
 	 * @param net 要注册的对象，必须继承自TileEntity
 	 * @throws ClassCastException 如果net不继承自TileEntity
 	 */
-	public static void register(IAutoNetwork net) {
+	public static synchronized void register(IAutoNetwork net) {
 		if (!(net instanceof TileEntity)) throw new ClassCastException("net不继承自TileEntity");
 		for (IAutoNetwork network : NETWORKS)
 			if (network == net) return;

@@ -1,12 +1,11 @@
 package minedreams.mi.blocks.machine.transfer;
 
 import javax.annotation.Nullable;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import minedreams.mi.api.electricity.ElectricityTransfer;
-import minedreams.mi.api.electricity.block.TransferBlock;
+import minedreams.mi.api.electricity.src.block.TransferBlock;
+import minedreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import minedreams.mi.blocks.register.BlockBaseT;
 import minedreams.mi.register.AutoRegister;
 import minedreams.mi.register.RegisterManager;
@@ -42,8 +41,8 @@ public final class WireManager {
 		
 		@Nullable
 		@Override
-		public ElectricityTransfer createNewTileEntity(World worldIn, int meta) {
-			return new ElectricityTransfer(1000, 200);
+		public EleSrcCable createNewTileEntity(World worldIn, int meta) {
+			return new EleSrcCable(1000, 1);
 		}
 		
 	};

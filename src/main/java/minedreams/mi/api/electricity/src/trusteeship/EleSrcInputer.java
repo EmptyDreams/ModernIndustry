@@ -1,8 +1,7 @@
-package minedreams.mi.api.electricity.trusteeship;
+package minedreams.mi.api.electricity.src.trusteeship;
 
 import minedreams.mi.ModernIndustry;
-import minedreams.mi.api.electricity.EleWorker;
-import minedreams.mi.api.electricity.ElectricityUser;
+import minedreams.mi.api.electricity.src.tileentity.EleSrcUser;
 import minedreams.mi.api.electricity.interfaces.IEleInputer;
 import minedreams.mi.api.electricity.interfaces.IVoltage;
 import minedreams.mi.register.trusteeship.AutoTrusteeshipRegister;
@@ -17,31 +16,22 @@ import net.minecraft.util.ResourceLocation;
 @AutoTrusteeshipRegister
 public class EleSrcInputer implements IEleInputer {
 	
-	static {
-		EleWorker.registerInputer(new EleSrcInputer());
-	}
-	
 	private static final ResourceLocation NAME =
 			new ResourceLocation(ModernIndustry.MODID, "EleSrcInputer");
 	
 	@Override
-	public void input(TileEntity te, int energy, IVoltage voltage) {
-		((ElectricityUser) te).useElectricity(energy, voltage);
-	}
-	
-	@Override
 	public int getEnergyMin(TileEntity te) {
-		return ((ElectricityUser) te).getEnergyMin();
+		return ((EleSrcUser) te).getEnergyMin();
 	}
 	
 	@Override
 	public int getEnergy(TileEntity te) {
-		return ((ElectricityUser) te).getEnergy();
+		return ((EleSrcUser) te).getEnergy();
 	}
 	
 	@Override
 	public IVoltage getVoltage(TileEntity te) {
-		return ((ElectricityUser) te).getVoltage();
+		return ((EleSrcUser) te).getVoltage();
 	}
 	
 	@Override
@@ -56,7 +46,7 @@ public class EleSrcInputer implements IEleInputer {
 	
 	@Override
 	public boolean contains(TileEntity te) {
-		return te instanceof ElectricityUser;
+		return te instanceof EleSrcUser;
 	}
 	
 }

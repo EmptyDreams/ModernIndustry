@@ -1,11 +1,12 @@
-package minedreams.mi.api.electricity;
+package minedreams.mi.api.electricity.src.tileentity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import minedreams.mi.api.electricity.info.EnumVoltage;
+import minedreams.mi.api.electricity.Electricity;
+import minedreams.mi.api.electricity.src.info.EnumVoltage;
 import minedreams.mi.api.electricity.info.OutPutResult;
 import minedreams.mi.api.electricity.interfaces.IVoltage;
 import minedreams.mi.api.net.WaitList;
@@ -26,9 +27,9 @@ public abstract class ElectricityMaker extends Electricity {
 	/** 最大电能储备 */
 	protected int meBoxMax = 10000;
 	/** 最小输出电压 */
-	protected EnumVoltage voltage_min = EnumVoltage.ORDINARY;
+	protected IVoltage voltage_min = EnumVoltage.ORDINARY;
 	/** 最大输出电压 */
-	protected EnumVoltage voltage_max = EnumVoltage.HIGHER;
+	protected IVoltage voltage_max = EnumVoltage.HIGHER;
 	/** 存储该发电机周围连接的方块 */
 	protected final Map<EnumFacing, Electricity> LINKS = new HashMap<>(6);
 	/** 最大电能瞬时输出 */
@@ -102,7 +103,7 @@ public abstract class ElectricityMaker extends Electricity {
 	
 	/**
 	 * 请求发电. 该方法中需要处理UI界面中的物品更新、电能储备量更新等任务，
-	 * 在附近有设备请求电能时，首先调用{@link #output(int, EnumVoltage, boolean)}方法，
+	 * 在附近有设备请求电能时，首先调用{@link #output(int, IVoltage, boolean)}方法，
 	 * 若返回{@link OutPutResult#NOT_ENOUGH}或{@link OutPutResult#FAILURE}
 	 * 时会尝试调用该方法
 	 *
@@ -113,28 +114,28 @@ public abstract class ElectricityMaker extends Electricity {
 	/**
 	 * 检查需要输出的电压是否可以输出，当电压不满足但是可以输出时同样返回false
 	 */
-	public final boolean checkOutput(EnumVoltage voltage) {
+	public final boolean checkOutput(IVoltage voltage) {
 		return voltage.getVoltage() >= getVoltage_min().getVoltage() &&
 				       voltage.getVoltage() <= getVoltage_max().getVoltage();
 	}
 	
 	/** 获取最小输出电压 */
-	public final EnumVoltage getVoltage_min() { return voltage_min; }
+	public final IVoltage getVoltage_min() { return voltage_min; }
 	/**
 	 * 设置最小输出电压
 	 * @throws NullPointerException 如果 voltage_min == null
 	 */
-	public final void setVoltage_min(EnumVoltage voltage_min) {
+	public final void setVoltage_min(IVoltage voltage_min) {
 		WaitList.checkNull(voltage_min, "voltage_min");
 		this.voltage_min = voltage_min;
 	}
 	/** 获取最大输出电压 */
-	public final EnumVoltage getVoltage_max() {return voltage_max; }
+	public final IVoltage getVoltage_max() {return voltage_max; }
 	/**
 	 * 设置最大输出电压
 	 * @throws NullPointerException 如果 voltage_min == null
 	 */
-	public final void setVoltage_max(EnumVoltage voltage_max) {
+	public final void setVoltage_max(IVoltage voltage_max) {
 		WaitList.checkNull(voltage_max, "voltage_max");
 		this.voltage_max = voltage_max;
 	}

@@ -1,11 +1,14 @@
 package minedreams.mi.api.electricity.info;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import minedreams.mi.api.electricity.EleWorker;
 import minedreams.mi.api.electricity.interfaces.IEleInputer;
 import minedreams.mi.api.electricity.interfaces.IEleOutputer;
 import minedreams.mi.api.electricity.interfaces.IVoltage;
 import net.minecraft.tileentity.TileEntity;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 存储线路计算信息.<br>
@@ -18,7 +21,7 @@ import net.minecraft.tileentity.TileEntity;
  * @author EmptyDreams
  * @version V1.0
  */
-public class PathInfo {
+public class PathInfo implements Comparable<PathInfo> {
 	
 	/** 运输过程损耗的能量 */
 	private int lossEnergy;
@@ -27,22 +30,28 @@ public class PathInfo {
 	/** 实际提供的电压 */
 	private IVoltage voltage;
 	/** 路径 */
-	private List<TileEntity> path;
+	private List<TileEntity> path = new ArrayList<>();
 	/** 输出电能的方块 */
-	private TileEntity output;
+	private TileEntity outer;
 	/** 输出电能方块的托管 */
 	private IEleOutputer outputer;
+	/** 终点 */
+	private TileEntity user;
+	/** 托管 */
+	private IEleInputer inputer;
 	
 	public PathInfo() { }
 	
 	public PathInfo(int lossEnergy, int energy, IVoltage voltage, List<? extends TileEntity> path,
-	                TileEntity output, IEleOutputer outputer) {
+	                TileEntity outer, IEleOutputer outputer, TileEntity user, IEleInputer inputer) {
 		this.lossEnergy = lossEnergy;
 		this.energy = energy;
 		this.voltage = voltage;
 		this.path = (List<TileEntity>) path;
-		this.output = output;
+		this.outer = outer;
 		this.outputer = outputer;
+		this.user = user;
+		this.inputer = inputer;
 	}
 	
 	/**
@@ -51,9 +60,13 @@ public class PathInfo {
 	 * @param inputer 输入电能的托管
 	 * @return 返回用电详单
 	 */
-	public final UseOfInfo invoke(TileEntity user, IEleInputer inputer) {
-		UseOfInfo real = outputer.output(output, energy + lossEnergy, voltage, false);
-		inputer.input(user, Math.min(real.getEnergy(), energy), real.getVoltage());
+	public final UseInfo invoke(TileEntity user, IEleInputer inputer) {
+		UseInfo real = outputer.output(outer, energy + lossEnergy, voltage, false);
+		TileEntity transfer;
+		for (int i = 0; i < path.size(); i++) {
+			transfer = path.get(i);
+			EleWorker.getTransfer(transfer).transfer(transfer, real.getEnergy(), real.getVoltage(), null);
+		}
 		return real;
 	}
 	
@@ -65,14 +78,14 @@ public class PathInfo {
 	public boolean merge(PathInfo info) {
 		lossEnergy += info.lossEnergy;
 		path.addAll(info.path);
-		if (output == null) {
-			output = info.output;
+		if (outer == null) {
+			outer = info.outer;
 			outputer = info.outputer;
 			voltage = info.voltage;
 			energy = info.energy;
 			return true;
 		} else {
-			return info.output == null;
+			return info.outer == null;
 		}
 	}
 	
@@ -111,12 +124,12 @@ public class PathInfo {
 		return path;
 	}
 	
-	public TileEntity getOutput() {
-		return output;
+	public TileEntity getOuter() {
+		return outer;
 	}
 	
-	public PathInfo setOutput(TileEntity output) {
-		this.output = output;
+	public PathInfo setOuter(TileEntity outer) {
+		this.outer = outer;
 		return this;
 	}
 	
@@ -127,5 +140,83 @@ public class PathInfo {
 	public PathInfo setOutputer(IEleOutputer outputer) {
 		this.outputer = outputer;
 		return this;
+	}
+	
+	public TileEntity getUser() {
+		return user;
+	}
+	
+	public PathInfo setUser(TileEntity user) {
+		this.user = user;
+		return this;
+	}
+	
+	public IEleInputer getInputer() {
+		return inputer;
+	}
+	
+	public PathInfo setInputer(IEleInputer inputer) {
+		this.inputer = inputer;
+		return this;
+	}
+	
+	/**
+	 * 重新计算线路
+	 */
+	public void calculateLossEnergy() {
+		if (lossEnergy <= 0) {
+			for (TileEntity entity : path)
+				lossEnergy += EleWorker.getTransfer(entity).getEnergyLoss(entity, energy, voltage);
+		}
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof PathInfo)) return false;
+		
+		PathInfo pathInfo = (PathInfo) o;
+		
+		if (lossEnergy != pathInfo.lossEnergy) return false;
+		if (energy != pathInfo.energy) return false;
+		if (!voltage.equals(pathInfo.voltage)) return false;
+		if (!outer.equals(pathInfo.outer)) return false;
+		if (!outputer.equals(pathInfo.outputer)) return false;
+		if (!user.equals(pathInfo.user)) return false;
+		if (!getStart().equals(pathInfo.getStart())) {
+			if (!getStart().equals(pathInfo.getEnd())) return false;
+		}
+		if (!getEnd().equals(pathInfo.getEnd())) {
+			if (!getEnd().equals(pathInfo.getStart())) return false;
+		}
+		return inputer.equals(pathInfo.inputer);
+	}
+	
+	@Override
+	public int hashCode() {
+		int result = lossEnergy;
+		result = 31 * result + energy;
+		result = 31 * result + voltage.hashCode();
+		result = 31 * result + outer.hashCode();
+		result = 31 * result + outputer.hashCode();
+		result = 31 * result + user.hashCode();
+		result = 31 * result + inputer.hashCode();
+		return result;
+	}
+	
+	@Override
+	public int compareTo(@NotNull PathInfo o) {
+		if (!user.equals(o.user)) return 0;
+		if (outputer.isAllowable(outer, inputer.getVoltage(user))) {
+			if (o.outputer.isAllowable(o.outer, o.inputer.getVoltage(user))) {
+				return Integer.compare(getLossEnergy(), o.getLossEnergy());
+			} else {
+				return -1;
+			}
+		} else if (o.outputer.isAllowable(o.outer, o.inputer.getVoltage(user))) {
+			return 1;
+		} else {
+			return Integer.compare(getLossEnergy(), o.getLossEnergy());
+		}
 	}
 }

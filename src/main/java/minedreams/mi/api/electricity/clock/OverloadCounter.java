@@ -1,8 +1,10 @@
 package minedreams.mi.api.electricity.clock;
 
+import minedreams.mi.api.electricity.src.tileentity.EleSrcUser;
+
 /**
  * 每一个自{@link minedreams.mi.api.electricity.ElectricityTransfer}和
- * {@link minedreams.mi.api.electricity.ElectricityUser}派生的类都含有该计数器，
+ * {@link EleSrcUser}派生的类都含有该计数器，
  * 该计数器用来记录电子设备超载的时长，单位为tick
  *
  * @author EmptyDreams

@@ -1,6 +1,6 @@
 package minedreams.mi.api.electricity.clock;
 
-import minedreams.mi.api.electricity.ElectricityUser;
+import minedreams.mi.api.electricity.src.tileentity.EleSrcUser;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -14,9 +14,9 @@ import net.minecraft.world.World;
  */
 public class OrdinaryCounter extends OverloadCounter {
 	
-	private final ElectricityUser ele;
+	private final EleSrcUser ele;
 	
-	public OrdinaryCounter(ElectricityUser user) {
+	public OrdinaryCounter(EleSrcUser user) {
 		ele = user;
 		if (temp == null) temp = new Temp(user.getWorld());
 	}

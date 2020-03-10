@@ -1,7 +1,7 @@
 package minedreams.mi.api.electricity;
 
-import minedreams.mi.api.electricity.info.IEleInfo;
-import minedreams.mi.api.electricity.info.LinkInfo;
+import minedreams.mi.api.electricity.src.info.IEleInfo;
+import minedreams.mi.api.electricity.src.info.LinkInfo;
 
 /**
  * 电力系统工具类，其中包含了所有可用的静态函数

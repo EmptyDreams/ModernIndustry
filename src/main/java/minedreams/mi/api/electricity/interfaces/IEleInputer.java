@@ -11,19 +11,9 @@ import net.minecraft.util.EnumFacing;
 /**
  * 可以输入电能的方块托管
  * @author EmptyDreams
- * @version V1.0
+ * @version V1.1
  */
 public interface IEleInputer extends IRegister {
-	
-	/**
-	 * 向指定方块输入指定的电能
-	 * @param te 对应方块的TE
-	 * @param energy 电能
-	 * @param voltage 电压
-	 * @throws NullPointerException if te == null || voltage == null
-	 * @throws ClassCastException 如果不支持输入的TE
-	 */
-	void input(TileEntity te, int energy, IVoltage voltage);
 	
 	/** 获取方块最小需要的电能 */
 	int getEnergyMin(TileEntity te);

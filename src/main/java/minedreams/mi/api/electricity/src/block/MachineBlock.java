@@ -1,9 +1,9 @@
-package minedreams.mi.api.electricity.block;
+package minedreams.mi.api.electricity.src.block;
 
-import minedreams.mi.api.electricity.ElectricityMaker;
-import minedreams.mi.api.electricity.ElectricityTransfer;
-import minedreams.mi.api.electricity.ElectricityUser;
-import minedreams.mi.api.electricity.info.IEleInfo;
+import minedreams.mi.api.electricity.src.tileentity.ElectricityMaker;
+import minedreams.mi.api.electricity.src.tileentity.EleSrcUser;
+import minedreams.mi.api.electricity.src.info.IEleInfo;
+import minedreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import minedreams.mi.blocks.register.BlockBaseT;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -29,24 +29,24 @@ public abstract class MachineBlock extends BlockBaseT implements IEleInfo {
 		TileEntity now = world.getTileEntity(pos);
 		if (now == null) return;
 		TileEntity from = world.getTileEntity(fromPos);
-		if (isUser == null) isUser = now instanceof ElectricityUser;
+		if (isUser == null) isUser = now instanceof EleSrcUser;
 		if (isUser) {
-			ElectricityUser user = (ElectricityUser) now;
+			EleSrcUser user = (EleSrcUser) now;
 			if (from == null) {
 				user.removeLink(fromPos);
 			} else if (from instanceof ElectricityMaker) {
 				user.link((ElectricityMaker) from);
-			} else if (from instanceof ElectricityTransfer) {
-				ElectricityTransfer et = (ElectricityTransfer) from;
+			} else if (from instanceof EleSrcCable) {
+				EleSrcCable et = (EleSrcCable) from;
 				user.link(et);
 				et.link(now);
 			}
 		} else {
 			ElectricityMaker maker = (ElectricityMaker) now;
-			if (from instanceof ElectricityUser) {
-				((ElectricityUser) from).link(maker);
-			} else if (from instanceof ElectricityTransfer) {
-				((ElectricityTransfer) from).link(maker);
+			if (from instanceof EleSrcUser) {
+				((EleSrcUser) from).link(maker);
+			} else if (from instanceof EleSrcCable) {
+				((EleSrcCable) from).link(maker);
 			}
 		}
 	}

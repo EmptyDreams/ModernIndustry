@@ -1,4 +1,4 @@
-package minedreams.mi.api.electricity.info;
+package minedreams.mi.api.electricity.src.info;
 
 import minedreams.mi.api.electricity.interfaces.IVoltage;
 

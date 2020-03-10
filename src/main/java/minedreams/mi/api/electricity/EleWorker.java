@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import minedreams.mi.api.electricity.info.UseOfInfo;
+import minedreams.mi.api.electricity.info.UseInfo;
 import minedreams.mi.api.electricity.info.PathInfo;
 import minedreams.mi.api.electricity.interfaces.IEleInputer;
 import minedreams.mi.api.electricity.interfaces.IEleOutputer;
@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.Mod;
  * 关于电力系统的工作都在这里进行<br>
  *
  * @author EmptyDreams
- * @version V1.0
+ * @version V2.0
  */
 @Mod.EventBusSubscriber
 public final class EleWorker {
@@ -104,40 +104,42 @@ public final class EleWorker {
 	/**
 	 * 让指定方块使用电能，如果该方块没有对应的托管的话只会输出一个错误
 	 * @param te 指定方块
+	 * @return 是否成功
 	 */
-	public static boolean useEleEnergy(TileEntity te) {
+	public static UseInfo useEleEnergy(TileEntity te) {
 		for (IEleInputer inputer : INPUTERS) {
 			if (inputer.contains(te)) {
 				return useEleEnergy(te, inputer);
 			}
 		}
 		MISysInfo.err("该方块没有找到可用的托管：" + te);
-		return false;
+		return null;
 	}
 	
 	/**
 	 * 让指定方块使用电能
 	 * @param te 指定方块
 	 * @param inputer 支持该方块的托管
+	 * @return 是否成功
 	 */
-	public static boolean useEleEnergy(TileEntity te, IEleInputer inputer) {
+	public static UseInfo useEleEnergy(TileEntity te, IEleInputer inputer) {
 		Map<TileEntity, IEleOutputer> outs = inputer.getOutputerAround(te);
 		if (outs.isEmpty()) {
 			Map<TileEntity, IEleTransfer> transfers = inputer.getTransferAround(te);
-			if (transfers.isEmpty()) return false;
+			if (transfers.isEmpty()) return null;
 			
 			PathInfo realPath = null;
 			for (Map.Entry<TileEntity, IEleTransfer> entry : transfers.entrySet()) {
 				PathInfo pathInfo = entry.getValue().findPath(entry.getKey(), te, inputer);
-				if (pathInfo.getOutput() == null) continue;
+				if (pathInfo == null || pathInfo.getOuter() == null) continue;
 				if (realPath == null || realPath.getLossEnergy() > pathInfo.getLossEnergy())
 					realPath = pathInfo;
 			}
 			
-			if (realPath == null) return false;
-			realPath.invoke(te, inputer);
+			if (realPath == null) return null;
 			lineTransfer(realPath.getPath(),
 					realPath.getEnergy() + realPath.getLossEnergy(), realPath.getVoltage());
+			return realPath.invoke(te, inputer);
 		} else {
 			IVoltage voltage = inputer.getVoltage(te);
 			int allEnergy = inputer.getEnergy(te);
@@ -151,7 +153,7 @@ public final class EleWorker {
 			for (Map.Entry<TileEntity, IEleOutputer> enerty : outs.entrySet()) {
 				IEleOutputer outputer = enerty.getValue();
 				TileEntity out = enerty.getKey();
-				UseOfInfo outputInfo = outputer.output(out, Integer.MAX_VALUE, voltage, true);
+				UseInfo outputInfo = outputer.output(out, Integer.MAX_VALUE, voltage, true);
 				if (outputInfo.getEnergy() >= allEnergy) {
 					realOut = out;
 					realOutputer = outputer;
@@ -165,12 +167,9 @@ public final class EleWorker {
 				}
 			}
 			
-			if (realOut == null) return false;
-			realOutputer.output(realOut, realEnergy, realVoltage, false);
-			inputer.input(te, realEnergy, realVoltage);
-			return true;
+			if (realOut == null) return null;
+			return realOutputer.output(realOut, realEnergy, realVoltage, false);
 		}
-		return false;
 	}
 	
 	/**

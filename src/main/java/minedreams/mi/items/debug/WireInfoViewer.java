@@ -2,11 +2,11 @@ package minedreams.mi.items.debug;
 
 import java.util.Arrays;
 
-import minedreams.mi.tools.MISysInfo;
 import minedreams.mi.ModernIndustry;
-import minedreams.mi.api.electricity.ElectricityTransfer;
-import minedreams.mi.api.electricity.block.TransferBlock;
+import minedreams.mi.api.electricity.src.block.TransferBlock;
+import minedreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import minedreams.mi.register.item.AutoItemRegister;
+import minedreams.mi.tools.MISysInfo;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -32,7 +32,7 @@ public class WireInfoViewer extends Item {
 		IBlockState state = worldIn.getBlockState(pos);
 		if (state.getBlock() instanceof TransferBlock) {
 			if (worldIn.isRemote) {
-				ElectricityTransfer et = (ElectricityTransfer) worldIn.getTileEntity(pos);
+				EleSrcCable et = (EleSrcCable) worldIn.getTileEntity(pos);
 				StringBuilder sb = new StringBuilder();
 				sb.append("客户端线缆信息{\n\t内部连接数据：\t")
 						.append(Arrays.toString(new boolean[]{
@@ -43,7 +43,7 @@ public class WireInfoViewer extends Item {
 				MISysInfo.print(sb);
 				return EnumActionResult.SUCCESS;
 			} else {
-				ElectricityTransfer et = (ElectricityTransfer) worldIn.getTileEntity(pos);
+				EleSrcCable et = (EleSrcCable) worldIn.getTileEntity(pos);
 				StringBuilder sb = new StringBuilder();
 				sb.append("服务端线缆信息{\n\t坐标：")
 						.append(pos)

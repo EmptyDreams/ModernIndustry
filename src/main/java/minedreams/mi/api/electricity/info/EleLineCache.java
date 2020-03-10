@@ -1,11 +1,9 @@
-package minedreams.mi.api.electricity.cache;
+package minedreams.mi.api.electricity.info;
 
 import javax.annotation.Nullable;
-
 import java.util.Collection;
 import java.util.LinkedList;
 
-import minedreams.mi.api.electricity.info.PathInfo;
 import minedreams.mi.api.electricity.interfaces.IEleInputer;
 import net.minecraft.tileentity.TileEntity;
 
@@ -22,6 +20,8 @@ abstract public class EleLineCache {
 			add(EleLineCache.this);
 		}
 	};
+	
+	abstract public int getOutputerAmount();
 	
 	/**
 	 * 读取缓存中的线路信息
@@ -49,6 +49,13 @@ abstract public class EleLineCache {
 	}
 	
 	/**
+	 * 将目标缓存信息从当前缓存中取消合并，传入参数可能来自其它模组
+	 * @param cache 目标缓存
+	 * @return 是否移除成功
+	 */
+	public final boolean disperse(EleLineCache cache) { return CACHES.remove(cache); }
+	
+	/**
 	 * 读取缓存中的线路信息
 	 * @param start 起点
 	 * @param user 需求电能的方块
@@ -56,6 +63,13 @@ abstract public class EleLineCache {
 	 * @return 返回读取结果，没有则返回null
 	 */
 	@Nullable
-	abstract public PathInfo readInfo(TileEntity start, TileEntity user, IEleInputer inputer);
+	abstract protected PathInfo readInfo(TileEntity start, TileEntity user, IEleInputer inputer);
+	
+	/**
+	 * 写入缓存数据
+	 * @param info 线路信息
+	 */
+	abstract public void writeInfo(PathInfo info);
+	
 	
 }

@@ -3,8 +3,8 @@ package minedreams.mi.blocks.machine.user;
 import java.util.Random;
 
 import minedreams.mi.ModernIndustry;
-import minedreams.mi.api.electricity.block.MachineBlock;
-import minedreams.mi.api.electricity.info.LinkInfo;
+import minedreams.mi.api.electricity.src.block.MachineBlock;
+import minedreams.mi.api.electricity.src.info.LinkInfo;
 import minedreams.mi.register.block.AutoBlockRegister;
 import minedreams.mi.register.block.BlockRegister;
 import minedreams.mi.blocks.te.user.EUCompressor;

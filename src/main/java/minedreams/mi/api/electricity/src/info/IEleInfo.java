@@ -1,6 +1,6 @@
-package minedreams.mi.api.electricity.info;
+package minedreams.mi.api.electricity.src.info;
 
-import minedreams.mi.api.electricity.ElectricityTransfer;
+import minedreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import minedreams.mi.api.exception.ProtocolErrorException;
 import net.minecraft.tileentity.TileEntity;
 
@@ -15,8 +15,8 @@ public interface IEleInfo {
 	 * 判断方块是否可以连接电线，
 	 * <b>
 	 *     注意：此方法不保证fromPos/nowPos在此时已经在世界存在，所以提供了额外的参数，</b>
-	 * 同时这个类不允许调用{@link ElectricityTransfer#canLink(TileEntity)}，
-	 * 因为ET的canLink此方法可能依赖{@link ElectricityTransfer#canLink(TileEntity)}
+	 * 同时这个类不允许调用{@link EleSrcCable#canLink(TileEntity)}，
+	 * 因为ET的canLink此方法可能依赖{@link EleSrcCable#canLink(TileEntity)}
 	 *
 	 * @param info 附加信息
 	 * @param nowIsExist 当前方块是否存在
