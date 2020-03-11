@@ -3,6 +3,7 @@ package minedreams.mi.blocks.machine.maker;
 import javax.annotation.Nullable;
 import java.util.Random;
 
+import minedreams.mi.ModernIndustry;
 import minedreams.mi.api.electricity.src.block.MachineBlock;
 import minedreams.mi.api.electricity.src.info.IEleInfo;
 import minedreams.mi.api.electricity.src.info.LinkInfo;
@@ -18,13 +19,16 @@ import net.minecraft.world.World;
  * @author EmptyDreams
  * @version V1.0
  */
-@AutoBlockRegister(name = 10, registryName = "perpetual")
+@AutoBlockRegister(registryName = "perpetual")
 public class PerpetualBlock extends MachineBlock implements IEleInfo {
 	
 	private final Item ITEM = new ItemBlock(this).setRegistryName("perpetual");
 	
 	public PerpetualBlock() {
 		super(Material.IRON);
+		setHarvestLevel("pickaxe", 1);
+		setHardness(3.5F);
+		setCreativeTab(ModernIndustry.TAB_BLOCK);
 	}
 	
 	@Override

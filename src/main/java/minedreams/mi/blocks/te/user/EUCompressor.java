@@ -59,14 +59,14 @@ public class EUCompressor extends EleSrcUser {
 		ItemStack itemStack2 = item.extractItem(1, 1, true);
 		ItemStack out = cgi.getOuts().get(0);
 		
-		boolean isWorking = false;
+		boolean isWorking = true;
 		
 		//检查输入物品数目是否足够
 		if (!(itemStack.equals(ItemStack.EMPTY) && itemStack2.equals(ItemStack.EMPTY) &&
 				      item.insertItem(2, out, true).equals(ItemStack.EMPTY))) {
 			if (this.out.getStack().getCount() == 0) this.out.putStack(ItemStack.EMPTY);
 			if (EleWorker.useEleEnergy(this) != null) {
-				isWorking = true;
+				isWorking = false;
 				++workingTime;
 				if (workingTime >= getNeedTime()) {
 					workingTime = 0;
@@ -79,8 +79,8 @@ public class EUCompressor extends EleSrcUser {
 		}
 		IBlockState state = world.getBlockState(pos);
 		world.setBlockState(pos, state.withProperty(EMPTY, isEmpty()).withProperty(WORKING, isWorking));
-		world.markBlockRangeForRenderUpdate(pos, pos);
 		markDirty();
+		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
 	/** 判断输入是否合法 */

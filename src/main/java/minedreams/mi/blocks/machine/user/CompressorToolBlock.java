@@ -5,10 +5,9 @@ import java.util.Random;
 import minedreams.mi.ModernIndustry;
 import minedreams.mi.api.electricity.src.block.MachineBlock;
 import minedreams.mi.api.electricity.src.info.LinkInfo;
-import minedreams.mi.register.block.AutoBlockRegister;
-import minedreams.mi.register.block.BlockRegister;
-import minedreams.mi.blocks.te.user.EUCompressor;
 import minedreams.mi.api.gui.GuiLoader;
+import minedreams.mi.blocks.te.user.EUCompressor;
+import minedreams.mi.register.block.AutoBlockRegister;
 import minedreams.mi.tools.Tools;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -34,8 +33,7 @@ import net.minecraft.world.World;
  * @author EmptyDremas
  * @version V1.0
  */
-@AutoBlockRegister(registryName = CompressorToolBlock.NAME,
-			name = BlockRegister.COMPRESSOR_TBLOCK)
+@AutoBlockRegister(registryName = CompressorToolBlock.NAME)
 public class CompressorToolBlock extends MachineBlock {
 	
 	/** 方块内部名称 */
@@ -57,6 +55,9 @@ public class CompressorToolBlock extends MachineBlock {
 	
 	public CompressorToolBlock() {
 		super(Material.ROCK);
+		setHarvestLevel("pickaxe", 1);
+		setHardness(3.5F);
+		setCreativeTab(ModernIndustry.TAB_BLOCK);
 		setSoundType(SoundType.STONE);
 		ITEM = new ItemBlock(this).setRegistryName(ModernIndustry.MODID, NAME);
 		setDefaultState(blockState.getBaseState().withProperty(

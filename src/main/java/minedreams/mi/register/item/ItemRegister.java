@@ -108,14 +108,4 @@ public class ItemRegister {
 				new ItemStack(output), params);
 	}
 	
-	/** 通过名称获取Item */
-	public static Item getItem(String name) {
-		return AutoRegister.Items.items.get(name);
-	}
-	
-	/** 通过名称获取ItemStack */
-	public static ItemStack getStack(String name, int amount) {
-		return new ItemStack(AutoRegister.Items.items.get(name), amount);
-	}
-	
 }

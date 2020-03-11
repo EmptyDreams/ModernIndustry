@@ -17,8 +17,8 @@ import net.minecraft.item.ItemBlock;
  */
 public class OreBlock extends BlockBase {
 
-	public static final Map<OreBlock, Item> LIST = new HashMap<>(2);
-	
+	/** 存储方块列表 */
+	public static final Map<OreBlock, Item> LIST = new HashMap<>(10);
 	public static final String NAME_COPPER = "copper_ore_block";
 	public static final String NAME_TIN = "tin_ore_block";
 	

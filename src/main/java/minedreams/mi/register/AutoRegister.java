@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -62,7 +63,7 @@ public final class AutoRegister {
 	
 	public static final class Blocks {
 		/** 所有方块 */
-		public static final HashMap<Integer, Block> blocks = new HashMap<>();
+		public static final List<Block> blocks = new ArrayList<>(50);
 		/** 需要自动注册的方块 */
 		public static final ArrayList<Block> autoRegister = new ArrayList<>();
 		/** 不需要自动注册的方块的注册地址 */
@@ -75,7 +76,8 @@ public final class AutoRegister {
 	
 	public static final class Items {
 		/** 所有物品 */
-		public static final HashMap<String, Item> items = new HashMap<>();
+		//public static final HashMap<String, Item> items = new HashMap<>();
+		public static final List<Item> items = new ArrayList<>(50);
 		/** 需要注册的物品 */
 		public static final ArrayList<Item> autoItems = new ArrayList<>();
 	}
@@ -125,54 +127,26 @@ public final class AutoRegister {
 		}
 	}
 	
-	private static Block findBlock(String name) {
-		for (Block b : Blocks.blocks.values()) {
-			if (b.getRegistryName().getResourcePath().equals(name))
-				return b;
-		}
-		return null;
-	}
-	
 	/** 添加一个自动注册的方块 */
 	public static void addAutoBlock(Block block) {
-		addAutoBlock(block, BlockRegister.next());
-	}
-	
-	/** 添加一个自动注册的方块 */
-	public static void addAutoBlock(Block block, int index) {
-		addBlock(block, index);
+		addBlock(block);
 		Blocks.autoRegister.add(block);
 	}
 	
 	/** 添加一个方块 */
-	public static void addBlock(Block block, int index) {
-		Blocks.blocks.put(index, block);
-	}
-	
-	/** 添加一个方块 */
 	public static void addBlock(Block block) {
-		addBlock(block, BlockRegister.next());
+		Blocks.blocks.add(block);
 	}
 	
 	/** 添加一个自动注册的物品 */
 	public static void addAutoItem(Item item) {
-		addAutoItem(item, item.getRegistryName().getResourcePath());
-	}
-	
-	/** 添加一个自动注册的物品 */
-	public static void addAutoItem(Item item, String name) {
 		Items.autoItems.add(item);
-		addItem(item, name);
-	}
-	
-	/** 添加一个物品 */
-	public static void addItem(Item item, String name) {
-		Items.items.put(name, item);
+		addItem(item);
 	}
 	
 	/** 添加一个物品 */
 	public static void addItem(Item item) {
-		addItem(item, item.getRegistryName().getResourcePath());
+		Items.items.add(item);
 	}
 	
 	/* 自动注册托管 */
@@ -231,7 +205,7 @@ public final class AutoRegister {
 				
 				item.setRegistryName(ID, name);
 				item.setUnlocalizedName(name);
-				addAutoItem(item, name);
+				addAutoItem(item);
 			}
 		}
 	}
@@ -270,14 +244,21 @@ public final class AutoRegister {
 	}
 	
 	/* 矿石生成器 */
-	private static void reOreCreater(ASMDataTable ASM) {
+	private static void reOreCreater(ASMDataTable ASM)
+			throws ClassNotFoundException, IllegalAccessException, InstantiationException {
 		Set<ASMData> classSet = ASM.getAll(OreCreat.class.getName());
 		Map<String, Object> valueMap;
 		if (classSet != null) {
-			Block b;
+			Block b = null;
 			for (ASMData data : classSet) {
 				valueMap = data.getAnnotationInfo();
-				b = findBlock(valueMap.get("name").toString());
+				String name = valueMap.get("name").toString();
+				for (Block block : Blocks.blocks) {
+					if (block.getRegistryName().getResourcePath().equals(name)) {
+						b = block;
+						break;
+					}
+				}
 				if (b == null) {
 					MISysInfo.err("发现了一个没有对应方块的矿石生成器[",
 							valueMap.get("name"), "] -> continue");
@@ -300,15 +281,9 @@ public final class AutoRegister {
 				nowClass = Class.forName(data.getClassName());
 				Block bt = (Block) nowClass.newInstance();
 				bt.setRegistryName(ModernIndustry.MODID, (String) valueMap.get("registryName"));
-				bt.setUnlocalizedName(bt.getRegistryName().getResourcePath());
-				bt.setHardness((float) valueMap.getOrDefault("hardnexx", AutoBlockRegister.HARDNEXX));
-				if ((boolean) valueMap.getOrDefault("tab", AutoBlockRegister.TAB))
-					bt.setCreativeTab(ModernIndustry.TAB_BLOCK);
-				String tool = (String) valueMap.getOrDefault("tool", AutoBlockRegister.TOOL);
-				if (!"".equals(tool)) {
-					bt.setHarvestLevel(tool, (int) valueMap.getOrDefault("level", AutoBlockRegister.LEVEL));
-				}
-				Blocks.blocks.put((int) valueMap.get("name"), bt);
+				String unName = valueMap.getOrDefault("unlocalizedName", "").toString();
+				bt.setUnlocalizedName(unName.equals("") ? bt.getRegistryName().getResourcePath() : unName);
+				Blocks.blocks.add(bt);
 				
 				Class<?> register = (Class<?>) valueMap.getOrDefault("register", AutoBlockRegister.REGISTER);
 				if (AutoBlockRegister.REGISTER.equals(register))
@@ -321,14 +296,12 @@ public final class AutoRegister {
 	
 	/** BlockRegister类 */
 	private static void regBlockRegister() throws IllegalAccessException {
-		int index = 0;
 		Field[] bfs = BlockRegister.class.getFields();
 		for (Field f : bfs) {
 			Object o = f.get(null);
 			if (o instanceof Block) {
 				Block b = (Block) o;
-				Blocks.blocks.put(--index, b);
-				Blocks.autoRegister.add(b);
+				addAutoBlock(b);
 				if (f.isAnnotationPresent(OreCreat.class)) {
 					OreCreat oc = f.getAnnotation(OreCreat.class);
 					Blocks.worldCreater.put(b, new WorldCreater(oc, b.getDefaultState()));
