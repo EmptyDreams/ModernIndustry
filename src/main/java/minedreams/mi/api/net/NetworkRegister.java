@@ -15,19 +15,35 @@ import net.minecraft.tileentity.TileEntity;
  */
 public final class NetworkRegister {
 	
-	static final List<IAutoNetwork> NETWORKS = new ArrayList<>();
+	/** 服务端 */
+	private static final List<IAutoNetwork> NETWORKS_SERVICE = new ArrayList<>(20);
+	/** 客户端 */
+	private static final List<IAutoNetwork> NETWORKS_CLIENT = new ArrayList<>(20);
 	
-	static synchronized void forEach(Consumer<? super IAutoNetwork> consumer) {
+	static synchronized void forEach(boolean isClient, Consumer<? super IAutoNetwork> consumer) {
 		IAutoNetwork network;
-		for (int i = 0; i < NETWORKS.size(); ++i) {
-			network = NETWORKS.get(i);
-			if (network.isInvalid()) {
-				NETWORKS.remove(i);
-				--i;
-				continue;
+		if (isClient) {
+			for (int i = 0; i < NETWORKS_CLIENT.size(); ++i) {
+				network = NETWORKS_CLIENT.get(i);
+				if (network.isInvalid()) {
+					NETWORKS_CLIENT.remove(i);
+					--i;
+					continue;
+				}
+				if (network.getWorld().isBlockLoaded(network.getPos()))
+					consumer.accept(network);
 			}
-			if (network.getWorld().isBlockLoaded(network.getPos()))
-				consumer.accept(network);
+		} else {
+			for (int i = 0; i < NETWORKS_SERVICE.size(); ++i) {
+				network = NETWORKS_SERVICE.get(i);
+				if (network.isInvalid()) {
+					NETWORKS_SERVICE.remove(i);
+					--i;
+					continue;
+				}
+				if (network.getWorld().isBlockLoaded(network.getPos()))
+					consumer.accept(network);
+			}
 		}
 	}
 	
@@ -37,10 +53,15 @@ public final class NetworkRegister {
 	 * @throws ClassCastException 如果net不继承自TileEntity
 	 */
 	public static synchronized void register(IAutoNetwork net) {
-		if (!(net instanceof TileEntity)) throw new ClassCastException("net不继承自TileEntity");
-		for (IAutoNetwork network : NETWORKS)
-			if (network == net) return;
-		NETWORKS.add(net);
+		if (net.getWorld().isRemote) {
+			for (IAutoNetwork network : NETWORKS_CLIENT)
+				if (network == net) return;
+			NETWORKS_CLIENT.add(net);
+		} else {
+			for (IAutoNetwork network : NETWORKS_SERVICE)
+				if (network == net) return;
+			NETWORKS_SERVICE.add(net);
+		}
 	}
 	
 }

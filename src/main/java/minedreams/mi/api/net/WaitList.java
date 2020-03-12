@@ -65,7 +65,7 @@ public class WaitList {
 	
 	private static void sendAll(boolean isClient) {
 		if (isClient) {
-			NetworkRegister.forEach(network -> {
+			NetworkRegister.forEach(true, network -> {
 				NBTTagCompound message = network.send();
 				if (message != null) {
 					message.setIntArray("_pos", new int[] {
@@ -78,7 +78,7 @@ public class WaitList {
 			});
 		} else {
 			try {
-				NetworkRegister.forEach(network -> {
+				NetworkRegister.forEach(false, network -> {
 					NBTTagCompound message = network.send();
 					if (message != null) {
 						message.setIntArray("_pos", new int[] {
