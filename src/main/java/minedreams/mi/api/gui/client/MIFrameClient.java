@@ -1,12 +1,12 @@
-package minedreams.mi.api.gui;
+package minedreams.mi.api.gui.client;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.awt.Component;
 import java.awt.Point;
 import java.util.LinkedList;
 import java.util.List;
 
-import minedreams.mi.api.gui.component.MIComponent;
 import minedreams.mi.api.gui.info.TitleModelEnum;
 import minedreams.mi.api.net.WaitList;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -32,11 +32,9 @@ public class MIFrameClient extends GuiContainer {
 	private int titleColor = 0x000000;
 	
 	/** 保存组件 */
-	private final List<MIComponent> components = new LinkedList<>();
+	private final List<Component> components = new LinkedList<>();
 	
-	public MIFrameClient(Container inventorySlotsIn) {
-		super(inventorySlotsIn);
-	}
+	public MIFrameClient(Container inventorySlotsIn) { super(inventorySlotsIn); }
 	
 	/** 设置是否绘制默认背景 */
 	public void isPaintBackGround(boolean isPaintBackGround) { this.isPaintBackGround = isPaintBackGround; }
@@ -93,7 +91,7 @@ public class MIFrameClient extends GuiContainer {
 	 * 移除一个组件
 	 * @param component 要移除的组件
 	 */
-	public void remove(MIComponent component) {
+	public void remove(Component component) {
 		components.remove(component);
 	}
 	
@@ -103,9 +101,8 @@ public class MIFrameClient extends GuiContainer {
 	 * @param component 要添加的组件
 	 * @throws NullPointerException 如果component == null
 	 */
-	public void add(MIComponent component) {
+	public void add(Component component) {
 		WaitList.checkNull(component, "component");
-		
 		components.add(component);
 	}
 	
@@ -148,13 +145,17 @@ public class MIFrameClient extends GuiContainer {
 	}
 	
 	private void drawComponent() {
-		MIComponent.RenderTexture render;
-		for (MIComponent component : components) {
-			render = component.getRender();
-			mc.getTextureManager().bindTexture(render.getTexture());
-			drawTexturedModalRect(component.getX(), component.getY(),
-					render.getX(), render.getY(), component.getWidth(), component.getHeight());
+		MITexture text = MITexture.getInstance(width, height);
+		text.loadTexture(null);
+		
+		for (Component component : components) {
+			component.paint(text.getGraphics(
+					component.getX(), component.getY(), component.getWidth(), component.getHeight()));
 		}
+		
+		GlStateManager.bindTexture(text.getGlTextureId());
+		drawTexturedModalRect(0, 0, 0, 0, width, height);
+		
 	}
 	
 }

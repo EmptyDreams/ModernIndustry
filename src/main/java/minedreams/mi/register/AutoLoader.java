@@ -8,12 +8,10 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * 注册管理类，该类允许用户添加自己的注册机制，
- * 类中必须定义静态方法(可为私有)：{@code register(Class<?>)}，
- * 若需注册物品/方块需调用{@link AutoRegister}中的方法
+ * 在加载时自动触发类的加载
  */
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface RegisterManager {
+public @interface AutoLoader {
 }

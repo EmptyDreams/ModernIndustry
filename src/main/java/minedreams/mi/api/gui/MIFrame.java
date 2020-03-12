@@ -16,8 +16,6 @@ public class MIFrame extends Container {
 	
 	/** 存储窗体的尺寸，可以更改 */
 	private int width, height;
-	/** 存储ID */
-	private final int ID;
 	/** 方块坐标 */
 	private BlockPos blockPos;
 	/** 所在世界 */
@@ -31,20 +29,9 @@ public class MIFrame extends Container {
 	 * @param width 宽度
 	 * @param height 高度
 	 */
-	public MIFrame(IContainerCreater creater, int width, int height) {
-		ID = GuiLoader.createID(creater);
+	public MIFrame(int width, int height) {
 		this.width = width;
 		this.height = height;
-	}
-	
-	/**
-	 * 创建一个默认大小的UI，(width = 176, height = 166).
-	 * UI自动注册到{@link GuiLoader}中。
-	 *
-	 * @param creater 创建器
-	 */
-	public MIFrame(IContainerCreater creater) {
-		this(creater, 176, 166);
 	}
 	
 	/**
@@ -83,8 +70,6 @@ public class MIFrame extends Container {
 	public int getWidth() { return width; }
 	/** 获取高度 */
 	public int getHeight() { return height; }
-	/** 获取ID */
-	public int getID() { return ID; }
 	/** 获取所在世界 */
 	public World getWorld() { return world; }
 	/** 获取方块坐标 */

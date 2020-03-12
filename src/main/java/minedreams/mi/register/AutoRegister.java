@@ -103,6 +103,8 @@ public final class AutoRegister {
 			reAutoItem(ASM);
 			reRegisterManager(ASM);
 			reAutoTR(ASM);
+			triggerAutoLoader(ASM);
+			
 		} catch (IllegalAccessException e) {
 			MISysInfo.err("需要的函数不可见，原因可能是：",
 							"用户提供的需初始化的类没有提供可视的构造函数");
@@ -147,6 +149,13 @@ public final class AutoRegister {
 	/** 添加一个物品 */
 	public static void addItem(Item item) {
 		Items.items.add(item);
+	}
+	
+	private static void triggerAutoLoader(ASMDataTable ASM) throws ClassNotFoundException {
+		Set<ASMData> classSet = ASM.getAll(AutoLoader.class.getName());
+		for (ASMData data : classSet) {
+			Class.forName(data.getClassName());
+		}
 	}
 	
 	/* 自动注册托管 */
