@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
-import minedreams.mi.api.electricity.Electricity;
 import minedreams.mi.api.electricity.clock.OrdinaryCounter;
 import minedreams.mi.api.electricity.clock.OverloadCounter;
 import minedreams.mi.api.electricity.src.block.MachineBlock;

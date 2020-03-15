@@ -1,4 +1,4 @@
-package minedreams.mi.api.electricity;
+package minedreams.mi.api.electricity.src.tileentity;
 
 import minedreams.mi.register.te.AutoTileEntity;
 import net.minecraft.block.Block;

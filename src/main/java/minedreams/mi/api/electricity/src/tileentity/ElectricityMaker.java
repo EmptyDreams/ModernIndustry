@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import minedreams.mi.api.electricity.Electricity;
 import minedreams.mi.api.electricity.src.info.EnumVoltage;
 import minedreams.mi.api.electricity.info.OutPutResult;
 import minedreams.mi.api.electricity.interfaces.IVoltage;

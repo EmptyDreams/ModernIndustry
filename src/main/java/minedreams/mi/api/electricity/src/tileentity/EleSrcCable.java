@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import minedreams.mi.api.electricity.EleWorker;
-import minedreams.mi.api.electricity.Electricity;
 import minedreams.mi.api.electricity.clock.OverloadCounter;
 import minedreams.mi.api.electricity.interfaces.IEleTransfer;
 import minedreams.mi.api.electricity.interfaces.IVoltage;
@@ -36,11 +35,8 @@ import net.minecraftforge.common.capabilities.Capability;
 @AutoTileEntity("IN_FATHER_ELECTRICITY_TRANSFER")
 public class EleSrcCable extends Electricity implements IAutoNetwork {
 	
-	public EleSrcCable() {
-		NetworkRegister.register(this);
-	}
+	public EleSrcCable() { }
 	public EleSrcCable(int meMax, int loss) {
-		this();
 		this.meMax = meMax;
 		this.loss = loss;
 	}
@@ -330,6 +326,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 	@Override
 	public void update() {
 		if (cache == null) {
+			NetworkRegister.register(this);
 			if (world.isRemote) cache = CLIENT_CACHE;
 			else {
 				WireLinkInfo.calculateCache(this);

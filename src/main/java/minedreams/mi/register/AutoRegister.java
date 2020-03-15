@@ -253,8 +253,7 @@ public final class AutoRegister {
 	}
 	
 	/* 矿石生成器 */
-	private static void reOreCreater(ASMDataTable ASM)
-			throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+	private static void reOreCreater(ASMDataTable ASM) {
 		Set<ASMData> classSet = ASM.getAll(OreCreat.class.getName());
 		Map<String, Object> valueMap;
 		if (classSet != null) {

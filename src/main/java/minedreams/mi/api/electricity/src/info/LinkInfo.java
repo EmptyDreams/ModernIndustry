@@ -1,6 +1,6 @@
 package minedreams.mi.api.electricity.src.info;
 
-import minedreams.mi.api.electricity.Electricity;
+import minedreams.mi.api.electricity.src.tileentity.Electricity;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;

@@ -33,8 +33,8 @@ import net.minecraft.world.World;
  * @author EmptyDremas
  * @version V1.0
  */
-@AutoBlockRegister(registryName = CompressorToolBlock.NAME)
-public class CompressorToolBlock extends MachineBlock {
+@AutoBlockRegister(registryName = CompressorBlock.NAME)
+public class CompressorBlock extends MachineBlock {
 	
 	/** 方块内部名称 */
 	public static final String NAME = "compressor_tblock";
@@ -53,7 +53,7 @@ public class CompressorToolBlock extends MachineBlock {
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 	}
 	
-	public CompressorToolBlock() {
+	public CompressorBlock() {
 		super(Material.ROCK);
 		setHarvestLevel("pickaxe", 1);
 		setHardness(3.5F);

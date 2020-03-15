@@ -22,26 +22,29 @@ public final class NetworkRegister {
 	
 	static synchronized void forEach(boolean isClient, Consumer<? super IAutoNetwork> consumer) {
 		IAutoNetwork network;
+		TileEntity entity;
 		if (isClient) {
 			for (int i = 0; i < NETWORKS_CLIENT.size(); ++i) {
 				network = NETWORKS_CLIENT.get(i);
-				if (network.isInvalid()) {
+				entity = (TileEntity) network;
+				if (entity.isInvalid()) {
 					NETWORKS_CLIENT.remove(i);
 					--i;
 					continue;
 				}
-				if (network.getWorld().isBlockLoaded(network.getPos()))
+				if (entity.getWorld().isBlockLoaded(entity.getPos()))
 					consumer.accept(network);
 			}
 		} else {
 			for (int i = 0; i < NETWORKS_SERVICE.size(); ++i) {
 				network = NETWORKS_SERVICE.get(i);
-				if (network.isInvalid()) {
+				entity = (TileEntity) network;
+				if (entity.isInvalid()) {
 					NETWORKS_SERVICE.remove(i);
 					--i;
 					continue;
 				}
-				if (network.getWorld().isBlockLoaded(network.getPos()))
+				if (entity.getWorld().isBlockLoaded(entity.getPos()))
 					consumer.accept(network);
 			}
 		}

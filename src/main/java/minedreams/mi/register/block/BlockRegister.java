@@ -1,7 +1,5 @@
 package minedreams.mi.register.block;
 
-import static minedreams.mi.register.AutoRegister.Blocks;
-
 import java.lang.reflect.InvocationTargetException;
 
 import minedreams.mi.ModernIndustry;
@@ -18,6 +16,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
+
+import static minedreams.mi.register.AutoRegister.Blocks;
 
 /**
  * 方块注册类

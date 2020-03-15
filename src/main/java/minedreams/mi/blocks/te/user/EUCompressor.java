@@ -7,7 +7,7 @@ import minedreams.mi.api.electricity.EleWorker;
 import minedreams.mi.api.electricity.src.info.BiggerVoltage;
 import minedreams.mi.api.electricity.src.info.EnumBiggerVoltage;
 import minedreams.mi.api.electricity.src.tileentity.EleSrcUser;
-import minedreams.mi.blocks.machine.user.CompressorToolBlock;
+import minedreams.mi.blocks.machine.user.CompressorBlock;
 import minedreams.mi.register.te.AutoTileEntity;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -16,15 +16,15 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-import static minedreams.mi.blocks.machine.user.CompressorToolBlock.EMPTY;
-import static minedreams.mi.blocks.machine.user.CompressorToolBlock.WORKING;
+import static minedreams.mi.blocks.machine.user.CompressorBlock.EMPTY;
+import static minedreams.mi.blocks.machine.user.CompressorBlock.WORKING;
 
 /**
  * 压缩机的TileEntity，存储方块内物品、工作时间等内容
  * @author EmptyDreams
  * @version V1.2
  */
-@AutoTileEntity(CompressorToolBlock.NAME)
+@AutoTileEntity(CompressorBlock.NAME)
 public class EUCompressor extends EleSrcUser {
 	
 	/** 已工作时间 */
