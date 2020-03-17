@@ -1,7 +1,6 @@
 package minedreams.mi.api.electricity.src.trusteeship;
 
 import minedreams.mi.ModernIndustry;
-import minedreams.mi.api.electricity.src.tileentity.EleMaker;
 import minedreams.mi.api.electricity.info.UseInfo;
 import minedreams.mi.api.electricity.interfaces.IEleOutputer;
 import minedreams.mi.api.electricity.interfaces.IVoltage;
@@ -10,14 +9,17 @@ import minedreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 /**
- * MI提供的缺省输出托管. 使用该托管的方块的TE必须实现{@link EleMaker}
+ * 提供对能力系统的输出支持
  * @author EmptyDreams
  * @version V1.0
  */
+@SuppressWarnings("unused")
 @AutoTrusteeshipRegister
-public class EleSrcOutputer implements IEleOutputer {
+public class EleCapOutputer implements IEleOutputer {
 	
 	private static final ResourceLocation NAME =
 			new ResourceLocation(ModernIndustry.MODID, "EleSrcOutputer");
@@ -25,36 +27,23 @@ public class EleSrcOutputer implements IEleOutputer {
 	@Override
 	public UseInfo output(TileEntity te, int energy, IVoltage voltage, boolean simulation) {
 		UseInfo info = new UseInfo();
-		switch (((EleMaker) te).output(energy, voltage, !simulation)) {
-			case YES:
-				info.setEnergy(energy);
-				info.setVoltage(voltage);
-				break;
-			case FAILURE:
-				info.setEnergy(0);
-				info.setVoltage(EnumVoltage.NON);
-				break;
-			case NOT_ENOUGH:
-				info.setEnergy(((EleMaker) te).getOutputMax());
-				info.setVoltage(voltage);
-				break;
-		}
-		return info;
+		int real = te.getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(energy, simulation);
+		return info.setVoltage(EnumVoltage.ORDINARY).setEnergy(real);
 	}
 	
 	@Override
 	public boolean isAllowable(TileEntity te, EnumFacing facing) {
-		return true;
+		return te.getCapability(CapabilityEnergy.ENERGY, facing) != null;
 	}
 	
 	@Override
 	public boolean isAllowable(TileEntity now, IVoltage voltage) {
-		return ((EleMaker) now).checkOutput(voltage);
+		return true;
 	}
 	
 	@Override
 	public int getOutput(TileEntity te) {
-		return ((EleMaker) te).getOutputMax();
+		return te.getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(1, true);
 	}
 	
 	@Override
@@ -64,6 +53,9 @@ public class EleSrcOutputer implements IEleOutputer {
 	
 	@Override
 	public boolean contains(TileEntity te) {
-		return te instanceof EleMaker;
+		IEnergyStorage cap = te.getCapability(CapabilityEnergy.ENERGY, null);
+		if (cap == null) return false;
+		return cap.extractEnergy(1, true) >= 1;
 	}
+	
 }

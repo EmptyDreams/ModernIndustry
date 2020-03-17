@@ -19,7 +19,7 @@ import net.minecraft.util.EnumFacing;
  * @version V1.0
  */
 @AutoTileEntity("IN_FATHER_ELECTRICITY_MAKER")
-public abstract class ElectricityMaker extends Electricity {
+public abstract class EleMaker extends Electricity {
 
 	/** 电能储备 */
 	protected int meBox = 0;

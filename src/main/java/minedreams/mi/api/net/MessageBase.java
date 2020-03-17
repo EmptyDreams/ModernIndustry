@@ -80,7 +80,7 @@ public class MessageBase implements IMessage {
 					                               .getWorld(message.getDimension())
 					                               .getTileEntity(message.getBlockPos());
 			WaitList.checkNull(et, "et");
-			et.reveive(message.getCompound());
+			et.receive(message.getCompound());
 			return null;
 		}
 	}

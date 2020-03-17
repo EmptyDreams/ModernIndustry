@@ -56,7 +56,7 @@ public final class NetworkRegister {
 	 * @throws ClassCastException 如果net不继承自TileEntity
 	 */
 	public static synchronized void register(IAutoNetwork net) {
-		if (net.getWorld().isRemote) {
+		if (((TileEntity) net).getWorld().isRemote) {
 			for (IAutoNetwork network : NETWORKS_CLIENT)
 				if (network == net) return;
 			NETWORKS_CLIENT.add(net);

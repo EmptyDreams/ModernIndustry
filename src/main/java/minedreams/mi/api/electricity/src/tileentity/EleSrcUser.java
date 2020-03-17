@@ -33,7 +33,7 @@ public abstract class EleSrcUser extends Electricity {
 	/** 保存所需电能正常值 */
 	private int energy = 0;
 	/** 该方块连接的发电机 */
-	private final Map<EnumFacing, ElectricityMaker> linkedMaker = new HashMap<>(6);
+	private final Map<EnumFacing, EleMaker> linkedMaker = new HashMap<>(6);
 	/** 连接电线的数量 */
 	private final Map<EnumFacing, TileEntity> linkedWire = new HashMap<>(6);
 	/** 计数器 */
@@ -76,7 +76,7 @@ public abstract class EleSrcUser extends Electricity {
 	 * @return 返回值为源数据的副本，可以随意修改
 	 */
 	@Nonnull
-	public final Map<EnumFacing, ElectricityMaker> getLinkedMaker() {
+	public final Map<EnumFacing, EleMaker> getLinkedMaker() {
 		return linkedMaker;
 	}
 	
@@ -84,7 +84,7 @@ public abstract class EleSrcUser extends Electricity {
 	 * 连接一个发电机，这个方法一般由{@link MachineBlock}调用
 	 * @throws NullPointerException 如果 maker == null
 	 */
-	public void link(ElectricityMaker maker) {
+	public void link(EleMaker maker) {
 		WaitList.checkNull(maker, "maker");
 		linkedMaker.put(Tools.whatFacing(pos, maker.getPos()), maker);
 	}
@@ -138,7 +138,7 @@ public abstract class EleSrcUser extends Electricity {
 		compound.setInteger("transfers_size", linkedWire.size());
 		
 		int i = 0;
-		for (Map.Entry<EnumFacing, ElectricityMaker> entry : linkedMaker.entrySet()) {
+		for (Map.Entry<EnumFacing, EleMaker> entry : linkedMaker.entrySet()) {
 			Tools.writeBlockPos(compound, entry.getValue().getPos(), "maker_pos_" + i);
 			++i;
 		}
@@ -158,7 +158,7 @@ public abstract class EleSrcUser extends Electricity {
 	private void updateInfo() {
 		if (_makers == null) return;
 		for (BlockPos pos : _makers) {
-			linkedMaker.put(Tools.whatFacing(getPos(), pos), (ElectricityMaker) world.getTileEntity(pos));
+			linkedMaker.put(Tools.whatFacing(getPos(), pos), (EleMaker) world.getTileEntity(pos));
 		}
 		for (BlockPos pos : _transfers) {
 			linkedWire.put(Tools.whatFacing(getPos(), pos), world.getTileEntity(pos));

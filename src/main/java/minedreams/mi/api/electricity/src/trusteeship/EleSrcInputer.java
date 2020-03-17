@@ -20,14 +20,18 @@ public class EleSrcInputer implements IEleInputer {
 			new ResourceLocation(ModernIndustry.MODID, "EleSrcInputer");
 	
 	@Override
-	public int getEnergyMin(TileEntity te) {
-		return ((EleSrcUser) te).getEnergyMin();
-	}
-	
-	@Override
 	public int getEnergy(TileEntity te) {
 		return ((EleSrcUser) te).getEnergy();
 	}
+	
+	@Override
+	public int getEnergy(TileEntity now, int energy) {
+		int max = getEnergy(now);
+		return energy >= max ? max : ((EleSrcUser) now).getEnergyMin();
+	}
+	
+	@Override
+	public void useEnergy(TileEntity now, int energy, IVoltage voltage) { }
 	
 	@Override
 	public IVoltage getVoltage(TileEntity te) {

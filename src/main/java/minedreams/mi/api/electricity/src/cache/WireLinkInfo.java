@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import minedreams.mi.api.electricity.EleWorker;
 import minedreams.mi.api.electricity.info.EleLineCache;
@@ -138,29 +139,32 @@ public final class WireLinkInfo extends EleLineCache {
 	private static void calculateHelper(EleSrcCable start, TileEntity prev,
 	                                    TileEntity user, IEleInputer inputer, PathInfo info) {
 		info.setUser(user).setInputer(inputer);
+		AtomicReference<UseInfo> realUseInfo = new AtomicReference<>();
+		AtomicReference<TileEntity> realOut = new AtomicReference<>();
+		AtomicReference<IEleOutputer> realOutper = new AtomicReference<>();
 		
 		IEleTransfer transfer = EleWorker.getTransfer(start);
 		int energy = inputer.getEnergy(user);
-		int minEnergy = inputer.getEnergyMin(user);
 		IVoltage voltage = inputer.getVoltage(user);
 		start.forEach(prev, (it, isEnd, next) -> {
 			info.getPath().add(it);
 			if (isEnd) {
 				for (Map.Entry<TileEntity, IEleOutputer> entry : transfer.getOutputerAround(it).entrySet()) {
-					UseInfo useInfo = entry.getValue().output(entry.getKey(), energy, voltage, true);
+					UseInfo useInfo = entry.getValue().output(
+							entry.getKey(), Integer.MAX_VALUE, voltage, true);
 					if (useInfo.getEnergy() >= energy) {
 						info.setEnergy(energy)
 								.setOuter(entry.getKey())
 								.setOutputer(entry.getValue())
 								.setVoltage(useInfo.getVoltage());
 						return false;
-					} else if (useInfo.getEnergy() >= minEnergy) {
-						if (info.getEnergy() == 0 || info.getEnergy() < useInfo.getEnergy()) {
-							info.setEnergy(minEnergy)
-									.setOuter(entry.getKey())
-									.setOutputer(entry.getValue())
-									.setVoltage(useInfo.getVoltage());
-						}
+					}
+					int k = inputer.getEnergy(user, useInfo.getEnergy());
+					if (k > 0 && (realUseInfo.get() == null ||
+							              realUseInfo.get().getEnergy() < k)) {
+						realUseInfo.set(useInfo.setEnergy(k));
+						realOut.set(entry.getKey());
+						realOutper.set(entry.getValue());
 					}
 				}
 				if (next != null) {
@@ -169,25 +173,32 @@ public final class WireLinkInfo extends EleLineCache {
 				return false;
 			} else {
 				for (Map.Entry<TileEntity, IEleOutputer> entry : transfer.getOutputerAround(it).entrySet()) {
-					UseInfo useInfo = entry.getValue().output(entry.getKey(), energy, voltage, true);
+					UseInfo useInfo = entry.getValue().output(
+							entry.getKey(), Integer.MAX_VALUE, voltage, true);
 					if (useInfo.getEnergy() >= energy) {
 						info.setEnergy(energy)
-							.setOuter(entry.getKey())
-							.setOutputer(entry.getValue())
-							.setVoltage(useInfo.getVoltage());
+								.setOuter(entry.getKey())
+								.setOutputer(entry.getValue())
+								.setVoltage(useInfo.getVoltage());
 						return false;
-					} else if (useInfo.getEnergy() >= minEnergy) {
-						if (info.getEnergy() == 0 || info.getEnergy() < useInfo.getEnergy()) {
-							info.setEnergy(minEnergy)
-									.setOuter(entry.getKey())
-									.setOutputer(entry.getValue())
-									.setVoltage(useInfo.getVoltage());
-						}
+					}
+					int k = inputer.getEnergy(user, useInfo.getEnergy());
+					if (k > 0 && (realUseInfo.get() == null ||
+							              realUseInfo.get().getEnergy() < k)) {
+						realUseInfo.set(useInfo.setEnergy(k));
+						realOut.set(entry.getKey());
+						realOutper.set(entry.getValue());
 					}
 				}
 				return true;
 			}
 		});
+		if (info.getOuter() == null && realUseInfo.get() != null) {
+			info.setEnergy(realUseInfo.get().getEnergy())
+					.setOuter(realOut.get())
+					.setOutputer(realOutper.get())
+					.setVoltage(realUseInfo.get().getVoltage());
+		}
 	}
 	
 	/**

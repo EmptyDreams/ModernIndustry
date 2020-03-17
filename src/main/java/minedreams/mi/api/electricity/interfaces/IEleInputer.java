@@ -15,15 +15,29 @@ import net.minecraft.util.EnumFacing;
  */
 public interface IEleInputer extends IRegister {
 	
-	/** 获取方块最小需要的电能 */
-	int getEnergyMin(TileEntity te);
-	
 	/**
 	 * 获取方块需要的正常电能
 	 * @param te 对应方块的TE
 	 * @throws ClassCastException 如果不支持输入的TE
 	 */
 	int getEnergy(TileEntity te);
+	
+	/**
+	 * 根据输入的电能判断电器可消耗的电能
+	 * @param now 当前方块
+	 * @param energy 能量值
+	 * @return 返回值 ≤ energy
+	 * @throws ClassCastException 如果不支持输入的TE
+	 */
+	int getEnergy(TileEntity now, int energy);
+	
+	/**
+	 * 使方块使用电能
+	 * @param now 当前方块
+	 * @param energy 能量
+	 * @param voltage 电压
+	 */
+	void useEnergy(TileEntity now, int energy, IVoltage voltage);
 	
 	/**
 	 * 获取用电器需要的电压

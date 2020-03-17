@@ -4,8 +4,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 /**
  * 自动化的网络传输类，实现该接口的类应该同时实现{@link net.minecraft.tileentity.TileEntity}
@@ -28,12 +26,6 @@ public interface IAutoNetwork {
 	/**
 	 * 处理接收的信息
 	 */
-	void reveive(@Nonnull NBTTagCompound compound);
-	
-	World getWorld();
-	
-	boolean isInvalid();
-	
-	BlockPos getPos();
+	void receive(@Nonnull NBTTagCompound compound);
 	
 }

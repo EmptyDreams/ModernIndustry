@@ -419,7 +419,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 	private final List<String> players = new ArrayList<>(1);
 	
 	@Override
-	public void reveive(@Nonnull NBTTagCompound message) {
+	public void receive(@Nonnull NBTTagCompound message) {
 		up = message.getBoolean("up");
 		down = message.getBoolean("down");
 		east = message.getBoolean("east");

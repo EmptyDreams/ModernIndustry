@@ -143,7 +143,6 @@ public final class EleWorker {
 		} else {
 			IVoltage voltage = inputer.getVoltage(te);
 			int allEnergy = inputer.getEnergy(te);
-			int minEnergy = inputer.getEnergyMin(te);
 			
 			int realEnergy = 0;
 			TileEntity realOut = null;
@@ -159,7 +158,9 @@ public final class EleWorker {
 					realOutputer = outputer;
 					realVoltage = outputInfo.getVoltage();
 					break;
-				} else if (outputInfo.getEnergy() >= minEnergy && outputInfo.getEnergy() > realEnergy) {
+				}
+				int minEnergy = inputer.getEnergy(te, outputInfo.getEnergy());
+				if (outputInfo.getEnergy() >= minEnergy && outputInfo.getEnergy() > realEnergy) {
 					realEnergy = outputInfo.getEnergy();
 					realOut = out;
 					realOutputer = outputer;

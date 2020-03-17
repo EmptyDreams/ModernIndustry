@@ -1,6 +1,6 @@
 package minedreams.mi.api.electricity.src.block;
 
-import minedreams.mi.api.electricity.src.tileentity.ElectricityMaker;
+import minedreams.mi.api.electricity.src.tileentity.EleMaker;
 import minedreams.mi.api.electricity.src.tileentity.EleSrcUser;
 import minedreams.mi.api.electricity.src.info.IEleInfo;
 import minedreams.mi.api.electricity.src.tileentity.EleSrcCable;
@@ -34,15 +34,15 @@ public abstract class MachineBlock extends BlockBaseT implements IEleInfo {
 			EleSrcUser user = (EleSrcUser) now;
 			if (from == null) {
 				user.removeLink(fromPos);
-			} else if (from instanceof ElectricityMaker) {
-				user.link((ElectricityMaker) from);
+			} else if (from instanceof EleMaker) {
+				user.link((EleMaker) from);
 			} else if (from instanceof EleSrcCable) {
 				EleSrcCable et = (EleSrcCable) from;
 				user.link(et);
 				et.link(now);
 			}
 		} else {
-			ElectricityMaker maker = (ElectricityMaker) now;
+			EleMaker maker = (EleMaker) now;
 			if (from instanceof EleSrcUser) {
 				((EleSrcUser) from).link(maker);
 			} else if (from instanceof EleSrcCable) {

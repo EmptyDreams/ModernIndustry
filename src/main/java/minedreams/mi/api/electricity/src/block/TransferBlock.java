@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import minedreams.mi.ModernIndustry;
-import minedreams.mi.api.electricity.src.tileentity.ElectricityMaker;
+import minedreams.mi.api.electricity.src.tileentity.EleMaker;
 import minedreams.mi.api.electricity.src.tileentity.EleSrcUser;
 import minedreams.mi.api.electricity.src.info.IEleInfo;
 import minedreams.mi.api.electricity.src.info.LinkInfo;
@@ -146,7 +146,7 @@ abstract public class TransferBlock extends BlockBaseT implements IEleInfo {
 			if (from instanceof EleSrcCable) {
 				return ((EleSrcCable) from).canLink(now);
 			}
-			return from instanceof ElectricityMaker || from instanceof EleSrcUser;
+			return from instanceof EleMaker || from instanceof EleSrcUser;
 		} else {
 			return now.canLink(from);
 		}

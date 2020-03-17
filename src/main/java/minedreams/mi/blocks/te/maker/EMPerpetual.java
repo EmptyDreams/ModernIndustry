@@ -1,6 +1,6 @@
 package minedreams.mi.blocks.te.maker;
 
-import minedreams.mi.api.electricity.src.tileentity.ElectricityMaker;
+import minedreams.mi.api.electricity.src.tileentity.EleMaker;
 import minedreams.mi.register.te.AutoTileEntity;
 
 /**
@@ -8,7 +8,7 @@ import minedreams.mi.register.te.AutoTileEntity;
  * @version V1.0
  */
 @AutoTileEntity("perpetual")
-public class EMPerpetual extends ElectricityMaker {
+public class EMPerpetual extends EleMaker {
 	
 	{
 		meBox = Integer.MAX_VALUE;
