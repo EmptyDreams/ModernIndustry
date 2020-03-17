@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Random;
 
 import minedreams.mi.ModernIndustry;
-import minedreams.mi.api.electricity.src.tileentity.EleMaker;
-import minedreams.mi.api.electricity.src.tileentity.EleSrcUser;
 import minedreams.mi.api.electricity.src.info.IEleInfo;
 import minedreams.mi.api.electricity.src.info.LinkInfo;
+import minedreams.mi.api.electricity.src.tileentity.EleMaker;
 import minedreams.mi.api.electricity.src.tileentity.EleSrcCable;
+import minedreams.mi.api.electricity.src.tileentity.EleSrcUser;
 import minedreams.mi.blocks.register.BlockBaseT;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
