@@ -4,11 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import minedreams.mi.ModernIndustry;
-import minedreams.mi.api.electricity.src.info.IEleInfo;
-import minedreams.mi.api.electricity.src.info.LinkInfo;
-import minedreams.mi.api.electricity.src.tileentity.EleMaker;
 import minedreams.mi.api.electricity.src.tileentity.EleSrcCable;
-import minedreams.mi.api.electricity.src.tileentity.EleSrcUser;
 import minedreams.mi.blocks.register.BlockBaseT;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -35,7 +31,7 @@ import net.minecraft.world.World;
  * @author EmptyDremas
  * @version V1.0
  */
-abstract public class TransferBlock extends BlockBaseT implements IEleInfo {
+abstract public class TransferBlock extends BlockBaseT {
 	
 	public static final AxisAlignedBB B_POINT =
 			new AxisAlignedBB(0.375F, 0.375F, 0.375F, 0.625F, 0.625F, 0.625F);
@@ -137,36 +133,6 @@ abstract public class TransferBlock extends BlockBaseT implements IEleInfo {
 		} else if (fromEntity != null) {
 			EleSrcCable tew = (EleSrcCable) worldIn.getTileEntity(pos);
 			tew.link(fromEntity);
-		}
-	}
-	
-	/**
-	 * 判断调用方块是否可以连接自身(电线)
-	 *
-	 * @return 若可以连接则返回true
-	 */
-	@Override
-	public boolean canLink(LinkInfo info, boolean nowIsExist, boolean fromIsExist) {
-		TileEntity from = info.fromUser;
-		EleSrcCable now;
-		
-		TileEntity temp = info.nowUser == null ? info.world.getTileEntity(info.nowPos) : info.nowUser;
-		if (info.nowUser == null && !nowIsExist)
-			throw new IllegalArgumentException("判断信息不足！当前方块不存在时传入参数nowUser不能为null");
-		if (!(temp instanceof EleSrcCable))
-			throw new IllegalArgumentException("判断信息错误！当前方块的TE类型应该为"
-					                                   + EleSrcCable.class.getSimpleName());
-		now = (EleSrcCable) temp;
-		
-		if (fromIsExist) {
-			if (from == null) from = info.world.getTileEntity(info.fromPos);
-			if (!now.canLink(from)) return false;
-			if (from instanceof EleSrcCable) {
-				return ((EleSrcCable) from).canLink(now);
-			}
-			return from instanceof EleMaker || from instanceof EleSrcUser;
-		} else {
-			return now.canLink(from);
 		}
 	}
 	

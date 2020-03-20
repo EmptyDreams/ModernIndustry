@@ -2,7 +2,6 @@ package minedreams.mi.api.electricity.src.block;
 
 import minedreams.mi.api.electricity.src.tileentity.EleMaker;
 import minedreams.mi.api.electricity.src.tileentity.EleSrcUser;
-import minedreams.mi.api.electricity.src.info.IEleInfo;
 import minedreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import minedreams.mi.blocks.register.BlockBaseT;
 import net.minecraft.block.Block;
@@ -16,7 +15,7 @@ import net.minecraft.world.World;
  * @author EmptyDreams
  * @version V1.0
  */
-public abstract class MachineBlock extends BlockBaseT implements IEleInfo {
+public abstract class MachineBlock extends BlockBaseT {
 	
 	public MachineBlock(Material materialIn) {
 		super(materialIn);

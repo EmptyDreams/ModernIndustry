@@ -28,35 +28,6 @@ public @interface AutoBlockRegister {
 	 */
 	String unlocalizedName() default "";
 	
-	//String TOOL = "pickaxe";
-	
-	/**
-	 * 方块挖掘工具，默认为镐子
-	 */
-	//String tool() default TOOL;
-	
-	//int LEVEL = 1;
-	
-	/**
-	 * 方块挖掘级别
-	 * @see net.minecraft.block.Block#setHarvestLevel(String, int)
-	 */
-	//int level() default LEVEL;
-	
-	//float HARDNEXX = 3.5F;
-	
-	/**
-	 * 挖掘方块所需要的命中数
-	 */
-	//float hardnexx() default HARDNEXX;
-	
-	//boolean TAB = true;
-	
-	/**
-	 * 是否自动设置创造模式物品栏
-	 */
-	//boolean tab() default TAB;
-	
 	Class<?> REGISTER = AutoBlockRegister.class;
 	
 	/**

@@ -5,10 +5,8 @@ import java.util.Random;
 
 import minedreams.mi.ModernIndustry;
 import minedreams.mi.api.electricity.src.block.MachineBlock;
-import minedreams.mi.api.electricity.src.info.IEleInfo;
-import minedreams.mi.api.electricity.src.info.LinkInfo;
-import minedreams.mi.register.block.AutoBlockRegister;
 import minedreams.mi.blocks.te.maker.EMPerpetual;
+import minedreams.mi.register.block.AutoBlockRegister;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -20,7 +18,7 @@ import net.minecraft.world.World;
  * @version V1.0
  */
 @AutoBlockRegister(registryName = "perpetual")
-public class PerpetualBlock extends MachineBlock implements IEleInfo {
+public class PerpetualBlock extends MachineBlock {
 	
 	private final Item ITEM = new ItemBlock(this).setRegistryName("perpetual");
 	
@@ -47,8 +45,4 @@ public class PerpetualBlock extends MachineBlock implements IEleInfo {
 		return new EMPerpetual();
 	}
 	
-	@Override
-	public boolean canLink(LinkInfo info, boolean nowIsExist, boolean fromIsExist) {
-		return true;
-	}
 }
