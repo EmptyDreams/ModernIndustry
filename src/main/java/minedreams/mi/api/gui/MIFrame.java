@@ -22,10 +22,8 @@ public class MIFrame extends Container {
 	private World world;
 	
 	/**
-	 * 通过该构造函数创建一个指定尺寸的UI.
-	 * UI自动注册到{@link GuiLoader}中。
+	 * 通过该构造函数创建一个指定尺寸的UI
 	 *
-	 * @param creater 创建器
 	 * @param width 宽度
 	 * @param height 高度
 	 */

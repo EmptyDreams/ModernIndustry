@@ -2,7 +2,9 @@ package minedreams.mi.api.gui.client;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Label;
 import java.awt.Point;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,11 +15,14 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Container;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * @author EmptyDreams
  * @version V1.0
  */
+@SideOnly(Side.CLIENT)
 public class MIFrameClient extends GuiContainer {
 	
 	/** 是否绘制默认背景颜色 */
@@ -35,6 +40,37 @@ public class MIFrameClient extends GuiContainer {
 	private final List<Component> components = new LinkedList<>();
 	
 	public MIFrameClient(Container inventorySlotsIn) { super(inventorySlotsIn); }
+	
+	private boolean needInit = true;
+	
+	private void init() {
+		if (needInit) {
+			String temp = I18n.format(title);
+			int length = fontRenderer.getStringWidth(temp);
+			Label title = new Label(temp);
+			title.setForeground(new Color(titleColor));
+			title.setSize(length, title.getFont().getSize() + 1);
+			if (titleLocation == null) {
+				Point location;
+				switch (titleModel) {
+					case LEFT:
+						location = new Point(0, 6);
+						break;
+					case CENTRAL:
+						location = new Point((xSize - length) / 2, 6);
+						break;
+					case RIGHT:
+						location = new Point(xSize - length, 6);
+						break;
+					default: throw new AssertionError();
+				}
+				title.setLocation(location);
+			} else {
+				title.setLocation(titleLocation);
+			}
+			add(title);
+		}
+	}
 	
 	/** 设置是否绘制默认背景 */
 	public void isPaintBackGround(boolean isPaintBackGround) { this.isPaintBackGround = isPaintBackGround; }
@@ -114,37 +150,17 @@ public class MIFrameClient extends GuiContainer {
 	}
 	
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		/* 绘制标题 */
-		String temp = I18n.format(title);
-		int length = fontRenderer.getStringWidth(temp);
-		Point location = null;
-		if (titleLocation == null) {
-			switch (titleModel) {
-				case LEFT:
-					location = new Point(0, 6);
-					break;
-				case CENTRAL:
-					location = new Point((xSize - length) / 2, 6);
-					break;
-				case RIGHT:
-					location = new Point(xSize - length, 6);
-					break;
-			}
-		} else {
-			location = titleLocation;
-		}
-		fontRenderer.drawString(temp, location.x, location.y, titleColor);
+	protected final void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+		drawComponent();
 	}
 	
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+	protected final void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F);
 		if (isPaintBackGround) drawDefaultBackground();
-		
 	}
 	
-	private void drawComponent() {
+	public void drawComponent() {
 		MITexture text = MITexture.getInstance(width, height);
 		text.loadTexture(null);
 		
@@ -155,7 +171,7 @@ public class MIFrameClient extends GuiContainer {
 		
 		GlStateManager.bindTexture(text.getGlTextureId());
 		drawTexturedModalRect(0, 0, 0, 0, width, height);
-		
+		text.invalidate();
 	}
 	
 }

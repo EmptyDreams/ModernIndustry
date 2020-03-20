@@ -55,7 +55,7 @@ public final class NetworkRegister {
 		}
 	}
 	
-	private static void registerAll() {
+	private static synchronized void registerAll() {
 		ListIterator<IAutoNetwork> it = WAIT_REGIST.listIterator();
 		IAutoNetwork network;
 		TileEntity entity;
@@ -78,7 +78,7 @@ public final class NetworkRegister {
 	 * @param net 要注册的对象，必须继承自TileEntity
 	 * @throws ClassCastException 如果net不继承自TileEntity
 	 */
-	public static void register(IAutoNetwork net) {
+	public static synchronized void register(IAutoNetwork net) {
 		if (!(net instanceof TileEntity)) throw new ClassCastException("'net' is not extends TileEntity!");
 		for (IAutoNetwork network : NETWORKS_SERVICE)
 			if (network == net) return;
