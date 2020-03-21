@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
@@ -20,11 +21,11 @@ public class MITexture extends AbstractTexture {
 	
 	private final int WIDTH;
 	private final int HEIGHT;
-	private final BufferedImage IMAGE;
+	private BufferedImage IMAGE;
+	//两个不知作用的布尔值
 	private final boolean BLUR;
 	private final boolean CLAMP;
-	/** 是否需要装载 */
-	private boolean needLoad = true;
+	/** 是否可重用 */
 	private boolean isInvalid = false;
 	private static final List<MITexture> TEXTURES = new ArrayList<>(10);
 	
@@ -54,7 +55,7 @@ public class MITexture extends AbstractTexture {
 	}
 	
 	public MITexture(int width, int height, boolean isBlur, boolean isClamp) {
-		this(width, height, BufferedImage.TYPE_4BYTE_ABGR, isBlur, isClamp);
+		this(width, height, BufferedImage.TYPE_INT_ARGB, isBlur, isClamp);
 	}
 	
 	public MITexture(int width, int height, int imageType, boolean isBlur, boolean isClamp) {
@@ -68,18 +69,22 @@ public class MITexture extends AbstractTexture {
 	
 	public int getWidth() { return WIDTH; }
 	public int getHeight() { return HEIGHT; }
-	public Graphics getGraphics() { return IMAGE.getGraphics(); }
+	public Graphics getGraphics() {
+		int x = (Minecraft.getMinecraft().displayWidth - WIDTH) / 2;
+		int y = (Minecraft.getMinecraft().displayHeight - HEIGHT) / 2;
+		return IMAGE.getGraphics().create(x, y, WIDTH, HEIGHT);
+	}
 	public Graphics getGraphics(int x, int y, int width, int height) {
-		return IMAGE.getGraphics().create(x, y, width, height);
+		return getGraphics().create(x, y, width, height);
 	}
 	public void cleanImage() {
-		Graphics2D g2 = (Graphics2D) IMAGE.getGraphics();
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
-		g2.fillRect(0, 0, WIDTH, HEIGHT);
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+		IMAGE = new BufferedImage(WIDTH, HEIGHT, IMAGE.getType());
 	}
 	/** 使类可重用 */
-	public void invalidate() { isInvalid = true; }
+	public void invalidate() {
+		deleteGlTexture();
+		isInvalid = true;
+	}
 	/** 使类不可重用 */
 	public void validate() { isInvalid = false; }
 	/** 判断该对象是否可重用 */
@@ -87,9 +92,7 @@ public class MITexture extends AbstractTexture {
 	
 	@Override
 	public void loadTexture(IResourceManager resourceManager) {
-		if (needLoad) {
-			TextureUtil.uploadTextureImageAllocate(getGlTextureId(), IMAGE, BLUR, CLAMP);
-			needLoad = false;
-		}
+		deleteGlTexture();
+		TextureUtil.uploadTextureImageAllocate(getGlTextureId(), IMAGE, BLUR, CLAMP);
 	}
 }

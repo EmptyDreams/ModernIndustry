@@ -4,11 +4,9 @@ import java.util.Random;
 
 import minedreams.mi.ModernIndustry;
 import minedreams.mi.api.electricity.src.block.MachineBlock;
-import minedreams.mi.api.electricity.src.info.LinkInfo;
 import minedreams.mi.api.gui.GuiLoader;
 import minedreams.mi.blocks.te.user.EUCompressor;
 import minedreams.mi.register.block.AutoBlockRegister;
-import minedreams.mi.tools.Tools;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -171,13 +169,6 @@ public class CompressorBlock extends MachineBlock {
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
 		return new EUCompressor();
-	}
-	
-	@Override
-	public boolean canLink(LinkInfo info, boolean nowIsExist, boolean fromIsExist) {
-		IBlockState state = info.nowState == null ? info.world.getBlockState(info.nowPos) : info.nowState;
-		EnumFacing enumfacing = EnumFacing.getHorizontal(getMetaFromState(state) & 0b0011);
-		return Tools.whatFacing(info.nowPos, info.fromPos) != enumfacing;
 	}
 	
 }

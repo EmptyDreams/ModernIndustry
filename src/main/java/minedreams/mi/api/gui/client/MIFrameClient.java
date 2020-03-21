@@ -2,10 +2,9 @@ package minedreams.mi.api.gui.client;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Label;
-import java.awt.Point;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,21 +34,24 @@ public class MIFrameClient extends GuiContainer {
 	private TitleModelEnum titleModel = TitleModelEnum.CENTRAL;
 	/** 标题颜色 */
 	private int titleColor = 0x000000;
-	
+	/** 背景 */
+	private BufferedImage backgroundImage;
 	/** 保存组件 */
 	private final List<Component> components = new LinkedList<>();
 	
 	public MIFrameClient(Container inventorySlotsIn) { super(inventorySlotsIn); }
 	
-	private boolean needInit = true;
-	
 	private void init() {
-		if (needInit) {
+		if (backgroundImage == null) {
+			backgroundImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+			drawBackground(backgroundImage.getGraphics(), width, height);
+			
+			components.clear();
 			String temp = I18n.format(title);
 			int length = fontRenderer.getStringWidth(temp);
-			Label title = new Label(temp);
-			title.setForeground(new Color(titleColor));
-			title.setSize(length, title.getFont().getSize() + 1);
+			JLabel titleLable = new JLabel(temp);
+			titleLable.setForeground(new Color(titleColor));
+			titleLable.setSize(length, titleLable.getFont().getSize() + 1);
 			if (titleLocation == null) {
 				Point location;
 				switch (titleModel) {
@@ -64,11 +66,11 @@ public class MIFrameClient extends GuiContainer {
 						break;
 					default: throw new AssertionError();
 				}
-				title.setLocation(location);
+				titleLable.setLocation(location);
 			} else {
-				title.setLocation(titleLocation);
+				titleLable.setLocation(titleLocation);
 			}
-			add(title);
+			add(titleLable);
 		}
 	}
 	
@@ -150,28 +152,77 @@ public class MIFrameClient extends GuiContainer {
 	}
 	
 	@Override
-	protected final void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		drawComponent();
-	}
-	
-	@Override
 	protected final void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F);
 		if (isPaintBackGround) drawDefaultBackground();
+		init();
+		drawComponent();
 	}
 	
 	public void drawComponent() {
 		MITexture text = MITexture.getInstance(width, height);
-		text.loadTexture(null);
+		text.getGraphics().drawImage(backgroundImage, 0, 0, null);
+		
+		
+		//drawHorizontalLine();
+		
+		
 		
 		for (Component component : components) {
 			component.paint(text.getGraphics(
 					component.getX(), component.getY(), component.getWidth(), component.getHeight()));
 		}
 		
+		text.loadTexture(null);
 		GlStateManager.bindTexture(text.getGlTextureId());
-		drawTexturedModalRect(0, 0, 0, 0, width, height);
+		drawTexturedModalRect(0, 0, 0, 0, text.getWidth(), text.getHeight());
 		text.invalidate();
+	}
+	
+	private static final Color GRAY = new Color(85, 85, 85);
+	private static final Color GRAY_CENTER = new Color(198, 198, 198);
+	
+	public static void drawBackground(Graphics g, int width, int height) {
+		//绘制黑色边框
+		g.setColor(Color.BLACK);
+		g.drawLine(2, 0, width - 4, 0);
+		g.drawLine(0,2, 0, height - 4);
+		g.drawLine(3, height - 1, width - 3, height - 1);
+		g.drawLine(width - 2, height - 2, width - 2, height - 2);
+		g.drawLine(width - 1, height - 3, width - 1, 3);
+		
+		//绘制白色区域
+		g.setColor(Color.WHITE);
+		g.fillRect(1, 1, width - 4, 2);
+		g.fillRect(1, 3, 2, height - 7);
+		
+		//绘制灰色区域
+		g.setColor(GRAY);
+		g.fillRect(width - 4, 3, 2, height - 4);
+		g.fillRect(3, height - 4, width - 7, 2);
+		
+		//绘制中心区域
+		g.setColor(GRAY_CENTER);
+		g.fillRect(3, 3, width - 6, height - 6);
+		g.drawLine(2, height - 4, 2, height - 4);
+		g.drawLine(width - 4, 2, width - 4, 2);
+		
+		//绘制白点
+		g.setColor(Color.WHITE);
+		g.drawLine(3, 3, 3, 3);
+		
+		//绘制灰点
+		g.setColor(GRAY);
+		g.drawLine(width - 5, height - 5, width - 5, height - 5);
+		
+		//绘制黑点
+		g.setColor(Color.BLACK);
+		g.drawLine(1, 1, 1, 1);
+		g.drawLine(width - 2, 2, width -2, 2);
+		g.drawLine(width - 3, 1, width - 3, 1);
+		g.drawLine(1, height - 3, 1, height - 3);
+		g.drawLine(2, height - 2, 2, height - 2);
+		
 	}
 	
 }
