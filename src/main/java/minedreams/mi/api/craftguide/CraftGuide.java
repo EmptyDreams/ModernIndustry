@@ -1,89 +1,69 @@
 package minedreams.mi.api.craftguide;
 
-import java.util.Objects;
-
-import net.minecraft.item.ItemStack;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * 通用合成表<br>
- * 主要用于存储机器的合成表，也可以用来存储其它合成表
- * @author EmptyDremas
+ * 通用合成表
+ * @param <E> 产物类型
+ * @author EmptyDreams
  * @version V1.0
  */
-public final class CraftGuide {
-
-	/** 存储需要的合称为物品 */
-	private final CraftGuideItems items = new CraftGuideItems();
-	/** 存储输出物品 */
-	private final CraftGuideItems outs = new CraftGuideItems();
-	/** 存储工作时间 */
-	private final int WORK_TIME;
+public class CraftGuide<T, E> {
 	
-	/** 缺省构造函数 */
-	public CraftGuide() {
-		this(0);
+	private Set<GuideList<T, E>> guides;
+	
+	public CraftGuide(int size) {
+		guides = new HashSet<>(size);
 	}
+	
+	public CraftGuide() { this(10); }
 	
 	/**
-	 * @param time 合成物品需要的时间，不需要时间为0
+	 * 判断列表中是否包含指定合成表
+	 * @param list 指定合成表
 	 */
-	public CraftGuide(int time) {
-		WORK_TIME = time;
+	public boolean contains(GuideList<T, E> list) {
+		return guides.contains(list);
 	}
 	
-	public CraftGuideItems getOuts() {
-		return outs;
-	}
-	
-	public CraftGuideItems getItems() {
-		return items;
-	}
-	
-	/** 复制指定合成表的产品，不覆盖原有产品 */
-	public CraftGuide addProduct(CraftGuide cg) {
-		if (cg == null) return this;
-		items.add(cg.items);
-		return this;
-	}
-	
-	/** 添加一个产物，如果stack为null则不做任何事情 */
-	public CraftGuide addProduct(ItemStack stack) {
-		if (stack == null) return this;
-		outs.add(stack.getItem(), stack.getCount());
-		return this;
-	}
-	
-	/** 添加一个原料，如果stack为null则不做任何事情 */
-	public CraftGuide addMeterial(ItemStack stack) {
-		if (stack == null) return this;
-		items.add(stack.getItem(), stack.getCount());
-		return this;
-	}
-	
-	/**
-	 * 获取需要的工作时间
-	 */
-	public int getTime() {
-		return WORK_TIME;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof CraftGuide) {
-			CraftGuide c = (CraftGuide) obj;
-			return (WORK_TIME == c.WORK_TIME) &&  c.outs.equals(outs) && c.items.equals(items);
+	public boolean contains(T item) {
+		for (GuideList<T, E> guide : guides) {
+			if (guide.contains(item)) return true;
 		}
 		return false;
 	}
 	
-	@Override
-	public String toString() {
-		return items.toString() + outs.toString();
+	/**
+	 * 获取指定合成表的产物.<br>
+	 * 输入的合成表的产物不影响运算结果，这个方法的存在意义就是
+	 * 当用户只知道原料时通过该方法获取产物
+	 * @param list 合成表
+	 * @return 若没有找到注册的合成表则返回null，否则返回产物
+	 */
+	public E get(GuideList<T, E> list) {
+		for (GuideList<T, E> guide : guides) {
+			if (guide.equals(list)) return guide.get();
+		}
+		return null;
 	}
 	
-	@Override
-	public int hashCode() {
-		return Objects.hash(items, outs, WORK_TIME);
+	/**
+	 * 向列表注册一个合成表
+	 * @param list 合成表
+	 * @return 是否注册成功
+	 */
+	public boolean register(GuideList<T, E> list) {
+		return guides.add(list);
+	}
+	
+	/**
+	 * 取消指定合成表的注册
+	 * @param list 合成表
+	 * @return 是否取消成功
+	 */
+	public boolean unregister(GuideList<T, E> list) {
+		return guides.remove(list);
 	}
 	
 }

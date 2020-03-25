@@ -26,6 +26,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 
 /**
  * @author EmptyDreams
@@ -66,12 +67,18 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 	private boolean south = false;
 	private boolean north = false;
 	/** 电线连接的方块，不包括电线方块 */
-	private List<TileEntity> linkedBlocks = new ArrayList<>(5);
+	private List<BlockPos> linkedBlocks = new ArrayList<BlockPos>(5) {
+		@Override
+		public boolean add(BlockPos tileEntity) {
+			WaitList.checkNull(tileEntity, "tileEntity");
+			return super.add(tileEntity);
+		}
+	};
 	/** 上一根电线 */
-	private TileEntity prev = null;
+	private BlockPos prev = null;
 	private IEleTransfer prevShip = null;
 	/** 下一根电线 */
-	private TileEntity next = null;
+	private BlockPos next = null;
 	private IEleTransfer nextShip = null;
 	/** 最大电流量 */
 	protected int meMax = 5000;
@@ -90,8 +97,8 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 	 */
 	public boolean canLink(TileEntity target) {
 		if (EleWorker.isTransfer(target)) {
-			return prev == null || prev.equals(target) ||
-					       next == null || next.equals(target);
+			return prev == null || prev.equals(target.getPos()) ||
+					       next == null || next.equals(target.getPos());
 		}
 		return EleWorker.isOutputer(target) || EleWorker.isInputer(target);
 	}
@@ -102,17 +109,17 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 	 *
 	 * @throws IllegalArgumentException 如果 ele == null 且 {@link #getLinkAmount()} > 1
 	 */
-	public TileEntity next(TileEntity from) {
+	public TileEntity next(BlockPos from) {
 		if (from == null) {
 			if (next == null) {
 				if (prev == null) return null;
-				return prev;
+				return getPrev();
 			}
-			if (prev == null) return next;
+			if (prev == null) return getNext();
 			throw new IllegalArgumentException("from == null，信息不足！");
 		}
-		if (from.equals(next)) return prev;
-		if (from.equals(prev)) return next;
+		if (from.equals(next) && prev != null) return getPrev();
+		if (from.equals(prev) && next != null) return getNext();
 		return null;
 	}
 	
@@ -135,17 +142,19 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 	 * @param target 要连接的方块
 	 * @return 连接成功返回true，否则返回false
 	 */
-	public boolean link(TileEntity target) {
-		if (target == null || target == this || world.isRemote) return false;
+	public boolean link(BlockPos target) {
+		if (target == null || target.equals(pos) || world.isRemote) return false;
 		if (cache == null) update();
-		IEleTransfer et = EleWorker.getTransfer(target);
+		TileEntity targetEntity = world.getTileEntity(target);
+		if (targetEntity == null) return false;
+		IEleTransfer et = EleWorker.getTransfer(targetEntity);
 		if (et != null) {
-			if (!et.canLink(target, this)) return false;
+			if (!et.canLink(targetEntity, this)) return false;
 			if (next == null) {
 				if (prev == null || !prev.equals(target)) {
 					next = target;
 					nextShip = et;
-					cache.merge(nextShip.getLineCache(next));
+					cache.merge(nextShip.getLineCache(getNext()));
 					updateLinkShow();
 					return true;
 				}
@@ -154,27 +163,18 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 			} else if (prev == null) {
 				prev = target;
 				prevShip = et;
-				cache.merge(prevShip.getLineCache(prev));
+				cache.merge(prevShip.getLineCache(getPrev()));
 				updateLinkShow();
 				return true;
 			} else return prev.equals(target);
 			return false;
 		}
-		if (EleWorker.isInputer(target) || EleWorker.isOutputer(target)) {
+		if (EleWorker.isInputer(targetEntity) || EleWorker.isOutputer(targetEntity)) {
 			if (!linkedBlocks.contains(target)) linkedBlocks.add(target);
 			updateLinkShow();
 			return true;
 		}
 		return false;
-	}
-	
-	/**
-	 * 连接一个方块
-	 * @param pos 要连接的方块
-	 * @return 连接成功返回true，否则返回false
-	 */
-	public final boolean link(BlockPos pos) {
-		return link(pos == null ? null : world.getTileEntity(pos));
 	}
 	
 	public void updateLinkShow() {
@@ -185,7 +185,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 		setUp(false);
 		setDown(false);
 		if (next != null) {
-			switch (Tools.whatFacing(pos, next.getPos())) {
+			switch (Tools.whatFacing(pos, next)) {
 				case EAST: setEast(true); break;
 				case WEST: setWest(true); break;
 				case SOUTH: setSouth(true); break;
@@ -195,7 +195,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 			}
 		}
 		if (prev != null) {
-			switch (Tools.whatFacing(pos, prev.getPos())) {
+			switch (Tools.whatFacing(pos, prev)) {
 				case EAST: setEast(true); break;
 				case WEST: setWest(true); break;
 				case SOUTH: setSouth(true); break;
@@ -204,8 +204,8 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 				default: setDown(true);
 			}
 		}
-		for (TileEntity block : linkedBlocks) {
-			switch (Tools.whatFacing(pos, block.getPos())) {
+		for (BlockPos block : linkedBlocks) {
+			switch (Tools.whatFacing(pos, block)) {
 				case EAST: setEast(true); break;
 				case WEST: setWest(true); break;
 				case SOUTH: setSouth(true); break;
@@ -223,54 +223,16 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 	 * @param pos 要删除的连接坐标，为null时不会做任何事情
 	 */
 	public final void deleteLink(BlockPos pos) {
+		if (world.isRemote) return;
 		if (pos == null) return;
-		if (next != null && pos.equals(next.getPos())) {
-			if (next instanceof EleSrcCable) {
-				EleSrcCable next = (EleSrcCable) this.next;
-				if (next.getLinkAmount() == 1) {
-					cache.plusMakerAmount(-nextShip.getOutputerAround(next).size());
-					next.setCache(null);
-					this.next = null;
-				} else {
-					this.next = null;
-					WireLinkInfo.calculateCache(this);
-				}
-			} else {
-				if (nextShip.getLinkAmount(next) == 1) {
-					cache.plusMakerAmount(-nextShip.getLineCache(next).getOutputerAmount());
-					nextShip.setLineCache(next, nextShip.createLineCache(next));
-					this.next = null;
-				} else {
-					cache.disperse(nextShip.getLineCache(next));
-					this.next = null;
-					WireLinkInfo.calculateCache(this);
-				}
-				
-			}
-		} else if (prev != null && pos.equals(prev.getPos())) {
-			if (prev instanceof EleSrcCable) {
-				EleSrcCable prev = (EleSrcCable) this.prev;
-				if (prev.getLinkAmount() == 1) {
-					cache.plusMakerAmount(-prevShip.getOutputerAround(prev).size());
-					prev.setCache(null);
-					this.prev = null;
-				} else {
-					this.prev = null;
-					WireLinkInfo.calculateCache(this);
-				}
-			} else {
-				if (prevShip.getLinkAmount(prev) == 1) {
-					cache.plusMakerAmount(-prevShip.getLineCache(prev).getOutputerAmount());
-					prevShip.setLineCache(next, prevShip.createLineCache(prev));
-					prev = null;
-				} else {
-					cache.disperse(prevShip.getLineCache(prev));
-					prev = null;
-					WireLinkInfo.calculateCache(this);
-				}
-			}
+		if (pos.equals(next)) {
+			next = null;
+			WireLinkInfo.calculateCache(this);
+		} else if (pos.equals(prev)) {
+			prev = null;
+			WireLinkInfo.calculateCache(this);
 		} else {
-			linkedBlocks.remove(world.getTileEntity(pos));
+			linkedBlocks.remove(pos);
 		}
 		updateLinkShow();
 	}
@@ -293,7 +255,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 	 * @param prev 上一根电线
 	 * @param run 要运行的内容
 	 */
-	public final void forEach(TileEntity prev, IETForEach run) {
+	public final void forEach(BlockPos prev, IETForEach run) {
 		forEach(prev, run, true);
 	}
 	
@@ -303,16 +265,17 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 	 * @param run 要运行的内容
 	 * @param isNow 是否遍历当前电线
 	 */
-	private void forEach(TileEntity prev, IETForEach run, boolean isNow) {
+	private void forEach(BlockPos prev, IETForEach run, boolean isNow) {
 		TileEntity next = next(prev);
-		prev = this;
-		if (!(next instanceof EleSrcCable))
+		prev = pos;
+		if (!(next instanceof EleSrcCable)) {
 			if (isNow && !run.run(this, true, next)) return;
-		else
+		} else {
 			if (isNow && !run.run(this, false, null)) return;
+		}
 		for (EleSrcCable et = (EleSrcCable) next; !(et == null || et == this); et = (EleSrcCable) next) {
 			next = et.next(prev);
-			prev = et;
+			prev = et.getPos();
 			if (next instanceof EleSrcCable) {
 				if (run.run(et, false, null)) continue;
 			} else {
@@ -332,16 +295,16 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 			if (world.isRemote) cache = CLIENT_CACHE;
 			else {
 				WireLinkInfo.calculateCache(this);
-				if (cachePos != null) {
-					if (cachePos[0] != null) next = world.getTileEntity(cachePos[0]);
-					if (cachePos[1] != null) prev = world.getTileEntity(cachePos[1]);
-					if (cacheFacing != null) {
-						for (EnumFacing facing : cacheFacing)
-							linkedBlocks.add(world.getTileEntity(Tools.getBlockPos(pos, facing, 1)));
-					}
-					cacheFacing = null;
-					cachePos = null;
-				}
+				nextShip = EleWorker.getTransfer(getNext());
+				prevShip = EleWorker.getTransfer(getPrev());
+			}
+		}
+		
+		TileEntity entity;
+		for (BlockPos block : linkedBlocks) {
+			entity = world.getTileEntity(block);
+			if (entity.hasCapability(CapabilityEnergy.ENERGY, Tools.whatFacing(block, pos))) {
+				EleWorker.useEleEnergy(entity);
 			}
 		}
 	}
@@ -393,11 +356,22 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 	/** 设置电力损耗指数 */
 	public final void setLoss(int loss) { this.loss = loss; }
 	/** 获取上一根电线 */
-	public final TileEntity getPrev() { return prev; }
+	public final TileEntity getPrev() { return prev == null ? null : world.getTileEntity(prev); }
 	/** 获取下一根电线 */
-	public final TileEntity getNext() { return next; }
+	public final TileEntity getNext() { return next == null ? null : world.getTileEntity(next); }
+	/** 获取上一根电线的坐标 */
+	public final BlockPos getPrevPos() { return prev; }
+	/** 获取下一根电线的坐标 */
+	public final BlockPos getNextPos() { return next; }
 	/** 获取连接的方块. 返回的列表可以随意修改 */
-	public final List<TileEntity> getLinkedBlocks() { return new ArrayList<>(linkedBlocks); }
+	public final List<TileEntity> getLinkedBlocks() {
+		List<TileEntity> blocks = new ArrayList<>(linkedBlocks.size());
+		//noinspection ForLoopReplaceableByForEach
+		for (int i = 0; i < linkedBlocks.size(); i++) {
+			blocks.add(world.getTileEntity(linkedBlocks.get(i)));
+		}
+		return blocks;
+	}
 	/** 获取计数器 */
 	public final OverloadCounter getCounter() { return counter; }
 	/** 设置计数器 */
@@ -406,13 +380,6 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 		this.counter = counter;
 	}
 	
-	/*
-	 * 因为在radFromNBT阶段世界没有加载完毕，调用world.getTileEntity会返回null，
-	 * 所有建立一个临时列表在用户调用next方法的时候检查是否需要更新参数，
-	 * 当cachePos==null的时候标志已经更新，不需要再次更新
-	 */
-	private BlockPos[] cachePos = new BlockPos[2];
-	private EnumFacing[] cacheFacing;
 	/**
 	 * 存储已经更新过的玩家列表，因为作者认为单机时长会更多，所以选择1作为默认值。<br>
 	 * 	不同方块不共用此列表且此列表不会离线存储，当玩家离开方块过远或退出游戏等操作导致
@@ -487,16 +454,15 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 		north = compound.getBoolean("north");
 		
 		if (compound.getBoolean("hasNext")) {
-			cachePos[0] = Tools.readBlockPos(compound, "next");
+			next = Tools.readBlockPos(compound, "next");
 		}
 		if (compound.getBoolean("hasPrev")) {
-			cachePos[1] = Tools.readBlockPos(compound, "prev");
+			prev = Tools.readBlockPos(compound, "prev");
 		}
 		
 		int size = compound.getInteger("maker_size");
-		cacheFacing = new EnumFacing[size];
 		for (int i = 0; i < size; ++i) {
-			cacheFacing[i] = EnumFacing.getFront(compound.getInteger("facing_" + i));
+			linkedBlocks.add(pos.offset(EnumFacing.getFront(compound.getInteger("facing_" + i))));
 		}
 	}
 	
@@ -513,15 +479,15 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 		compound.setBoolean("hasNext", next != null);
 		compound.setBoolean("hasPrev", prev != null);
 		if (next != null) {
-			Tools.writeBlockPos(compound, next.getPos(), "next");
+			Tools.writeBlockPos(compound, next, "next");
 		}
 		if (prev != null) {
-			Tools.writeBlockPos(compound, prev.getPos(), "prev");
+			Tools.writeBlockPos(compound, prev, "prev");
 		}
 		
 		int size = 0;
-		for (TileEntity te : linkedBlocks) {
-			compound.setInteger("facing_" + size++, Tools.whatFacing(pos, te.getPos()).getIndex());
+		for (BlockPos block : linkedBlocks) {
+			compound.setInteger("facing_" + size++, Tools.whatFacing(pos, block).getIndex());
 		}
 		compound.setInteger("maker_size", size);
 		

@@ -146,10 +146,11 @@ public final class WireLinkInfo extends EleLineCache {
 		IEleTransfer transfer = EleWorker.getTransfer(start);
 		int energy = inputer.getEnergy(user);
 		IVoltage voltage = inputer.getVoltage(user);
-		start.forEach(prev, (it, isEnd, next) -> {
+		start.forEach(prev == null ? null : prev.getPos(), (it, isEnd, next) -> {
 			info.getPath().add(it);
 			if (isEnd) {
-				for (Map.Entry<TileEntity, IEleOutputer> entry : transfer.getOutputerAround(it).entrySet()) {
+				for (Map.Entry<TileEntity, IEleOutputer> entry :
+						transfer.getOutputerAround(it).entrySet()) {
 					UseInfo useInfo = entry.getValue().output(
 							entry.getKey(), Integer.MAX_VALUE, voltage, true);
 					if (useInfo.getEnergy() >= energy) {
@@ -172,7 +173,8 @@ public final class WireLinkInfo extends EleLineCache {
 				}
 				return false;
 			} else {
-				for (Map.Entry<TileEntity, IEleOutputer> entry : transfer.getOutputerAround(it).entrySet()) {
+				for (Map.Entry<TileEntity, IEleOutputer> entry :
+						transfer.getOutputerAround(it).entrySet()) {
 					UseInfo useInfo = entry.getValue().output(
 							entry.getKey(), Integer.MAX_VALUE, voltage, true);
 					if (useInfo.getEnergy() >= energy) {

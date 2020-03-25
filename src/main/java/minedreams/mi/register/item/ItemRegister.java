@@ -2,13 +2,11 @@ package minedreams.mi.register.item;
 
 import javax.annotation.Nonnull;
 
-import minedreams.mi.register.AutoRegister;
-import minedreams.mi.tools.MISysInfo;
 import minedreams.mi.ModernIndustry;
-import minedreams.mi.api.craftguide.CraftGuide;
-import minedreams.mi.api.craftguide.CraftGuideManager;
 import minedreams.mi.blocks.ore.OreBlock;
 import minedreams.mi.items.tools.ToolRegister;
+import minedreams.mi.register.AutoRegister;
+import minedreams.mi.tools.MISysInfo;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -75,12 +73,6 @@ public class ItemRegister {
 	    for (OreBlock block : OreBlock.LIST.keySet()) {
 	    	GameRegistry.addSmelting(block.getBlockItem(), new ItemStack(OreBlock.LIST.get(block)), 0.5F);
 	    }
-	    
-	    //注册压缩机合成表
-	    CraftGuideManager.Compressor.add(new CraftGuide(235).addMeterial(
-			new ItemStack(ItemRegister.ITEM_COPPER_POWDER, 2)).addProduct(new ItemStack(ItemRegister.ITEM_COPPER)))
-													   .add(new CraftGuide(235).addMeterial(
-			new ItemStack(ItemRegister.ITEM_TIN_POWER, 2)).addProduct(new ItemStack(ItemRegister.ITEM_TIN)));
 	}
 	
 	/** 注册合成表 */

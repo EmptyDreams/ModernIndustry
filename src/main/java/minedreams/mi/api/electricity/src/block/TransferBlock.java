@@ -132,7 +132,7 @@ abstract public class TransferBlock extends BlockBaseT {
 			tew.deleteLink(fromPos);
 		} else if (fromEntity != null) {
 			EleSrcCable tew = (EleSrcCable) worldIn.getTileEntity(pos);
-			tew.link(fromEntity);
+			tew.link(fromPos);
 		}
 	}
 	

@@ -38,14 +38,14 @@ public abstract class MachineBlock extends BlockBaseT {
 			} else if (from instanceof EleSrcCable) {
 				EleSrcCable et = (EleSrcCable) from;
 				user.link(et);
-				et.link(now);
+				et.link(pos);
 			}
 		} else {
 			EleMaker maker = (EleMaker) now;
 			if (from instanceof EleSrcUser) {
 				((EleSrcUser) from).link(maker);
 			} else if (from instanceof EleSrcCable) {
-				((EleSrcCable) from).link(maker);
+				((EleSrcCable) from).link(pos);
 			}
 		}
 	}

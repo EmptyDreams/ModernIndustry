@@ -67,7 +67,7 @@ public final class TransferItem extends ItemBlock {
 	            nbt.setBlockType(this.block);
 	            if (pos != blockPos) nbt.link(pos);
 	            Tools.forEachAroundTE(worldIn, blockPos, (te, fa) -> {
-	            	if (pos != te.getPos()) nbt.link(te);
+	            	if (pos != te.getPos()) nbt.link(te.getPos());
 	            });
 	            worldIn.setTileEntity(blockPos, nbt);
             	

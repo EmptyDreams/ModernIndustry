@@ -1,13 +1,13 @@
 package minedreams.mi.blocks.te.user;
 
 import minedreams.mi.api.craftguide.CraftGuide;
-import minedreams.mi.api.craftguide.CraftGuideItems;
-import minedreams.mi.api.craftguide.CraftGuideManager;
+import minedreams.mi.api.craftguide.DictDisorderList;
 import minedreams.mi.api.electricity.EleWorker;
 import minedreams.mi.api.electricity.src.info.BiggerVoltage;
 import minedreams.mi.api.electricity.src.info.EnumBiggerVoltage;
 import minedreams.mi.api.electricity.src.tileentity.EleSrcUser;
 import minedreams.mi.blocks.machine.user.CompressorBlock;
+import minedreams.mi.register.item.ItemRegister;
 import minedreams.mi.register.te.AutoTileEntity;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -16,8 +16,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-import static minedreams.mi.blocks.machine.user.CompressorBlock.EMPTY;
 import static minedreams.mi.blocks.machine.user.CompressorBlock.WORKING;
+import static minedreams.mi.blocks.machine.user.CompressorBlock.EMPTY;
 
 /**
  * 压缩机的TileEntity，存储方块内物品、工作时间等内容
@@ -26,6 +26,15 @@ import static minedreams.mi.blocks.machine.user.CompressorBlock.WORKING;
  */
 @AutoTileEntity(CompressorBlock.NAME)
 public class EUCompressor extends EleSrcUser {
+	
+	public static final CraftGuide<ItemStack, ItemStack> CRAFT_GUIDE = new CraftGuide<>();
+	
+	static {
+		CRAFT_GUIDE.register(DictDisorderList.create(ItemRegister.ITEM_COPPER, 1,
+				new ItemStack(ItemRegister.ITEM_COPPER_POWDER, 2)));
+		CRAFT_GUIDE.register(DictDisorderList.create(ItemRegister.ITEM_TIN, 1,
+				new ItemStack(ItemRegister.ITEM_TIN_POWER, 2)));
+	}
 	
 	/** 已工作时间 */
 	private int workingTime = 0;
@@ -53,17 +62,23 @@ public class EUCompressor extends EleSrcUser {
 	public void update() {
 		super.update();
 		//检查输入框是否合法 如果不合法则清零工作时间并结束函数
-		CraftGuide cgi = isLawful();
-		if (cgi == null) return;
+		DictDisorderList guide = new DictDisorderList(2, null, 0);
+		guide.add(new ItemStack(up.getStack().getItem())); guide.add(new ItemStack(down.getStack().getItem()));
+		ItemStack outStack = CRAFT_GUIDE.get(guide);
+		if (outStack == null) {
+			IBlockState state = world.getBlockState(pos).withProperty(WORKING, true);
+			world.setBlockState(pos, state);
+			world.markBlockRangeForRenderUpdate(pos, pos);
+			return;
+		}
 		ItemStack itemStack = item.extractItem(0, 1, true);
 		ItemStack itemStack2 = item.extractItem(1, 1, true);
-		ItemStack out = cgi.getOuts().get(0);
 		
 		boolean isWorking = true;
 		
 		//检查输入物品数目是否足够
 		if (!(itemStack.equals(ItemStack.EMPTY) && itemStack2.equals(ItemStack.EMPTY) &&
-				      item.insertItem(2, out, true).equals(ItemStack.EMPTY))) {
+				      item.insertItem(2, outStack, true).equals(ItemStack.EMPTY))) {
 			if (this.out.getStack().getCount() == 0) this.out.putStack(ItemStack.EMPTY);
 			if (EleWorker.useEleEnergy(this) != null) {
 				isWorking = false;
@@ -72,8 +87,8 @@ public class EUCompressor extends EleSrcUser {
 					workingTime = 0;
 					item.extractItem(0, 1, false);
 					item.extractItem(1, 1, false);
-					this.out.putStack(new ItemStack(out.getItem(),
-							out.getCount() + this.out.getStack().getCount()));
+					this.out.putStack(new ItemStack(outStack.getItem(),
+							outStack.getCount() + this.out.getStack().getCount()));
 				}
 			}
 		}
@@ -83,20 +98,9 @@ public class EUCompressor extends EleSrcUser {
 		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
-	/** 判断输入是否合法 */
-	public CraftGuide isLawful() {
-		CraftGuideItems in = new CraftGuideItems().add(up.getStack().getItem(), 1)
-				                     .add(down.getStack().getItem(), 1);
-		return CraftGuideManager.Compressor.getCraftGuide(in);
-	}
-	
 	/** 获取需要的工作时间 */
 	public int getNeedTime() {
-		CraftGuideItems in = new CraftGuideItems().add(up.getStack().getItem(), 1)
-				                     .add(down.getStack().getItem(), 1);
-		CraftGuide cg = CraftGuideManager.Compressor.getCraftGuide(in);
-		if (cg == null) return 0;
-		return cg.getTime();
+		return 235;
 	}
 	
 	/**
@@ -160,7 +164,7 @@ public class EUCompressor extends EleSrcUser {
 		
 		@Override
 		public boolean isItemValid(ItemStack stack) {
-			boolean b = stack != null && CraftGuideManager.Compressor.findMeterial(stack.getItem())
+			boolean b = stack != null && CRAFT_GUIDE.contains(stack)
 					            && super.isItemValid(stack);
 			if (b && !nbt.isEmptyForInput()) {
 				SlotItemHandler s = nbt.getSolt(index == 0 ? 1 : 0);

@@ -26,6 +26,7 @@ public class EleSrcTransfer implements IEleTransfer {
 	@Override
 	public PathInfo findPath(TileEntity start, TileEntity user, IEleInputer inputer) {
 		EleLineCache cache = getLineCache(start);
+		if (cache == null) return null;
 		PathInfo info = cache.read(start, user, inputer);
 		if (info != null) return info;
 		info = WireLinkInfo.calculate((EleSrcCable) start, user, inputer);
@@ -61,7 +62,7 @@ public class EleSrcTransfer implements IEleTransfer {
 	
 	@Override
 	public boolean link(TileEntity now, TileEntity target) {
-		return ((EleSrcCable) now).link(target);
+		return ((EleSrcCable) now).link(target.getPos());
 	}
 	
 	@Override
