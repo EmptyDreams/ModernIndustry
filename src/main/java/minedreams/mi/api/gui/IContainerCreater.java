@@ -2,7 +2,7 @@ package minedreams.mi.api.gui;
 
 import javax.annotation.Nonnull;
 
-import minedreams.mi.api.gui.client.MIFrameClient;
+import minedreams.mi.api.gui.client.MIStaticFrameClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -33,6 +33,6 @@ public interface IContainerCreater {
 	 * @return 一个完成创建的完整对象
 	 */
 	@Nonnull
-	MIFrameClient createClient(World world, EntityPlayer player, BlockPos pos);
+	MIStaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos);
 	
 }

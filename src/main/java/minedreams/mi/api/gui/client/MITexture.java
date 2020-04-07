@@ -1,98 +1,74 @@
 package minedreams.mi.api.gui.client;
 
-import javax.annotation.Nonnull;
-import java.awt.*;
+import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
-import net.minecraft.client.Minecraft;
+import minedreams.mi.api.net.WaitList;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.util.ResourceLocation;
 
 /**
- * 材质类.
- * 使用后必须调用{@link #invalidate()}来使当前类恢复可重用状态
+ * 材质类
  * @author EmptyDreams
- * @version V1.0
+ * @version V2.0
  */
 public class MITexture extends AbstractTexture {
 	
-	private final int WIDTH;
-	private final int HEIGHT;
-	private BufferedImage IMAGE;
-	//两个不知作用的布尔值
-	private final boolean BLUR;
-	private final boolean CLAMP;
-	/** 是否可重用 */
-	private boolean isInvalid = false;
-	private static final List<MITexture> TEXTURES = new ArrayList<>(10);
+	private boolean flag = false, flag1 = false;
+	private final ResourceLocation rl;
 	
-	/**
-	 * 获取一个对象，该对象可能是复用以前的对象.<br>
-	 * 对象自动会被调用{@link #cleanImage()}方法，无需手动调用。
-	 * @param width 宽度
-	 * @param height 高度
-	 */
-	@Nonnull
-	public static MITexture getInstance(int width, int height) {
-		MITexture text;
-		//noinspection ForLoopReplaceableByForEach
-		for (int i = 0; i < TEXTURES.size(); i++) {
-			text = TEXTURES.get(i);
-			if (text.isInvalid() && text.WIDTH == width && text.HEIGHT == height) {
-				text.cleanImage();
-				text.validate();
-				return text;
-			}
-		}
-		return new MITexture(width, height);
+	public MITexture(ResourceLocation rl, boolean flag, boolean flag1) {
+		WaitList.checkNull(rl, "rl");
+		this.rl = rl;
+		this.flag = flag;
+		this.flag1 = flag1;
 	}
 	
-	public MITexture(int width, int height) {
-		this(width, height, true, false);
+	public MITexture(ResourceLocation rl) {
+		this(rl, false, true);
 	}
-	
-	public MITexture(int width, int height, boolean isBlur, boolean isClamp) {
-		this(width, height, BufferedImage.TYPE_INT_ARGB, isBlur, isClamp);
-	}
-	
-	public MITexture(int width, int height, int imageType, boolean isBlur, boolean isClamp) {
-		WIDTH = width;
-		HEIGHT = height;
-		IMAGE = new BufferedImage(width, height, imageType);
-		BLUR = isBlur;
-		CLAMP = isClamp;
-		TEXTURES.add(this);
-	}
-	
-	public int getWidth() { return WIDTH; }
-	public int getHeight() { return HEIGHT; }
-	public Graphics getGraphics() {
-		int x = (Minecraft.getMinecraft().displayWidth - WIDTH) / 2;
-		int y = (Minecraft.getMinecraft().displayHeight - HEIGHT) / 2;
-		return IMAGE.getGraphics().create(x, y, WIDTH, HEIGHT);
-	}
-	public Graphics getGraphics(int x, int y, int width, int height) {
-		return getGraphics().create(x, y, width, height);
-	}
-	public void cleanImage() {
-		IMAGE = new BufferedImage(WIDTH, HEIGHT, IMAGE.getType());
-	}
-	/** 使类可重用 */
-	public void invalidate() {
-		deleteGlTexture();
-		isInvalid = true;
-	}
-	/** 使类不可重用 */
-	public void validate() { isInvalid = false; }
-	/** 判断该对象是否可重用 */
-	public boolean isInvalid() { return isInvalid; }
 	
 	@Override
-	public void loadTexture(IResourceManager resourceManager) {
+	public void loadTexture(@Nullable IResourceManager resourceManager) throws IOException {
 		deleteGlTexture();
-		TextureUtil.uploadTextureImageAllocate(getGlTextureId(), IMAGE, BLUR, CLAMP);
+		String root = "mods/cache/" + rl.getResourceDomain() + "/gui/";
+		File path = new File(root);
+		checkFile(path);
+		path = new File(root + rl.getResourcePath());
+		
+		try (InputStream input = new FileInputStream(path)) {
+			BufferedImage buffered = TextureUtil.readBufferedImage(input);
+			TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), buffered, flag, flag1);
+		}
 	}
+	
+	private static void checkFile(File file) throws IOException {
+		if (!file.exists()) {
+			boolean right = file.mkdirs();
+			if(!right) throw new FileNotFoundException("[" + file.getAbsolutePath() + "]目录创建失败");
+		}
+		if (!file.canRead())
+			throw new FileNotFoundException("[" + file.getAbsolutePath() + "]无访问权限");
+	}
+	
+	public static void writeFile(ResourceLocation path, BufferedImage image) throws IOException {
+		String root = "mods/cache/" + path.getResourceDomain() + "/gui";
+		File file = new File(root);
+		checkFile(file);
+		file = new File(root + "/" + path.getResourcePath());
+		if (file.exists()) {
+			//noinspection ResultOfMethodCallIgnored
+			file.delete();
+		}
+		ImageIO.write(image, "png", file);
+	}
+	
 }

@@ -1,11 +1,15 @@
 package minedreams.mi.api.net;
 
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import minedreams.mi.api.net.guinet.GUIMessage;
+import minedreams.mi.api.net.guinet.IAutoGuiNetWork;
+import minedreams.mi.tools.MISysInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.Mod;
@@ -39,9 +43,9 @@ public class WaitList {
 	}
 	
 	/** 存储客户端待处理的消息 */
-	private static Set<MessageBase> client = new LinkedHashSet<>();
-	/** 操作client时的锁，因为client可变，所以重新建立一个常量 */
-	private static final Object CLIENT_LOCK = new Object();
+	private static final Set<MessageBase> CLIENT = new LinkedHashSet<>();
+	/** 存储客户端GUI待处理消息 */
+	private static final Set<GUIMessage> GUI_CLIENT = new LinkedHashSet<>();
 	
 	/** 获取已经执行的信息总数 */
 	public static int getAmount() {
@@ -49,15 +53,27 @@ public class WaitList {
 	}
 	
 	public static void addMessageToClientList(MessageBase base) {
-		synchronized (CLIENT_LOCK) {
-			checkNull(base, "base");
-			client.add(base);
+		checkNull(base, "base");
+		synchronized (CLIENT) {
+			CLIENT.add(base);
+		}
+	}
+	
+	public static void addMessageToClientList(GUIMessage gui) {
+		checkNull(gui, "gui");
+		synchronized (GUI_CLIENT) {
+			GUI_CLIENT.add(gui);
 		}
 	}
 	
 	public static void toString(StringBuilder sb) {
-		synchronized (CLIENT_LOCK) {
-			for (IMessage base : client) {
+		synchronized (CLIENT) {
+			for (IMessage base : CLIENT) {
+				sb.append('\t').append(base).append('\n');
+			}
+		}
+		synchronized (GUI_CLIENT) {
+			for (IMessage base : GUI_CLIENT) {
 				sb.append('\t').append(base).append('\n');
 			}
 		}
@@ -65,7 +81,7 @@ public class WaitList {
 	
 	private static void sendAll(boolean isClient) {
 		if (isClient) {
-			NetworkRegister.forEach(true, network -> {
+			NetworkRegister.forEachBlock(true, network -> {
 				NBTTagCompound message = network.send();
 				if (message != null) {
 					TileEntity te = (TileEntity) network;
@@ -79,7 +95,7 @@ public class WaitList {
 			});
 		} else {
 			try {
-				NetworkRegister.forEach(false, network -> {
+				NetworkRegister.forEachBlock(false, network -> {
 					NBTTagCompound message = network.send();
 					if (message != null) {
 						TileEntity te = (TileEntity) network;
@@ -88,18 +104,16 @@ public class WaitList {
 								te.getPos().getY(),
 								te.getPos().getZ()});
 						message.setInteger("_world", te.getWorld().provider.getDimension());
-						int amount = message.getInteger("playerAmount");
-						if (amount > 0) {
-							Set<EntityPlayerMP> players = new HashSet<>(amount);
-							for (int i = 0; i < amount; ++i) {
-								EntityPlayerMP player = (EntityPlayerMP) te.getWorld().getPlayerEntityByName(
-										message.getString("player" + i));
-								if (player == null) throw new ClassCastException("指定玩家不存在！[" +
-										                              message.getString("player" + i) + "]");
-								players.add(player);
-							}
-							sendToClient(new MessageBase(message), players);
-						}
+						Set<EntityPlayerMP> players = AutoNetworkHelper.getPlayer(te.getWorld(), message);
+						if (players != null) sendToClient(new MessageBase(message), players);
+					}
+				});
+				NetworkRegister.forEachGui(false, network -> {
+					NBTTagCompound message = network.send();
+					if (message != null) {
+						message.setInteger("_code", network.getAuthCode());
+						Set<EntityPlayerMP> players = AutoNetworkHelper.getPlayer(network.getWorld(), message);
+						if (players != null) sendToClient(new GUIMessage(message), players);
 					}
 				});
 			} catch (ClassCastException e) {
@@ -118,20 +132,53 @@ public class WaitList {
 			amount = 0;
 			return;
 		}
-		Set<MessageBase> clientMessage = new LinkedHashSet<>();
-		synchronized (CLIENT_LOCK) {
-			client.forEach(mb -> {
-				IAutoNetwork et = (IAutoNetwork) net.minecraft.client.Minecraft
-						                               .getMinecraft().world.getTileEntity(
-						                               		mb.getBlockPos());
-				if (et == null) {
-					clientMessage.add(mb);
-				} else {
+		synchronized (CLIENT) {
+			Iterator<MessageBase> it = CLIENT.iterator();
+			MessageBase mb;
+			IAutoNetwork network;
+			while (it.hasNext()) {
+				mb = it.next();
+				network = (IAutoNetwork) net.minecraft.client.Minecraft
+						                        .getMinecraft().world.getTileEntity(
+								mb.getBlockPos());
+				if (network != null) {
 					++amount;
-					et.receive(mb.getCompound());
+					it.remove();
+					network.receive(mb.getCompound());
 				}
-			});
-			client = clientMessage;
+			}
+		}
+		synchronized (GUI_CLIENT) {
+			Iterator<GUIMessage> it = GUI_CLIENT.iterator();
+			GUIMessage message;
+			IAutoGuiNetWork netWork;
+			while (it.hasNext()) {
+				message = it.next();
+				NBTTagCompound compound = message.getCompound();
+				EntityPlayer player = net.minecraft.client.Minecraft.getMinecraft().player;
+				Container con = player.openContainer;
+				if (con instanceof IAutoGuiNetWork) {
+					int code = compound.getInteger("_code");
+					IAutoGuiNetWork network = (IAutoGuiNetWork) con;
+					net.minecraft.client.gui.inventory.GuiContainer gui = network.getGuiContainer();
+					network = (IAutoGuiNetWork) gui;
+					if (network.checkAutoCode(code)) {
+						if (network.isLive()) {
+							it.remove();
+							network.receive(compound);
+						} else {
+							MISysInfo.err("GUI网络传输丢包：客户端GUI不处于生存状态！");
+						}
+					} else {
+						MISysInfo.err("GUI网络传输丢包：serveCode=" + code + ", clientCode=" + network.getAuthCode());
+					}
+				} else {
+					if (message.plusAmount() > 30) {
+						MISysInfo.err("GUI网络传输丢包：serveCode=" + message.getCompound().getInteger("_code"));
+						it.remove();
+					}
+				}
+			}
 		}
 	}
 	

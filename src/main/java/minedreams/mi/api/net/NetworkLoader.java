@@ -1,6 +1,7 @@
 package minedreams.mi.api.net;
 
 import minedreams.mi.ModernIndustry;
+import minedreams.mi.api.net.guinet.GUIMessage;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -22,13 +23,14 @@ public final class NetworkLoader {
 	private int nextID = -1;
 	 
 	public NetworkLoader() {
-		registerMessage(MessageBase.ClientHandler.class, CLIENT);
-		registerMessage(MessageBase.ServiceHandler.class, SERVER);
+		registerMessage(MessageBase.ClientHandler.class, MessageBase.class, CLIENT);
+		registerMessage(GUIMessage.ClientHandler.class, GUIMessage.class, CLIENT);
+		registerMessage(MessageBase.ServiceHandler.class, MessageBase.class, SERVER);
 	}
 	
 	private <REQ extends IMessage, REPLY extends IMessage> void registerMessage(
-			Class<? extends IMessageHandler<REQ, REPLY>> messageHandler, Side side) {
-		instance.registerMessage(messageHandler, (Class<REQ>) MessageBase.class, ++nextID, side);
+			Class<? extends IMessageHandler<REQ, REPLY>> messageHandler, Class<REQ> requestMessageType, Side side) {
+		instance.registerMessage(messageHandler, requestMessageType, ++nextID, side);
 	}
 	
 	public static SimpleNetworkWrapper instance() {

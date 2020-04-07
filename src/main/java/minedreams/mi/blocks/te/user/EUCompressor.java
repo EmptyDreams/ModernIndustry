@@ -6,6 +6,7 @@ import minedreams.mi.api.electricity.EleWorker;
 import minedreams.mi.api.electricity.src.info.BiggerVoltage;
 import minedreams.mi.api.electricity.src.info.EnumBiggerVoltage;
 import minedreams.mi.api.electricity.src.tileentity.EleSrcUser;
+import minedreams.mi.api.gui.component.MProgressBar;
 import minedreams.mi.blocks.machine.user.CompressorBlock;
 import minedreams.mi.register.item.ItemRegister;
 import minedreams.mi.register.te.AutoTileEntity;
@@ -16,8 +17,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-import static minedreams.mi.blocks.machine.user.CompressorBlock.WORKING;
 import static minedreams.mi.blocks.machine.user.CompressorBlock.EMPTY;
+import static minedreams.mi.blocks.machine.user.CompressorBlock.WORKING;
 
 /**
  * 压缩机的TileEntity，存储方块内物品、工作时间等内容
@@ -44,29 +45,33 @@ public class EUCompressor extends EleSrcUser {
 	private final ItemStackHandler item = new ItemStackHandler(3);
 	private final SlotMI up = new SlotMI(item, 0, 56, 17, this);
 	private final SlotMI down = new SlotMI(item, 1, 56, 53, this);
-	private final SlotItemHandler out = new SlotItemHandler(item, 2, 116, 34) {
+	private final SlotItemHandler out = new SlotItemHandler(item, 2, 120, 34) {
 		@Override
 		public boolean isItemValid(ItemStack stack) {
 			return false;
 		}
 	};
+	private final MProgressBar progressBar = new MProgressBar();
 	
 	public EUCompressor() {
 		setBiggerMaxTime(100);
 		setBiggerVoltageOperate(new BiggerVoltage(3, EnumBiggerVoltage.FIRE));
 		setEnergy(200);
 		setEnergyMin(200);
+		progressBar.setLocation(80, 35);
 	}
 	
 	@Override
 	public void update() {
 		super.update();
+		if (world.isRemote) return;
+		progressBar.setMax(getNeedTime());
 		//检查输入框是否合法 如果不合法则清零工作时间并结束函数
 		DictDisorderList guide = new DictDisorderList(2, null, 0);
 		guide.add(new ItemStack(up.getStack().getItem())); guide.add(new ItemStack(down.getStack().getItem()));
 		ItemStack outStack = CRAFT_GUIDE.get(guide);
 		if (outStack == null) {
-			IBlockState state = world.getBlockState(pos).withProperty(WORKING, true);
+			IBlockState state = world.getBlockState(pos).withProperty(WORKING, true).withProperty(EMPTY, isEmpty());
 			world.setBlockState(pos, state);
 			world.markBlockRangeForRenderUpdate(pos, pos);
 			return;
@@ -79,7 +84,9 @@ public class EUCompressor extends EleSrcUser {
 		//检查输入物品数目是否足够
 		if (!(itemStack.equals(ItemStack.EMPTY) && itemStack2.equals(ItemStack.EMPTY) &&
 				      item.insertItem(2, outStack, true).equals(ItemStack.EMPTY))) {
-			if (this.out.getStack().getCount() == 0) this.out.putStack(ItemStack.EMPTY);
+			if (this.out.getStack().getCount() == 0) {
+				this.out.putStack(ItemStack.EMPTY);
+			}
 			if (EleWorker.useEleEnergy(this) != null) {
 				isWorking = false;
 				++workingTime;
@@ -91,7 +98,10 @@ public class EUCompressor extends EleSrcUser {
 							outStack.getCount() + this.out.getStack().getCount()));
 				}
 			}
+		} else {
+			workingTime = 0;
 		}
+		progressBar.set(workingTime);
 		IBlockState state = world.getBlockState(pos);
 		world.setBlockState(pos, state.withProperty(EMPTY, isEmpty()).withProperty(WORKING, isWorking));
 		markDirty();
@@ -123,6 +133,8 @@ public class EUCompressor extends EleSrcUser {
 	public boolean isEmpty() {
 		return up.getHasStack() || down.getHasStack() || out.getHasStack();
 	}
+	
+	public MProgressBar getProgressBar() { return progressBar; }
 	
 	/**
 	 * @param index 0-上端，1-下端，2-输出

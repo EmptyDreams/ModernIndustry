@@ -7,10 +7,24 @@ package minedreams.mi.api.gui.info;
 public enum TitleModelEnum {
 	
 	/** 左侧 */
-	LEFT,
+	LEFT(0),
 	/** 居中 */
-	CENTRAL,
+	CENTRAL(1),
 	/** 右侧 */
-	RIGHT;
-
+	RIGHT(2);
+	
+	private final int INDEX;
+	
+	TitleModelEnum(int index) {
+		INDEX = index;
+	}
+	
+	public int getIndex() {
+		return INDEX;
+	}
+	
+	public static TitleModelEnum getInstance(int index) {
+		return values()[index];
+	}
+	
 }

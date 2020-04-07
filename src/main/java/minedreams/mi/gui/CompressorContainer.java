@@ -25,7 +25,7 @@ public class CompressorContainer extends Container {
 
 	/** UI材质路径 */
 	private static final String TEXTURE_PATH = ModernIndustry.MODID + ":" + "textures/gui/gui.png";
-	private static final ResourceLocation TEXTURE = new ResourceLocation(TEXTURE_PATH);
+	public static final ResourceLocation TEXTURE = new ResourceLocation(TEXTURE_PATH);
     
 	/**
 	 * 能否被玩家打开
@@ -50,6 +50,7 @@ public class CompressorContainer extends Container {
 		addSlotToContainer(nbt.getSolt(0));
 		addSlotToContainer(nbt.getSolt(1));
 		addSlotToContainer(nbt.getSolt(2));
+		//玩家背包
 		for (int i = 0; i < 3; ++i) {
 			for (int k = 0; k < 9; ++k) {
 				addSlotToContainer(new Slot(player.inventory, k + i * 9 + 9, 8 + k * 18, 84 + i * 18));
@@ -67,25 +68,23 @@ public class CompressorContainer extends Container {
 	public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
 		Slot slot = inventorySlots.get(index);
         
-	        ItemStack newStack = slot.getStack(), oldStack = newStack.copy();
-	        boolean isMerged;
-	        
-	        if (index == 0 || index == 1 || index == 2) {
-	        	isMerged = mergeItemStack(newStack, 3, 39, true);
-	        } else if (index > 2 && index < 30 && newStack.getMaxStackSize() <= 64) {
-	        	isMerged = mergeItemStack(newStack, 0, 3, false)
-		        		|| mergeItemStack(newStack, 31, 39, false);
-	        } else if (index > 29 && index < 39 && newStack.getMaxStackSize() <= 64) {
-	        	isMerged = mergeItemStack(newStack, 0, 30, false);
-	        } else {
-	        	isMerged = false;
-	        }
-	
-	        if (!isMerged) return ItemStack.EMPTY;
-	        else if (newStack.isEmpty()) slot.putStack(ItemStack.EMPTY);
-	        else slot.onSlotChanged();
-	        
-	        return oldStack;
+		ItemStack newStack = slot.getStack(), oldStack = newStack.copy();
+		boolean isMerged;
+		
+		if (index == 0 || index == 1 || index == 2) {
+			isMerged = mergeItemStack(newStack, 3, 39, true);
+		} else if (index > 2 && index < 30 && newStack.getMaxStackSize() <= 64) {
+			isMerged = mergeItemStack(newStack, 0, 3, false) || mergeItemStack(newStack, 31, 39, false);
+		} else if (index > 29 && index < 39 && newStack.getMaxStackSize() <= 64) {
+			isMerged = mergeItemStack(newStack, 0, 30, false);
+		} else {
+			isMerged = false;
+		}
+		if (!isMerged) return ItemStack.EMPTY;
+		else if (newStack.isEmpty()) slot.putStack(ItemStack.EMPTY);
+		else slot.onSlotChanged();
+		
+		return oldStack;
 	}
 	
 	private int[] Information = { 0, 0 };

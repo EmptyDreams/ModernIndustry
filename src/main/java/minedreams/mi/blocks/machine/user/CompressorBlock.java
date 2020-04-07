@@ -4,8 +4,8 @@ import java.util.Random;
 
 import minedreams.mi.ModernIndustry;
 import minedreams.mi.api.electricity.src.block.MachineBlock;
-import minedreams.mi.api.gui.GuiLoader;
 import minedreams.mi.blocks.te.user.EUCompressor;
+import minedreams.mi.gui.CompressorFrame;
 import minedreams.mi.register.block.AutoBlockRegister;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -72,7 +72,7 @@ public class CompressorBlock extends MachineBlock {
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!worldIn.isRemote)
 			playerIn.openGui(ModernIndustry.instance,
-					GuiLoader.GUI_COMPRESSOR, worldIn, pos.getX(), pos.getY(), pos.getZ());
+					CompressorFrame.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
 		return true;
 	}
 	

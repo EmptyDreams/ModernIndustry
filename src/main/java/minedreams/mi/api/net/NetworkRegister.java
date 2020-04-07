@@ -1,12 +1,16 @@
 package minedreams.mi.api.net;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Consumer;
 
+import minedreams.mi.api.net.guinet.IAutoGuiNetWork;
+import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 /**
  * 自动化网络传输注册机.<br>
@@ -17,58 +21,26 @@ import net.minecraft.tileentity.TileEntity;
  */
 public final class NetworkRegister {
 	
-	/** 服务端 */
+	/** 服务端-方块 */
 	private static final List<IAutoNetwork> NETWORKS_SERVICE = new ArrayList<>(20);
-	/** 客户端 */
+	/** 客户端-方块 */
 	private static final List<IAutoNetwork> NETWORKS_CLIENT = new ArrayList<>(20);
-	/** 待注册 */
-	private static final LinkedList<IAutoNetwork> WAIT_REGIST = new LinkedList<>();
+	/** 待注册-方块 */
+	private static final LinkedList<IAutoNetwork> WAIT_BLOCK = new LinkedList<>();
+	/** 列表-GUI */
+	private static final List<IAutoGuiNetWork> GUINET = new ArrayList<>(10);
 	
-	static void forEach(boolean isClient, Consumer<? super IAutoNetwork> consumer) {
-		registerAll();
-		IAutoNetwork network;
-		TileEntity entity;
-		if (isClient) {
-			for (int i = 0; i < NETWORKS_CLIENT.size(); ++i) {
-				network = NETWORKS_CLIENT.get(i);
-				entity = (TileEntity) network;
-				if (entity.isInvalid()) {
-					NETWORKS_CLIENT.remove(i);
-					--i;
-					continue;
-				}
-				if (entity.getWorld().isBlockLoaded(entity.getPos()))
-					consumer.accept(network);
-			}
-		} else {
-			for (int i = 0; i < NETWORKS_SERVICE.size(); ++i) {
-				network = NETWORKS_SERVICE.get(i);
-				entity = (TileEntity) network;
-				if (entity.isInvalid()) {
-					NETWORKS_SERVICE.remove(i);
-					--i;
-					continue;
-				}
-				if (entity.getWorld().isBlockLoaded(entity.getPos()))
-					consumer.accept(network);
-			}
-		}
-	}
-	
-	private static synchronized void registerAll() {
-		ListIterator<IAutoNetwork> it = WAIT_REGIST.listIterator();
-		IAutoNetwork network;
-		TileEntity entity;
-		while (it.hasNext()) {
-			network = it.next();
-			entity = (TileEntity) network;
-			if (entity.getWorld() != null) {
-				if (entity.getWorld().isRemote) {
-					NETWORKS_CLIENT.add(network);
-				} else {
-					NETWORKS_SERVICE.add(network);
-				}
-				it.remove();
+	/**
+	 * 注册一个GUI的自动化网络传输，客户端无需注册
+	 * @param net 要注册的对象，必须继承自Container或GuiContainer
+	 * @throws ClassCastException 如果net不继承自Container
+	 */
+	public static void register(IAutoGuiNetWork net) {
+		synchronized (GUINET) {
+			if (net instanceof Container) {
+				if (!net.isClient()) GUINET.add(net);
+			} else {
+				throw new ClassCastException("'net' is not extends Container!");
 			}
 		}
 	}
@@ -78,11 +50,94 @@ public final class NetworkRegister {
 	 * @param net 要注册的对象，必须继承自TileEntity
 	 * @throws ClassCastException 如果net不继承自TileEntity
 	 */
-	public static synchronized void register(IAutoNetwork net) {
+	public static void register(IAutoNetwork net) {
 		if (!(net instanceof TileEntity)) throw new ClassCastException("'net' is not extends TileEntity!");
-		for (IAutoNetwork network : NETWORKS_SERVICE)
-			if (network == net) return;
-		WAIT_REGIST.add(net);
+		World world = ((TileEntity) net).getWorld();
+		if (world == null) {
+			synchronized (WAIT_BLOCK) {
+				WAIT_BLOCK.add(net);
+			}
+		} else if (world.isRemote) {
+			synchronized (NETWORKS_CLIENT) {
+				NETWORKS_CLIENT.add(net);
+			}
+		} else {
+			synchronized (NETWORKS_SERVICE) {
+				NETWORKS_SERVICE.add(net);
+			}
+		}
+	}
+	
+	static void forEachGui(boolean isClient, Consumer<? super IAutoGuiNetWork> consumer) {
+		synchronized (GUINET) {
+			IAutoGuiNetWork network;
+			Iterator<IAutoGuiNetWork> it = GUINET.iterator();
+			while (it.hasNext()) {
+				network = it.next();
+				if (network.isLive()) {
+					if (network.isClient() == isClient) {
+						consumer.accept(network);
+					}
+				} else {
+					it.remove();
+				}
+			}
+		}
+	}
+	
+	static void forEachBlock(boolean isClient, Consumer<? super IAutoNetwork> consumer) {
+		registerAllBlock();
+		IAutoNetwork network;
+		TileEntity entity;
+		if (isClient) {
+			synchronized (NETWORKS_CLIENT) {
+				Iterator<IAutoNetwork> it = NETWORKS_CLIENT.iterator();
+				while (it.hasNext()) {
+					network = it.next();
+					entity = (TileEntity) network;
+					if (entity.isInvalid()) {
+						it.remove();
+						continue;
+					}
+					if (entity.getWorld().isBlockLoaded(entity.getPos()))
+						consumer.accept(network);
+				}
+			}
+		} else {
+			synchronized (NETWORKS_SERVICE) {
+				Iterator<IAutoNetwork> it = NETWORKS_SERVICE.iterator();
+				while (it.hasNext()) {
+					network = it.next();
+					entity = (TileEntity) network;
+					if (entity.isInvalid()) {
+						it.remove();
+						continue;
+					}
+					if (entity.getWorld().isBlockLoaded(entity.getPos()))
+						consumer.accept(network);
+				}
+			}
+		}
+	}
+	
+	private static void registerAllBlock() {
+		synchronized (WAIT_BLOCK) {
+			ListIterator<IAutoNetwork> it = WAIT_BLOCK.listIterator();
+			IAutoNetwork network;
+			TileEntity entity;
+			while (it.hasNext()) {
+				network = it.next();
+				entity = (TileEntity) network;
+				if (entity.getWorld() != null) {
+					if (entity.getWorld().isRemote) {
+						NETWORKS_CLIENT.add(network);
+					} else {
+						NETWORKS_SERVICE.add(network);
+					}
+					it.remove();
+				}
+			}
+		}
 	}
 	
 }
