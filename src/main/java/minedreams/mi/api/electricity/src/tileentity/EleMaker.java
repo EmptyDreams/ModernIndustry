@@ -12,6 +12,7 @@ import minedreams.mi.api.net.WaitList;
 import minedreams.mi.register.te.AutoTileEntity;
 import minedreams.mi.tools.Tools;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 
 /**
  * 电力制造者(发电机类)的父级TE
@@ -19,7 +20,7 @@ import net.minecraft.util.EnumFacing;
  * @version V1.0
  */
 @AutoTileEntity("IN_FATHER_ELECTRICITY_MAKER")
-public abstract class EleMaker extends Electricity {
+public abstract class EleMaker extends Electricity implements ITickable {
 
 	/** 电能储备 */
 	protected int meBox = 0;

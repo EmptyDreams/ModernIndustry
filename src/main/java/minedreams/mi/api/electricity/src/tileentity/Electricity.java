@@ -4,7 +4,6 @@ import minedreams.mi.register.te.AutoTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -15,7 +14,7 @@ import net.minecraft.world.World;
  * @version V2.0
  */
 @AutoTileEntity("IN_FATHER_ELECTRICITY")
-public abstract class Electricity extends TileEntity implements ITickable {
+public abstract class Electricity extends TileEntity {
 	
 	/** 没有信息 */
 	public static final Object NO_HAVE_INFO = new Object();

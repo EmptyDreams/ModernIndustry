@@ -23,6 +23,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -34,7 +35,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
  */
 @SuppressWarnings("unused")
 @AutoTileEntity("IN_FATHER_ELECTRICITY_TRANSFER")
-public class EleSrcCable extends Electricity implements IAutoNetwork {
+public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable {
 	
 	public EleSrcCable() {
 		NetworkRegister.register(this);
@@ -399,6 +400,12 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		players.clear();
+		return super.getUpdateTag();
+	}
+	
 	/**
 	 * 这其中写有更新内部数据的代码，重写时应该调用
 	 *
@@ -429,6 +436,8 @@ public class EleSrcCable extends Electricity implements IAutoNetwork {
 				if (player instanceof EntityPlayerMP) {
 					players.add(player.getName());
 					sendPlayers.add(player.getName());
+				} else {
+					players.remove(player.getName());
 				}
 			}
 		}

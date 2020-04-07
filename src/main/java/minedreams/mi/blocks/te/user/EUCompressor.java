@@ -13,6 +13,7 @@ import minedreams.mi.register.te.AutoTileEntity;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -26,7 +27,7 @@ import static minedreams.mi.blocks.machine.user.CompressorBlock.WORKING;
  * @version V1.2
  */
 @AutoTileEntity(CompressorBlock.NAME)
-public class EUCompressor extends EleSrcUser {
+public class EUCompressor extends EleSrcUser implements ITickable {
 	
 	public static final CraftGuide<ItemStack, ItemStack> CRAFT_GUIDE = new CraftGuide<>();
 	
@@ -63,7 +64,6 @@ public class EUCompressor extends EleSrcUser {
 	
 	@Override
 	public void update() {
-		super.update();
 		if (world.isRemote) return;
 		progressBar.setMax(getNeedTime());
 		//检查输入框是否合法 如果不合法则清零工作时间并结束函数

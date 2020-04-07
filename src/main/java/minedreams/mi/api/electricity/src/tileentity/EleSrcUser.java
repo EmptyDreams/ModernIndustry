@@ -126,30 +126,9 @@ public abstract class EleSrcUser extends Electricity {
 	public final EnumVoltage getVoltage() { return voltage; }
 	
 	@Override
-	public void update() {
+	public NBTTagCompound getUpdateTag() {
 		updateInfo();
-	}
-	
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		super.writeToNBT(compound);
-		
-		compound.setInteger("makers_size", linkedMaker.size());
-		compound.setInteger("transfers_size", linkedWire.size());
-		
-		int i = 0;
-		for (Map.Entry<EnumFacing, EleMaker> entry : linkedMaker.entrySet()) {
-			Tools.writeBlockPos(compound, entry.getValue().getPos(), "maker_pos_" + i);
-			++i;
-		}
-		
-		i = 0;
-		for (Map.Entry<EnumFacing, TileEntity> entry : linkedWire.entrySet()) {
-			Tools.writeBlockPos(compound, entry.getValue().getPos(), "transfer_pos_" + i);
-			++i;
-		}
-		
-		return compound;
+		return super.getUpdateTag();
 	}
 	
 	private BlockPos[] _makers;
@@ -183,4 +162,27 @@ public abstract class EleSrcUser extends Electricity {
 			_transfers[i] = Tools.readBlockPos(compound, "transfer_pos_" + i);
 		}
 	}
+	
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+		super.writeToNBT(compound);
+		
+		compound.setInteger("makers_size", linkedMaker.size());
+		compound.setInteger("transfers_size", linkedWire.size());
+		
+		int i = 0;
+		for (Map.Entry<EnumFacing, EleMaker> entry : linkedMaker.entrySet()) {
+			Tools.writeBlockPos(compound, entry.getValue().getPos(), "maker_pos_" + i);
+			++i;
+		}
+		
+		i = 0;
+		for (Map.Entry<EnumFacing, TileEntity> entry : linkedWire.entrySet()) {
+			Tools.writeBlockPos(compound, entry.getValue().getPos(), "transfer_pos_" + i);
+			++i;
+		}
+		
+		return compound;
+	}
+	
 }
