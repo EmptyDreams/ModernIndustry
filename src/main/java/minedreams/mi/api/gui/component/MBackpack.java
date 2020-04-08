@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import java.awt.*;
 
 import minedreams.mi.api.gui.MIFrame;
-import minedreams.mi.tools.MISysInfo;
+import minedreams.mi.utils.MISysInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;

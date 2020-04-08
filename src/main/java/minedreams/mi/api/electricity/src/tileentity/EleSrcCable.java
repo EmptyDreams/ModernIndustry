@@ -16,7 +16,7 @@ import minedreams.mi.api.net.IAutoNetwork;
 import minedreams.mi.api.net.NetworkRegister;
 import minedreams.mi.api.net.WaitList;
 import minedreams.mi.register.te.AutoTileEntity;
-import minedreams.mi.tools.Tools;
+import minedreams.mi.utils.BlockPosUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -55,7 +55,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 			for (int i = 0; i < 2; ++i) {
 				world.setBlockState(pos, Blocks.FIRE.getDefaultState());
 				world.markBlockRangeForRenderUpdate(pos, pos);
-				pos = Tools.randomPos(world, pos, Tools.ALL);
+				pos = BlockPosUtil.randomPos(world, pos, BlockPosUtil.ALL);
 				if (pos == null) break;
 			}
 		}
@@ -186,7 +186,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 		setUp(false);
 		setDown(false);
 		if (next != null) {
-			switch (Tools.whatFacing(pos, next)) {
+			switch (BlockPosUtil.whatFacing(pos, next)) {
 				case EAST: setEast(true); break;
 				case WEST: setWest(true); break;
 				case SOUTH: setSouth(true); break;
@@ -196,7 +196,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 			}
 		}
 		if (prev != null) {
-			switch (Tools.whatFacing(pos, prev)) {
+			switch (BlockPosUtil.whatFacing(pos, prev)) {
 				case EAST: setEast(true); break;
 				case WEST: setWest(true); break;
 				case SOUTH: setSouth(true); break;
@@ -206,7 +206,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 			}
 		}
 		for (BlockPos block : linkedBlocks) {
-			switch (Tools.whatFacing(pos, block)) {
+			switch (BlockPosUtil.whatFacing(pos, block)) {
 				case EAST: setEast(true); break;
 				case WEST: setWest(true); break;
 				case SOUTH: setSouth(true); break;
@@ -304,7 +304,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 		TileEntity entity;
 		for (BlockPos block : linkedBlocks) {
 			entity = world.getTileEntity(block);
-			if (entity.hasCapability(CapabilityEnergy.ENERGY, Tools.whatFacing(block, pos))) {
+			if (entity.hasCapability(CapabilityEnergy.ENERGY, BlockPosUtil.whatFacing(block, pos))) {
 				EleWorker.useEleEnergy(entity);
 			}
 		}
@@ -463,10 +463,10 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 		north = compound.getBoolean("north");
 		
 		if (compound.getBoolean("hasNext")) {
-			next = Tools.readBlockPos(compound, "next");
+			next = BlockPosUtil.readBlockPos(compound, "next");
 		}
 		if (compound.getBoolean("hasPrev")) {
-			prev = Tools.readBlockPos(compound, "prev");
+			prev = BlockPosUtil.readBlockPos(compound, "prev");
 		}
 		
 		int size = compound.getInteger("maker_size");
@@ -488,15 +488,15 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 		compound.setBoolean("hasNext", next != null);
 		compound.setBoolean("hasPrev", prev != null);
 		if (next != null) {
-			Tools.writeBlockPos(compound, next, "next");
+			BlockPosUtil.writeBlockPos(compound, next, "next");
 		}
 		if (prev != null) {
-			Tools.writeBlockPos(compound, prev, "prev");
+			BlockPosUtil.writeBlockPos(compound, prev, "prev");
 		}
 		
 		int size = 0;
 		for (BlockPos block : linkedBlocks) {
-			compound.setInteger("facing_" + size++, Tools.whatFacing(pos, block).getIndex());
+			compound.setInteger("facing_" + size++, BlockPosUtil.whatFacing(pos, block).getIndex());
 		}
 		compound.setInteger("maker_size", size);
 		

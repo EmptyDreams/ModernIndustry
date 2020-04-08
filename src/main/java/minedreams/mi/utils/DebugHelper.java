@@ -1,4 +1,4 @@
-package minedreams.mi.tools;
+package minedreams.mi.utils;
 
 import java.util.Collection;
 

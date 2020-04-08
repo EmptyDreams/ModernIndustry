@@ -12,7 +12,7 @@ import minedreams.mi.api.electricity.src.info.EnumBiggerVoltage;
 import minedreams.mi.api.electricity.src.info.EnumVoltage;
 import minedreams.mi.api.net.WaitList;
 import minedreams.mi.register.te.AutoTileEntity;
-import minedreams.mi.tools.Tools;
+import minedreams.mi.utils.BlockPosUtil;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -57,7 +57,7 @@ public abstract class EleSrcUser extends Electricity {
 	 */
 	public void link(EleSrcCable transfer) {
 		WaitList.checkNull(transfer, "transfer");
-		linkedWire.put(Tools.whatFacing(pos, transfer.getPos()), transfer);
+		linkedWire.put(BlockPosUtil.whatFacing(pos, transfer.getPos()), transfer);
 	}
 	
 	/**
@@ -86,7 +86,7 @@ public abstract class EleSrcUser extends Electricity {
 	 */
 	public void link(EleMaker maker) {
 		WaitList.checkNull(maker, "maker");
-		linkedMaker.put(Tools.whatFacing(pos, maker.getPos()), maker);
+		linkedMaker.put(BlockPosUtil.whatFacing(pos, maker.getPos()), maker);
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public abstract class EleSrcUser extends Electricity {
 	 */
 	public final void removeLink(BlockPos fromPos) {
 		WaitList.checkNull(fromPos, "fromPos");
-		EnumFacing facing = Tools.whatFacing(pos, fromPos);
+		EnumFacing facing = BlockPosUtil.whatFacing(pos, fromPos);
 		linkedMaker.remove(facing);
 		linkedWire.remove(facing);
 	}
@@ -137,10 +137,10 @@ public abstract class EleSrcUser extends Electricity {
 	private void updateInfo() {
 		if (_makers == null) return;
 		for (BlockPos pos : _makers) {
-			linkedMaker.put(Tools.whatFacing(getPos(), pos), (EleMaker) world.getTileEntity(pos));
+			linkedMaker.put(BlockPosUtil.whatFacing(getPos(), pos), (EleMaker) world.getTileEntity(pos));
 		}
 		for (BlockPos pos : _transfers) {
-			linkedWire.put(Tools.whatFacing(getPos(), pos), world.getTileEntity(pos));
+			linkedWire.put(BlockPosUtil.whatFacing(getPos(), pos), world.getTileEntity(pos));
 		}
 		_makers = null;
 		_transfers = null;
@@ -153,13 +153,13 @@ public abstract class EleSrcUser extends Electricity {
 		int size = compound.getInteger("makers_size");
 		_makers = new BlockPos[size];
 		for (int i = 0; i < size; ++i) {
-			_makers[i] = Tools.readBlockPos(compound, "maker_pos_" + i);
+			_makers[i] = BlockPosUtil.readBlockPos(compound, "maker_pos_" + i);
 		}
 		
 		size = compound.getInteger("transfers_size");
 		_transfers = new BlockPos[size];
 		for (int i = 0; i < size; ++i) {
-			_transfers[i] = Tools.readBlockPos(compound, "transfer_pos_" + i);
+			_transfers[i] = BlockPosUtil.readBlockPos(compound, "transfer_pos_" + i);
 		}
 	}
 	
@@ -172,13 +172,13 @@ public abstract class EleSrcUser extends Electricity {
 		
 		int i = 0;
 		for (Map.Entry<EnumFacing, EleMaker> entry : linkedMaker.entrySet()) {
-			Tools.writeBlockPos(compound, entry.getValue().getPos(), "maker_pos_" + i);
+			BlockPosUtil.writeBlockPos(compound, entry.getValue().getPos(), "maker_pos_" + i);
 			++i;
 		}
 		
 		i = 0;
 		for (Map.Entry<EnumFacing, TileEntity> entry : linkedWire.entrySet()) {
-			Tools.writeBlockPos(compound, entry.getValue().getPos(), "transfer_pos_" + i);
+			BlockPosUtil.writeBlockPos(compound, entry.getValue().getPos(), "transfer_pos_" + i);
 			++i;
 		}
 		

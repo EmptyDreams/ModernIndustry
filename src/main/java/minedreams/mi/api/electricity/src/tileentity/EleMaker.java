@@ -10,7 +10,7 @@ import minedreams.mi.api.electricity.info.OutPutResult;
 import minedreams.mi.api.electricity.interfaces.IVoltage;
 import minedreams.mi.api.net.WaitList;
 import minedreams.mi.register.te.AutoTileEntity;
-import minedreams.mi.tools.Tools;
+import minedreams.mi.utils.BlockPosUtil;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 
@@ -38,7 +38,7 @@ public abstract class EleMaker extends Electricity implements ITickable {
 	private int output = 0;
 	/** 连接指定方块 */
 	public void link(Electricity te) {
-		link(te, Tools.whatFacing(pos, te.getPos()));
+		link(te, BlockPosUtil.whatFacing(pos, te.getPos()));
 	}
 	/** 连接指定方块 */
 	public void link(Electricity te, EnumFacing facing) {

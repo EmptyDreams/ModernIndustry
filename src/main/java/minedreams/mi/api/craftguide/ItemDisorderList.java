@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import minedreams.mi.api.net.WaitList;
-import minedreams.mi.tools.MISysInfo;
+import minedreams.mi.utils.MISysInfo;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 

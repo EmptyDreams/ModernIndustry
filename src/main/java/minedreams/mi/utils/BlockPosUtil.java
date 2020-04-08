@@ -1,4 +1,4 @@
-package minedreams.mi.tools;
+package minedreams.mi.utils;
 
 import static net.minecraft.util.EnumFacing.UP;
 import static net.minecraft.util.EnumFacing.DOWN;
@@ -24,7 +24,7 @@ import net.minecraft.world.World;
  * @author EmptyDremas
  * @version V1.0
  */
-public final class Tools {
+public final class BlockPosUtil {
 	
 	/**
 	 * 遍历指定方块周围的所有TE，不包含TE的不会进行遍历

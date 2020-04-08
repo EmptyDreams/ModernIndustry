@@ -7,7 +7,7 @@ import java.util.Map;
 import minedreams.mi.api.electricity.EleWorker;
 import minedreams.mi.api.electricity.info.EleLineCache;
 import minedreams.mi.api.electricity.info.PathInfo;
-import minedreams.mi.tools.Tools;
+import minedreams.mi.utils.BlockPosUtil;
 import net.minecraft.tileentity.TileEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -120,9 +120,9 @@ public interface IEleTransfer extends IRegister {
 	
 	default Map<TileEntity, IEleOutputer> getOutputerAround(TileEntity now) {
 		Map<TileEntity, IEleOutputer> list = new HashMap<>(3);
-		Tools.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
+		BlockPosUtil.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
 			IEleOutputer out = EleWorker.getOutputer(te);
-			if (out != null && isLink(now, te) && out.isAllowable(te, Tools.upsideDown(facing)))
+			if (out != null && isLink(now, te) && out.isAllowable(te, BlockPosUtil.upsideDown(facing)))
 				list.put(te, out);
 		});
 		return list;

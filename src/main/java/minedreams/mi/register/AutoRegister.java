@@ -26,7 +26,7 @@ import minedreams.mi.register.item.AutoItemRegister;
 import minedreams.mi.register.item.ItemRegister;
 import minedreams.mi.register.te.AutoTileEntity;
 import minedreams.mi.register.trusteeship.AutoTrusteeshipRegister;
-import minedreams.mi.tools.MISysInfo;
+import minedreams.mi.utils.MISysInfo;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;

@@ -12,7 +12,7 @@ import minedreams.mi.api.electricity.interfaces.IEleOutputer;
 import minedreams.mi.api.electricity.interfaces.IEleTransfer;
 import minedreams.mi.api.electricity.interfaces.IVoltage;
 import minedreams.mi.api.net.WaitList;
-import minedreams.mi.tools.MISysInfo;
+import minedreams.mi.utils.MISysInfo;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.Mod;
 

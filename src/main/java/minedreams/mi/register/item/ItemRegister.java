@@ -6,7 +6,7 @@ import minedreams.mi.ModernIndustry;
 import minedreams.mi.blocks.ore.OreBlock;
 import minedreams.mi.items.tools.ToolRegister;
 import minedreams.mi.register.AutoRegister;
-import minedreams.mi.tools.MISysInfo;
+import minedreams.mi.utils.MISysInfo;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

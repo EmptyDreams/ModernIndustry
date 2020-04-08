@@ -6,7 +6,7 @@ import java.util.Set;
 
 import minedreams.mi.api.net.guinet.GUIMessage;
 import minedreams.mi.api.net.guinet.IAutoGuiNetWork;
-import minedreams.mi.tools.MISysInfo;
+import minedreams.mi.utils.MISysInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;

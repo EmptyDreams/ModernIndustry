@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import minedreams.mi.api.electricity.EleWorker;
-import minedreams.mi.tools.Tools;
+import minedreams.mi.utils.BlockPosUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
@@ -60,7 +60,7 @@ public interface IEleInputer extends IRegister {
 	 */
 	default Map<TileEntity, IEleTransfer> getTransferAround(TileEntity now) {
 		Map<TileEntity, IEleTransfer> list = new HashMap<>(4);
-		Tools.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
+		BlockPosUtil.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
 			IEleTransfer et = EleWorker.getTransfer(te);
 			if (et != null && et.isLink(te, now)) list.put(te,et);
 		});
@@ -73,9 +73,9 @@ public interface IEleInputer extends IRegister {
 	 */
 	default Map<TileEntity, IEleOutputer> getOutputerAround(TileEntity now) {
 		Map<TileEntity, IEleOutputer> list = new HashMap<>(3);
-		Tools.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
+		BlockPosUtil.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
 			IEleOutputer out = EleWorker.getOutputer(te);
-			if (out != null && isAllowable(now, facing) && out.isAllowable(te, Tools.upsideDown(facing)))
+			if (out != null && isAllowable(now, facing) && out.isAllowable(te, BlockPosUtil.upsideDown(facing)))
 				list.put(te, out);
 		});
 		return list;

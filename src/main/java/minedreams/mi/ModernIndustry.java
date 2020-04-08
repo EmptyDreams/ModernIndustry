@@ -3,7 +3,7 @@ package minedreams.mi;
 import javax.annotation.Nonnull;
 
 import minedreams.mi.register.item.ItemRegister;
-import minedreams.mi.tools.MISysInfo;
+import minedreams.mi.utils.MISysInfo;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

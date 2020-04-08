@@ -1,7 +1,7 @@
 package minedreams.mi.api.electricity.src.block;
 
 import minedreams.mi.api.electricity.src.tileentity.EleSrcCable;
-import minedreams.mi.tools.Tools;
+import minedreams.mi.utils.BlockPosUtil;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -66,7 +66,7 @@ public final class TransferItem extends ItemBlock {
 	            nbt.setPos(blockPos);
 	            nbt.setBlockType(this.block);
 	            if (pos != blockPos) nbt.link(pos);
-	            Tools.forEachAroundTE(worldIn, blockPos, (te, fa) -> {
+	            BlockPosUtil.forEachAroundTE(worldIn, blockPos, (te, fa) -> {
 	            	if (pos != te.getPos()) nbt.link(te.getPos());
 	            });
 	            worldIn.setTileEntity(blockPos, nbt);

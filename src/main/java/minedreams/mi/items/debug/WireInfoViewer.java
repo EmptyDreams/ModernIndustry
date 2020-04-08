@@ -6,7 +6,7 @@ import minedreams.mi.ModernIndustry;
 import minedreams.mi.api.electricity.src.block.TransferBlock;
 import minedreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import minedreams.mi.register.item.AutoItemRegister;
-import minedreams.mi.tools.MISysInfo;
+import minedreams.mi.utils.MISysInfo;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
