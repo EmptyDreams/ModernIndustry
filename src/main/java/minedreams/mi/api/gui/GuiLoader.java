@@ -10,7 +10,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * GUI的总加载器
@@ -99,7 +98,7 @@ public class GuiLoader implements IGuiHandler {
 		}
 		
 		@Override
-		public int compareTo(@NotNull GuiLoader.Int o) {
+		public int compareTo(GuiLoader.Int o) {
 			return Integer.compare(i, o.i);
 		}
 	}

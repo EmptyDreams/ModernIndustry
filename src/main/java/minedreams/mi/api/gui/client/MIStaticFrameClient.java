@@ -21,7 +21,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * 静态GUI，注意：该类只能用于静态GUI的显示
@@ -223,7 +222,7 @@ public class MIStaticFrameClient extends GuiContainer {
 		}
 	}
 	
-	public static void drawBackground(@NotNull Graphics g, int width, int height) {
+	public static void drawBackground(Graphics g, int width, int height) {
 		g.drawImage(ImageData.BACKGROUND.getScaledInstance(
 				width, height, Image.SCALE_DEFAULT), 0, 0, null);
 	}

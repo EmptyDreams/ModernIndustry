@@ -5,9 +5,12 @@ import java.util.Map;
 import java.util.Random;
 
 import minedreams.mi.ModernIndustry;
+import minedreams.mi.api.oregen.GenRegister;
+import minedreams.mi.api.oregen.Generator;
 import minedreams.mi.blocks.register.BlockBase;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 
@@ -34,6 +37,11 @@ public class OreBlock extends BlockBase {
 		setHarvestLevel("pickaxe", 1);
 		ITEM = new ItemBlock(this).setRegistryName(name);
 		LIST.put(this, output);
+		Generator gen = new Generator(Generator.DistributionType.ADJACENT, getDefaultState());
+		gen.setCount(10);
+		gen.setMaxZ(100);
+		gen.setReplace(Blocks.STONE);
+		GenRegister.register(gen);
 	}
 	
 	@Override

@@ -1,5 +1,6 @@
 package minedreams.mi.api.electricity.interfaces;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +10,6 @@ import minedreams.mi.api.electricity.info.EleLineCache;
 import minedreams.mi.api.electricity.info.PathInfo;
 import minedreams.mi.utils.BlockPosUtil;
 import net.minecraft.tileentity.TileEntity;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * 电力传输工具的托管
@@ -109,7 +109,7 @@ public interface IEleTransfer extends IRegister {
 	 * 创建一个新的线路缓存，该方法不修改now中的数据
 	 * @param now 目标方块
 	 */
-	@NotNull
+	@Nonnull
 	EleLineCache createLineCache(TileEntity now);
 	
 	/**

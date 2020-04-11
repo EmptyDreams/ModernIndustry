@@ -1,5 +1,6 @@
 package minedreams.mi.api.electricity.src.trusteeship;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import minedreams.mi.ModernIndustry;
@@ -13,7 +14,6 @@ import minedreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import minedreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author EmptyDreams
@@ -94,8 +94,9 @@ public class EleSrcTransfer implements IEleTransfer {
 		((EleSrcCable) now).setCache((WireLinkInfo) cache);
 	}
 	
+	@Nonnull
 	@Override
-	public @NotNull EleLineCache createLineCache(TileEntity now) {
+	public EleLineCache createLineCache(TileEntity now) {
 		return new WireLinkInfo();
 	}
 	

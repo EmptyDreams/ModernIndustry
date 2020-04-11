@@ -1,5 +1,6 @@
 package minedreams.mi.api.electricity.info;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,6 @@ import minedreams.mi.api.electricity.interfaces.IEleInputer;
 import minedreams.mi.api.electricity.interfaces.IEleOutputer;
 import minedreams.mi.api.electricity.interfaces.IVoltage;
 import net.minecraft.tileentity.TileEntity;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * 存储线路计算信息.<br>
@@ -205,7 +205,7 @@ public class PathInfo implements Comparable<PathInfo> {
 	}
 	
 	@Override
-	public int compareTo(@NotNull PathInfo o) {
+	public int compareTo(@Nonnull PathInfo o) {
 		if (!user.equals(o.user)) return 0;
 		if (outputer.isAllowable(outer, inputer.getVoltage(user))) {
 			if (o.outputer.isAllowable(o.outer, o.inputer.getVoltage(user))) {
