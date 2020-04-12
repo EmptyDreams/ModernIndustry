@@ -27,13 +27,6 @@ import static minedreams.mi.register.AutoRegister.Blocks;
 @Mod.EventBusSubscriber
 public class BlockRegister {
 	
-	private static int nextID = Integer.MAX_VALUE / 2;
-	
-	/** 自动分配ID */
-	public static int next() {
-		return ++nextID;
-	}
-	
 	/** 铜矿石 */
 	@OreCreat(yRange = 76 - 16, count = 11, name = OreBlock.NAME_COPPER)
 	public static final OreBlock ORE_COPPER = new OreBlock(OreBlock.NAME_COPPER, ItemRegister.ITEM_COPPER_POWDER);
@@ -116,10 +109,6 @@ public class BlockRegister {
 				event.getRegistry().register(item);
 			}
 		}
-	}
-	
-	public static Block getBlock(int index) {
-		return Blocks.blocks.get(index);
 	}
 	
 }
