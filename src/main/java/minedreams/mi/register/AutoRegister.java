@@ -31,6 +31,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
@@ -69,7 +70,7 @@ public final class AutoRegister {
 		/** 不需要自动注册的方块的注册地址 */
 		public static final HashMap<Class<?>, Block> selfRegister = new HashMap<>();
 		/** 地图生成方块 */
-		public static final HashMap<Block, WorldCreater> worldCreater = new HashMap<>();
+		public static final HashMap<Block, WorldGenerator> worldCreater = new HashMap<>();
 		/** 不注册物品的方块 */
 		public static final ArrayList<Block> noItem = new ArrayList<>();
 	}

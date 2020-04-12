@@ -33,7 +33,7 @@ public @interface OreCreat {
 	/** 高度范围 */
 	int yRange() default 64;
 	/** 生成成功几率 */
-	float probability() default 0.8F;
+	float probability() default 1.0F;
 	/** 方块名称（不包括MODID） */
 	String name();
 	

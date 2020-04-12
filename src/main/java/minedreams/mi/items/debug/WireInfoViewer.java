@@ -1,5 +1,6 @@
 package minedreams.mi.items.debug;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 import minedreams.mi.ModernIndustry;
@@ -19,6 +20,7 @@ import net.minecraft.world.World;
 /**
  * 电线信息显示器，信息将会打印在客户端的后台中
  */
+@SuppressWarnings("SpellCheckingInspection")
 @AutoItemRegister("wireinfo_viewer")
 public class WireInfoViewer extends Item {
 	
@@ -26,25 +28,23 @@ public class WireInfoViewer extends Item {
 		setCreativeTab(ModernIndustry.TAB_DEBUG);
 	}
 	
+	@Nonnull
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos,
 	                                  EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		IBlockState state = worldIn.getBlockState(pos);
 		if (state.getBlock() instanceof TransferBlock) {
+			EleSrcCable et = (EleSrcCable) worldIn.getTileEntity(pos);
+			StringBuilder sb = new StringBuilder();
+			assert et != null;
 			if (worldIn.isRemote) {
-				EleSrcCable et = (EleSrcCable) worldIn.getTileEntity(pos);
-				StringBuilder sb = new StringBuilder();
 				sb.append("客户端线缆信息{\n\t内部连接数据：\t")
 						.append(Arrays.toString(new boolean[]{
 								et.getUp(), et.getDown(), et.getEast(),
 								et.getWest(), et.getSouth(), et.getNorth()
 						}))
 						.append(";\n\t\t\t       UP, DOWN, EAST, WEST, SOUTH\n}");
-				MISysInfo.print(sb);
-				return EnumActionResult.SUCCESS;
 			} else {
-				EleSrcCable et = (EleSrcCable) worldIn.getTileEntity(pos);
-				StringBuilder sb = new StringBuilder();
 				sb.append("服务端线缆信息{\n\t坐标：")
 						.append(pos)
 						.append(";\n\t上一根电线：")
@@ -57,9 +57,9 @@ public class WireInfoViewer extends Item {
 								et.getWest(), et.getSouth(), et.getNorth()
 						}))
 						.append(";\n\t\t\t       UP, DOWN, EAST, WEST, SOUTH\n}");
-				MISysInfo.print(sb);
-				return EnumActionResult.SUCCESS;
 			}
+			MISysInfo.print(sb);
+			return EnumActionResult.SUCCESS;
 		} else {
 			return EnumActionResult.FAIL;
 		}

@@ -34,16 +34,11 @@ public class BlockRegister {
 		return ++nextID;
 	}
 	
-	/** 压缩机 */
-	public static final int COMPRESSOR_TBLOCK = 1;
-	/** 铜线 */
-	public static final int WIRE_COPPER = 2;
-	
 	/** 铜矿石 */
-	@OreCreat(yRange = 76 - 16, name = OreBlock.NAME_COPPER)
+	@OreCreat(yRange = 76 - 16, count = 11, name = OreBlock.NAME_COPPER)
 	public static final OreBlock ORE_COPPER = new OreBlock(OreBlock.NAME_COPPER, ItemRegister.ITEM_COPPER_POWDER);
 	/** 锡矿石 */
-	@OreCreat(yRange = 70 - 16, count = 5, time = 3, name = OreBlock.NAME_TIN)
+	@OreCreat(yRange = 70 - 16, count = 7, time = 3, name = OreBlock.NAME_TIN)
 	public static final OreBlock ORE_TIN = new OreBlock(OreBlock.NAME_TIN, ItemRegister.ITEM_TIN_POWER);
 	
 	@SubscribeEvent

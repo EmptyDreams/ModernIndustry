@@ -1,6 +1,7 @@
 package minedreams.mi.blocks.world;
 
 import minedreams.mi.register.AutoRegister.Blocks;
+import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.terraingen.OreGenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -18,7 +19,7 @@ public final class WorldAutoCreater {
 	@SubscribeEvent
 	public static void onOreGenPost(OreGenEvent.Post event) {
 		if (!event.getWorld().isRemote) {
-			for (WorldCreater generator : Blocks.worldCreater.values()) {
+			for (WorldGenerator generator : Blocks.worldCreater.values()) {
 				generator.generate(event.getWorld(), event.getRand(), event.getPos());
 			}
 		}
