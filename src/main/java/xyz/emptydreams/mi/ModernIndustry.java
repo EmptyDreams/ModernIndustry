@@ -31,8 +31,8 @@ public final class ModernIndustry {
 	@Mod.Instance(ModernIndustry.MODID)
 	public static ModernIndustry instance;
 
-	@SidedProxy(clientSide = "ClientProxy",
-	    		serverSide = "CommonProxy")
+	@SidedProxy(clientSide = "xyz.emptydreams.mi.proxy.ClientProxy",
+	    		serverSide = "xyz.emptydreams.mi.proxy.CommonProxy")
 	public static CommonProxy proxy;
 	
 	public static Logger logger;

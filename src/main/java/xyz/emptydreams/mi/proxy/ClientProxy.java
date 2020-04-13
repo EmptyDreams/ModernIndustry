@@ -23,11 +23,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void preInit(@Nonnull FMLPreInitializationEvent event){
 		ASM = event.getAsmData();
-		AutoRegister.init();
 		super.preInit(event);
-		new WorldAutoCreater();
-		new GuiLoader();
-		new NetworkLoader();
 	}
 
 	@Override

@@ -14,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
  * @author EmptyDreams
  * @version V1.0
  */
+@SuppressWarnings("unused")
 public class MProgressBar extends MComponent {
 	
 	private EnumStyle style;
@@ -31,6 +32,7 @@ public class MProgressBar extends MComponent {
 	public MProgressBar(EnumStyle style, int max) {
 		WaitList.checkNull(style, "style");
 		this.style = style;
+		this.max = max;
 		setSize(style.getWidth(), style.getHeight());
 	}
 	
@@ -49,7 +51,7 @@ public class MProgressBar extends MComponent {
 		int x = offsetX + getX(), y = offsetY + getY();
 		double d = now / (double) max;
 		gui.mc.getTextureManager().bindTexture(TEXTURE);
-		gui.drawTexturedModalRect(x, y, 0, 166,
+		gui.drawTexturedModalRect(x, y, style.getX2(), style.getY2(),
 				Math.min((int) (style.getWidth() * d), style.getWidth()), style.getHeight());
 	}
 	
@@ -82,11 +84,11 @@ public class MProgressBar extends MComponent {
 	
 	public enum EnumStyle {
 		
-		ARROW(0, 0, 10, 15, 22, 15),
+		ARROW(0, 0, 0, 15, 22, 15),
 		STRIPE(22, 0, 22, 4, 89, 4),
 		ARROW_BIG(22, 8, 22, 27, 68, 19);
 		
-		private int x, y, x2, y2, width, height;
+		private final int x, y, x2, y2, width, height;
 		
 		EnumStyle(int x, int y, int x2, int y2, int width, int height) {
 			this.x = x;

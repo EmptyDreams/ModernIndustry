@@ -15,7 +15,6 @@ public class CommonProxy {
 	
 	private static ASMDataTable ASM;
 	
-
 	@Nonnull
 	public static ASMDataTable getAsm() {
 		return ASM;
@@ -25,7 +24,6 @@ public class CommonProxy {
 		ASM = event.getAsmData();
 		AutoRegister.init();
 		new NetworkLoader();
-		new WorldAutoCreater();
 		new GuiLoader();
     }
     public void init(FMLInitializationEvent event){
