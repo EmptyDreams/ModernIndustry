@@ -10,7 +10,7 @@ import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.electricity.src.cache.WireLinkInfo;
+import xyz.emptydreams.mi.api.electricity.src.info.WireLinkInfo;
 import xyz.emptydreams.mi.api.electricity.src.info.IETForEach;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.net.NetworkRegister;
@@ -68,7 +68,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 	private boolean south = false;
 	private boolean north = false;
 	/** 电线连接的方块，不包括电线方块 */
-	private List<BlockPos> linkedBlocks = new ArrayList<BlockPos>(5) {
+	private final List<BlockPos> linkedBlocks = new ArrayList<BlockPos>(5) {
 		@Override
 		public boolean add(BlockPos tileEntity) {
 			WaitList.checkNull(tileEntity, "tileEntity");
@@ -304,7 +304,9 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 		TileEntity entity;
 		for (BlockPos block : linkedBlocks) {
 			entity = world.getTileEntity(block);
-			if (entity.hasCapability(CapabilityEnergy.ENERGY, BlockPosUtil.whatFacing(block, pos))) {
+			if (entity.hasCapability(CapabilityEnergy.ENERGY, BlockPosUtil.whatFacing(block, pos))
+					    && entity.getCapability(CapabilityEnergy.ENERGY,
+					BlockPosUtil.whatFacing(block, pos)).receiveEnergy(1, true) > 0) {
 				EleWorker.useEleEnergy(entity);
 			}
 		}

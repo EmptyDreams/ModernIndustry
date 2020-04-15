@@ -9,7 +9,7 @@ import xyz.emptydreams.mi.api.electricity.info.PathInfo;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.electricity.src.cache.WireLinkInfo;
+import xyz.emptydreams.mi.api.electricity.src.info.WireLinkInfo;
 import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 import net.minecraft.tileentity.TileEntity;

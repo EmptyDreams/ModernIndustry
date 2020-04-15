@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.electricity.src.cache;
+package xyz.emptydreams.mi.api.electricity.src.info;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -151,6 +151,7 @@ public final class WireLinkInfo extends EleLineCache {
 			if (isEnd) {
 				for (Map.Entry<TileEntity, IEleOutputer> entry :
 						transfer.getOutputerAround(it).entrySet()) {
+					if (entry.getKey() == user) continue;
 					UseInfo useInfo = entry.getValue().output(
 							entry.getKey(), Integer.MAX_VALUE, voltage, true);
 					if (useInfo.getEnergy() >= energy) {
@@ -175,6 +176,7 @@ public final class WireLinkInfo extends EleLineCache {
 			} else {
 				for (Map.Entry<TileEntity, IEleOutputer> entry :
 						transfer.getOutputerAround(it).entrySet()) {
+					if (entry.getKey() == user) continue;
 					UseInfo useInfo = entry.getValue().output(
 							entry.getKey(), Integer.MAX_VALUE, voltage, true);
 					if (useInfo.getEnergy() >= energy) {
