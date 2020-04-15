@@ -48,7 +48,9 @@ public class EleCapInputer implements IEleInputer {
 	
 	@Override
 	public boolean isAllowable(TileEntity now, EnumFacing facing) {
-		return true;
+		IEnergyStorage pro = now.getCapability(CapabilityEnergy.ENERGY, facing);
+		if (pro == null) return false;
+		return pro.receiveEnergy(1, true) > 0;
 	}
 	
 	@Override
@@ -59,8 +61,7 @@ public class EleCapInputer implements IEleInputer {
 	@Override
 	public boolean contains(TileEntity te) {
 		IEnergyStorage cap = te.getCapability(CapabilityEnergy.ENERGY, null);
-		if (cap == null) return false;
-		return cap.receiveEnergy(1, true) >= 1;
+		return cap != null;
 	}
 	
 }

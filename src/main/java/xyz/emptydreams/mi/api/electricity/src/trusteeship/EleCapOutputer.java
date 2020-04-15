@@ -33,17 +33,19 @@ public class EleCapOutputer implements IEleOutputer {
 	
 	@Override
 	public boolean isAllowable(TileEntity te, EnumFacing facing) {
-		return te.getCapability(CapabilityEnergy.ENERGY, facing) != null;
+		IEnergyStorage energy = te.getCapability(CapabilityEnergy.ENERGY, facing);
+		if (energy == null) return false;
+		return energy.extractEnergy(1, true) > 0;
 	}
 	
 	@Override
 	public boolean isAllowable(TileEntity now, IVoltage voltage) {
-		return true;
+		return now.hasCapability(CapabilityEnergy.ENERGY, null);
 	}
 	
 	@Override
 	public int getOutput(TileEntity te) {
-		return te.getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(1, true);
+		return te.getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(Integer.MAX_VALUE, true);
 	}
 	
 	@Override
@@ -54,8 +56,7 @@ public class EleCapOutputer implements IEleOutputer {
 	@Override
 	public boolean contains(TileEntity te) {
 		IEnergyStorage cap = te.getCapability(CapabilityEnergy.ENERGY, null);
-		if (cap == null) return false;
-		return cap.extractEnergy(1, true) >= 1;
+		return cap != null;
 	}
 	
 }
