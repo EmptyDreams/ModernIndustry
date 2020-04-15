@@ -1,12 +1,15 @@
 package xyz.emptydreams.mi.api.gui.component;
 
 import javax.annotation.Nonnull;
+
 import java.awt.*;
+import java.util.List;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
+import net.minecraft.inventory.Slot;
 
 /**
  * @author EmptyDreams
@@ -51,6 +54,10 @@ public interface IComponent {
 	int getHeight();
 	/** 获取宽度 */
 	int getWidth();
+	/** 当前组件是否包含Slot */
+	boolean hasSlot();
+	/** 获取Slot */
+	List<Slot> getSlots();
 	
 	/**
 	 * 绘制图像，在组件被渲染时调用.<br>

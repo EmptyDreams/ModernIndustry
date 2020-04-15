@@ -38,7 +38,6 @@ public class CompressorFrame extends MIFrame {
 			MIFrame frame = new CompressorFrame();
 			init(frame, world, pos, player);
 			MIStaticFrameClient client = new MIStaticFrameClient(frame);
-			frame.setGuiContainer(client);
 			init(client, world, pos, player);
 			return client;
 		}
@@ -47,7 +46,7 @@ public class CompressorFrame extends MIFrame {
 			EUCompressor compressor = (EUCompressor) world.getTileEntity(pos);
 			if (o instanceof MIFrame) {
 				MIFrame frame = (MIFrame) o;
-				frame.init(world, pos);
+				frame.init(world);
 				frame.setTitle("tile.compressor_tblock.name");
 				frame.setTitleModel(TitleModelEnum.CENTRAL);
 				frame.add(new MBackpack(8, 84), player);

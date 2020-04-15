@@ -87,7 +87,7 @@ public class CompressorContainer extends Container {
 		return oldStack;
 	}
 	
-	private int[] Information = { 0, 0 };
+	private final int[] Information = { 0, 0 };
 	
 	/** 
 	 * 向客户端发送信息：<br>

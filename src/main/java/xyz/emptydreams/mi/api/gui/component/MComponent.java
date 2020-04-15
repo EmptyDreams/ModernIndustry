@@ -2,9 +2,11 @@ package xyz.emptydreams.mi.api.gui.component;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -50,6 +52,10 @@ public abstract class MComponent implements IComponent {
 	public int getHeight() { return height; }
 	@Override
 	public int getWidth() { return width; }
+	@Override
+	public boolean hasSlot() { return false; }
+	@Override
+	public List<Slot> getSlots() { return null; }
 	
 	@Override
 	@SideOnly(Side.CLIENT)

@@ -2,7 +2,9 @@ package xyz.emptydreams.mi.api.gui.client;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -18,7 +20,6 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -27,6 +28,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author EmptyDreams
  * @version V1.0
  */
+@SuppressWarnings("unused")
 @SideOnly(Side.CLIENT)
 public class MIStaticFrameClient extends GuiContainer {
 	
@@ -46,14 +48,11 @@ public class MIStaticFrameClient extends GuiContainer {
 	private final List<IComponent> stringComponents = new LinkedList<>();
 	/** 材质 */
 	private final ResourceLocation RL;
-	/** 方块坐标 */
-	private final BlockPos pos;
 	
 	public MIStaticFrameClient(MIFrame inventorySlotsIn) {
 		super(inventorySlotsIn);
 		xSize = inventorySlotsIn.getWidth();
 		ySize = inventorySlotsIn.getHeight();
-		pos = inventorySlotsIn.getBlockPos();
 		RL = new ResourceLocation(inventorySlotsIn.getModId(), inventorySlotsIn.getName());
 	}
 	
@@ -67,7 +66,6 @@ public class MIStaticFrameClient extends GuiContainer {
 	}
 	
 	private boolean isInit = true;
-	private boolean _isInit = false;
 	private void init() {
 		if (isInit) {
 			isInit = false;

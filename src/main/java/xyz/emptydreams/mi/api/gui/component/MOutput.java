@@ -2,7 +2,9 @@ package xyz.emptydreams.mi.api.gui.component;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.List;
 
+import com.google.common.collect.Lists;
 import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.utils.MISysInfo;
@@ -58,6 +60,10 @@ public class MOutput extends MComponent {
 	public void setSize(int width, int height) { }
 	@Override
 	public void setLocation(int x, int y) { }
+	@Override
+	public boolean hasSlot() { return true; }
+	@Override
+	public List<Slot> getSlots() { return Lists.newArrayList(slot); }
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {

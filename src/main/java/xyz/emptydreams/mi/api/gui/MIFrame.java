@@ -2,12 +2,14 @@ package xyz.emptydreams.mi.api.gui;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
+import java.awt.Point;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.minecraft.item.ItemStack;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.component.IComponent;
+import xyz.emptydreams.mi.api.gui.component.MBackpack;
 import xyz.emptydreams.mi.api.gui.info.TitleModelEnum;
 import xyz.emptydreams.mi.api.net.WaitList;
 import net.minecraft.client.resources.I18n;
@@ -15,11 +17,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * MI版本窗体，通过该类可以便捷的创建和控制UI界面
@@ -27,13 +26,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author EmptyDreams
  * @version V1.0
  */
+@SuppressWarnings("unused")
 @Mod.EventBusSubscriber
 public class MIFrame extends Container {
 	
 	/** 存储窗体的尺寸，可以更改 */
 	private int width, height;
-	/** 方块坐标 */
-	private BlockPos blockPos;
 	/** 所在世界 */
 	private World world;
 	/** 名称 */
@@ -57,17 +55,13 @@ public class MIFrame extends Container {
 	/**
 	 * 初始化内部数据
 	 * @param world 当前世界
-	 * @param pos 方块所在地点
 	 *
 	 * @throws NullPointerException 如果world == null || pos == null
 	 * @throws IllegalArgumentException 如果第二次调用该函数
 	 */
-	public void init(World world, BlockPos pos) {
+	public void init(World world) {
 		WaitList.checkNull(world, "world");
-		WaitList.checkNull(pos, "pos");
-		
 		this.world = world;
-		blockPos = pos;
 	}
 	
 	/**
@@ -91,23 +85,10 @@ public class MIFrame extends Container {
 	public int getHeight() { return height; }
 	/** 获取所在世界 */
 	public World getWorld() { return world; }
-	/** 获取方块坐标 */
-	public BlockPos getBlockPos() { return blockPos; }
 	/** 获取名称 */
 	public String getName() { return NAME; }
 	/** 获取MODID */
 	public String getModId() { return MODID; }
-	
-	@SideOnly(Side.CLIENT)
-	private Object gui;
-	
-	public void setGuiContainer(Object gui) {
-		if (gui instanceof net.minecraft.client.gui.inventory.GuiContainer) {
-			this.gui = gui;
-		} else {
-			throw new ClassCastException("gui is not instanceof GuiContainer");
-		}
-	}
 	
 	/**
 	 * 判断玩家是否可以打开UI，默认返回true
@@ -120,6 +101,48 @@ public class MIFrame extends Container {
 	@Override
 	public Slot addSlotToContainer(Slot slotIn) {
 		return super.addSlotToContainer(slotIn);
+	}
+	
+	@Override
+	public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+		Slot slot = inventorySlots.get(index);
+		ItemStack stack = slot.getStack();
+		ItemStack oldStack = stack.copy();
+		if (stack.isEmpty()) return null;
+		
+		int bagStart = -1, end = -1;
+		for (IComponent component : components) {
+			if (component instanceof MBackpack) {
+				bagStart = ((MBackpack) component).getStartIndex();
+				end = bagStart + 36;
+				break;
+			}
+		}
+		
+		boolean isme = false;
+		if (bagStart == -1) {
+			if (index > 0) {
+				isme = mergeItemStack(stack, 0, index - 1, false);
+			}
+			if (!isme && index < inventorySlots.size() - 1) {
+				isme = mergeItemStack(stack, index + 1, inventorySlots.size() - 1, false);
+			}
+		} else {
+			if (index >= bagStart && index <= end) {
+				if (bagStart > 0)
+					isme = mergeItemStack(stack, 0, bagStart - 1, false);
+				if (!isme && end < inventorySlots.size() - 1)
+					isme = mergeItemStack(stack,
+							end, inventorySlots.size() - 1, false);
+			} else {
+				isme = mergeItemStack(stack, bagStart, end, true);
+			}
+		}
+		if (!isme) return ItemStack.EMPTY;
+		if (stack.isEmpty()) slot.putStack(ItemStack.EMPTY);
+		else slot.onSlotChanged();
+		slot.onTake(playerIn, stack);
+		return oldStack;
 	}
 	
 	//--------------------关于组件的操作--------------------//
