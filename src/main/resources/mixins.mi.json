@@ -1,0 +1,11 @@
+{
+  "package": "xyz.emptydreams.mi.coremod.mixin",
+  "mixins": [
+    "MixinItemStack"
+  ],
+  "client": [],
+  "server": [],
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.6",
+  "refmap": "mixins.mi.refmap.json"
+}

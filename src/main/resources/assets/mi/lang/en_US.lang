@@ -1,3 +1,5 @@
+#authro:空梦(EmptyDreams)
+
 item.copper_item.name=Copper
 item.copper_powder_item.name=Copper Powder
 item.tin_item.name=Tin
@@ -28,3 +30,5 @@ itemGroup.mi_block=MI Blocks
 itemGroup.mi_tool=MI Tools
 itmeGroup.mi_debug=MI Debug
 itmeGroup.mi_wire=MI Wires
+
+mi.property.poor_quality.name=Poor Quality
