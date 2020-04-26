@@ -7,6 +7,8 @@ import xyz.emptydreams.mi.api.electricity.src.info.BiggerVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcUser;
 import xyz.emptydreams.mi.api.gui.component.MProgressBar;
+import xyz.emptydreams.mi.api.utils.DataType;
+import xyz.emptydreams.mi.api.utils.TEHelper;
 import xyz.emptydreams.mi.blocks.machine.user.CompressorBlock;
 import xyz.emptydreams.mi.register.item.ItemRegister;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
@@ -36,10 +38,12 @@ public class EUCompressor extends EleSrcUser implements ITickable {
 	}
 	
 	/** 已工作时间 */
+	@Storage(type = DataType.INT)
 	private int workingTime = 0;
 	/** 三个物品框<br>
 	 * 	0-上端，1-下端，2-输出
 	 */
+	@Storage(type = DataType.OTHER)
 	private final ItemStackHandler item = new ItemStackHandler(3);
 	private final SlotMI up = new SlotMI(item, 0, 56, 17, this);
 	private final SlotMI down = new SlotMI(item, 1, 56, 53, this);
@@ -68,7 +72,9 @@ public class EUCompressor extends EleSrcUser implements ITickable {
 		guide.add(new ItemStack(up.getStack().getItem())); guide.add(new ItemStack(down.getStack().getItem()));
 		ItemStack outStack = CRAFT_GUIDE.get(guide);
 		if (outStack == null) {
-			IBlockState state = world.getBlockState(pos).withProperty(CompressorBlock.WORKING, true).withProperty(CompressorBlock.EMPTY, isEmpty());
+			IBlockState state = world.getBlockState(pos)
+					                    .withProperty(CompressorBlock.WORKING, false)
+					                    .withProperty(CompressorBlock.EMPTY, isEmpty());
 			world.setBlockState(pos, state);
 			world.markBlockRangeForRenderUpdate(pos, pos);
 			return;
@@ -76,7 +82,7 @@ public class EUCompressor extends EleSrcUser implements ITickable {
 		ItemStack itemStack = item.extractItem(0, 1, true);
 		ItemStack itemStack2 = item.extractItem(1, 1, true);
 		
-		boolean isWorking = true;
+		boolean isWorking = false;
 		
 		//检查输入物品数目是否足够
 		if (!(itemStack.equals(ItemStack.EMPTY) && itemStack2.equals(ItemStack.EMPTY) &&
@@ -85,7 +91,7 @@ public class EUCompressor extends EleSrcUser implements ITickable {
 				this.out.putStack(ItemStack.EMPTY);
 			}
 			if (EleWorker.useEleEnergy(this) != null) {
-				isWorking = false;
+				isWorking = true;
 				++workingTime;
 				if (workingTime >= getNeedTime()) {
 					workingTime = 0;
@@ -143,21 +149,6 @@ public class EUCompressor extends EleSrcUser implements ITickable {
 			case 2 : return out;
 			default : return null;
 		}
-	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound data) {
-		super.readFromNBT(data);
-		item.deserializeNBT(data.getCompoundTag("items"));
-		workingTime = data.getInteger("workingTime");
-	}
-	
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound data) {
-		super.writeToNBT(data);
-		data.setTag("items", item.serializeNBT());
-		data.setInteger("workingTime", workingTime);
-		return data;
 	}
 	
 	public static class SlotMI extends SlotItemHandler {

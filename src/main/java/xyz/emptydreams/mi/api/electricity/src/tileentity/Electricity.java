@@ -1,5 +1,7 @@
 package xyz.emptydreams.mi.api.electricity.src.tileentity;
 
+import net.minecraft.nbt.NBTTagCompound;
+import xyz.emptydreams.mi.api.utils.TEHelper;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -14,7 +16,7 @@ import net.minecraft.world.World;
  * @version V2.0
  */
 @AutoTileEntity("IN_FATHER_ELECTRICITY")
-public abstract class Electricity extends TileEntity {
+public abstract class Electricity extends TileEntity implements TEHelper {
 	
 	/** 没有信息 */
 	public static final Object NO_HAVE_INFO = new Object();
@@ -40,6 +42,18 @@ public abstract class Electricity extends TileEntity {
 	/** 设置方块类型 */
 	public final void setBlockType(Block block) {
 		blockType = block;
+	}
+	
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+		super.writeToNBT(compound);
+		return TEHelper.super.writeToNBT(compound);
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound compound) {
+		super.readFromNBT(compound);
+		TEHelper.super.readFromNBT(compound);
 	}
 	
 	@Override

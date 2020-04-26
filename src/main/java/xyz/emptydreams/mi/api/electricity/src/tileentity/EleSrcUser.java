@@ -11,6 +11,7 @@ import xyz.emptydreams.mi.api.electricity.src.info.BiggerVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.api.utils.DataType;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 import xyz.emptydreams.mi.utils.BlockPosUtil;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,9 +34,11 @@ public abstract class EleSrcUser extends Electricity {
 	/** 保存所需电能正常值 */
 	private int energy = 0;
 	/** 该方块连接的发电机 */
-	private final Map<EnumFacing, EleMaker> linkedMaker = new HashMap<>(6);
+	@Storage(type = DataType.MAP)
+	private final Map<EnumFacing, BlockPos> linkedMaker = new HashMap<>(6);
 	/** 连接电线的数量 */
-	private final Map<EnumFacing, TileEntity> linkedWire = new HashMap<>(6);
+	@Storage(type = DataType.MAP)
+	private final Map<EnumFacing, BlockPos> linkedWire = new HashMap<>(6);
 	/** 计数器 */
 	public final OverloadCounter COUNTER = new OrdinaryCounter(this);
 	/** 过载超时后的操作 */
@@ -57,7 +60,7 @@ public abstract class EleSrcUser extends Electricity {
 	 */
 	public void link(EleSrcCable transfer) {
 		WaitList.checkNull(transfer, "transfer");
-		linkedWire.put(BlockPosUtil.whatFacing(pos, transfer.getPos()), transfer);
+		linkedWire.put(BlockPosUtil.whatFacing(pos, transfer.getPos()), transfer.getPos());
 	}
 	
 	/**
@@ -65,7 +68,10 @@ public abstract class EleSrcUser extends Electricity {
 	 * @return 返回值为源数据的副本，可以随意修改
 	 */
 	public final Map<EnumFacing, TileEntity> getLinkedWire() {
-		return new HashMap<>(linkedWire);
+		Map<EnumFacing, TileEntity> temp = new HashMap<>(linkedWire.size());
+		for (Map.Entry<EnumFacing, BlockPos> entry : linkedWire.entrySet())
+			temp.put(entry.getKey(), world.getTileEntity(entry.getValue()));
+		return temp;
 	}
 	
 	/** 是否连接电线 */
@@ -77,7 +83,11 @@ public abstract class EleSrcUser extends Electricity {
 	 */
 	@Nonnull
 	public final Map<EnumFacing, EleMaker> getLinkedMaker() {
-		return linkedMaker;
+		Map<EnumFacing, EleMaker> temp = new HashMap<>(linkedMaker.size());
+		for (Map.Entry<EnumFacing, BlockPos> entry : linkedMaker.entrySet()) {
+			temp.put(entry.getKey(), (EleMaker) world.getTileEntity(entry.getValue()));
+		}
+		return temp;
 	}
 	
 	/**
@@ -86,7 +96,7 @@ public abstract class EleSrcUser extends Electricity {
 	 */
 	public void link(EleMaker maker) {
 		WaitList.checkNull(maker, "maker");
-		linkedMaker.put(BlockPosUtil.whatFacing(pos, maker.getPos()), maker);
+		linkedMaker.put(BlockPosUtil.whatFacing(pos, maker.getPos()), maker.getPos());
 	}
 	
 	/**
@@ -124,65 +134,5 @@ public abstract class EleSrcUser extends Electricity {
 	}
 	/** 获取电器所需电压 */
 	public final EnumVoltage getVoltage() { return voltage; }
-	
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		updateInfo();
-		return super.getUpdateTag();
-	}
-	
-	private BlockPos[] _makers;
-	private BlockPos[] _transfers;
-	
-	private void updateInfo() {
-		if (_makers == null) return;
-		for (BlockPos pos : _makers) {
-			linkedMaker.put(BlockPosUtil.whatFacing(getPos(), pos), (EleMaker) world.getTileEntity(pos));
-		}
-		for (BlockPos pos : _transfers) {
-			linkedWire.put(BlockPosUtil.whatFacing(getPos(), pos), world.getTileEntity(pos));
-		}
-		_makers = null;
-		_transfers = null;
-	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound compound) {
-		super.readFromNBT(compound);
-		
-		int size = compound.getInteger("makers_size");
-		_makers = new BlockPos[size];
-		for (int i = 0; i < size; ++i) {
-			_makers[i] = BlockPosUtil.readBlockPos(compound, "maker_pos_" + i);
-		}
-		
-		size = compound.getInteger("transfers_size");
-		_transfers = new BlockPos[size];
-		for (int i = 0; i < size; ++i) {
-			_transfers[i] = BlockPosUtil.readBlockPos(compound, "transfer_pos_" + i);
-		}
-	}
-	
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		super.writeToNBT(compound);
-		
-		compound.setInteger("makers_size", linkedMaker.size());
-		compound.setInteger("transfers_size", linkedWire.size());
-		
-		int i = 0;
-		for (Map.Entry<EnumFacing, EleMaker> entry : linkedMaker.entrySet()) {
-			BlockPosUtil.writeBlockPos(compound, entry.getValue().getPos(), "maker_pos_" + i);
-			++i;
-		}
-		
-		i = 0;
-		for (Map.Entry<EnumFacing, TileEntity> entry : linkedWire.entrySet()) {
-			BlockPosUtil.writeBlockPos(compound, entry.getValue().getPos(), "transfer_pos_" + i);
-			++i;
-		}
-		
-		return compound;
-	}
 	
 }

@@ -15,6 +15,7 @@ import xyz.emptydreams.mi.api.electricity.src.info.IETForEach;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.net.NetworkRegister;
 import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.api.utils.DataType;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 import xyz.emptydreams.mi.utils.BlockPosUtil;
 import net.minecraft.entity.player.EntityPlayer;
@@ -61,13 +62,14 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 		}
 	};
 	//六个方向是否连接
-	private boolean up = false;
-	private boolean down = false;
-	private boolean east =false;
-	private boolean west = false;
-	private boolean south = false;
-	private boolean north = false;
+	@Storage(type = DataType.BOOLEAN) private boolean up = false;
+	@Storage(type = DataType.BOOLEAN) private boolean down = false;
+	@Storage(type = DataType.BOOLEAN) private boolean east =false;
+	@Storage(type = DataType.BOOLEAN) private boolean west = false;
+	@Storage(type = DataType.BOOLEAN) private boolean south = false;
+	@Storage(type = DataType.BOOLEAN) private boolean north = false;
 	/** 电线连接的方块，不包括电线方块 */
+	@Storage(type = DataType.COLLECTION)
 	private final List<BlockPos> linkedBlocks = new ArrayList<BlockPos>(5) {
 		@Override
 		public boolean add(BlockPos tileEntity) {
@@ -76,9 +78,11 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 		}
 	};
 	/** 上一根电线 */
+	@Storage(type = DataType.POS)
 	private BlockPos prev = null;
 	private IEleTransfer prevShip = null;
 	/** 下一根电线 */
+	@Storage(type = DataType.POS)
 	private BlockPos next = null;
 	private IEleTransfer nextShip = null;
 	/** 最大电流量 */
@@ -450,57 +454,6 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 			compound.setString("player" + i, player);
 			++i;
 		}
-		
-		return compound;
-	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound compound) {
-		super.readFromNBT(compound);
-		up = compound.getBoolean("up");
-		down = compound.getBoolean("down");
-		east = compound.getBoolean("east");
-		west = compound.getBoolean("west");
-		south = compound.getBoolean("south");
-		north = compound.getBoolean("north");
-		
-		if (compound.getBoolean("hasNext")) {
-			next = BlockPosUtil.readBlockPos(compound, "next");
-		}
-		if (compound.getBoolean("hasPrev")) {
-			prev = BlockPosUtil.readBlockPos(compound, "prev");
-		}
-		
-		int size = compound.getInteger("maker_size");
-		for (int i = 0; i < size; ++i) {
-			linkedBlocks.add(pos.offset(EnumFacing.getFront(compound.getInteger("facing_" + i))));
-		}
-	}
-	
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		super.writeToNBT(compound);
-		compound.setBoolean("up", up);
-		compound.setBoolean("down", down);
-		compound.setBoolean("east", east);
-		compound.setBoolean("west", west);
-		compound.setBoolean("south", south);
-		compound.setBoolean("north", north);
-		
-		compound.setBoolean("hasNext", next != null);
-		compound.setBoolean("hasPrev", prev != null);
-		if (next != null) {
-			BlockPosUtil.writeBlockPos(compound, next, "next");
-		}
-		if (prev != null) {
-			BlockPosUtil.writeBlockPos(compound, prev, "prev");
-		}
-		
-		int size = 0;
-		for (BlockPos block : linkedBlocks) {
-			compound.setInteger("facing_" + size++, BlockPosUtil.whatFacing(pos, block).getIndex());
-		}
-		compound.setInteger("maker_size", size);
 		
 		return compound;
 	}
