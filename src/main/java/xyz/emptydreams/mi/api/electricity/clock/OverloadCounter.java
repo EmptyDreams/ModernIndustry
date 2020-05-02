@@ -14,19 +14,24 @@ import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcUser;
 public abstract class OverloadCounter {
 
 	private int time = 0;
+	private int maxTime;
+	
+	public OverloadCounter() { this(0); }
+	public OverloadCounter(int maxTime) { this.maxTime = maxTime; }
 	
 	/** 清零 */
 	public void clean() {
 		time = 0;
 	}
 	
-	/**
-	 * 获取当前计数
-	 */
+	/** 获取当前计数 */
 	public int getTime() {
 		return time;
 	}
-	
+	/** 获取最大计数 */
+	public int getMaxTime() { return maxTime; }
+	/** 设置最大计数 */
+	public void setMaxTime(int maxTime) { this.maxTime = maxTime; }
 	@SuppressWarnings("unused")
 	protected void setTime(int time) { this.time = time; }
 	

@@ -1,10 +1,7 @@
 package xyz.emptydreams.mi.api.electricity.clock;
 
-import javax.annotation.Nonnull;
-
+import xyz.emptydreams.mi.api.electricity.src.info.BiggerVoltage;
 import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcUser;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -16,49 +13,31 @@ import net.minecraft.world.World;
  */
 public class OrdinaryCounter extends OverloadCounter {
 	
-	private final EleSrcUser ele;
+	private final BlockPos pos;
+	private final World world;
+	private final BiggerVoltage bigger;
 	
 	public OrdinaryCounter(EleSrcUser user) {
-		ele = user;
-		if (temp == null) temp = new Temp(user.getWorld());
+		this(user.getWorld(), user.getPos(), user.getBiggerVoltageOperate(), user.getBiggerMaxTime());
+	}
+	
+	public OrdinaryCounter(World world, BlockPos pos, BiggerVoltage bigger, int maxTime) {
+		super(maxTime);
+		this.pos = pos;
+		this.bigger = bigger;
+		this.world = world;
 	}
 	
 	@Override
 	public void overload() {
-		switch (ele.getBiggerVoltageOperate().EBV) {
-			case NON:
-				break;
-			case BOOM:
-				BlockPos pos = ele.getPos();
-				ele.getWorld().createExplosion(temp, pos.getX(), pos.getY(), pos.getZ(),
-						ele.getBiggerVoltageOperate().intensity, true);
-				break;
-			case FIRE:
-				break;
-		}
+		bigger.EBV.overload(world.getTileEntity(pos), bigger);
+		clean();
 	}
 	
 	@Override
 	public void plus(int amount) {
 		super.plus(amount);
-		if (getTime() >= ele.getBiggerMaxTime()) overload();
-	}
-	
-	private static Temp temp;
-	private static final class Temp extends Entity {
-		
-		public Temp(World world) {
-			super(world);
-		}
-		@Override
-		protected void entityInit() {
-		}
-		@Override
-		protected void readEntityFromNBT(@Nonnull NBTTagCompound compound) {
-		}
-		@Override
-		protected void writeEntityToNBT(@Nonnull NBTTagCompound compound) {
-		}
+		if (getTime() >= getMaxTime()) overload();
 	}
 	
 }

@@ -16,7 +16,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -93,7 +92,7 @@ public interface TEHelper {
 					try {
 						field.setAccessible(true);
 						if (!data.hasKey(name + ":null")) _read(field, type, data, name, this);
-					} catch (IllegalAccessException | ClassNotFoundException | NoSuchFieldException e) {
+					} catch (IllegalAccessException | ClassNotFoundException e) {
 						throw new RuntimeException(e);
 					} catch (ClassCastException e) {
 						e.initCause(new ClassCastException("标记的需要读写的数据类型不继承自INBTSerializable"));
@@ -125,7 +124,7 @@ public interface TEHelper {
 	}
 	
 	static void _read(Field field, DataType type, NBTTagCompound data, String name, Object o)
-			throws IllegalAccessException, ClassNotFoundException, InstantiationException, NoSuchFieldException {
+			throws IllegalAccessException, ClassNotFoundException, InstantiationException {
 		switch (type) {
 			case BYTE: field.set(o, data.getByte(name)); break;
 			case SHORT: field.set(o, data.getShort(name)); break;
@@ -140,7 +139,7 @@ public interface TEHelper {
 			case UNIQUE_ID: field.set(o, data.getUniqueId(name)); break;
 			case TAG: field.set(o, data.getTag(name)); break;
 			case POS: field.set(o, BlockPosUtil.readBlockPos(data, name)); break;
-			case ENUM: field.set(o, field.getType().getField(data.getString(name)).get(null)); break;
+			case ENUM: field.set(o, Enum.valueOf((Class) field.getType(), data.getString(name))); break;
 			case COLLECTION: case MAP:
 				AtomicReference atomic = new AtomicReference<>(field.get(o));
 				_readHelper(atomic, type, data, name);
@@ -153,14 +152,14 @@ public interface TEHelper {
 	}
 	
 	static void _readHelper(AtomicReference collection, DataType type, NBTTagCompound data, String name)
-			throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
+			throws IllegalAccessException, InstantiationException, ClassNotFoundException {
 		if (type == DataType.COLLECTION) _readCollection((AtomicReference<Collection>) collection, data, name);
 		else if (type == DataType.MAP) _readMap((AtomicReference<Map>) collection, data, name);
 		else throw new IllegalAccessException("输入的参数类型在支持的类型之外：" + type.name());
 	}
 	
 	static void _readMap(AtomicReference<Map> mapAtomic, NBTTagCompound data, String name)
-			throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
+			throws IllegalAccessException, InstantiationException, ClassNotFoundException {
 		int size = data.getInteger(name + ":size");
 		if (mapAtomic.get() == null) mapAtomic.set(new HashMap(size));
 		Map map = mapAtomic.get();
@@ -176,7 +175,7 @@ public interface TEHelper {
 	
 	static void _readCollection(AtomicReference<Collection> collection,
 	                            NBTTagCompound data, String name)
-			throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchFieldException {
+			throws ClassNotFoundException, IllegalAccessException, InstantiationException {
 		int size = data.getInteger(name + ":size");
 		if (collection.get() == null) collection.set(new ArrayList(size));
 		Collection co = collection.get();
@@ -189,7 +188,7 @@ public interface TEHelper {
 	}
 	
 	static Object _readElement(NBTTagCompound data, DataType type, String name)
-			throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchFieldException {
+			throws ClassNotFoundException, IllegalAccessException, InstantiationException {
 		switch (type) {
 			case BYTE: return data.getByte(name);
 			case SHORT: return data.getShort(name);
@@ -204,7 +203,7 @@ public interface TEHelper {
 			case UNIQUE_ID: return data.getUniqueId(name);
 			case TAG: return data.getTag(name);
 			case ENUM:
-				return Class.forName(data.getString(name + ":class")).getField(data.getString(name)).get(null);
+				return Enum.valueOf((Class) Class.forName(data.getString(name + ":class")), data.getString(name));
 			case OTHER:
 				Class<?> clazz = Class.forName(data.getString(name + ":class"));
 				INBTSerializable o = (INBTSerializable) clazz.newInstance();
@@ -245,7 +244,7 @@ public interface TEHelper {
 				if (isSon) data.setString(name + ":class", field.getClass().getName());
 				break;
 			case COLLECTION: {
-				Collection<?> it = (Collection<?>) field;
+				Collection it = (Collection) field;
 				int k = 0;
 				DataType t;
 				String temp;
@@ -253,10 +252,10 @@ public interface TEHelper {
 					temp = name + k;
 					t = getDataType(o.getClass());
 					data.setInteger(temp + ":type", t.ordinal());
-					_wirte(t, type, data, temp, true);
+					_wirte(o, t, data, temp, true);
 					++k;
 				}
-				data.setInteger(name + ":size", k + 1);
+				data.setInteger(name + ":size", k);
 				break;
 			}
 			case MAP: {

@@ -7,9 +7,12 @@ import java.util.List;
 import java.util.Set;
 
 import xyz.emptydreams.mi.api.electricity.EleWorker;
+import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
+import xyz.emptydreams.mi.api.electricity.src.info.BiggerVoltage;
+import xyz.emptydreams.mi.api.electricity.src.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.WireLinkInfo;
 import xyz.emptydreams.mi.api.electricity.src.info.IETForEach;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
@@ -34,7 +37,6 @@ import net.minecraftforge.energy.CapabilityEnergy;
  * @author EmptyDreams
  * @version V1.0
  */
-@SuppressWarnings("unused")
 @AutoTileEntity("IN_FATHER_ELECTRICITY_TRANSFER")
 public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable {
 	
@@ -48,19 +50,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 	}
 	
 	/** 计数器 */
-	private OverloadCounter counter = new OverloadCounter() {
-		@Override
-		public void overload() {
-			World world = getWorld();
-			BlockPos pos = getPos();
-			for (int i = 0; i < 2; ++i) {
-				world.setBlockState(pos, Blocks.FIRE.getDefaultState());
-				world.markBlockRangeForRenderUpdate(pos, pos);
-				pos = BlockPosUtil.randomPos(world, pos, BlockPosUtil.ALL);
-				if (pos == null) break;
-			}
-		}
-	};
+	private OverloadCounter counter;
 	//六个方向是否连接
 	@Storage(type = DataType.BOOLEAN) private boolean up = false;
 	@Storage(type = DataType.BOOLEAN) private boolean down = false;
@@ -69,7 +59,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 	@Storage(type = DataType.BOOLEAN) private boolean south = false;
 	@Storage(type = DataType.BOOLEAN) private boolean north = false;
 	/** 电线连接的方块，不包括电线方块 */
-	@Storage(type = DataType.COLLECTION)
+	@Storage
 	private final List<BlockPos> linkedBlocks = new ArrayList<BlockPos>(5) {
 		@Override
 		public boolean add(BlockPos tileEntity) {
@@ -370,6 +360,12 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 	public final BlockPos getPrevPos() { return prev; }
 	/** 获取下一根电线的坐标 */
 	public final BlockPos getNextPos() { return next; }
+	@Override
+	protected void setBiggerMaxTime(int bvt) {
+		super.setBiggerMaxTime(bvt);
+		getCounter().setMaxTime(getBiggerMaxTime());
+	}
+	
 	/** 获取连接的方块. 返回的列表可以随意修改 */
 	public final List<TileEntity> getLinkedBlocks() {
 		List<TileEntity> blocks = new ArrayList<>(linkedBlocks.size());
@@ -379,8 +375,20 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 		}
 		return blocks;
 	}
+	
 	/** 获取计数器 */
-	public final OverloadCounter getCounter() { return counter; }
+	@Nonnull
+	public final OverloadCounter getCounter() {
+		if (counter == null) {
+			BiggerVoltage bigger = new BiggerVoltage(2, EnumBiggerVoltage.FIRE);
+			bigger.setFireRadius(2);
+			//bigger.setFirePer(0.5F);
+			counter = new OrdinaryCounter(world, pos,
+					bigger, getBiggerMaxTime());
+			
+		}
+		return counter;
+	}
 	/** 设置计数器 */
 	public final void setCounter(OverloadCounter counter) {
 		WaitList.checkNull(counter, "counter");

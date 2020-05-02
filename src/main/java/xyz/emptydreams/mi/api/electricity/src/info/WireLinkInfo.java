@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.api.electricity.src.info;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,7 +66,11 @@ public final class WireLinkInfo extends EleLineCache {
 	@Nullable
 	@Override
 	public PathInfo readInfo(TileEntity start, TileEntity user, IEleInputer inputer) {
-		for (PathInfo info : CACHE) {
+		Iterator<PathInfo> it = CACHE.iterator();
+		PathInfo info;
+		while(it.hasNext()) {
+			info = it.next();
+			if (!info.isAvailable()) it.remove();
 			if (info.getStart().equals(start) || info.getEnd().equals(start)) {
 				if (info.getUser().equals(user)) {
 					return info;
@@ -157,7 +162,6 @@ public final class WireLinkInfo extends EleLineCache {
 					if (useInfo.getEnergy() >= energy) {
 						info.setEnergy(energy)
 								.setOuter(entry.getKey())
-								.setOutputer(entry.getValue())
 								.setVoltage(useInfo.getVoltage());
 						return false;
 					}
@@ -182,7 +186,6 @@ public final class WireLinkInfo extends EleLineCache {
 					if (useInfo.getEnergy() >= energy) {
 						info.setEnergy(energy)
 								.setOuter(entry.getKey())
-								.setOutputer(entry.getValue())
 								.setVoltage(useInfo.getVoltage());
 						return false;
 					}
@@ -200,7 +203,6 @@ public final class WireLinkInfo extends EleLineCache {
 		if (info.getOuter() == null && realUseInfo.get() != null) {
 			info.setEnergy(realUseInfo.get().getEnergy())
 					.setOuter(realOut.get())
-					.setOutputer(realOutper.get())
 					.setVoltage(realUseInfo.get().getVoltage());
 		}
 	}

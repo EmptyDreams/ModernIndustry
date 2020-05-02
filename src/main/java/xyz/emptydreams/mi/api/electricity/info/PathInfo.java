@@ -4,6 +4,8 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
@@ -32,27 +34,30 @@ public class PathInfo implements Comparable<PathInfo> {
 	/** 路径 */
 	private List<TileEntity> path = new ArrayList<>();
 	/** 输出电能的方块 */
-	private TileEntity outer;
+	private BlockPos outer;
 	/** 输出电能方块的托管 */
 	private IEleOutputer outputer;
 	/** 终点 */
-	private TileEntity user;
+	private BlockPos user;
 	/** 托管 */
 	private IEleInputer inputer;
+	/** 所在世界 */
+	private World world;
 	
 	public PathInfo() { }
 	
-	@SuppressWarnings({"unchecked", "unused"})
+	@SuppressWarnings("unchecked")
 	public PathInfo(int lossEnergy, int energy, IVoltage voltage, List<? extends TileEntity> path,
 	                TileEntity outer, IEleOutputer outputer, TileEntity user, IEleInputer inputer) {
 		this.lossEnergy = lossEnergy;
 		this.energy = energy;
 		this.voltage = voltage;
 		this.path = (List<TileEntity>) path;
-		this.outer = outer;
+		this.outer = outer.getPos();
 		this.outputer = outputer;
-		this.user = user;
+		this.user = user.getPos();
 		this.inputer = inputer;
+		this.world = user.getWorld();
 	}
 	
 	/**
@@ -60,7 +65,7 @@ public class PathInfo implements Comparable<PathInfo> {
 	 * @return 返回用电详单
 	 */
 	public final UseInfo invoke() {
-		UseInfo real = outputer.output(outer, energy + lossEnergy, voltage, false);
+		UseInfo real = outputer.output(getOuter(), energy + lossEnergy, voltage, false);
 		TileEntity transfer;
 		for (TileEntity tileEntity : path) {
 			transfer = tileEntity;
@@ -97,7 +102,6 @@ public class PathInfo implements Comparable<PathInfo> {
 		return lossEnergy;
 	}
 	
-	@SuppressWarnings("unused")
 	public PathInfo setLossEnergy(int lossEnergy) {
 		this.lossEnergy = lossEnergy;
 		return this;
@@ -126,34 +130,33 @@ public class PathInfo implements Comparable<PathInfo> {
 	}
 	
 	public TileEntity getOuter() {
-		return outer;
+		return outer == null ? null : world.getTileEntity(outer);
 	}
 	
 	public PathInfo setOuter(TileEntity outer) {
-		this.outer = outer;
+		this.outer = outer.getPos();
+		outputer = EleWorker.getOutputer(outer);
+		world = outer.getWorld();
 		return this;
 	}
 	
-	@SuppressWarnings("unused")
-	public IEleOutputer getOutputer() {
-		return outputer;
+	public void setWorld(World world) {
+		this.world = world;
 	}
 	
-	public PathInfo setOutputer(IEleOutputer outputer) {
-		this.outputer = outputer;
-		return this;
+	public World getWorld() {
+		return world;
 	}
 	
 	public TileEntity getUser() {
-		return user;
+		return user == null ? null : world.getTileEntity(user);
 	}
 	
 	public PathInfo setUser(TileEntity user) {
-		this.user = user;
+		this.user = user.getPos();
 		return this;
 	}
 	
-	@SuppressWarnings("unused")
 	public IEleInputer getInputer() {
 		return inputer;
 	}
@@ -172,6 +175,11 @@ public class PathInfo implements Comparable<PathInfo> {
 			for (TileEntity entity : path)
 				lossEnergy += EleWorker.getTransfer(entity).getEnergyLoss(entity, energy, voltage);
 		}
+	}
+	
+	public boolean isAvailable() {
+		TileEntity te = getOuter();
+		return te != null && EleWorker.isOutputer(te);
 	}
 	
 	@Override
@@ -211,13 +219,13 @@ public class PathInfo implements Comparable<PathInfo> {
 	@Override
 	public int compareTo(@Nonnull PathInfo o) {
 		if (!user.equals(o.user)) return 0;
-		if (outputer.isAllowable(outer, inputer.getVoltage(user))) {
-			if (o.outputer.isAllowable(o.outer, o.inputer.getVoltage(user))) {
+		if (outputer.isAllowable(getOuter(), inputer.getVoltage(getUser()))) {
+			if (o.outputer.isAllowable(o.getOuter(), o.inputer.getVoltage(getUser()))) {
 				return Integer.compare(getLossEnergy(), o.getLossEnergy());
 			} else {
 				return -1;
 			}
-		} else if (o.outputer.isAllowable(o.outer, o.inputer.getVoltage(user))) {
+		} else if (o.outputer.isAllowable(o.getOuter(), o.inputer.getVoltage(getUser()))) {
 			return 1;
 		} else {
 			return Integer.compare(getLossEnergy(), o.getLossEnergy());

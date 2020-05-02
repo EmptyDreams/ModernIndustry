@@ -18,9 +18,6 @@ import net.minecraft.world.World;
 @AutoTileEntity("IN_FATHER_ELECTRICITY")
 public abstract class Electricity extends TileEntity implements TEHelper {
 	
-	/** 没有信息 */
-	public static final Object NO_HAVE_INFO = new Object();
-	
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
 		return oldState.getBlock() != newSate.getBlock();
@@ -30,12 +27,12 @@ public abstract class Electricity extends TileEntity implements TEHelper {
 	protected int biggerMaxTime = 50;
 	
 	/** 设置过载最长时间(单位：tick，默认值：50tick)，当设置时间小于0时保持原设置不变 */
-	protected final Electricity setBiggerMaxTime(int bvt) {
+	@SuppressWarnings("UnusedReturnValue")
+	protected void setBiggerMaxTime(int bvt) {
 		biggerMaxTime = (bvt >= 0) ? bvt : biggerMaxTime;
-		return this;
 	}
 	/** 获取最长过载时间 */
-	public final int getBiggerMaxTime() {
+	public int getBiggerMaxTime() {
 		return biggerMaxTime;
 	}
 	

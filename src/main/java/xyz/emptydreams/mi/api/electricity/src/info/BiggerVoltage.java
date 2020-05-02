@@ -5,19 +5,16 @@ package xyz.emptydreams.mi.api.electricity.src.info;
  * @author EmptyDremas
  * @version V1.0
  */
-@SuppressWarnings("unused")
 public final class BiggerVoltage {
 	
 	/** 效果强度 */
 	public final float intensity;
 	/** 过载后的操作 */
 	public final EnumBiggerVoltage EBV;
-	
-	/* 一下设置爆炸专属 */
-	/** 爆炸伤害 */
-	private int damage = 1;
-	/** 爆炸伤害范围，不包括中心方块 */
-	private int radius = 1;
+	/** 爆炸强度 */
+	private float boomStrength = 1F;
+	/** 火焰半径 */
+	private int fireRadius;
 	
 	/**
 	 * @param intensity 强度，对于爆炸是爆炸强度，对于火灾是火灾块数
@@ -28,29 +25,25 @@ public final class BiggerVoltage {
 		this.EBV = ebv;
 	}
 	
-	/**
-	 * 设置爆炸伤害
-	 * @param damage 伤害
-	 *
-	 * @throws IllegalArgumentException 如果 damage < 0
-	 */
-	public void setBoomDamage(int damage) {
-		if (damage < 0) throw new IllegalArgumentException("damage < 0 : " + damage);
-		this.damage = damage;
+	/** 获取爆炸强度 */
+	public float getBoomStrength() {
+		return boomStrength;
 	}
-	
-	/**
-	 * 设置爆炸伤害半径
-	 * @param radius 半径
-	 *
-	 * @throws IllegalArgumentException 如果 radius < 0
-	 */
-	public void setBoomRadius(int radius) {
-		if (radius < 0) throw new IllegalArgumentException("radius < 0 : " + radius);
-		this.radius = radius;
+	/** 设置爆炸强度 */
+	public void setBoomStrength(float boomStrength) {
+		this.boomStrength = boomStrength;
 	}
-	
-	public int getBoomDamage() { return damage; }
-	public int getBoomRadius() { return radius; }
+	/** 获取火焰半径 */
+	public int getFireRadius() {
+		return fireRadius;
+	}
+	/** 设置火焰半径 */
+	public void setFireRadius(int fireRadius) {
+		this.fireRadius = fireRadius;
+	}
+	/** 获取火焰生成几率 */
+	public float getFirePer() { return boomStrength; }
+	/** 设置火焰生成几率 */
+	public void setFirePer(float per) { boomStrength = per; }
 	
 }

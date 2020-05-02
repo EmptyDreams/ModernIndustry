@@ -44,7 +44,7 @@ public class EleSrcTransfer implements IEleTransfer {
 			cable.getCounter().plus();
 			if (cable.getCounter().getTime() > cable.getBiggerMaxTime()) {
 				EleLineCache cache = getLineCache(now);
-				if (info == cache) cable.getCounter().clean();
+				if (info == cache && info != null) cable.getCounter().clean();
 				else cable.getCounter().overload();
 				return cache;
 			}
@@ -56,9 +56,7 @@ public class EleSrcTransfer implements IEleTransfer {
 	}
 	
 	@Override
-	public void cleanTransfer(TileEntity now) {
-		((EleSrcCable) now).clearTransfer();
-	}
+	public void cleanTransfer(TileEntity now) { ((EleSrcCable) now).clearTransfer(); }
 	
 	@Override
 	public boolean link(TileEntity now, TileEntity target) {
