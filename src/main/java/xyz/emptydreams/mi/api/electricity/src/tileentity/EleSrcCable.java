@@ -23,13 +23,11 @@ import xyz.emptydreams.mi.register.te.AutoTileEntity;
 import xyz.emptydreams.mi.utils.BlockPosUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 
@@ -61,6 +59,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 	/** 电线连接的方块，不包括电线方块 */
 	@Storage
 	private final List<BlockPos> linkedBlocks = new ArrayList<BlockPos>(5) {
+		private static final long serialVersionUID = 8683452581122892180L;
 		@Override
 		public boolean add(BlockPos tileEntity) {
 			WaitList.checkNull(tileEntity, "tileEntity");
@@ -381,8 +380,7 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 	public final OverloadCounter getCounter() {
 		if (counter == null) {
 			BiggerVoltage bigger = new BiggerVoltage(2, EnumBiggerVoltage.FIRE);
-			bigger.setFireRadius(2);
-			//bigger.setFirePer(0.5F);
+			bigger.setFireRadius(1);
 			counter = new OrdinaryCounter(world, pos,
 					bigger, getBiggerMaxTime());
 			

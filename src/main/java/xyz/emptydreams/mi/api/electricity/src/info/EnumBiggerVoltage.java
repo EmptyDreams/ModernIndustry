@@ -1,10 +1,8 @@
 package xyz.emptydreams.mi.api.electricity.src.info;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -41,20 +39,16 @@ public enum EnumBiggerVoltage {
 		BlockPos pos = te.getPos();
 		if (bigger.getFireRadius() == 1) {
 			BlockPosUtil.setFire(te.getWorld(), pos);
-			te.getWorld().markBlockRangeForRenderUpdate(pos, pos);
 		} else {
-			int z = bigger.getFireRadius() + 1;
-			int x = pos.getX() - z;
-			int y = pos.getY() - z;
-			z = pos.getZ() - z;
 			int r = bigger.getFireRadius();
-			for (int i = 0; i < r; ++i) {
-				for (int k = 0; k < r; ++k) {
-					for (int j = 0; j < r; ++j) {
+			int x = pos.getX() - r;
+			int y = pos.getY() - r;
+			int z = pos.getZ() - r;
+			for (int i = 1; i <= r; ++i) {
+				for (int k = 1; k <= r; ++k) {
+					for (int j = 1; j <= r; ++j) {
 						if (bigger.getFirePer() > IProperty.RANDOM_PROPERTY.nextFloat()) {
-							BlockPos b = new BlockPos(x + i, y + k, z + j);
-							BlockPosUtil.setFire(te.getWorld(), b);
-							te.getWorld().markBlockRangeForRenderUpdate(b, b);
+							BlockPosUtil.setFire(te.getWorld(), new BlockPos(x + i, y + k, z + j));
 						}
 					}
 				}
@@ -72,7 +66,7 @@ public enum EnumBiggerVoltage {
 		consumer.accept(tileEntity, bigger);
 	}
 	
-	private final static class EntityExplosion extends Entity {
+	public final static class EntityExplosion extends Entity {
 		
 		private static final DataParameter<Integer> FUSE =
 				EntityDataManager.createKey(EntityExplosion.class, DataSerializers.VARINT);
