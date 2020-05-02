@@ -71,7 +71,10 @@ public class EUCompressor extends EleSrcUser implements ITickable {
 		DictDisorderList guide = new DictDisorderList(2, null, 0);
 		guide.add(new ItemStack(up.getStack().getItem())); guide.add(new ItemStack(down.getStack().getItem()));
 		ItemStack outStack = CRAFT_GUIDE.get(guide);
+		//判断配方是否存在
 		if (outStack == null) {
+			//如果不存在，更新方块显示
+			workingTime = 0;
 			IBlockState state = world.getBlockState(pos)
 					                    .withProperty(CompressorBlock.WORKING, false)
 					                    .withProperty(CompressorBlock.EMPTY, isEmpty());
@@ -79,10 +82,10 @@ public class EUCompressor extends EleSrcUser implements ITickable {
 			world.markBlockRangeForRenderUpdate(pos, pos);
 			return;
 		}
+		//若配方存在则继续计算
 		ItemStack itemStack = item.extractItem(0, 1, true);
 		ItemStack itemStack2 = item.extractItem(1, 1, true);
-		
-		boolean isWorking = false;
+		boolean isWorking = false;  //保存是否正在工作
 		
 		//检查输入物品数目是否足够
 		if (!(itemStack.equals(ItemStack.EMPTY) && itemStack2.equals(ItemStack.EMPTY) &&

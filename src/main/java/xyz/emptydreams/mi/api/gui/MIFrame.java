@@ -110,6 +110,7 @@ public class MIFrame extends Container {
 		ItemStack oldStack = stack.copy();
 		if (stack.isEmpty()) return null;
 		
+		//查找背包包含的slot所在的下标范围
 		int bagStart = -1, end = -1;
 		for (IComponent component : components) {
 			if (component instanceof MBackpack) {
@@ -120,6 +121,7 @@ public class MIFrame extends Container {
 		}
 		
 		boolean isme = false;
+		//bagStart==-1时表明当前GUI没有添加背包
 		if (bagStart == -1) {
 			if (index > 0) {
 				isme = mergeItemStack(stack, 0, index - 1, false);
@@ -128,7 +130,8 @@ public class MIFrame extends Container {
 				isme = mergeItemStack(stack, index + 1, inventorySlots.size() - 1, false);
 			}
 		} else {
-			if (index >= bagStart && index <= end) {
+			//判断当前物品是否在背包中
+			if (index >= bagStart && index < end) {
 				if (bagStart > 0)
 					isme = mergeItemStack(stack, 0, bagStart - 1, false);
 				if (!isme && end < inventorySlots.size() - 1)
