@@ -10,12 +10,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import xyz.emptydreams.mi.api.tools.capabilities.PropertyCapability;
+import xyz.emptydreams.mi.api.tools.capabilities.PropertyProvider;
 import xyz.emptydreams.mi.api.tools.property.IProperty;
 import xyz.emptydreams.mi.api.tools.property.PropertyManager;
 
@@ -155,6 +158,10 @@ public interface IToolHelper {
 		PropertyManager manager = itemStack.getCapability(PropertyCapability.PROPERTY, null);
 		if (manager == null) return;
 		for (IProperty property : manager) property.onArmorTick(world, player, itemStack);
+	}
+	
+	default ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt) {
+		return new PropertyProvider(PropertyCapability.PROPERTY.getDefaultInstance());
 	}
 	
 }

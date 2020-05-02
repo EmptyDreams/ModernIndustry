@@ -24,7 +24,6 @@ import xyz.emptydreams.mi.api.event.ItemDamageEvent;
  */
 public interface IProperty {
 	
-	@SuppressWarnings("unused")
 	Random RANDOM_PROPERTY = new Random();
 	
 	/** 获取名称 */

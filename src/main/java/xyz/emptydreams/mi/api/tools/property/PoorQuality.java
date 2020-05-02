@@ -36,7 +36,11 @@ public class PoorQuality implements IProperty {
 	
 	@Override
 	public String getValue() {
-		return String.valueOf(level);
+		if (level >= 0) {
+			return String.valueOf(level);
+		} else {
+			return "鉴定中...";
+		}
 	}
 	
 	public int getLevel() { return level; }
