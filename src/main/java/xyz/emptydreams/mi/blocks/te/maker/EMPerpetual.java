@@ -1,6 +1,9 @@
 package xyz.emptydreams.mi.blocks.te.maker;
 
-import xyz.emptydreams.mi.api.electricity.src.tileentity.EleMaker;
+import net.minecraft.util.EnumFacing;
+import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
+import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
+import xyz.emptydreams.mi.api.electricity.src.tileentity.EleTileEntity;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 
 /**
@@ -8,16 +11,29 @@ import xyz.emptydreams.mi.register.te.AutoTileEntity;
  * @version V1.0
  */
 @AutoTileEntity("perpetual")
-public class EMPerpetual extends EleMaker {
+public class EMPerpetual extends EleTileEntity {
 	
-	{
-		meBox = Integer.MAX_VALUE;
-		meBoxMax = Integer.MAX_VALUE;
-		setOutputMax(Integer.MAX_VALUE);
+	public EMPerpetual() {
+		super(0, 0, EnumVoltage.NON, EnumVoltage.SUPERCONDUCTOR);
+		setExtract(true);
+		setMaxExtract(Integer.MAX_VALUE);
+		setNowEnergy(Integer.MAX_VALUE);
 	}
 	
 	@Override
-	public void input(int ee) {
-		setMeBox(Integer.MAX_VALUE);
+	public boolean onExtract(EleEnergy energy) {
+		setNowEnergy(Integer.MAX_VALUE);
+		return true;
 	}
+	
+	@Override
+	public boolean isReAllowable(EnumFacing facing) {
+		return false;
+	}
+	
+	@Override
+	public boolean isExAllowable(EnumFacing facing) {
+		return true;
+	}
+	
 }

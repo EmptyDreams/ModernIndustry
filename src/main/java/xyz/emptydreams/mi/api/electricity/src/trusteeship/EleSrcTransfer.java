@@ -19,7 +19,6 @@ import net.minecraft.util.ResourceLocation;
  * @author EmptyDreams
  * @version V1.0
  */
-@SuppressWarnings("unused")
 @AutoTrusteeshipRegister
 public class EleSrcTransfer implements IEleTransfer {
 	

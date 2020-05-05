@@ -1,6 +1,6 @@
 package xyz.emptydreams.mi.api.electricity.interfaces;
 
-import xyz.emptydreams.mi.api.electricity.info.UseInfo;
+import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
@@ -21,7 +21,7 @@ public interface IEleOutputer extends IRegister {
 	 * @throws NullPointerException if te == null || voltage == null
 	 * @throws ClassCastException 如果不支持输入的TE
 	 */
-	UseInfo output(TileEntity te, int energy, IVoltage voltage, boolean simulation);
+	EleEnergy output(TileEntity te, int energy, IVoltage voltage, boolean simulation);
 	
 	/**
 	 * 判断指定方块能否向指定方向输出电能
@@ -31,14 +31,11 @@ public interface IEleOutputer extends IRegister {
 	 */
 	boolean isAllowable(TileEntity te, EnumFacing facing);
 	
-	boolean isAllowable(TileEntity now, IVoltage voltage);
-	
 	/**
-	 * 获取当前可瞬时输出的电能
-	 * @param te 对应方块的TE
-	 * @throws NullPointerException if te == null
-	 * @throws ClassCastException 如果不支持输入的TE
+	 * 判断当前方块能否与指定方向的方块连接
+	 * @param now 当前方块
+	 * @param facing 指定方向
 	 */
-	int getOutput(TileEntity te);
+	default boolean canLink(TileEntity now, EnumFacing facing) { return true; }
 	
 }

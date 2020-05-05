@@ -10,9 +10,9 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import xyz.emptydreams.mi.api.electricity.EleWorker;
+import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.EleLineCache;
 import xyz.emptydreams.mi.api.electricity.info.PathInfo;
-import xyz.emptydreams.mi.api.electricity.info.UseInfo;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
@@ -144,20 +144,20 @@ public final class WireLinkInfo extends EleLineCache {
 	private static void calculateHelper(EleSrcCable start, TileEntity prev,
 	                                    TileEntity user, IEleInputer inputer, PathInfo info) {
 		info.setUser(user).setInputer(inputer);
-		AtomicReference<UseInfo> realUseInfo = new AtomicReference<>();
+		AtomicReference<EleEnergy> realUseInfo = new AtomicReference<>();
 		AtomicReference<TileEntity> realOut = new AtomicReference<>();
 		AtomicReference<IEleOutputer> realOutper = new AtomicReference<>();
 		
 		IEleTransfer transfer = EleWorker.getTransfer(start);
 		int energy = inputer.getEnergy(user);
-		IVoltage voltage = inputer.getVoltage(user);
+		IVoltage voltage = inputer.getVoltage(user, EnumVoltage.ORDINARY);
 		start.forEach(prev == null ? null : prev.getPos(), (it, isEnd, next) -> {
 			info.getPath().add(it);
 			if (isEnd) {
 				for (Map.Entry<TileEntity, IEleOutputer> entry :
 						transfer.getOutputerAround(it).entrySet()) {
 					if (entry.getKey() == user) continue;
-					UseInfo useInfo = entry.getValue().output(
+					EleEnergy useInfo = entry.getValue().output(
 							entry.getKey(), Integer.MAX_VALUE, voltage, true);
 					if (useInfo.getEnergy() >= energy) {
 						info.setEnergy(energy)
@@ -168,7 +168,8 @@ public final class WireLinkInfo extends EleLineCache {
 					int k = inputer.getEnergy(user, useInfo.getEnergy());
 					if (k > 0 && (realUseInfo.get() == null ||
 							              realUseInfo.get().getEnergy() < k)) {
-						realUseInfo.set(useInfo.setEnergy(k));
+						useInfo.setEnergy(k);
+						realUseInfo.set(useInfo);
 						realOut.set(entry.getKey());
 						realOutper.set(entry.getValue());
 					}
@@ -181,7 +182,7 @@ public final class WireLinkInfo extends EleLineCache {
 				for (Map.Entry<TileEntity, IEleOutputer> entry :
 						transfer.getOutputerAround(it).entrySet()) {
 					if (entry.getKey() == user) continue;
-					UseInfo useInfo = entry.getValue().output(
+					EleEnergy useInfo = entry.getValue().output(
 							entry.getKey(), Integer.MAX_VALUE, voltage, true);
 					if (useInfo.getEnergy() >= energy) {
 						info.setEnergy(energy)
@@ -192,7 +193,8 @@ public final class WireLinkInfo extends EleLineCache {
 					int k = inputer.getEnergy(user, useInfo.getEnergy());
 					if (k > 0 && (realUseInfo.get() == null ||
 							              realUseInfo.get().getEnergy() < k)) {
-						realUseInfo.set(useInfo.setEnergy(k));
+						useInfo.setEnergy(k);
+						realUseInfo.set(useInfo);
 						realOut.set(entry.getKey());
 						realOutper.set(entry.getValue());
 					}

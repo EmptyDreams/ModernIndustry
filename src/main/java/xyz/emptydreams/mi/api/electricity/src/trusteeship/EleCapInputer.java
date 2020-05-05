@@ -1,15 +1,15 @@
 package xyz.emptydreams.mi.api.electricity.src.trusteeship;
 
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
+import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
+import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 
 /**
  * 提供对能力系统的输入支持
@@ -25,32 +25,30 @@ public class EleCapInputer implements IEleInputer {
 	
 	@Override
 	public void useEnergy(TileEntity now, int energy, IVoltage voltage) {
-		now.getCapability(CapabilityEnergy.ENERGY, null).receiveEnergy(energy, false);
+		now.getCapability(EleCapability.ENERGY, null)
+				.receiveEnergy(new EleEnergy(energy, voltage), false);
 	}
 	
-	/**
-	 * @throws NullPointerException 传入的TE不符合要求
-	 */
 	@Override
 	public int getEnergy(TileEntity te) {
-		return te.getCapability(CapabilityEnergy.ENERGY, null).receiveEnergy(Integer.MAX_VALUE, true);
+		return te.getCapability(EleCapability.ENERGY, null).getEnergyRange().getMaxEnergy();
 	}
 	
 	@Override
 	public int getEnergy(TileEntity now, int energy) {
-		return now.getCapability(CapabilityEnergy.ENERGY, null).receiveEnergy(energy, true);
+		return now.getCapability(EleCapability.ENERGY, null).getEnergyRange().getOptimalEnergy(energy);
 	}
 	
 	@Override
-	public IVoltage getVoltage(TileEntity te) {
-		return EnumVoltage.ORDINARY;
+	public IVoltage getVoltage(TileEntity now, IVoltage voltage) {
+		return now.getCapability(EleCapability.ENERGY, null).getEnergyRange().getOptimalVoltage(voltage);
 	}
 	
 	@Override
 	public boolean isAllowable(TileEntity now, EnumFacing facing) {
-		IEnergyStorage pro = now.getCapability(CapabilityEnergy.ENERGY, facing);
+		IStorage pro = now.getCapability(EleCapability.ENERGY, facing);
 		if (pro == null) return false;
-		return pro.receiveEnergy(1, true) > 0;
+		return pro.isReAllowable(facing);
 	}
 	
 	@Override
@@ -60,8 +58,8 @@ public class EleCapInputer implements IEleInputer {
 	
 	@Override
 	public boolean contains(TileEntity te) {
-		IEnergyStorage cap = te.getCapability(CapabilityEnergy.ENERGY, null);
-		return cap != null;
+		IStorage cap = te.getCapability(EleCapability.ENERGY, null);
+		return cap != null && cap.canReceive();
 	}
 	
 }

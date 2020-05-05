@@ -1,7 +1,6 @@
 package xyz.emptydreams.mi.api.electricity.clock;
 
 import xyz.emptydreams.mi.api.electricity.src.info.BiggerVoltage;
-import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcUser;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -13,19 +12,12 @@ import net.minecraft.world.World;
  */
 public class OrdinaryCounter extends OverloadCounter {
 	
-	private final BlockPos pos;
-	private final World world;
-	private final BiggerVoltage bigger;
+	private  BlockPos pos;
+	private  World world;
+	private BiggerVoltage bigger;
 	
-	public OrdinaryCounter(EleSrcUser user) {
-		this(user.getWorld(), user.getPos(), user.getBiggerVoltageOperate(), user.getBiggerMaxTime());
-	}
-	
-	public OrdinaryCounter(World world, BlockPos pos, BiggerVoltage bigger, int maxTime) {
+	public OrdinaryCounter(int maxTime) {
 		super(maxTime);
-		this.pos = pos;
-		this.bigger = bigger;
-		this.world = world;
 	}
 	
 	@Override
@@ -38,6 +30,30 @@ public class OrdinaryCounter extends OverloadCounter {
 	public void plus(int amount) {
 		super.plus(amount);
 		if (getTime() >= getMaxTime()) overload();
+	}
+	
+	public BlockPos getPos() {
+		return pos;
+	}
+	
+	public void setPos(BlockPos pos) {
+		this.pos = pos;
+	}
+	
+	public World getWorld() {
+		return world;
+	}
+	
+	public void setWorld(World world) {
+		this.world = world;
+	}
+	
+	public BiggerVoltage getBigger() {
+		return bigger;
+	}
+	
+	public void setBigger(BiggerVoltage bigger) {
+		this.bigger = bigger;
 	}
 	
 }

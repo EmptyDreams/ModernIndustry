@@ -19,6 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.common.util.INBTSerializable;
+import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.utils.BlockPosUtil;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -139,6 +140,11 @@ public interface TEHelper {
 			case UNIQUE_ID: field.set(o, data.getUniqueId(name)); break;
 			case TAG: field.set(o, data.getTag(name)); break;
 			case POS: field.set(o, BlockPosUtil.readBlockPos(data, name)); break;
+			case VOLTAGE:
+				int voltage = data.getInteger(name);
+				int loss = data.getInteger(name + "loss");
+				field.set(o, IVoltage.getInstance(voltage, loss));
+				break;
 			case ENUM: field.set(o, Enum.valueOf((Class) field.getType(), data.getString(name))); break;
 			case COLLECTION: case MAP:
 				AtomicReference atomic = new AtomicReference<>(field.get(o));
@@ -202,6 +208,10 @@ public interface TEHelper {
 			case ARRAY_INT: return data.getIntArray(name);
 			case UNIQUE_ID: return data.getUniqueId(name);
 			case TAG: return data.getTag(name);
+			case VOLTAGE:
+				int voltage = data.getInteger(name);
+				int loss = data.getInteger(name + "loss");
+				return IVoltage.getInstance(voltage, loss);
 			case ENUM:
 				return Enum.valueOf((Class) Class.forName(data.getString(name + ":class")), data.getString(name));
 			case OTHER:
@@ -239,6 +249,11 @@ public interface TEHelper {
 			case UNIQUE_ID: data.setUniqueId(name, (UUID) field); break;
 			case TAG: data.setTag(name, (NBTBase) field); break;
 			case POS: BlockPosUtil.writeBlockPos(data, (BlockPos) field, name); break;
+			case VOLTAGE:
+				IVoltage voltage = (IVoltage) field;
+				data.setInteger(name, voltage.getVoltage());
+				data.setInteger(name + "loss", voltage.getLossIndex());
+				break;
 			case ENUM:
 				data.setString(name, ((Enum) field).name());
 				if (isSon) data.setString(name + ":class", field.getClass().getName());
@@ -293,6 +308,8 @@ public interface TEHelper {
 			return DataType.BOOLEAN;
 		} else if (Vec3i.class.isAssignableFrom(clazz)) {
 			return DataType.POS;
+		} else if (IVoltage.class.isAssignableFrom(clazz)) {
+			return DataType.VOLTAGE;
 		} else if (long.class == clazz || Long.class == clazz) {
 			return DataType.LONG;
 		} else if (double.class == clazz || Double.class == clazz) {

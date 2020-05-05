@@ -1,13 +1,7 @@
 package xyz.emptydreams.mi.api.electricity.clock;
 
-import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
-import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcUser;
-
 /**
- * 每一个自{@link EleSrcCable}和
- * {@link EleSrcUser}派生的类都含有该计数器，
- * 该计数器用来记录电子设备超载的时长，单位为tick
- *
+ * 通用的过载计数器
  * @author EmptyDreams
  * @version V1.0
  */

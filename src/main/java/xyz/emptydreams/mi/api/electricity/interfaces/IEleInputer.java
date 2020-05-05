@@ -41,10 +41,10 @@ public interface IEleInputer extends IRegister {
 	
 	/**
 	 * 获取用电器需要的电压
-	 * @param te 对应方块的TE
+	 * @param now 对应方块的TE
 	 * @throws ClassCastException 如果不支持输入的TE
 	 */
-	IVoltage getVoltage(TileEntity te);
+	IVoltage getVoltage(TileEntity now, IVoltage voltage);
 	
 	/**
 	 * 判断当前方块能否从指定方向获取电能
@@ -53,6 +53,13 @@ public interface IEleInputer extends IRegister {
 	 * @throws ClassCastException 如果不支持输入的TE
 	 */
 	boolean isAllowable(TileEntity now, EnumFacing facing);
+	
+	/**
+	 * 判断当前方块能否与指定方向的方块连接
+	 * @param now 当前方块
+	 * @param facing 指定方向
+	 */
+	default boolean canLink(TileEntity now, EnumFacing facing) { return true; }
 	
 	/**
 	 * 获取当前方块周围的已连接的传输方块
@@ -79,17 +86,6 @@ public interface IEleInputer extends IRegister {
 				list.put(te, out);
 		});
 		return list;
-	}
-	
-	/**
-	 * 判断当前方块是否已经连接指定传输方块
-	 * @param now 当前方块
-	 * @param transfer 传输方块
-	 */
-	static boolean isLink(TileEntity now, TileEntity transfer) {
-		IEleTransfer et = EleWorker.getTransfer(transfer);
-		if (et == null) return false;
-		return et.isLink(transfer, now);
 	}
 	
 }

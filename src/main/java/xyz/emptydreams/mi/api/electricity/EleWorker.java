@@ -5,12 +5,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import xyz.emptydreams.mi.api.electricity.info.UseInfo;
+import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.PathInfo;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
+import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.utils.MISysInfo;
 import net.minecraft.tileentity.TileEntity;
@@ -106,7 +107,8 @@ public final class EleWorker {
 	 * @param te 指定方块
 	 * @return 是否成功
 	 */
-	public static UseInfo useEleEnergy(TileEntity te) {
+	@SuppressWarnings("UnusedReturnValue")
+	public static EleEnergy useEleEnergy(TileEntity te) {
 		for (IEleInputer inputer : INPUTERS) {
 			if (inputer.contains(te)) {
 				return useEleEnergy(te, inputer);
@@ -122,7 +124,7 @@ public final class EleWorker {
 	 * @param inputer 支持该方块的托管
 	 * @return 是否成功
 	 */
-	public static UseInfo useEleEnergy(TileEntity te, IEleInputer inputer) {
+	public static EleEnergy useEleEnergy(TileEntity te, IEleInputer inputer) {
 		Map<TileEntity, IEleOutputer> outs = inputer.getOutputerAround(te);
 		if (outs.isEmpty()) {
 			Map<TileEntity, IEleTransfer> transfers = inputer.getTransferAround(te);
@@ -141,7 +143,7 @@ public final class EleWorker {
 					realPath.getEnergy() + realPath.getLossEnergy(), realPath.getVoltage());
 			return realPath.invoke();
 		} else {
-			IVoltage voltage = inputer.getVoltage(te);
+			IVoltage voltage = inputer.getVoltage(te, EnumVoltage.ORDINARY);
 			int allEnergy = inputer.getEnergy(te);
 			
 			int realEnergy = 0;
@@ -152,7 +154,7 @@ public final class EleWorker {
 			for (Map.Entry<TileEntity, IEleOutputer> enerty : outs.entrySet()) {
 				IEleOutputer outputer = enerty.getValue();
 				TileEntity out = enerty.getKey();
-				UseInfo outputInfo = outputer.output(out, Integer.MAX_VALUE, voltage, true);
+				EleEnergy outputInfo = outputer.output(out, Integer.MAX_VALUE, voltage, true);
 				if (outputInfo.getEnergy() >= allEnergy) {
 					realOut = out;
 					realOutputer = outputer;

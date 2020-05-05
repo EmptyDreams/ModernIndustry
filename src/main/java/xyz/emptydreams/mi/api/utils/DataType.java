@@ -28,6 +28,8 @@ public enum  DataType {
 	 * Map中的Key和Value都必须支持写入到NBT中。
 	 * 若存储类型为{@link #OTHER}，则存储的类必须包含默认构造函数
 	 */
-	MAP
+	MAP,
+	/** 表示{@link xyz.emptydreams.mi.api.electricity.interfaces.IVoltage} */
+	VOLTAGE
 	
 }

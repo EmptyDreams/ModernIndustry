@@ -1,11 +1,16 @@
 package xyz.emptydreams.mi.blocks.te.user;
 
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.DictDisorderList;
-import xyz.emptydreams.mi.api.electricity.EleWorker;
+import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.electricity.src.info.BiggerVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.EnumBiggerVoltage;
-import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcUser;
+import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
+import xyz.emptydreams.mi.api.electricity.src.tileentity.EleTileEntity;
 import xyz.emptydreams.mi.api.gui.component.MProgressBar;
 import xyz.emptydreams.mi.api.utils.DataType;
 import xyz.emptydreams.mi.blocks.machine.user.CompressorBlock;
@@ -24,7 +29,7 @@ import net.minecraftforge.items.SlotItemHandler;
  * @version V1.2
  */
 @AutoTileEntity(CompressorBlock.NAME)
-public class EUCompressor extends EleSrcUser implements ITickable {
+public class EUCompressor extends EleTileEntity implements ITickable {
 	
 	public static final CraftGuide<ItemStack, ItemStack> CRAFT_GUIDE = new CraftGuide<>();
 	
@@ -38,7 +43,8 @@ public class EUCompressor extends EleSrcUser implements ITickable {
 	/** 已工作时间 */
 	@Storage(type = DataType.INT)
 	private int workingTime = 0;
-	/** 三个物品框<br>
+	/**
+	 * 三个物品框<br>
 	 * 	0-上端，1-下端，2-输出
 	 */
 	@Storage(type = DataType.OTHER)
@@ -54,11 +60,36 @@ public class EUCompressor extends EleSrcUser implements ITickable {
 	private final MProgressBar progressBar = new MProgressBar();
 	
 	public EUCompressor() {
-		setBiggerMaxTime(100);
-		setBiggerVoltageOperate(new BiggerVoltage(3, EnumBiggerVoltage.FIRE));
-		setEnergy(200);
-		setEnergyMin(200);
+		super(1, 200, EnumVoltage.LOWER, EnumVoltage.ORDINARY);
+		OrdinaryCounter counter = new OrdinaryCounter(100);
+		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
+		setCounter(counter);
+		setReceive(true);
+		setMaxReceive(200);
+		setNowEnergy(0);
 		progressBar.setLocation(80, 35);
+	}
+	
+	@Override
+	public void setWorld(World worldIn) {
+		super.setWorld(worldIn);
+		((OrdinaryCounter) getCounter()).setWorld(worldIn);
+	}
+	
+	@Override
+	public void setPos(BlockPos posIn) {
+		super.setPos(posIn);
+		((OrdinaryCounter) getCounter()).setPos(posIn);
+	}
+	
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		if (getCounter() instanceof OrdinaryCounter) {
+			OrdinaryCounter counter = (OrdinaryCounter) getCounter();
+			counter.setWorld(world);
+			counter.setPos(pos);
+		}
+		return super.getUpdateTag();
 	}
 	
 	@Override
@@ -78,6 +109,8 @@ public class EUCompressor extends EleSrcUser implements ITickable {
 					                    .withProperty(CompressorBlock.EMPTY, isEmpty());
 			world.setBlockState(pos, state);
 			world.markBlockRangeForRenderUpdate(pos, pos);
+			progressBar.set(workingTime);
+			markDirty();
 			return;
 		}
 		//若配方存在则继续计算
@@ -91,23 +124,23 @@ public class EUCompressor extends EleSrcUser implements ITickable {
 			if (this.out.getStack().getCount() == 0) {
 				this.out.putStack(ItemStack.EMPTY);
 			}
-			if (EleWorker.useEleEnergy(this) != null) {
-				isWorking = true;
-				++workingTime;
-				if (workingTime >= getNeedTime()) {
-					workingTime = 0;
-					item.extractItem(0, 1, false);
-					item.extractItem(1, 1, false);
-					this.out.putStack(new ItemStack(outStack.getItem(),
-							outStack.getCount() + this.out.getStack().getCount()));
-				}
+			isWorking = true;
+			++workingTime;
+			if (workingTime >= getNeedTime()) {
+				workingTime = 0;
+				item.extractItem(0, 1, false);
+				item.extractItem(1, 1, false);
+				this.out.putStack(new ItemStack(outStack.getItem(),
+						outStack.getCount() + this.out.getStack().getCount()));
 			}
+			setNowEnergy(getNowEnergy() - 200);
 		} else {
 			workingTime = 0;
 		}
 		progressBar.set(workingTime);
 		IBlockState state = world.getBlockState(pos);
-		world.setBlockState(pos, state.withProperty(CompressorBlock.EMPTY, isEmpty()).withProperty(CompressorBlock.WORKING, isWorking));
+		world.setBlockState(pos, state.withProperty(CompressorBlock.EMPTY, isEmpty())
+				                         .withProperty(CompressorBlock.WORKING, isWorking));
 		markDirty();
 		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
@@ -150,6 +183,16 @@ public class EUCompressor extends EleSrcUser implements ITickable {
 			case 2 : return out;
 			default : return null;
 		}
+	}
+	
+	@Override
+	public boolean isReAllowable(EnumFacing facing) {
+		return true;
+	}
+	
+	@Override
+	public boolean isExAllowable(EnumFacing facing) {
+		return false;
 	}
 	
 	public static class SlotMI extends SlotItemHandler {

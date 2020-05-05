@@ -6,7 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
+import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
+import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
@@ -19,6 +24,7 @@ import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.net.NetworkRegister;
 import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.DataType;
+import xyz.emptydreams.mi.api.utils.TEHelper;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 import xyz.emptydreams.mi.utils.BlockPosUtil;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,7 +42,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
  * @version V1.0
  */
 @AutoTileEntity("IN_FATHER_ELECTRICITY_TRANSFER")
-public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable {
+public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, TEHelper {
 	
 	public EleSrcCable() {
 		NetworkRegister.register(this);
@@ -84,6 +90,8 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 	WireLinkInfo cache = null;
 	/** 在客户端存储电线连接数量 */
 	private int _amount = 0;
+	/** 过载最长时间 */
+	protected int biggerMaxTime = 50;
 	
 	/**
 	 * 判断一个方块能否连接当前电线
@@ -295,12 +303,14 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 		}
 		
 		TileEntity entity;
+		IStorage storage;
 		for (BlockPos block : linkedBlocks) {
 			entity = world.getTileEntity(block);
-			if (entity.hasCapability(CapabilityEnergy.ENERGY, BlockPosUtil.whatFacing(block, pos))
-					    && entity.getCapability(CapabilityEnergy.ENERGY,
-					BlockPosUtil.whatFacing(block, pos)).receiveEnergy(1, true) > 0) {
-				EleWorker.useEleEnergy(entity);
+			if (entity == null) {
+				deleteLink(block);
+			} else {
+				storage = entity.getCapability(EleCapability.ENERGY, BlockPosUtil.whatFacing(block, pos));
+				if (storage != null && storage.canReceive()) EleWorker.useEleEnergy(entity);
 			}
 		}
 	}
@@ -359,10 +369,18 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 	public final BlockPos getPrevPos() { return prev; }
 	/** 获取下一根电线的坐标 */
 	public final BlockPos getNextPos() { return next; }
-	@Override
-	protected void setBiggerMaxTime(int bvt) {
-		super.setBiggerMaxTime(bvt);
+	/** 设置过载最长时间(单位：tick，默认值：50tick)，当设置时间小于0时保持原设置不变 */
+	public void setBiggerMaxTime(int bvt) {
+		biggerMaxTime = (bvt >= 0) ? bvt : biggerMaxTime;
 		getCounter().setMaxTime(getBiggerMaxTime());
+	}
+	/** 获取最长过载时间 */
+	public int getBiggerMaxTime() {
+		return biggerMaxTime;
+	}
+	/** 设置方块类型 */
+	public final void setBlockType(Block block) {
+		blockType = block;
 	}
 	
 	/** 获取连接的方块. 返回的列表可以随意修改 */
@@ -381,9 +399,11 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 		if (counter == null) {
 			BiggerVoltage bigger = new BiggerVoltage(2, EnumBiggerVoltage.FIRE);
 			bigger.setFireRadius(1);
-			counter = new OrdinaryCounter(world, pos,
-					bigger, getBiggerMaxTime());
-			
+			OrdinaryCounter counter = new OrdinaryCounter(getBiggerMaxTime());
+			counter.setPos(pos);
+			counter.setWorld(world);
+			counter.setBigger(new BiggerVoltage(1, EnumBiggerVoltage.FIRE));
+			this.counter = counter;
 		}
 		return counter;
 	}
@@ -471,6 +491,28 @@ public class EleSrcCable extends Electricity implements IAutoNetwork, ITickable 
 	@Override
 	public final <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		return null;
+	}
+	
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+		super.writeToNBT(compound);
+		return TEHelper.super.writeToNBT(compound);
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound compound) {
+		super.readFromNBT(compound);
+		TEHelper.super.readFromNBT(compound);
+	}
+	
+	@Override
+	public String toString() {
+		return "EleSrcCable{ pos=" + pos + '}';
+	}
+	
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+		return oldState.getBlock() != newSate.getBlock();
 	}
 	
 }

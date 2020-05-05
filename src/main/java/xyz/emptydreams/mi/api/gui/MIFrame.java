@@ -64,6 +64,8 @@ public class MIFrame extends Container {
 		this.world = world;
 	}
 	
+	
+	
 	/**
 	 * 重新设置UI大小
 	 * @param width 宽度

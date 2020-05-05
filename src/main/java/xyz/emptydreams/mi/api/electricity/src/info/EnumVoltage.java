@@ -1,5 +1,7 @@
 package xyz.emptydreams.mi.api.electricity.src.info;
 
+import javax.annotation.Nonnull;
+
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 
 /**
@@ -8,23 +10,22 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
  * @author EmptyDreams
  * @version V1.0
  */
-@SuppressWarnings("unused")
 public enum EnumVoltage implements IVoltage {
-
-	NON(0, Integer.MAX_VALUE, 0),
+	
+	EXTREMELY_HIGHER(5000, 5, 7),
+	HIGH(500, 20, 5),
+	HIGHER(200, 27, 4),
 	LOW(10, 50, 1),
 	LOWER(50, 45, 2),
+	NON(0, Integer.MAX_VALUE, 0),
 	ORDINARY(100, 34, 3),
-	HIGHER(200, 27, 4),
-	HIGH(500, 20, 5),
-	VERY_HIGH(2000, 10, 6),
-	EXTREMELY_HIGHER(5000, 5, 7),
-	SUPERCONDUCTOR(50000, 0, 8);
+	SUPERCONDUCTOR(50000, 0, 8),
+	VERY_HIGH(2000, 10, 6);
 	
 	private final int VOLTAGE;
 	private final int LOSS;
 	private final int INDEX;
-
+	
 	EnumVoltage(int voltage, int loss, int index) {
 		VOLTAGE = voltage;
 		LOSS = loss;
@@ -35,12 +36,21 @@ public enum EnumVoltage implements IVoltage {
 	public int getVoltage() {
 		return VOLTAGE;
 	}
+	
 	@Override
 	public int getLossIndex() {
 		return LOSS;
 	}
 	
-	public int getIndex() { return INDEX; }
+	@Nonnull
+	@Override
+	public IVoltage copy() {
+		return this;
+	}
+	
+	public int getIndex() {
+		return INDEX;
+	}
 	
 	/**
 	 * 根据下标获取值
