@@ -7,7 +7,7 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 /**
  * 存储一个能量的具体值
  * @author EmptyDreams
- * @version V1.0
+ * @version V2.0
  */
 public final class EleEnergy implements INBTSerializable<NBTTagCompound> {
 	

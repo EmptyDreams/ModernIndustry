@@ -18,8 +18,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.Mod;
 
 /**
- * 关于电力系统的工作都在这里进行<br>
- *
+ * 关于电力系统的工作都在这里进行
  * @author EmptyDreams
  * @version V2.0
  */

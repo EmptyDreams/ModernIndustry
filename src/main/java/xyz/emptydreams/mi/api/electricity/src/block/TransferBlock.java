@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
+import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.blocks.register.BlockBaseT;
 import net.minecraft.block.Block;
@@ -26,6 +28,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import xyz.emptydreams.mi.utils.BlockPosUtil;
 
 /**
  * 普通电线
@@ -136,8 +139,11 @@ abstract public class TransferBlock extends BlockBaseT {
 			EleSrcCable tew = (EleSrcCable) worldIn.getTileEntity(pos);
 			tew.deleteLink(fromPos);
 		} else if (fromEntity != null) {
-			EleSrcCable tew = (EleSrcCable) worldIn.getTileEntity(pos);
-			tew.link(fromPos);
+			ILink link = fromEntity.getCapability(LinkCapability.LINK, null);
+			if (link.canLink(BlockPosUtil.whatFacing(fromPos, pos))) {
+				EleSrcCable tew = (EleSrcCable) worldIn.getTileEntity(pos);
+				tew.link(fromPos);
+			}
 		}
 	}
 	

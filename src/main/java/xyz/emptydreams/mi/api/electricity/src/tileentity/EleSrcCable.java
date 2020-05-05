@@ -14,6 +14,8 @@ import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
 import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
+import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
+import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.BiggerVoltage;
@@ -35,11 +37,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.energy.CapabilityEnergy;
 
 /**
  * @author EmptyDreams
- * @version V1.0
+ * @version V2.0
  */
 @AutoTileEntity("IN_FATHER_ELECTRICITY_TRANSFER")
 public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, TEHelper {
@@ -170,13 +171,19 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 				return true;
 			} else return prev.equals(target);
 			return false;
-		}
-		if (EleWorker.isInputer(targetEntity) || EleWorker.isOutputer(targetEntity)) {
+		} else {
+			IEleInputer inputer = EleWorker.getInputer(targetEntity);
+			EnumFacing facing = BlockPosUtil.whatFacing(target, pos);
+			if (inputer != null &&
+					    !inputer.canLink(targetEntity, facing)) return false;
+			IEleOutputer outputer = EleWorker.getOutputer(targetEntity);
+			if (outputer != null &&
+						!outputer.canLink(targetEntity, facing)) return false;
+			if (inputer == null && outputer == null) return false;
 			if (!linkedBlocks.contains(target)) linkedBlocks.add(target);
 			updateLinkShow();
 			return true;
 		}
-		return false;
 	}
 	
 	public void updateLinkShow() {

@@ -15,6 +15,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
@@ -27,9 +31,11 @@ import xyz.emptydreams.mi.api.event.EnergyEvent;
 import xyz.emptydreams.mi.api.utils.TEHelper;
 
 /**
+ * 机器的父类，其中包含了机器的一些默认实现
  * @author EmptyDreams
- * @version V1.0
+ * @version V2.1
  */
+@Mod.EventBusSubscriber
 public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	
 	/** 空的能量 */
@@ -57,11 +63,27 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	@Storage
 	private final Set<BlockPos> linkedBlocks = new HashSet<>(3);
 	
+	/**
+	 * @param minEnergy 可接收/输出的能量最小值
+	 * @param maxEnergy 可接收/输出的能量最大值
+	 * @param minVoltage 可接收/输出的电压最小值
+	 * @param maxVoltage 可接收/输出的电压最大值
+	 */
 	public EleTileEntity(int minEnergy, int maxEnergy, IVoltage minVoltage, IVoltage maxVoltage) {
 		energyRange.setMinEnergy(minEnergy);
 		energyRange.setMaxEnergy(maxEnergy);
 		energyRange.setMinVoltage(minVoltage);
 		energyRange.setMaxVoltage(maxVoltage);
+	}
+	
+	@Override
+	public void validate() {
+		super.validate();
+	}
+	
+	@Override
+	public void invalidate() {
+		super.invalidate();
 	}
 	
 	/**
@@ -84,7 +106,7 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	public abstract boolean isExAllowable(EnumFacing facing);
 	
 	/** @see ILink#canLink(EnumFacing) */
-	public boolean canLink(EnumFacing facing) { return true; }
+	public boolean canLink(EnumFacing facing) { return hasCapability(EleCapability.ENERGY, facing); }
 	/** @see ILink#link(BlockPos) */
 	public boolean link(BlockPos pos) { return linkedBlocks.add(pos); }
 	/** @see ILink#unLink(BlockPos) */
@@ -102,12 +124,26 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 		TEHelper.super.readFromNBT(compound);
 	}
 	
+	/**
+	 * 判断方块某个方向是否含有指定能力<br>
+	 * 要求：{@link #getCapability(Capability, EnumFacing)}返回非null值时该方法必须返回true，
+	 * 该方法返回true时{@link #getCapability(Capability, EnumFacing)}必须返回非null值
+	 * @param capability 能力
+	 * @param facing 方向
+	 */
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
 		if (super.hasCapability(capability, facing)) return true;
 		return capability == EleCapability.ENERGY || capability == LinkCapability.LINK;
 	}
 	
+	/**
+	 * 获取方块某个方向的能力，能力不存在时返回null
+	 * @param capability 指定的能力
+	 * @param facing 方向
+	 * @param <T> 能力类型
+	 * @see #hasCapability(Capability, EnumFacing) 
+	 */
 	@Nullable
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
@@ -163,25 +199,18 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	/** 能量接口 */
 	private IStorage storage = new IStorage() {
 		@Override
-		public boolean canReceive() {
-			return isReceive;
-		}
-		
+		public boolean canReceive() { return isReceive; }
 		@Override
-		public boolean canExtract() {
-			return isExtract;
-		}
-		
+		public boolean canExtract() { return isExtract; }
 		@Nonnull
 		@Override
-		public EnergyRange getEnergyRange() {
-			return energyRange.copy();
-		}
+		public EnergyRange getEnergyRange() { return energyRange.copy(); }
 		
 		@Override
 		public int receiveEnergy(EleEnergy energy, boolean simulate) {
 			if (world.isRemote) return 0;
 			if (canReceive()) {
+				//若当前储存能量已满则不再接收能量
 				if (nowEnergy < maxReceive) {
 					if (simulate) {
 						return Math.min(maxReceive - nowEnergy, energy.getEnergy());
@@ -189,8 +218,13 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 						int k = Math.min(maxReceive - nowEnergy, energy.getEnergy());
 						IVoltage voltage = energyRange.getOptimalVoltage(energy.getVoltage());
 						if (!onReceive(new EleEnergy(k, voltage))) return 0;
+						//若输入电压不在适用电压范围内，则增加计数器
+						if (voltage.getVoltage() != energy.getVoltage().getVoltage()) {
+							getCounter().plus();
+						}
 						nowEnergy += k;
 						if (reVoltage == null) reVoltage = energy.getVoltage().copy();
+						//触发事件
 						MinecraftForge.EVENT_BUS.post(
 								new EnergyEvent.Receive(new EleEnergy(k, voltage), EleTileEntity.this));
 						return k;
@@ -202,35 +236,28 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 		
 		@Override
 		public EleEnergy extractEnergy(EleEnergy energy, boolean simulate) {
-			if (world.isRemote) return EMPTY_ENERGY;
+			if (world.isRemote) return EMPTY_ENERGY.copy();
 			if (canExtract()) {
-				if (nowEnergy >= energy.getEnergy()) {
-					int k = Math.min(nowEnergy, energy.getEnergy());
-					if (k <= 0) return EMPTY_ENERGY;
-					IVoltage voltage = energyRange.getOptimalVoltage(energy.getVoltage());
-					EleEnergy reEnergy = new EleEnergy(k, voltage);
-					if (!simulate) {
-						if (!onExtract(new EleEnergy(k, voltage))) return EMPTY_ENERGY;
-						if (exVoltage == null) exVoltage = energy.getVoltage().copy();
-						nowEnergy -= k;
-						MinecraftForge.EVENT_BUS.post(
-								new EnergyEvent.Extract(reEnergy.copy(), EleTileEntity.this));
-					}
-					return reEnergy;
-				} else if (nowEnergy > 0) {
-					IVoltage voltage = energyRange.getOptimalVoltage(energy.getVoltage());
-					EleEnergy reEnergy = new EleEnergy(nowEnergy, voltage);
-					if (!simulate) {
-						if (!onExtract(new EleEnergy(nowEnergy, voltage))) return EMPTY_ENERGY;
-						if (exVoltage == null) exVoltage = energy.getVoltage().copy();
-						nowEnergy = 0;
-						MinecraftForge.EVENT_BUS.post(
-								new EnergyEvent.Extract(reEnergy.copy(), EleTileEntity.this));
-					}
-					return reEnergy;
+				//若存储能量或需要输出的能量小于等于0则直接返回
+				if (nowEnergy <= 0 || energy.getEnergy() <= 0) return EMPTY_ENERGY.copy();
+				
+				//计算应该输出的电能
+				int k = Math.min(nowEnergy, energy.getEnergy());
+				//计算最适电压
+				IVoltage voltage = energyRange.getOptimalVoltage(energy.getVoltage());
+				//若需要输出的电压不在可输出的范围则输出最适电压
+				EleEnergy reEnergy = new EleEnergy(k, voltage);
+				if (!simulate) {
+					if (!onExtract(new EleEnergy(k, voltage))) return EMPTY_ENERGY.copy();
+					if (exVoltage == null) exVoltage = energy.getVoltage().copy();
+					nowEnergy -= k;
+					//触发事件
+					MinecraftForge.EVENT_BUS.post(
+							new EnergyEvent.Extract(reEnergy.copy(), EleTileEntity.this));
 				}
+				return reEnergy;
 			}
-			return EMPTY_ENERGY;
+			return EMPTY_ENERGY.copy();
 		}
 		
 		@Override
@@ -273,6 +300,21 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
 		return oldState.getBlock() != newSate.getBlock();
+	}
+	
+	/** 在每Tick结尾将类中临时数据清空 */
+	@SubscribeEvent
+	public static void onTickEnd(TickEvent.ServerTickEvent event) {
+		World[] worlds = FMLCommonHandler.instance().getMinecraftServerInstance().worlds;
+		EleTileEntity entity;
+		for (World world : worlds) {
+			for (TileEntity te : world.loadedTileEntityList) {
+				if (te instanceof EleTileEntity) {
+					entity = (EleTileEntity) te;
+					entity.reVoltage = entity.exVoltage = null;
+				}
+			}
+		}
 	}
 	
 }

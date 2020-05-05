@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import xyz.emptydreams.mi.api.electricity.EleWorker;
+import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
+import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.utils.BlockPosUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -59,7 +61,11 @@ public interface IEleInputer extends IRegister {
 	 * @param now 当前方块
 	 * @param facing 指定方向
 	 */
-	default boolean canLink(TileEntity now, EnumFacing facing) { return true; }
+	default boolean canLink(TileEntity now, EnumFacing facing) {
+		ILink link = now.getCapability(LinkCapability.LINK, facing);
+		if (link == null) return false;
+		return link.canLink(facing);
+	}
 	
 	/**
 	 * 获取当前方块周围的已连接的传输方块

@@ -11,6 +11,7 @@ import xyz.emptydreams.mi.api.electricity.src.info.BiggerVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.api.electricity.src.tileentity.EleTileEntity;
+import xyz.emptydreams.mi.api.electricity.src.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.api.gui.component.MProgressBar;
 import xyz.emptydreams.mi.api.utils.DataType;
 import xyz.emptydreams.mi.blocks.machine.user.CompressorBlock;
@@ -29,7 +30,7 @@ import net.minecraftforge.items.SlotItemHandler;
  * @version V1.2
  */
 @AutoTileEntity(CompressorBlock.NAME)
-public class EUCompressor extends EleTileEntity implements ITickable {
+public class EUCompressor extends FrontTileEntity implements ITickable {
 	
 	public static final CraftGuide<ItemStack, ItemStack> CRAFT_GUIDE = new CraftGuide<>();
 	
@@ -193,6 +194,11 @@ public class EUCompressor extends EleTileEntity implements ITickable {
 	@Override
 	public boolean isExAllowable(EnumFacing facing) {
 		return false;
+	}
+	
+	@Override
+	public EnumFacing getFront() {
+		return world.getBlockState(pos).getValue(CompressorBlock.FACING);
 	}
 	
 	public static class SlotMI extends SlotItemHandler {

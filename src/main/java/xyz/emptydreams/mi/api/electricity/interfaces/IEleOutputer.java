@@ -1,5 +1,7 @@
 package xyz.emptydreams.mi.api.electricity.interfaces;
 
+import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
+import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -36,6 +38,10 @@ public interface IEleOutputer extends IRegister {
 	 * @param now 当前方块
 	 * @param facing 指定方向
 	 */
-	default boolean canLink(TileEntity now, EnumFacing facing) { return true; }
+	default boolean canLink(TileEntity now, EnumFacing facing) {
+		ILink link = now.getCapability(LinkCapability.LINK, facing);
+		if (link == null) return false;
+		return link.canLink(facing);
+	}
 	
 }
