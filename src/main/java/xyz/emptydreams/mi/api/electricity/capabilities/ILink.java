@@ -19,16 +19,28 @@ public interface ILink {
 	 */
 	boolean canLink(EnumFacing facing);
 	
-	/** 连接指定方块 */
+	/**
+	 * 连接指定方块
+	 * @return 是否连接成功
+	 */
 	boolean link(BlockPos pos);
 	
+	/**
+	 * 取消连接
+	 * @return 是否取消成功
+	 */
+	@SuppressWarnings("UnusedReturnValue")
+	boolean unLink(BlockPos pos);
+	
 	/** 判断方块是否连接指定方块 */
+	@SuppressWarnings("unused")
 	boolean isLink(BlockPos pos);
 	
 	/**
 	 * 获取已经连接的所有方块
 	 * @return 该方法返回实际数据的拷贝（可以是浅拷贝也可以是深拷贝）
 	 */
+	@SuppressWarnings("unused")
 	@Nonnull
 	Collection<BlockPos> getLinks();
 	

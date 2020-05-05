@@ -78,15 +78,17 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	 */
 	public boolean onExtract(EleEnergy energy) { return true; }
 	
-	/** @see IStorage#isReAllowable(EnumFacing)  */
+	/** @see IStorage#isReAllowable(EnumFacing) */
 	public abstract boolean isReAllowable(EnumFacing facing);
-	/** @see IStorage#isExAllowable(EnumFacing)  */
+	/** @see IStorage#isExAllowable(EnumFacing) */
 	public abstract boolean isExAllowable(EnumFacing facing);
 	
-	/** @see ILink#canLink(EnumFacing)  */
+	/** @see ILink#canLink(EnumFacing) */
 	public boolean canLink(EnumFacing facing) { return true; }
-	/** @see ILink#link(BlockPos)  */
+	/** @see ILink#link(BlockPos) */
 	public boolean link(BlockPos pos) { return linkedBlocks.add(pos); }
+	/** @see ILink#unLink(BlockPos) */
+	public boolean unLink(BlockPos pos) { return linkedBlocks.remove(pos); }
 	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
@@ -215,6 +217,17 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 								new EnergyEvent.Extract(reEnergy.copy(), EleTileEntity.this));
 					}
 					return reEnergy;
+				} else if (nowEnergy > 0) {
+					IVoltage voltage = energyRange.getOptimalVoltage(energy.getVoltage());
+					EleEnergy reEnergy = new EleEnergy(nowEnergy, voltage);
+					if (!simulate) {
+						if (!onExtract(new EleEnergy(nowEnergy, voltage))) return EMPTY_ENERGY;
+						if (exVoltage == null) exVoltage = energy.getVoltage().copy();
+						nowEnergy = 0;
+						MinecraftForge.EVENT_BUS.post(
+								new EnergyEvent.Extract(reEnergy.copy(), EleTileEntity.this));
+					}
+					return reEnergy;
 				}
 			}
 			return EMPTY_ENERGY;
@@ -235,18 +248,17 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 		public boolean canLink(EnumFacing facing) {
 			return EleTileEntity.this.canLink(facing);
 		}
-		
 		@Override
 		public boolean link(BlockPos pos) {
 			return EleTileEntity.this.link(pos);
 		}
-		
+		@Override
+		public boolean unLink(BlockPos pos) { return EleTileEntity.this.unLink(pos); }
 		@Nonnull
 		@Override
 		public Collection<BlockPos> getLinks() {
 			return new HashSet<>(linkedBlocks);
 		}
-		
 		@Override
 		public boolean isLink(BlockPos pos) {
 			return linkedBlocks.contains(pos);

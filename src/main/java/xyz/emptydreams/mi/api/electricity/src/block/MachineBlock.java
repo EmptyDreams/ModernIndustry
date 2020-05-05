@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.electricity.src.block;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.init.Blocks;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.blocks.register.BlockBaseT;
@@ -27,15 +28,15 @@ public abstract class MachineBlock extends BlockBaseT {
 	public void neighborChanged(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
 	                            @Nonnull Block blockIn, @Nonnull BlockPos fromPos) {
 		TileEntity now = world.getTileEntity(pos);
-		if (now == null) return;
 		ILink link = now.getCapability(LinkCapability.LINK, null);
-		if (link != null) link.link(fromPos);
-		
-		TileEntity from = world.getTileEntity(fromPos);
-		if (from == null) return;
-		link = from.getCapability(LinkCapability.LINK, null);
-		if (link == null) return;
-		link.link(pos);
+		blockIn = world.getBlockState(fromPos).getBlock();
+		if (link != null) {
+			if (blockIn == Blocks.AIR) {
+				link.unLink(fromPos);
+			} else {
+				link.link(fromPos);
+			}
+		}
 	}
 	
 }

@@ -101,7 +101,7 @@ public class EUCompressor extends EleTileEntity implements ITickable {
 		guide.add(new ItemStack(up.getStack().getItem())); guide.add(new ItemStack(down.getStack().getItem()));
 		ItemStack outStack = CRAFT_GUIDE.get(guide);
 		//判断配方是否存在
-		if (outStack == null) {
+		if (outStack == null || getNowEnergy() <= 0) {
 			//如果不存在，更新方块显示
 			workingTime = 0;
 			IBlockState state = world.getBlockState(pos)
@@ -109,7 +109,7 @@ public class EUCompressor extends EleTileEntity implements ITickable {
 					                    .withProperty(CompressorBlock.EMPTY, isEmpty());
 			world.setBlockState(pos, state);
 			world.markBlockRangeForRenderUpdate(pos, pos);
-			progressBar.set(workingTime);
+			if (getNowEnergy() > 0) progressBar.set(workingTime);
 			markDirty();
 			return;
 		}

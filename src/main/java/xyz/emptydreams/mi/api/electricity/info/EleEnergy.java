@@ -14,7 +14,7 @@ public final class EleEnergy implements INBTSerializable<NBTTagCompound> {
 	private IVoltage voltage;
 	private int energy;
 	
-	public EleEnergy() { }
+	public EleEnergy() { this(0, null); }
 	
 	public EleEnergy(int energy, IVoltage voltage) {
 		this.energy = energy;

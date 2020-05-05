@@ -41,6 +41,8 @@ public class LinkCapability {
 			@Override
 			public boolean link(BlockPos pos) { return false; }
 			@Override
+			public boolean unLink(BlockPos pos) { return false; }
+			@Override
 			public boolean isLink(BlockPos pos) { return false; }
 			@Nonnull
 			@Override

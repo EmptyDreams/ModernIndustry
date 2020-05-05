@@ -99,7 +99,7 @@ public final class WireLinkInfo extends EleLineCache {
 	 * @return 返回null表示无可用线路
 	 */
 	public static PathInfo calculate(EleSrcCable start, TileEntity user, IEleInputer inputer) {
-		if (start.getLinkAmount() == 1) {
+		if (start.getLinkAmount() <= 1) {
 			PathInfo info = new PathInfo();
 			calculateHelper(start, null, user, inputer, info);
 			if (info.getOuter() == null) return null;
@@ -165,13 +165,15 @@ public final class WireLinkInfo extends EleLineCache {
 								.setVoltage(useInfo.getVoltage());
 						return false;
 					}
-					int k = inputer.getEnergy(user, useInfo.getEnergy());
-					if (k > 0 && (realUseInfo.get() == null ||
-							              realUseInfo.get().getEnergy() < k)) {
-						useInfo.setEnergy(k);
-						realUseInfo.set(useInfo);
-						realOut.set(entry.getKey());
-						realOutper.set(entry.getValue());
+					if (useInfo.getEnergy() > 0) {
+						int k = inputer.getEnergy(user, useInfo.getEnergy());
+						if (k > 0 && (realUseInfo.get() == null ||
+								              realUseInfo.get().getEnergy() < k)) {
+							useInfo.setEnergy(k);
+							realUseInfo.set(useInfo);
+							realOut.set(entry.getKey());
+							realOutper.set(entry.getValue());
+						}
 					}
 				}
 				if (next != null) {
@@ -190,13 +192,15 @@ public final class WireLinkInfo extends EleLineCache {
 								.setVoltage(useInfo.getVoltage());
 						return false;
 					}
-					int k = inputer.getEnergy(user, useInfo.getEnergy());
-					if (k > 0 && (realUseInfo.get() == null ||
-							              realUseInfo.get().getEnergy() < k)) {
-						useInfo.setEnergy(k);
-						realUseInfo.set(useInfo);
-						realOut.set(entry.getKey());
-						realOutper.set(entry.getValue());
+					if (useInfo.getEnergy() > 0) {
+						int k = inputer.getEnergy(user, useInfo.getEnergy());
+						if (k > 0 && (realUseInfo.get() == null ||
+								              realUseInfo.get().getEnergy() < k)) {
+							useInfo.setEnergy(k);
+							realUseInfo.set(useInfo);
+							realOut.set(entry.getKey());
+							realOutper.set(entry.getValue());
+						}
 					}
 				}
 				return true;
