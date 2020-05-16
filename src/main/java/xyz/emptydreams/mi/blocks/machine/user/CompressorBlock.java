@@ -10,8 +10,6 @@ import xyz.emptydreams.mi.gui.CompressorFrame;
 import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,6 +24,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
+import static xyz.emptydreams.mi.blocks.base.MIStates.EMPTY;
+import static xyz.emptydreams.mi.blocks.base.MIStates.FACING;
+import static xyz.emptydreams.mi.blocks.base.MIStates.WORKING;
+
 /**
  * 压缩机
  * @author EmptyDremas
@@ -37,20 +39,8 @@ public class CompressorBlock extends MachineBlock {
 	
 	/** 方块内部名称 */
 	public static final String NAME = "compressor_tblock";
-	/** 状态：方向 */
-	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-	/** 状态：是否正在工作 */
-	public static final PropertyBool WORKING = PropertyBool.create("working");
-	/** 状态：是否为空 */
-	public static final PropertyBool EMPTY = PropertyBool.create("isempty");
 	
 	private final Item ITEM;
-	
-	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state,
-	                            EntityLivingBase placer, ItemStack stack) {
-		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
-	}
 	
 	public CompressorBlock() {
 		super(Material.ROCK);
@@ -71,9 +61,11 @@ public class CompressorBlock extends MachineBlock {
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (!worldIn.isRemote)
+		if (!super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)) return false;
+		if (!worldIn.isRemote) {
 			playerIn.openGui(ModernIndustry.instance,
 					CompressorFrame.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+		}
 		return true;
 	}
 	

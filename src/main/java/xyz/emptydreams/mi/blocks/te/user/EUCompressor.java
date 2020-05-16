@@ -13,6 +13,7 @@ import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.api.electricity.src.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.api.gui.component.MProgressBar;
 import xyz.emptydreams.mi.api.utils.data.DataType;
+import xyz.emptydreams.mi.blocks.base.MIStates;
 import xyz.emptydreams.mi.blocks.machine.user.CompressorBlock;
 import xyz.emptydreams.mi.register.item.ItemRegister;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
@@ -105,8 +106,8 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 			//如果不存在，更新方块显示
 			workingTime = 0;
 			IBlockState state = world.getBlockState(pos)
-					                    .withProperty(CompressorBlock.WORKING, false)
-					                    .withProperty(CompressorBlock.EMPTY, isEmpty());
+					                    .withProperty(MIStates.WORKING, false)
+					                    .withProperty(MIStates.EMPTY, isEmpty());
 			world.setBlockState(pos, state);
 			world.markBlockRangeForRenderUpdate(pos, pos);
 			if (getNowEnergy() > 0) progressBar.set(workingTime);
@@ -139,8 +140,8 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		}
 		progressBar.set(workingTime);
 		IBlockState state = world.getBlockState(pos);
-		world.setBlockState(pos, state.withProperty(CompressorBlock.EMPTY, isEmpty())
-				                         .withProperty(CompressorBlock.WORKING, isWorking));
+		world.setBlockState(pos, state.withProperty(MIStates.EMPTY, isEmpty())
+				                         .withProperty(MIStates.WORKING, isWorking));
 		markDirty();
 		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
@@ -197,7 +198,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	
 	@Override
 	public EnumFacing getFront() {
-		return world.getBlockState(pos).getValue(CompressorBlock.FACING);
+		return world.getBlockState(pos).getValue(MIStates.FACING);
 	}
 	
 	public static class SlotMI extends SlotItemHandler {

@@ -2,7 +2,10 @@ package xyz.emptydreams.mi.api.electricity.src.block;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.blocks.base.TEBlockBase;
@@ -12,6 +15,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import xyz.emptydreams.mi.items.common.SpannerItem;
 
 /**
  * @author EmptyDreams
@@ -37,6 +41,11 @@ public abstract class MachineBlock extends TEBlockBase {
 				link.link(fromPos);
 			}
 		}
+	}
+	
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+	                                EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		return playerIn.getHeldItem(hand).getItem() != SpannerItem.getInstance();
 	}
 	
 }

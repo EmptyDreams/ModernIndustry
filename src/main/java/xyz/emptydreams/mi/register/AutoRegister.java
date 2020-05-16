@@ -219,24 +219,31 @@ public final class AutoRegister {
 	
 	/** 自动注册物品 */
 	private static void reAutoItem(ASMDataTable ASM)
-			throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+			throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchFieldException {
 		Set<ASMData> classSet = ASM.getAll(AutoItemRegister.class.getName());
 		Map<String, Object> valueMap;
 		Class<?> nowClass;
 		String ID;
 		String name;
 		Item item;
+		String object;
 		if (classSet != null) {
 			for (ASMData data : classSet) {
 				valueMap = data.getAnnotationInfo();
 				ID = valueMap.getOrDefault("ID", AutoItemRegister.ID).toString();
 				name = valueMap.get("value").toString();
+				object = String.valueOf(valueMap.getOrDefault("object", ""));
 				nowClass = Class.forName(data.getClassName());
 				item = (Item) nowClass.newInstance();
 				
 				item.setRegistryName(ID, name);
 				item.setUnlocalizedName(name);
 				addAutoItem(item);
+				if (!object.equals("")) {
+					Field field = nowClass.getDeclaredField(object);
+					field.setAccessible(true);
+					field.set(null, item);
+				}
 			}
 		}
 	}
@@ -262,6 +269,7 @@ public final class AutoRegister {
 	}
 	
 	/* 注册TE */
+	@SuppressWarnings("unchecked")
 	private static void reAutoTE(ASMDataTable ASM) throws ClassNotFoundException {
 		Set<ASMData> classSet = ASM.getAll(AutoTileEntity.class.getName());
 		Map<String, Object> valueMap;

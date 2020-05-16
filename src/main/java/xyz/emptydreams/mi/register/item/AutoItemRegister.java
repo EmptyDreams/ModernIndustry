@@ -28,4 +28,7 @@ public @interface AutoItemRegister {
 	/** MOD ID */
 	String ID() default ID;
 	
+	/** 将注册的物品对象存储到该类中的某个对象上 */
+	String object() default "";
+	
 }
