@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.blocks.register;
+package xyz.emptydreams.mi.blocks.base;
 
 import java.util.Random;
 
@@ -16,9 +16,9 @@ import net.minecraft.util.EnumBlockRenderType;
  * @author EmptyDremas
  * @version V1.0
  */
-public abstract class BlockBaseT extends BlockContainer implements BlockItemHelper {
+public abstract class TEBlockBase extends BlockContainer implements BlockItemHelper {
 
-	protected BlockBaseT(Material materialIn) {
+	protected TEBlockBase(Material materialIn) {
 		super(materialIn);
 	}
 	

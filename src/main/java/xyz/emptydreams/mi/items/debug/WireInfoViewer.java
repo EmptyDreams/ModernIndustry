@@ -20,7 +20,6 @@ import net.minecraft.world.World;
 /**
  * 电线信息显示器，信息将会打印在客户端的后台中
  */
-@SuppressWarnings("SpellCheckingInspection")
 @AutoItemRegister("wireinfo_viewer")
 public class WireInfoViewer extends Item {
 	

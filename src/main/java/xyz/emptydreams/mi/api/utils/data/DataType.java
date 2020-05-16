@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.utils;
+package xyz.emptydreams.mi.api.utils.data;
 
 import net.minecraftforge.common.util.INBTSerializable;
 

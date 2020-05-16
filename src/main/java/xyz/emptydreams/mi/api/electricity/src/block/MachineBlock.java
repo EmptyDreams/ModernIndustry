@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.init.Blocks;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
-import xyz.emptydreams.mi.blocks.register.BlockBaseT;
+import xyz.emptydreams.mi.blocks.base.TEBlockBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -17,7 +17,7 @@ import net.minecraft.world.World;
  * @author EmptyDreams
  * @version V1.0
  */
-public abstract class MachineBlock extends BlockBaseT {
+public abstract class MachineBlock extends TEBlockBase {
 	
 	public MachineBlock(Material materialIn) {
 		super(materialIn);

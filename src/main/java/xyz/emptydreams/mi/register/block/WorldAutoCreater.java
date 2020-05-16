@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.blocks.world;
+package xyz.emptydreams.mi.register.block;
 
 import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.common.MinecraftForge;

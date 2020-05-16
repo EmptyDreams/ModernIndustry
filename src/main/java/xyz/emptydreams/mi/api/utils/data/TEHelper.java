@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.utils;
+package xyz.emptydreams.mi.api.utils.data;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -230,8 +230,8 @@ public interface TEHelper {
 				_readMap(atomic, data, name);
 				return atomic.get();
 			}
+			default: return null;
 		}
-		return null;
 	}
 	
 	static void _wirte(Object field, DataType type, NBTTagCompound data, String name, boolean isSon) {

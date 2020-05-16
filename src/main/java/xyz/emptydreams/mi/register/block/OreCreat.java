@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.blocks.world;
+package xyz.emptydreams.mi.register.block;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.TYPE;

@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.blocks.register;
+package xyz.emptydreams.mi.blocks.base;
 
 import java.util.Random;
 

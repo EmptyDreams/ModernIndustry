@@ -4,6 +4,7 @@ import java.util.Random;
 
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.electricity.src.block.MachineBlock;
+import xyz.emptydreams.mi.blocks.common.CommonBlocks;
 import xyz.emptydreams.mi.blocks.te.user.EUCompressor;
 import xyz.emptydreams.mi.gui.CompressorFrame;
 import xyz.emptydreams.mi.register.block.AutoBlockRegister;
@@ -15,7 +16,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -44,7 +44,7 @@ public class CompressorBlock extends MachineBlock {
 	/** 状态：是否为空 */
 	public static final PropertyBool EMPTY = PropertyBool.create("isempty");
 	
-	private Item ITEM;
+	private final Item ITEM;
 	
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state,
@@ -115,14 +115,12 @@ public class CompressorBlock extends MachineBlock {
 		spawnAsEntity(worldIn, pos, is);
 		spawnAsEntity(worldIn, pos, is2);
 		spawnAsEntity(worldIn, pos, is3);
-		if (!player.capabilities.isCreativeMode)
-			spawnAsEntity(worldIn, pos, new ItemStack(getBlockItem()));
 	}
 	
 	/** 被爆炸破坏时掉落外壳 */
 	@Override
 	public void onBlockExploded(World world, BlockPos pos, Explosion explosion) {
-		spawnAsEntity(world, pos, new ItemStack(Items.STICK));
+		spawnAsEntity(world, pos, new ItemStack(CommonBlocks.MACHINE_SHELL));
 		super.onBlockExploded(world, pos, explosion);
 	}
 	

@@ -8,7 +8,7 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
-import xyz.emptydreams.mi.blocks.register.BlockBaseT;
+import xyz.emptydreams.mi.blocks.base.TEBlockBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -36,7 +36,7 @@ import xyz.emptydreams.mi.utils.BlockPosUtil;
  * @version V1.0
  */
 @SuppressWarnings("deprecation")
-abstract public class TransferBlock extends BlockBaseT {
+abstract public class TransferBlock extends TEBlockBase {
 	
 	public static final AxisAlignedBB B_POINT =
 			new AxisAlignedBB(0.375F, 0.375F, 0.375F, 0.625F, 0.625F, 0.625F);

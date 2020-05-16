@@ -1,9 +1,13 @@
 package xyz.emptydreams.mi.api.net;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import xyz.emptydreams.mi.api.net.guinet.GUIMessage;
 import xyz.emptydreams.mi.api.net.guinet.IAutoGuiNetWork;
 import xyz.emptydreams.mi.utils.MISysInfo;
@@ -30,16 +34,55 @@ public class WaitList {
 	
 	/** 已经传输的信息总数 */
 	private static int amount = 0;
+	/** 计时器 */
+	private static long taskTime = 0;
+	private static long clientTaskTime = 0;
 	
 	@SubscribeEvent
 	public static void runAtTickEndService(TickEvent.ServerTickEvent event) {
+		++taskTime;
 		sendAll(false);
 	}
 	
 	@SubscribeEvent
 	public static void runAtTickEndClient(TickEvent.ClientTickEvent event) {
+		++clientTaskTime;
 		reClient();
 		sendAll(true);
+	}
+	
+	/**
+	 * 获取指定端口的时间计数器
+	 * @return 当前时间
+	 */
+	public static long getTaskTime(@Nonnull Side side) {
+		if (side.isClient()) return clientTaskTime;
+		return taskTime;
+	}
+	
+	/**
+	 * 获取指定端口的时间计数器
+	 * @param world 当前世界，用于判断端口
+	 * @return 当前时间
+	 */
+	public static long getTaskTime(@Nullable World world) {
+		if (world == null) return getTaskTime();
+		return world.isRemote ? clientTaskTime : taskTime;
+	}
+	
+	/**
+	 * 获取当前端口的时间计数器.<br>
+	 * <b>服务端调用该方法的线程不为"Client Thread"或"Server Thread"时判断可能不准确</b>
+	 * @return 当前时间
+	 */
+	public static long getTaskTime() {
+		if (FMLCommonHandler.instance().getSide().isServer()) {
+			return taskTime;
+		}
+		if (Thread.currentThread().getName().contains("Server")) {
+			return taskTime;
+		}
+		return clientTaskTime;
 	}
 	
 	/** 存储客户端待处理的消息 */
@@ -129,6 +172,7 @@ public class WaitList {
 	@SideOnly(Side.CLIENT)
 	public static void reClient() {
 		if (net.minecraft.client.Minecraft.getMinecraft().world == null) {
+			clientTaskTime = taskTime = 0;
 			amount = 0;
 			return;
 		}
@@ -151,7 +195,6 @@ public class WaitList {
 		synchronized (GUI_CLIENT) {
 			Iterator<GUIMessage> it = GUI_CLIENT.iterator();
 			GUIMessage message;
-			IAutoGuiNetWork netWork;
 			while (it.hasNext()) {
 				message = it.next();
 				NBTTagCompound compound = message.getCompound();
@@ -258,9 +301,9 @@ public class WaitList {
 	 * @throws IllegalArgumentException 如果objects与name长度不一样
 	 */
 	public static void checkNull(Object[] objects, String[] name) {
-		if (objects.length != name.length) throw new IllegalArgumentException("objects的长度与name的不相等");
 		if (objects == null) throw new NullPointerException("objects == null");
 		if (name == null) throw new NullPointerException("name == null");
+		if (objects.length != name.length) throw new IllegalArgumentException("objects的长度与name的不相等");
 		for (int i = 0; i < name.length; ++i) {
 			if (objects[i] == null) throw new NullPointerException(name[i] + " == null");
 		}

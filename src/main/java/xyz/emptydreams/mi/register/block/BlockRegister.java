@@ -1,10 +1,11 @@
 package xyz.emptydreams.mi.register.block;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.blocks.ore.OreBlock;
-import xyz.emptydreams.mi.blocks.world.OreCreat;
 import xyz.emptydreams.mi.register.item.ItemRegister;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;

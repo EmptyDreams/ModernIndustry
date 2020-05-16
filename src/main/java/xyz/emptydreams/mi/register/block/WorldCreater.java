@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.blocks.world;
+package xyz.emptydreams.mi.register.block;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
+import xyz.emptydreams.mi.register.block.OreCreat;
 
 /**
  * @author EmptyDremas

@@ -28,7 +28,7 @@ import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.event.EnergyEvent;
-import xyz.emptydreams.mi.api.utils.TEHelper;
+import xyz.emptydreams.mi.api.utils.data.TEHelper;
 
 /**
  * 机器的父类，其中包含了机器的一些默认实现

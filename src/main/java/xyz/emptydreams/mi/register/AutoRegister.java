@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +16,8 @@ import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
-import xyz.emptydreams.mi.blocks.world.OreCreat;
-import xyz.emptydreams.mi.blocks.world.WorldCreater;
+import xyz.emptydreams.mi.register.block.OreCreat;
+import xyz.emptydreams.mi.register.block.WorldCreater;
 import xyz.emptydreams.mi.items.tools.ToolRegister;
 import xyz.emptydreams.mi.proxy.ClientProxy;
 import xyz.emptydreams.mi.proxy.CommonProxy;
@@ -100,6 +101,7 @@ public final class AutoRegister {
 			reAutoTE(ASM);
 			reItemRegister();
 			reAutoItem(ASM);
+			reManager(ASM);
 			reRegisterManager(ASM);
 			reAutoTR(ASM);
 			triggerAutoLoader(ASM);
@@ -111,7 +113,7 @@ public final class AutoRegister {
 		} catch (NoSuchMethodException e) {
 			MISysInfo.err("没有找到对应的方法，原因可能可能是：\n",
 					              "1).用户的类使用了RegisterManager注解却未在类中定义static register()\n",
-							      "2).使用@AutoTrusteeshipRegister注解的托管没有提供默认构造函数");
+							      "2).使用@AutoTrusteeshipRegister注解的托管没有提供默认构造函数\n");
 			throw new RuntimeException(e);
 		} catch (NullPointerException e) {
 			MISysInfo.err("反射过程中发生了空指针错误，原因可能是：\n",
@@ -150,6 +152,27 @@ public final class AutoRegister {
 		Items.items.add(item);
 	}
 	
+	private static void reManager(ASMDataTable ASM) throws ClassNotFoundException, IllegalAccessException {
+		Set<ASMData> classSet = ASM.getAll(AutoManager.class.getName());
+		Class<?> clazz;
+		for (ASMData data : classSet) {
+			clazz = Class.forName(data.getClassName());
+			AutoManager manager = clazz.getAnnotation(AutoManager.class);
+			for (Field field : clazz.getFields()) {
+				if ((manager.block() && Block.class.isAssignableFrom(field.getType()))) {
+					if (Modifier.isStatic(field.getModifiers())) {
+						addAutoBlock((Block) field.get(null));
+					}
+				} else if (manager.item() && Item.class.isAssignableFrom(field.getType())) {
+					if (Modifier.isStatic(field.getModifiers())) {
+						addAutoItem((Item) field.get(null));
+					}
+				}
+			}
+		}
+	}
+	
+	/** 自动加载 */
 	private static void triggerAutoLoader(ASMDataTable ASM) throws ClassNotFoundException {
 		Set<ASMData> classSet = ASM.getAll(AutoLoader.class.getName());
 		for (ASMData data : classSet) {
