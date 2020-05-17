@@ -4,7 +4,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.gui.CompressorContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -29,19 +28,12 @@ public class GuiLoader implements IGuiHandler {
 	
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		if (ID == GUI_COMPRESSOR) {
-			return new CompressorContainer(player, world, new BlockPos(x, y, z));
-		}
 		IContainerCreater creater = IDS.getOrDefault(new Int(ID), null);
 		return creater == null ? null : creater.createService(world, player, new BlockPos(x, y, z));
 	}
 	
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		if (ID == GUI_COMPRESSOR) {
-			return new CompressorContainer.ContainerGui(
-					new CompressorContainer(player, world, new BlockPos(x, y, z)));
-		}
 		IContainerCreater creater = IDS.getOrDefault(new Int(ID), null);
 		return creater == null ? null : creater.createClient(world, player, new BlockPos(x, y, z));
 		

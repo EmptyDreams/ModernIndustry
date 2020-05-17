@@ -13,16 +13,6 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
  */
 public abstract class FrontTileEntity extends EleTileEntity {
 	
-	/**
-	 * @param minEnergy  可接收/输出的能量最小值
-	 * @param maxEnergy  可接收/输出的能量最大值
-	 * @param minVoltage 可接收/输出的电压最小值
-	 * @param maxVoltage 可接收/输出的电压最大值
-	 */
-	public FrontTileEntity(int minEnergy, int maxEnergy, IVoltage minVoltage, IVoltage maxVoltage) {
-		super(minEnergy, maxEnergy, minVoltage, maxVoltage);
-	}
-	
 	/** 获取正面 */
 	public abstract EnumFacing getFront();
 	

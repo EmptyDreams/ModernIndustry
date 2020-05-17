@@ -14,7 +14,7 @@ import xyz.emptydreams.mi.register.te.AutoTileEntity;
 public class EMPerpetual extends EleTileEntity {
 	
 	public EMPerpetual() {
-		super(0, 0, EnumVoltage.NON, EnumVoltage.SUPERCONDUCTOR);
+		setExtractRange(1, Integer.MAX_VALUE, EnumVoltage.NON, EnumVoltage.SUPERCONDUCTOR);
 		setExtract(true);
 		setMaxExtract(Integer.MAX_VALUE);
 		setNowEnergy(Integer.MAX_VALUE);

@@ -5,10 +5,11 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.util.EnumFacing;
 
 /**
+ * 放置常用的Property
  * @author EmptyDreams
  * @version V1.0
  */
-public final class MIStates {
+public final class MIProperty {
 	
 	/** 状态：方向 */
 	public static final PropertyDirection FACING =

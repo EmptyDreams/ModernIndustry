@@ -1,14 +1,16 @@
 package xyz.emptydreams.mi.blocks.machine.user;
 
+import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.Random;
 
+import net.minecraft.util.NonNullList;
+import net.minecraft.world.IBlockAccess;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.electricity.src.block.MachineBlock;
-import xyz.emptydreams.mi.blocks.common.CommonBlocks;
 import xyz.emptydreams.mi.blocks.te.user.EUCompressor;
 import xyz.emptydreams.mi.gui.CompressorFrame;
 import xyz.emptydreams.mi.register.block.AutoBlockRegister;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -21,12 +23,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-import static xyz.emptydreams.mi.blocks.base.MIStates.EMPTY;
-import static xyz.emptydreams.mi.blocks.base.MIStates.FACING;
-import static xyz.emptydreams.mi.blocks.base.MIStates.WORKING;
+import static xyz.emptydreams.mi.blocks.base.MIProperty.EMPTY;
+import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
+import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 
 /**
  * 压缩机
@@ -47,7 +48,6 @@ public class CompressorBlock extends MachineBlock {
 		setHarvestLevel("pickaxe", 1);
 		setHardness(3.5F);
 		setCreativeTab(ModernIndustry.TAB_BLOCK);
-		setSoundType(SoundType.STONE);
 		ITEM = new ItemBlock(this).setRegistryName(ModernIndustry.MODID, NAME);
 		setDefaultState(blockState.getBaseState().withProperty(
 				FACING, EnumFacing.EAST).withProperty(WORKING, false).withProperty(EMPTY, false));
@@ -97,23 +97,17 @@ public class CompressorBlock extends MachineBlock {
 		}
 	}
 	
-	/** 当方块被玩家破坏的时候掉落方块中的物品 */
 	@Override
-	public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
-		EUCompressor nbt = (EUCompressor) worldIn.getTileEntity(pos);
+	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world,
+	                     BlockPos pos, IBlockState state, int fortune) {
+		super.getDrops(drops, world, pos, state, fortune);
+		EUCompressor nbt = (EUCompressor) world.getTileEntity(pos);
 		ItemStack is = nbt.getSolt(0).getStack();
 		ItemStack is2 = nbt.getSolt(1).getStack();
 		ItemStack is3 = nbt.getSolt(2).getStack();
-		spawnAsEntity(worldIn, pos, is);
-		spawnAsEntity(worldIn, pos, is2);
-		spawnAsEntity(worldIn, pos, is3);
-	}
-	
-	/** 被爆炸破坏时掉落外壳 */
-	@Override
-	public void onBlockExploded(World world, BlockPos pos, Explosion explosion) {
-		spawnAsEntity(world, pos, new ItemStack(CommonBlocks.MACHINE_SHELL));
-		super.onBlockExploded(world, pos, explosion);
+		drops.add(is);
+		drops.add(is2);
+		drops.add(is3);
 	}
 	
 	@Override

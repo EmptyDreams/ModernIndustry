@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.blocks.machine.transfer;
+package xyz.emptydreams.mi.blocks.machine;
 
 import javax.annotation.Nullable;
 

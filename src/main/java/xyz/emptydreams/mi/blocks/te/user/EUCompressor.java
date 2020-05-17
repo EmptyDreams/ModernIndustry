@@ -13,7 +13,7 @@ import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.api.electricity.src.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.api.gui.component.MProgressBar;
 import xyz.emptydreams.mi.api.utils.data.DataType;
-import xyz.emptydreams.mi.blocks.base.MIStates;
+import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.machine.user.CompressorBlock;
 import xyz.emptydreams.mi.register.item.ItemRegister;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
@@ -50,8 +50,8 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	 */
 	@Storage(type = DataType.OTHER)
 	private final ItemStackHandler item = new ItemStackHandler(3);
-	private final SlotMI up = new SlotMI(item, 0, 56, 17, this);
-	private final SlotMI down = new SlotMI(item, 1, 56, 53, this);
+	private final SlotMI up = new SlotMI(item, 0, 56, 17);
+	private final SlotMI down = new SlotMI(item, 1, 56, 53);
 	private final SlotItemHandler out = new SlotItemHandler(item, 2, 120, 34) {
 		@Override
 		public boolean isItemValid(ItemStack stack) {
@@ -61,13 +61,12 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	private final MProgressBar progressBar = new MProgressBar();
 	
 	public EUCompressor() {
-		super(1, 200, EnumVoltage.LOWER, EnumVoltage.ORDINARY);
+		setReciveRange(1, 200, EnumVoltage.LOWER, EnumVoltage.ORDINARY);
 		OrdinaryCounter counter = new OrdinaryCounter(100);
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
 		setReceive(true);
 		setMaxReceive(200);
-		setNowEnergy(0);
 		progressBar.setLocation(80, 35);
 	}
 	
@@ -106,8 +105,8 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 			//如果不存在，更新方块显示
 			workingTime = 0;
 			IBlockState state = world.getBlockState(pos)
-					                    .withProperty(MIStates.WORKING, false)
-					                    .withProperty(MIStates.EMPTY, isEmpty());
+					                    .withProperty(MIProperty.WORKING, false)
+					                    .withProperty(MIProperty.EMPTY, isEmpty());
 			world.setBlockState(pos, state);
 			world.markBlockRangeForRenderUpdate(pos, pos);
 			if (getNowEnergy() > 0) progressBar.set(workingTime);
@@ -140,8 +139,8 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		}
 		progressBar.set(workingTime);
 		IBlockState state = world.getBlockState(pos);
-		world.setBlockState(pos, state.withProperty(MIStates.EMPTY, isEmpty())
-				                         .withProperty(MIStates.WORKING, isWorking));
+		world.setBlockState(pos, state.withProperty(MIProperty.EMPTY, isEmpty())
+				                         .withProperty(MIProperty.WORKING, isWorking));
 		markDirty();
 		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
@@ -198,26 +197,24 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	
 	@Override
 	public EnumFacing getFront() {
-		return world.getBlockState(pos).getValue(MIStates.FACING);
+		return world.getBlockState(pos).getValue(MIProperty.FACING);
 	}
 	
-	public static class SlotMI extends SlotItemHandler {
+	private final class SlotMI extends SlotItemHandler {
 		
 		int index;
-		EUCompressor nbt;
 		
-		public SlotMI(IItemHandler itemHandler, int index, int xPosition, int yPosition, EUCompressor nbt) {
+		public SlotMI(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
 			super(itemHandler, index, xPosition, yPosition);
 			this.index = index;
-			this.nbt = nbt;
 		}
 		
 		@Override
 		public boolean isItemValid(ItemStack stack) {
 			boolean b = stack != null && CRAFT_GUIDE.contains(stack)
 					            && super.isItemValid(stack);
-			if (b && !nbt.isEmptyForInput()) {
-				SlotItemHandler s = nbt.getSolt(index == 0 ? 1 : 0);
+			if (b && !isEmptyForInput()) {
+				SlotItemHandler s = getSolt(index == 0 ? 1 : 0);
 				if (s.getHasStack() && !getHasStack()) {
 					b &= s.getStack().getItem().equals(getStack().getItem());
 				}

@@ -41,8 +41,10 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	/** 空的能量 */
 	private static final EleEnergy EMPTY_ENERGY = new EleEnergy();
 	
-	/** 存储需要的能量 */
-	private final EnergyRange energyRange = new EnergyRange();
+	/** 可输出的能量范围 */
+	private final EnergyRange extractRange = new EnergyRange();
+	/** 可输入的能量范围 */
+	private final EnergyRange reciveRange = new EnergyRange();
 	/** 当前包含的能量 */
 	@Storage private int nowEnergy;
 	/** 当前输出电压 */
@@ -64,26 +66,24 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	private final Set<BlockPos> linkedBlocks = new HashSet<>(3);
 	
 	/**
-	 * @param minEnergy 可接收/输出的能量最小值
-	 * @param maxEnergy 可接收/输出的能量最大值
-	 * @param minVoltage 可接收/输出的电压最小值
-	 * @param maxVoltage 可接收/输出的电压最大值
+	 * 设定方块可以输出的能量范围
+	 * @param minEnergy 最低能量值
+	 * @param maxEnergy 最高能量值
+	 * @param minVoltage 最低电压
+	 * @param maxVoltage 最高电压
 	 */
-	public EleTileEntity(int minEnergy, int maxEnergy, IVoltage minVoltage, IVoltage maxVoltage) {
-		energyRange.setMinEnergy(minEnergy);
-		energyRange.setMaxEnergy(maxEnergy);
-		energyRange.setMinVoltage(minVoltage);
-		energyRange.setMaxVoltage(maxVoltage);
+	public void setExtractRange(int minEnergy, int maxEnergy, IVoltage minVoltage, IVoltage maxVoltage) {
+		extractRange.setMinEnergy(minEnergy);
+		extractRange.setMaxEnergy(maxEnergy);
+		extractRange.setMinVoltage(minVoltage);
+		extractRange.setMaxVoltage(maxVoltage);
 	}
 	
-	@Override
-	public void validate() {
-		super.validate();
-	}
-	
-	@Override
-	public void invalidate() {
-		super.invalidate();
+	public void setReciveRange(int minEnergy, int maxEnergy, IVoltage minVoltage, IVoltage maxVoltage) {
+		reciveRange.setMinEnergy(minEnergy);
+		reciveRange.setMaxEnergy(maxEnergy);
+		reciveRange.setMinVoltage(minVoltage);
+		reciveRange.setMaxVoltage(maxVoltage);
 	}
 	
 	/**
@@ -155,8 +155,10 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 		return super.getCapability(capability, facing);
 	}
 	
-	/** 获取能量范围 */
-	public EnergyRange getEnergyRange() { return energyRange.copy(); }
+	/** 获取输出能量范围 */
+	public EnergyRange getExtractRange() { return extractRange.copy(); }
+	/** 获取输入能量范围 */
+	public EnergyRange getReciveRange() { return reciveRange.copy(); }
 	/** 获取现在的能量 */
 	public int getNowEnergy() { return nowEnergy; }
 	/** 设置现在的能量 */
@@ -204,7 +206,7 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 		public boolean canExtract() { return isExtract; }
 		@Nonnull
 		@Override
-		public EnergyRange getEnergyRange() { return energyRange.copy(); }
+		public EnergyRange getEnergyRange() { return reciveRange.copy(); }
 		
 		@Override
 		public int receiveEnergy(EleEnergy energy, boolean simulate) {
@@ -216,7 +218,7 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 						return Math.min(maxReceive - nowEnergy, energy.getEnergy());
 					} else {
 						int k = Math.min(maxReceive - nowEnergy, energy.getEnergy());
-						IVoltage voltage = energyRange.getOptimalVoltage(energy.getVoltage());
+						IVoltage voltage = reciveRange.getOptimalVoltage(energy.getVoltage());
 						if (!onReceive(new EleEnergy(k, voltage))) return 0;
 						//若输入电压不在适用电压范围内，则增加计数器
 						if (voltage.getVoltage() != energy.getVoltage().getVoltage()) {
@@ -244,7 +246,7 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 				//计算应该输出的电能
 				int k = Math.min(nowEnergy, energy.getEnergy());
 				//计算最适电压
-				IVoltage voltage = energyRange.getOptimalVoltage(energy.getVoltage());
+				IVoltage voltage = extractRange.getOptimalVoltage(energy.getVoltage());
 				//若需要输出的电压不在可输出的范围则输出最适电压
 				EleEnergy reEnergy = new EleEnergy(k, voltage);
 				if (!simulate) {

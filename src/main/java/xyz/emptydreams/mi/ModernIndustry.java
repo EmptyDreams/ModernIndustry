@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
 
 import xyz.emptydreams.mi.register.block.BlockRegister;
-import xyz.emptydreams.mi.blocks.machine.transfer.WireManager;
+import xyz.emptydreams.mi.blocks.machine.WireManager;
 import xyz.emptydreams.mi.items.tools.ToolRegister;
 import xyz.emptydreams.mi.proxy.CommonProxy;
 

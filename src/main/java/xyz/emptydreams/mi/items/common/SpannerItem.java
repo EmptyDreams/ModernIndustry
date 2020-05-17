@@ -19,7 +19,7 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.electricity.src.block.MachineBlock;
 import xyz.emptydreams.mi.api.utils.timetask.TaskTable;
 import xyz.emptydreams.mi.api.utils.timetask.TimeTask;
-import xyz.emptydreams.mi.blocks.base.MIStates;
+import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.register.item.AutoItemRegister;
 
 /**
@@ -81,9 +81,9 @@ public class SpannerItem extends Item {
 				if (!player.isCreative()) Block.spawnAsEntity(worldIn, pos, new ItemStack(block));
 				worldIn.setBlockToAir(pos);
 			} else {
-				Comparable<?> comparable = state.getProperties().get(MIStates.FACING);
+				Comparable<?> comparable = state.getProperties().get(MIProperty.FACING);
 				if (comparable != null) {
-					EnumFacing fac = MIStates.FACING.getValueClass().cast(comparable);
+					EnumFacing fac = MIProperty.FACING.getValueClass().cast(comparable);
 					switch (fac) {
 						case EAST: fac = EnumFacing.SOUTH; break;
 						case SOUTH: fac = EnumFacing.WEST; break;
@@ -91,7 +91,7 @@ public class SpannerItem extends Item {
 						case NORTH: fac = EnumFacing.EAST; break;
 						default: break;
 					}
-					worldIn.setBlockState(pos, state.withProperty(MIStates.FACING, fac));
+					worldIn.setBlockState(pos, state.withProperty(MIProperty.FACING, fac));
 					worldIn.markBlockRangeForRenderUpdate(pos, pos);
 				}
 			}
