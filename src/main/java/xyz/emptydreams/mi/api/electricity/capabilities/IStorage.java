@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
+import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 
 /**
  * 表示能量
@@ -26,10 +27,6 @@ public interface IStorage {
 	 */
 	boolean canExtract();
 	
-	/** 获取支持的能量范围 */
-	@Nonnull
-	EnergyRange getEnergyRange();
-	
 	/**
 	 * 尝试输入能量
 	 * @param energy 输入的能量值
@@ -38,6 +35,10 @@ public interface IStorage {
 	 *              则返回消耗的，若输入的能量值小于需要的，则返回需要的最小能量值
 	 */
 	int receiveEnergy(EleEnergy energy, boolean simulate);
+	
+	/** 获取最适电压. 若voltage在允许的电压范围内则返回voltage，否则返回最接近voltage的电压 */
+	@Nonnull
+	IVoltage getVoltage(EnumEleState state, IVoltage voltage);
 	
 	/**
 	 * 尝试输出能量，当需求输出的能量的电压不在可输出电压范围内时，输出最适电压而非不输出

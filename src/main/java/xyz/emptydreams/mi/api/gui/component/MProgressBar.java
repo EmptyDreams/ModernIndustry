@@ -49,7 +49,7 @@ public class MProgressBar extends MComponent {
 	public void realTimePaint(GuiContainer gui) {
 		int offsetX = (gui.width - gui.getXSize()) / 2, offsetY = (gui.height - gui.getYSize()) / 2;
 		int x = offsetX + getX(), y = offsetY + getY();
-		double d = now / (double) max;
+		double d = max >= 0 ? now / (double) max : 0;
 		gui.mc.getTextureManager().bindTexture(TEXTURE);
 		gui.drawTexturedModalRect(x, y, style.getX2(), style.getY2(),
 				Math.min((int) (style.getWidth() * d), style.getWidth()), style.getHeight());

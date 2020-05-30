@@ -1,7 +1,5 @@
 package xyz.emptydreams.mi.blocks.machine.user;
 
-import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.Random;
 
 import net.minecraft.util.NonNullList;
@@ -49,6 +47,7 @@ public class CompressorBlock extends MachineBlock {
 		setHardness(3.5F);
 		setCreativeTab(ModernIndustry.TAB_BLOCK);
 		ITEM = new ItemBlock(this).setRegistryName(ModernIndustry.MODID, NAME);
+		
 		setDefaultState(blockState.getBaseState().withProperty(
 				FACING, EnumFacing.EAST).withProperty(WORKING, false).withProperty(EMPTY, false));
 	}

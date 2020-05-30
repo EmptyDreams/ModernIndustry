@@ -3,7 +3,7 @@
   "defaults": {
     "model": "cube_all",
     "textures": {
-      "all": "mi:blocks/copper_ore_block"
+      "all": "mi:blocks/machine/all_maker"
     }
   },
   "variants": {

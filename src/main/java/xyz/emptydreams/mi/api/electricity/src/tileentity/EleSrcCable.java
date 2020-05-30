@@ -311,7 +311,10 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 		
 		TileEntity entity;
 		IStorage storage;
-		for (BlockPos block : linkedBlocks) {
+		BlockPos block;
+		//noinspection ForLoopReplaceableByForEach
+		for (int i = 0; i < linkedBlocks.size(); i++) {
+			block = linkedBlocks.get(i);
 			entity = world.getTileEntity(block);
 			if (entity == null) {
 				deleteLink(block);

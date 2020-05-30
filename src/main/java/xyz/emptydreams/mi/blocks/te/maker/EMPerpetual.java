@@ -16,7 +16,7 @@ public class EMPerpetual extends EleTileEntity {
 	public EMPerpetual() {
 		setExtractRange(1, Integer.MAX_VALUE, EnumVoltage.NON, EnumVoltage.SUPERCONDUCTOR);
 		setExtract(true);
-		setMaxExtract(Integer.MAX_VALUE);
+		setMaxEnergy(Integer.MAX_VALUE);
 		setNowEnergy(Integer.MAX_VALUE);
 	}
 	

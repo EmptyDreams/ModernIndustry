@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
+import xyz.emptydreams.mi.api.electricity.capabilities.EnumEleState;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
@@ -27,6 +28,7 @@ import xyz.emptydreams.mi.api.electricity.capabilities.EnergyRange;
 import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
+import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.api.event.EnergyEvent;
 import xyz.emptydreams.mi.api.utils.data.TEHelper;
 
@@ -39,7 +41,7 @@ import xyz.emptydreams.mi.api.utils.data.TEHelper;
 public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	
 	/** 空的能量 */
-	private static final EleEnergy EMPTY_ENERGY = new EleEnergy();
+	private static final EleEnergy EMPTY_ENERGY = new EleEnergy(0, EnumVoltage.NON);
 	
 	/** 可输出的能量范围 */
 	private final EnergyRange extractRange = new EnergyRange();
@@ -51,10 +53,8 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	@Storage private IVoltage exVoltage;
 	/** 当前输入电压 */
 	@Storage private IVoltage reVoltage;
-	/** 1Tick接受的最大能量 */
-	private int maxReceive;
-	/** 1Tick输出的最大能量 */
-	private int maxExtract;
+	/** 可存储的最大能量 */
+	private int maxEnergy = 0;
 	/** 超载计时器 */
 	private OverloadCounter counter;
 	/** 是否可以接收能量 */
@@ -162,7 +162,7 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	/** 获取现在的能量 */
 	public int getNowEnergy() { return nowEnergy; }
 	/** 设置现在的能量 */
-	public void setNowEnergy(int nowEnergy) { this.nowEnergy = nowEnergy; }
+	public void setNowEnergy(int nowEnergy) { this.nowEnergy = Math.min(Math.max(nowEnergy, 0), getMaxEnergy()); }
 	/** 获取现在输出的电压 */
 	public IVoltage getExVoltage() { return exVoltage; }
 	/** 设置现在输出的电压 */
@@ -171,14 +171,6 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	public IVoltage getReVoltage() { return reVoltage; }
 	/** 设置现在就收的电压 */
 	public void setReVoltage(IVoltage reVoltage) { this.reVoltage = reVoltage; }
-	/** 获取1Tick中可接收的最大能量 */
-	public int getMaxReceive() { return maxReceive; }
-	/** 设置1Tick中可接收的最大能量 */
-	protected void setMaxReceive(int maxReceive) { this.maxReceive = maxReceive; }
-	/** 获取1Tick中可输出的最大能量 */
-	public int getMaxExtract() { return maxExtract; }
-	/** 设置1Tick中可输出的最大能量 */
-	protected void setMaxExtract(int maxExtract) { this.maxExtract = maxExtract; }
 	/** 获取计数器 */
 	public OverloadCounter getCounter() { return counter; }
 	/** 设置计数器 */
@@ -197,6 +189,10 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	protected void setStorage(IStorage storage) { this.storage = storage; }
 	/** 获取连接限制接口 */
 	public ILink getLinkInfo() { return linkInfo; }
+	/** 获取可存储的能量值 */
+	public int getMaxEnergy() { return maxEnergy; }
+	/** 设置可存储的最大能量值 */
+	public void setMaxEnergy(int max) { maxEnergy = max; }
 	
 	/** 能量接口 */
 	private IStorage storage = new IStorage() {
@@ -204,20 +200,18 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 		public boolean canReceive() { return isReceive; }
 		@Override
 		public boolean canExtract() { return isExtract; }
-		@Nonnull
-		@Override
-		public EnergyRange getEnergyRange() { return reciveRange.copy(); }
 		
 		@Override
 		public int receiveEnergy(EleEnergy energy, boolean simulate) {
 			if (world.isRemote) return 0;
 			if (canReceive()) {
 				//若当前储存能量已满则不再接收能量
-				if (nowEnergy < maxReceive) {
+				if (nowEnergy < getMaxEnergy()) {
 					if (simulate) {
-						return Math.min(maxReceive - nowEnergy, energy.getEnergy());
+						return Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy());
 					} else {
-						int k = Math.min(maxReceive - nowEnergy, energy.getEnergy());
+						int k = Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy());
+						k = reciveRange.getOptimalEnergy(k);
 						IVoltage voltage = reciveRange.getOptimalVoltage(energy.getVoltage());
 						if (!onReceive(new EleEnergy(k, voltage))) return 0;
 						//若输入电压不在适用电压范围内，则增加计数器
@@ -234,6 +228,12 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 				}
 			}
 			return 0;
+		}
+		
+		@Override
+		public IVoltage getVoltage(EnumEleState state, IVoltage voltage) {
+			return state == EnumEleState.IN ? getReciveRange().getOptimalVoltage(voltage) :
+					       getExtractRange().getOptimalVoltage(voltage);
 		}
 		
 		@Override

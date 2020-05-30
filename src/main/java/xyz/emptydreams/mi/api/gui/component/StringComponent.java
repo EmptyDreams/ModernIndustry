@@ -3,6 +3,8 @@ package xyz.emptydreams.mi.api.gui.component;
 import javax.annotation.Nonnull;
 import java.awt.*;
 
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IContainerListener;
 import xyz.emptydreams.mi.api.net.WaitList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -16,6 +18,8 @@ public class StringComponent extends MComponent {
 	
 	private String value;
 	private int color = 0;
+	
+	public StringComponent() { this(""); }
 	
 	public StringComponent(String str) {
 		WaitList.checkNull(str, "str");
@@ -32,9 +36,18 @@ public class StringComponent extends MComponent {
 	public void setString(String str) {
 		WaitList.checkNull(str, "str");
 		this.value = str;
+		
 	}
 	@Override
 	public boolean isString() { return true; }
 	@Override
 	public void paint(@Nonnull Graphics g) { }
+	
+	@Override
+	public String toString() {
+		return "StringComponent{" +
+				       "value='" + value + '\'' +
+				       ", color=" + color +
+				       '}';
+	}
 }

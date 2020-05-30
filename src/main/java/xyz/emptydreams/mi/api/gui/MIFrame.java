@@ -129,7 +129,8 @@ public class MIFrame extends Container {
 				isme = mergeItemStack(stack, 0, index - 1, false);
 			}
 			if (!isme && index < inventorySlots.size() - 1) {
-				isme = mergeItemStack(stack, index + 1, inventorySlots.size() - 1, false);
+				isme = mergeItemStack(stack, index + 1,
+						inventorySlots.size() - 1, false);
 			}
 		} else {
 			//判断当前物品是否在背包中

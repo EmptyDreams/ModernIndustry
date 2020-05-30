@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import xyz.emptydreams.mi.api.electricity.EleWorker;
+import xyz.emptydreams.mi.api.electricity.capabilities.EnumEleState;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.utils.BlockPosUtil;

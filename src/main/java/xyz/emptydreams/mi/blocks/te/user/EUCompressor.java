@@ -32,6 +32,7 @@ import net.minecraftforge.items.SlotItemHandler;
 @AutoTileEntity(CompressorBlock.NAME)
 public class EUCompressor extends FrontTileEntity implements ITickable {
 	
+	/** 压缩机的合成表 */
 	public static final CraftGuide<ItemStack, ItemStack> CRAFT_GUIDE = new CraftGuide<>();
 	
 	static {
@@ -58,15 +59,19 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 			return false;
 		}
 	};
+	/** 进度条 */
 	private final MProgressBar progressBar = new MProgressBar();
+	/** 每次工作消耗的电能 */
+	private int needEnergy = 15;
 	
 	public EUCompressor() {
-		setReciveRange(1, 200, EnumVoltage.LOWER, EnumVoltage.ORDINARY);
+		setReciveRange(1, 50, EnumVoltage.LOWER, EnumVoltage.ORDINARY);
 		OrdinaryCounter counter = new OrdinaryCounter(100);
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
 		setReceive(true);
-		setMaxReceive(200);
+		setMaxEnergy(100);
+		
 		progressBar.setLocation(80, 35);
 	}
 	
@@ -100,16 +105,16 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		DictDisorderList guide = new DictDisorderList(2, null, 0);
 		guide.add(new ItemStack(up.getStack().getItem())); guide.add(new ItemStack(down.getStack().getItem()));
 		ItemStack outStack = CRAFT_GUIDE.get(guide);
+		IBlockState old = world.getBlockState(pos);
 		//判断配方是否存在
-		if (outStack == null || getNowEnergy() <= 0) {
+		if (outStack == null || getNowEnergy() < getNeedEnergy()) {
 			//如果不存在，更新方块显示
-			workingTime = 0;
-			IBlockState state = world.getBlockState(pos)
-					                    .withProperty(MIProperty.WORKING, false)
+			if (outStack == null) workingTime = 0;
+			IBlockState state = old.withProperty(MIProperty.WORKING, false)
 					                    .withProperty(MIProperty.EMPTY, isEmpty());
 			world.setBlockState(pos, state);
 			world.markBlockRangeForRenderUpdate(pos, pos);
-			if (getNowEnergy() > 0) progressBar.set(workingTime);
+			progressBar.set(workingTime);
 			markDirty();
 			return;
 		}
@@ -133,44 +138,35 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 				this.out.putStack(new ItemStack(outStack.getItem(),
 						outStack.getCount() + this.out.getStack().getCount()));
 			}
-			setNowEnergy(getNowEnergy() - 200);
+			setNowEnergy(getNowEnergy() - getNeedEnergy());
 		} else {
 			workingTime = 0;
 		}
 		progressBar.set(workingTime);
-		IBlockState state = world.getBlockState(pos);
-		world.setBlockState(pos, state.withProperty(MIProperty.EMPTY, isEmpty())
-				                         .withProperty(MIProperty.WORKING, isWorking));
+		IBlockState state = old.withProperty(MIProperty.EMPTY, isEmpty())
+				                    .withProperty(MIProperty.WORKING, isWorking);
+		if (!old.equals(state)) world.setBlockState(pos, state);
 		markDirty();
 		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
 	/** 获取需要的工作时间 */
-	public int getNeedTime() {
-		return 235;
-	}
-	
-	/**
-	 * 获取已工作时间
-	 */
-	public int getWorkingTime() {
-		return workingTime;
-	}
-	
-	/**
-	 * 判断输入是否为空
-	 */
+	public int getNeedTime() { return 135; }
+	/** 获取已工作时间 */
+	public int getWorkingTime() { return workingTime; }
+	/** 获取每Tick需要的能量 */
+	public int getNeedEnergy() { return needEnergy; }
+	/** 设置每Tick需要的能量 */
+	public void setNeedEnergy(int needEnergy) { this.needEnergy = needEnergy; }
+	/** 判断输入是否为空 */
 	public boolean isEmptyForInput() {
 		return up.getHasStack() || down.getHasStack();
 	}
-	
-	/**
-	 * 判断是否为空
-	 */
+	/** 判断是否为空 */
 	public boolean isEmpty() {
 		return up.getHasStack() || down.getHasStack() || out.getHasStack();
 	}
-	
+	/** 获取进度条 */
 	public MProgressBar getProgressBar() { return progressBar; }
 	
 	/**

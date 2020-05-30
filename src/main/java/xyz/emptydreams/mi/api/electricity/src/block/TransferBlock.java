@@ -135,14 +135,16 @@ abstract public class TransferBlock extends TEBlockBase {
 	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
 		TileEntity fromEntity = worldIn.getTileEntity(fromPos);
 		Block block = fromEntity == null ? worldIn.getBlockState(fromPos).getBlock() : fromEntity.getBlockType();
+		EleSrcCable tew = (EleSrcCable) worldIn.getTileEntity(pos);
 		if (block == Blocks.AIR) {
-			EleSrcCable tew = (EleSrcCable) worldIn.getTileEntity(pos);
 			tew.deleteLink(fromPos);
 		} else if (fromEntity != null) {
+			tew.link(fromPos);
 			ILink link = fromEntity.getCapability(LinkCapability.LINK, null);
-			if (link.canLink(BlockPosUtil.whatFacing(fromPos, pos))) {
-				EleSrcCable tew = (EleSrcCable) worldIn.getTileEntity(pos);
-				tew.link(fromPos);
+			if (link != null) {
+				if (link.canLink(BlockPosUtil.whatFacing(fromPos, pos))) {
+					tew.link(fromPos);
+				}
 			}
 		}
 	}

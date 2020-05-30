@@ -9,6 +9,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
+import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.register.AutoLoader;
 
@@ -36,11 +37,10 @@ public class EleCapability {
 			public boolean canReceive() { return false; }
 			@Override
 			public boolean canExtract() { return false; }
-			@Nonnull
-			@Override
-			public EnergyRange getEnergyRange() { return new EnergyRange(); }
 			@Override
 			public int receiveEnergy(EleEnergy energy, boolean simulate) { return 0; }
+			@Override
+			public IVoltage getVoltage(EnumEleState state, IVoltage voltage) { return EnumVoltage.NON; }
 			@Override
 			public EleEnergy extractEnergy(EleEnergy energy, boolean simulate) {
 				return new EleEnergy(0, EnumVoltage.NON);

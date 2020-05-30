@@ -9,9 +9,7 @@
         }
     },
     "variants": {
-        "inventory": [
-            {}
-        ],
+        "inventory": [{ }],
         "facing": {
             "north": {},
             "east": {

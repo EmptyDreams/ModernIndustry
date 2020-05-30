@@ -3,6 +3,8 @@ package xyz.emptydreams.mi.api.electricity.src.trusteeship;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.electricity.info.EleLineCache;
 import xyz.emptydreams.mi.api.electricity.info.PathInfo;
@@ -12,8 +14,6 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.WireLinkInfo;
 import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 
 /**
  * @author EmptyDreams

@@ -2,10 +2,12 @@ package xyz.emptydreams.mi.api.electricity.src.trusteeship;
 
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
+import xyz.emptydreams.mi.api.electricity.capabilities.EnumEleState;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
+import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -31,17 +33,19 @@ public class EleCapInputer implements IEleInputer {
 	
 	@Override
 	public int getEnergy(TileEntity te) {
-		return te.getCapability(EleCapability.ENERGY, null).getEnergyRange().getMaxEnergy();
+		return te.getCapability(EleCapability.ENERGY, null)
+				       .receiveEnergy(new EleEnergy(Integer.MAX_VALUE, EnumVoltage.NON), true);
 	}
 	
 	@Override
 	public int getEnergy(TileEntity now, int energy) {
-		return now.getCapability(EleCapability.ENERGY, null).getEnergyRange().getOptimalEnergy(energy);
+		return now.getCapability(EleCapability.ENERGY, null)
+				.receiveEnergy(new EleEnergy(energy, EnumVoltage.NON), true);
 	}
 	
 	@Override
 	public IVoltage getVoltage(TileEntity now, IVoltage voltage) {
-		return now.getCapability(EleCapability.ENERGY, null).getEnergyRange().getOptimalVoltage(voltage);
+		return now.getCapability(EleCapability.ENERGY, null).getVoltage(EnumEleState.IN, voltage);
 	}
 	
 	@Override

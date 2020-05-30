@@ -66,6 +66,7 @@ public class PathInfo implements Comparable<PathInfo> {
 	 * @return 返回用电详单
 	 */
 	public final EleEnergy invoke() {
+		if (energy <= 0) return new EleEnergy(0, EnumVoltage.NON);
 		EleEnergy real = outputer.output(getOuter(), energy + lossEnergy, voltage, false);
 		inputer.useEnergy(getUser(), real.getEnergy(), real.getVoltage());
 		TileEntity transfer;

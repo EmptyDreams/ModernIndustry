@@ -1,6 +1,7 @@
 package xyz.emptydreams.mi.api.electricity.src.block;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.List;
 import java.util.Random;
@@ -13,6 +14,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.Explosion;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
@@ -56,6 +58,19 @@ public abstract class MachineBlock extends TEBlockBase {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
 	                                EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		return playerIn.getHeldItem(hand).getItem() != SpannerItem.getInstance();
+	}
+	
+	@Override
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+		NonNullList<ItemStack> drops = getItemDrops(worldIn, pos);
+		if (drops != null)
+			drops.forEach(it -> Block.spawnAsEntity(worldIn, pos, it));
+		super.breakBlock(worldIn, pos, state);
+	}
+	
+	@Nullable
+	public NonNullList<ItemStack> getItemDrops(World world, BlockPos pos) {
+		return null;
 	}
 	
 	@Override
