@@ -263,6 +263,11 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 		}
 		
 		@Override
+		public void fallback(int energy) {
+			nowEnergy += energy;
+		}
+		
+		@Override
 		public boolean isReAllowable(EnumFacing facing) {
 			return EleTileEntity.this.isReAllowable(facing);
 		}

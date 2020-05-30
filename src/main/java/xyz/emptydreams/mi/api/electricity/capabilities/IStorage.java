@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.electricity.capabilities;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
@@ -48,6 +49,9 @@ public interface IStorage {
 	 */
 	@Nonnull
 	EleEnergy extractEnergy(EleEnergy energy, boolean simulate);
+	
+	/** @see xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer#fallback(TileEntity, int)  */
+	void fallback(int energy);
 	
 	/** 是否可以从指定方向输入电能 */
 	boolean isReAllowable(EnumFacing facing);

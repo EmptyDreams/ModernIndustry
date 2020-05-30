@@ -124,6 +124,7 @@ public final class EleWorker {
 	 * @return 是否成功
 	 */
 	public static EleEnergy useEleEnergy(TileEntity te, IEleInputer inputer) {
+		if (inputer.getEnergy(te) <= 0) return new EleEnergy(0, EnumVoltage.NON);
 		Map<TileEntity, IEleOutputer> outs = inputer.getOutputerAround(te);
 		if (outs.isEmpty()) {
 			Map<TileEntity, IEleTransfer> transfers = inputer.getTransferAround(te);

@@ -26,8 +26,8 @@ public class EleCapInputer implements IEleInputer {
 			new ResourceLocation(ModernIndustry.MODID, "EleSrcInputer");
 	
 	@Override
-	public void useEnergy(TileEntity now, int energy, IVoltage voltage) {
-		now.getCapability(EleCapability.ENERGY, null)
+	public int useEnergy(TileEntity now, int energy, IVoltage voltage) {
+		return now.getCapability(EleCapability.ENERGY, null)
 				.receiveEnergy(new EleEnergy(energy, voltage), false);
 	}
 	

@@ -71,11 +71,8 @@ public class FirePowerBlock extends MachineBlock {
 	@Nullable
 	@Override
 	public NonNullList<ItemStack> getItemDrops(World world, BlockPos pos) {
-		NonNullList<ItemStack> drops = NonNullList.create();
 		EMFirePower power = (EMFirePower) world.getTileEntity(pos);
-		drops.add(power.getInSlot().getStack());
-		drops.add(power.getOutSlot().getStack());
-		return drops;
+		return NonNullList.from(power.getInSlot().getStack(), power.getOutSlot().getStack());
 	}
 	
 	@Override

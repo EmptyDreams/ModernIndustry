@@ -22,6 +22,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.utils.WorldUtil;
 
 /**
  * 所有客户端/服务端需要等待处理的消息存放在此处
@@ -40,6 +41,7 @@ public class WaitList {
 	
 	@SubscribeEvent
 	public static void runAtTickEndService(TickEvent.ServerTickEvent event) {
+		if (taskTime == 0) WorldUtil.optimizeSideCalculate(null);
 		++taskTime;
 		sendAll(false);
 	}
@@ -53,21 +55,11 @@ public class WaitList {
 	
 	/**
 	 * 获取指定端口的时间计数器
-	 * @return 当前时间
-	 */
-	public static long getTaskTime(@Nonnull Side side) {
-		if (side.isClient()) return clientTaskTime;
-		return taskTime;
-	}
-	
-	/**
-	 * 获取指定端口的时间计数器
 	 * @param world 当前世界，用于判断端口
 	 * @return 当前时间
 	 */
 	public static long getTaskTime(@Nullable World world) {
-		if (world == null) return getTaskTime();
-		return world.isRemote ? clientTaskTime : taskTime;
+		return WorldUtil.isServer(world) ? taskTime : clientTaskTime;
 	}
 	
 	/**
@@ -76,13 +68,7 @@ public class WaitList {
 	 * @return 当前时间
 	 */
 	public static long getTaskTime() {
-		if (FMLCommonHandler.instance().getSide().isServer()) {
-			return taskTime;
-		}
-		if (Thread.currentThread().getName().contains("Server")) {
-			return taskTime;
-		}
-		return clientTaskTime;
+		return getTaskTime(null);
 	}
 	
 	/** 存储客户端待处理的消息 */

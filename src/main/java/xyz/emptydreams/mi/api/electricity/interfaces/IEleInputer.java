@@ -40,7 +40,7 @@ public interface IEleInputer extends IRegister {
 	 * @param energy 能量
 	 * @param voltage 电压
 	 */
-	void useEnergy(TileEntity now, int energy, IVoltage voltage);
+	int useEnergy(TileEntity now, int energy, IVoltage voltage);
 	
 	/**
 	 * 获取用电器需要的电压

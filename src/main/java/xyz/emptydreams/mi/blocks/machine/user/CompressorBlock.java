@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.blocks.machine.user;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 import net.minecraft.util.NonNullList;
@@ -96,17 +97,14 @@ public class CompressorBlock extends MachineBlock {
 		}
 	}
 	
+	@Nullable
 	@Override
-	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world,
-	                     BlockPos pos, IBlockState state, int fortune) {
-		super.getDrops(drops, world, pos, state, fortune);
+	public NonNullList<ItemStack> getItemDrops(World world, BlockPos pos) {
 		EUCompressor nbt = (EUCompressor) world.getTileEntity(pos);
 		ItemStack is = nbt.getSolt(0).getStack();
 		ItemStack is2 = nbt.getSolt(1).getStack();
 		ItemStack is3 = nbt.getSolt(2).getStack();
-		drops.add(is);
-		drops.add(is2);
-		drops.add(is3);
+		return NonNullList.from(is, is2, is3);
 	}
 	
 	@Override

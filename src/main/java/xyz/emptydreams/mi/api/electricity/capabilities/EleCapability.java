@@ -46,6 +46,8 @@ public class EleCapability {
 				return new EleEnergy(0, EnumVoltage.NON);
 			}
 			@Override
+			public void fallback(int energy) { }
+			@Override
 			public boolean isReAllowable(EnumFacing facing) { return false; }
 			@Override
 			public boolean isExAllowable(EnumFacing facing) { return false; }

@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.electricity.src.tileentity;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,7 +12,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
+import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
+import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
@@ -172,17 +175,15 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 			} else return prev.equals(target);
 			return false;
 		} else {
-			IEleInputer inputer = EleWorker.getInputer(targetEntity);
 			EnumFacing facing = BlockPosUtil.whatFacing(target, pos);
-			if (inputer != null &&
-					    !inputer.canLink(targetEntity, facing)) return false;
-			IEleOutputer outputer = EleWorker.getOutputer(targetEntity);
-			if (outputer != null &&
-						!outputer.canLink(targetEntity, facing)) return false;
-			if (inputer == null && outputer == null) return false;
-			if (!linkedBlocks.contains(target)) linkedBlocks.add(target);
-			updateLinkShow();
-			return true;
+			ILink link = targetEntity.getCapability(LinkCapability.LINK, facing);
+			if (link == null) return false;
+			if (link.canLink(facing)) {
+				if (!linkedBlocks.contains(target)) linkedBlocks.add(target);
+				updateLinkShow();
+				return true;
+			}
+			return false;
 		}
 	}
 	
@@ -312,6 +313,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 		TileEntity entity;
 		IStorage storage;
 		BlockPos block;
+		boolean isRun = false;
 		//noinspection ForLoopReplaceableByForEach
 		for (int i = 0; i < linkedBlocks.size(); i++) {
 			block = linkedBlocks.get(i);
@@ -320,7 +322,10 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 				deleteLink(block);
 			} else {
 				storage = entity.getCapability(EleCapability.ENERGY, BlockPosUtil.whatFacing(block, pos));
-				if (storage != null && storage.canReceive()) EleWorker.useEleEnergy(entity);
+				if (storage != null && storage.canReceive()) {
+					isRun = true;
+					EleWorker.useEleEnergy(entity);
+				}
 			}
 		}
 	}

@@ -26,6 +26,13 @@ public interface IEleOutputer extends IRegister {
 	EleEnergy output(TileEntity te, int energy, IVoltage voltage, boolean simulation);
 	
 	/**
+	 * 用于当计算失误时回退能量操作
+	 * @param te 当前TE
+	 * @param energy 能量值
+	 */
+	void fallback(TileEntity te, int energy);
+	
+	/**
 	 * 判断指定方块能否向指定方向输出电能
 	 * @param te 当前方块
 	 * @param facing 方向

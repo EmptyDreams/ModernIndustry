@@ -101,7 +101,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 			ItemStack stack = in.getStack();
 			IBlockState old = world.getBlockState(pos);
 			IBlockState state;
-			if (!stack.isEmpty() && getNowEnergy() < getMaxEnergy() / 10 * 9) {
+			if (!stack.isEmpty() && getNowEnergy() < getMaxEnergy() / 10 * 5) {
 				maxTime = TileEntityFurnace.getItemBurnTime(stack);
 				stack.shrink(1);
 				state = old.withProperty(MIProperty.WORKING, true);
@@ -119,7 +119,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 				maxTime = burningTime = 0;
 			}
 			progressBar.set(burningTime);
-			setNowEnergy(getNowEnergy() + 120);
+			setNowEnergy(getNowEnergy() + 60);
 		}
 		
 		energyPro.set(getNowEnergy());
