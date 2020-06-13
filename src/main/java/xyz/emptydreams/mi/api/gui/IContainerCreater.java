@@ -2,10 +2,10 @@ package xyz.emptydreams.mi.api.gui;
 
 import javax.annotation.Nonnull;
 
-import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 
 /**
  * {@link GuiLoader}同过该类为方块创建UI对象

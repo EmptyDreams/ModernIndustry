@@ -13,6 +13,7 @@ import xyz.emptydreams.mi.register.AutoLoader;
 @AutoLoader
 public class PropertyCapability  {
 
+	@SuppressWarnings("CanBeFinal")
 	@CapabilityInject(PropertyManager.class)
 	public static Capability<PropertyManager> PROPERTY = null;
 	

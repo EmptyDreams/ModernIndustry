@@ -4,11 +4,6 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
-import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
-import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
-import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
-import xyz.emptydreams.mi.blocks.base.TEBlockBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -28,6 +23,11 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
+import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
+import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
+import xyz.emptydreams.mi.blocks.base.TEBlockBase;
 import xyz.emptydreams.mi.utils.BlockPosUtil;
 
 /**

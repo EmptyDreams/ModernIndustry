@@ -13,9 +13,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import xyz.emptydreams.mi.api.event.ItemDamageEvent;
 
 /**
  * 所有属性需要实现的接口，注意：实现该接口的类必须带有默认构造函数

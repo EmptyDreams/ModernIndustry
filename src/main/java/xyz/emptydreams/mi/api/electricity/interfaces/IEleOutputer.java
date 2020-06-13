@@ -1,10 +1,8 @@
 package xyz.emptydreams.mi.api.electricity.interfaces;
 
-import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
-import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
-import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 
 /**
  * 可输出电能的方块的托管接口
@@ -39,16 +37,5 @@ public interface IEleOutputer extends IRegister {
 	 * @throws ClassCastException 如果不支持输入的TE
 	 */
 	boolean isAllowable(TileEntity te, EnumFacing facing);
-	
-	/**
-	 * 判断当前方块能否与指定方向的方块连接
-	 * @param now 当前方块
-	 * @param facing 指定方向
-	 */
-	default boolean canLink(TileEntity now, EnumFacing facing) {
-		ILink link = now.getCapability(LinkCapability.LINK, facing);
-		if (link == null) return false;
-		return link.canLink(facing);
-	}
 	
 }

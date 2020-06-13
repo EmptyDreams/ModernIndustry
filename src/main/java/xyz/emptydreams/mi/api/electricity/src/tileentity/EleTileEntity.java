@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.api.electricity.src.tileentity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,17 +19,18 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
-import xyz.emptydreams.mi.api.electricity.capabilities.EnumEleState;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
-import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
-import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
-import xyz.emptydreams.mi.api.electricity.capabilities.EnergyRange;
 import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
+import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
+import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
+import xyz.emptydreams.mi.api.electricity.info.EnergyRange;
+import xyz.emptydreams.mi.api.electricity.info.EnumEleState;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.api.event.EnergyEvent;
 import xyz.emptydreams.mi.api.utils.data.TEHelper;
+import xyz.emptydreams.mi.utils.MISysInfo;
 
 /**
  * 机器的父类，其中包含了机器的一些默认实现
@@ -208,10 +208,9 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 				//若当前储存能量已满则不再接收能量
 				if (nowEnergy < getMaxEnergy()) {
 					if (simulate) {
-						return Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy());
+						return reciveRange.getOptimalEnergy(Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy()));
 					} else {
-						int k = Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy());
-						k = reciveRange.getOptimalEnergy(k);
+						int k = reciveRange.getOptimalEnergy(Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy()));
 						IVoltage voltage = reciveRange.getOptimalVoltage(energy.getVoltage());
 						if (!onReceive(new EleEnergy(k, voltage))) return 0;
 						//若输入电压不在适用电压范围内，则增加计数器

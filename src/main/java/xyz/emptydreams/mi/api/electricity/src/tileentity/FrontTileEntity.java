@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 
 /**
  * 带方向的机器方块

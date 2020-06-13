@@ -3,13 +3,6 @@ package xyz.emptydreams.mi.blocks.machine.user;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-import net.minecraft.util.NonNullList;
-import net.minecraft.world.IBlockAccess;
-import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.electricity.src.block.MachineBlock;
-import xyz.emptydreams.mi.blocks.te.user.EUCompressor;
-import xyz.emptydreams.mi.gui.CompressorFrame;
-import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -21,8 +14,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.electricity.src.block.MachineBlock;
+import xyz.emptydreams.mi.blocks.te.user.EUCompressor;
+import xyz.emptydreams.mi.gui.CompressorFrame;
+import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 
 import static xyz.emptydreams.mi.blocks.base.MIProperty.EMPTY;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;

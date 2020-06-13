@@ -3,13 +3,10 @@ package xyz.emptydreams.mi.api.electricity.interfaces;
 import java.util.HashMap;
 import java.util.Map;
 
-import xyz.emptydreams.mi.api.electricity.EleWorker;
-import xyz.emptydreams.mi.api.electricity.capabilities.EnumEleState;
-import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
-import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
-import xyz.emptydreams.mi.utils.BlockPosUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import xyz.emptydreams.mi.api.electricity.EleWorker;
+import xyz.emptydreams.mi.utils.BlockPosUtil;
 
 /**
  * 可以输入电能的方块托管
@@ -56,17 +53,6 @@ public interface IEleInputer extends IRegister {
 	 * @throws ClassCastException 如果不支持输入的TE
 	 */
 	boolean isAllowable(TileEntity now, EnumFacing facing);
-	
-	/**
-	 * 判断当前方块能否与指定方向的方块连接
-	 * @param now 当前方块
-	 * @param facing 指定方向
-	 */
-	default boolean canLink(TileEntity now, EnumFacing facing) {
-		ILink link = now.getCapability(LinkCapability.LINK, facing);
-		if (link == null) return false;
-		return link.canLink(facing);
-	}
 	
 	/**
 	 * 获取当前方块周围的已连接的传输方块

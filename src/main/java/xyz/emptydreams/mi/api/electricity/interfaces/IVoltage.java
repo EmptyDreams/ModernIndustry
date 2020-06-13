@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.api.electricity.interfaces;
 
 import javax.annotation.Nonnull;
 
-import net.minecraftforge.common.util.INBTSerializable;
 import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 
 /**

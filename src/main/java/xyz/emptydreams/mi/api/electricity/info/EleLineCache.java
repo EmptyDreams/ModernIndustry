@@ -4,8 +4,8 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import net.minecraft.tileentity.TileEntity;
+import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 
 /**
  * 线路缓存信息存储.<br>

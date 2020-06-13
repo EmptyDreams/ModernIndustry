@@ -3,11 +3,9 @@ package xyz.emptydreams.mi.api.gui.component;
 import javax.annotation.Nonnull;
 import java.awt.*;
 
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
-import xyz.emptydreams.mi.api.net.WaitList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.net.WaitList;
 
 /**
  * @author EmptyDreams

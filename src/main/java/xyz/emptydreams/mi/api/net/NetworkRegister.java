@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Consumer;
 
-import xyz.emptydreams.mi.api.net.guinet.IAutoGuiNetWork;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import xyz.emptydreams.mi.api.net.guinet.IAutoGuiNetWork;
 
 /**
  * 自动化网络传输注册机.<br>

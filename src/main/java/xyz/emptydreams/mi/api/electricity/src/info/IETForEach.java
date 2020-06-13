@@ -2,8 +2,8 @@ package xyz.emptydreams.mi.api.electricity.src.info;
 
 import javax.annotation.Nonnull;
 
-import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import net.minecraft.tileentity.TileEntity;
+import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
 
 /**
  * @author EmptyDreams

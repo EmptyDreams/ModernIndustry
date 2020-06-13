@@ -2,10 +2,10 @@ package xyz.emptydreams.mi.utils;
 
 import java.util.Collection;
 
-import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
-import xyz.emptydreams.mi.api.net.WaitList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
+import xyz.emptydreams.mi.api.net.WaitList;
 
 import static xyz.emptydreams.mi.api.net.WaitList.checkNull;
 

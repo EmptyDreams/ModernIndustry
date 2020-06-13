@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.api.electricity.capabilities;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.util.Collection;
 import java.util.HashSet;
 

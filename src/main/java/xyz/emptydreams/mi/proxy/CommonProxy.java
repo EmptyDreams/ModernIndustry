@@ -2,13 +2,13 @@ package xyz.emptydreams.mi.proxy;
 
 import javax.annotation.Nonnull;
 
-import xyz.emptydreams.mi.register.AutoRegister;
-import xyz.emptydreams.mi.api.gui.GuiLoader;
-import xyz.emptydreams.mi.api.net.NetworkLoader;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import xyz.emptydreams.mi.api.gui.GuiLoader;
+import xyz.emptydreams.mi.api.net.NetworkLoader;
+import xyz.emptydreams.mi.register.AutoRegister;
 
 public class CommonProxy {
 	

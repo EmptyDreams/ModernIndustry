@@ -1,14 +1,13 @@
 package xyz.emptydreams.mi.blocks.base;
 
+import javax.annotation.Nonnull;
 import java.util.Random;
 
-import javax.annotation.Nonnull;
-
-import xyz.emptydreams.mi.register.block.BlockItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
+import xyz.emptydreams.mi.register.block.BlockItemHelper;
 
 /**
  * 基础方块，定义了经常需要重写的函数

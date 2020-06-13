@@ -1,27 +1,25 @@
 package xyz.emptydreams.mi.api.net;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import xyz.emptydreams.mi.api.net.guinet.GUIMessage;
-import xyz.emptydreams.mi.api.net.guinet.IAutoGuiNetWork;
-import xyz.emptydreams.mi.utils.MISysInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.net.guinet.GUIMessage;
+import xyz.emptydreams.mi.api.net.guinet.IAutoGuiNetWork;
+import xyz.emptydreams.mi.utils.MISysInfo;
 import xyz.emptydreams.mi.utils.WorldUtil;
 
 /**

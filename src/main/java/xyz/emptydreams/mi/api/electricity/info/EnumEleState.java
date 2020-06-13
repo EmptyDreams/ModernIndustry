@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.electricity.capabilities;
+package xyz.emptydreams.mi.api.electricity.info;
 
 /**
  * 标记电能输入/输出
@@ -7,6 +7,6 @@ package xyz.emptydreams.mi.api.electricity.capabilities;
  */
 public enum EnumEleState {
 	
-	OUT, IN;
+	OUT, IN
 	
 }

@@ -2,36 +2,12 @@ package xyz.emptydreams.mi.api.electricity.src.tileentity;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.electricity.EleWorker;
-import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
-import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
-import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
-import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
-import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
-import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
-import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
-import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
-import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
-import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.electricity.src.info.BiggerVoltage;
-import xyz.emptydreams.mi.api.electricity.src.info.EnumBiggerVoltage;
-import xyz.emptydreams.mi.api.electricity.src.info.WireLinkInfo;
-import xyz.emptydreams.mi.api.electricity.src.info.IETForEach;
-import xyz.emptydreams.mi.api.net.IAutoNetwork;
-import xyz.emptydreams.mi.api.net.NetworkRegister;
-import xyz.emptydreams.mi.api.net.WaitList;
-import xyz.emptydreams.mi.api.utils.data.DataType;
-import xyz.emptydreams.mi.api.utils.data.TEHelper;
-import xyz.emptydreams.mi.register.te.AutoTileEntity;
-import xyz.emptydreams.mi.utils.BlockPosUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -39,7 +15,28 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import xyz.emptydreams.mi.api.electricity.EleWorker;
+import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
+import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
+import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
+import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
+import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
+import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
+import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
+import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
+import xyz.emptydreams.mi.api.electricity.src.info.BiggerVoltage;
+import xyz.emptydreams.mi.api.electricity.src.info.EnumBiggerVoltage;
+import xyz.emptydreams.mi.api.electricity.src.info.IETForEach;
+import xyz.emptydreams.mi.api.electricity.src.info.WireLinkInfo;
+import xyz.emptydreams.mi.api.net.IAutoNetwork;
+import xyz.emptydreams.mi.api.net.NetworkRegister;
+import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.api.utils.data.DataType;
+import xyz.emptydreams.mi.api.utils.data.TEHelper;
+import xyz.emptydreams.mi.register.te.AutoTileEntity;
+import xyz.emptydreams.mi.utils.BlockPosUtil;
 
 /**
  * @author EmptyDreams
@@ -173,7 +170,6 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 				updateLinkShow();
 				return true;
 			} else return prev.equals(target);
-			return false;
 		} else {
 			EnumFacing facing = BlockPosUtil.whatFacing(target, pos);
 			ILink link = targetEntity.getCapability(LinkCapability.LINK, facing);
@@ -183,8 +179,8 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 				updateLinkShow();
 				return true;
 			}
-			return false;
 		}
+		return false;
 	}
 	
 	public void updateLinkShow() {

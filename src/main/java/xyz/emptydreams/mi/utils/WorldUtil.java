@@ -12,6 +12,9 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
  */
 public final class WorldUtil {
 	
+	/** 当集合元素数目达到该值时使用多线程优化 */
+	public static final int PARALLEL_THRESHOLD = 20;
+	
 	/**
 	 * 优化客户端/服务端判断<br>
 	 * <b>注意：该方法对单机游戏无效</b>

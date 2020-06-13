@@ -129,7 +129,7 @@ public class IntegerList implements List<Integer>, RandomAccess {
 	public boolean containsAll(Collection<?> c) {
 		for (Object o : c) {
 			if (o.getClass() == Integer.class) {
-				if (!contains((Integer) o)) return false;
+				if (!contains(o)) return false;
 			} else {
 				return false;
 			}

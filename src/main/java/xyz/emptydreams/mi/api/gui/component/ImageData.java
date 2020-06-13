@@ -9,6 +9,7 @@ import java.io.IOException;
  * @author EmptyDreams
  * @version V1.0
  */
+@SuppressWarnings("CanBeFinal")
 public final class ImageData {
 	
 	public final static BufferedImage BACKGROUND;

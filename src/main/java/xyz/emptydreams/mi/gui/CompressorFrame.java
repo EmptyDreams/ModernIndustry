@@ -2,6 +2,9 @@ package xyz.emptydreams.mi.gui;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.gui.GuiLoader;
 import xyz.emptydreams.mi.api.gui.IContainerCreater;
 import xyz.emptydreams.mi.api.gui.MIFrame;
@@ -12,9 +15,6 @@ import xyz.emptydreams.mi.api.gui.component.MOutput;
 import xyz.emptydreams.mi.api.gui.info.TitleModelEnum;
 import xyz.emptydreams.mi.blocks.te.user.EUCompressor;
 import xyz.emptydreams.mi.register.AutoLoader;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 /**
  * @author EmptyDreams

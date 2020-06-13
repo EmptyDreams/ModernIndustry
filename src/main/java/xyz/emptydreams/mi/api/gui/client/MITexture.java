@@ -9,11 +9,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import xyz.emptydreams.mi.api.net.WaitList;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import xyz.emptydreams.mi.api.net.WaitList;
 
 /**
  * 材质类
@@ -22,7 +22,8 @@ import net.minecraft.util.ResourceLocation;
  */
 public class MITexture extends AbstractTexture {
 	
-	private boolean flag = false, flag1 = false;
+	private final boolean flag;
+	private final boolean flag1;
 	private final ResourceLocation rl;
 	
 	public MITexture(ResourceLocation rl, boolean flag, boolean flag1) {

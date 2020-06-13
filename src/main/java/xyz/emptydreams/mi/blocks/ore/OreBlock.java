@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.blocks.base.BlockBase;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.blocks.base.BlockBase;
 
 /**
  * @author EmptyDremas

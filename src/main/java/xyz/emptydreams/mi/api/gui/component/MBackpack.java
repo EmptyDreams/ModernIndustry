@@ -5,11 +5,11 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import xyz.emptydreams.mi.api.gui.MIFrame;
-import xyz.emptydreams.mi.utils.MISysInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import xyz.emptydreams.mi.api.gui.MIFrame;
+import xyz.emptydreams.mi.utils.MISysInfo;
 
 /**
  * @author EmptyDreams

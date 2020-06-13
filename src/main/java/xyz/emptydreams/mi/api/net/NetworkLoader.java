@@ -1,12 +1,12 @@
 package xyz.emptydreams.mi.api.net;
 
-import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.net.guinet.GUIMessage;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
+import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.net.guinet.GUIMessage;
 
 import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 import static net.minecraftforge.fml.relauncher.Side.SERVER;

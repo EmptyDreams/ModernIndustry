@@ -2,26 +2,24 @@ package xyz.emptydreams.mi.api.gui.client;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import xyz.emptydreams.mi.api.gui.MIFrame;
-import xyz.emptydreams.mi.api.gui.component.IComponent;
-import xyz.emptydreams.mi.api.gui.component.ImageData;
-import xyz.emptydreams.mi.api.gui.info.TitleModelEnum;
-import xyz.emptydreams.mi.api.net.WaitList;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.gui.MIFrame;
+import xyz.emptydreams.mi.api.gui.component.IComponent;
+import xyz.emptydreams.mi.api.gui.component.ImageData;
+import xyz.emptydreams.mi.api.gui.info.TitleModelEnum;
+import xyz.emptydreams.mi.api.net.WaitList;
 
 /**
  * 静态GUI，注意：该类只能用于静态GUI的显示

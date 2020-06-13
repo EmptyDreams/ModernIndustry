@@ -1,8 +1,6 @@
 package xyz.emptydreams.mi.api.net.guinet;
 
 import io.netty.buffer.ByteBuf;
-import xyz.emptydreams.mi.api.net.WaitList;
-import xyz.emptydreams.mi.utils.MISysInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,6 +8,8 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.utils.MISysInfo;
 
 /**
  * @author EmptyDreams

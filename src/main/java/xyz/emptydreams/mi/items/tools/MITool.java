@@ -1,10 +1,10 @@
 package xyz.emptydreams.mi.items.tools;
 
-import xyz.emptydreams.mi.ModernIndustry;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraftforge.common.util.EnumHelper;
+import xyz.emptydreams.mi.ModernIndustry;
 
 /**
  * @author EmptyDremas

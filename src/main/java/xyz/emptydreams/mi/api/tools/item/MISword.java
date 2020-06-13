@@ -1,7 +1,6 @@
 package xyz.emptydreams.mi.api.tools.item;
 
 import javax.annotation.Nullable;
-
 import java.util.List;
 
 import com.google.common.collect.HashMultimap;

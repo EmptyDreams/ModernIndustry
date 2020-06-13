@@ -3,12 +3,12 @@ package xyz.emptydreams.mi.api.gui.component;
 import javax.annotation.Nonnull;
 import java.awt.*;
 
-import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.net.WaitList;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.util.ResourceLocation;
+import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.net.WaitList;
 
 /**
  * @author EmptyDreams

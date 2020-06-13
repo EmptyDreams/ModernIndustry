@@ -1,12 +1,7 @@
 package xyz.emptydreams.mi.register.block;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 
-import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.blocks.ore.OreBlock;
-import xyz.emptydreams.mi.register.item.ItemRegister;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -17,6 +12,9 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
+import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.blocks.ore.OreBlock;
+import xyz.emptydreams.mi.register.item.ItemRegister;
 
 import static xyz.emptydreams.mi.register.AutoRegister.Blocks;
 

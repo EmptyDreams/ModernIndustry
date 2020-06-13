@@ -1,28 +1,38 @@
 package xyz.emptydreams.mi.blocks.te.user;
 
+import java.util.List;
+import java.util.Optional;
+
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.craftguide.CraftGuide;
-import xyz.emptydreams.mi.api.craftguide.DictDisorderList;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.SlotItemHandler;
+import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.electricity.src.info.BiggerVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.api.electricity.src.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.api.gui.component.MProgressBar;
+import xyz.emptydreams.mi.api.craftguide.CraftRegistry;
+import xyz.emptydreams.mi.api.craftguide.ICraftGuide;
+import xyz.emptydreams.mi.api.craftguide.ItemElement;
+import xyz.emptydreams.mi.api.craftguide.ULCraftGuide;
 import xyz.emptydreams.mi.api.utils.data.DataType;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.machine.user.CompressorBlock;
 import xyz.emptydreams.mi.register.item.ItemRegister;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ITickable;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
+
+import static xyz.emptydreams.mi.utils.ItemUtil.merge;
+import static xyz.emptydreams.mi.utils.ItemUtil.hasEmpty;
 
 /**
  * 压缩机的TileEntity，存储方块内物品、工作时间等内容
@@ -33,13 +43,18 @@ import net.minecraftforge.items.SlotItemHandler;
 public class EUCompressor extends FrontTileEntity implements ITickable {
 	
 	/** 压缩机的合成表 */
-	public static final CraftGuide<ItemStack, ItemStack> CRAFT_GUIDE = new CraftGuide<>();
+	public static final CraftRegistry REGISTRY = CraftRegistry.instance(
+			new ResourceLocation(ModernIndustry.MODID, CompressorBlock.NAME));
 	
 	static {
-		CRAFT_GUIDE.register(DictDisorderList.create(ItemRegister.ITEM_COPPER, 1,
-				new ItemStack(ItemRegister.ITEM_COPPER_POWDER, 2)));
-		CRAFT_GUIDE.register(DictDisorderList.create(ItemRegister.ITEM_TIN, 1,
-				new ItemStack(ItemRegister.ITEM_TIN_POWER, 2)));
+		ULCraftGuide craft0 = new ULCraftGuide(2)
+				                      .addElement(ItemElement.instance(ItemRegister.ITEM_COPPER_POWDER, 2))
+				                      .addOutElement(ItemElement.instance(ItemRegister.ITEM_COPPER, 1));
+		ULCraftGuide craft1 = new ULCraftGuide(2)
+				                      .addElement(ItemElement.instance(ItemRegister.ITEM_TIN_POWER, 2))
+				                      .addOutElement(ItemElement.instance(ItemRegister.ITEM_TIN, 1));
+		
+		REGISTRY.register(craft0, craft1);
 	}
 	
 	/** 已工作时间 */
@@ -101,10 +116,15 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	public void update() {
 		if (world.isRemote) return;
 		progressBar.setMax(getNeedTime());
+		
 		//检查输入框是否合法 如果不合法则清零工作时间并结束函数
-		DictDisorderList guide = new DictDisorderList(2, null, 0);
-		guide.add(new ItemStack(up.getStack().getItem())); guide.add(new ItemStack(down.getStack().getItem()));
-		ItemStack outStack = CRAFT_GUIDE.get(guide);
+		ItemStack outStack = null;
+		if (!hasEmpty(up.getStack(), down.getStack())) {
+			List<ItemStack> inputs = merge(up.getStack(), down.getStack());
+			Optional<ICraftGuide> craft = REGISTRY.apply(inputs);
+			outStack = craft.map(it -> it.getOuts().get(0).getStack()).orElse(null);
+		}
+		
 		IBlockState old = world.getBlockState(pos);
 		//判断配方是否存在
 		if (outStack == null || getNowEnergy() < getNeedEnergy()) {
@@ -160,11 +180,11 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	public void setNeedEnergy(int needEnergy) { this.needEnergy = needEnergy; }
 	/** 判断输入是否为空 */
 	public boolean isEmptyForInput() {
-		return up.getHasStack() || down.getHasStack();
+		return hasEmpty(up.getStack(), down.getStack());
 	}
 	/** 判断是否为空 */
 	public boolean isEmpty() {
-		return up.getHasStack() || down.getHasStack() || out.getHasStack();
+		return hasEmpty(up.getStack(), down.getStack(), out.getStack());
 	}
 	/** 获取进度条 */
 	public MProgressBar getProgressBar() { return progressBar; }
@@ -198,7 +218,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	
 	private final class SlotMI extends SlotItemHandler {
 		
-		int index;
+		final int index;
 		
 		public SlotMI(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
 			super(itemHandler, index, xPosition, yPosition);
@@ -207,7 +227,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		
 		@Override
 		public boolean isItemValid(ItemStack stack) {
-			boolean b = stack != null && CRAFT_GUIDE.contains(stack)
+			boolean b = stack != null && REGISTRY.hasItem(stack.getItem())
 					            && super.isItemValid(stack);
 			if (b && !isEmptyForInput()) {
 				SlotItemHandler s = getSolt(index == 0 ? 1 : 0);

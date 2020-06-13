@@ -3,15 +3,15 @@ package xyz.emptydreams.mi.blocks.machine.maker;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.electricity.src.block.MachineBlock;
-import xyz.emptydreams.mi.blocks.te.maker.EMPerpetual;
-import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.electricity.src.block.MachineBlock;
+import xyz.emptydreams.mi.blocks.te.maker.EMPerpetual;
+import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 
 /**
  * @author EmptyDreams

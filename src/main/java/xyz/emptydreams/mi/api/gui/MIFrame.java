@@ -2,23 +2,23 @@ package xyz.emptydreams.mi.api.gui;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.Point;
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.gui.component.IComponent;
-import xyz.emptydreams.mi.api.gui.component.MBackpack;
-import xyz.emptydreams.mi.api.gui.info.TitleModelEnum;
-import xyz.emptydreams.mi.api.net.WaitList;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Mod;
+import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.gui.component.IComponent;
+import xyz.emptydreams.mi.api.gui.component.MBackpack;
+import xyz.emptydreams.mi.api.gui.info.TitleModelEnum;
+import xyz.emptydreams.mi.api.net.WaitList;
 
 /**
  * MI版本窗体，通过该类可以便捷的创建和控制UI界面
@@ -110,7 +110,7 @@ public class MIFrame extends Container {
 		Slot slot = inventorySlots.get(index);
 		ItemStack stack = slot.getStack();
 		ItemStack oldStack = stack.copy();
-		if (stack.isEmpty()) return null;
+		if (stack.isEmpty()) return oldStack;
 		
 		//查找背包包含的slot所在的下标范围
 		int bagStart = -1, end = -1;

@@ -1,7 +1,5 @@
 package xyz.emptydreams.mi.api.electricity.src.block;
 
-import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
-import xyz.emptydreams.mi.utils.BlockPosUtil;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -17,6 +15,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
+import xyz.emptydreams.mi.utils.BlockPosUtil;
 
 /**
  * 普通电线物品

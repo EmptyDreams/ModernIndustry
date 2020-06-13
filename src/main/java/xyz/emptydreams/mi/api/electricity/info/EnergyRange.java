@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.electricity.capabilities;
+package xyz.emptydreams.mi.api.electricity.info;
 
 import javax.annotation.Nonnull;
 

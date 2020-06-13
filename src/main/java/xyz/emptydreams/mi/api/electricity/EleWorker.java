@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.common.Mod;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.PathInfo;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
@@ -14,8 +16,6 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.utils.MISysInfo;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.common.Mod;
 
 /**
  * 关于电力系统的工作都在这里进行
