@@ -30,13 +30,13 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.api.event.EnergyEvent;
 import xyz.emptydreams.mi.api.utils.data.TEHelper;
-import xyz.emptydreams.mi.utils.MISysInfo;
 
 /**
  * 机器的父类，其中包含了机器的一些默认实现
  * @author EmptyDreams
  * @version V2.1
  */
+@SuppressWarnings("unused")
 @Mod.EventBusSubscriber
 public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	

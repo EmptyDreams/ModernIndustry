@@ -160,9 +160,8 @@ public final class WireLinkInfo extends EleLineCache {
 					EleEnergy useInfo = entry.getValue().output(
 							entry.getKey(), Integer.MAX_VALUE, voltage, true);
 					if (useInfo.getEnergy() >= energy) {
-						info.setEnergy(energy)
-								.setOuter(entry.getKey())
-								.setVoltage(useInfo.getVoltage());
+						info.setOuter(entry.getKey())
+							.setVoltage(useInfo.getVoltage());
 						return false;
 					}
 					if (useInfo.getEnergy() > 0) {
@@ -187,9 +186,8 @@ public final class WireLinkInfo extends EleLineCache {
 					EleEnergy useInfo = entry.getValue().output(
 							entry.getKey(), Integer.MAX_VALUE, voltage, true);
 					if (useInfo.getEnergy() >= energy) {
-						info.setEnergy(energy)
-								.setOuter(entry.getKey())
-								.setVoltage(useInfo.getVoltage());
+						info.setOuter(entry.getKey())
+							.setVoltage(useInfo.getVoltage());
 						return false;
 					}
 					if (useInfo.getEnergy() > 0) {
@@ -207,9 +205,8 @@ public final class WireLinkInfo extends EleLineCache {
 			}
 		});
 		if (info.getOuter() == null && realUseInfo.get() != null) {
-			info.setEnergy(realUseInfo.get().getEnergy())
-					.setOuter(realOut.get())
-					.setVoltage(realUseInfo.get().getVoltage());
+			info.setOuter(realOut.get())
+				.setVoltage(realUseInfo.get().getVoltage());
 		}
 	}
 	

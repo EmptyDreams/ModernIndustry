@@ -28,8 +28,6 @@ public class PathInfo implements Comparable<PathInfo> {
 	
 	/** 运输过程损耗的能量 */
 	private int lossEnergy;
-	/** 实际提供的电能 */
-	private int energy;
 	/** 实际提供的电压 */
 	private IVoltage voltage;
 	/** 路径 */
@@ -48,10 +46,9 @@ public class PathInfo implements Comparable<PathInfo> {
 	public PathInfo() { }
 	
 	@SuppressWarnings("unchecked")
-	public PathInfo(int lossEnergy, int energy, IVoltage voltage, List<? extends TileEntity> path,
+	public PathInfo(int lossEnergy, IVoltage voltage, List<? extends TileEntity> path,
 	                TileEntity outer, IEleOutputer outputer, TileEntity user, IEleInputer inputer) {
 		this.lossEnergy = lossEnergy;
-		this.energy = energy;
 		this.voltage = voltage;
 		this.path = (List<TileEntity>) path;
 		this.outer = outer.getPos();
@@ -66,6 +63,7 @@ public class PathInfo implements Comparable<PathInfo> {
 	 * @return 返回用电详单
 	 */
 	public final EleEnergy invoke() {
+		int energy = getEnergy();
 		if (energy <= 0) return new EleEnergy(0, EnumVoltage.NON);
 		EleEnergy real = outputer.output(getOuter(), energy + lossEnergy, voltage, false);
 		if (real.getEnergy() <= 0 || real.getVoltage().getVoltage() <= 0) return real;
@@ -95,7 +93,6 @@ public class PathInfo implements Comparable<PathInfo> {
 			outer = info.outer;
 			outputer = info.outputer;
 			voltage = info.voltage;
-			energy = info.energy;
 			return true;
 		} else {
 			return info.outer == null;
@@ -116,12 +113,7 @@ public class PathInfo implements Comparable<PathInfo> {
 	}
 	
 	public int getEnergy() {
-		return energy;
-	}
-	
-	public PathInfo setEnergy(int energy) {
-		this.energy = energy;
-		return this;
+		return inputer.getEnergy(getUser());
 	}
 	
 	public IVoltage getVoltage() {
@@ -178,6 +170,7 @@ public class PathInfo implements Comparable<PathInfo> {
 	 */
 	public void calculateLossEnergy() {
 		if (lossEnergy <= 0) {
+			int energy = getEnergy();
 			for (TileEntity entity : path)
 				lossEnergy += EleWorker.getTransfer(entity).getEnergyLoss(
 						entity, energy, voltage);
@@ -197,7 +190,6 @@ public class PathInfo implements Comparable<PathInfo> {
 		PathInfo pathInfo = (PathInfo) o;
 		
 		if (lossEnergy != pathInfo.lossEnergy) return false;
-		if (energy != pathInfo.energy) return false;
 		if (!voltage.equals(pathInfo.voltage)) return false;
 		if (!outer.equals(pathInfo.outer)) return false;
 		if (!outputer.equals(pathInfo.outputer)) return false;
@@ -214,7 +206,6 @@ public class PathInfo implements Comparable<PathInfo> {
 	@Override
 	public int hashCode() {
 		int result = lossEnergy;
-		result = 31 * result + energy;
 		result = 31 * result + voltage.hashCode();
 		result = 31 * result + outer.hashCode();
 		result = 31 * result + outputer.hashCode();
@@ -226,12 +217,9 @@ public class PathInfo implements Comparable<PathInfo> {
 	@Override
 	public int compareTo(@Nonnull PathInfo o) {
 		if (!user.equals(o.user)) return 0;
-		int i = Integer.compare(energy, o.energy);
+		int i = Integer.compare(o.lossEnergy, lossEnergy);
 		if (i == 0) {
-			i = Integer.compare(o.lossEnergy, lossEnergy);
-			if (i == 0) {
-				i = voltage.compareTo(o.voltage);
-			}
+			i = voltage.compareTo(o.voltage);
 		}
 		return i;
 	}
