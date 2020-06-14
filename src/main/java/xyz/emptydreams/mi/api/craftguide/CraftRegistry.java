@@ -11,17 +11,18 @@ import net.minecraft.util.ResourceLocation;
 import xyz.emptydreams.mi.api.net.WaitList;
 
 /**
- * 注册表
+ * 合成表的注册表
  * @author EmptyDreams
  * @version V1.0
  */
 public class CraftRegistry {
 	
+	/** 保存已有的实例 */
 	private static final Set<CraftRegistry> INSTANCES = new HashSet<>();
 	
 	/**
 	 * 获取一个实例，实例不存在时自动创建新的实例并返回
-	 * @param name 资源名称
+	 * @param name 资源名称（由MODID和名称组成）
 	 */
 	@Nonnull
 	public static CraftRegistry instance(ResourceLocation name) {
@@ -34,10 +35,15 @@ public class CraftRegistry {
 		});
 	}
 	
+	/** 包含的合成表 */
 	private final Set<ICraftGuide> CRAFTS = new HashSet<>();
-	
+	/** 资源名称 */
 	private final ResourceLocation NAME;
 	
+	/**
+	 * 根据资源名称创建一个合成列表
+	 * @param name 名称
+	 */
 	private CraftRegistry(ResourceLocation name) {
 		NAME = name;
 	}
@@ -51,10 +57,13 @@ public class CraftRegistry {
 		CRAFTS.add(craft);
 	}
 	
+	/**
+	 * 注册列表中的所有合成表
+	 * @param crafts 指定列表
+	 * @throws NullPointerException 如果crafts == null 或者其中任意一个元素为null
+	 */
 	public void register(ICraftGuide... crafts) {
-		for (ICraftGuide guide : crafts) {
-			register(guide);
-		}
+		for (ICraftGuide guide : crafts) register(guide);
 	}
 	
 	/**

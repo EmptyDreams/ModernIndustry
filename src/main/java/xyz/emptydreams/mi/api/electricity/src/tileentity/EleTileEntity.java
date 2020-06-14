@@ -79,6 +79,13 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 		extractRange.setMaxVoltage(maxVoltage);
 	}
 	
+	/**
+	 * 设定方块可以接受的能量范围
+	 * @param minEnergy 最低能量值
+	 * @param maxEnergy 最高能量值
+	 * @param minVoltage 最低电压
+	 * @param maxVoltage 最高电压
+	 */
 	public void setReciveRange(int minEnergy, int maxEnergy, IVoltage minVoltage, IVoltage maxVoltage) {
 		reciveRange.setMinEnergy(minEnergy);
 		reciveRange.setMaxEnergy(maxEnergy);
@@ -100,16 +107,16 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	 */
 	public boolean onExtract(EleEnergy energy) { return true; }
 	
-	/** @see IStorage#isReAllowable(EnumFacing) */
+	/** 是否可以从指定方向输入电能 */
 	public abstract boolean isReAllowable(EnumFacing facing);
-	/** @see IStorage#isExAllowable(EnumFacing) */
+	/** 是否可以从指定方向输出电 */
 	public abstract boolean isExAllowable(EnumFacing facing);
 	
-	/** @see ILink#canLink(EnumFacing) */
+	/** 是否可以连接指定方向的方 */
 	public boolean canLink(EnumFacing facing) { return hasCapability(EleCapability.ENERGY, facing); }
-	/** @see ILink#link(BlockPos) */
+	/** 连接指定方块 */
 	public boolean link(BlockPos pos) { return linkedBlocks.add(pos); }
-	/** @see ILink#unLink(BlockPos) */
+	/** 取消链接指定方块 */
 	public boolean unLink(BlockPos pos) { return linkedBlocks.remove(pos); }
 	
 	@Override
@@ -163,6 +170,10 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	public int getNowEnergy() { return nowEnergy; }
 	/** 设置现在的能量 */
 	public void setNowEnergy(int nowEnergy) { this.nowEnergy = Math.min(Math.max(nowEnergy, 0), getMaxEnergy()); }
+	/** 增加能量 */
+	public void growEnergy(int grow) { setNowEnergy(getNowEnergy() + grow); }
+	/** 减少能量 */
+	public void shrinkEnergy(int shrink) { growEnergy(-shrink); }
 	/** 获取现在输出的电压 */
 	public IVoltage getExVoltage() { return exVoltage; }
 	/** 设置现在输出的电压 */

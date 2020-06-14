@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.electricity;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -80,6 +81,12 @@ public final class EleWorker {
 		return getInputer(te) != null;
 	}
 	
+	/**
+	 * 获取指定线缆方块的托管
+	 * @param te 指定方块的TE
+	 * @return 若不存在则返回null
+	 */
+	@Nullable
 	public static IEleTransfer getTransfer(TileEntity te) {
 		for (IEleTransfer transfer : TRANSFERS) {
 			if (transfer.contains(te)) return transfer;
@@ -87,6 +94,12 @@ public final class EleWorker {
 		return null;
 	}
 	
+	/**
+	 * 获取指定发电机的托管
+	 * @param te 指定方块的TE
+	 * @return 若不存在则返回null
+	 */
+	@Nullable
 	public static IEleOutputer getOutputer(TileEntity te) {
 		for (IEleOutputer outputer : OUTPUTERS) {
 			if (outputer.contains(te)) return outputer;
@@ -94,6 +107,12 @@ public final class EleWorker {
 		return null;
 	}
 	
+	/**
+	 * 获取指定用电器的托管
+	 * @param te 指定方块的TE
+	 * @return 若不存在则返回null
+	 */
+	@Nullable
 	public static IEleInputer getInputer(TileEntity te) {
 		for (IEleInputer inputer : INPUTERS) {
 			if (inputer.contains(te)) return inputer;
@@ -125,54 +144,21 @@ public final class EleWorker {
 	 */
 	public static EleEnergy useEleEnergy(TileEntity te, IEleInputer inputer) {
 		if (inputer.getEnergy(te) <= 0) return new EleEnergy(0, EnumVoltage.NON);
-		Map<TileEntity, IEleOutputer> outs = inputer.getOutputerAround(te);
-		if (outs.isEmpty()) {
-			Map<TileEntity, IEleTransfer> transfers = inputer.getTransferAround(te);
-			if (transfers.isEmpty()) return null;
-			
-			PathInfo realPath = null;
-			for (Map.Entry<TileEntity, IEleTransfer> entry : transfers.entrySet()) {
-				PathInfo pathInfo = entry.getValue().findPath(entry.getKey(), te, inputer);
-				if (pathInfo == null || pathInfo.getOuter() == null) continue;
-				if (realPath == null || realPath.getLossEnergy() > pathInfo.getLossEnergy())
-					realPath = pathInfo;
-			}
-			
-			if (realPath == null) return null;
-			lineTransfer(realPath.getPath(),
-					realPath.getEnergy() + realPath.getLossEnergy(), realPath.getVoltage());
-			return realPath.invoke();
-		} else {
-			IVoltage voltage = inputer.getVoltage(te, EnumVoltage.ORDINARY);
-			int allEnergy = inputer.getEnergy(te);
-			
-			int realEnergy = 0;
-			TileEntity realOut = null;
-			IEleOutputer realOutputer = null;
-			IVoltage realVoltage = null;
-			
-			for (Map.Entry<TileEntity, IEleOutputer> enerty : outs.entrySet()) {
-				IEleOutputer outputer = enerty.getValue();
-				TileEntity out = enerty.getKey();
-				EleEnergy outputInfo = outputer.output(out, Integer.MAX_VALUE, voltage, true);
-				if (outputInfo.getEnergy() >= allEnergy) {
-					realOut = out;
-					realOutputer = outputer;
-					realVoltage = outputInfo.getVoltage();
-					break;
-				}
-				int minEnergy = inputer.getEnergy(te, outputInfo.getEnergy());
-				if (outputInfo.getEnergy() >= minEnergy && outputInfo.getEnergy() > realEnergy) {
-					realEnergy = outputInfo.getEnergy();
-					realOut = out;
-					realOutputer = outputer;
-					realVoltage = outputInfo.getVoltage();
-				}
-			}
-			
-			if (realOut == null) return null;
-			return realOutputer.output(realOut, realEnergy, realVoltage, false);
+		Map<TileEntity, IEleTransfer> transfers = inputer.getTransferAround(te);
+		if (transfers.isEmpty()) return null;
+		
+		PathInfo realPath = null;
+		for (Map.Entry<TileEntity, IEleTransfer> entry : transfers.entrySet()) {
+			PathInfo pathInfo = entry.getValue().findPath(entry.getKey(), te, inputer);
+			if (pathInfo == null || pathInfo.getOuter() == null) continue;
+			if (realPath == null || realPath.getLossEnergy() > pathInfo.getLossEnergy())
+				realPath = pathInfo;
 		}
+		
+		if (realPath == null) return null;
+		lineTransfer(realPath.getPath(),
+				realPath.getEnergy() + realPath.getLossEnergy(), realPath.getVoltage());
+		return realPath.invoke();
 	}
 	
 	/**
@@ -192,7 +178,9 @@ public final class EleWorker {
 						entity, energy, voltage, infos.getOrDefault(transfer, null)));
 			}
 		} catch (NullPointerException e) {
-			throw new NullPointerException("线路中有至少一个电缆方块没有托管！");
+			NullPointerException rte = new NullPointerException("线路中有至少一个电缆方块没有托管！");
+			rte.initCause(e);
+			throw rte;
 		}
 	}
 	

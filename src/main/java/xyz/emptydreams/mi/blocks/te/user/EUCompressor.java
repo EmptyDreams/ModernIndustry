@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
@@ -15,24 +14,24 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.craftguide.CraftRegistry;
+import xyz.emptydreams.mi.api.craftguide.ICraftGuide;
+import xyz.emptydreams.mi.api.craftguide.ItemElement;
+import xyz.emptydreams.mi.api.craftguide.ULCraftGuide;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.electricity.src.info.BiggerVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.api.electricity.src.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.api.gui.component.MProgressBar;
-import xyz.emptydreams.mi.api.craftguide.CraftRegistry;
-import xyz.emptydreams.mi.api.craftguide.ICraftGuide;
-import xyz.emptydreams.mi.api.craftguide.ItemElement;
-import xyz.emptydreams.mi.api.craftguide.ULCraftGuide;
 import xyz.emptydreams.mi.api.utils.data.DataType;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.machine.user.CompressorBlock;
 import xyz.emptydreams.mi.register.item.ItemRegister;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 
-import static xyz.emptydreams.mi.utils.ItemUtil.merge;
 import static xyz.emptydreams.mi.utils.ItemUtil.hasEmpty;
+import static xyz.emptydreams.mi.utils.ItemUtil.merge;
 
 /**
  * 压缩机的TileEntity，存储方块内物品、工作时间等内容
@@ -57,9 +56,6 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		REGISTRY.register(craft0, craft1);
 	}
 	
-	/** 已工作时间 */
-	@Storage(type = DataType.INT)
-	private int workingTime = 0;
 	/**
 	 * 三个物品框<br>
 	 * 	0-上端，1-下端，2-输出
@@ -74,6 +70,9 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 			return false;
 		}
 	};
+	/** 已工作时间 */
+	@Storage(type = DataType.INT)
+	private int workingTime = 0;
 	/** 进度条 */
 	private final MProgressBar progressBar = new MProgressBar();
 	/** 每次工作消耗的电能 */
@@ -103,75 +102,82 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	}
 	
 	@Override
-	public NBTTagCompound getUpdateTag() {
-		if (getCounter() instanceof OrdinaryCounter) {
-			OrdinaryCounter counter = (OrdinaryCounter) getCounter();
-			counter.setWorld(world);
-			counter.setPos(pos);
-		}
-		return super.getUpdateTag();
-	}
-	
-	@Override
 	public void update() {
 		if (world.isRemote) return;
 		progressBar.setMax(getNeedTime());
 		
 		//检查输入框是否合法 如果不合法则清零工作时间并结束函数
-		ItemStack outStack = null;
-		if (!hasEmpty(up.getStack(), down.getStack())) {
-			List<ItemStack> inputs = merge(up.getStack(), down.getStack());
-			Optional<ICraftGuide> craft = REGISTRY.apply(inputs);
-			outStack = craft.map(it -> it.getOuts().get(0).getStack()).orElse(null);
-		}
-		
-		IBlockState old = world.getBlockState(pos);
-		//判断配方是否存在
+		ItemStack outStack = checkInput();
 		if (outStack == null || getNowEnergy() < getNeedEnergy()) {
-			//如果不存在，更新方块显示
-			if (outStack == null) workingTime = 0;
-			IBlockState state = old.withProperty(MIProperty.WORKING, false)
-					                    .withProperty(MIProperty.EMPTY, isEmpty());
-			world.setBlockState(pos, state);
-			world.markBlockRangeForRenderUpdate(pos, pos);
-			progressBar.set(workingTime);
-			markDirty();
+			whenFaild(outStack == null);
 			return;
 		}
-		//若配方存在则继续计算
-		ItemStack itemStack = item.extractItem(0, 1, true);
-		ItemStack itemStack2 = item.extractItem(1, 1, true);
-		boolean isWorking = false;  //保存是否正在工作
 		
+		//若配方存在则继续计算
+		boolean isWorking = false;  //保存是否正在工作
+		ItemStack nowOut = out.getStack();
 		//检查输入物品数目是否足够
-		if (!(itemStack.equals(ItemStack.EMPTY) && itemStack2.equals(ItemStack.EMPTY) &&
-				      item.insertItem(2, outStack, true).equals(ItemStack.EMPTY))) {
-			if (this.out.getStack().getCount() == 0) {
-				this.out.putStack(ItemStack.EMPTY);
-			}
+		if (item.insertItem(2, outStack, true).isEmpty()) {
+			if (nowOut.getCount() == 0) out.putStack(ItemStack.EMPTY);
 			isWorking = true;
 			++workingTime;
 			if (workingTime >= getNeedTime()) {
 				workingTime = 0;
 				item.extractItem(0, 1, false);
 				item.extractItem(1, 1, false);
-				this.out.putStack(new ItemStack(outStack.getItem(),
+				out.putStack(new ItemStack(outStack.getItem(),
 						outStack.getCount() + this.out.getStack().getCount()));
 			}
-			setNowEnergy(getNowEnergy() - getNeedEnergy());
+			shrinkEnergy(getNeedEnergy());
 		} else {
 			workingTime = 0;
 		}
 		progressBar.set(workingTime);
+		updateShow(isWorking);
+		markDirty();
+	}
+	
+	/**
+	 * 更新方块显示
+	 * @param isWorking 是否正在工作
+	 */
+	private void updateShow(boolean isWorking) {
+		IBlockState old = world.getBlockState(pos);
 		IBlockState state = old.withProperty(MIProperty.EMPTY, isEmpty())
 				                    .withProperty(MIProperty.WORKING, isWorking);
-		if (!old.equals(state)) world.setBlockState(pos, state);
+		if (!old.equals(state)) {
+			world.setBlockState(pos, state);
+			world.markBlockRangeForRenderUpdate(pos, pos);
+		}
+	}
+	
+	/**
+	 * 检查输入内容并获取输出
+	 * @return 返回产品，若输入不合法则返回null
+	 */
+	private ItemStack checkInput() {
+		if (!hasEmpty(up.getStack(), down.getStack())) {
+			List<ItemStack> inputs = merge(up.getStack(), down.getStack());
+			Optional<ICraftGuide> craft = REGISTRY.apply(inputs);
+			return craft.map(it -> it.getOuts().get(0).getStack()).orElse(null);
+		}
+		return null;
+	}
+	
+	/**
+	 * 当工作失败时执行替换方块的操作
+	 * @param isOutputFaild 是否是因为合成表不存在导致的失败
+	 */
+	private void whenFaild(boolean isOutputFaild) {
+		//如果不存在，更新方块显示
+		if (isOutputFaild) workingTime = 0;
+		updateShow(false);
+		progressBar.set(workingTime);
 		markDirty();
-		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
 	/** 获取需要的工作时间 */
-	public int getNeedTime() { return 135; }
+	public int getNeedTime() { return 100; }
 	/** 获取已工作时间 */
 	public int getWorkingTime() { return workingTime; }
 	/** 获取每Tick需要的能量 */
@@ -205,16 +211,12 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	public boolean isReAllowable(EnumFacing facing) {
 		return true;
 	}
-	
 	@Override
 	public boolean isExAllowable(EnumFacing facing) {
 		return false;
 	}
-	
 	@Override
-	public EnumFacing getFront() {
-		return world.getBlockState(pos).getValue(MIProperty.FACING);
-	}
+	public EnumFacing getFront() { return world.getBlockState(pos).getValue(MIProperty.FACING); }
 	
 	private final class SlotMI extends SlotItemHandler {
 		

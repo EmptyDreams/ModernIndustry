@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.api.craftguide;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;

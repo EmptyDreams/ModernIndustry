@@ -1,0 +1,32 @@
+package xyz.emptydreams.mi.api.utils.wrapper;
+
+import javax.annotation.Nullable;
+
+/**
+ * 用于盛放对象引用的容器
+ * @author EmptyDreams
+ * @version V1.0
+ */
+public final class Wrapper<T> {
+	
+	private T object;
+	
+	/**
+	 * 创建一个包含指定对象的容器
+	 * @param o 指定对象
+	 */
+	public Wrapper(T o) {
+		object = o;
+	}
+	
+	/**
+	 * 创建一个包含null的容器
+	 */
+	public Wrapper() { this(null); }
+	
+	@Nullable
+	public T get() { return object; }
+	
+	public void set(T o) { object = o; }
+	
+}

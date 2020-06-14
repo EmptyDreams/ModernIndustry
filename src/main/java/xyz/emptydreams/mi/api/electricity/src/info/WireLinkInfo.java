@@ -1,27 +1,23 @@
 package xyz.emptydreams.mi.api.electricity.src.info;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.EleLineCache;
 import xyz.emptydreams.mi.api.electricity.info.PathInfo;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
-import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.api.utils.wrapper.Wrapper;
 
 /**
  * <p>存储一条电缆线路的缓存信息. 该类不支持离线存储数据，
@@ -135,9 +131,9 @@ public final class WireLinkInfo extends EleLineCache {
 	                                    TileEntity user, IEleInputer inputer) {
 		PathInfo info = new PathInfo();
 		info.setUser(user).setInputer(inputer);
-		AtomicReference<EleEnergy> realUseInfo = new AtomicReference<>();
-		AtomicReference<TileEntity> realOut = new AtomicReference<>();
-		AtomicReference<IEleOutputer> realOutper = new AtomicReference<>();
+		Wrapper<EleEnergy> realUseInfo = new Wrapper<>();
+		Wrapper<TileEntity> realOut = new Wrapper<>();
+		Wrapper<IEleOutputer> realOutper = new Wrapper<>();
 		
 		int energy = inputer.getEnergy(user);
 		IVoltage voltage = inputer.getVoltage(user, EnumVoltage.ORDINARY);
@@ -169,9 +165,9 @@ public final class WireLinkInfo extends EleLineCache {
 	 */
 	private static boolean onceLoop(TileEntity it, PathInfo info,
 	                                IEleInputer inputer, TileEntity user, int energy, IVoltage voltage,
-	                                AtomicReference<EleEnergy> realUseInfo,
-	                                AtomicReference<TileEntity> realOut,
-	                                AtomicReference<IEleOutputer> realOutper,
+	                                Wrapper<EleEnergy> realUseInfo,
+	                                Wrapper<TileEntity> realOut,
+	                                Wrapper<IEleOutputer> realOutper,
 	                                TileEntity next, boolean isEnd) {
 		for (Map.Entry<TileEntity, IEleOutputer> entry :
 				EleWorker.getTransfer(it).getOutputerAround(it).entrySet()) {

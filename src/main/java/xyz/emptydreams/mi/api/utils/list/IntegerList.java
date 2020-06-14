@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.list;
+package xyz.emptydreams.mi.api.utils.list;
 
 import java.util.ArrayList;
 import java.util.Arrays;

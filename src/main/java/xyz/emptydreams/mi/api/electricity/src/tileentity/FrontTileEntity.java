@@ -12,7 +12,11 @@ import net.minecraftforge.common.capabilities.Capability;
  */
 public abstract class FrontTileEntity extends EleTileEntity {
 	
-	/** 获取正面 */
+	/**
+	 * 获取正面
+	 * @return 返回null表示任何方向都可以执行操作
+	 */
+	@Nullable
 	public abstract EnumFacing getFront();
 	
 	@Nullable

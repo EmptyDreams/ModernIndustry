@@ -113,7 +113,8 @@ public class PathInfo implements Comparable<PathInfo> {
 	}
 	
 	public int getEnergy() {
-		return inputer.getEnergy(getUser());
+		return Math.min(inputer.getEnergy(getUser()),
+				outputer.output(getOuter(), Integer.MAX_VALUE, EnumVoltage.ORDINARY, true).getEnergy());
 	}
 	
 	public IVoltage getVoltage() {
@@ -216,6 +217,11 @@ public class PathInfo implements Comparable<PathInfo> {
 	
 	@Override
 	public int compareTo(@Nonnull PathInfo o) {
+		if (o.outputer == null) {
+			if (outputer == null) return 0;
+			return -1;
+		}
+		if (outputer == null) return 1;
 		if (!user.equals(o.user)) return 0;
 		int i = Integer.compare(o.lossEnergy, lossEnergy);
 		if (i == 0) {
