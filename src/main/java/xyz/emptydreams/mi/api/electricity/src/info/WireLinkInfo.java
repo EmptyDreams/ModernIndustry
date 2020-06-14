@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -32,8 +33,6 @@ import xyz.emptydreams.mi.api.net.WaitList;
  */
 @SuppressWarnings("unused")
 public final class WireLinkInfo extends EleLineCache {
-	
-	private static final List<BlockPos> NON = new ArrayList<>(0);
 	
 	/** 含有发电机的数量 */
 	private int makerAmount = 0;
@@ -70,7 +69,10 @@ public final class WireLinkInfo extends EleLineCache {
 		PathInfo info;
 		while(it.hasNext()) {
 			info = it.next();
-			if (!info.isAvailable()) it.remove();
+			if (!info.isAvailable()) {
+				it.remove();
+				continue;
+			}
 			if (info.getStart().equals(start) || info.getEnd().equals(start)) {
 				if (info.getUser().equals(user)) {
 					return info;
@@ -100,114 +102,103 @@ public final class WireLinkInfo extends EleLineCache {
 	 */
 	public static PathInfo calculate(EleSrcCable start, TileEntity user, IEleInputer inputer) {
 		if (start.getLinkAmount() <= 1) {
-			PathInfo info = new PathInfo();
-			calculateHelper(start, null, user, inputer, info);
+			PathInfo info = calculateHelper(start, null, user, inputer);
 			if (info.getOuter() == null) return null;
 			info.calculateLossEnergy();
 			return info;
 		} else {
-			PathInfo info0 = new PathInfo(), info1 = new PathInfo();
-			calculateHelper(start, start.getPrev(), user, inputer, info0);
-			calculateHelper(start, start.getNext(), user, inputer, info1);
+			PathInfo info0 = calculateHelper(start, start.getPrev(), user, inputer);
+			PathInfo info1 = calculateHelper(start, start.getNext(), user, inputer);
 			
-			if (info0.getOuter() == null) {
-				if (info1.getOuter() == null) return null;
-				return info1;
-			} else if (info1.getOuter() == null) return info0;
-			
-			int needEnergy = inputer.getEnergy(user);
-			if (info0.getEnergy() < needEnergy) {
-				if (info1.getEnergy() < needEnergy) {
-					if (info0.getEnergy() < info1.getEnergy()) {
-						info0.calculateLossEnergy();
-						return info0;
-					} else {
-						info1.calculateLossEnergy();
-						return info1;
-					}
-				} else {
-					info1.calculateLossEnergy();
-					return info1;
-				}
-			} else if (info1.getEnergy() < needEnergy) {
-				info0.calculateLossEnergy();
-				return info0;
-			} else {
-				info0.calculateLossEnergy();
-				info1.calculateLossEnergy();
-				if (info0.getLossEnergy() < info1.getLossEnergy()) return info0;
-				return info1;
+			int k = info0.compareTo(info1);
+			switch (k) {
+				case -1: return info0;
+				case  1: return info1;
+				case  0:
+					if (info0.getOuter() == null) return null;
+					return info0;
+				default:
+					throw new NoSuchElementException("内部计算错误，PathInfo#compareTo(PathInfo)返回了0,-1,1之外的值");
 			}
 		}
 	}
 	
-	private static void calculateHelper(EleSrcCable start, TileEntity prev,
-	                                    TileEntity user, IEleInputer inputer, PathInfo info) {
+	/**
+	 * 计算指定导线所在线路的{@link PathInfo}
+	 * @param start 起点
+	 * @param prev 上一根电线
+	 * @param user 用电器的TE
+	 * @param inputer 用电器的托管
+	 * @return 计算结果
+	 */
+	private static PathInfo calculateHelper(EleSrcCable start, TileEntity prev,
+	                                    TileEntity user, IEleInputer inputer) {
+		PathInfo info = new PathInfo();
 		info.setUser(user).setInputer(inputer);
 		AtomicReference<EleEnergy> realUseInfo = new AtomicReference<>();
 		AtomicReference<TileEntity> realOut = new AtomicReference<>();
 		AtomicReference<IEleOutputer> realOutper = new AtomicReference<>();
 		
-		IEleTransfer transfer = EleWorker.getTransfer(start);
 		int energy = inputer.getEnergy(user);
 		IVoltage voltage = inputer.getVoltage(user, EnumVoltage.ORDINARY);
 		start.forEach(prev == null ? null : prev.getPos(), (it, isEnd, next) -> {
 			info.getPath().add(it);
-			if (isEnd) {
-				for (Map.Entry<TileEntity, IEleOutputer> entry :
-						transfer.getOutputerAround(it).entrySet()) {
-					if (entry.getKey() == user) continue;
-					EleEnergy useInfo = entry.getValue().output(
-							entry.getKey(), Integer.MAX_VALUE, voltage, true);
-					if (useInfo.getEnergy() >= energy) {
-						info.setOuter(entry.getKey())
-							.setVoltage(useInfo.getVoltage());
-						return false;
-					}
-					if (useInfo.getEnergy() > 0) {
-						int k = inputer.getEnergy(user, useInfo.getEnergy());
-						if (k > 0 && (realUseInfo.get() == null ||
-								              realUseInfo.get().getEnergy() < k)) {
-							useInfo.setEnergy(k);
-							realUseInfo.set(useInfo);
-							realOut.set(entry.getKey());
-							realOutper.set(entry.getValue());
-						}
-					}
-				}
-				if (next != null) {
-					info.merge(EleWorker.getTransfer(next).findPath(next, user, inputer));
-				}
-				return false;
-			} else {
-				for (Map.Entry<TileEntity, IEleOutputer> entry :
-						transfer.getOutputerAround(it).entrySet()) {
-					if (entry.getKey() == user) continue;
-					EleEnergy useInfo = entry.getValue().output(
-							entry.getKey(), Integer.MAX_VALUE, voltage, true);
-					if (useInfo.getEnergy() >= energy) {
-						info.setOuter(entry.getKey())
-							.setVoltage(useInfo.getVoltage());
-						return false;
-					}
-					if (useInfo.getEnergy() > 0) {
-						int k = inputer.getEnergy(user, useInfo.getEnergy());
-						if (k > 0 && (realUseInfo.get() == null ||
-								              realUseInfo.get().getEnergy() < k)) {
-							useInfo.setEnergy(k);
-							realUseInfo.set(useInfo);
-							realOut.set(entry.getKey());
-							realOutper.set(entry.getValue());
-						}
-					}
-				}
-				return true;
-			}
+			return onceLoop(it, info, inputer, user, energy, voltage, realUseInfo, realOut, realOutper, next, isEnd);
 		});
 		if (info.getOuter() == null && realUseInfo.get() != null) {
 			info.setOuter(realOut.get())
 				.setVoltage(realUseInfo.get().getVoltage());
 		}
+		return info;
+	}
+	
+	/**
+	 * 一次循环中所需要做的事情
+	 * @param it 当前导线
+	 * @param info 已有的线路信息
+	 * @param inputer 用电器的托管
+	 * @param user 用电器的TE
+	 * @param energy 需要的能量
+	 * @param voltage 需要的电压
+	 * @param realUseInfo 能量信息
+	 * @param realOut  计算得到的发电机的TE
+	 * @param realOutper 计算得到的发电机的托管
+	 * @param next 下一根导线
+	 * @param isEnd 是否是最后一根
+	 * @return 是否继续循环，返回false表示直接中断
+	 */
+	private static boolean onceLoop(TileEntity it, PathInfo info,
+	                                IEleInputer inputer, TileEntity user, int energy, IVoltage voltage,
+	                                AtomicReference<EleEnergy> realUseInfo,
+	                                AtomicReference<TileEntity> realOut,
+	                                AtomicReference<IEleOutputer> realOutper,
+	                                TileEntity next, boolean isEnd) {
+		for (Map.Entry<TileEntity, IEleOutputer> entry :
+				EleWorker.getTransfer(it).getOutputerAround(it).entrySet()) {
+			if (entry.getKey() == user) continue;
+			EleEnergy useInfo = entry.getValue().output(
+					entry.getKey(), Integer.MAX_VALUE, voltage, true);
+			if (useInfo.getEnergy() >= energy) {
+				info.setOuter(entry.getKey())
+						.setVoltage(useInfo.getVoltage());
+				return false;
+			}
+			if (useInfo.getEnergy() > 0) {
+				int k = inputer.getEnergy(user, useInfo.getEnergy());
+				if (k > 0 && (realUseInfo.get() == null ||
+						              realUseInfo.get().getEnergy() < k)) {
+					useInfo.setEnergy(k);
+					realUseInfo.set(useInfo);
+					realOut.set(entry.getKey());
+					realOutper.set(entry.getValue());
+				}
+			}
+		}
+		if (isEnd) {
+			if (next != null) info.merge(EleWorker.getTransfer(next).findPath(next, user, inputer));
+			return false;
+		}
+		return true;
 	}
 	
 	/**
