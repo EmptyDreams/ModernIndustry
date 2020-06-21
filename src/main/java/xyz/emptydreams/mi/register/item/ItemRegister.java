@@ -16,7 +16,7 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.blocks.ore.OreBlock;
 import xyz.emptydreams.mi.items.tools.ToolRegister;
 import xyz.emptydreams.mi.register.AutoRegister;
-import xyz.emptydreams.mi.utils.MISysInfo;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 /**
  * @author EmptyDremas

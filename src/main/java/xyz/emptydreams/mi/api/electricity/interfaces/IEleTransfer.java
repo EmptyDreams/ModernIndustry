@@ -9,7 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.info.EleLineCache;
 import xyz.emptydreams.mi.api.electricity.info.PathInfo;
-import xyz.emptydreams.mi.utils.BlockPosUtil;
+import xyz.emptydreams.mi.api.utils.BlockPosUtil;
 
 /**
  * 电力传输工具的托管
@@ -122,7 +122,7 @@ public interface IEleTransfer extends IRegister {
 		Map<TileEntity, IEleOutputer> list = new HashMap<>(3);
 		BlockPosUtil.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
 			IEleOutputer out = EleWorker.getOutputer(te);
-			if (out != null && isLink(now, te) && out.isAllowable(te, BlockPosUtil.upsideDown(facing)))
+			if (out != null && isLink(now, te) && out.isAllowable(te, facing.getOpposite()))
 				list.put(te, out);
 		});
 		return list;

@@ -3,8 +3,8 @@ package xyz.emptydreams.mi.blocks.machine;
 import javax.annotation.Nullable;
 
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.electricity.src.block.TransferBlock;
-import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
+import xyz.emptydreams.mi.blocks.base.TransferBlock;
+import xyz.emptydreams.mi.blocks.te.EleSrcCable;
 import xyz.emptydreams.mi.register.AutoManager;
 
 /**

@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.electricity.src.tileentity;
+package xyz.emptydreams.mi.api.electricity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -6,8 +6,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -27,9 +25,9 @@ import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.EnergyRange;
 import xyz.emptydreams.mi.api.electricity.info.EnumEleState;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.api.event.EnergyEvent;
-import xyz.emptydreams.mi.api.utils.data.TEHelper;
+import xyz.emptydreams.mi.api.tools.BaseTileEntity;
+import xyz.emptydreams.mi.data.info.EnumVoltage;
 
 /**
  * 机器的父类，其中包含了机器的一些默认实现
@@ -38,7 +36,7 @@ import xyz.emptydreams.mi.api.utils.data.TEHelper;
  */
 @SuppressWarnings("unused")
 @Mod.EventBusSubscriber
-public abstract class EleTileEntity extends TileEntity implements TEHelper {
+public abstract class EleTileEntity extends BaseTileEntity {
 	
 	/** 空的能量 */
 	private static final EleEnergy EMPTY_ENERGY = new EleEnergy(0, EnumVoltage.NON);
@@ -118,18 +116,6 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 	public boolean link(BlockPos pos) { return linkedBlocks.add(pos); }
 	/** 取消链接指定方块 */
 	public boolean unLink(BlockPos pos) { return linkedBlocks.remove(pos); }
-	
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		TEHelper.super.writeToNBT(compound);
-		return super.writeToNBT(compound);
-	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound compound) {
-		super.readFromNBT(compound);
-		TEHelper.super.readFromNBT(compound);
-	}
 	
 	/**
 	 * 判断方块某个方向是否含有指定能力<br>
@@ -308,16 +294,6 @@ public abstract class EleTileEntity extends TileEntity implements TEHelper {
 			return linkedBlocks.contains(pos);
 		}
 	};
-	
-	@Override
-	public String toString() {
-		return "EleTileEntity{ pos=" + pos + '}';
-	}
-	
-	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return oldState.getBlock() != newSate.getBlock();
-	}
 	
 	/** 在每Tick结尾将类中临时数据清空 */
 	@SubscribeEvent

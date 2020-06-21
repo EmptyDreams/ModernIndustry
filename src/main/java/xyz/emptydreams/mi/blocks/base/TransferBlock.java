@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.electricity.src.block;
+package xyz.emptydreams.mi.blocks.base;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -26,9 +26,8 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
-import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
-import xyz.emptydreams.mi.blocks.base.TEBlockBase;
-import xyz.emptydreams.mi.utils.BlockPosUtil;
+import xyz.emptydreams.mi.blocks.te.EleSrcCable;
+import xyz.emptydreams.mi.api.utils.BlockPosUtil;
 
 /**
  * 普通电线

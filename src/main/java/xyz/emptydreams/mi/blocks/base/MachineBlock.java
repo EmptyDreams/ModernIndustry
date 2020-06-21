@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.electricity.src.block;
+package xyz.emptydreams.mi.blocks.base;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,7 +22,6 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
-import xyz.emptydreams.mi.blocks.base.TEBlockBase;
 import xyz.emptydreams.mi.blocks.common.CommonBlocks;
 import xyz.emptydreams.mi.items.common.SpannerItem;
 

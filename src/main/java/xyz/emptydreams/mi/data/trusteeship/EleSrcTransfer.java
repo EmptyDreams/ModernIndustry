@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.electricity.src.trusteeship;
+package xyz.emptydreams.mi.data.trusteeship;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -11,8 +11,8 @@ import xyz.emptydreams.mi.api.electricity.info.PathInfo;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.electricity.src.info.WireLinkInfo;
-import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
+import xyz.emptydreams.mi.blocks.te.EleSrcCable;
+import xyz.emptydreams.mi.data.info.WireLinkInfo;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 
 /**

@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.electricity.src.info;
+package xyz.emptydreams.mi.data.info;
 
 import java.util.function.BiConsumer;
 
@@ -13,7 +13,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.tools.property.IProperty;
-import xyz.emptydreams.mi.utils.BlockPosUtil;
+import xyz.emptydreams.mi.api.utils.BlockPosUtil;
 
 /**
  * 机器过载操作

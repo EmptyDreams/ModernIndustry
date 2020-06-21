@@ -10,13 +10,15 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.net.WaitList;
-import xyz.emptydreams.mi.utils.MISysInfo;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 /**
  * @author EmptyDreams
  * @version V1.0
  */
 public class MInput extends MComponent {
+	
+	public static final String RESOUCE_NAME = "slot";
 	
 	private Slot slot;
 	private int xOffset, yOffset;
@@ -67,7 +69,7 @@ public class MInput extends MComponent {
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {
-		g.drawImage(ImageData.INPUT, 0, 0, null);
+		g.drawImage(ImageData.getImage(RESOUCE_NAME, getWidth(), getHeight()), 0, 0, null);
 	}
 	
 	private int index = -1;

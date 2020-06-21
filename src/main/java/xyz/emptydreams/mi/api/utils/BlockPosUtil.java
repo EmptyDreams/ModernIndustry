@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.utils;
+package xyz.emptydreams.mi.api.utils;
 
 import java.util.function.BiConsumer;
 
@@ -9,14 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.electricity.src.block.TransferBlock;
-
-import static net.minecraft.util.EnumFacing.DOWN;
-import static net.minecraft.util.EnumFacing.EAST;
-import static net.minecraft.util.EnumFacing.NORTH;
-import static net.minecraft.util.EnumFacing.SOUTH;
-import static net.minecraft.util.EnumFacing.UP;
-import static net.minecraft.util.EnumFacing.WEST;
+import xyz.emptydreams.mi.blocks.base.TransferBlock;
 
 /**
  * 这个类种包含一些常用的工具类方法
@@ -98,18 +91,6 @@ public final class BlockPosUtil {
 			}
 		}
 		return ts;
-	}
-	
-	/** 获取反向的EnumFacing */
-	public static EnumFacing upsideDown(EnumFacing facing) {
-		switch (facing) {
-			case UP : return DOWN;
-			case DOWN : return UP;
-			case EAST : return WEST;
-			case WEST : return EAST;
-			case NORTH : return SOUTH;
-			default : return NORTH;
-		}
 	}
 	
 }

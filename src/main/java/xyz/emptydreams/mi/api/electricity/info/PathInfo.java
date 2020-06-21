@@ -11,7 +11,7 @@ import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
+import xyz.emptydreams.mi.data.info.EnumVoltage;
 
 /**
  * 存储线路计算信息.<br>

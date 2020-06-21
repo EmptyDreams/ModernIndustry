@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.electricity.src.info;
+package xyz.emptydreams.mi.data.info;
 
 /**
  * 存储电压过大时操作

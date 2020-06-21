@@ -19,8 +19,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.net.guinet.GUIMessage;
 import xyz.emptydreams.mi.api.net.guinet.IAutoGuiNetWork;
-import xyz.emptydreams.mi.utils.MISysInfo;
-import xyz.emptydreams.mi.utils.WorldUtil;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 /**
  * 所有客户端/服务端需要等待处理的消息存放在此处

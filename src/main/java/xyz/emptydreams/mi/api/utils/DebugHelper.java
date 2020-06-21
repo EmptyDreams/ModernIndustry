@@ -1,11 +1,13 @@
-package xyz.emptydreams.mi.utils;
+package xyz.emptydreams.mi.api.utils;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.Collection;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.blocks.te.EleSrcCable;
 
 import static xyz.emptydreams.mi.api.net.WaitList.checkNull;
 
@@ -16,6 +18,17 @@ import static xyz.emptydreams.mi.api.net.WaitList.checkNull;
  * @version V1.0
  */
 public final class DebugHelper {
+	
+	private final static JDialog jd = new JDialog((Dialog) null, "debug");
+	
+	public static void showImage(Image image) {
+		jd.setSize(256, 256);
+		jd.removeAll();
+		JLabel jl = new JLabel(new ImageIcon(image));
+		jd.add(jl);
+		jd.setVisible(true);
+		jd.repaint();
+	}
 	
 	/**
 	 * 打印客户端等待列表的信息

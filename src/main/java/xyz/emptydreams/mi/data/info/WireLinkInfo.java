@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.electricity.src.info;
+package xyz.emptydreams.mi.data.info;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -15,9 +15,9 @@ import xyz.emptydreams.mi.api.electricity.info.PathInfo;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.electricity.src.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.wrapper.Wrapper;
+import xyz.emptydreams.mi.blocks.te.EleSrcCable;
 
 /**
  * <p>存储一条电缆线路的缓存信息. 该类不支持离线存储数据，

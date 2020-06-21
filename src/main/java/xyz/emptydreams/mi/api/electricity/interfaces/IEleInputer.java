@@ -6,7 +6,7 @@ import java.util.Map;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
-import xyz.emptydreams.mi.utils.BlockPosUtil;
+import xyz.emptydreams.mi.api.utils.BlockPosUtil;
 
 /**
  * 可以输入电能的方块托管
@@ -75,7 +75,7 @@ public interface IEleInputer extends IRegister {
 		Map<TileEntity, IEleOutputer> list = new HashMap<>(3);
 		BlockPosUtil.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
 			IEleOutputer out = EleWorker.getOutputer(te);
-			if (out != null && isAllowable(now, facing) && out.isAllowable(te, BlockPosUtil.upsideDown(facing)))
+			if (out != null && isAllowable(now, facing) && out.isAllowable(te, facing.getOpposite()))
 				list.put(te, out);
 		});
 		return list;

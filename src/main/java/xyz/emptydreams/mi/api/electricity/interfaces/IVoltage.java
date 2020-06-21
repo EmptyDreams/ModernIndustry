@@ -2,11 +2,11 @@ package xyz.emptydreams.mi.api.electricity.interfaces;
 
 import javax.annotation.Nonnull;
 
-import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
+import xyz.emptydreams.mi.data.info.EnumVoltage;
 
 /**
  * 电压值.
- * 该类在读写后不保证依然是原对象，可能会替换为{@link xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage}或匿名内部类
+ * 该类在读写后不保证依然是原对象，可能会替换为{@link EnumVoltage}或匿名内部类
  * @author EmptyDreams
  * @version V1.0
  */

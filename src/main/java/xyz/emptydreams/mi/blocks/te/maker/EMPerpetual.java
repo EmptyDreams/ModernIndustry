@@ -1,9 +1,9 @@
 package xyz.emptydreams.mi.blocks.te.maker;
 
 import net.minecraft.util.EnumFacing;
+import xyz.emptydreams.mi.api.electricity.EleTileEntity;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
-import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
-import xyz.emptydreams.mi.api.electricity.src.tileentity.EleTileEntity;
+import xyz.emptydreams.mi.data.info.EnumVoltage;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 
 /**

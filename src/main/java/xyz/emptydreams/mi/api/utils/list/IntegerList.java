@@ -84,6 +84,7 @@ public class IntegerList implements List<Integer>, RandomAccess {
 		return Arrays.stream(values, 0, size).boxed().toArray(Integer[]::new);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T[] toArray(T[] a) {
 		if (!(a.getClass().isAssignableFrom(Integer[].class)))

@@ -1,0 +1,34 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "orientable",
+    "textures": {
+      "top": "mi:blocks/machine/shell",
+      "side": "mi:blocks/machine/shell",
+      "front": "mi:blocks/machine/muffle_furnace/src"
+    }
+  },
+  "variants": {
+    "inventory": [{ }],
+    "facing": {
+      "north": {},
+      "east": {
+        "y": 90
+      },
+      "west": {
+        "y": 270
+      },
+      "south": {
+        "y": 180
+      }
+    },
+    "working": {
+      "true": {
+        "textures": {
+          "front": "mi:blocks/machine/muffle_furnace/working"
+        }
+      },
+      "false": {}
+    }
+  }
+}

@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.gui.component;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,13 +10,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import xyz.emptydreams.mi.api.gui.MIFrame;
-import xyz.emptydreams.mi.utils.MISysInfo;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 /**
  * @author EmptyDreams
  * @version V1.0
  */
 public class MBackpack extends MComponent {
+	
+	public static final String RESOUCE_NAME = "backpack";
 	
 	public MBackpack() {
 		this(0, 0);
@@ -24,8 +27,8 @@ public class MBackpack extends MComponent {
 	public MBackpack(int x, int y) {
 		this.x = x;
 		this.y = y;
-		width = ImageData.BACKPACK.getWidth(null);
-		height = ImageData.BACKPACK.getHeight(null);
+		width = 162;
+		height = 76;
 	}
 	
 	@Override
@@ -45,7 +48,7 @@ public class MBackpack extends MComponent {
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {
-		g.drawImage(ImageData.BACKPACK, 0, 0, null);
+		g.drawImage(ImageData.getImage(RESOUCE_NAME), 0, 0, null);
 	}
 	
 	private int startIndex = -1;

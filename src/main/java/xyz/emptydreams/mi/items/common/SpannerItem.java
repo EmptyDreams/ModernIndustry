@@ -16,10 +16,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.electricity.src.block.MachineBlock;
 import xyz.emptydreams.mi.api.utils.timetask.TaskTable;
 import xyz.emptydreams.mi.api.utils.timetask.TimeTask;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
+import xyz.emptydreams.mi.blocks.base.MachineBlock;
 import xyz.emptydreams.mi.register.item.AutoItemRegister;
 
 /**

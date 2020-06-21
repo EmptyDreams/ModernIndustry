@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.utils;
+package xyz.emptydreams.mi.api.utils;
 
 import org.apache.logging.log4j.Logger;
 

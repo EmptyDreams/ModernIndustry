@@ -18,8 +18,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.IComponent;
 import xyz.emptydreams.mi.api.gui.component.ImageData;
+import xyz.emptydreams.mi.api.gui.component.MBackpack;
 import xyz.emptydreams.mi.api.gui.info.TitleModelEnum;
 import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 /**
  * 静态GUI，注意：该类只能用于静态GUI的显示
@@ -94,7 +96,7 @@ public class MIStaticFrameClient extends GuiContainer {
 		MITexture texture = maps.getOrDefault(RL, null);
 		if (texture == null) {
 			try {
-				texture = new MITexture(RL, false, true);
+				texture = new MITexture(RL);
 				texture.loadTexture(null);
 				maps.put(RL, texture);
 			} catch (Exception e) {
@@ -219,8 +221,10 @@ public class MIStaticFrameClient extends GuiContainer {
 	}
 	
 	public static void drawBackground(Graphics g, int width, int height) {
-		g.drawImage(ImageData.BACKGROUND.getScaledInstance(
-				width, height, Image.SCALE_DEFAULT), 0, 0, null);
+		if (WorldUtil.isClient(null)) {
+			g.drawImage(ImageData.getImage("background").getScaledInstance(
+					width, height, Image.SCALE_DEFAULT), 0, 0, null);
+		}
 	}
 	
 }

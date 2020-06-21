@@ -1,9 +1,10 @@
-package xyz.emptydreams.mi.api.electricity.src.tileentity;
+package xyz.emptydreams.mi.blocks.te;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import xyz.emptydreams.mi.api.electricity.EleTileEntity;
 
 /**
  * 带方向的机器方块

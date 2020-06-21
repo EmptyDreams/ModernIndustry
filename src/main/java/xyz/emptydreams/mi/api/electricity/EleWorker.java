@@ -14,9 +14,9 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
 import xyz.emptydreams.mi.api.net.WaitList;
-import xyz.emptydreams.mi.utils.MISysInfo;
+import xyz.emptydreams.mi.data.info.EnumVoltage;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 /**
  * 关于电力系统的工作都在这里进行

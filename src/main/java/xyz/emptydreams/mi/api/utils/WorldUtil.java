@@ -1,7 +1,9 @@
-package xyz.emptydreams.mi.utils;
+package xyz.emptydreams.mi.api.utils;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -12,8 +14,28 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
  */
 public final class WorldUtil {
 	
-	/** 当集合元素数目达到该值时使用多线程优化 */
-	public static final int PARALLEL_THRESHOLD = 20;
+	/**
+	 * 设置BlockState，当新旧state一致时不进行替换
+	 * @param world 所在世界
+	 * @param pos 方块坐标
+	 * @param newState 新的state
+	 */
+	public static void setBlockState(World world, BlockPos pos, IBlockState newState) {
+		setBlockState(world, pos, world.getBlockState(pos), newState);
+	}
+	
+	/**
+	 * 设置BlockState，当新旧state一致时不进行替换
+	 * @param world 所在世界
+	 * @param pos 方块坐标
+	 * @param oldState 旧的state
+	 * @param newState 新的state
+	 */
+	public static void setBlockState(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
+		if (oldState.equals(newState)) return;
+		world.setBlockState(pos, newState);
+		world.markBlockRangeForRenderUpdate(pos, pos);
+	}
 	
 	/**
 	 * 优化客户端/服务端判断<br>

@@ -20,7 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.common.util.INBTSerializable;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.utils.BlockPosUtil;
+import xyz.emptydreams.mi.api.utils.BlockPosUtil;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -48,7 +48,7 @@ public interface TEHelper {
 					} else {
 						name = storage.name();
 					}
-					DataType type = storage.type();
+					DataType type = storage.value();
 					if (type == DataType.AUTO) {
 						type = getDataType(field.getType());
 					}
@@ -85,7 +85,7 @@ public interface TEHelper {
 					} else {
 						name = storage.name();
 					}
-					DataType type = storage.type();
+					DataType type = storage.value();
 					if (type == DataType.AUTO) {
 						type = getDataType(field.getType());
 					}
@@ -120,7 +120,7 @@ public interface TEHelper {
 		String name() default "";
 	
 		/** 数据类型，手动指定数据类型可以减少运算量 */
-		DataType type() default DataType.AUTO;
+		DataType value() default DataType.AUTO;
 		
 	}
 	
@@ -188,7 +188,7 @@ public interface TEHelper {
 		String temp; DataType type;
 		for (int i = 0; i < size; ++i) {
 			temp = name + i;
-			type = DataType.values()[data.getInteger(temp + ":type")];
+			type = DataType.values()[data.getInteger(temp + ":value")];
 			co.add(_readElement(data, type, temp));
 		}
 	}
@@ -266,7 +266,7 @@ public interface TEHelper {
 				for (Object o : it) {
 					temp = name + k;
 					t = getDataType(o.getClass());
-					data.setInteger(temp + ":type", t.ordinal());
+					data.setInteger(temp + ":value", t.ordinal());
 					_wirte(o, t, data, temp, true);
 					++k;
 				}

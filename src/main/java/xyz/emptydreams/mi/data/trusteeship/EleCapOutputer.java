@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.electricity.src.trusteeship;
+package xyz.emptydreams.mi.data.trusteeship;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;

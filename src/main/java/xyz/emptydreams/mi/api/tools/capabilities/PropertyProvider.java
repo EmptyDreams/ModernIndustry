@@ -29,10 +29,10 @@ public class PropertyProvider implements ICapabilityProvider, INBTSerializable<N
 		return capability == PropertyCapability.PROPERTY;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
 	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-		//noinspection unchecked
 		return (T) property;
 	}
 	

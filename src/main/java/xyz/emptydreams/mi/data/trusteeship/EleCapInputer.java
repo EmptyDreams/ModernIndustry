@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.electricity.src.trusteeship;
+package xyz.emptydreams.mi.data.trusteeship;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -10,7 +10,7 @@ import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.EnumEleState;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
+import xyz.emptydreams.mi.data.info.EnumVoltage;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 
 /**

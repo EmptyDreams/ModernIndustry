@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.utils;
+package xyz.emptydreams.mi.api.utils;
 
 import javax.annotation.Nonnull;
 import java.util.LinkedList;

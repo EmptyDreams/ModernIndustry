@@ -36,7 +36,7 @@ import xyz.emptydreams.mi.register.item.AutoItemRegister;
 import xyz.emptydreams.mi.register.item.ItemRegister;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
-import xyz.emptydreams.mi.utils.MISysInfo;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 /**
  * 自动注册的总类，自动注册的功能由init()函数完成，该类的运行架构如下：

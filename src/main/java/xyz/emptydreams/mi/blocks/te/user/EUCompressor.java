@@ -19,19 +19,20 @@ import xyz.emptydreams.mi.api.craftguide.ICraftGuide;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.craftguide.ULCraftGuide;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
-import xyz.emptydreams.mi.api.electricity.src.info.BiggerVoltage;
-import xyz.emptydreams.mi.api.electricity.src.info.EnumBiggerVoltage;
-import xyz.emptydreams.mi.api.electricity.src.info.EnumVoltage;
-import xyz.emptydreams.mi.api.electricity.src.tileentity.FrontTileEntity;
-import xyz.emptydreams.mi.api.gui.component.MProgressBar;
+import xyz.emptydreams.mi.api.gui.component.CommonProgress;
+import xyz.emptydreams.mi.api.gui.component.IProgressBar;
 import xyz.emptydreams.mi.api.utils.data.DataType;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.machine.user.CompressorBlock;
+import xyz.emptydreams.mi.blocks.te.FrontTileEntity;
+import xyz.emptydreams.mi.data.info.BiggerVoltage;
+import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
+import xyz.emptydreams.mi.data.info.EnumVoltage;
 import xyz.emptydreams.mi.register.item.ItemRegister;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 
-import static xyz.emptydreams.mi.utils.ItemUtil.hasEmpty;
-import static xyz.emptydreams.mi.utils.ItemUtil.merge;
+import static xyz.emptydreams.mi.api.utils.ItemUtil.hasEmpty;
+import static xyz.emptydreams.mi.api.utils.ItemUtil.merge;
 
 /**
  * 压缩机的TileEntity，存储方块内物品、工作时间等内容
@@ -60,7 +61,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	 * 三个物品框<br>
 	 * 	0-上端，1-下端，2-输出
 	 */
-	@Storage(type = DataType.OTHER)
+	@Storage(value = DataType.OTHER)
 	private final ItemStackHandler item = new ItemStackHandler(3);
 	private final SlotMI up = new SlotMI(item, 0, 56, 17);
 	private final SlotMI down = new SlotMI(item, 1, 56, 53);
@@ -71,10 +72,10 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		}
 	};
 	/** 已工作时间 */
-	@Storage(type = DataType.INT)
+	@Storage(value = DataType.INT)
 	private int workingTime = 0;
 	/** 进度条 */
-	private final MProgressBar progressBar = new MProgressBar();
+	private final CommonProgress progressBar = new CommonProgress();
 	/** 每次工作消耗的电能 */
 	private int needEnergy = 15;
 	
@@ -132,7 +133,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		} else {
 			workingTime = 0;
 		}
-		progressBar.set(workingTime);
+		progressBar.setNow(workingTime);
 		updateShow(isWorking);
 		markDirty();
 	}
@@ -172,7 +173,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		//如果不存在，更新方块显示
 		if (isOutputFaild) workingTime = 0;
 		updateShow(false);
-		progressBar.set(workingTime);
+		progressBar.setNow(workingTime);
 		markDirty();
 	}
 	
@@ -193,7 +194,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		return hasEmpty(up.getStack(), down.getStack(), out.getStack());
 	}
 	/** 获取进度条 */
-	public MProgressBar getProgressBar() { return progressBar; }
+	public IProgressBar getProgressBar() { return progressBar; }
 	
 	/**
 	 * @param index 0-上端，1-下端，2-输出

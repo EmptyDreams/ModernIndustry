@@ -10,7 +10,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.net.WaitList;
-import xyz.emptydreams.mi.utils.MISysInfo;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 /**
  * @author EmptyDreams
@@ -67,7 +67,7 @@ public class MOutput extends MComponent {
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {
-		g.drawImage(ImageData.OUTPUT, 0, 0, null);
+		g.drawImage(ImageData.getImage(MInput.RESOUCE_NAME), 0, 0, null);
 	}
 	
 	private int index = -1;
