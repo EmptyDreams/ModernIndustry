@@ -46,8 +46,22 @@ public class RuntimeTexture extends AbstractTexture {
 		deleteGlTexture();
 		
 		BufferedImage image = ImageData.getImage(name);
-		TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), image, false, true);
+		int width = image.getWidth(null);
+		int height = image.getHeight(null);
+		int size = 256;
 		
+		BufferedImage real = new BufferedImage(size, size, 6);
+		real.getGraphics().drawImage(image, 0, 0, null);
+		
+		TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), real, false, true);
+		
+	}
+	
+	public static int getSize(int min) {
+		for (int i = 3; i < 32; ++i) {
+			if (1 << i >= min) return 1 << i;
+		}
+		return -1;
 	}
 	
 }
