@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.api.gui.component;
 
 import net.minecraft.client.renderer.GlStateManager;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
-import xyz.emptydreams.mi.api.utils.DebugHelper;
 
 /**
  * @author EmptyDreams
@@ -36,8 +35,8 @@ public interface IProgressBar extends IComponent {
 		return ((double) getNow()) / getMax();
 	}
 	
-	static void bindTexture() {
-		GlStateManager.bindTexture(RuntimeTexture.instance(RESOURCE_NAME).getGlTextureId());
+	static RuntimeTexture getTexture() {
+		return RuntimeTexture.instance(RESOURCE_NAME).bindTexture();
 	}
 	
 }

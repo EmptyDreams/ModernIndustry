@@ -4,20 +4,21 @@ import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.function.Consumer;
 
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
-import net.minecraft.util.ResourceLocation;
-import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.net.WaitList;
 
-import static xyz.emptydreams.mi.api.gui.component.IProgressBar.bindTexture;
+import static xyz.emptydreams.mi.api.gui.component.IProgressBar.getTexture;
 
 /**
  * 通用进度条
  * @author EmptyDreams
  * @version V1.0
  */
+@SuppressWarnings("unused")
 public class CommonProgress extends MComponent implements IProgressBar {
 	
 	private int max;
@@ -168,13 +169,10 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	}
 	
 	private class Node {
-		/** gui端口 */
-		final GuiContainer gui;
 		/** 图形在窗口中的坐标 */
 		final int x, y;
 		
 		Node(GuiContainer gui) {
-			this.gui = gui;
 			int offsetX = (gui.width - gui.getXSize()) / 2;
 			int offsetY = (gui.height - gui.getYSize()) / 2;
 			x = offsetX + getX();
@@ -188,41 +186,45 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	/** 绘制从下到上的图形 */
 	public static void paintUp(Node node) {
 		Style style = node.getThis().style;
-		GuiContainer gui = node.gui;
 		int height = (int) (style.getHeight() * node.getThis().getPer());
 		int y = node.y + style.getHeight() - height;
 		int tY = style.getY2() + style.getHeight() - height;
-		bindTexture();
-		gui.drawTexturedModalRect(node.x, y, style.getX2(), tY, style.getWidth(), height);
+		RuntimeTexture texture = getTexture();
+		//Gui.drawModalRectWithCustomSizedTexture(node.x, y, style.getX2(), tY,
+		//		style.getWidth(), height, texture.getTextureWidth(), texture.getTextureHeight());
+		texture.drawToFrame(node.x, y, style.getX2(), style.getY2(), style.getWidth(), height);
 	}
 	
 	/** 绘制从上到下的图形 */
 	public static void paintDown(Node node) {
 		Style style = node.getThis().style;
-		GuiContainer gui = node.gui;
 		int height = (int) (style.getHeight() * node.getThis().getPer());
-		bindTexture();
-		gui.drawTexturedModalRect(node.x, node.y, style.getX2(), style.getY2(), style.getWidth(), height);
+		RuntimeTexture texture = getTexture();
+		//Gui.drawModalRectWithCustomSizedTexture(node.x, node.y, style.getX2(), style.getY2(),
+		//		style.getWidth(), height, texture.getTextureWidth(), texture.getTextureHeight());
+		texture.drawToFrame(node.x, node.y, style.getX2(), style.getY2(), style.getWidth(), height);
 	}
 	
 	/** 绘制从右到左的图形 */
 	public static void paintLeft(Node node) {
 		Style style = node.getThis().style;
-		GuiContainer gui = node.gui;
 		int width = (int) (style.getWidth() * node.getThis().getPer());
 		int x = node.x + style.getWidth() - width;
 		int tX = style.getX2() + style.getWidth() - width;
-		bindTexture();
-		gui.drawTexturedModalRect(x, node.y, tX, style.getY2(), width, style.getHeight());
+		RuntimeTexture texture = getTexture();
+		//Gui.drawModalRectWithCustomSizedTexture(x, node.y, tX, style.getY2(),
+		//		width, style.getHeight(), texture.getTextureWidth(), texture.getTextureHeight());
+		texture.drawToFrame(x, node.y, tX, style.getY2(), width, style.getHeight());
 	}
 	
 	/** 绘制从左到右的图形 */
 	public static void paintRight(Node node) {
 		Style style = node.getThis().style;
-		GuiContainer gui = node.gui;
 		int width = (int) (style.getWidth() * node.getThis().getPer());
-		bindTexture();
-		gui.drawTexturedModalRect(node.x, node.y, style.getX2(), style.getY2(), width, style.getHeight());
+		RuntimeTexture texture = getTexture();
+		//Gui.drawModalRectWithCustomSizedTexture(node.x, node.y, style.getX2(), style.getY2(),
+		//		width, style.getHeight(), texture.getTextureWidth(), texture.getTextureHeight());
+		texture.drawToFrame(node.x, node.y, style.getX2(), style.getY2(), width, style.getHeight());
 	}
 	
 }

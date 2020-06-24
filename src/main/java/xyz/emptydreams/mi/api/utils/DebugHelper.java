@@ -19,17 +19,6 @@ import static xyz.emptydreams.mi.api.net.WaitList.checkNull;
  */
 public final class DebugHelper {
 	
-	private final static JDialog jd = new JDialog((Dialog) null, "debug");
-	
-	public static void showImage(Image image) {
-		jd.setSize(256, 256);
-		jd.removeAll();
-		JLabel jl = new JLabel(new ImageIcon(image));
-		jd.add(jl);
-		jd.setVisible(true);
-		jd.repaint();
-	}
-	
 	/**
 	 * 打印客户端等待列表的信息
 	 */
