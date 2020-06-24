@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.gui.component;
 
-import net.minecraft.client.renderer.GlStateManager;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 
 /**

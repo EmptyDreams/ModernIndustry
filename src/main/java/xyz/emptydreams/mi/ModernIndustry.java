@@ -12,12 +12,12 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.blocks.machine.WireManager;
 import xyz.emptydreams.mi.items.tools.ToolRegister;
 import xyz.emptydreams.mi.proxy.CommonProxy;
 import xyz.emptydreams.mi.register.block.BlockRegister;
 import xyz.emptydreams.mi.register.item.ItemRegister;
-import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 @Mod(modid = ModernIndustry.MODID, name = ModernIndustry.NAME, version = ModernIndustry.VERSION)
 public final class ModernIndustry {

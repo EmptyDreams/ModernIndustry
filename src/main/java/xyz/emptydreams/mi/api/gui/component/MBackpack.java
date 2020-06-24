@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.api.gui.component;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 

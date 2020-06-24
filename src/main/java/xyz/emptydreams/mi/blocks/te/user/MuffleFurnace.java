@@ -12,13 +12,13 @@ import xyz.emptydreams.mi.api.gui.component.CommonProgress.Front;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress.Style;
 import xyz.emptydreams.mi.api.gui.component.IProgressBar;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
-import xyz.emptydreams.mi.register.te.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
+import xyz.emptydreams.mi.register.te.AutoTileEntity;
 
 import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
 import static xyz.emptydreams.mi.api.utils.data.DataType.INT;
-import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
+import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 
 /**
  * 高温火炉

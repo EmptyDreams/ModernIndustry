@@ -25,6 +25,7 @@ import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.items.tools.ToolRegister;
 import xyz.emptydreams.mi.proxy.ClientProxy;
 import xyz.emptydreams.mi.proxy.CommonProxy;
@@ -36,7 +37,6 @@ import xyz.emptydreams.mi.register.item.AutoItemRegister;
 import xyz.emptydreams.mi.register.item.ItemRegister;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
-import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 /**
  * 自动注册的总类，自动注册的功能由init()函数完成，该类的运行架构如下：

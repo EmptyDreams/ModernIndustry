@@ -13,10 +13,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.blocks.ore.OreBlock;
 import xyz.emptydreams.mi.items.tools.ToolRegister;
 import xyz.emptydreams.mi.register.AutoRegister;
-import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 /**
  * @author EmptyDremas

@@ -1,7 +1,5 @@
 package xyz.emptydreams.mi.api.utils;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.Collection;
 
 import net.minecraftforge.fml.relauncher.Side;

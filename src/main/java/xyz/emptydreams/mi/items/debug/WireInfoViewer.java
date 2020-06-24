@@ -12,10 +12,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.blocks.base.TransferBlock;
 import xyz.emptydreams.mi.blocks.te.EleSrcCable;
 import xyz.emptydreams.mi.register.item.AutoItemRegister;
-import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 /**
  * 电线信息显示器，信息将会打印在客户端的后台中

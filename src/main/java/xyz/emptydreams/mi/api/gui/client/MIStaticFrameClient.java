@@ -4,10 +4,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.NoSuchElementException;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,13 +14,12 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.IComponent;
 import xyz.emptydreams.mi.api.gui.component.ImageData;
-import xyz.emptydreams.mi.api.gui.component.MBackpack;
 import xyz.emptydreams.mi.api.gui.info.TitleModelEnum;
 import xyz.emptydreams.mi.api.net.WaitList;
-import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 /**
  * 静态GUI，注意：该类只能用于静态GUI的显示
@@ -32,10 +30,13 @@ import xyz.emptydreams.mi.api.utils.WorldUtil;
 @SideOnly(Side.CLIENT)
 public class MIStaticFrameClient extends GuiContainer {
 	
+	/** GUI背景的资源名称 */
+	public static final String SOURCE_NAME = "background";
+	
 	/** 是否绘制默认背景颜色 */
 	private boolean isPaintBackGround = true;
 	/** 标题 */
-	private String title = "by minedreams";
+	private String title = null;
 	/** 标题位置 */
 	private Point titleLocation = null;
 	/** 标题模式 */
@@ -46,65 +47,46 @@ public class MIStaticFrameClient extends GuiContainer {
 	private final List<IComponent> components = new LinkedList<>();
 	/** 保存字符串组件 */
 	private final List<IComponent> stringComponents = new LinkedList<>();
-	/** 材质 */
-	private final ResourceLocation RL;
+	/** 资源名称 */
+	private String name;
 	
 	public MIStaticFrameClient(MIFrame inventorySlotsIn) {
 		super(inventorySlotsIn);
 		xSize = inventorySlotsIn.getWidth();
 		ySize = inventorySlotsIn.getHeight();
-		RL = new ResourceLocation(inventorySlotsIn.getModId(), inventorySlotsIn.getName());
 	}
 	
-	private static int getSize(int size) {
-		int k;
-		for (int i = 1; i <= 32; ++i) {
-			k = 1 << i;
-			if (k >= size) return k;
-		}
-		return -1;
-	}
-	
-	private boolean isInit = true;
-	private void init() {
-		if (isInit) {
-			isInit = false;
-			if (maps.containsKey(RL)) return;
-			
-			int size = getSize(Math.max(xSize, ySize));
-			BufferedImage image = new BufferedImage(size, size, 6);
+	/**
+	 * 初始化材质
+	 * @param isReset 当材质已存在时是否重置材质
+	 */
+	@SuppressWarnings("SameParameterValue")
+	private void init(boolean isReset) {
+		if (title == null) throw new NoSuchElementException("GUI的名称不存在！");
+		ResourceLocation location = new ResourceLocation(ModernIndustry.MODID, title);
+		name = location.toString();
+		RuntimeTexture texture = RuntimeTexture.getInstance(name);
+		if (texture == null || isReset) {
+			BufferedImage image = new BufferedImage(xSize, ySize, 6);
 			Graphics g = image.getGraphics();
 			drawBackground(g, xSize, ySize);
-			
 			for (IComponent component : components) {
 				component.paint(g.create(
 						component.getX(), component.getY(), component.getWidth(), component.getHeight()));
 			}
-			
-			try {
-				MITexture.writeFile(RL, image);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
+			RuntimeTexture.setInstance(name, image);
 		}
 	}
 	
-	private final Map<ResourceLocation, MITexture> maps = new HashMap<>();
-	/** 装载材质，切勿使用原版自带的方法装载 */
-	public boolean bindTexture() {
-		if (isInit) return false;
-		MITexture texture = maps.getOrDefault(RL, null);
+	/** 获取并装载材质，切勿使用原版自带的方法装载 */
+	public RuntimeTexture getTexture() {
+		RuntimeTexture texture = RuntimeTexture.getInstance(name);
 		if (texture == null) {
-			try {
-				texture = new MITexture(RL);
-				texture.loadTexture(null);
-				maps.put(RL, texture);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
+			init(false);
+			texture = RuntimeTexture.getInstance(name);
 		}
-		GlStateManager.bindTexture(texture.getGlTextureId());
-		return true;
+		texture.bindTexture();
+		return texture;
 	}
 	
 	/** 设置是否绘制默认背景 */
@@ -210,21 +192,17 @@ public class MIStaticFrameClient extends GuiContainer {
 	protected final void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F);
 		if (isPaintBackGround) drawDefaultBackground();
-		init();
-		if (bindTexture()) {
-			int offsetX = (this.width - this.xSize) / 2, offsetY = (this.height - this.ySize) / 2;
-			drawTexturedModalRect(offsetX, offsetY, 0, 0, xSize, ySize);
-			for (IComponent component : components) {
-				component.realTimePaint(this);
-			}
+		RuntimeTexture texture = getTexture();
+		int offsetX = (this.width - this.xSize) / 2, offsetY = (this.height - this.ySize) / 2;
+		//drawTexturedModalRect(offsetX, offsetY, 0, 0, xSize, ySize);
+		texture.drawToFrame(offsetX, offsetY, 0, 0, xSize, ySize);
+		for (IComponent component : components) {
+			component.realTimePaint(this);
 		}
 	}
 	
 	public static void drawBackground(Graphics g, int width, int height) {
-		if (WorldUtil.isClient(null)) {
-			g.drawImage(ImageData.getImage("background").getScaledInstance(
-					width, height, Image.SCALE_DEFAULT), 0, 0, null);
-		}
+		g.drawImage(ImageData.getImage(SOURCE_NAME, width, height), 0, 0, null);
 	}
 	
 }

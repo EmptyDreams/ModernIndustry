@@ -29,6 +29,7 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.net.NetworkRegister;
 import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.api.utils.BlockPosUtil;
 import xyz.emptydreams.mi.api.utils.data.DataType;
 import xyz.emptydreams.mi.api.utils.data.TEHelper;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
@@ -36,7 +37,6 @@ import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.data.info.IETForEach;
 import xyz.emptydreams.mi.data.info.WireLinkInfo;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
-import xyz.emptydreams.mi.api.utils.BlockPosUtil;
 
 /**
  * @author EmptyDreams

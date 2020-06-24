@@ -26,8 +26,8 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
-import xyz.emptydreams.mi.blocks.te.EleSrcCable;
 import xyz.emptydreams.mi.api.utils.BlockPosUtil;
+import xyz.emptydreams.mi.blocks.te.EleSrcCable;
 
 /**
  * 普通电线
