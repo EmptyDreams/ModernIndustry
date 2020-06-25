@@ -194,7 +194,6 @@ public class MIStaticFrameClient extends GuiContainer {
 		if (isPaintBackGround) drawDefaultBackground();
 		RuntimeTexture texture = getTexture();
 		int offsetX = (this.width - this.xSize) / 2, offsetY = (this.height - this.ySize) / 2;
-		//drawTexturedModalRect(offsetX, offsetY, 0, 0, xSize, ySize);
 		texture.drawToFrame(offsetX, offsetY, 0, 0, xSize, ySize);
 		for (IComponent component : components) {
 			component.realTimePaint(this);

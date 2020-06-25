@@ -189,8 +189,6 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		int y = node.y + style.getHeight() - height;
 		int tY = style.getY2() + style.getHeight() - height;
 		RuntimeTexture texture = getTexture();
-		//Gui.drawModalRectWithCustomSizedTexture(node.x, y, style.getX2(), tY,
-		//		style.getWidth(), height, texture.getTextureWidth(), texture.getTextureHeight());
 		texture.drawToFrame(node.x, y, style.getX2(), style.getY2(), style.getWidth(), height);
 	}
 	
@@ -199,8 +197,6 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		Style style = node.getThis().style;
 		int height = (int) (style.getHeight() * node.getThis().getPer());
 		RuntimeTexture texture = getTexture();
-		//Gui.drawModalRectWithCustomSizedTexture(node.x, node.y, style.getX2(), style.getY2(),
-		//		style.getWidth(), height, texture.getTextureWidth(), texture.getTextureHeight());
 		texture.drawToFrame(node.x, node.y, style.getX2(), style.getY2(), style.getWidth(), height);
 	}
 	
@@ -211,8 +207,6 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		int x = node.x + style.getWidth() - width;
 		int tX = style.getX2() + style.getWidth() - width;
 		RuntimeTexture texture = getTexture();
-		//Gui.drawModalRectWithCustomSizedTexture(x, node.y, tX, style.getY2(),
-		//		width, style.getHeight(), texture.getTextureWidth(), texture.getTextureHeight());
 		texture.drawToFrame(x, node.y, tX, style.getY2(), width, style.getHeight());
 	}
 	
@@ -221,8 +215,6 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		Style style = node.getThis().style;
 		int width = (int) (style.getWidth() * node.getThis().getPer());
 		RuntimeTexture texture = getTexture();
-		//Gui.drawModalRectWithCustomSizedTexture(node.x, node.y, style.getX2(), style.getY2(),
-		//		width, style.getHeight(), texture.getTextureWidth(), texture.getTextureHeight());
 		texture.drawToFrame(node.x, node.y, style.getX2(), style.getY2(), width, style.getHeight());
 	}
 	
