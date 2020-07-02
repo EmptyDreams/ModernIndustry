@@ -1,9 +1,5 @@
 package xyz.emptydreams.mi.api.electricity.info;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -11,7 +7,12 @@ import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 存储线路计算信息.<br>
@@ -27,7 +28,7 @@ import xyz.emptydreams.mi.data.info.EnumVoltage;
 public class PathInfo implements Comparable<PathInfo> {
 	
 	/** 运输过程损耗的能量 */
-	private int lossEnergy;
+	private int lossEnergy = -1;
 	/** 实际提供的电压 */
 	private IVoltage voltage;
 	/** 路径 */
@@ -107,14 +108,9 @@ public class PathInfo implements Comparable<PathInfo> {
 		return lossEnergy;
 	}
 	
-	public PathInfo setLossEnergy(int lossEnergy) {
-		this.lossEnergy = lossEnergy;
-		return this;
-	}
-	
 	public int getEnergy() {
 		return Math.min(inputer.getEnergy(getUser()),
-				outputer.output(getOuter(), Integer.MAX_VALUE, EnumVoltage.ORDINARY, true).getEnergy());
+				outputer.output(getOuter(), Integer.MAX_VALUE, EnumVoltage.D, true).getEnergy());
 	}
 	
 	public IVoltage getVoltage() {
@@ -166,18 +162,21 @@ public class PathInfo implements Comparable<PathInfo> {
 		this.inputer = inputer;
 	}
 	
-	/**
-	 * 重新计算线路
-	 */
+	/** 计算线路能量损耗 */
 	public void calculateLossEnergy() {
-		if (lossEnergy <= 0) {
+		if (lossEnergy == -1) {
 			int energy = getEnergy();
-			for (TileEntity entity : path)
-				lossEnergy += EleWorker.getTransfer(entity).getEnergyLoss(
-						entity, energy, voltage);
+			double result = path.stream().mapToDouble(it ->
+					EleWorker.getTransfer(it).getEnergyLoss(it, energy, voltage)).sum();
+			if (result > Integer.MAX_VALUE)
+				throw new IllegalArgumentException("线缆电能损耗量超过极限值[" + result + "]");
+			if (result % 1 != 0) lossEnergy = ((int) result) + 1;
+			else lossEnergy = (int) result;
+			MISysInfo.print(lossEnergy);
 		}
 	}
-	
+
+	/** 判断数据是否可用 */
 	public boolean isAvailable() {
 		TileEntity te = getOuter();
 		return te != null && EleWorker.isOutputer(te);

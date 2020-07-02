@@ -1,14 +1,14 @@
 package xyz.emptydreams.mi.api.gui.component;
 
-import javax.annotation.Nonnull;
-import java.awt.*;
-import java.util.List;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
+
+import javax.annotation.Nonnull;
+import java.awt.*;
+import java.util.List;
 
 /**
  * @author EmptyDreams
@@ -82,9 +82,33 @@ public interface IComponent {
 	 * @param listener 数据发送接口
 	 */
 	default void send(Container con, IContainerListener listener) { }
-	
+
+	/**
+	 * 接受服务端发送的信息
+	 * @param codeID 数据代号
+	 * @param data 数据信息
+	 * @return 若输入的数据代号符合要求则返回true，可以帮助客户端减少处理时长
+	 */
 	default boolean update(int codeID, int data) { return false; }
-	
+
+	/**
+	 * 获取传输数据用的codeID
+	 * @param code 私有ID，大于等于0
+	 * @return 共有ID
+	 */
+	default int getCodeID(int code) {
+		return getCode() + code;
+	}
+
+	/**
+	 * 通过共有获取私有ID
+	 * @param code 共有ID
+	 * @return 私有ID
+	 */
+	default int getPrivateCodeID(int code) {
+		return code - getCode();
+	}
+
 	int getCode();
 	
 	/** 设置code起点，该方法由GUI类调用 */

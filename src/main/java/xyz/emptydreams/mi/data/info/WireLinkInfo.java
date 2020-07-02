@@ -1,12 +1,5 @@
 package xyz.emptydreams.mi.data.info;
 
-import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
 import net.minecraft.tileentity.TileEntity;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
@@ -18,6 +11,13 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.wrapper.Wrapper;
 import xyz.emptydreams.mi.blocks.te.EleSrcCable;
+
+import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * <p>存储一条电缆线路的缓存信息. 该类不支持离线存储数据，
@@ -133,13 +133,13 @@ public final class WireLinkInfo extends EleLineCache {
 		info.setUser(user).setInputer(inputer);
 		Wrapper<EleEnergy> realUseInfo = new Wrapper<>();
 		Wrapper<TileEntity> realOut = new Wrapper<>();
-		Wrapper<IEleOutputer> realOutper = new Wrapper<>();
+		Wrapper<IEleOutputer> realOutputer = new Wrapper<>();
 		
 		int energy = inputer.getEnergy(user);
-		IVoltage voltage = inputer.getVoltage(user, EnumVoltage.ORDINARY);
+		IVoltage voltage = inputer.getVoltage(user, EnumVoltage.D);
 		start.forEach(prev == null ? null : prev.getPos(), (it, isEnd, next) -> {
 			info.getPath().add(it);
-			return onceLoop(it, info, inputer, user, energy, voltage, realUseInfo, realOut, realOutper, next, isEnd);
+			return onceLoop(it, info, inputer, user, energy, voltage, realUseInfo, realOut, realOutputer, next, isEnd);
 		});
 		if (info.getOuter() == null && realUseInfo.get() != null) {
 			info.setOuter(realOut.get())
@@ -158,7 +158,7 @@ public final class WireLinkInfo extends EleLineCache {
 	 * @param voltage 需要的电压
 	 * @param realUseInfo 能量信息
 	 * @param realOut  计算得到的发电机的TE
-	 * @param realOutper 计算得到的发电机的托管
+	 * @param realOutputer 计算得到的发电机的托管
 	 * @param next 下一根导线
 	 * @param isEnd 是否是最后一根
 	 * @return 是否继续循环，返回false表示直接中断
@@ -167,7 +167,7 @@ public final class WireLinkInfo extends EleLineCache {
 	                                IEleInputer inputer, TileEntity user, int energy, IVoltage voltage,
 	                                Wrapper<EleEnergy> realUseInfo,
 	                                Wrapper<TileEntity> realOut,
-	                                Wrapper<IEleOutputer> realOutper,
+	                                Wrapper<IEleOutputer> realOutputer,
 	                                TileEntity next, boolean isEnd) {
 		for (Map.Entry<TileEntity, IEleOutputer> entry :
 				EleWorker.getTransfer(it).getOutputerAround(it).entrySet()) {
@@ -186,7 +186,7 @@ public final class WireLinkInfo extends EleLineCache {
 					useInfo.setEnergy(k);
 					realUseInfo.set(useInfo);
 					realOut.set(entry.getKey());
-					realOutper.set(entry.getValue());
+					realOutputer.set(entry.getValue());
 				}
 			}
 		}

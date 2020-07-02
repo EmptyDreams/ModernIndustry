@@ -1,7 +1,5 @@
 package xyz.emptydreams.mi.gui;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -9,12 +7,14 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.GuiLoader;
 import xyz.emptydreams.mi.api.gui.IContainerCreater;
 import xyz.emptydreams.mi.api.gui.MIFrame;
+import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
 import xyz.emptydreams.mi.api.gui.component.MInput;
-import xyz.emptydreams.mi.api.gui.info.TitleModelEnum;
 import xyz.emptydreams.mi.blocks.te.user.MuffleFurnace;
 import xyz.emptydreams.mi.register.AutoLoader;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author EmptyDreams

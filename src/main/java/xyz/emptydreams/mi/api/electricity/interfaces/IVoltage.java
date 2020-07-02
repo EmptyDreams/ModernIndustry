@@ -1,8 +1,8 @@
 package xyz.emptydreams.mi.api.electricity.interfaces;
 
-import javax.annotation.Nonnull;
-
 import xyz.emptydreams.mi.data.info.EnumVoltage;
+
+import javax.annotation.Nonnull;
 
 /**
  * 电压值.
@@ -16,12 +16,12 @@ public interface IVoltage {
 	int getVoltage();
 	
 	/** 获取该电压的电力损耗指数 */
-	int getLossIndex();
+	double getLossIndex();
 	
 	default int compareTo(IVoltage o) {
 		int k = Integer.compare(getVoltage(), o.getVoltage());
 		if (k == 0) {
-			k = Integer.compare(o.getLossIndex(), getLossIndex());
+			k = Double.compare(o.getLossIndex(), getLossIndex());
 		}
 		return k;
 	}
@@ -44,7 +44,7 @@ public interface IVoltage {
 			}
 			
 			@Override
-			public int getLossIndex() {
+			public double getLossIndex() {
 				return loss;
 			}
 			

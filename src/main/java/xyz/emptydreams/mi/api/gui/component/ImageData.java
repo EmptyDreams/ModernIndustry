@@ -1,18 +1,18 @@
 package xyz.emptydreams.mi.api.gui.component;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.utils.wrapper.Wrapper;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 存储GUI相关的图像资源
@@ -70,10 +70,6 @@ public final class ImageData {
 		Node node = resourceInfo.getOrDefault(name, null);
 		if (node == null) return null;
 		return node.wrapper.get();
-	}
-	
-	public static void main(String[] args) {
-		//System.out.println(BACKGROUND);
 	}
 	
 	/** 存储资源 */

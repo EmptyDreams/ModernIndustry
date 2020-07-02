@@ -6,12 +6,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.utils.data.TEHelper;
+import xyz.emptydreams.mi.register.te.AutoTileEntity;
 
 /**
  * 基础TE，提供了一些默认的功能
  * @author EmptyDreams
  * @version V1.0
  */
+@AutoTileEntity("BASE_TILE_ENTITY")
 public class BaseTileEntity extends TileEntity implements TEHelper {
 	
 	/**

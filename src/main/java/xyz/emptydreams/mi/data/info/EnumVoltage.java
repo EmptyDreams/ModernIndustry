@@ -1,8 +1,8 @@
 package xyz.emptydreams.mi.data.info;
 
-import javax.annotation.Nonnull;
-
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
+
+import javax.annotation.Nonnull;
 
 /**
  * 存储支持的电压等级
@@ -11,25 +11,23 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
  * @version V1.0
  */
 public enum EnumVoltage implements IVoltage {
-	
-	EXTREMELY_HIGHER(5000, 5, 7),
-	HIGH(500, 20, 5),
-	HIGHER(200, 27, 4),
-	LOW(10, 50, 1),
-	LOWER(50, 45, 2),
-	NON(0, Integer.MAX_VALUE, 0),
-	ORDINARY(100, 34, 3),
-	SUPERCONDUCTOR(50000, 0, 8),
-	VERY_HIGH(2000, 10, 6);
+
+	NON(0, Double.MAX_VALUE),
+	A(10, 0.05),
+	B(50, 0.04),
+	C(100, 0.03),
+	D(200, 0.01),
+	E(500, 0.007),
+	F(1000, 0.005),
+	G(2000, 0.003),
+	H(5000, 0.001);
 	
 	private final int VOLTAGE;
-	private final int LOSS;
-	private final int INDEX;
+	private final double LOSS;
 	
-	EnumVoltage(int voltage, int loss, int index) {
+	EnumVoltage(int voltage, double loss) {
 		VOLTAGE = voltage;
 		LOSS = loss;
-		INDEX = index;
 	}
 	
 	@Override
@@ -38,7 +36,7 @@ public enum EnumVoltage implements IVoltage {
 	}
 	
 	@Override
-	public int getLossIndex() {
+	public double getLossIndex() {
 		return LOSS;
 	}
 	
@@ -46,20 +44,6 @@ public enum EnumVoltage implements IVoltage {
 	@Override
 	public IVoltage copy() {
 		return this;
-	}
-	
-	public int getIndex() {
-		return INDEX;
-	}
-	
-	/**
-	 * 根据下标获取值
-	 * @param index 下标
-	 *
-	 * @throws IndexOutOfBoundsException 如果 index 超出范围
-	 */
-	public static EnumVoltage valueOf(int index) {
-		return values()[index];
 	}
 	
 }

@@ -1,12 +1,8 @@
 package xyz.emptydreams.mi.blocks.machine.user;
 
-import javax.annotation.Nullable;
-import java.util.Random;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -23,9 +19,11 @@ import xyz.emptydreams.mi.blocks.te.user.EUCompressor;
 import xyz.emptydreams.mi.gui.CompressorFrame;
 import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 
-import static xyz.emptydreams.mi.blocks.base.MIProperty.EMPTY;
-import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
-import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Random;
+
+import static xyz.emptydreams.mi.blocks.base.MIProperty.*;
 
 /**
  * 压缩机
@@ -37,13 +35,14 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 public class CompressorBlock extends MachineBlock {
 	
 	/** 方块内部名称 */
+	@SuppressWarnings("SpellCheckingInspection")
 	public static final String NAME = "compressor_tblock";
 	
 	private final Item ITEM;
 	
 	public CompressorBlock() {
 		super(Material.ROCK);
-		setHarvestLevel("pickaxe", 1);
+		//setHarvestLevel("pickaxe", 1);
 		setHardness(3.5F);
 		setCreativeTab(ModernIndustry.TAB_BLOCK);
 		ITEM = new ItemBlock(this).setRegistryName(ModernIndustry.MODID, NAME);
@@ -52,6 +51,7 @@ public class CompressorBlock extends MachineBlock {
 				FACING, EnumFacing.EAST).withProperty(WORKING, false).withProperty(EMPTY, false));
 	}
 	
+	@Nonnull
 	@Override
 	public Item getBlockItem() {
 		return ITEM;
@@ -68,34 +68,6 @@ public class CompressorBlock extends MachineBlock {
 		return true;
 	}
 	
-	@Override
-	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
-		if (!worldIn.isRemote) {
-		    IBlockState iblockstate = worldIn.getBlockState(pos.north());
-		    IBlockState iblockstate1 = worldIn.getBlockState(pos.south());
-		    IBlockState iblockstate2 = worldIn.getBlockState(pos.west());
-		    IBlockState iblockstate3 = worldIn.getBlockState(pos.east());
-		    EnumFacing enumfacing = state.getValue(FACING);
-		    if (enumfacing == EnumFacing.NORTH &&
-				        iblockstate.isFullBlock() && !iblockstate1.isFullBlock()) {
-		        enumfacing = EnumFacing.SOUTH;
-		    } else if (enumfacing == EnumFacing.SOUTH &&
-				        iblockstate1.isFullBlock() && !iblockstate.isFullBlock()) {
-		        enumfacing = EnumFacing.NORTH;
-		    } else if (enumfacing == EnumFacing.WEST &&
-				        iblockstate2.isFullBlock() && !iblockstate3.isFullBlock()) {
-		        enumfacing = EnumFacing.EAST;
-		    } else if (enumfacing == EnumFacing.EAST &&
-				        iblockstate3.isFullBlock() && !iblockstate2.isFullBlock()) {
-		        enumfacing = EnumFacing.WEST;
-		    }
-		    
-		    worldIn.setBlockState(pos, state.withProperty(FACING, enumfacing)
-		                                      .withProperty(WORKING, false)
-		                                      .withProperty(EMPTY, false), 2);
-		}
-	}
-	
 	@Nullable
 	@Override
 	public NonNullList<ItemStack> getItemDrops(World world, BlockPos pos) {
@@ -104,13 +76,6 @@ public class CompressorBlock extends MachineBlock {
 		ItemStack is2 = nbt.getSolt(1).getStack();
 		ItemStack is3 = nbt.getSolt(2).getStack();
 		return NonNullList.from(is, is2, is3);
-	}
-	
-	@Override
-	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing,
-			float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite())
-				.withProperty(WORKING, (meta & 0b0100) == 0b0100).withProperty(EMPTY, (meta & 0b1000) == 0b1000);
 	}
 	
 	@Override
@@ -127,12 +92,12 @@ public class CompressorBlock extends MachineBlock {
 	public IBlockState getStateFromMeta(int meta) {
 		EnumFacing enumfacing = EnumFacing.getHorizontal(meta & 0b0011);
 	    boolean burning = (meta & 0b0100) == 0b0100;
-	    boolean isEmtpy = (meta & 0b1000) == 0b1000;
+	    boolean isEmpty = (meta & 0b1000) == 0b1000;
 	    if (enumfacing.getAxis() == EnumFacing.Axis.Y) {
 	        enumfacing = EnumFacing.NORTH;
 	    }
 	    return getDefaultState().withProperty(FACING, enumfacing)
-	    		.withProperty(WORKING, burning).withProperty(EMPTY, isEmtpy);
+	    		.withProperty(WORKING, burning).withProperty(EMPTY, isEmpty);
 	}
 	
 	/** 

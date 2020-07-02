@@ -16,39 +16,46 @@ import xyz.emptydreams.mi.api.electricity.clock.NonCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.IProgressBar;
 import xyz.emptydreams.mi.api.gui.component.StringComponent;
-import xyz.emptydreams.mi.api.utils.data.DataType;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.te.FrontTileEntity;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
+
+import static xyz.emptydreams.mi.api.utils.data.DataType.INT;
+import static xyz.emptydreams.mi.api.utils.data.DataType.OTHER;
 
 /**
  * 火力发电机的TE
  * @author EmptyDreams
  * @version V1.0
  */
-@AutoTileEntity("front_tileentity")
+@AutoTileEntity("fire_power")
 public class EMFirePower extends FrontTileEntity implements ITickable {
-	
+
+	/** 工作进度条 */
 	private final CommonProgress progressBar = new CommonProgress();
+	/** 能量进度条 */
 	private final CommonProgress energyPro = new CommonProgress();
+	/** 能量数据显示 */
 	private final StringComponent stringShower = new StringComponent() {
 		@Override
 		public void send(Container con, IContainerListener listener) {
-			listener.sendWindowProperty(con, getCode(), getNowEnergy());
+			listener.sendWindowProperty(con, getCodeID(0), getNowEnergy());
 		}
 		
 		@Override
 		public boolean update(int codeID, int data) {
-			if (codeID == getCode()) {
+			if (codeID == getCodeID(0)) {
 				((EMFirePower) world.getTileEntity(pos)).setNowEnergy(data);
 				return true;
 			}
 			return false;
 		}
 	};
-	@Storage(value = DataType.OTHER)
-	private final ItemStackHandler item = new ItemStackHandler(3);
+	/** 输入/输出框 */
+	@Storage(OTHER) private final ItemStackHandler item = new ItemStackHandler(2);
+	/** 输入框 */
 	private final SlotItemHandler in = new SlotItemHandler(item, 0, 52, 29) {
 		@Override
 		public boolean isItemValid(ItemStack stack) {
@@ -60,6 +67,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 			return 64;
 		}
 	};
+	/** 输出框 */
 	private final SlotItemHandler out = new SlotItemHandler(item, 1, 106, 29) {
 		@Override
 		public boolean isItemValid(ItemStack stack) {
@@ -67,12 +75,12 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 		}
 	};
 	/** 已经燃烧的时长 */
-	private int burningTime = 0;
+	@Storage(INT) private int burningTime = 0;
 	/** 最大燃烧时长 */
-	private int maxTime = 0;
+	@Storage(INT) private int maxTime = 0;
 	
 	public EMFirePower() {
-		setExtractRange(1, 120, EnumVoltage.LOWER, EnumVoltage.HIGH);
+		setExtractRange(1, 120, EnumVoltage.C, EnumVoltage.E);
 		setExtract(true);
 		setReceive(false);
 		setMaxEnergy(10000);
@@ -82,49 +90,58 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 		energyPro.setStyle(CommonProgress.Style.STRIPE);
 		energyPro.setMax(getMaxEnergy());
 	}
-	
-	@SideOnly(Side.CLIENT) private int cache = -1;
+
 	@Override
 	public void update() {
 		if (world.isRemote) {
-			if (cache != getNowEnergy()) {
-				cache = getNowEnergy();
-				stringShower.setString(cache + " / " + getMaxEnergy());
-				stringShower.setLocation(
-						(176 - Minecraft.getMinecraft().fontRenderer
-								       .getStringWidth(stringShower.getString())) / 2, 56);
-			}
+			updateStringShower();
 			return;
 		}
-		if (maxTime <= 0) {
-			ItemStack stack = in.getStack();
-			IBlockState old = world.getBlockState(pos);
-			IBlockState state;
-			if (!stack.isEmpty() && getNowEnergy() < getMaxEnergy() / 10 * 5) {
-				maxTime = TileEntityFurnace.getItemBurnTime(stack);
-				stack.shrink(1);
-				state = old.withProperty(MIProperty.WORKING, true);
-			} else {
-				maxTime = 0;
-				state = old.withProperty(MIProperty.WORKING, false);
-			}
-			if (!old.equals(state)) {
-				world.setBlockState(pos, state);
-				world.markBlockRangeForRenderUpdate(pos, pos);
-			}
-			progressBar.setMax(maxTime);
-		} else {
-			if ((burningTime += 15) >= maxTime) {
-				maxTime = burningTime = 0;
-			}
-			progressBar.setNow(burningTime);
-			setNowEnergy(getNowEnergy() + 60);
-		}
+		if (maxTime <= 0) burnItem();
+		else updateBurningTime();
 		
 		energyPro.setNow(getNowEnergy());
-		stringShower.setString(getNowEnergy() + " / " + getMaxEnergy());
+		//stringShower.setString(getNowEnergy() + " / " + getMaxEnergy());
 	}
-	
+
+	/** 燃烧输入框中的物品 */
+	private void burnItem() {
+		ItemStack stack = in.getStack();
+		IBlockState old = world.getBlockState(pos);
+		IBlockState state;
+		if (!stack.isEmpty() && getNowEnergy() < getMaxEnergy() / 10 * 5) {
+			maxTime = TileEntityFurnace.getItemBurnTime(stack);
+			stack.shrink(1);
+			state = old.withProperty(MIProperty.WORKING, true);
+		} else {
+			state = old.withProperty(MIProperty.WORKING, false);
+		}
+		WorldUtil.setBlockState(world, pos, old, state);
+		progressBar.setMax(maxTime);
+	}
+
+	/** 更新燃烧时间 */
+	private void updateBurningTime() {
+		if ((burningTime += 15) >= maxTime) {
+			maxTime = burningTime = 0;
+		}
+		progressBar.setNow(burningTime);
+		setNowEnergy(getNowEnergy() + 60);
+	}
+
+	@SideOnly(Side.CLIENT) private int cache = -1;
+	/** 更新客户端进度条下方的文字显示 */
+	@SideOnly(Side.CLIENT)
+	private void updateStringShower() {
+		if (cache != getNowEnergy()) {
+			cache = getNowEnergy();
+			stringShower.setString(cache + " / " + getMaxEnergy());
+			stringShower.setLocation(
+					(176 - Minecraft.getMinecraft().fontRenderer
+							.getStringWidth(stringShower.getString())) / 2, 56);
+		}
+	}
+
 	public StringComponent getStringShower() { return stringShower; }
 	public IProgressBar getEnergyProBar() { return energyPro; }
 	public IProgressBar getProgressBar() { return progressBar; }

@@ -1,15 +1,16 @@
 package xyz.emptydreams.mi.blocks.ore;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.blocks.base.BlockBase;
+
+import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * @author EmptyDremas
@@ -36,6 +37,7 @@ public class OreBlock extends BlockBase {
 		LIST.put(this, output);
 	}
 	
+	@Nonnull
 	@Override
 	public Item getBlockItem() {
 		return ITEM;

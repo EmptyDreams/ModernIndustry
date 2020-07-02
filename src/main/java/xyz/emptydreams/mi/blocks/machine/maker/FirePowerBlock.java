@@ -1,11 +1,8 @@
 package xyz.emptydreams.mi.blocks.machine.maker;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -22,6 +19,9 @@ import xyz.emptydreams.mi.blocks.common.CommonBlocks;
 import xyz.emptydreams.mi.blocks.te.maker.EMFirePower;
 import xyz.emptydreams.mi.gui.FirePowerFrame;
 import xyz.emptydreams.mi.register.block.AutoBlockRegister;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
@@ -45,13 +45,6 @@ public class FirePowerBlock extends MachineBlock {
 		setDefaultState(blockState.getBaseState()
 				                .withProperty(FACING, EnumFacing.NORTH).withProperty(WORKING, false));
 		ITEM = new ItemBlock(this).setRegistryName(ModernIndustry.MODID, "fire_power");
-	}
-	
-	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state,
-	                            EntityLivingBase placer, ItemStack stack) {
-		state = state.withProperty(FACING, placer.getHorizontalFacing().getOpposite());
-		worldIn.setBlockState(pos, state);
 	}
 	
 	@Override
@@ -100,6 +93,7 @@ public class FirePowerBlock extends MachineBlock {
 		return new EMFirePower();
 	}
 	
+	@Nonnull
 	@Override
 	public Item getBlockItem() {
 		return ITEM;

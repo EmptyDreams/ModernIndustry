@@ -55,7 +55,7 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 		}
 	};
 	
-	private int maxWorkingTime = 0;
+	@Storage(INT) private int maxWorkingTime = 0;
 	@Storage(INT) private int workingTime = 0;
 	@Storage(INT) private int maxBurningTime = 0;
 	@Storage(INT) private int burningTime = 0;

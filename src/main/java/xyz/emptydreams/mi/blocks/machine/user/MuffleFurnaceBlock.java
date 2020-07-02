@@ -1,8 +1,5 @@
 package xyz.emptydreams.mi.blocks.machine.user;
 
-import javax.annotation.Nullable;
-import java.util.Random;
-
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
@@ -21,7 +18,12 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.blocks.base.TEBlockBase;
 import xyz.emptydreams.mi.blocks.te.user.MuffleFurnace;
 import xyz.emptydreams.mi.gui.MuffleFuranceFrame;
+import xyz.emptydreams.mi.items.common.SpannerItem;
 import xyz.emptydreams.mi.register.block.AutoBlockRegister;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Random;
 
 import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
@@ -34,7 +36,7 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 @AutoBlockRegister(registryName = "muffle_furnace")
 public class MuffleFurnaceBlock extends TEBlockBase {
 	
-	private final Item ITEM = new ItemBlock(this).setRegistryName(ModernIndustry.MODID, "muffle_furnace");
+	private final Item ITEM = new ItemBlock(this);
 	
 	public MuffleFurnaceBlock() {
 		super(Material.ROCK);
@@ -43,7 +45,8 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 				                .withProperty(WORKING, false));
 		setCreativeTab(ModernIndustry.TAB_BLOCK);
 		setSoundType(SoundType.STONE);
-		
+		setHardness(3.5F);
+		setHarvestLevel("pickaxe", 1);
 	}
 	
 	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
@@ -55,6 +58,7 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
+		if (playerIn.getHeldItem(hand).getItem() == SpannerItem.getInstance()) return false;
 		if (!worldIn.isRemote) {
 			playerIn.openGui(ModernIndustry.instance,
 					MuffleFuranceFrame.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
@@ -102,6 +106,7 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 		return new MuffleFurnace();
 	}
 	
+	@Nonnull
 	@Override
 	public Item getBlockItem() {
 		return ITEM;

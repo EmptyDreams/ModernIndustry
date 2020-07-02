@@ -1,8 +1,5 @@
 package xyz.emptydreams.mi.blocks.te.user;
 
-import java.util.List;
-import java.util.Optional;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -30,6 +27,9 @@ import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
 import xyz.emptydreams.mi.register.item.ItemRegister;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
+
+import java.util.List;
+import java.util.Optional;
 
 import static xyz.emptydreams.mi.api.utils.ItemUtil.hasEmpty;
 import static xyz.emptydreams.mi.api.utils.ItemUtil.merge;
@@ -77,10 +77,10 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	/** 进度条 */
 	private final CommonProgress progressBar = new CommonProgress();
 	/** 每次工作消耗的电能 */
-	private int needEnergy = 15;
+	private int needEnergy = 10;
 	
 	public EUCompressor() {
-		setReciveRange(1, 50, EnumVoltage.LOWER, EnumVoltage.ORDINARY);
+		setReciveRange(1, 50, EnumVoltage.C, EnumVoltage.D);
 		OrdinaryCounter counter = new OrdinaryCounter(100);
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
@@ -119,15 +119,13 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		ItemStack nowOut = out.getStack();
 		//检查输入物品数目是否足够
 		if (item.insertItem(2, outStack, true).isEmpty()) {
-			if (nowOut.getCount() == 0) out.putStack(ItemStack.EMPTY);
 			isWorking = true;
 			++workingTime;
 			if (workingTime >= getNeedTime()) {
 				workingTime = 0;
 				item.extractItem(0, 1, false);
 				item.extractItem(1, 1, false);
-				out.putStack(new ItemStack(outStack.getItem(),
-						outStack.getCount() + this.out.getStack().getCount()));
+				nowOut.grow(1);
 			}
 			shrinkEnergy(getNeedEnergy());
 		} else {

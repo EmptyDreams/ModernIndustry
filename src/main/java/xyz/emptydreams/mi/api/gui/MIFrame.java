@@ -1,11 +1,5 @@
 package xyz.emptydreams.mi.api.gui;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.awt.*;
-import java.util.LinkedList;
-import java.util.List;
-
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -17,8 +11,13 @@ import net.minecraftforge.fml.common.Mod;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.component.IComponent;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
-import xyz.emptydreams.mi.api.gui.info.TitleModelEnum;
 import xyz.emptydreams.mi.api.net.WaitList;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.awt.*;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * MI版本窗体，通过该类可以便捷的创建和控制UI界面

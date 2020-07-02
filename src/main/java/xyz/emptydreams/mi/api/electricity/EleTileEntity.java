@@ -1,11 +1,5 @@
 package xyz.emptydreams.mi.api.electricity;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -28,6 +22,13 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.event.EnergyEvent;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
+import xyz.emptydreams.mi.register.te.AutoTileEntity;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 机器的父类，其中包含了机器的一些默认实现
@@ -36,6 +37,7 @@ import xyz.emptydreams.mi.data.info.EnumVoltage;
  */
 @SuppressWarnings("unused")
 @Mod.EventBusSubscriber
+@AutoTileEntity("ELE_TILE_ENTITY")
 public abstract class EleTileEntity extends BaseTileEntity {
 	
 	/** 空的能量 */
@@ -151,15 +153,28 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	/** 获取输出能量范围 */
 	public EnergyRange getExtractRange() { return extractRange.copy(); }
 	/** 获取输入能量范围 */
-	public EnergyRange getReciveRange() { return reciveRange.copy(); }
+	public EnergyRange getReceiveRange() { return reciveRange.copy(); }
 	/** 获取现在的能量 */
 	public int getNowEnergy() { return nowEnergy; }
 	/** 设置现在的能量 */
 	public void setNowEnergy(int nowEnergy) { this.nowEnergy = Math.min(Math.max(nowEnergy, 0), getMaxEnergy()); }
 	/** 增加能量 */
-	public void growEnergy(int grow) { setNowEnergy(getNowEnergy() + grow); }
-	/** 减少能量 */
-	public void shrinkEnergy(int shrink) { growEnergy(-shrink); }
+	public int growEnergy(int grow) {
+		int value = getNowEnergy() + grow;
+		setNowEnergy(value);
+		return value - getNowEnergy();
+	}
+	/**
+	 * 减少能量
+	 * @param shrink 要减少的数量
+	 * @return 减少操作是否成功，若剩余能量小于shrink则返回false
+	 */
+	public boolean shrinkEnergy(int shrink) {
+		int value = getNowEnergy() - shrink;
+		if (value < 0) return false;
+		setNowEnergy(value);
+		return true;
+	}
 	/** 获取现在输出的电压 */
 	public IVoltage getExVoltage() { return exVoltage; }
 	/** 设置现在输出的电压 */
@@ -228,7 +243,7 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		
 		@Override
 		public IVoltage getVoltage(EnumEleState state, IVoltage voltage) {
-			return state == EnumEleState.IN ? getReciveRange().getOptimalVoltage(voltage) :
+			return state == EnumEleState.IN ? getReceiveRange().getOptimalVoltage(voltage) :
 					       getExtractRange().getOptimalVoltage(voltage);
 		}
 		

@@ -1,0 +1,16 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mi:machine",
+    "textures": { "front": "template:src" }
+  },
+  "variants": {
+    "inventory": [{ }],
+    "facing": {
+      "north": { },
+      "east": { "y": 90 },
+      "west": { "y": 270 },
+      "south": { "y": 180 }
+    }
+  }
+}

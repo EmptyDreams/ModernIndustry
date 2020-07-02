@@ -1,15 +1,15 @@
 package xyz.emptydreams.mi.api.electricity.interfaces;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.tileentity.TileEntity;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.info.EleLineCache;
 import xyz.emptydreams.mi.api.electricity.info.PathInfo;
 import xyz.emptydreams.mi.api.utils.BlockPosUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 电力传输工具的托管
@@ -65,7 +65,7 @@ public interface IEleTransfer extends IRegister {
 	boolean link(TileEntity now, TileEntity target);
 	
 	/**
-	 * 判断是否已经连接指定方块. 方法传入的tgte可能在托管名单之外，
+	 * 判断是否已经连接指定方块. 方法传入的target可能在托管名单之外，
 	 * 若自己的线缆方块支持连接其它线缆方块可增强模组的兼容性。
 	 * @param now 当前方块
 	 * @param target 指定方块
@@ -73,12 +73,12 @@ public interface IEleTransfer extends IRegister {
 	boolean isLink(TileEntity now, TileEntity target);
 	
 	/**
-	 * 判断能否连接指定方块. 方法传入的tgte可能在托管名单之外，
+	 * 判断能否连接指定方块. 方法传入的target可能在托管名单之外，
 	 * 若自己的线缆方块支持连接其它线缆方块可增强模组的兼容性。
 	 * @param now 当前方块
-	 * @param tgte 指定方块的TE
+	 * @param target 指定方块的TE
 	 */
-	boolean canLink(TileEntity now, TileEntity tgte);
+	boolean canLink(TileEntity now, TileEntity target);
 	
 	/**
 	 * 获取指定电缆的电能损耗值
@@ -87,7 +87,7 @@ public interface IEleTransfer extends IRegister {
 	 * @param voltage 电压
 	 * @return 损耗的能量
 	 */
-	int getEnergyLoss(TileEntity now, int energy, IVoltage voltage);
+	double getEnergyLoss(TileEntity now, int energy, IVoltage voltage);
 	
 	/**
 	 * 获取当前线缆所在的线路的缓存信息.

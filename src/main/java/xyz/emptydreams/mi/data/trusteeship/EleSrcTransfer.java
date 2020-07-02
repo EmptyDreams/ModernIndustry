@@ -1,11 +1,9 @@
 package xyz.emptydreams.mi.data.trusteeship;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.EleLineCache;
 import xyz.emptydreams.mi.api.electricity.info.PathInfo;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
@@ -14,6 +12,9 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.blocks.te.EleSrcCable;
 import xyz.emptydreams.mi.data.info.WireLinkInfo;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author EmptyDreams
@@ -71,13 +72,13 @@ public class EleSrcTransfer implements IEleTransfer {
 	}
 	
 	@Override
-	public boolean canLink(TileEntity now, TileEntity tgte) {
-		return ((EleSrcCable) now).canLink(tgte);
+	public boolean canLink(TileEntity now, TileEntity target) {
+		return ((EleSrcCable) now).canLink(target);
 	}
 	
 	@Override
-	public int getEnergyLoss(TileEntity now, int energy, IVoltage voltage) {
-		return ((EleSrcCable) now).getLoss(voltage);
+	public double getEnergyLoss(TileEntity now, int energy, IVoltage voltage) {
+		return ((EleSrcCable) now).getLoss(new EleEnergy(energy, voltage));
 	}
 	
 	@Nullable

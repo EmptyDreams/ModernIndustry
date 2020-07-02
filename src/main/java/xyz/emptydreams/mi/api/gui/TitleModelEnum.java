@@ -1,6 +1,7 @@
-package xyz.emptydreams.mi.api.gui.info;
+package xyz.emptydreams.mi.api.gui;
 
 /**
+ * 标题样式
  * @author EmptyDreams
  * @version V1.0
  */

@@ -1,9 +1,5 @@
 package xyz.emptydreams.mi.blocks.base;
 
-import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -28,6 +24,10 @@ import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.api.utils.BlockPosUtil;
 import xyz.emptydreams.mi.blocks.te.EleSrcCable;
+
+import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.Random;
 
 /**
  * 普通电线
@@ -76,6 +76,7 @@ abstract public class TransferBlock extends TEBlockBase {
 		ITEM = new TransferItem(this, name);
 	}
 	
+	@Nonnull
 	@Override
 	public Item getBlockItem() {
 		return ITEM;
@@ -159,7 +160,12 @@ abstract public class TransferBlock extends TEBlockBase {
 	public boolean isFullCube(IBlockState state) {
 		return false;
 	}
-	
+
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		return getDefaultState();
+	}
+
 	@Override
 	public int getMetaFromState(IBlockState state) {
 		return 0;

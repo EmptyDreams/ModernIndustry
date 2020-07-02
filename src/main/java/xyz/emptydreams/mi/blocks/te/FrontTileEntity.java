@@ -1,16 +1,18 @@
 package xyz.emptydreams.mi.blocks.te;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import xyz.emptydreams.mi.api.electricity.EleTileEntity;
+import xyz.emptydreams.mi.register.te.AutoTileEntity;
+
+import javax.annotation.Nullable;
 
 /**
  * 带方向的机器方块
  * @author EmptyDreams
  * @version V1.0
  */
+@AutoTileEntity("FRONT_TILE_ENTITY")
 public abstract class FrontTileEntity extends EleTileEntity {
 	
 	/**

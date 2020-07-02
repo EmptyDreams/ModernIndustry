@@ -1,14 +1,14 @@
 package xyz.emptydreams.mi.api.gui.component;
 
-import javax.annotation.Nonnull;
-import java.awt.*;
-import java.util.function.Consumer;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.net.WaitList;
+
+import javax.annotation.Nonnull;
+import java.awt.*;
+import java.util.function.Consumer;
 
 import static xyz.emptydreams.mi.api.gui.component.IProgressBar.getTexture;
 
@@ -94,20 +94,17 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	
 	@Override
 	public void send(Container con, IContainerListener listener) {
-		listener.sendWindowProperty(con, getCode(), getNow());
-		listener.sendWindowProperty(con, getCode() + 1, getMax());
+		listener.sendWindowProperty(con, getCodeID(0), getNow());
+		listener.sendWindowProperty(con, getCodeID(1), getMax());
 	}
 	
 	@Override
 	public boolean update(int codeID, int data) {
-		if (codeID == getCode()) {
-			setNow(data);
-			return true;
-		} else if (codeID == getCode() + 1) {
-			setMax(data);
-			return true;
+		switch (getPrivateCodeID(codeID)) {
+			case 0: setNow(data); return true;
+			case 1: setMax(data); return true;
+			default: return false;
 		}
-		return false;
 	}
 	
 	/** 风格 */

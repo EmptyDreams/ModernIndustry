@@ -1,20 +1,21 @@
 package xyz.emptydreams.mi.register.block;
 
-import java.lang.reflect.InvocationTargetException;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
-import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.blocks.ore.OreBlock;
 import xyz.emptydreams.mi.register.item.ItemRegister;
+
+import java.lang.reflect.InvocationTargetException;
 
 import static xyz.emptydreams.mi.register.AutoRegister.Blocks;
 
@@ -55,60 +56,57 @@ public class BlockRegister {
 	
 	@SubscribeEvent
 	public static void registerItem(RegistryEvent.Register<Item> event) {
-		if (FMLCommonHandler.instance().getSide().isClient()) {
-			for(Block b : Blocks.autoRegister) {
-				if (Blocks.noItem.contains(b))
-					continue;
-				if (b instanceof BlockItemHelper) {
-					Item item = ((BlockItemHelper) b).getBlockItem();
-					event.getRegistry().register(item);
-					ModelResourceLocation model = new ModelResourceLocation(b.getRegistryName(), "inventory");
-					ModelLoader.setCustomModelResourceLocation(item, 0, model);
-				} else {
-					Item item = new ItemBlock(b);
-					item.setRegistryName(ModernIndustry.MODID, b.getRegistryName().getResourcePath());
-					event.getRegistry().register(item);
-					ModelResourceLocation model = new ModelResourceLocation(b.getRegistryName(), "inventory");
-					ModelLoader.setCustomModelResourceLocation(item, 0, model);
-				}
-			}
-			for (Block b : Blocks.selfRegister.values()) {
-				if (Blocks.noItem.contains(b)) {
-					continue;
-				}
-				Item item;
-				if (b instanceof BlockItemHelper)
-					item = ((BlockItemHelper) b).getBlockItem();
-				else
-					item = Item.getItemFromBlock(b);
-				event.getRegistry().register(item);
-				ModelResourceLocation model = new ModelResourceLocation(b.getRegistryName(), "inventory");
-				ModelLoader.setCustomModelResourceLocation(item, 0, model);
-			}
+		if (WorldUtil.isServer(null)) {
+			registerItemOnServer(event);
 		} else {
-			for(Block b : Blocks.autoRegister) {
-				if (Blocks.noItem.contains(b))
-					continue;
-				Item item;
-				if (b instanceof BlockItemHelper) {
-					item = ((BlockItemHelper) b).getBlockItem();
-				} else {
-					item = new ItemBlock(b);
-					item.setRegistryName(ModernIndustry.MODID, b.getRegistryName().getResourcePath());
-				}
-				event.getRegistry().register(item);
-			}
-			for (Block b : Blocks.selfRegister.values()) {
-				if (Blocks.noItem.contains(b))
-					continue;
-				Item item;
-				if (b instanceof BlockItemHelper)
-					item = ((BlockItemHelper) b).getBlockItem();
-				else
-					item = Item.getItemFromBlock(b);
-				event.getRegistry().register(item);
-			}
+			registerItemOnClint(event);
 		}
 	}
-	
+
+	private static void registerItemOnServer(RegistryEvent.Register<Item> event) {
+		for(Block b : Blocks.autoRegister) {
+			if (Blocks.noItem.contains(b)) continue;
+			Item item = getItem(b);
+			event.getRegistry().register(item);
+		}
+		for (Block b : Blocks.selfRegister.values()) {
+			if (Blocks.noItem.contains(b)) continue;
+			Item item = getItem(b);
+			event.getRegistry().register(item);
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	private static void registerItemOnClint(RegistryEvent.Register<Item> event) {
+		for(Block b : Blocks.autoRegister) {
+			if (Blocks.noItem.contains(b)) continue;
+			Item item = getItem(b);
+			event.getRegistry().register(item);
+			ModelResourceLocation model = new ModelResourceLocation(b.getRegistryName(), "inventory");
+			ModelLoader.setCustomModelResourceLocation(item, 0, model);
+		}
+		for (Block b : Blocks.selfRegister.values()) {
+			if (Blocks.noItem.contains(b)) continue;
+			Item item = getItem(b);
+			event.getRegistry().register(item);
+			ModelResourceLocation model = new ModelResourceLocation(b.getRegistryName(), "inventory");
+			ModelLoader.setCustomModelResourceLocation(item, 0, model);
+		}
+	}
+
+	private static Item getItem(Block block) {
+		//noinspection IfStatementWithIdenticalBranches
+		if (block instanceof BlockItemHelper) {
+			Item item = ((BlockItemHelper) block).getBlockItem();
+			if (item.getRegistryName() == null) {
+				item.setRegistryName(block.getRegistryName());
+			}
+			return item;
+		} else {
+			Item item = new ItemBlock(block);
+			item.setRegistryName(block.getRegistryName());
+			return item;
+		}
+	}
+
 }

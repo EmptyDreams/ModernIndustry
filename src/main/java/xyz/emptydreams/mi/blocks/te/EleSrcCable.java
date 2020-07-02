@@ -1,11 +1,5 @@
 package xyz.emptydreams.mi.blocks.te;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,8 +18,8 @@ import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
+import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
-import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.net.NetworkRegister;
 import xyz.emptydreams.mi.api.net.WaitList;
@@ -38,6 +32,12 @@ import xyz.emptydreams.mi.data.info.IETForEach;
 import xyz.emptydreams.mi.data.info.WireLinkInfo;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author EmptyDreams
  * @version V2.0
@@ -48,7 +48,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	public EleSrcCable() {
 		NetworkRegister.register(this);
 	}
-	public EleSrcCable(int meMax, int loss) {
+	public EleSrcCable(int meMax, double loss) {
 		this();
 		this.meMax = meMax;
 		this.loss = loss;
@@ -86,7 +86,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	/** 当前电流量 */
 	private int me = 0;
 	/** 电力损耗指数，指数越大损耗越多 */
-	protected int loss = 0;
+	protected double loss = 0;
 	/** 所属电路缓存 */
 	WireLinkInfo cache = null;
 	/** 在客户端存储电线连接数量 */
@@ -308,18 +308,13 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 		
 		TileEntity entity;
 		IStorage storage;
-		BlockPos block;
-		boolean isRun = false;
-		//noinspection ForLoopReplaceableByForEach
-		for (int i = 0; i < linkedBlocks.size(); i++) {
-			block = linkedBlocks.get(i);
+		for (BlockPos block : linkedBlocks) {
 			entity = world.getTileEntity(block);
 			if (entity == null) {
 				deleteLink(block);
 			} else {
 				storage = entity.getCapability(EleCapability.ENERGY, BlockPosUtil.whatFacing(block, pos));
 				if (storage != null && storage.canReceive()) {
-					isRun = true;
 					EleWorker.useEleEnergy(entity);
 				}
 			}
@@ -367,11 +362,12 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	/** 设置南方是否连接方块 */
 	public final void setSouth(boolean value) { south = value; }
 	/** 获取损耗值 */
-	public final int getLoss(IVoltage voltage) {
-		return voltage.getLossIndex() * loss / 2;
+	public final double getLoss(EleEnergy energy) {
+		double loss = energy.calculateLoss();
+		return loss + loss * this.loss;
 	}
 	/** 设置电力损耗指数 */
-	public final void setLoss(int loss) { this.loss = loss; }
+	public final void setLoss(double loss) { this.loss = loss; }
 	/** 获取上一根电线 */
 	public final TileEntity getPrev() { return prev == null ? null : world.getTileEntity(prev); }
 	/** 获取下一根电线 */

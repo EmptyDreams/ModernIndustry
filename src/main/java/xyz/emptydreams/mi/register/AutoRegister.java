@@ -1,16 +1,5 @@
 package xyz.emptydreams.mi.register;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -37,6 +26,17 @@ import xyz.emptydreams.mi.register.item.AutoItemRegister;
 import xyz.emptydreams.mi.register.item.ItemRegister;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 自动注册的总类，自动注册的功能由init()函数完成，该类的运行架构如下：
@@ -105,7 +105,7 @@ public final class AutoRegister {
 			reRegisterManager(ASM);
 			reAutoTR(ASM);
 			triggerAutoLoader(ASM);
-			
+			JsonBuilder.build();
 		} catch (IllegalAccessException e) {
 			MISysInfo.err("需要的函数不可见，原因可能是：",
 							"用户提供的需初始化的类没有提供可视的构造函数");

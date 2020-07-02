@@ -1,5 +1,14 @@
 package xyz.emptydreams.mi.api.utils.data;
 
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
+import net.minecraftforge.common.util.INBTSerializable;
+import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
+import xyz.emptydreams.mi.api.utils.BlockPosUtil;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -12,15 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
-
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraftforge.common.util.INBTSerializable;
-import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.utils.BlockPosUtil;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -252,7 +252,7 @@ public interface TEHelper {
 			case VOLTAGE:
 				IVoltage voltage = (IVoltage) field;
 				data.setInteger(name, voltage.getVoltage());
-				data.setInteger(name + "loss", voltage.getLossIndex());
+				data.setDouble(name + "loss", voltage.getLossIndex());
 				break;
 			case ENUM:
 				data.setString(name, ((Enum) field).name());
