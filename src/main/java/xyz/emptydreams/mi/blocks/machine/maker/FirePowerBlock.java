@@ -65,11 +65,13 @@ public class FirePowerBlock extends MachineBlock {
 		return NonNullList.from(power.getInSlot().getStack(), power.getOutSlot().getStack());
 	}
 	
+	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, FACING, WORKING);
 	}
 	
+	@Nonnull
 	@SuppressWarnings("deprecation")
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
@@ -82,7 +84,7 @@ public class FirePowerBlock extends MachineBlock {
 	}
 	
 	@Override
-	public int getMetaFromState(IBlockState state) {
+	public int getMetaFromState(@Nonnull IBlockState state) {
 		return state.getValue(FACING).getHorizontalIndex() |
 				       (state.getValue(WORKING) ? 0b0100 : 0b0000);
 	}

@@ -24,11 +24,14 @@ import javax.annotation.Nonnull;
 @AutoLoader
 public final class EleFurnaceFrame {
 
+	public static final String NAME = "ele_furnace";
+	public static final String LOCATION_NAME = "tile.ele_furnace.name";
+
 	public static final int ID = GuiLoader.register(new IContainerCreater() {
 		@Nonnull
 		@Override
 		public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(ModernIndustry.MODID, "ele_furnace", 176, 156);
+			MIFrame frame = new MIFrame(ModernIndustry.MODID, NAME, 176, 156);
 			init(frame, world, pos, player);
 			return frame;
 		}
@@ -36,7 +39,7 @@ public final class EleFurnaceFrame {
 		@Nonnull
 		@Override
 		public MIStaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(ModernIndustry.MODID, "ele_furnace", 176, 156);
+			MIFrame frame = new MIFrame(ModernIndustry.MODID, NAME, 176, 156);
 			init(frame, world, pos, player);
 			MIStaticFrameClient client = new MIStaticFrameClient(frame);
 			init(client, world, pos, player);
@@ -48,7 +51,7 @@ public final class EleFurnaceFrame {
 			if (o instanceof MIFrame) {
 				MIFrame frame = (MIFrame) o;
 				frame.init(world);
-				frame.setTitle("tile.ele_furnace.name");
+				frame.setTitle(LOCATION_NAME);
 				frame.setTitleModel(TitleModelEnum.CENTRAL);
 				frame.add(new MBackpack(6, 72), player);
 				frame.add(new MInput(firepower.getInSlot()), player);
@@ -56,7 +59,7 @@ public final class EleFurnaceFrame {
 				frame.add(firepower.getProgressBar(), player);
 			} else {
 				MIStaticFrameClient frame = (MIStaticFrameClient) o;
-				frame.setTitle("tile.ele_furnace.name");
+				frame.setTitle(LOCATION_NAME);
 				frame.setTitleModel(TitleModelEnum.CENTRAL);
 				frame.add(new MBackpack(6, 72));
 				frame.add(new MInput(firepower.getInSlot()));

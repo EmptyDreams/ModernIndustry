@@ -1,5 +1,13 @@
 package xyz.emptydreams.mi.api.craftguide;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import xyz.emptydreams.mi.api.net.WaitList;
+
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,14 +20,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import xyz.emptydreams.mi.api.net.WaitList;
 
 /**
  * 有序合成表. <b>产物是无序的</b>
@@ -185,7 +185,12 @@ public class SQCraftGuide implements ICraftGuide, INBTSerializable<NBTTagCompoun
 	public List<ItemElement> getOuts() {
 		return new ArrayList<>(outs);
 	}
-	
+
+	@Override
+	public ItemElement getFirstOut() {
+		return outs.iterator().next();
+	}
+
 	/** 空白填充，用于将合成表中null部分填充为{@link ItemElement#empty()} */
 	public void fillBlank() {
 		for (int y = 0; y < elements.length; y++) {

@@ -12,12 +12,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.blocks.base.TEBlockBase;
 import xyz.emptydreams.mi.blocks.te.user.MuffleFurnace;
-import xyz.emptydreams.mi.gui.MuffleFuranceFrame;
+import xyz.emptydreams.mi.gui.MuffleFurnaceFrame;
 import xyz.emptydreams.mi.items.common.SpannerItem;
 import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 
@@ -61,11 +62,21 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 		if (playerIn.getHeldItem(hand).getItem() == SpannerItem.getInstance()) return false;
 		if (!worldIn.isRemote) {
 			playerIn.openGui(ModernIndustry.instance,
-					MuffleFuranceFrame.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+					MuffleFurnaceFrame.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
 		}
 		return true;
 	}
-	
+
+	@Nullable
+	@Override
+	public NonNullList<ItemStack> getItemDrops(World world, BlockPos pos) {
+		MuffleFurnace furnace = (MuffleFurnace) world.getTileEntity(pos);
+		return NonNullList.from(furnace.getDown().getStack(),
+								furnace.getUp().getStack(),
+								furnace.getOut().getStack());
+	}
+
+	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		EnumFacing facing = EnumFacing.getFront(meta & 0b0011);
@@ -85,10 +96,11 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 	}
 	
 	@Override
-	public int getMetaFromState(IBlockState state) {
+	public int getMetaFromState(@Nonnull IBlockState state) {
 		return state.getValue(FACING).getHorizontalIndex() | (state.getValue(WORKING) ? 0b0100 : 0);
 	}
 	
+	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
 		//阻止折叠
@@ -96,7 +108,7 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 	}
 	
 	@Override
-	public int quantityDropped(Random random) {
+	public int quantityDropped(@Nonnull Random random) {
 		return 1;
 	}
 	

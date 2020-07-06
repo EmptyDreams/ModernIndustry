@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
-import xyz.emptydreams.mi.blocks.ore.OreBlock;
+import xyz.emptydreams.mi.blocks.common.OreBlock;
 import xyz.emptydreams.mi.register.item.ItemRegister;
 
 import java.lang.reflect.InvocationTargetException;

@@ -13,11 +13,10 @@ import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.craftguide.CraftRegistry;
 import xyz.emptydreams.mi.api.craftguide.ICraftGuide;
-import xyz.emptydreams.mi.api.craftguide.ItemElement;
-import xyz.emptydreams.mi.api.craftguide.ULCraftGuide;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.IProgressBar;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.DataType;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.machine.user.CompressorBlock;
@@ -25,11 +24,9 @@ import xyz.emptydreams.mi.blocks.te.FrontTileEntity;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
-import xyz.emptydreams.mi.register.item.ItemRegister;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 import static xyz.emptydreams.mi.api.utils.ItemUtil.hasEmpty;
 import static xyz.emptydreams.mi.api.utils.ItemUtil.merge;
@@ -43,18 +40,11 @@ import static xyz.emptydreams.mi.api.utils.ItemUtil.merge;
 public class EUCompressor extends FrontTileEntity implements ITickable {
 	
 	/** 压缩机的合成表 */
-	public static final CraftRegistry REGISTRY = CraftRegistry.instance(
+	public static final CraftRegistry CRAFT = CraftRegistry.instance(
 			new ResourceLocation(ModernIndustry.MODID, CompressorBlock.NAME));
 	
 	static {
-		ULCraftGuide craft0 = new ULCraftGuide(2)
-				                      .addElement(ItemElement.instance(ItemRegister.ITEM_COPPER_POWDER, 2))
-				                      .addOutElement(ItemElement.instance(ItemRegister.ITEM_COPPER, 1));
-		ULCraftGuide craft1 = new ULCraftGuide(2)
-				                      .addElement(ItemElement.instance(ItemRegister.ITEM_TIN_POWER, 2))
-				                      .addOutElement(ItemElement.instance(ItemRegister.ITEM_TIN, 1));
-		
-		REGISTRY.register(craft0, craft1);
+
 	}
 	
 	/**
@@ -80,7 +70,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	private int needEnergy = 10;
 	
 	public EUCompressor() {
-		setReciveRange(1, 50, EnumVoltage.C, EnumVoltage.D);
+		setReceiveRange(1, 50, EnumVoltage.C, EnumVoltage.D);
 		OrdinaryCounter counter = new OrdinaryCounter(100);
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
@@ -89,13 +79,15 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		
 		progressBar.setLocation(80, 35);
 	}
-	
+
+	/** 设置世界时更新计数器的设置 */
 	@Override
 	public void setWorld(World worldIn) {
 		super.setWorld(worldIn);
 		((OrdinaryCounter) getCounter()).setWorld(worldIn);
 	}
-	
+
+	/** 设置坐标时更新计数器的设置 */
 	@Override
 	public void setPos(BlockPos posIn) {
 		super.setPos(posIn);
@@ -110,11 +102,23 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		//检查输入框是否合法 如果不合法则清零工作时间并结束函数
 		ItemStack outStack = checkInput();
 		if (outStack == null || getNowEnergy() < getNeedEnergy()) {
-			whenFaild(outStack == null);
+			whenFailed(outStack == null);
 			return;
 		}
 		
 		//若配方存在则继续计算
+		boolean isWorking = updateData(outStack);
+		progressBar.setNow(workingTime);
+		updateShow(isWorking);
+		markDirty();
+	}
+
+	/**
+	 * 更新内部数据
+	 * @param outStack 产品
+	 * @return 是否正在工作
+	 */
+	private boolean updateData(ItemStack outStack) {
 		boolean isWorking = false;  //保存是否正在工作
 		ItemStack nowOut = out.getStack();
 		//检查输入物品数目是否足够
@@ -131,11 +135,9 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		} else {
 			workingTime = 0;
 		}
-		progressBar.setNow(workingTime);
-		updateShow(isWorking);
-		markDirty();
+		return isWorking;
 	}
-	
+
 	/**
 	 * 更新方块显示
 	 * @param isWorking 是否正在工作
@@ -144,10 +146,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		IBlockState old = world.getBlockState(pos);
 		IBlockState state = old.withProperty(MIProperty.EMPTY, isEmpty())
 				                    .withProperty(MIProperty.WORKING, isWorking);
-		if (!old.equals(state)) {
-			world.setBlockState(pos, state);
-			world.markBlockRangeForRenderUpdate(pos, pos);
-		}
+		WorldUtil.setBlockState(world, pos, old, state);
 	}
 	
 	/**
@@ -157,19 +156,20 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	private ItemStack checkInput() {
 		if (!hasEmpty(up.getStack(), down.getStack())) {
 			List<ItemStack> inputs = merge(up.getStack(), down.getStack());
-			Optional<ICraftGuide> craft = REGISTRY.apply(inputs);
-			return craft.map(it -> it.getOuts().get(0).getStack()).orElse(null);
+			ICraftGuide craft = CRAFT.apply(inputs);
+			if (craft == null) return null;
+			return craft.getFirstOut().getStack();
 		}
 		return null;
 	}
 	
 	/**
 	 * 当工作失败时执行替换方块的操作
-	 * @param isOutputFaild 是否是因为合成表不存在导致的失败
+	 * @param isOutputFailed 是否是因为合成表不存在导致的失败
 	 */
-	private void whenFaild(boolean isOutputFaild) {
+	private void whenFailed(boolean isOutputFailed) {
 		//如果不存在，更新方块显示
-		if (isOutputFaild) workingTime = 0;
+		if (isOutputFailed) workingTime = 0;
 		updateShow(false);
 		progressBar.setNow(workingTime);
 		markDirty();
@@ -197,7 +197,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	/**
 	 * @param index 0-上端，1-下端，2-输出
 	 */
-	public SlotItemHandler getSolt(int index) {
+	public SlotItemHandler getSlot(int index) {
 		switch (index) {
 			case 0 : return up;
 			case 1 : return down;
@@ -219,30 +219,22 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	
 	private final class SlotMI extends SlotItemHandler {
 		
-		final int index;
-		
 		public SlotMI(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
 			super(itemHandler, index, xPosition, yPosition);
-			this.index = index;
 		}
 		
 		@Override
 		public boolean isItemValid(ItemStack stack) {
-			boolean b = stack != null && REGISTRY.hasItem(stack.getItem())
+			boolean b = stack != null && CRAFT.hasItem(stack.getItem())
 					            && super.isItemValid(stack);
 			if (b && !isEmptyForInput()) {
-				SlotItemHandler s = getSolt(index == 0 ? 1 : 0);
+				SlotItemHandler s = getSlot(getSlotIndex() == 0 ? 1 : 0);
 				if (s.getHasStack() && !getHasStack()) {
 					b &= s.getStack().getItem().equals(getStack().getItem());
 				}
 			}
 			
 			return b;
-		}
-		
-		@Override
-		public int getItemStackLimit(ItemStack stack) {
-			return 64;
 		}
 		
 	}

@@ -161,23 +161,25 @@ abstract public class TransferBlock extends TEBlockBase {
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		return getDefaultState();
 	}
 
 	@Override
-	public int getMetaFromState(IBlockState state) {
+	public int getMetaFromState(@Nonnull IBlockState state) {
 		return 0;
 	}
 	
+	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, EAST, NORTH, SOUTH, WEST, DOWN, UP);
 	}
 	
 	@Override
-	public int quantityDropped(Random random) {
+	public int quantityDropped(@Nonnull Random random) {
 		return 1;
 	}
 	

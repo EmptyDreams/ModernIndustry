@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.blocks.ore;
+package xyz.emptydreams.mi.blocks.common;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -22,7 +22,7 @@ public class OreBlock extends BlockBase {
 	public static final Map<OreBlock, Item> LIST = new HashMap<>(10);
 	public static final String NAME_COPPER = "copper_ore_block";
 	public static final String NAME_TIN = "tin_ore_block";
-	
+
 	private final Item ITEM;
 	
 	public OreBlock(String name, Item output) {
@@ -36,7 +36,7 @@ public class OreBlock extends BlockBase {
 		ITEM = new ItemBlock(this).setRegistryName(name);
 		LIST.put(this, output);
 	}
-	
+
 	@Nonnull
 	@Override
 	public Item getBlockItem() {

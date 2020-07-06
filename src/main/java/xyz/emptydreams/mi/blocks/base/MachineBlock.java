@@ -13,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -24,7 +23,6 @@ import xyz.emptydreams.mi.blocks.common.CommonBlocks;
 import xyz.emptydreams.mi.items.common.SpannerItem;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Random;
 
 import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
@@ -69,21 +67,6 @@ public abstract class MachineBlock extends TEBlockBase {
 		return playerIn.getHeldItem(hand).getItem() != SpannerItem.getInstance();
 	}
 
-	/**
-	 * 当方块被破坏时掉落额外物品.
-	 * 用户覆盖该方法时应该调用该方法，否则会导致{@link #getItemDrops(World, BlockPos)}方法失效
-	 * @param worldIn 所在世界
-	 * @param pos 当前坐标
-	 * @param state 当前State
-	 */
-	@Override
-	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-		NonNullList<ItemStack> drops = getItemDrops(worldIn, pos);
-		if (drops != null)
-			drops.forEach(it -> Block.spawnAsEntity(worldIn, pos, it));
-		super.breakBlock(worldIn, pos, state);
-	}
-
 	private BooleanWrapper hasFacing = null;
 
 	/**
@@ -103,20 +86,9 @@ public abstract class MachineBlock extends TEBlockBase {
 			return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
 		return getDefaultState();
 	}
-
-	/**
-	 * 获取方块额外的凋落物，用于在方块破坏的时候掉落方块内存储的物品
-	 * @param world 所在世界
-	 * @param pos 方块坐标
-	 * @return 若无需要掉落的物品则返回null
-	 */
-	@Nullable
-	public NonNullList<ItemStack> getItemDrops(World world, BlockPos pos) {
-		return null;
-	}
 	
 	@Override
-	public int quantityDropped(Random random) { return 1; }
+	public int quantityDropped(@Nonnull Random random) { return 1; }
 	
 	/** 被爆炸破坏时掉落外壳 */
 	@Override

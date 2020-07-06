@@ -72,22 +72,24 @@ public class CompressorBlock extends MachineBlock {
 	@Override
 	public NonNullList<ItemStack> getItemDrops(World world, BlockPos pos) {
 		EUCompressor nbt = (EUCompressor) world.getTileEntity(pos);
-		ItemStack is = nbt.getSolt(0).getStack();
-		ItemStack is2 = nbt.getSolt(1).getStack();
-		ItemStack is3 = nbt.getSolt(2).getStack();
+		ItemStack is = nbt.getSlot(0).getStack();
+		ItemStack is2 = nbt.getSlot(1).getStack();
+		ItemStack is3 = nbt.getSlot(2).getStack();
 		return NonNullList.from(is, is2, is3);
 	}
 	
+	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, FACING, WORKING, EMPTY);
 	}
 	
 	@Override
-	public int quantityDropped(Random random) {
+	public int quantityDropped(@Nonnull Random random) {
 		return 0;
 	}
 	
+	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		EnumFacing enumfacing = EnumFacing.getHorizontal(meta & 0b0011);
@@ -106,7 +108,7 @@ public class CompressorBlock extends MachineBlock {
 	 * 			第一位存储内部是否有物品，1表示内部为空
 	 */
 	@Override
-	public int getMetaFromState(IBlockState state) {
+	public int getMetaFromState(@Nonnull IBlockState state) {
 		return state.getValue(FACING).getHorizontalIndex()
 				       | (state.getValue(WORKING) ? 0b0100 : 0b0000)
 				       | (state.getValue(EMPTY) ? 0b1000 : 0b0000);

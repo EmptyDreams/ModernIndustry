@@ -17,17 +17,20 @@ import xyz.emptydreams.mi.register.AutoLoader;
 import javax.annotation.Nonnull;
 
 /**
+ * 高温熔炉的GUI
  * @author EmptyDreams
- * @version V1.0
  */
 @AutoLoader
-public class MuffleFuranceFrame {
-	
+public class MuffleFurnaceFrame {
+
+	public static final String NAME = "muffleFurnace";
+	public static final String LOCATION_NAME = "tile.muffle_furnace.name";
+
 	public static final int ID = GuiLoader.register(new IContainerCreater() {
 		@Nonnull
 		@Override
 		public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(ModernIndustry.MODID, "muffleFurnace", 176, 166);
+			MIFrame frame = new MIFrame(ModernIndustry.MODID, NAME, 176, 166);
 			init(frame, world, pos, player);
 			return frame;
 		}
@@ -35,7 +38,7 @@ public class MuffleFuranceFrame {
 		@Nonnull
 		@Override
 		public MIStaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(ModernIndustry.MODID, "firepower", 176, 166);
+			MIFrame frame = new MIFrame(ModernIndustry.MODID, NAME, 176, 166);
 			init(frame, world, pos, player);
 			MIStaticFrameClient client = new MIStaticFrameClient(frame);
 			init(client, world, pos, player);
@@ -47,7 +50,7 @@ public class MuffleFuranceFrame {
 			if (o instanceof MIFrame) {
 				MIFrame frame = (MIFrame) o;
 				frame.init(world);
-				frame.setTitle("tile.muffle_furnace.name");
+				frame.setTitle(LOCATION_NAME);
 				frame.setTitleModel(TitleModelEnum.CENTRAL);
 				frame.add(new MBackpack(7, 83), player);
 				frame.add(new MInput(furnace.getUp()), player);
@@ -57,7 +60,7 @@ public class MuffleFuranceFrame {
 				frame.add(furnace.getBurnProgress(), player);
 			} else {
 				MIStaticFrameClient frame = (MIStaticFrameClient) o;
-				frame.setTitle("tile.muffle_furnace.name");
+				frame.setTitle(LOCATION_NAME);
 				frame.setTitleModel(TitleModelEnum.CENTRAL);
 				frame.add(new MBackpack(7, 83));
 				frame.add(new MInput(furnace.getUp()));

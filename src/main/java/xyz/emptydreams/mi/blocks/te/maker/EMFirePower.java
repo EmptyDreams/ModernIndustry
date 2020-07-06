@@ -17,6 +17,7 @@ import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.IProgressBar;
 import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
+import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.te.FrontTileEntity;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
@@ -56,29 +57,15 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	/** 输入/输出框 */
 	@Storage(OTHER) private final ItemStackHandler item = new ItemStackHandler(2);
 	/** 输入框 */
-	private final SlotItemHandler in = new SlotItemHandler(item, 0, 52, 29) {
-		@Override
-		public boolean isItemValid(ItemStack stack) {
-			return super.isItemValid(stack) &&
-					       TileEntityFurnace.getItemBurnTime(stack) > 0;
-		}
-		@Override
-		public int getItemStackLimit(ItemStack stack) {
-			return 64;
-		}
-	};
+	private final SlotItemHandler in = CommonUtil.createInputSlot(item, 0, 52, 29,
+											stack -> TileEntityFurnace.getItemBurnTime(stack) > 0);
 	/** 输出框 */
-	private final SlotItemHandler out = new SlotItemHandler(item, 1, 106, 29) {
-		@Override
-		public boolean isItemValid(ItemStack stack) {
-			return false;
-		}
-	};
+	private final SlotItemHandler out = CommonUtil.createOutputSlot(item, 1, 106, 29);
 	/** 已经燃烧的时长 */
 	@Storage(INT) private int burningTime = 0;
 	/** 最大燃烧时长 */
 	@Storage(INT) private int maxTime = 0;
-	
+
 	public EMFirePower() {
 		setExtractRange(1, 120, EnumVoltage.C, EnumVoltage.E);
 		setExtract(true);
@@ -101,7 +88,6 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 		else updateBurningTime();
 		
 		energyPro.setNow(getNowEnergy());
-		//stringShower.setString(getNowEnergy() + " / " + getMaxEnergy());
 	}
 
 	/** 燃烧输入框中的物品 */
@@ -122,11 +108,12 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 
 	/** 更新燃烧时间 */
 	private void updateBurningTime() {
-		if ((burningTime += 15) >= maxTime) {
+		if ((burningTime += 5) >= maxTime) {
 			maxTime = burningTime = 0;
 		}
 		progressBar.setNow(burningTime);
-		setNowEnergy(getNowEnergy() + 60);
+		setNowEnergy(getNowEnergy() + 30);
+		markDirty();
 	}
 
 	@SideOnly(Side.CLIENT) private int cache = -1;

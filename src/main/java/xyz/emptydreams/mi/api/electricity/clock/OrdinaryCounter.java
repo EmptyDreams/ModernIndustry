@@ -21,38 +21,28 @@ public class OrdinaryCounter extends OverloadCounter {
 	
 	@Override
 	public void overload() {
-		bigger.EBV.overload(world.getTileEntity(pos), bigger);
+		getBigger().EBV.overload(world.getTileEntity(pos), bigger);
 		clean();
 	}
-	
+
+	/** 计数器增加指定数量，当数量超过指定数值时自动触发{@link #overload()} */
 	@Override
 	public void plus(int amount) {
 		super.plus(amount);
 		if (getTime() >= getMaxTime()) overload();
 	}
-	
-	public BlockPos getPos() {
-		return pos;
-	}
-	
-	public void setPos(BlockPos pos) {
-		this.pos = pos;
-	}
-	
-	public World getWorld() {
-		return world;
-	}
-	
-	public void setWorld(World world) {
-		this.world = world;
-	}
-	
-	public BiggerVoltage getBigger() {
-		return bigger;
-	}
-	
-	public void setBigger(BiggerVoltage bigger) {
-		this.bigger = bigger;
-	}
+
+	/** 获取方块坐标 */
+	public BlockPos getPos() { return pos; }
+	/** 设置方块坐标 */
+	public void setPos(BlockPos pos) { this.pos = pos; }
+	/** 获取方块所在世界 */
+	public World getWorld() { return world; }
+	/** 设置方块所在世界 */
+	public void setWorld(World world) { this.world = world; }
+	/** 获取电压过大时的操作 */
+	public BiggerVoltage getBigger() { return bigger; }
+	/** 设置电压过大时的操作 */
+	public void setBigger(BiggerVoltage bigger) { this.bigger = bigger; }
 	
 }

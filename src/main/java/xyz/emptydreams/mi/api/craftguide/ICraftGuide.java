@@ -1,10 +1,10 @@
 package xyz.emptydreams.mi.api.craftguide;
 
-import javax.annotation.Nonnull;
-import java.util.List;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * 所有合成表的接口，其中定义了一些规范
@@ -44,5 +44,10 @@ public interface ICraftGuide {
 	 */
 	@Nonnull
 	List<ItemElement> getOuts();
+
+	/**
+	 * 获取列表中第一个产物
+	 */
+	ItemElement getFirstOut();
 	
 }

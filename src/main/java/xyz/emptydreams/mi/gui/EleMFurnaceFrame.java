@@ -11,20 +11,20 @@ import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
 import xyz.emptydreams.mi.api.gui.component.MInput;
-import xyz.emptydreams.mi.blocks.te.maker.EMFirePower;
+import xyz.emptydreams.mi.blocks.te.user.EUMFurnace;
 import xyz.emptydreams.mi.register.AutoLoader;
 
 import javax.annotation.Nonnull;
 
 /**
- * 火力发电机的GUI
+ * 高温电炉的GUI
  * @author EmptyDreams
  */
 @AutoLoader
-public final class FirePowerFrame {
+public final class EleMFurnaceFrame {
 
-	public static final String NAME = "firepower";
-	public static final String LOCATION_NAME = "tile.fire_power.name";
+	public static final String NAME = "ele_mfurnace";
+	public static final String LOCATION_NAME = "tile.ele_mfurnace.name";
 
 	public static final int ID = GuiLoader.register(new IContainerCreater() {
 		@Nonnull
@@ -34,7 +34,7 @@ public final class FirePowerFrame {
 			init(frame, world, pos, player);
 			return frame;
 		}
-		
+
 		@Nonnull
 		@Override
 		public MIStaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
@@ -44,9 +44,9 @@ public final class FirePowerFrame {
 			init(client, world, pos, player);
 			return client;
 		}
-		
+
 		private void init(Object o, World world, BlockPos pos, EntityPlayer player) {
-			EMFirePower firepower = (EMFirePower) world.getTileEntity(pos);
+			EUMFurnace firepower = (EUMFurnace) world.getTileEntity(pos);
 			if (o instanceof MIFrame) {
 				MIFrame frame = (MIFrame) o;
 				frame.init(world);
@@ -56,8 +56,6 @@ public final class FirePowerFrame {
 				frame.add(new MInput(firepower.getInSlot()), player);
 				frame.add(new MInput(firepower.getOutSlot()), player);
 				frame.add(firepower.getProgressBar(), player);
-				frame.add(firepower.getEnergyProBar(), player);
-				frame.add(firepower.getStringShower(), player);
 			} else {
 				MIStaticFrameClient frame = (MIStaticFrameClient) o;
 				frame.setTitle(LOCATION_NAME);
@@ -66,11 +64,9 @@ public final class FirePowerFrame {
 				frame.add(new MInput(firepower.getInSlot()));
 				frame.add(new MInput(firepower.getOutSlot()));
 				frame.add(firepower.getProgressBar());
-				frame.add(firepower.getEnergyProBar());
-				frame.add(firepower.getStringShower());
 			}
 		}
-		
+
 	});
-	
+
 }

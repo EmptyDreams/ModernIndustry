@@ -35,7 +35,7 @@ public class JsonBuilder {
 	static {
 		FATHER = Minecraft.getMinecraft().mcDataDir.getAbsoluteFile().getParentFile().getParentFile();
 		OUTPUTS[0] = new File(FATHER,"src/main/resources/assets/mi/blockstates");
-		OUTPUTS[1] = new File(FATHER, "out/production/forge-1.12.2-14.23.5.2768-mdk.main/assets/mi/blockstates");
+		OUTPUTS[1] = new File(FATHER, "out/production/ModernIndustry.main/assets/mi/blockstates");
 		TEMPLATE = new File(FATHER, "src/main/resources/assets/mi/templates");
 		try {
 			TEMPLATE_DATA = getTemplates();

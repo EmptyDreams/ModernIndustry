@@ -36,7 +36,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 	@Storage(value = DataType.OTHER)
 	private final ItemStackHandler item = new ItemStackHandler(2);
 	/** 输入框 */
-	private final SlotItemHandler in = new SlotItemHandler(item, 0, 52, 29) {
+	private final SlotItemHandler in = new SlotItemHandler(item, 0, 52, 32) {
 		@Override
 		public boolean isItemValid(ItemStack stack) {
 			return super.isItemValid(stack) &&
@@ -44,7 +44,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 		}
 	};
 	/** 输出框 */
-	private final SlotItemHandler out = new SlotItemHandler(item, 1, 106, 29) {
+	private final SlotItemHandler out = new SlotItemHandler(item, 1, 106, 32) {
 		@Override
 		public boolean isItemValid(ItemStack stack) {
 			return false;
@@ -53,12 +53,12 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 	@Storage(INT) private int workingTime = 0;
 
 	public EUFurnace() {
-		setReciveRange(1, 50, EnumVoltage.C, EnumVoltage.D);
+		setReceiveRange(5, 10, EnumVoltage.C, EnumVoltage.D);
 		OrdinaryCounter counter = new OrdinaryCounter(100);
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
 		setReceive(true);
-		setMaxEnergy(100);
+		setMaxEnergy(10);
 		progressBar.setLocation(76, 30);
 		progressBar.setMax(getNeedTime());
 	}
@@ -85,8 +85,8 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 				outStack.grow(1);
 			} else {
 				out.putStack(getResult(in.getStack()));
-				in.getStack().shrink(1);
 			}
+			in.getStack().shrink(1);
 		}
 
 		IBlockState old = world.getBlockState(pos);

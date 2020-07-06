@@ -1,11 +1,6 @@
 package xyz.emptydreams.mi.api.craftguide;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,6 +8,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 代表一个物品
@@ -45,7 +46,11 @@ public final class ItemElement implements INBTSerializable<NBTTagCompound> {
 		instances.add(element);
 		return element;
 	}
-	
+
+	public static ItemElement instance(Block block) {
+		return instance(new ItemStack(block));
+	}
+
 	public static ItemElement instance(NBTTagCompound tag) {
 		ItemElement element = new ItemElement();
 		element.deserializeNBT(tag);

@@ -22,7 +22,7 @@ public @interface AutoBlockRegister {
 	 */
 	String registryName();
 	
-	/** 方块的unlocalized名称，""表示与registery名称保持一致 */
+	/** 方块的unlocalized名称，""表示与registry名称保持一致 */
 	String unlocalizedName() default "";
 	
 	Class<?> REGISTER = AutoBlockRegister.class;

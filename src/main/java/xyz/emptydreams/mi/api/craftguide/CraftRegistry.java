@@ -1,14 +1,14 @@
 package xyz.emptydreams.mi.api.craftguide;
 
-import javax.annotation.Nonnull;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import xyz.emptydreams.mi.api.net.WaitList;
+
+import javax.annotation.Nonnull;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * 合成表的注册表
@@ -68,26 +68,26 @@ public class CraftRegistry {
 	
 	/**
 	 * 判断注册表中是否有指定的合成表
-	 * @return 若没有查找到对应元素，返回空的{@link Optional<ICraftGuide>}
+	 * @return 若没有查找到对应元素，返回null
 	 */
-	public Optional<ICraftGuide> apply(Iterable<ItemStack> stacks) {
-		return CRAFTS.stream().filter(it -> it.apply(stacks)).findAny();
+	public ICraftGuide apply(Iterable<ItemStack> stacks) {
+		return CRAFTS.stream().filter(it -> it.apply(stacks)).findAny().orElse(null);
 	}
 	
 	/**
 	 * 判断注册表中是否有指定的合成表
-	 * @return 若没有查找到对应元素，返回空的{@link Optional<ICraftGuide>}
+	 * @return 若没有查找到对应元素，返回null
 	 */
-	public Optional<ICraftGuide> apply(ItemStack... stacks) {
-		return CRAFTS.stream().filter(it -> it.apply(stacks)).findAny();
+	public ICraftGuide apply(ItemStack... stacks) {
+		return CRAFTS.stream().filter(it -> it.apply(stacks)).findAny().orElse(null);
 	}
 	
 	/**
 	 * 判断注册表中是否有指定的合成表
-	 * @return 若没有查找到对应元素，返回空的{@link Optional<ICraftGuide>}
+	 * @return 若没有查找到对应元素，返回null
 	 */
-	public Optional<ICraftGuide> apply(ICraftGuide craft) {
-		return CRAFTS.stream().filter(it -> it.apply(craft)).findAny();
+	public ICraftGuide apply(ICraftGuide craft) {
+		return CRAFTS.stream().filter(it -> it.apply(craft)).findAny().orElse(null);
 	}
 	
 	/**

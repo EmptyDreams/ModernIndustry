@@ -1,11 +1,5 @@
 package xyz.emptydreams.mi.api.craftguide;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -14,6 +8,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import xyz.emptydreams.mi.api.net.WaitList;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 无序合成表类
@@ -26,7 +26,7 @@ public class ULCraftGuide implements ICraftGuide, Iterable<ItemElement>, INBTSer
 	/** 原料 */
 	private HashSet<ItemElement> elements;
 	/** 产物 */
-	private HashSet<ItemElement> outs = new HashSet<ItemElement>(1) {
+	private final HashSet<ItemElement> outs = new HashSet<ItemElement>(1) {
 		@Override
 		public boolean add(ItemElement o) {
 			for (ItemElement element : this) {
@@ -208,7 +208,12 @@ public class ULCraftGuide implements ICraftGuide, Iterable<ItemElement>, INBTSer
 	public List<ItemElement> getOuts() {
 		return new ArrayList<>(outs);
 	}
-	
+
+	@Override
+	public ItemElement getFirstOut() {
+		return outs.iterator().next();
+	}
+
 	/** 将合成表转换为ItemStack[] */
 	public ItemStack[] toItemStack() {
 		ItemStack[] stacks = new ItemStack[elements.size()];

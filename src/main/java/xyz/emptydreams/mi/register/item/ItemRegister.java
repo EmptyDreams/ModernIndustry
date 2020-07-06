@@ -1,7 +1,5 @@
 package xyz.emptydreams.mi.register.item;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,9 +12,11 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
-import xyz.emptydreams.mi.blocks.ore.OreBlock;
+import xyz.emptydreams.mi.blocks.common.OreBlock;
 import xyz.emptydreams.mi.items.tools.ToolRegister;
 import xyz.emptydreams.mi.register.AutoRegister;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author EmptyDremas

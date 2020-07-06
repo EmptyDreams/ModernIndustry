@@ -35,7 +35,6 @@ import java.util.Set;
  * @author EmptyDreams
  * @version V2.1
  */
-@SuppressWarnings("unused")
 @Mod.EventBusSubscriber
 @AutoTileEntity("ELE_TILE_ENTITY")
 public abstract class EleTileEntity extends BaseTileEntity {
@@ -46,7 +45,7 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	/** 可输出的能量范围 */
 	private final EnergyRange extractRange = new EnergyRange();
 	/** 可输入的能量范围 */
-	private final EnergyRange reciveRange = new EnergyRange();
+	private final EnergyRange receiveRange = new EnergyRange();
 	/** 当前包含的能量 */
 	@Storage private int nowEnergy;
 	/** 当前输出电压 */
@@ -86,11 +85,11 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	 * @param minVoltage 最低电压
 	 * @param maxVoltage 最高电压
 	 */
-	public void setReciveRange(int minEnergy, int maxEnergy, IVoltage minVoltage, IVoltage maxVoltage) {
-		reciveRange.setMinEnergy(minEnergy);
-		reciveRange.setMaxEnergy(maxEnergy);
-		reciveRange.setMinVoltage(minVoltage);
-		reciveRange.setMaxVoltage(maxVoltage);
+	public void setReceiveRange(int minEnergy, int maxEnergy, IVoltage minVoltage, IVoltage maxVoltage) {
+		receiveRange.setMinEnergy(minEnergy);
+		receiveRange.setMaxEnergy(maxEnergy);
+		receiveRange.setMinVoltage(minVoltage);
+		receiveRange.setMaxVoltage(maxVoltage);
 	}
 	
 	/**
@@ -153,7 +152,7 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	/** 获取输出能量范围 */
 	public EnergyRange getExtractRange() { return extractRange.copy(); }
 	/** 获取输入能量范围 */
-	public EnergyRange getReceiveRange() { return reciveRange.copy(); }
+	public EnergyRange getReceiveRange() { return receiveRange.copy(); }
 	/** 获取现在的能量 */
 	public int getNowEnergy() { return nowEnergy; }
 	/** 设置现在的能量 */
@@ -220,10 +219,10 @@ public abstract class EleTileEntity extends BaseTileEntity {
 				//若当前储存能量已满则不再接收能量
 				if (nowEnergy < getMaxEnergy()) {
 					if (simulate) {
-						return reciveRange.getOptimalEnergy(Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy()));
+						return receiveRange.getOptimalEnergy(Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy()));
 					} else {
-						int k = reciveRange.getOptimalEnergy(Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy()));
-						IVoltage voltage = reciveRange.getOptimalVoltage(energy.getVoltage());
+						int k = receiveRange.getOptimalEnergy(Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy()));
+						IVoltage voltage = receiveRange.getOptimalVoltage(energy.getVoltage());
 						if (!onReceive(new EleEnergy(k, voltage))) return 0;
 						//若输入电压不在适用电压范围内，则增加计数器
 						if (voltage.getVoltage() != energy.getVoltage().getVoltage()) {

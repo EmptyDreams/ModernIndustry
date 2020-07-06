@@ -16,8 +16,8 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.MachineBlock;
-import xyz.emptydreams.mi.blocks.te.user.EUFurnace;
-import xyz.emptydreams.mi.gui.EleFurnaceFrame;
+import xyz.emptydreams.mi.blocks.te.user.EUPulverizer;
+import xyz.emptydreams.mi.gui.PulverizerFrame;
 import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 
 import javax.annotation.Nonnull;
@@ -28,15 +28,15 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 
 /**
- * 电炉的Block
+ * 粉碎机的Block
  * @author EmptyDreams
  */
-@AutoBlockRegister(registryName = "ele_furnace")
-public class EleFurnaceBlock extends MachineBlock {
+@AutoBlockRegister(registryName = "pulverizer")
+public class PulverizerBlock extends MachineBlock {
 
 	private final Item ITEM = new ItemBlock(this);
 
-	public EleFurnaceBlock() {
+	public PulverizerBlock() {
 		super(Material.IRON);
 		setCreativeTab(ModernIndustry.TAB_BLOCK);
 		setDefaultState(blockState.getBaseState()
@@ -46,31 +46,18 @@ public class EleFurnaceBlock extends MachineBlock {
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
-	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
-	                                float hitX, float hitY, float hitZ) {
-		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ) &&
-				CommonUtil.openGui(playerIn, EleFurnaceFrame.ID, worldIn, pos);
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		if (super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)) {
+			return CommonUtil.openGui(playerIn, PulverizerFrame.ID, worldIn, pos);
+		}
+		return false;
 	}
 
 	@Nullable
 	@Override
 	public NonNullList<ItemStack> getItemDrops(World world, BlockPos pos) {
-		EUFurnace furnace = (EUFurnace) world.getTileEntity(pos);
-		return NonNullList.from(furnace.getInSlot().getStack(),
-				furnace.getOutSlot().getStack());
-	}
-
-	@Nullable
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new EUFurnace();
-	}
-
-	@Nonnull
-	@Override
-	public Item getBlockItem() {
-		return ITEM;
+		EUPulverizer pulverizer = (EUPulverizer) world.getTileEntity(pos);
+		return NonNullList.from(pulverizer.getInSlot().getStack(), pulverizer.getOutSlot().getStack());
 	}
 
 	@Nonnull
@@ -88,5 +75,17 @@ public class EleFurnaceBlock extends MachineBlock {
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		return CommonUtil.getStateFromMeta(this, meta);
+	}
+
+	@Nullable
+	@Override
+	public TileEntity createNewTileEntity(World worldIn, int meta) {
+		return new EUPulverizer();
+	}
+
+	@Nonnull
+	@Override
+	public Item getBlockItem() {
+		return ITEM;
 	}
 }
