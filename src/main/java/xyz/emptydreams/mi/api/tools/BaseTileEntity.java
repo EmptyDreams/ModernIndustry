@@ -13,7 +13,6 @@ import xyz.emptydreams.mi.register.te.AutoTileEntity;
  * @author EmptyDreams
  * @version V1.0
  */
-@AutoTileEntity("BASE_TILE_ENTITY")
 public class BaseTileEntity extends TileEntity implements TEHelper {
 	
 	/**

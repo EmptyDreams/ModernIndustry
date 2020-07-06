@@ -36,7 +36,6 @@ import java.util.Set;
  * @version V2.1
  */
 @Mod.EventBusSubscriber
-@AutoTileEntity("ELE_TILE_ENTITY")
 public abstract class EleTileEntity extends BaseTileEntity {
 	
 	/** 空的能量 */

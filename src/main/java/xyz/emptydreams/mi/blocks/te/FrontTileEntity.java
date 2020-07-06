@@ -12,7 +12,6 @@ import javax.annotation.Nullable;
  * @author EmptyDreams
  * @version V1.0
  */
-@AutoTileEntity("FRONT_TILE_ENTITY")
 public abstract class FrontTileEntity extends EleTileEntity {
 	
 	/**

@@ -3,17 +3,43 @@ package xyz.emptydreams.mi.api.utils;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.net.WaitList;
+
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 关于世界的操作
  * @author EmptyDreams
  * @version V1.0
  */
+@Mod.EventBusSubscriber
 public final class WorldUtil {
-	
+
+	/**
+	 * 将指定任务从每Tick的循环中移除
+	 * @param tickable 要移除的任务
+	 */
+	public static void removeTickable(TileEntity tickable) {
+		WaitList.checkNull(tickable, "tickable");
+		if (tickable.getWorld().isRemote)
+			CLIENT_REMOVES.computeIfAbsent(tickable.getWorld(), key -> new LinkedList<>()).add(tickable);
+		else
+			SERVER_REMOVES.computeIfAbsent(tickable.getWorld(), key -> new LinkedList<>()).add(tickable);
+	}
+
 	/**
 	 * 设置BlockState，当新旧state一致时不进行替换
 	 * @param world 所在世界
@@ -75,5 +101,24 @@ public final class WorldUtil {
 	public static boolean isClient(@Nullable World world) {
 		return !isServer(world);
 	}
-	
+
+	/** 客户端移除列表 */
+	@SideOnly(Side.CLIENT)
+	private static final Map<World, List<TileEntity>> CLIENT_REMOVES = new LinkedHashMap<>();
+	/** 服务端移除列表 */
+	private static final Map<World, List<TileEntity>> SERVER_REMOVES = new LinkedHashMap<>();
+
+	@SubscribeEvent
+	public static void atServerTickEnd(TickEvent.ServerTickEvent event) {
+		SERVER_REMOVES.forEach((key, value) -> key.tickableTileEntities.removeAll(value));
+		SERVER_REMOVES.clear();
+	}
+
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	public static void atClientTickEnd(TickEvent.ClientTickEvent event) {
+		CLIENT_REMOVES.forEach((key, value) -> key.tickableTileEntities.removeAll(value));
+		CLIENT_REMOVES.clear();
+	}
+
 }

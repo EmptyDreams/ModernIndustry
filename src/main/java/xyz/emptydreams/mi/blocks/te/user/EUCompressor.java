@@ -96,7 +96,10 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	
 	@Override
 	public void update() {
-		if (world.isRemote) return;
+		if (world.isRemote) {
+			WorldUtil.removeTickable(this);
+			return;
+		}
 		progressBar.setMax(getNeedTime());
 		
 		//检查输入框是否合法 如果不合法则清零工作时间并结束函数

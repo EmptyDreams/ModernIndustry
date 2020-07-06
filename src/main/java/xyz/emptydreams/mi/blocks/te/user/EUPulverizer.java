@@ -11,6 +11,7 @@ import xyz.emptydreams.mi.api.craftguide.CraftRegistry;
 import xyz.emptydreams.mi.api.craftguide.ICraftGuide;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.IProgressBar;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.te.FrontTileEntity;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
@@ -52,7 +53,10 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 
 	@Override
 	public void update() {
-		if (world.isRemote) return;
+		if (world.isRemote) {
+			WorldUtil.removeTickable(this);
+			return;
+		}
 		if (checkInputAndOutput() || !shrinkEnergy(getNeedEnergy())) {
 			updateShow();
 			return;

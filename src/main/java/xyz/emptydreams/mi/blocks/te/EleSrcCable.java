@@ -24,6 +24,7 @@ import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.net.NetworkRegister;
 import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.BlockPosUtil;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.DataType;
 import xyz.emptydreams.mi.api.utils.data.TEHelper;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
@@ -37,6 +38,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static xyz.emptydreams.mi.api.utils.data.DataType.*;
 
 /**
  * @author EmptyDreams
@@ -57,12 +60,12 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	/** 计数器 */
 	private OverloadCounter counter;
 	//六个方向是否连接
-	@Storage(value = DataType.BOOLEAN) private boolean up = false;
-	@Storage(value = DataType.BOOLEAN) private boolean down = false;
-	@Storage(value = DataType.BOOLEAN) private boolean east =false;
-	@Storage(value = DataType.BOOLEAN) private boolean west = false;
-	@Storage(value = DataType.BOOLEAN) private boolean south = false;
-	@Storage(value = DataType.BOOLEAN) private boolean north = false;
+	@Storage(BOOLEAN) private boolean up = false;
+	@Storage(BOOLEAN) private boolean down = false;
+	@Storage(BOOLEAN) private boolean east =false;
+	@Storage(BOOLEAN) private boolean west = false;
+	@Storage(BOOLEAN) private boolean south = false;
+	@Storage(BOOLEAN) private boolean north = false;
 	/** 电线连接的方块，不包括电线方块 */
 	@Storage
 	private final List<BlockPos> linkedBlocks = new ArrayList<BlockPos>(5) {
@@ -74,12 +77,10 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 		}
 	};
 	/** 上一根电线 */
-	@Storage(value = DataType.POS)
-	private BlockPos prev = null;
+	@Storage(POS) private BlockPos prev = null;
 	private IEleTransfer prevShip = null;
 	/** 下一根电线 */
-	@Storage(value = DataType.POS)
-	private BlockPos next = null;
+	@Storage(POS) private BlockPos next = null;
 	private IEleTransfer nextShip = null;
 	/** 最大电流量 */
 	protected int meMax = 5000;
@@ -298,8 +299,10 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	@Override
 	public void update() {
 		if (cache == null) {
-			if (world.isRemote) cache = CLIENT_CACHE;
-			else {
+			if (world.isRemote) {
+				cache = CLIENT_CACHE;
+				WorldUtil.removeTickable(this);
+			} else {
 				WireLinkInfo.calculateCache(this);
 				nextShip = EleWorker.getTransfer(getNext());
 				prevShip = EleWorker.getTransfer(getPrev());

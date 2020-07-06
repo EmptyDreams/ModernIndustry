@@ -70,7 +70,10 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 	
 	@Override
 	public void update() {
-		if (world.isRemote) return;
+		if (world.isRemote) {
+			WorldUtil.removeTickable(this);
+			return;
+		}
 		if (updateBurningTime()) {
 			ItemStack result = out.getStack();
 			if (result.getCount() < result.getMaxStackSize()) updateWorkingTime();
