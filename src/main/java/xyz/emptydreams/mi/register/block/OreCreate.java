@@ -16,12 +16,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD })
-public @interface OreCreat {
+public @interface OreCreate {
 
 	int COUNT = 8;
 	int TIME = 4;
-	int YMIN = 16;
-	int YRANGE = 64;
+	int Y_MIN = 16;
+	int Y_RANGE = 64;
 	float PROBABILITY = 0.8F;
 	
 	/** 生成规模 */

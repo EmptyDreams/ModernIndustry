@@ -23,6 +23,9 @@ public @interface AutoItemRegister {
 	/** 物品名称（不包括MOD ID） */
 	String value();
 
+	/** 矿物词典，留空为不添加矿物词典 */
+	String[] oreDic() default { };
+
 	String ID = ModernIndustry.MODID;
 	
 	/** MOD ID */

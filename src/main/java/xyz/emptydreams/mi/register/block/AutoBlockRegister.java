@@ -32,5 +32,8 @@ public @interface AutoBlockRegister {
 	 * AutoBlockRegister.class
 	 */
 	Class<?> register() default AutoBlockRegister.class;
-	
+
+	/** 用于接收注册时生成的实例的变量，留空为不保留实例 */
+	String field() default "";
+
 }

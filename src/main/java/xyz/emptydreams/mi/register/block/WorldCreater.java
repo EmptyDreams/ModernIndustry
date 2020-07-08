@@ -36,15 +36,15 @@ public class WorldCreater extends WorldGenerator {
 	
 	public WorldCreater(ASMData asm, Block block) {
 		Map<String, Object> map = asm.getAnnotationInfo();
-		INFO.count = (int) map.getOrDefault("count", OreCreat.COUNT);
-		INFO.time = (int) map.getOrDefault("time", OreCreat.TIME);
-		INFO.yMin = (int) map.getOrDefault("yMin", OreCreat.YMIN);
-		INFO.yRange = (int) map.getOrDefault("yRange", OreCreat.YRANGE);
-		INFO.probability = (float) map.getOrDefault("probability", OreCreat.PROBABILITY);
+		INFO.count = (int) map.getOrDefault("count", OreCreate.COUNT);
+		INFO.time = (int) map.getOrDefault("time", OreCreate.TIME);
+		INFO.yMin = (int) map.getOrDefault("yMin", OreCreate.Y_MIN);
+		INFO.yRange = (int) map.getOrDefault("yRange", OreCreate.Y_RANGE);
+		INFO.probability = (float) map.getOrDefault("probability", OreCreate.PROBABILITY);
 		creater = new WorldGenMinable(block.getDefaultState(), INFO.count);
 	}
 	
-	public WorldCreater(OreCreat info, IBlockState block) {
+	public WorldCreater(OreCreate info, IBlockState block) {
 		INFO.count = info.count();
 		INFO.time = info.time();
 		INFO.yMin = info.yMin();

@@ -21,7 +21,7 @@ public final class WorldAutoCreater {
 	@SubscribeEvent
 	public static void onOreGenPost(OreGenEvent.Post event) {
 		if (!event.getWorld().isRemote) {
-			for (WorldGenerator generator : AutoRegister.Blocks.worldCreater.values()) {
+			for (WorldGenerator generator : AutoRegister.Blocks.worldCreate.values()) {
 				generator.generate(event.getWorld(), event.getRand(), event.getPos());
 			}
 		}

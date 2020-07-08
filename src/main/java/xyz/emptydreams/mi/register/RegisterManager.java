@@ -9,8 +9,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * 注册管理类，该类允许用户添加自己的注册机制，
- * 类中必须定义静态方法(可为私有)：{@code register(Class<?>)}，
- * 若需注册物品/方块需调用{@link AutoRegister}中的方法
+ * 类中必须定义静态方法(可为私有)：{@code static registry()}
  */
 @Documented
 @Retention(RUNTIME)

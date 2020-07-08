@@ -13,7 +13,9 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
+import xyz.emptydreams.mi.blocks.common.CommonBlocks;
 import xyz.emptydreams.mi.blocks.machine.WireManager;
+import xyz.emptydreams.mi.items.common.CommonItems;
 import xyz.emptydreams.mi.items.tools.ToolRegister;
 import xyz.emptydreams.mi.proxy.CommonProxy;
 import xyz.emptydreams.mi.register.block.BlockRegister;
@@ -40,7 +42,7 @@ public final class ModernIndustry {
 		@Override
 		@Nonnull
 		public ItemStack getTabIconItem() {
-			return ItemRegister.ITEM_COPPER.getDefaultInstance();
+			return CommonItems.ITEM_COPPER.getDefaultInstance();
 		}
 	};
 	/** 物品栏-工具 */
@@ -56,7 +58,7 @@ public final class ModernIndustry {
 		@Override
 		@Nonnull
 		public ItemStack getTabIconItem() {
-			return BlockRegister.ORE_COPPER.getBlockItem().getDefaultInstance();
+			return CommonBlocks.ORE_COPPER.getBlockItem().getDefaultInstance();
 		}
 	};
 	/** 物品栏-线缆 */

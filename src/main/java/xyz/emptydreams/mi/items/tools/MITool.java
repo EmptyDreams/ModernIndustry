@@ -13,7 +13,8 @@ import xyz.emptydreams.mi.ModernIndustry;
 public class MITool {
 
 	/** 铜制工具 */
-	public static final Item.ToolMaterial COPPER = EnumHelper.addToolMaterial("COPPER", 2, 240, 5.0F, 2.0F, 9);
+	public static final Item.ToolMaterial COPPER = EnumHelper.addToolMaterial(
+			"COPPER", 2, 240, 5.0F, 2.0F, 9);
 	/** 铜制盔甲 */
 	public static final ItemArmor.ArmorMaterial COPPER_ARMOR = EnumHelper.addArmorMaterial(
 				"COPPER", ModernIndustry.MODID + ":" + "copper", 240,

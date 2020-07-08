@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.tools.capabilities.PropertyCapability;
 import xyz.emptydreams.mi.api.tools.capabilities.PropertyProvider;
-import xyz.emptydreams.mi.api.tools.item.IToolHelper;
+import xyz.emptydreams.mi.api.tools.item.IToolMaterial;
 import xyz.emptydreams.mi.api.tools.item.MIAxe;
 import xyz.emptydreams.mi.api.tools.item.MIHoe;
 import xyz.emptydreams.mi.api.tools.item.MIPickaxe;
@@ -27,7 +27,9 @@ import xyz.emptydreams.mi.api.tools.item.MISword;
 import xyz.emptydreams.mi.api.tools.property.IProperty;
 import xyz.emptydreams.mi.api.tools.property.PoorQuality;
 import xyz.emptydreams.mi.api.tools.property.PropertyManager;
-import xyz.emptydreams.mi.register.item.ItemRegister;
+import xyz.emptydreams.mi.items.common.CommonItems;
+import xyz.emptydreams.mi.register.AutoManager;
+import xyz.emptydreams.mi.register.item.RecipeRegister;
 
 import static net.minecraft.inventory.EntityEquipmentSlot.CHEST;
 import static net.minecraft.inventory.EntityEquipmentSlot.FEET;
@@ -35,10 +37,11 @@ import static net.minecraft.inventory.EntityEquipmentSlot.HEAD;
 import static net.minecraft.inventory.EntityEquipmentSlot.LEGS;
 
 /**
+ * 工具
  * @author EmptyDremas
- * @version V1.0
  */
 @Mod.EventBusSubscriber
+@AutoManager(item = true, itemCustom = true)
 public class ToolRegister {
 	
 	/** 铜斧 */
@@ -88,88 +91,11 @@ public class ToolRegister {
 					.setRegistryName(ModernIndustry.MODID, NAME_COPPER_BOOT)
 					.setUnlocalizedName(NAME_COPPER_BOOT)
 					.setCreativeTab(ModernIndustry.TAB_TOOL);
-	
-	public static void registerRecipe() {
-		//铜镐
-		ItemRegister.registerRecipe(ITEM_COPPER_PICKAXE,
-				new Object[] {
-					"###", " * ", " * ",
-					'#', ItemRegister.ITEM_COPPER,
-					'*', Items.STICK
-				}
-		);
-		//铜斧
-		ItemRegister.registerRecipe(ITEM_COPPER_AXE,
-				new Object[] {
-					"## ", "#* ", " * ",
-					'#', ItemRegister.ITEM_COPPER,
-					'*', Items.STICK
-				}
-		);
-		//铜剑
-		ItemRegister.registerRecipe(ITEM_COPPER_SWORD,
-				new Object[] {
-					" # ", " # ", " * ",
-					'#', ItemRegister.ITEM_COPPER,
-					'*', Items.STICK
-				}
-		);
-		//铜铲
-		ItemRegister.registerRecipe(ITEM_COPPER_SHOVEL,
-				new Object[] {
-					" * ", " # ", " # ",
-					'#', ItemRegister.ITEM_COPPER,
-					'*', Items.STICK
-				}
-		);
-		//铜锄
-		ItemRegister.registerRecipe(ITEM_COPPER_HOE,
-				new Object[] {
-					"## ", " * ", " * ",
-					'#', ItemRegister.ITEM_COPPER,
-					'*', Items.STICK
-				}
-		);
-		//铜头盔
-		ItemRegister.registerRecipe(ITEM_COPPER_HEAD,
-				new Object[] {
-					"###", "# #", "   ",
-					'#', ItemRegister.ITEM_COPPER
-				}
-		);
-		ItemRegister.registerRecipe(ITEM_COPPER_HEAD,
-				new Object[] {
-					"   ", "###", "# #",
-					'#', ItemRegister.ITEM_COPPER
-				}
-		);
-		//铜盔甲
-		ItemRegister.registerRecipe(ITEM_COPPER_CHEST,
-				new Object[] {
-					"# #", "###", "###",
-					'#', ItemRegister.ITEM_COPPER
-				}
-		);
-		//铜护腿
-		ItemRegister.registerRecipe(ITEM_COPPER_LEG,
-				new Object[] {
-					"###", "# #", "# #",
-					'#', ItemRegister.ITEM_COPPER
-				}
-		);
-		//铜靴子
-		ItemRegister.registerRecipe(ITEM_COPPER_BOOT,
-				new Object[] {
-					"   ", "# #", "# #",
-					'#', ItemRegister.ITEM_COPPER
-				}
-		);
-		ItemRegister.registerRecipe(ITEM_COPPER_BOOT,
-				new Object[] {
-					"# #", "# #", "   ",
-					'#', ItemRegister.ITEM_COPPER
-				}
-		);
+
+	@SuppressWarnings("unused")
+	public static void itemCustom(Item item) {
+		if (item instanceof IToolMaterial)
+			RecipeRegister.registry(item, ((IToolMaterial) item).getMaterial());
 	}
 	
 	@SubscribeEvent
@@ -198,7 +124,6 @@ public class ToolRegister {
 	@SubscribeEvent
 	public static void addTooltip(ItemTooltipEvent event) {
 		if (event.getItemStack() == null) return;
-		if (event.getItemStack().getItem() instanceof IToolHelper) return;
 		PropertyManager manager = event.getItemStack().getCapability(PropertyCapability.PROPERTY, null);
 		if (manager == null) return;
 		List<String> list = new LinkedList<>();

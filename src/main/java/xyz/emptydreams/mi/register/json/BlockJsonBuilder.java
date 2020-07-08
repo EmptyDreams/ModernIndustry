@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.register;
+package xyz.emptydreams.mi.register.json;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
@@ -6,6 +6,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
+import xyz.emptydreams.mi.register.AutoRegister;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,25 +19,25 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
+ * 方块Json生成器
  * @author EmptyDreams
- * @version V1.0
  */
-public class JsonBuilder {
+public final class BlockJsonBuilder {
 
 	/** 根目录 */
-	private static final File FATHER;
+	static final File FATHER;
 	/** 模板所在目录 */
-	private static final File TEMPLATE;
+	static final File TEMPLATE;
 	/** 输出目录 */
-	private static final File[] OUTPUTS = new File[2];
+	static final File[] OUTPUTS = new File[2];
 	/** 模板 */
-	private static final Map<Type, String> TEMPLATE_DATA;
+	static final Map<Type, String> TEMPLATE_DATA;
 
 	static {
 		FATHER = Minecraft.getMinecraft().mcDataDir.getAbsoluteFile().getParentFile().getParentFile();
 		OUTPUTS[0] = new File(FATHER,"src/main/resources/assets/mi/blockstates");
 		OUTPUTS[1] = new File(FATHER, "out/production/ModernIndustry.main/assets/mi/blockstates");
-		TEMPLATE = new File(FATHER, "src/main/resources/assets/mi/templates");
+		TEMPLATE = new File(FATHER, "src/main/resources/assets/mi/templates/block");
 		try {
 			TEMPLATE_DATA = getTemplates();
 		} catch (IOException e) {
@@ -49,9 +50,7 @@ public class JsonBuilder {
 	 * @throws IOException 如果发生I/O错误
 	 */
 	public static void build() throws IOException {
-		int step = 0;
-		int build = 0;
-
+		int step = 0, build = 0;
 		for (Block block : AutoRegister.Blocks.blocks) {
 			if (isNeedSkip(block)) {
 				++step;
@@ -63,7 +62,7 @@ public class JsonBuilder {
 			++build;
 		}
 
-		MISysInfo.print("JSON：跳过：" + step + "，生成：" + build + "，总计：" + Integer.sum(step, build));
+		MISysInfo.print("Block Json：跳过：" + step + "，生成：" + build + "，总计：" + Integer.sum(step, build));
 	}
 
 	/**
@@ -99,7 +98,7 @@ public class JsonBuilder {
 	 * @return 读取的数据
 	 * @throws IOException 如果发生I/O错误
 	 */
-	private static String readFile(File file) throws IOException {
+	static String readFile(File file) throws IOException {
 		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 			StringBuilder stringBuilder = new StringBuilder();
 			String temp;
