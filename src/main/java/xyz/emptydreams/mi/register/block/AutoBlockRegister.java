@@ -17,14 +17,15 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(TYPE)
 public @interface AutoBlockRegister {
 	
-	/**
-	 * 方块的注册名称
-	 */
+	/** 方块的注册名称 */
 	String registryName();
 	
 	/** 方块的unlocalized名称，""表示与registry名称保持一致 */
 	String unlocalizedName() default "";
-	
+
+	/** 矿物词典，留空为不添加 */
+	String[] oreDic() default { };
+
 	Class<?> REGISTER = AutoBlockRegister.class;
 	
 	/**

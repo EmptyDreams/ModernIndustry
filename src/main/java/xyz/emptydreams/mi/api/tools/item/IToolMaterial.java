@@ -1,7 +1,5 @@
 package xyz.emptydreams.mi.api.tools.item;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemSword;
@@ -23,8 +21,10 @@ public interface IToolMaterial {
 			name = ((ItemSword) this).getToolMaterialName();
 		} else if (this instanceof ItemHoe) {
 			name = ((ItemHoe) this).getMaterialName();
-		} else {
+		} else if (this instanceof ItemTool) {
 			name = ((ItemTool) this).getToolMaterialName();
+		} else {
+			name = ((ItemArmor) this).getArmorMaterial().toString();
 		}
 		switch (name) {
 			case "WOOD": return "logWood";

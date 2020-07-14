@@ -4,12 +4,13 @@ import net.minecraft.item.Item;
 import net.minecraftforge.oredict.OreDictionary;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.register.AutoManager;
+import xyz.emptydreams.mi.register.OreDicRegister;
 
 /**
  * 放置一些普通物品
  * @author EmptyDreams
  */
-@AutoManager(item = true, block = false)
+@AutoManager(item = true)
 public final class CommonItems {
 
 	//--------------------金属锭--------------------//
@@ -51,9 +52,7 @@ public final class CommonItems {
 
 		public MItem(String registryName, String... oreDic) {
 			this(registryName);
-			if (oreDic != null)
-				for (String ore : oreDic)
-					OreDictionary.registerOre(ore, this);
+			if (oreDic != null) OreDicRegister.registry(this, oreDic);
 		}
 
 	}

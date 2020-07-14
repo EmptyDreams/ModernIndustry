@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.tools.item;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemHoe;
 import xyz.emptydreams.mi.ModernIndustry;
 
@@ -14,9 +13,9 @@ public class MIHoe extends ItemHoe implements IToolMaterial {
 		super(material);
 		setCreativeTab(ModernIndustry.TAB_TOOL);
 	}
-	
-	public Item setRegistry(String name) {
-		setRegistryName(name).setUnlocalizedName(name);
+
+	public MIHoe setRegistry(String modid, String name) {
+		setRegistryName(modid, name).setUnlocalizedName(name);
 		return this;
 	}
 	

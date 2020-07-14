@@ -1,12 +1,14 @@
 package xyz.emptydreams.mi.register.item;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -35,6 +37,8 @@ public final class RecipeRegister {
 	private static final Map<ItemSpade, String> SPADES = new HashMap<>();
 	/** 需要注册的剑 */
 	private static final Map<ItemSword, String> SWORDS = new HashMap<>();
+	/** 需要注册的装备 */
+	private static final Map<ItemArmor, String> ARMORS = new HashMap<>();
 
 	/**
 	 * 注册一个锄头
@@ -87,6 +91,16 @@ public final class RecipeRegister {
 	}
 
 	/**
+	 * 注册一个装备
+	 * @param material 材质
+	 */
+	public static void registry(ItemArmor armor, String material) {
+		WaitList.checkNull(armor, "armor");
+		WaitList.checkNull(material, "material");
+		ARMORS.put(armor, material);
+	}
+
+	/**
 	 * 注册一个合成表
 	 * @param item 必须是铲子、稿子、斧子、锄头、剑中的一种
 	 * @param material 材质
@@ -98,6 +112,7 @@ public final class RecipeRegister {
 		else if (item instanceof ItemPickaxe) registry((ItemPickaxe) item, material);
 		else if (item instanceof ItemSpade) registry((ItemSpade) item, material);
 		else if (item instanceof ItemSword) registry((ItemSword) item, material);
+		else if (item instanceof ItemArmor) registry(((ItemArmor) item), material);
 		else throw new IllegalArgumentException("不支持该item的注册：" + item.getRegistryName());
 	}
 
@@ -106,21 +121,50 @@ public final class RecipeRegister {
 	@SubscribeEvent
 	public static void registerRecipe(RegistryEvent.Register<IRecipe> event) {
 		IForgeRegistry<IRecipe> registry = event.getRegistry();
-		HOES.forEach((hoe, material) -> registry.register(getRecipe(hoe, new Object[] { "## ", " | ", " | ",
+		HOES.forEach((hoe, material) -> registry.register(getRecipe(hoe, new Object[] { "##", " |", " |",
 															'#', material, '|', STICK })));
-		AXES.forEach((axe, material) -> registry.register(getRecipe(axe, new Object[] { "## ", "#| ", " | ",
+		AXES.forEach((axe, material) -> registry.register(getRecipe(axe, new Object[] { "##", "#|", " |",
 															'#', material, '|', STICK })));
 		PICKAXES.forEach((pick, material) -> registry.register(getRecipe(pick, new Object[] { "###", " | ", " | ",
 															'#', material, '|', STICK })));
-		SPADES.forEach((spade, material) -> registry.register(getRecipe(spade, new Object[] { " # ", " | ", " | ",
+		SPADES.forEach((spade, material) -> registry.register(getRecipe(spade, new Object[] { "#", "|", "|",
 															'#', material, '|', STICK })));
-		SWORDS.forEach((sword, material) -> registry.register(getRecipe(sword, new Object[] { " # ", " # ", " | ",
+		SWORDS.forEach((sword, material) -> registry.register(getRecipe(sword, new Object[] { "#", "#", "|",
 															'#', material, '|', STICK })));
+		ARMORS.forEach((armor, material) -> registryArmor(armor, material, registry));
+	}
+
+	private static void registryArmor(ItemArmor armor, String material, IForgeRegistry<IRecipe> registry) {
+		ResourceLocation registryName = armor.getRegistryName();
+		switch (armor.getEquipmentSlot()) {
+			case FEET:
+				registry.register(getRecipe(armor, new Object[]{ "# #", "# #",
+						'#', material}));
+				break;
+			case LEGS:
+				registry.register(getRecipe(armor, new Object[]{ "###", "# #", "# #",
+						'#', material}));
+				break;
+			case CHEST:
+				registry.register(getRecipe(armor, new Object[]{ "# #", "###", "###",
+						'#', material }));
+				break;
+			case HEAD:
+				registry.register(getRecipe(armor, new Object[]{ "###", "# #",
+						'#', material }));
+				break;
+			default: throw new IllegalArgumentException("不支持该元素[" +
+					registryName + "]:" + armor.getEquipmentSlot());
+		}
 	}
 
 	private static ShapedOreRecipe getRecipe(Item output, Object[] params) {
+		return getRecipe(output, output.getRegistryName(), params);
+	}
+
+	private static ShapedOreRecipe getRecipe(Item output, ResourceLocation name, Object[] params) {
 		ShapedOreRecipe recipe = new ShapedOreRecipe(output.getRegistryName(), output, params);
-		recipe.setRegistryName(output.getRegistryName());
+		recipe.setRegistryName(name);
 		return recipe;
 	}
 

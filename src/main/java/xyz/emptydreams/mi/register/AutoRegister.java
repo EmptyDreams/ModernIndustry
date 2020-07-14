@@ -49,7 +49,6 @@ import java.util.Set;
  * 7.被{@link AutoTrusteeshipRegister}注解的托管
  * 8.被{@link AutoLoader}注解的类
  * </pre>
- *
  * @author EmptyDremas
  */
 public final class AutoRegister {
@@ -149,9 +148,8 @@ public final class AutoRegister {
 					throws ClassNotFoundException, IllegalAccessException,
 							NoSuchMethodException, InvocationTargetException {
 		Set<ASMData> classSet = ASM.getAll(AutoManager.class.getName());
-		Class<?> clazz;
 		for (ASMData data : classSet) {
-			clazz = Class.forName(data.getClassName());
+			Class<?> clazz = Class.forName(data.getClassName());
 			AutoManager manager = clazz.getAnnotation(AutoManager.class);
 			for (Field field : clazz.getFields()) {
 				if ((manager.block() && Block.class.isAssignableFrom(field.getType()))) {
@@ -230,23 +228,16 @@ public final class AutoRegister {
 					throws ClassNotFoundException, IllegalAccessException,
 							InstantiationException, NoSuchFieldException {
 		Set<ASMData> classSet = ASM.getAll(AutoItemRegister.class.getName());
-		Map<String, Object> valueMap;
-		Class<?> nowClass;
-		String ID;
-		String name;
-		Item item;
-		String object;
-		String[] ores;
 		if (classSet != null) {
 			for (ASMData data : classSet) {
-				valueMap = data.getAnnotationInfo();
-				ID = valueMap.getOrDefault("ID", AutoItemRegister.ID).toString();
-				name = valueMap.get("value").toString();
-				object = valueMap.getOrDefault("object", "").toString();
-				nowClass = Class.forName(data.getClassName());
-				ores = (String[]) valueMap.getOrDefault("oreDic", null);
-				item = (Item) nowClass.newInstance();
-				
+				Map<String, Object> valueMap = data.getAnnotationInfo();
+				String ID = valueMap.getOrDefault("ID", AutoItemRegister.ID).toString();
+				String name = valueMap.get("value").toString();
+				String object = valueMap.getOrDefault("object", "").toString();
+				Class<?> nowClass = Class.forName(data.getClassName());
+				String[] ores = (String[]) valueMap.getOrDefault("oreDic", null);
+				Item item = (Item) nowClass.newInstance();
+
 				item.setRegistryName(ID, name);
 				item.setUnlocalizedName(name);
 				if (ores != null)
@@ -266,10 +257,9 @@ public final class AutoRegister {
 	@SuppressWarnings("unchecked")
 	private static void reAutoTE(ASMDataTable ASM) throws ClassNotFoundException {
 		Set<ASMData> classSet = ASM.getAll(AutoTileEntity.class.getName());
-		Map<String, Object> valueMap;
 		if (classSet != null) {
 			for (ASMData data : classSet) {
-				valueMap = data.getAnnotationInfo();
+				Map<String, Object> valueMap = data.getAnnotationInfo();
 				GameRegistry.registerTileEntity((Class<? extends TileEntity>) Class.forName(data.getClassName()),
 						new ResourceLocation(ModernIndustry.MODID, (String) valueMap.get("value")));
 			}
@@ -279,11 +269,10 @@ public final class AutoRegister {
 	/* 矿石生成器 */
 	private static void reOreCreate(ASMDataTable ASM) {
 		Set<ASMData> classSet = ASM.getAll(OreCreate.class.getName());
-		Map<String, Object> valueMap;
 		if (classSet != null) {
 			Block b = null;
 			for (ASMData data : classSet) {
-				valueMap = data.getAnnotationInfo();
+				Map<String, Object> valueMap = data.getAnnotationInfo();
 				String name = valueMap.get("name").toString();
 				for (Block block : Blocks.blocks) {
 					if (block.getRegistryName().getResourcePath().equals(name)) {
@@ -305,29 +294,33 @@ public final class AutoRegister {
 	private static void reAutoBlock(ASMDataTable ASM)
 			throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchFieldException {
 		Set<ASMData> classSet = ASM.getAll(AutoBlockRegister.class.getName());
-		Map<String, Object> valueMap;
-		Class<?> nowClass;
 		if (classSet != null) {
 			for (ASMDataTable.ASMData data : classSet) {
-				valueMap = data.getAnnotationInfo();
-				nowClass = Class.forName(data.getClassName());
-				Block bt = (Block) nowClass.newInstance();
-				bt.setRegistryName(ModernIndustry.MODID, (String) valueMap.get("registryName"));
+				Map<String, Object> valueMap = data.getAnnotationInfo();
+				Class<?> nowClass = Class.forName(data.getClassName());
+				Block block = (Block) nowClass.newInstance();
 				String unName = valueMap.getOrDefault("unlocalizedName", "").toString();
-				bt.setUnlocalizedName(unName.equals("") ? bt.getRegistryName().getResourcePath() : unName);
-				Blocks.blocks.add(bt);
 				String field = valueMap.getOrDefault("field", "").toString();
+				String[] ores = (String[]) valueMap.getOrDefault("oreDic", null);
+
+				block.setRegistryName(ModernIndustry.MODID, (String) valueMap.get("registryName"));
+				block.setUnlocalizedName(unName.equals("") ? block.getRegistryName().getResourcePath() : unName);
+
+				Blocks.blocks.add(block);
+				if (ores != null)
+					for (String ore : ores)
+						OreDictionary.registerOre(ore, block);
 				if (!field.equals("")) {
 					Field declaredField = nowClass.getDeclaredField(field);
 					declaredField.setAccessible(true);
-					declaredField.set(bt, bt);
+					declaredField.set(block, block);
 				}
 
 				Class<?> register = (Class<?>) valueMap.getOrDefault("register", AutoBlockRegister.REGISTER);
 				if (AutoBlockRegister.REGISTER.equals(register))
-					Blocks.autoRegister.add(bt);
+					Blocks.autoRegister.add(block);
 				else
-					Blocks.selfRegister.put(register, bt);
+					Blocks.selfRegister.put(register, block);
 			}
 		}
 	}

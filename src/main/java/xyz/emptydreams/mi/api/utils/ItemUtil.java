@@ -9,8 +9,8 @@ import net.minecraft.item.ItemStack;
 import xyz.emptydreams.mi.api.net.WaitList;
 
 /**
+ * 关于物品的一些常用操作的封装
  * @author EmptyDreams
- * @version V1.0
  */
 public final class ItemUtil {
 	

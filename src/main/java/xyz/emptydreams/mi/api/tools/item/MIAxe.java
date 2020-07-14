@@ -1,8 +1,6 @@
 package xyz.emptydreams.mi.api.tools.item;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemAxe;
-import net.minecraftforge.oredict.OreDictionary;
 import xyz.emptydreams.mi.ModernIndustry;
 
 /**
@@ -15,9 +13,9 @@ public class MIAxe extends ItemAxe implements IToolMaterial {
 		super(material, damage, speed);
 		setCreativeTab(ModernIndustry.TAB_TOOL);
 	}
-	
-	public Item setRegistry(String name) {
-		setRegistryName(name).setUnlocalizedName(name);
+
+	public MIAxe setRegistry(String modid, String name) {
+		setRegistryName(modid, name).setUnlocalizedName(name);
 		return this;
 	}
 

@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -19,6 +18,7 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.tools.capabilities.PropertyCapability;
 import xyz.emptydreams.mi.api.tools.capabilities.PropertyProvider;
 import xyz.emptydreams.mi.api.tools.item.IToolMaterial;
+import xyz.emptydreams.mi.api.tools.item.MIArmor;
 import xyz.emptydreams.mi.api.tools.item.MIAxe;
 import xyz.emptydreams.mi.api.tools.item.MIHoe;
 import xyz.emptydreams.mi.api.tools.item.MIPickaxe;
@@ -27,7 +27,6 @@ import xyz.emptydreams.mi.api.tools.item.MISword;
 import xyz.emptydreams.mi.api.tools.property.IProperty;
 import xyz.emptydreams.mi.api.tools.property.PoorQuality;
 import xyz.emptydreams.mi.api.tools.property.PropertyManager;
-import xyz.emptydreams.mi.items.common.CommonItems;
 import xyz.emptydreams.mi.register.AutoManager;
 import xyz.emptydreams.mi.register.item.RecipeRegister;
 
@@ -35,11 +34,13 @@ import static net.minecraft.inventory.EntityEquipmentSlot.CHEST;
 import static net.minecraft.inventory.EntityEquipmentSlot.FEET;
 import static net.minecraft.inventory.EntityEquipmentSlot.HEAD;
 import static net.minecraft.inventory.EntityEquipmentSlot.LEGS;
+import static xyz.emptydreams.mi.ModernIndustry.MODID;
 
 /**
  * 工具
  * @author EmptyDremas
  */
+@SuppressWarnings("unused")
 @Mod.EventBusSubscriber
 @AutoManager(item = true, itemCustom = true)
 public class ToolRegister {
@@ -47,52 +48,48 @@ public class ToolRegister {
 	/** 铜斧 */
 	public static final String NAME_COPPER_AXE = "copper_axe_tool";
 	public static final Item ITEM_COPPER_AXE = new MIAxe(MITool.COPPER, 8, -3.1F)
-			                                           .setRegistry(NAME_COPPER_AXE);
+			                                           .setRegistry(MODID, NAME_COPPER_AXE);
 	/** 铜镐 */
 	public static final String NAME_COPPER_PICKAXE = "copper_pickaxe_tool";
-	public static final Item ITEM_COPPER_PICKAXE = new MIPickaxe(MITool.COPPER).setRegistry(NAME_COPPER_PICKAXE);
+	public static final Item ITEM_COPPER_PICKAXE = new MIPickaxe(MITool.COPPER)
+														.setRegistry(MODID, NAME_COPPER_PICKAXE);
 	/** 铜剑 */
 	public static final String NAME_COPPER_SWORD = "copper_sword_tool";
 	public static final Item ITEM_COPPER_SWORD = new MISword(MITool.COPPER, 5, -2.5F)
-			                                             .setRegistry(NAME_COPPER_SWORD);
+			                                             .setRegistry(MODID, NAME_COPPER_SWORD);
 	/** 铜铲 */
 	public static final String NAME_COPPER_SHOVEL = "copper_shovel_tool";
 	public static final Item ITEM_COPPER_SHOVEL = new MISpade(MITool.COPPER)
-			                                              .setRegistry(NAME_COPPER_SHOVEL);
+			                                              .setRegistry(MODID, NAME_COPPER_SHOVEL);
 	/** 铜锄 */
 	public static final String NAME_COPPER_HOE = "copper_hoe_tool";
 	public static final Item ITEM_COPPER_HOE = new MIHoe(MITool.COPPER)
-			                                           .setRegistry(NAME_COPPER_HOE);
+			                                           .setRegistry(MODID, NAME_COPPER_HOE);
 	/** 铜头盔 */
 	public static final String NAME_COPPER_HEAD = "copper_head";
 	public static final Item ITEM_COPPER_HEAD =
-			new ItemArmor(MITool.COPPER_ARMOR, MITool.COPPER_ARMOR.ordinal(), HEAD)
-					.setRegistryName(ModernIndustry.MODID, NAME_COPPER_HEAD)
-					.setUnlocalizedName(NAME_COPPER_HEAD)
+			new MIArmor(MITool.COPPER_ARMOR, MITool.COPPER_ARMOR.ordinal(), HEAD)
+					.setRegistry(MODID, NAME_COPPER_HEAD)
 					.setCreativeTab(ModernIndustry.TAB_TOOL);
 	/** 铜胸甲 */
 	public static final String NAME_COPPER_CHEST = "copper_chest";
 	public static final Item ITEM_COPPER_CHEST =
-			new ItemArmor(MITool.COPPER_ARMOR, MITool.COPPER_ARMOR.ordinal(), CHEST)
-					.setRegistryName(ModernIndustry.MODID, NAME_COPPER_CHEST)
-					.setUnlocalizedName(NAME_COPPER_CHEST)
+			new MIArmor(MITool.COPPER_ARMOR, MITool.COPPER_ARMOR.ordinal(), CHEST)
+					.setRegistry(MODID, NAME_COPPER_CHEST)
 					.setCreativeTab(ModernIndustry.TAB_TOOL);
 	/** 铜护腿 */
 	public static final String NAME_COPPER_LEG = "copper_leg";
 	public static final Item ITEM_COPPER_LEG =
-			new ItemArmor(MITool.COPPER_ARMOR, MITool.COPPER_ARMOR.ordinal(), LEGS)
-					.setRegistryName(ModernIndustry.MODID, NAME_COPPER_LEG)
-					.setUnlocalizedName(NAME_COPPER_LEG)
+			new MIArmor(MITool.COPPER_ARMOR, MITool.COPPER_ARMOR.ordinal(), LEGS)
+					.setRegistry(MODID, NAME_COPPER_LEG)
 					.setCreativeTab(ModernIndustry.TAB_TOOL);
 	/** 铜靴子 */
 	public static final String NAME_COPPER_BOOT = "copper_boot";
 	public static final Item ITEM_COPPER_BOOT =
-			new ItemArmor(MITool.COPPER_ARMOR, MITool.COPPER_ARMOR.ordinal(), FEET)
-					.setRegistryName(ModernIndustry.MODID, NAME_COPPER_BOOT)
-					.setUnlocalizedName(NAME_COPPER_BOOT)
+			new MIArmor(MITool.COPPER_ARMOR, MITool.COPPER_ARMOR.ordinal(), FEET)
+					.setRegistry(MODID, NAME_COPPER_BOOT)
 					.setCreativeTab(ModernIndustry.TAB_TOOL);
 
-	@SuppressWarnings("unused")
 	public static void itemCustom(Item item) {
 		if (item instanceof IToolMaterial)
 			RecipeRegister.registry(item, ((IToolMaterial) item).getMaterial());
@@ -116,7 +113,7 @@ public class ToolRegister {
 		if (!event.getObject().hasCapability(PropertyCapability.PROPERTY, null) &&
 				    (event.getObject().getItem() instanceof ItemTool ||
 				     event.getObject().getItem() instanceof ItemArmor)){
-			event.addCapability(new ResourceLocation(ModernIndustry.MODID, PropertyCapability.PROPERTY.getName()),
+			event.addCapability(new ResourceLocation(MODID, PropertyCapability.PROPERTY.getName()),
 					new PropertyProvider(PropertyCapability.PROPERTY.getDefaultInstance()));
 		}
 	}
