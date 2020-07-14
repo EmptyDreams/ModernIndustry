@@ -13,9 +13,8 @@ import xyz.emptydreams.mi.register.AutoLoader;
 @AutoLoader
 public class PropertyCapability  {
 
-	@SuppressWarnings("CanBeFinal")
 	@CapabilityInject(PropertyManager.class)
-	public static Capability<PropertyManager> PROPERTY = null;
+	public static Capability<PropertyManager> PROPERTY;
 	
 	static {
 		CapabilityManager.INSTANCE.register(PropertyManager.class, new ProStorage(), PropertyManager::new);

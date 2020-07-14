@@ -20,6 +20,7 @@ import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.te.FrontTileEntity;
+import xyz.emptydreams.mi.capabilities.nonburn.NonBurnCapability;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 
@@ -58,7 +59,8 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	@Storage(OTHER) private final ItemStackHandler item = new ItemStackHandler(2);
 	/** 输入框 */
 	private final SlotItemHandler in = CommonUtil.createInputSlot(item, 0, 52, 29,
-											stack -> TileEntityFurnace.getItemBurnTime(stack) > 0);
+											stack -> TileEntityFurnace.getItemBurnTime(stack) > 0 &&
+													!stack.hasCapability(NonBurnCapability.NON_BURN, null));
 	/** 输出框 */
 	private final SlotItemHandler out = CommonUtil.createOutputSlot(item, 1, 106, 29);
 	/** 已经燃烧的时长 */

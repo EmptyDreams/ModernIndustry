@@ -4,7 +4,7 @@ echo ####################
 echo setupDecompWorkspace
 echo ####################
 echo.
-cmd /c ".\gradlew setupDecompWorkspace"
+.\gradlew setupDecompWorkspace
 
 echo.
 echo.
@@ -15,6 +15,6 @@ echo Loading IDEA
 echo ####################
 echo.
 title IDEA
-cmd /c ".\gradlew idea"
-cmd /c ".\gradlew genIntellijRuns"
+.\gradlew idea
+.\gradlew genIntellijRuns
 echo Done &pause>nul
