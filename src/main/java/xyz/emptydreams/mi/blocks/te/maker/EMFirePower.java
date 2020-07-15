@@ -12,10 +12,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import xyz.emptydreams.mi.api.craftguide.ICraftGuide;
+import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.electricity.clock.NonCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.IProgressBar;
 import xyz.emptydreams.mi.api.gui.component.StringComponent;
+import xyz.emptydreams.mi.api.utils.ItemUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
@@ -26,11 +29,11 @@ import xyz.emptydreams.mi.register.te.AutoTileEntity;
 
 import static xyz.emptydreams.mi.api.utils.data.DataType.INT;
 import static xyz.emptydreams.mi.api.utils.data.DataType.OTHER;
+import static xyz.emptydreams.mi.blocks.craft.CraftFirePower.CRAFT;
 
 /**
  * 火力发电机的TE
  * @author EmptyDreams
- * @version V1.0
  */
 @AutoTileEntity("fire_power")
 public class EMFirePower extends FrontTileEntity implements ITickable {
@@ -67,6 +70,8 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	@Storage(INT) private int burningTime = 0;
 	/** 最大燃烧时长 */
 	@Storage(INT) private int maxTime = 0;
+	/** 正在燃烧的物品 */
+	@Storage private ItemElement burnItem;
 
 	public EMFirePower() {
 		setExtractRange(1, 120, EnumVoltage.C, EnumVoltage.E);
@@ -99,20 +104,29 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 		IBlockState state;
 		if (!stack.isEmpty() && getNowEnergy() < getMaxEnergy() / 10 * 5) {
 			maxTime = TileEntityFurnace.getItemBurnTime(stack);
+			burnItem = ItemElement.instance(stack.getItem(), 1);
 			stack.shrink(1);
 			state = old.withProperty(MIProperty.WORKING, true);
 		} else {
+			burnItem = null;
 			state = old.withProperty(MIProperty.WORKING, false);
 		}
 		WorldUtil.setBlockState(world, pos, old, state);
 		progressBar.setMax(maxTime);
 	}
 
+	/** 更新输出 */
+	private void updateProduction() {
+		maxTime = burningTime = 0;
+		ICraftGuide out = CRAFT.apply(burnItem.getStack());
+		if (out == null) return;
+		ItemElement element = out.getFirstOut();
+		ItemUtil.putItemTo(this.out.getStack(), element.getStack(), false);
+	}
+
 	/** 更新燃烧时间 */
 	private void updateBurningTime() {
-		if ((burningTime += 5) >= maxTime) {
-			maxTime = burningTime = 0;
-		}
+		if ((burningTime += 5) >= maxTime) updateProduction();
 		progressBar.setNow(burningTime);
 		setNowEnergy(getNowEnergy() + 30);
 		markDirty();

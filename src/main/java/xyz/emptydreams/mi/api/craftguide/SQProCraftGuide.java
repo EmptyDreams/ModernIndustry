@@ -6,41 +6,32 @@ import xyz.emptydreams.mi.api.net.WaitList;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * 有序合成表. <b>产物是无序的</b>
+ * 只有一个产物的有序合成表
  * @author EmptyDreams
  */
-public class SQCraftGuide implements ICraftGuide, Iterable<ItemElement> {
-	
+public class SQProCraftGuide implements ICraftGuide, Iterable<ItemElement> {
+
 	/** 原料 */
 	private final ItemElement[][] elements;
 	/** 产品 */
-	private final HashSet<ItemElement> outs = new HashSet<ItemElement>() {
-		@Override
-		public boolean add(ItemElement o) {
-			for (ItemElement element : this) {
-				if (element.merge(o)) return true;
-			}
-			return super.add(o);
-		}
-	};
+	private ItemElement out;
 
-	public SQCraftGuide(int xSize, int ySize) {
+	public SQProCraftGuide(int xSize, int ySize) {
 		if (xSize <= 0) throw new IllegalArgumentException("xSize[" + xSize + "]应当大于0");
 		if (ySize <= 0) throw new IllegalArgumentException("ySize[" + ySize + "]应当大于0");
 		elements = new ItemElement[ySize][xSize];
 	}
-	
-	public SQCraftGuide() {
+
+	public SQProCraftGuide() {
 		this(3, 3);
 	}
-	
+
 	/**
 	 * 设置指定位置的元素
 	 * @param element 元素
@@ -57,53 +48,37 @@ public class SQCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 			checkIndex(x, y);
 		}
 	}
-	
+
 	/**
-	 * 向列表添加一个产物
+	 * 设置产物
 	 * @param element 产物
 	 * @throws NullPointerException 如果 element == null
 	 */
-	public void addOutElement(ItemElement element) {
+	public SQProCraftGuide setOut(ItemElement element) {
 		WaitList.checkNull(element, "element");
-		outs.add(element);
+		out = element;
+		return this;
 	}
-	
+
 	/**
-	 * 从合成表中删除一个产物
-	 * @param item 指定的物品
+	 * 设置产物
+	 * @param item 产物
+	 * @throws NullPointerException 如果 item == null
+	 */
+	public SQProCraftGuide setOut(Item item) {
+		return setOut(ItemElement.instance(item, 1));
+	}
+
+	/**
+	 * 从合成表中删除产物
 	 * @return 是否删除成功
 	 */
-	public boolean removeOutItem(Item item) {
-		ItemElement element;
-		Iterator<ItemElement> it = outs.iterator();
-		while (it.hasNext()) {
-			element = it.next();
-			if (element.contrastWith(item)) {
-				it.remove();
-				return true;
-			}
-		}
-		return false;
+	public boolean removeOutElement() {
+		if (out == null) return false;
+		out = null;
+		return true;
 	}
-	
-	/**
-	 * 从合成表中删除一个产物
-	 * @param element 指定的产物
-	 * @return 是否删除成功
-	 */
-	public boolean removeOutElement(ItemElement element) {
-		ItemElement itemElement;
-		Iterator<ItemElement> it = outs.iterator();
-		while (it.hasNext()) {
-			itemElement = it.next();
-			if (itemElement.contrastWith(element)) {
-				it.remove();
-				return true;
-			}
-		}
-		return false;
-	}
-	
+
 	/**
 	 * 获取指定位置的元素.
 	 * <b>该方法可能会触发补白操作</b>
@@ -116,7 +91,7 @@ public class SQCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 		checkIndex(x, y);
 		return elements[y][x];
 	}
-	
+
 	@Override
 	public boolean apply(Object craft) {
 		if (craft == this) return true;
@@ -131,7 +106,7 @@ public class SQCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 		});
 		return result.get();
 	}
-	
+
 	@Override
 	public boolean apply(ItemStack... stacks) {
 		if (stacks.length != xSize() * ySize()) return false;
@@ -141,7 +116,7 @@ public class SQCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean apply(Iterable<ItemStack> stacks) {
 		int x = 0, y = 0;
@@ -156,7 +131,7 @@ public class SQCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean hasItem(Item item) {
 		for (ItemElement element : this) {
@@ -164,16 +139,18 @@ public class SQCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 		}
 		return false;
 	}
-	
+
 	@Nonnull
 	@Override
 	public List<ItemElement> getOuts() {
-		return new ArrayList<>(outs);
+		List<ItemElement> list = new ArrayList<>(1);
+		list.add(out);
+		return list;
 	}
 
 	@Override
 	public ItemElement getFirstOut() {
-		return outs.iterator().next();
+		return out;
 	}
 
 	/** 空白填充，用于将合成表中null部分填充为{@link ItemElement#empty()} */
@@ -184,10 +161,9 @@ public class SQCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 			}
 		}
 	}
-	
+
 	public int xSize() { return elements[0].length; }
 	public int ySize() { return elements.length; }
-	public int outSize() { return outs.size(); }
 	/**
 	 * 检查下标是否正确，与虚拟机相比该方法能提供更准确的错误信息
 	 */
@@ -197,7 +173,7 @@ public class SQCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 		if (x >= elements[0].length)
 			throw new IndexOutOfBoundsException("x[" + x + "]值超出了极限{[0, " + elements[0].length + ")}");
 	}
-	
+
 	/**
 	 * 迭代顺序：从上到下，从左到右，不会遍历产物
 	 */
@@ -205,14 +181,14 @@ public class SQCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 	@Nonnull
 	public Iterator<ItemElement> iterator() {
 		return new Iterator<ItemElement>() {
-			
+
 			int nowX = 0, nowY = 0;
-			
+
 			@Override
 			public boolean hasNext() {
 				return nowX != xSize() - 1 || nowY != ySize() - 1;
 			}
-			
+
 			@Override
 			public ItemElement next() {
 				if (nowX == xSize() - 1) {
@@ -224,14 +200,14 @@ public class SQCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 				}
 				return get(++nowX, nowY);
 			}
-			
+
 			@Override
 			public void remove() {
 				setElement(ItemElement.empty(), nowX, nowY);
 			}
 		};
 	}
-	
+
 	/**
 	 * 遍历所有元素
 	 */
@@ -242,5 +218,5 @@ public class SQCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 			}
 		}
 	}
-	
+
 }

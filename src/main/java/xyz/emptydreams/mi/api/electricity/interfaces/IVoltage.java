@@ -30,7 +30,7 @@ public interface IVoltage {
 	@Nonnull
 	IVoltage copy();
 	
-	static IVoltage getInstance(int voltage, int loss) {
+	static IVoltage getInstance(int voltage, double loss) {
 		for (EnumVoltage value : EnumVoltage.values()) {
 			if (value.getVoltage() == voltage && value.getLossIndex() == loss) {
 				return value;

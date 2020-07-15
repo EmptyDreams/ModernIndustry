@@ -11,29 +11,21 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 无序合成表类
+ * 只有一个输出产物的无序合成表
  * @author EmptyDreams
  */
-public class ULCraftGuide implements ICraftGuide, Iterable<ItemElement> {
-	
+public class ULProCraftGuide implements ICraftGuide, Iterable<ItemElement> {
+
 	/** 原料 */
 	private final HashSet<ItemElement> elements;
 	/** 产物 */
-	private final HashSet<ItemElement> outs = new HashSet<ItemElement>(1) {
-		@Override
-		public boolean add(ItemElement o) {
-			for (ItemElement element : this) {
-				if (element.merge(o)) return true;
-			}
-			return super.add(o);
-		}
-	};
-	
+	private ItemElement out;
+
 	/**
 	 * 创建一个预测大小的合成表.
 	 * 这个数值不会影响运行效果，但是正确的预测大小可以减少内存浪费和提升运行速度
 	 */
-	public ULCraftGuide(int size) {
+	public ULProCraftGuide(int size) {
 		elements = new HashSet<ItemElement>(size) {
 			@Override
 			public boolean add(ItemElement o) {
@@ -44,50 +36,60 @@ public class ULCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 			}
 		};
 	}
-	
+
 	/** 以默认大小（4）创建合成表 */
-	public ULCraftGuide() { this(4); }
-	
+	public ULProCraftGuide() { this(4); }
+
 	/**
 	 * 向列表中添加一个元素
 	 * @param element 要添加的元素
 	 * @throws NullPointerException 如果 element == null
 	 */
-	public ULCraftGuide addElement(ItemElement element) {
+	public ULProCraftGuide addElement(ItemElement element) {
 		WaitList.checkNull(element, "element");
 		elements.add(element);
 		return this;
 	}
-	
+
 	/**
-	 * 向列表添加一个产物
+	 * 向列表中添加一个元素
+	 * @param item 要添加的元素
+	 * @throws NullPointerException 如果 item == null
+	 */
+	public ULProCraftGuide addElement(Item item) {
+		return addElement(ItemElement.instance(item, 1));
+	}
+
+	/**
+	 * 设置产物
 	 * @param element 产物
 	 * @throws NullPointerException 如果 element == null
 	 */
-	public ULCraftGuide addOutElement(ItemElement element) {
+	public ULProCraftGuide setOut(ItemElement element) {
 		WaitList.checkNull(element, "element");
-		outs.add(element);
+		out = element;
 		return this;
 	}
-	
+
 	/**
-	 * 从合成表中删除一个产物
-	 * @param item 指定的物品
+	 * 设置产物
+	 * @param item 产物
+	 * @throws NullPointerException 如果 item == null
+	 */
+	public ULProCraftGuide setOut(Item item) {
+		return setOut(ItemElement.instance(item, 1));
+	}
+
+	/**
+	 * 从合成表中删除产物
 	 * @return 是否删除成功
 	 */
-	public boolean removeOutItem(Item item) {
-		ItemElement element;
-		Iterator<ItemElement> it = outs.iterator();
-		while (it.hasNext()) {
-			element = it.next();
-			if (element.contrastWith(item)) {
-				it.remove();
-				return true;
-			}
-		}
-		return false;
+	public boolean removeOutElement() {
+		if (out == null) return false;
+		out = null;
+		return true;
 	}
-	
+
 	/**
 	 * 从合成表中删除一个物品
 	 * @param item 指定的物品
@@ -105,25 +107,7 @@ public class ULCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 		}
 		return false;
 	}
-	
-	/**
-	 * 从合成表中删除一个产物
-	 * @param element 指定的产物
-	 * @return 是否删除成功
-	 */
-	public boolean removeOutElement(ItemElement element) {
-		ItemElement itemElement;
-		Iterator<ItemElement> it = outs.iterator();
-		while (it.hasNext()) {
-			itemElement = it.next();
-			if (itemElement.contrastWith(element)) {
-				it.remove();
-				return true;
-			}
-		}
-		return false;
-	}
-	
+
 	/**
 	 * 从合成表中删除一个元素
 	 * @param element 指定的元素
@@ -141,7 +125,7 @@ public class ULCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 判断目标列表是否与合成表相符（比较时忽视产物）
 	 * @param craft 目标列表
@@ -149,12 +133,12 @@ public class ULCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 	 */
 	@Override
 	public boolean apply(Object craft) {
-		if (!(craft instanceof ULCraftGuide)) return false;
-		ULCraftGuide guide = (ULCraftGuide) craft;
+		if (!(craft instanceof ULProCraftGuide)) return false;
+		ULProCraftGuide guide = (ULProCraftGuide) craft;
 		if (craft == this) return true;
 		return elements.equals(guide.elements);
 	}
-	
+
 	/**
 	 * 判断目标列表是否与合成表相符
 	 * @param stacks 物品列表
@@ -173,7 +157,7 @@ public class ULCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean apply(Iterable<ItemStack> stacks) {
 		if (stacks == null) return false;
@@ -187,7 +171,7 @@ public class ULCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean hasItem(Item item) {
 		for (ItemElement element : this) {
@@ -195,16 +179,18 @@ public class ULCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 		}
 		return false;
 	}
-	
+
 	@Nonnull
 	@Override
 	public List<ItemElement> getOuts() {
-		return new ArrayList<>(outs);
+		List<ItemElement> list = new ArrayList<>(1);
+		list.add(out);
+		return list;
 	}
 
 	@Override
 	public ItemElement getFirstOut() {
-		return outs.iterator().next();
+		return out;
 	}
 
 	/** 将合成表转换为ItemStack[] */
@@ -217,31 +203,31 @@ public class ULCraftGuide implements ICraftGuide, Iterable<ItemElement> {
 		}
 		return stacks;
 	}
-	
+
 	@Override
 	public Iterator<ItemElement> iterator() {
 		return elements.iterator();
 	}
-	
+
 	@Override
 	public String toString() {
-		return "ULCraftGuide{" +
-				       "elementsSize=" + elements.size() + "," +
-					   "outsSize=" + outs.size() +
-				       '}';
+		return "ULProCraftGuide{" +
+				"elements=" + elements +
+				", out=" + out +
+				'}';
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		
-		ULCraftGuide that = (ULCraftGuide) o;
-		
+
+		ULProCraftGuide that = (ULProCraftGuide) o;
+
 		if (!elements.equals(that.elements)) return false;
-		return outs.equals(that.outs);
+		return out.equals(that.out);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return elements.hashCode();

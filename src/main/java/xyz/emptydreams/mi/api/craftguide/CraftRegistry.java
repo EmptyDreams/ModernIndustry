@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.api.craftguide;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.net.WaitList;
 
 import javax.annotation.Nonnull;
@@ -34,7 +35,11 @@ public class CraftRegistry {
 			return registry;
 		});
 	}
-	
+
+	public static CraftRegistry instance(String name) {
+		return instance(new ResourceLocation(ModernIndustry.MODID, name));
+	}
+
 	/** 包含的合成表 */
 	private final Set<ICraftGuide> CRAFTS = new HashSet<>();
 	/** 资源名称 */

@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * 所有合成表的接口，其中定义了一些规范
  * @author EmptyDreams
- * @version V1.0
  */
 public interface ICraftGuide {
 	

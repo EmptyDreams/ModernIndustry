@@ -1,12 +1,36 @@
 package xyz.emptydreams.mi.api.utils;
 
-import java.util.Arrays;
+import net.minecraft.util.ResourceLocation;
+
+import javax.annotation.Nonnull;
 
 /**
  * 关于一些字符串操作的封装
  * @author EmptyDreams
  */
 public class StringUtil {
+
+	/**
+	 * 向目标RL的Path中追加信息
+	 * @param src 目标RL
+	 * @param pathAddition 要追加的信息
+	 * @return 修改后的RL
+	 */
+	@Nonnull
+	public static ResourceLocation revampAddToRL(ResourceLocation src, String pathAddition) {
+		return revampRL(src, src.getResourcePath() + pathAddition);
+	}
+
+	/**
+	 * 将目标RL的Path替换为指定的path
+	 * @param src 目标RL
+	 * @param path 指定的path
+	 * @return 修改后的RL
+	 */
+	@Nonnull
+	public static ResourceLocation revampRL(ResourceLocation src, String path) {
+		return new ResourceLocation(src.getResourceDomain(), path);
+	}
 
 	/**
 	 * 合并两个字符串数组

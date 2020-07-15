@@ -38,14 +38,10 @@ import static xyz.emptydreams.mi.api.utils.ItemUtil.merge;
  */
 @AutoTileEntity(CompressorBlock.NAME)
 public class EUCompressor extends FrontTileEntity implements ITickable {
-	
+
 	/** 压缩机的合成表 */
 	public static final CraftRegistry CRAFT = CraftRegistry.instance(
 			new ResourceLocation(ModernIndustry.MODID, CompressorBlock.NAME));
-	
-	static {
-
-	}
 	
 	/**
 	 * 三个物品框<br>
