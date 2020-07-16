@@ -30,7 +30,7 @@ tile.compressor_tblock.name=压缩机
 tile.perpetual.name=无限电能方块
 tile.fire_power.name=火力发电机
 tile.muffle_furnace.name=高温熔炉
-tile.ele_furnace.name=火炉
+tile.ele_furnace.name=电炉
 #线缆
 tile.wire_copper.name=铜线
 #TAB

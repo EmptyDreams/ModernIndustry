@@ -1,13 +1,7 @@
 package xyz.emptydreams.mi.api.utils.data;
 
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraftforge.common.util.INBTSerializable;
-import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.utils.BlockPosUtil;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -15,21 +9,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * 自动化的TE数据处理
  * @author EmptyDreams
- * @version V1.0
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
 public interface TEHelper {
 	
 	/**
@@ -90,13 +76,11 @@ public interface TEHelper {
 					
 					try {
 						field.setAccessible(true);
-						if (!data.hasKey(name + ":null"))
-							field.set(this, type.read(data, name, null));
-					} catch (IllegalAccessException e) {
+						if (type == DataType.SERIALIZABLE && !storage.def().equals(""))
+							field.set(this, clazz.getDeclaredMethod(storage.def(), (Class<?>) null));
+						type.read(data, name, this, field);
+					} catch (ClassCastException | NoSuchMethodException | IllegalAccessException e) {
 						throw new RuntimeException(e);
-					} catch (ClassCastException e) {
-						e.initCause(new ClassCastException("标记的需要读写的数据类型不继承自INBTSerializable"));
-						throw e;
 					}
 				}
 			}
@@ -118,7 +102,16 @@ public interface TEHelper {
 	
 		/** 数据类型，手动指定数据类型可以减少运算量 */
 		DataType value() default DataType.AUTO;
-		
+
+		/**
+		 * 获取默认值的方法名称（目前仅{@link DataType#SERIALIZABLE}支持默认值），
+		 * 留空表示由MI计算默认值，默认值必须由运行时计算产生，离线存储时MI不会存储默认值<br>
+		 * 例：输入"getDefault":<br>
+		 * 则类中应当包含<b>public [数据类型] getDefault()</b>方法<br>
+		 * 其中[数据类型]与要读取的类型保持一致
+		 */
+		String def() default "";
+
 	}
 	
 }

@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 /**
  * 用于盛放对象引用的容器
  * @author EmptyDreams
- * @version V1.0
  */
 public final class Wrapper<T> {
 	

@@ -7,19 +7,19 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.INBTSerializable;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.interfaces.ThConsumer;
-import xyz.emptydreams.mi.api.interfaces.ThFunction;
+import xyz.emptydreams.mi.api.utils.wrapper.Wrapper;
 
 import javax.annotation.Nullable;
-import javax.print.DocFlavor;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.BiFunction;
 
 /**
  * 表示可以写入到NBT中的数据类型
  * @author EmptyDreams
  */
+@SuppressWarnings("rawtypes")
 public enum  DataType {
 
 	/** byte and {@link Byte} */
@@ -57,41 +57,33 @@ public enum  DataType {
 	/** {@link Enum} */
 	ENUM(DataOperator::writeEnum, DataOperator::readEnum),
 	/** 表示实现了{@link INBTSerializable}的类对象 */
-	OTHER(DataOperator::writeSerializable, DataOperator::readSerializable),
+	SERIALIZABLE(DataOperator::writeSerializable, DataOperator::readSerializable),
 	/** 表示坐标({@link net.minecraft.util.math.BlockPos}) */
 	POS(DataOperator::writePos, DataOperator::readPos),
 	/**
 	 * 表示{@link java.util.Collection}.
 	 * 该类中存储的所有数据都必须支持写入到NBT中。
-	 * 若存储类型为{@link #OTHER}，则存储的类必须包含默认构造函数
+	 * 若存储类型为{@link #SERIALIZABLE}，则存储的类必须包含默认构造函数
 	 */
 	COLLECTION(DataOperator::writeCollection, DataOperator::readCollection),
 	/**
 	 * 表示{@link java.util.Map}.
 	 * Map中的Key和Value都必须支持写入到NBT中。
-	 * 若存储类型为{@link #OTHER}，则存储的类必须包含默认构造函数
+	 * 若存储类型为{@link #SERIALIZABLE}，则存储的类必须包含默认构造函数
 	 */
 	MAP(DataOperator::writeMap, DataOperator::readMap),
 	/** 表示{@link xyz.emptydreams.mi.api.electricity.interfaces.IVoltage} */
 	VOLTAGE(DataOperator::writeVoltage, DataOperator::readVoltage),
 	/** 表示自动判断 */
-	AUTO(DataOperator::writeAuto, DataOperator::readAuto);
+	AUTO(DataOperator::writeAuto, null);
 
-	@SuppressWarnings("rawtypes")
 	private final ThConsumer writer;
-	private final BiFunction<NBTTagCompound, String, ?> reader;
-	private final ThFunction<NBTTagCompound, String, Class<?>, ?> auto;
+	private final ThConsumer<NBTTagCompound, String, ? super DataInfo> reader;
 
-	<T> DataType(ThConsumer<NBTTagCompound, String, T> writer, BiFunction<NBTTagCompound, String, T> reader) {
+	<T> DataType(ThConsumer<NBTTagCompound, String, T> writer,
+	             ThConsumer<NBTTagCompound, String, ? super DataInfo> reader) {
 		this.writer = writer;
 		this.reader = reader;
-		auto = null;
-	}
-
-	<T> DataType(ThConsumer<NBTTagCompound, String, T> writer, ThFunction<NBTTagCompound, String, Class<?>, T> auto) {
-		this.writer = writer;
-		this.auto = auto;
-		reader = null;
 	}
 
 	/**
@@ -117,15 +109,24 @@ public enum  DataType {
 	@SuppressWarnings("unchecked")
 	@Nullable
 	public <T> T read(NBTTagCompound nbt, String name, Class<T> dataType) {
-		if (auto == null) return (T) reader.apply(nbt, name);
-		return (T) auto.apply(nbt, name, dataType);
+		if (reader == null) return DataOperator.readAuto(nbt, name, dataType);
+		else {
+			Wrapper result = new Wrapper();
+			reader.accept(nbt, name, new DataInfo(result::set));
+			return (T) result.get();
+		}
+	}
+
+	public void read(NBTTagCompound nbt, String name, Object obj, Field field) {
+		if (reader == null) DataOperator.readAuto(nbt, name, obj, field);
+		else reader.accept(nbt, name, new DataInfo(obj, field));
 	}
 
 	public static DataType from(Class<?> type) {
 		if (type == int.class || type == Integer.class) return INT;
 		else if (type == boolean.class || type == Boolean.class) return BOOLEAN;
 		else if (NBTBase.class.isAssignableFrom(type)) return TAG;
-		else if (INBTSerializable.class.isAssignableFrom(type)) return OTHER;
+		else if (INBTSerializable.class.isAssignableFrom(type)) return SERIALIZABLE;
 		else if (type == BlockPos.class) return POS;
 		else if (IVoltage.class.isAssignableFrom(type)) return VOLTAGE;
 		else if (Enum.class.isAssignableFrom(type)) return ENUM;

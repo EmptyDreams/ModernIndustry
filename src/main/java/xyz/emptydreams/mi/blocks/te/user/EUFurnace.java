@@ -33,7 +33,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 	/** 工作进度条 */
 	private final CommonProgress progressBar = new CommonProgress();
 	/** 输入/输出框 */
-	@Storage(value = DataType.OTHER)
+	@Storage(value = DataType.SERIALIZABLE)
 	private final ItemStackHandler item = new ItemStackHandler(2);
 	/** 输入框 */
 	private final SlotItemHandler in = new SlotItemHandler(item, 0, 52, 32) {

@@ -28,7 +28,7 @@ import xyz.emptydreams.mi.data.info.EnumVoltage;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 
 import static xyz.emptydreams.mi.api.utils.data.DataType.INT;
-import static xyz.emptydreams.mi.api.utils.data.DataType.OTHER;
+import static xyz.emptydreams.mi.api.utils.data.DataType.SERIALIZABLE;
 import static xyz.emptydreams.mi.blocks.craft.CraftFirePower.CRAFT;
 
 /**
@@ -59,7 +59,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 		}
 	};
 	/** 输入/输出框 */
-	@Storage(OTHER) private final ItemStackHandler item = new ItemStackHandler(2);
+	@Storage(SERIALIZABLE) private final ItemStackHandler item = new ItemStackHandler(2);
 	/** 输入框 */
 	private final SlotItemHandler in = CommonUtil.createInputSlot(item, 0, 52, 29,
 											stack -> TileEntityFurnace.getItemBurnTime(stack) > 0 &&
