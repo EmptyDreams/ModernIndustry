@@ -104,7 +104,8 @@ public interface TEHelper {
 		DataType value() default DataType.AUTO;
 
 		/**
-		 * 获取默认值的方法名称（目前仅{@link DataType#SERIALIZABLE}支持默认值），
+		 * 获取默认值的方法名称（目前仅{@link DataType#SERIALIZABLE}、
+		 * {@link DataType#MAP}以及{@link DataType#COLLECTION}支持默认值），
 		 * 留空表示由MI计算默认值，默认值必须由运行时计算产生，离线存储时MI不会存储默认值<br>
 		 * 例：输入"getDefault":<br>
 		 * 则类中应当包含<b>public [数据类型] getDefault()</b>方法<br>

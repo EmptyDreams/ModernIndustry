@@ -1,12 +1,28 @@
 #author:空梦(EmptyDreams)
 #注：该模组开放翻译，翻译内容的版权归译者所有，责任由译者承担
 #译者可在.lang文件开头声明自己的名称
+#若译者同意模组作者将自己的翻译成果加入到模组中，请在文件中将下面一行的内容改为true
+#agree to use=false
 
-#矿物
+#锭
 item.copper_item.name=铜锭
-item.copper_powder_item.name=铜粉
 item.tin_item.name=锡锭
-item.tin_powder_item.name=锡粉
+#粉
+item.copper_powder.name=铜粉
+item.tin_powder.name=锡粉
+item.coal_powder.name=煤粉
+item.coal_burn_powder.name=煤渣
+item.iron_powder.name=铁粉
+item.gold_powder.name=金粉
+item.diamond_powder.name=钻石粉
+item.stone_powder.name=石粉
+#粉碎矿石
+item.copper_crush.name=粉碎铜矿石
+item.tin_crush.name=粉碎锡矿石
+item.coal_crush.name=粉碎煤矿石
+item.iron_crush.name=粉碎铁矿石
+item.gold_crush.name=粉碎金矿石
+item.diamond_crush.name=粉碎钻石矿石
 #工具
 item.spanner.name=扳手
 item.copper_pickaxe_tool.name=铜镐
@@ -31,6 +47,8 @@ tile.perpetual.name=无限电能方块
 tile.fire_power.name=火力发电机
 tile.muffle_furnace.name=高温熔炉
 tile.ele_furnace.name=电炉
+tile.pulverizer.name=粉碎机
+tile.ele_mfurnace.name=高温电炉
 #线缆
 tile.wire_copper.name=铜线
 #TAB

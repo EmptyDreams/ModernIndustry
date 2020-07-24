@@ -9,11 +9,16 @@ import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.craftguide.CraftRegistry;
 import xyz.emptydreams.mi.api.craftguide.ICraftGuide;
+import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.IProgressBar;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.blocks.CommonUtil;
+import xyz.emptydreams.mi.blocks.CraftList;
 import xyz.emptydreams.mi.blocks.te.FrontTileEntity;
+import xyz.emptydreams.mi.data.info.BiggerVoltage;
+import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
+import xyz.emptydreams.mi.data.info.EnumVoltage;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 
 import javax.annotation.Nonnull;
@@ -28,19 +33,10 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
 @AutoTileEntity("pulverizer")
 public class EUPulverizer extends FrontTileEntity implements ITickable {
 
-	/** 合成表 */
-	public static final CraftRegistry CRAFT = CraftRegistry.instance(
-			new ResourceLocation(ModernIndustry.MODID, "pulverizer"));
-
-	static {
-		ICraftGuide[] crafts = { };
-		CRAFT.register(crafts);
-	}
-
 	/** 物品栏 */
 	@Storage private final ItemStackHandler item = new ItemStackHandler(2);
 	private final SlotItemHandler in = CommonUtil.createInputSlot(item, 0, 52, 32,
-														stack -> CRAFT.hasItem(stack.getItem()));
+														stack -> CraftList.PULVERIZER.hasItem(stack.getItem()));
 	private final SlotItemHandler out = CommonUtil.createOutputSlot(item, 1, 106, 32);
 	/** 工作时间 */
 	private int workingTime = 0;
@@ -48,6 +44,13 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 	private final CommonProgress progressBar = new CommonProgress();
 
 	public EUPulverizer() {
+		setReceiveRange(1, 20, EnumVoltage.C, EnumVoltage.D);
+		OrdinaryCounter counter = new OrdinaryCounter(100);
+		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
+		setCounter(counter);
+		setReceive(true);
+		setMaxEnergy(20);
+
 		progressBar.setLocation(76, 33);
 	}
 
@@ -72,11 +75,11 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 
 	/** 更新内部数据 */
 	private void updateData() {
-		if (++workingTime >= getNeedEnergy()) {
+		if (++workingTime >= getNeedTime()) {
 			if (out.getHasStack()) {
 				out.getStack().grow(1);
 			} else {
-				out.putStack(CRAFT.apply(in.getStack()).getFirstOut().getStack());
+				out.putStack(CraftList.PULVERIZER.apply(in.getStack()).getFirstOut().getStack());
 			}
 			in.getStack().shrink(1);
 			workingTime = 0;
@@ -100,7 +103,8 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 		ItemStack out = this.out.getStack();
 		if (!out.isEmpty()) {
 			if (out.getCount() >= out.getMaxStackSize() ||
-					!CRAFT.apply(in.getStack()).getFirstOut().getStack().getItem().equals(out.getItem())) {
+					!CraftList.PULVERIZER.apply(in.getStack()).getFirstOut()
+							.getStack().getItem().equals(out.getItem())) {
 				//如果输出框不为空但物品数量达到上限则不能正常运行
 				//               或产品与输出框不相符则不能正常运行
 				if (workingTime != 0) {

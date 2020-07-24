@@ -46,7 +46,7 @@ public class ItemRegister {
 		    }
 	   }
 
-	    for (OreBlock block : OreBlock.LIST.keySet()) {
+	    for (OreBlock block : OreBlock.LIST.values()) {
 	    	GameRegistry.addSmelting(block.getBlockItem(), new ItemStack(OreBlock.LIST.get(block)), 0.5F);
 	    }
 	}

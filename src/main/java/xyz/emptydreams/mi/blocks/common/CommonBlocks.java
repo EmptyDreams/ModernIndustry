@@ -19,10 +19,10 @@ public final class CommonBlocks {
 
 	/** 铜矿石 */
 	@OreCreate(yRange = 76 - 16, count = 11, name = OreBlock.NAME_COPPER)
-	public static final OreBlock ORE_COPPER = new OreBlock(OreBlock.NAME_COPPER, CommonItems.ITEM_COPPER_POWDER);
+	public static final OreBlock ORE_COPPER = new OreBlock(OreBlock.NAME_COPPER);
 	/** 锡矿石 */
 	@OreCreate(yRange = 70 - 16, count = 7, time = 3, name = OreBlock.NAME_TIN)
-	public static final OreBlock ORE_TIN = new OreBlock(OreBlock.NAME_TIN, CommonItems.ITEM_TIN_POWER);
+	public static final OreBlock ORE_TIN = new OreBlock(OreBlock.NAME_TIN);
 
 	/** 机器外壳 */
 	public static final String NAME_MACHINE_SHELL = "machine_shell";

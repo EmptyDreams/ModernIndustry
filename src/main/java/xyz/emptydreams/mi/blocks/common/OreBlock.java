@@ -14,18 +14,21 @@ import java.util.Random;
 
 /**
  * @author EmptyDremas
- * @version V1.0
  */
 public class OreBlock extends BlockBase {
 
 	/** 存储方块列表 */
-	public static final Map<OreBlock, Item> LIST = new HashMap<>(10);
+	public static final Map<String, OreBlock> LIST = new HashMap<>(10);
 	public static final String NAME_COPPER = "copper_ore_block";
 	public static final String NAME_TIN = "tin_ore_block";
 
+	public static OreBlock getInstance(String name) {
+		return LIST.get(name);
+	}
+
 	private final Item ITEM;
 	
-	public OreBlock(String name, Item output) {
+	public OreBlock(String name) {
 		super(Material.ROCK);
 		setRegistryName(ModernIndustry.MODID, name);
 		setUnlocalizedName(name);
@@ -34,7 +37,7 @@ public class OreBlock extends BlockBase {
 		setHardness(2.5F);
 		setHarvestLevel("pickaxe", 1);
 		ITEM = new ItemBlock(this).setRegistryName(name);
-		LIST.put(this, output);
+		LIST.put(name, this);
 	}
 
 	@Nonnull
@@ -42,7 +45,7 @@ public class OreBlock extends BlockBase {
 	public Item getBlockItem() {
 		return ITEM;
 	}
-	
+
 	@Override
 	public int quantityDropped(Random random) {
 		return 1;

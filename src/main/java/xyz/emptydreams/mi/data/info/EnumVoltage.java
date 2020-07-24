@@ -6,19 +6,17 @@ import javax.annotation.Nonnull;
 
 /**
  * 存储支持的电压等级
- *
  * @author EmptyDreams
- * @version V1.0
  */
 public enum EnumVoltage implements IVoltage {
 
 	NON(0, Double.MAX_VALUE),
-	A(10, 0.05),
-	B(50, 0.04),
-	C(100, 0.03),
-	D(200, 0.01),
-	E(500, 0.007),
-	F(1000, 0.005),
+	A(10, 0.0012),
+	B(50, 0.001),
+	C(100, 0.008),
+	D(200, 0.006),
+	E(500, 0.005),
+	F(1000, 0.004),
 	G(2000, 0.003),
 	H(5000, 0.001);
 	

@@ -7,7 +7,6 @@ import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 /**
  * 与电能有关的事件
  * @author EmptyDreams
- * @version V1.0
  */
 public class EnergyEvent extends Event {
 	

@@ -21,6 +21,7 @@ import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.utils.ItemUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.blocks.CommonUtil;
+import xyz.emptydreams.mi.blocks.CraftList;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.te.FrontTileEntity;
 import xyz.emptydreams.mi.capabilities.nonburn.NonBurnCapability;
@@ -29,7 +30,6 @@ import xyz.emptydreams.mi.register.te.AutoTileEntity;
 
 import static xyz.emptydreams.mi.api.utils.data.DataType.INT;
 import static xyz.emptydreams.mi.api.utils.data.DataType.SERIALIZABLE;
-import static xyz.emptydreams.mi.blocks.craft.CraftFirePower.CRAFT;
 
 /**
  * 火力发电机的TE
@@ -113,12 +113,13 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 		}
 		WorldUtil.setBlockState(world, pos, old, state);
 		progressBar.setMax(maxTime);
+		markDirty();
 	}
 
 	/** 更新输出 */
 	private void updateProduction() {
 		maxTime = burningTime = 0;
-		ICraftGuide out = CRAFT.apply(burnItem.getStack());
+		ICraftGuide out = CraftList.FIRE_POWER.apply(burnItem.getStack());
 		if (out == null) return;
 		ItemElement element = out.getFirstOut();
 		ItemUtil.putItemTo(this.out.getStack(), element.getStack(), false);

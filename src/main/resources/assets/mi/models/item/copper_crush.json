@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "mi:items/tin_crush_item"
+    "layer0": "mi:items/copper_crush"
   }
 }

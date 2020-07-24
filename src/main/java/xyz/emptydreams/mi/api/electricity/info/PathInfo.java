@@ -172,7 +172,6 @@ public class PathInfo implements Comparable<PathInfo> {
 				throw new IllegalArgumentException("线缆电能损耗量超过极限值[" + result + "]");
 			if (result % 1 != 0) lossEnergy = ((int) result) + 1;
 			else lossEnergy = (int) result;
-			MISysInfo.print(lossEnergy);
 		}
 	}
 

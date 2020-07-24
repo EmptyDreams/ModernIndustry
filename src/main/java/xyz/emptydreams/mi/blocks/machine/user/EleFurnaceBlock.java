@@ -87,6 +87,13 @@ public class EleFurnaceBlock extends MachineBlock {
 	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return CommonUtil.getStateFromMeta(this, meta);
+		//return CommonUtil.getStateFromMeta(this, meta);
+		EnumFacing facing = EnumFacing.getFront(meta & 0b0011);
+		if (facing.getAxis() == EnumFacing.Axis.Y) {
+			facing = EnumFacing.NORTH;
+		}
+		return getDefaultState()
+				.withProperty(FACING, facing)
+				.withProperty(WORKING, (meta & 0b0100) == 0b0100);
 	}
 }

@@ -175,10 +175,7 @@ public final class DataOperator {
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public static void readSerializable(NBTTagCompound nbt, String name, DataInfo<INBTSerializable<?>> setter) {
 		NBTBase base = nbt.getTag(name);
-		if (base == null) {
-			setter.accept(null);
-			return;
-		}
+		if (base == null) return;
 		try {
 			INBTSerializable serializable = setter.getDefault();
 			if (serializable == null) {
@@ -193,10 +190,12 @@ public final class DataOperator {
 	}
 
 	public static void writePos(NBTTagCompound nbt, String name, BlockPos data) {
+		if (data == null) return;
 		BlockPosUtil.writeBlockPos(nbt, data, name);
 	}
 	public static void readPos(NBTTagCompound nbt, String name, Consumer<BlockPos> setter) {
-		setter.accept(BlockPosUtil.readBlockPos(nbt, name));
+		BlockPos pos = BlockPosUtil.readBlockPos(nbt, name);
+		if (pos != null) setter.accept(pos);
 	}
 
 	public static void writeCollection(NBTTagCompound nbt, String name, Collection<?> data) {
@@ -212,17 +211,16 @@ public final class DataOperator {
 		}
 	}
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	public static void readCollection(NBTTagCompound nbt, String name, Consumer<Collection<?>> setter) {
+	public static void readCollection(NBTTagCompound nbt, String name, DataInfo<Collection<?>> setter) {
 		int size = nbt.getInteger(name);
-		if (size == 0) {
-			setter.accept(null);
-			return;
-		}
-		Collection collection;
-		try {
-			collection = (Collection) Class.forName(nbt.getString(name + ":name")).newInstance();
-		} catch (Exception e) {
-			throw new RuntimeException("数据自动读写出现了意料之外的错误", e);
+		if (size == 0) return;
+		Collection collection = setter.getDefault();
+		if (collection == null) {
+			try {
+				collection = (Collection) Class.forName(nbt.getString(name + ":name")).newInstance();
+			} catch (Exception e) {
+				throw new RuntimeException("数据自动读写出现了意料之外的错误", e);
+			}
 		}
 		Wrapper<Class<?>> clazz = new Wrapper<>();
 		for (int i = 0; i < size; ++i) {
@@ -247,17 +245,16 @@ public final class DataOperator {
 		}
 	}
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	public static void readMap(NBTTagCompound nbt, String name, Consumer<Map<?,?>> setter) {
+	public static void readMap(NBTTagCompound nbt, String name, DataInfo<Map<?,?>> setter) {
 		int size = nbt.getInteger(name);
-		if (size == 0) {
-			setter.accept(null);
-			return;
-		}
-		Map map;
-		try {
-			map = (Map) Class.forName(nbt.getString(name + ":name")).newInstance();
-		} catch (Exception e) {
-			throw new RuntimeException("数据自动读写出现了意料之外的错误", e);
+		if (size == 0) return;
+		Map map = setter.getDefault();
+		if (map == null) {
+			try {
+				map = (Map) Class.forName(nbt.getString(name + ":name")).newInstance();
+			} catch (Exception e) {
+				throw new RuntimeException("数据自动读写出现了意料之外的错误", e);
+			}
 		}
 		Wrapper<Class<?>> keyClazz = new Wrapper<>();
 		Wrapper<Class<?>> valueClazz = new Wrapper<>();
@@ -278,10 +275,7 @@ public final class DataOperator {
 		nbt.setDouble(name + ":loss", data.getLossIndex());
 	}
 	public static void readVoltage(NBTTagCompound nbt, String name, Consumer<IVoltage> setter) {
-		if (!nbt.hasKey(name)) {
-			setter.accept(null);
-			return;
-		}
+		if (!nbt.hasKey(name)) return;
 		int voltage = nbt.getInteger(name);
 		double loss = nbt.getDouble(name + ":loss");
 		setter.accept(IVoltage.getInstance(voltage, loss));
@@ -294,7 +288,6 @@ public final class DataOperator {
 	public static void readClass(NBTTagCompound nbt, String name, Consumer<Class<?>> setter) {
 		try {
 			if (nbt.hasKey(name)) setter.accept(Class.forName(nbt.getString(name)));
-			else setter.accept(null);
 		} catch (Exception e) {
 			MISysInfo.err("Class读取时发生了意料之外的错误，可能是因为存储了匿名类");
 			e.printStackTrace();
@@ -302,104 +295,13 @@ public final class DataOperator {
 	}
 
 	public static void writeAuto(NBTTagCompound nbt, String name, Object data) {
-		Class<?> clazz = data.getClass();
-		if (clazz == int.class || clazz == Integer.class) writeInt(nbt, name, (int) data);
-		else if (clazz == boolean.class || clazz == Boolean.class) writeBoolean(nbt, name, (boolean) data);
-		else if (data instanceof NBTBase) writeTag(nbt, name, (NBTBase) data);
-		else if (data instanceof INBTSerializable) writeSerializable(nbt, name, (INBTSerializable<?>) data);
-		else if (clazz == BlockPos.class) writePos(nbt, name, (BlockPos) data);
-		else if (data instanceof IVoltage) writeVoltage(nbt, name, (IVoltage) data);
-		else if (data instanceof Enum) writeEnum(nbt, name, (Enum<?>) data);
-		else if (data instanceof Collection) writeCollection(nbt, name, (Collection<?>) data);
-		else if (data instanceof Map) writeMap(nbt, name, (Map<?, ?>) data);
-		else if (clazz == byte.class || clazz == Byte.class) writeByte(nbt, name, (byte) data);
-		else if (clazz == byte[].class) writeByteArray(nbt, name, (byte[]) data);
-		else if (clazz == int[].class) writeIntArray(nbt, name, (int[]) data);
-		else if (clazz == long.class) writeLong(nbt, name, (long) data);
-		else if (clazz == double.class) writeDouble(nbt, name, (double) data);
-		else if (clazz == short.class) writeShort(nbt, name, (short) data);
-		else if (clazz == float.class) writeFloat(nbt, name, (float) data);
-		else if (clazz == String.class) writeString(nbt, name, (String) data);
-		else if (clazz == UUID.class) writeUniqueID(nbt, name, (UUID) data);
-		else if (clazz == Byte[].class) writePackByteArray(nbt, name, (Byte[]) data);
-		else if (clazz == Integer[].class) writePackIntArray(nbt, name, (Integer[]) data);
-		else if (clazz == StringBuilder.class) writeStringBuilder(nbt, name, (StringBuilder) data);
-		else if (clazz == StringBuffer.class) writeStringBuffer(nbt, name, (StringBuffer) data);
-		else throw new UnsupportedMessageTypeException(data.getClass().getName());
+		DataType.from(data.getClass()).write(nbt, name, data);
 	}
 	public static void readAuto(NBTTagCompound nbt, String name, Object obj, Field field) {
-		Class<?> returnType = field.getType();
-		if (returnType == int.class || returnType == Integer.class)
-													readInt(nbt, name, it -> writeToField(obj, field, it));
-		else if (returnType == boolean.class || returnType == Boolean.class)
-													readBoolean(nbt, name, it -> writeToField(obj, field, it));
-		else if (NBTBase.class.isAssignableFrom(returnType))
-													readTag(nbt, name, it -> writeToField(obj, field, it));
-		else if (INBTSerializable.class.isAssignableFrom(returnType))
-													readSerializable(nbt, name, new DataInfo<>(obj, field));
-		else if (returnType == BlockPos.class)
-													readPos(nbt, name, it -> writeToField(obj, field, it));
-		else if (IVoltage.class.isAssignableFrom(returnType))
-													readVoltage(nbt, name, it -> writeToField(obj, field, it));
-		else if (Enum.class.isAssignableFrom(returnType))
-													readEnum(nbt, name, it -> writeToField(obj, field, it));
-		else if (Collection.class.isAssignableFrom(returnType))
-													readCollection(nbt, name, it -> writeToField(obj, field, it));
-		else if (Map.class.isAssignableFrom(returnType))
-													readMap(nbt, name, it -> writeToField(obj, field, it));
-		else if (returnType == byte.class || returnType == Byte.class)
-													readByte(nbt, name, it -> writeToField(obj, field, it));
-		else if (returnType == byte[].class)        readByteArray(nbt, name, it -> writeToField(obj, field, it));
-		else if (returnType == int[].class)         readIntArray(nbt, name, it -> writeToField(obj, field, it));
-		else if (returnType == long.class)          readLong(nbt, name, it -> writeToField(obj, field, it));
-		else if (returnType == double.class)        readDouble(nbt, name, it -> writeToField(obj, field, it));
-		else if (returnType == short.class)         readShort(nbt, name, it -> writeToField(obj, field, it));
-		else if (returnType == float.class)         readFloat(nbt, name, it -> writeToField(obj, field, it));
-		else if (returnType == String.class)        readString(nbt, name, it -> writeToField(obj, field, it));
-		else if (returnType == UUID.class)          readUniqueID(nbt, name, it -> writeToField(obj, field, it));
-		else if (returnType == Byte[].class)        readPackByteArray(nbt, name, it -> writeToField(obj, field, it));
-		else if (returnType == Integer[].class)     readPackIntArray(nbt, name, it -> writeToField(obj, field, it));
-		else if (returnType == StringBuilder.class) readStringBuilder(nbt, name, it -> writeToField(obj, field, it));
-		else if (returnType == StringBuffer.class)  readStringBuffer(nbt, name, it -> writeToField(obj, field, it));
-		else throw new UnsupportedMessageTypeException(returnType.getName());
+		DataType.from(field.getType()).read(nbt, name, obj, field);
 	}
 	public static <T> T readAuto(NBTTagCompound nbt, String name, Class<T> returnType) {
-		Wrapper<Object> result = new Wrapper<>();
-		if (returnType == int.class || returnType == Integer.class)
-													readInt(nbt, name, result::set);
-		else if (returnType == boolean.class || returnType == Boolean.class)
-													readBoolean(nbt, name, result::set);
-		else if (NBTBase.class.isAssignableFrom(returnType))
-													readTag(nbt, name, result::set);
-		else if (INBTSerializable.class.isAssignableFrom(returnType))
-													readSerializable(nbt, name, new DataInfo<>(result::set));
-		else if (returnType == BlockPos.class)
-													readPos(nbt, name, result::set);
-		else if (IVoltage.class.isAssignableFrom(returnType))
-													readVoltage(nbt, name, result::set);
-		else if (Enum.class.isAssignableFrom(returnType))
-													readEnum(nbt, name, result::set);
-		else if (Collection.class.isAssignableFrom(returnType))
-													readCollection(nbt, name, result::set);
-		else if (Map.class.isAssignableFrom(returnType))
-													readMap(nbt, name, result::set);
-		else if (returnType == byte.class || returnType == Byte.class)
-													readByte(nbt, name, result::set);
-		else if (returnType == byte[].class)        readByteArray(nbt, name, result::set);
-		else if (returnType == int[].class)         readIntArray(nbt, name, result::set);
-		else if (returnType == long.class)          readLong(nbt, name, result::set);
-		else if (returnType == double.class)        readDouble(nbt, name, result::set);
-		else if (returnType == short.class)         readShort(nbt, name, result::set);
-		else if (returnType == float.class)         readFloat(nbt, name, result::set);
-		else if (returnType == String.class)        readString(nbt, name, result::set);
-		else if (returnType == UUID.class)          readUniqueID(nbt, name, result::set);
-		else if (returnType == Byte[].class)        readPackByteArray(nbt, name, result::set);
-		else if (returnType == Integer[].class)     readPackIntArray(nbt, name, result::set);
-		else if (returnType == StringBuilder.class) readStringBuilder(nbt, name, result::set);
-		else if (returnType == StringBuffer.class)  readStringBuffer(nbt, name, result::set);
-		else throw new UnsupportedMessageTypeException(returnType.getName());
-		//noinspection unchecked
-		return (T) result.get();
+		return DataType.from(returnType).read(nbt, name, returnType);
 	}
 
 	/**

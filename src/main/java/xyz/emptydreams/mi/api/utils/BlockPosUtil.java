@@ -11,6 +11,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.blocks.base.TransferBlock;
 
+import javax.annotation.Nullable;
+
 /**
  * 这个类种包含一些常用的工具类方法
  * @author EmptyDremas
@@ -47,7 +49,9 @@ public final class BlockPosUtil {
 	 * @param name 名称
 	 * @return 坐标
 	 */
+	@Nullable
 	public static BlockPos readBlockPos(NBTTagCompound compound, String name) {
+		if (!compound.hasKey(name + "_x")) return null;
 		return new BlockPos(compound.getInteger(name + "_x"),
 				compound.getInteger(name + "_y"), compound.getInteger(name + "_z"));
 	}

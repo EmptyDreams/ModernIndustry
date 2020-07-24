@@ -34,7 +34,6 @@ import static xyz.emptydreams.mi.api.utils.ItemUtil.merge;
 /**
  * 压缩机的TileEntity，存储方块内物品、工作时间等内容
  * @author EmptyDreams
- * @version V1.2
  */
 @AutoTileEntity(CompressorBlock.NAME)
 public class EUCompressor extends FrontTileEntity implements ITickable {
@@ -47,7 +46,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	 * 三个物品框<br>
 	 * 	0-上端，1-下端，2-输出
 	 */
-	@Storage(value = DataType.SERIALIZABLE)
+	@Storage(DataType.SERIALIZABLE)
 	private final ItemStackHandler item = new ItemStackHandler(3);
 	private final SlotMI up = new SlotMI(item, 0, 56, 17);
 	private final SlotMI down = new SlotMI(item, 1, 56, 53);
@@ -58,7 +57,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		}
 	};
 	/** 已工作时间 */
-	@Storage(value = DataType.INT)
+	@Storage(DataType.INT)
 	private int workingTime = 0;
 	/** 进度条 */
 	private final CommonProgress progressBar = new CommonProgress();
@@ -66,12 +65,12 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	private int needEnergy = 10;
 	
 	public EUCompressor() {
-		setReceiveRange(1, 50, EnumVoltage.C, EnumVoltage.D);
+		setReceiveRange(1, 20, EnumVoltage.C, EnumVoltage.D);
 		OrdinaryCounter counter = new OrdinaryCounter(100);
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
 		setReceive(true);
-		setMaxEnergy(100);
+		setMaxEnergy(20);
 		
 		progressBar.setLocation(80, 35);
 	}
