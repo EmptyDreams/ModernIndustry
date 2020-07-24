@@ -10,7 +10,6 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.component.IComponent;
-import xyz.emptydreams.mi.api.gui.component.ImageData;
 import xyz.emptydreams.mi.api.net.WaitList;
 
 import javax.annotation.Nonnull;

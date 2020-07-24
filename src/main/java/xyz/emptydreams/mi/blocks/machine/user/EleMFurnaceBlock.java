@@ -13,7 +13,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.MachineBlock;
 import xyz.emptydreams.mi.blocks.te.user.EUMFurnace;
@@ -38,11 +37,9 @@ public class EleMFurnaceBlock extends MachineBlock {
 
 	public EleMFurnaceBlock() {
 		super(Material.IRON);
-		setCreativeTab(ModernIndustry.TAB_BLOCK);
 		setDefaultState(blockState.getBaseState()
 				.withProperty(FACING, NORTH)
 				.withProperty(WORKING, false));
-		setHardness(3.5F);
 	}
 
 	@Override

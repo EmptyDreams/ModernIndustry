@@ -16,6 +16,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.api.utils.wrapper.BooleanWrapper;
@@ -30,7 +31,6 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
 /**
  * MI中所有耗电机器的父类
  * @author EmptyDreams
- * @version V1.0
  */
 public abstract class MachineBlock extends TEBlockBase {
 	
@@ -38,6 +38,9 @@ public abstract class MachineBlock extends TEBlockBase {
 		super(materialIn);
 		setSoundType(SoundType.STONE);
 		setHarvestLevel("pickaxe", 1);
+		setHardness(3);
+		setResistance(20);
+		setCreativeTab(ModernIndustry.TAB_BLOCK);
 	}
 
 	/** 当临近的方块更新时更新连接状态 */

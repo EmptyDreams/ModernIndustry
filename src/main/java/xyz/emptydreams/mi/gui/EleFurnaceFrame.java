@@ -12,16 +12,13 @@ import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
 import xyz.emptydreams.mi.api.gui.component.MInput;
 import xyz.emptydreams.mi.blocks.te.user.EUFurnace;
-import xyz.emptydreams.mi.register.AutoLoader;
 
 import javax.annotation.Nonnull;
 
 /**
  * 电炉的GUI
  * @author EmptyDreams
- * @version V1.0
  */
-@AutoLoader
 public final class EleFurnaceFrame {
 
 	public static final String NAME = "ele_furnace";

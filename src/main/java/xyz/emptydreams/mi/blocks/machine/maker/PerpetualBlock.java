@@ -7,7 +7,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.blocks.base.MachineBlock;
 import xyz.emptydreams.mi.blocks.te.maker.EMPerpetual;
 import xyz.emptydreams.mi.register.block.AutoBlockRegister;
@@ -27,9 +26,6 @@ public class PerpetualBlock extends MachineBlock {
 	
 	public PerpetualBlock() {
 		super(Material.IRON);
-		setHarvestLevel("pickaxe", 1);
-		setHardness(3.5F);
-		setCreativeTab(ModernIndustry.TAB_BLOCK);
 	}
 	
 	@Override

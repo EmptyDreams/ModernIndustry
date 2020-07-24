@@ -76,7 +76,7 @@ public class EleFurnaceBlock extends MachineBlock {
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return CommonUtil.createWorkState(this);
+		return CommonUtil.createBlockState(this);
 	}
 
 	@Override

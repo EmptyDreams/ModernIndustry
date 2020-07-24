@@ -8,8 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.api.craftguide.ICraftGuide;
@@ -53,6 +51,10 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 		public boolean update(int codeID, int data) {
 			if (codeID == getCodeID(0)) {
 				((EMFirePower) world.getTileEntity(pos)).setNowEnergy(data);
+				stringShower.setString(data + " / " + getMaxEnergy());
+				stringShower.setLocation(
+						(176 - Minecraft.getMinecraft().fontRenderer
+								.getStringWidth(stringShower.getString())) / 2, 56);
 				return true;
 			}
 			return false;
@@ -88,7 +90,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	@Override
 	public void update() {
 		if (world.isRemote) {
-			updateStringShower();
+			WorldUtil.removeTickable(this);
 			return;
 		}
 		if (maxTime <= 0) burnItem();
@@ -131,19 +133,6 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 		progressBar.setNow(burningTime);
 		setNowEnergy(getNowEnergy() + 30);
 		markDirty();
-	}
-
-	@SideOnly(Side.CLIENT) private int cache = -1;
-	/** 更新客户端进度条下方的文字显示 */
-	@SideOnly(Side.CLIENT)
-	private void updateStringShower() {
-		if (cache != getNowEnergy()) {
-			cache = getNowEnergy();
-			stringShower.setString(cache + " / " + getMaxEnergy());
-			stringShower.setLocation(
-					(176 - Minecraft.getMinecraft().fontRenderer
-							.getStringWidth(stringShower.getString())) / 2, 56);
-		}
 	}
 
 	public StringComponent getStringShower() { return stringShower; }

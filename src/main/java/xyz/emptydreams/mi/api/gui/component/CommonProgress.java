@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.api.gui.component;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
+import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.net.WaitList;
 
@@ -109,15 +110,30 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	
 	/** 风格 */
 	public enum Style {
-		
+
+		/** 普通箭头 */
 		ARROW(0, 0, 0, 15, 22, 15, false),
+		/** 长条 */
 		STRIPE(22, 0, 22, 4, 89, 4, false),
+		/** 巨大箭头 */
 		ARROW_BIG(22, 8, 22, 27, 68, 19, false),
-		FIRE(90, 8, 90, 21, 13, 13, true);
+		/** 燃烧 */
+		FIRE(90, 8, 90, 21, 13, 13, true),
+		/** 向下的箭头 */
+		ARROW_DOWN(0, 30, 0, 52, 15, 22, false);
 		
 		private final int x, y, x2, y2, width, height;
 		private final boolean reverse;
-		
+
+		/**
+		 * @param x 空进度条的起点
+		 * @param y 空进度条的起点
+		 * @param x2 满进度条的起点
+		 * @param y2 满进度条的起点
+		 * @param width 进度条的宽度
+		 * @param height 进度条的高度
+		 * @param reverse 是否颠倒进度
+		 */
 		Style(int x, int y, int x2, int y2, int width, int height, boolean reverse) {
 			this.x = x;
 			this.y = y;
@@ -130,8 +146,8 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		
 		public int getX() { return x; }
 		public int getY() { return y; }
-		public int getX2() { return x2; }
-		public int getY2() { return y2; }
+		public int getFillX() { return x2; }
+		public int getFillY() { return y2; }
 		public int getWidth() { return width; }
 		public int getHeight() { return height; }
 		public boolean isReverse() { return reverse; }
@@ -184,9 +200,9 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		Style style = node.getThis().style;
 		int height = (int) (style.getHeight() * node.getThis().getPer());
 		int y = node.y + style.getHeight() - height;
-		int tY = style.getY2() + style.getHeight() - height;
+		int tY = style.getFillY() + style.getHeight() - height;
 		RuntimeTexture texture = getTexture();
-		texture.drawToFrame(node.x, y, style.getX2(), style.getY2(), style.getWidth(), height);
+		texture.drawToFrame(node.x, y, style.getFillX(), style.getFillY(), style.getWidth(), height);
 	}
 	
 	/** 绘制从上到下的图形 */
@@ -194,7 +210,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		Style style = node.getThis().style;
 		int height = (int) (style.getHeight() * node.getThis().getPer());
 		RuntimeTexture texture = getTexture();
-		texture.drawToFrame(node.x, node.y, style.getX2(), style.getY2(), style.getWidth(), height);
+		texture.drawToFrame(node.x, node.y, style.getFillX(), style.getFillY(), style.getWidth(), height);
 	}
 	
 	/** 绘制从右到左的图形 */
@@ -202,9 +218,9 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		Style style = node.getThis().style;
 		int width = (int) (style.getWidth() * node.getThis().getPer());
 		int x = node.x + style.getWidth() - width;
-		int tX = style.getX2() + style.getWidth() - width;
+		int tX = style.getFillX() + style.getWidth() - width;
 		RuntimeTexture texture = getTexture();
-		texture.drawToFrame(x, node.y, tX, style.getY2(), width, style.getHeight());
+		texture.drawToFrame(x, node.y, tX, style.getFillY(), width, style.getHeight());
 	}
 	
 	/** 绘制从左到右的图形 */
@@ -212,7 +228,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		Style style = node.getThis().style;
 		int width = (int) (style.getWidth() * node.getThis().getPer());
 		RuntimeTexture texture = getTexture();
-		texture.drawToFrame(node.x, node.y, style.getX2(), style.getY2(), width, style.getHeight());
+		texture.drawToFrame(node.x, node.y, style.getFillX(), style.getFillY(), width, style.getHeight());
 	}
 	
 }

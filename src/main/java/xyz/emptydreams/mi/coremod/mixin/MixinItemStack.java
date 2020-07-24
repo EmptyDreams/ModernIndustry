@@ -20,12 +20,11 @@ import xyz.emptydreams.mi.api.event.ItemDamageEvent;
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack {
 	
-	@Shadow
-	int itemDamage;
-	@Final @Shadow
-	private Item item;
+	@Shadow int itemDamage;
+	@Final @Shadow private Item item;
 	
 	/**
+	 * 在amount为负数时不触发事件，在amount为整数时触发事件
 	 * @author EmptyDreams
 	 */
 	@Overwrite

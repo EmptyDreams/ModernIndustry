@@ -14,6 +14,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.MachineBlock;
 import xyz.emptydreams.mi.blocks.common.CommonBlocks;
 import xyz.emptydreams.mi.blocks.te.maker.EMFirePower;
@@ -38,10 +39,7 @@ public class FirePowerBlock extends MachineBlock {
 	
 	public FirePowerBlock() {
 		super(Material.IRON);
-		setCreativeTab(ModernIndustry.TAB_BLOCK);
-		setHardness(5);
 		setHarvestLevel(CommonBlocks.TC_PICKAXE, 2);
-		setResistance(20);
 		setDefaultState(blockState.getBaseState()
 				                .withProperty(FACING, EnumFacing.NORTH).withProperty(WORKING, false));
 		ITEM = new ItemBlock(this).setRegistryName(ModernIndustry.MODID, "fire_power");
@@ -51,11 +49,8 @@ public class FirePowerBlock extends MachineBlock {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
 	                                EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)) return false;
-		if (!worldIn.isRemote) {
-			playerIn.openGui(ModernIndustry.instance,
-					FirePowerFrame.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
-		}
-		return true;
+		if (worldIn.isRemote) return false;
+		return CommonUtil.openGui(playerIn, FirePowerFrame.ID, worldIn, pos);
 	}
 	
 	@Nullable
@@ -68,25 +63,18 @@ public class FirePowerBlock extends MachineBlock {
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, FACING, WORKING);
+		return CommonUtil.createBlockState(this);
 	}
 	
 	@Nonnull
-	@SuppressWarnings("deprecation")
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		EnumFacing enumfacing = EnumFacing.getHorizontal(meta & 0b0011);
-		if (enumfacing.getAxis() == EnumFacing.Axis.Y) {
-			enumfacing = EnumFacing.NORTH;
-		}
-		return getDefaultState().withProperty(FACING, enumfacing)
-				       .withProperty(WORKING, (meta & 0b0100) == 0 );
+		return CommonUtil.getStateFromMeta(this, meta);
 	}
 	
 	@Override
 	public int getMetaFromState(@Nonnull IBlockState state) {
-		return state.getValue(FACING).getHorizontalIndex() |
-				       (state.getValue(WORKING) ? 0b0100 : 0b0000);
+		return CommonUtil.getMetaFromState(state);
 	}
 	
 	@Nullable

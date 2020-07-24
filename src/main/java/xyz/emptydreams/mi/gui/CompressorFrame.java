@@ -13,7 +13,6 @@ import xyz.emptydreams.mi.api.gui.component.MBackpack;
 import xyz.emptydreams.mi.api.gui.component.MInput;
 import xyz.emptydreams.mi.api.gui.component.MOutput;
 import xyz.emptydreams.mi.blocks.te.user.EUCompressor;
-import xyz.emptydreams.mi.register.AutoLoader;
 
 import javax.annotation.Nonnull;
 
@@ -21,7 +20,6 @@ import javax.annotation.Nonnull;
  * 压缩机的GUI
  * @author EmptyDreams
  */
-@AutoLoader
 public final class CompressorFrame {
 
 	public static String NAME = "compressor";

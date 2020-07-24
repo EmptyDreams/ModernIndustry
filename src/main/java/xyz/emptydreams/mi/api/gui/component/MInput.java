@@ -1,16 +1,17 @@
 package xyz.emptydreams.mi.api.gui.component;
 
-import javax.annotation.Nonnull;
-import java.awt.*;
-import java.util.List;
-
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import xyz.emptydreams.mi.api.gui.MIFrame;
+import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
+
+import javax.annotation.Nonnull;
+import java.awt.*;
+import java.util.List;
 
 /**
  * @author EmptyDreams

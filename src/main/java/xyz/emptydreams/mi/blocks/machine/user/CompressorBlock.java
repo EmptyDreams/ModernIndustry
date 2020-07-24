@@ -35,16 +35,12 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.*;
 public class CompressorBlock extends MachineBlock {
 	
 	/** 方块内部名称 */
-	@SuppressWarnings("SpellCheckingInspection")
 	public static final String NAME = "compressor_tblock";
 	
 	private final Item ITEM;
 	
 	public CompressorBlock() {
 		super(Material.ROCK);
-		//setHarvestLevel("pickaxe", 1);
-		setHardness(3.5F);
-		setCreativeTab(ModernIndustry.TAB_BLOCK);
 		ITEM = new ItemBlock(this).setRegistryName(ModernIndustry.MODID, NAME);
 		
 		setDefaultState(blockState.getBaseState().withProperty(

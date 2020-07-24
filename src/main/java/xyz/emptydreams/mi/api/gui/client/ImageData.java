@@ -1,10 +1,11 @@
-package xyz.emptydreams.mi.api.gui.component;
+package xyz.emptydreams.mi.api.gui.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.gui.component.IProgressBar;
 import xyz.emptydreams.mi.api.utils.wrapper.Wrapper;
 
 import javax.imageio.ImageIO;
@@ -22,11 +23,6 @@ import java.util.Map;
 @SuppressWarnings({"CanBeFinal", "unused"})
 @SideOnly(Side.CLIENT)
 public final class ImageData {
-	
-	private static BufferedImage BACKGROUND;
-	private static BufferedImage BACKPACK;
-	private static BufferedImage SLOT;
-	private static BufferedImage PROGRESS_BAR;
 	
 	/** 不应该调用的构造函数 */
 	private ImageData() { throw new AssertionError(); }
@@ -75,11 +71,11 @@ public final class ImageData {
 	/** 存储资源 */
 	private final static Map<String, Node> resourceInfo = new HashMap<String, Node>() {
 		{
-			put("background",   new Node(new Wrapper<>(BACKGROUND), 162, 0, 256, 256));
-			put("slot",         new Node(new Wrapper<>(SLOT), 0, 76, 26, 26));
-			put("backpack",     new Node(new Wrapper<>(BACKPACK), 0, 0, 162, 76));
+			put("background",   new Node(new Wrapper<>(), 162, 0, 256, 256));
+			put("slot",         new Node(new Wrapper<>(), 0, 76, 26, 26));
+			put("backpack",     new Node(new Wrapper<>(), 0, 0, 162, 76));
 			put(IProgressBar.RESOURCE_NAME,
-						new Node(new Wrapper<>(PROGRESS_BAR), 0, 102, 111, 46));
+						new Node(new Wrapper<>(), 0, 102, 111, 74));
 		}
 	};
 	

@@ -76,7 +76,7 @@ public final class CommonUtil {
 	}
 
 	/** 为指定方块生成一个带方向与工作状态的{@link BlockStateContainer} */
-	public static BlockStateContainer createWorkState(Block block) {
+	public static BlockStateContainer createBlockState(Block block) {
 		return new BlockStateContainer(block, FACING, WORKING);
 	}
 
@@ -92,7 +92,7 @@ public final class CommonUtil {
 	 */
 	@Nonnull
 	public static IBlockState getStateFromMeta(Block block, int meta) {
-		EnumFacing facing = EnumFacing.getFront(meta & 0b0011);
+		EnumFacing facing = EnumFacing.getHorizontal(meta & 0b0011);
 		if (facing.getAxis() == EnumFacing.Axis.Y) {
 			facing = EnumFacing.NORTH;
 		}

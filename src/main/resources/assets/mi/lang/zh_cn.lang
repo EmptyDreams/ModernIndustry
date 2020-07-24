@@ -49,6 +49,7 @@ tile.muffle_furnace.name=高温熔炉
 tile.ele_furnace.name=电炉
 tile.pulverizer.name=粉碎机
 tile.ele_mfurnace.name=高温电炉
+tile.red_stone_converter.name=红石能转换机
 #线缆
 tile.wire_copper.name=铜线
 #TAB

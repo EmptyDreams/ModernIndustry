@@ -1,17 +1,16 @@
 package xyz.emptydreams.mi.api.gui.client;
 
-import javax.annotation.Nullable;
-import java.awt.image.BufferedImage;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import xyz.emptydreams.mi.api.gui.component.ImageData;
+
+import javax.annotation.Nullable;
+import java.awt.image.BufferedImage;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 运行时加载资源
