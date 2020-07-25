@@ -74,6 +74,8 @@ public enum  DataType {
 	MAP(DataOperator::writeMap, DataOperator::readMap),
 	/** 表示{@link xyz.emptydreams.mi.api.electricity.interfaces.IVoltage} */
 	VOLTAGE(DataOperator::writeVoltage, DataOperator::readVoltage),
+	/** 表示{@link Class} */
+	CLASS(DataOperator::writeClass, DataOperator::readClass),
 	/** 表示自动判断 */
 	AUTO(DataOperator::writeAuto, null);
 
@@ -141,6 +143,7 @@ public enum  DataType {
 		else if (type == float.class) return FLOAT;
 		else if (type == String.class) return STRING;
 		else if (type == UUID.class) return UNIQUE_ID;
+		else if (type == Class.class) return CLASS;
 		else if (type == Byte[].class) return ARRAY_PACK_BYTE;
 		else if (type == Integer[].class) return ARRAY_PACK_INT;
 		else if (type == StringBuilder.class) return STRING_BUILDER;

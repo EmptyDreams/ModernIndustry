@@ -1,10 +1,5 @@
 package xyz.emptydreams.mi.api.net;
 
-import javax.annotation.Nullable;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -21,6 +16,11 @@ import xyz.emptydreams.mi.api.net.guinet.GUIMessage;
 import xyz.emptydreams.mi.api.net.guinet.IAutoGuiNetWork;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
+
+import javax.annotation.Nullable;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * 所有客户端/服务端需要等待处理的消息存放在此处

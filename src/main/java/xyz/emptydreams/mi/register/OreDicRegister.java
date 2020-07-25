@@ -8,8 +8,10 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import xyz.emptydreams.mi.api.utils.StringUtil;
+import xyz.emptydreams.mi.blocks.common.OreBlock;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,6 +67,10 @@ public final class OreDicRegister {
 	@SubscribeEvent
 	public static void registryDic(RegistryEvent.Register<IRecipe> event) {
 		itemMap.forEach(OreDicRegister::registryDic);
+		for (OreBlock block : OreBlock.LIST.values()) {
+			GameRegistry.addSmelting(block.getBlockItem(),
+					new ItemStack(OreBlock.LIST.get(block.getRegistryName().getResourcePath())), 0.5F);
+		}
 		//使itemMap得以被GC回收
 		itemMap = null;
 	}

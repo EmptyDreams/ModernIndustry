@@ -25,7 +25,6 @@ import xyz.emptydreams.mi.api.net.NetworkRegister;
 import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.BlockPosUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
-import xyz.emptydreams.mi.api.utils.data.DataType;
 import xyz.emptydreams.mi.api.utils.data.TEHelper;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
@@ -39,7 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static xyz.emptydreams.mi.api.utils.data.DataType.*;
+import static xyz.emptydreams.mi.api.utils.data.DataType.POS;
 
 /**
  * @author EmptyDreams
@@ -59,13 +58,11 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	
 	/** 计数器 */
 	private OverloadCounter counter;
-	//六个方向是否连接
-	@Storage(BOOLEAN) private boolean up = false;
-	@Storage(BOOLEAN) private boolean down = false;
-	@Storage(BOOLEAN) private boolean east =false;
-	@Storage(BOOLEAN) private boolean west = false;
-	@Storage(BOOLEAN) private boolean south = false;
-	@Storage(BOOLEAN) private boolean north = false;
+	/**
+	 * 存储六个方向的连接信息<br>
+	 * 从左到右依次为：上、下、东、南、西、北
+	 */
+	private int linkInfo = 0b000000;
 	/** 电线连接的方块，不包括电线方块 */
 	@Storage
 	private final List<BlockPos> linkedBlocks = new ArrayList<BlockPos>(5) {
@@ -339,31 +336,47 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	/** 获取线路缓存 */
 	public final WireLinkInfo getCache() { return cache; }
 	/** 获取上方是否连接方块 */
-	public final boolean getUp() { return up; }
+	public final boolean getUp() { return (linkInfo & 0b100000) == 0b100000; }
 	/** 获取下方是否连接方块 */
-	public final boolean getDown() { return down; }
+	public final boolean getDown() { return (linkInfo & 0b010000) == 0b010000; }
 	/** 获取东方是否连接方块 */
-	public final boolean getEast() { return east; }
-	/** 获取西方是否连接方块 */
-	public final boolean getWest() { return west; }
+	public final boolean getEast() { return (linkInfo & 0b001000) == 0b001000; }
 	/** 获取南方是否连接方块 */
-	public final boolean getSouth() { return south; }
+	public final boolean getSouth() { return (linkInfo & 0b000100) == 0b000100; }
+	/** 获取西方是否连接方块 */
+	public final boolean getWest() { return (linkInfo & 0b000010) == 0b000010; }
 	/** 获取北方是否连接方块 */
-	public final boolean getNorth() { return north; }
+	public final boolean getNorth() { return (linkInfo & 0b000001) == 0b000001; }
 	/** 设置上方是否连接方块 */
 	public final void setUp(boolean value) {
-		up = value;
+		if (value) linkInfo |= 0b100000;
+		else linkInfo &= 0b011111;
 	}
 	/** 设置下方是否连接方块 */
-	public final void setDown(boolean value) { down = value; }
+	public final void setDown(boolean value) {
+		if (value) linkInfo |= 0b010000;
+		else linkInfo &= 0b101111;
+	}
 	/** 设置东方是否连接方块 */
-	public final void setEast(boolean value) { east = value; }
-	/** 设置西方是否连接方块 */
-	public final void setWest(boolean value) { west = value; }
-	/** 设置北方是否连接方块 */
-	public final void setNorth(boolean value) { north = value; }
+	public final void setEast(boolean value) {
+		if (value) linkInfo |= 0b001000;
+		else linkInfo &= 0b110111;
+	}
 	/** 设置南方是否连接方块 */
-	public final void setSouth(boolean value) { south = value; }
+	public final void setSouth(boolean value) {
+		if (value) linkInfo |= 0b000100;
+		else linkInfo &= 0b111011;
+	}
+	/** 设置西方是否连接方块 */
+	public final void setWest(boolean value) {
+		if (value) linkInfo |= 0b000010;
+		else linkInfo &= 0b111101;
+	}
+	/** 设置北方是否连接方块 */
+	public final void setNorth(boolean value) {
+		if (value) linkInfo |= 0b000001;
+		else linkInfo &= 0b111110;
+	}
 	/** 获取损耗值 */
 	public final double getLoss(EleEnergy energy) {
 		double loss = energy.calculateLoss();
@@ -422,7 +435,13 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 		WaitList.checkNull(counter, "counter");
 		this.counter = counter;
 	}
-	
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		players.clear();
+		return super.getUpdateTag();
+	}
+
 	/**
 	 * 存储已经更新过的玩家列表，因为作者认为单机时长会更多，所以选择1作为默认值。<br>
 	 * 	不同方块不共用此列表且此列表不会离线存储，当玩家离开方块过远或退出游戏等操作导致
@@ -432,20 +451,9 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	
 	@Override
 	public void receive(@Nonnull NBTTagCompound message) {
-		up = message.getBoolean("up");
-		down = message.getBoolean("down");
-		east = message.getBoolean("east");
-		west = message.getBoolean("west");
-		south = message.getBoolean("south");
-		north = message.getBoolean("north");
+		linkInfo = message.getByte("linkInfo");
 		_amount = message.getInteger("amount");
 		world.markBlockRangeForRenderUpdate(pos, pos);
-	}
-	
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		players.clear();
-		return super.getUpdateTag();
 	}
 	
 	/**
@@ -460,12 +468,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 		if (players.size() == world.playerEntities.size()) return null;
 		Set<String> sendPlayers = new HashSet<>();
 		NBTTagCompound compound = new NBTTagCompound();
-		compound.setBoolean("up", up);
-		compound.setBoolean("down", down);
-		compound.setBoolean("south", south);
-		compound.setBoolean("north", north);
-		compound.setBoolean("west", west);
-		compound.setBoolean("east", east);
+		compound.setByte("linkInfo", (byte) linkInfo);
 		
 		//遍历所有玩家
 		for (EntityPlayer player : world.playerEntities) {
@@ -506,12 +509,14 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
+		compound.setByte("linkInfo", (byte) linkInfo);
 		return TEHelper.super.writeToNBT(compound);
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
+		linkInfo = compound.getByte("linkInfo");
 		TEHelper.super.readFromNBT(compound);
 	}
 	

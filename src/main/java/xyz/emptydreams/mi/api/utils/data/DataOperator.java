@@ -1,13 +1,11 @@
 package xyz.emptydreams.mi.api.utils.data;
 
-import io.netty.handler.codec.UnsupportedMessageTypeException;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.INBTSerializable;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.utils.BlockPosUtil;
-import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.wrapper.Wrapper;
 
 import java.lang.reflect.Field;
@@ -154,14 +152,15 @@ public final class DataOperator {
 
 	public static void writeEnum(NBTTagCompound nbt, String name, Enum<?> data) {
 		nbt.setInteger(name + ":index", data.ordinal());
-		nbt.setString(name, data.getClass().getName());
+		writeClass(nbt, name, data.getClass());
 	}
 	public static void readEnum(NBTTagCompound nbt, String name, Consumer<Enum<?>> setter) {
 		int index = nbt.getInteger(name + ":index");
 		try {
-			Class<?> clazz = Class.forName(nbt.getString(name));
-			setter.accept(((Enum<?>[]) clazz.getMethod("values", (Class<?>) null)
-								.invoke(null, (Object) null))[index]);
+			Wrapper<Class<?>> clazz = new Wrapper<>();
+			readClass(nbt, name, clazz::set);
+			setter.accept(((Enum<?>[]) clazz.get().getMethod("values", (Class<?>) null)
+											.invoke(null, (Object) null))[index]);
 		} catch (Exception e) {
 			throw new RuntimeException("数据自动读写出现了意料之外的错误", e);
 		}
@@ -170,7 +169,7 @@ public final class DataOperator {
 	public static void writeSerializable(NBTTagCompound nbt, String name, INBTSerializable<?> data) {
 		if (data == null) return;
 		nbt.setTag(name, data.serializeNBT());
-		nbt.setString(name + ":name", data.getClass().getName());
+		writeClass(nbt, name + ":name",data.getClass());
 	}
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public static void readSerializable(NBTTagCompound nbt, String name, DataInfo<INBTSerializable<?>> setter) {
@@ -179,8 +178,9 @@ public final class DataOperator {
 		try {
 			INBTSerializable serializable = setter.getDefault();
 			if (serializable == null) {
-				Class<?> clazz = Class.forName(nbt.getString(name + ":name"));
-				serializable = (INBTSerializable) clazz.newInstance();
+				Wrapper<Class<?>> clazz = new Wrapper<>();
+				readClass(nbt, name, clazz::set);
+				serializable = (INBTSerializable) clazz.get().newInstance();
 			}
 			serializable.deserializeNBT(base);
 			setter.accept(serializable);
@@ -200,7 +200,7 @@ public final class DataOperator {
 
 	public static void writeCollection(NBTTagCompound nbt, String name, Collection<?> data) {
 		if (data == null || data.size() == 0) return;
-		nbt.setString(name + ":name", data.getClass().getName());
+		writeClass(nbt, name + ":name", data.getClass());
 		nbt.setInteger(name, data.size());
 		int index = 0;
 		for (Object o : data) {
@@ -217,7 +217,9 @@ public final class DataOperator {
 		Collection collection = setter.getDefault();
 		if (collection == null) {
 			try {
-				collection = (Collection) Class.forName(nbt.getString(name + ":name")).newInstance();
+				Wrapper<Class<?>> temp = new Wrapper<>();
+				readClass(nbt, name + ":name", temp::set);
+				collection = (Collection) temp.get().newInstance();
 			} catch (Exception e) {
 				throw new RuntimeException("数据自动读写出现了意料之外的错误", e);
 			}
@@ -234,7 +236,7 @@ public final class DataOperator {
 	public static void writeMap(NBTTagCompound nbt, String name, Map<?, ?> data) {
 		if (data == null || data.size() == 0) return;
 		nbt.setInteger(name, data.size());
-		nbt.setString(name + "name", data.getClass().getName());
+		writeClass(nbt, name + "name", data.getClass());
 		int k = 0;
 		for (Map.Entry<?, ?> entry : data.entrySet()) {
 			String str = name + k++;
@@ -251,7 +253,9 @@ public final class DataOperator {
 		Map map = setter.getDefault();
 		if (map == null) {
 			try {
-				map = (Map) Class.forName(nbt.getString(name + ":name")).newInstance();
+				Wrapper<Class<?>> clazz = new Wrapper<>();
+				readClass(nbt, name + "name", clazz::set);
+				map = (Map) clazz.get().newInstance();
 			} catch (Exception e) {
 				throw new RuntimeException("数据自动读写出现了意料之外的错误", e);
 			}
@@ -283,15 +287,12 @@ public final class DataOperator {
 
 	public static void writeClass(NBTTagCompound nbt, String name, Class<?> data) {
 		if (data == null) return;
-		nbt.setString(name, data.getName());
+		nbt.setInteger(name, ClassMap.loadWorld().loadClass(data));
 	}
 	public static void readClass(NBTTagCompound nbt, String name, Consumer<Class<?>> setter) {
-		try {
-			if (nbt.hasKey(name)) setter.accept(Class.forName(nbt.getString(name)));
-		} catch (Exception e) {
-			MISysInfo.err("Class读取时发生了意料之外的错误，可能是因为存储了匿名类");
-			e.printStackTrace();
-		}
+		int value = nbt.getInteger(name);
+		if (value != 0)
+			setter.accept(ClassMap.loadWorld().readClass(value));
 	}
 
 	public static void writeAuto(NBTTagCompound nbt, String name, Object data) {
