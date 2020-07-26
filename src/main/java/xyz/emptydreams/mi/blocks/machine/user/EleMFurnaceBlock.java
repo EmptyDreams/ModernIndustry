@@ -45,10 +45,7 @@ public class EleMFurnaceBlock extends MachineBlock {
 
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)) {
-			return CommonUtil.openGui(playerIn, EleMFurnaceFrame.ID, worldIn, pos);
-		}
-		return false;
+		return CommonUtil.openGui(playerIn, EleMFurnaceFrame.ID, worldIn, pos);
 	}
 
 	@Nullable

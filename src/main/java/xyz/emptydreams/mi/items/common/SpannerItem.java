@@ -14,7 +14,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -130,6 +132,15 @@ public class SpannerItem extends Item {
 					return y <= 0.25 ? EnumFacing.DOWN : EnumFacing.UP;
 				}
 		}
+	}
+
+	@SubscribeEvent
+	public static void stopGUI(PlayerInteractEvent.RightClickBlock event) {
+		EntityPlayer player = event.getEntityPlayer();
+		if ((player.getHeldItemMainhand().getItem() == getInstance() ||
+				player.getHeldItemOffhand().getItem() == getInstance()) &&
+				getPropertyDirection(event.getWorld().getBlockState(event.getPos())) != null)
+			event.setUseBlock(Event.Result.DENY);
 	}
 
 	/** 当玩家手持扳手指向可旋转方块时绘制线条 */

@@ -5,7 +5,6 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -21,7 +20,6 @@ import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.api.utils.wrapper.BooleanWrapper;
 import xyz.emptydreams.mi.blocks.common.CommonBlocks;
-import xyz.emptydreams.mi.items.common.SpannerItem;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
@@ -59,16 +57,6 @@ public abstract class MachineBlock extends TEBlockBase {
 				link.link(fromPos);
 			}
 		}
-	}
-
-	/**
-	 * 在方块被右键时激活该方法，一般用于打开GUI.<br>
-	 * @return 是否可以打开GUI，若玩家手中拿着扳手则返回false
-	 */
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-	                                EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		return playerIn.getHeldItemMainhand().getItem() != SpannerItem.getInstance() &&
-					playerIn.getHeldItemOffhand().getItem() != SpannerItem.getInstance();
 	}
 
 	private BooleanWrapper hasFacing = null;

@@ -50,8 +50,7 @@ public class EleFurnaceBlock extends MachineBlock {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
-		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ) &&
-				CommonUtil.openGui(playerIn, EleFurnaceFrame.ID, worldIn, pos);
+		return CommonUtil.openGui(playerIn, EleFurnaceFrame.ID, worldIn, pos);
 	}
 
 	@Nullable
