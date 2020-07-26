@@ -14,7 +14,6 @@ import java.util.Set;
 /**
  * 合成表的注册表
  * @author EmptyDreams
- * @version V1.0
  */
 public class CraftRegistry {
 	

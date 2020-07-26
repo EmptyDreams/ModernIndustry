@@ -8,19 +8,18 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.register.block.BlockItemHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Random;
 
 /**
  * 带TE的基础方块，定义了经常需要重写的函数
  * @author EmptyDremas
- * @version V1.0
  */
 @SuppressWarnings("deprecation")
 abstract public class TEBlockBase extends BlockContainer implements BlockItemHelper {
@@ -38,7 +37,7 @@ abstract public class TEBlockBase extends BlockContainer implements BlockItemHel
 	 */
 	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-		NonNullList<ItemStack> drops = getItemDrops(worldIn, pos);
+		List<ItemStack> drops = getItemDrops(worldIn, pos);
 		if (drops != null)
 			drops.forEach(it -> Block.spawnAsEntity(worldIn, pos, it));
 		super.breakBlock(worldIn, pos, state);
@@ -51,7 +50,7 @@ abstract public class TEBlockBase extends BlockContainer implements BlockItemHel
 	 * @return 若无需要掉落的物品则返回null
 	 */
 	@Nullable
-	public NonNullList<ItemStack> getItemDrops(World world, BlockPos pos) {
+	public List<ItemStack> getItemDrops(World world, BlockPos pos) {
 		return null;
 	}
 

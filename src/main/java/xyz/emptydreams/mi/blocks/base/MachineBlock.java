@@ -67,7 +67,8 @@ public abstract class MachineBlock extends TEBlockBase {
 	 */
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
 	                                EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		return playerIn.getHeldItem(hand).getItem() != SpannerItem.getInstance();
+		return playerIn.getHeldItemMainhand().getItem() != SpannerItem.getInstance() &&
+					playerIn.getHeldItemOffhand().getItem() != SpannerItem.getInstance();
 	}
 
 	private BooleanWrapper hasFacing = null;

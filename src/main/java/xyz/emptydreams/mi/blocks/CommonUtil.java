@@ -70,8 +70,8 @@ public final class CommonUtil {
 	 * @return true
 	 */
 	public static boolean openGui(EntityPlayer player, int id, World world, BlockPos pos) {
-		player.openGui(ModernIndustry.instance, id,
-				world, pos.getX(), pos.getY(), pos.getZ());
+		if (world.isRemote) return true;
+		player.openGui(ModernIndustry.instance, id, world, pos.getX(), pos.getY(), pos.getZ());
 		return true;
 	}
 

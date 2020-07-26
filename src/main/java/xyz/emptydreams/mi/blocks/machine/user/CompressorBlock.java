@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.blocks.machine.user;
 
+import com.google.common.collect.Lists;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -10,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
@@ -21,6 +21,7 @@ import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Random;
 
 import static xyz.emptydreams.mi.blocks.base.MIProperty.*;
@@ -66,12 +67,12 @@ public class CompressorBlock extends MachineBlock {
 	
 	@Nullable
 	@Override
-	public NonNullList<ItemStack> getItemDrops(World world, BlockPos pos) {
+	public List<ItemStack> getItemDrops(World world, BlockPos pos) {
 		EUCompressor nbt = (EUCompressor) world.getTileEntity(pos);
 		ItemStack is = nbt.getSlot(0).getStack();
 		ItemStack is2 = nbt.getSlot(1).getStack();
 		ItemStack is3 = nbt.getSlot(2).getStack();
-		return NonNullList.from(is, is2, is3);
+		return Lists.newArrayList(is, is2, is3);
 	}
 	
 	@Nonnull

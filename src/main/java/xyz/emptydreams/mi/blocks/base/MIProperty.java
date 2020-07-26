@@ -18,5 +18,7 @@ public final class MIProperty {
 	public static final PropertyBool WORKING = PropertyBool.create("working");
 	/** 状态：是否为空 */
 	public static final PropertyBool EMPTY = PropertyBool.create("isempty");
+	/** 状态：所有方向 */
+	public static final PropertyDirection ALL_FACING = PropertyDirection.create("all_facing");
 	
 }

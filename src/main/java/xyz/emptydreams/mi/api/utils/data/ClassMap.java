@@ -67,9 +67,7 @@ public final class ClassMap extends WorldSavedData {
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound.setInteger("size", MAP.size());
-		for (Map.Entry<Integer, Class<?>> entry : MAP.entrySet()) {
-			compound.setString(String.valueOf(entry.getKey()), entry.getValue().getName());
-		}
+		MAP.forEach((key, value) -> compound.setString(String.valueOf(key), value.getName()));
 		return compound;
 	}
 
