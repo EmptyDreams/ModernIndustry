@@ -3,6 +3,8 @@ package xyz.emptydreams.mi.api.gui.component;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.net.WaitList;
@@ -37,7 +39,8 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		this.front = front;
 		setSize(style.getWidth(), style.getHeight());
 	}
-	
+
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void realTimePaint(GuiContainer gui) {
 		front.accept(new Node(gui));
@@ -98,7 +101,8 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		listener.sendWindowProperty(con, getCodeID(0), getNow());
 		listener.sendWindowProperty(con, getCodeID(1), getMax());
 	}
-	
+
+	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean update(int codeID, int data) {
 		switch (getPrivateCodeID(codeID)) {

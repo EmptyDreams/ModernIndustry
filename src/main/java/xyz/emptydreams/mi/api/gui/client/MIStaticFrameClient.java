@@ -3,10 +3,13 @@ package xyz.emptydreams.mi.api.gui.client;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.gui.IFrame;
 import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.component.IComponent;
@@ -23,11 +26,9 @@ import java.util.NoSuchElementException;
 /**
  * 静态GUI，注意：该类只能用于静态GUI的显示
  * @author EmptyDreams
- * @version V1.0
  */
-@SuppressWarnings("unused")
 @SideOnly(Side.CLIENT)
-public class MIStaticFrameClient extends GuiContainer {
+public class MIStaticFrameClient extends GuiContainer implements IFrame {
 	
 	/** GUI背景的资源名称 */
 	public static final String SOURCE_NAME = "background";
@@ -44,8 +45,6 @@ public class MIStaticFrameClient extends GuiContainer {
 	private int titleColor = 0x000000;
 	/** 保存组件 */
 	private final List<IComponent> components = new LinkedList<>();
-	/** 保存字符串组件 */
-	private final List<IComponent> stringComponents = new LinkedList<>();
 	/** 资源名称 */
 	private String name;
 	
@@ -97,11 +96,18 @@ public class MIStaticFrameClient extends GuiContainer {
 	 * 设置标题
 	 * @param text 该文本内部通过{@link I18n}转化
 	 */
+	@Override
 	public void setTitle(String text) {
-		if (text == null) title = "by minedreams";
-		else title = text;
+		WaitList.checkNull(text, "text");
+		title = text;
 	}
+
+	@Override
+	public int getWidth() { return xSize; }
+	@Override
+	public int getHeight() { return ySize; }
 	/** 获取标题 */
+	@Override
 	public String getTitle() { return title; }
 	
 	/**
@@ -119,13 +125,8 @@ public class MIStaticFrameClient extends GuiContainer {
 	 */
 	@Nullable
 	public Point getTitleLocation() { return titleLocation; }
-	
-	/**
-	 * 设置标题显示模式，当标题位置不为默认时该设置无效
-	 * @param model 指定的模式
-	 *
-	 * @throws NullPointerException 如果model == null
-	 */
+
+	@Override
 	public void setTitleModel(TitleModelEnum model) {
 		WaitList.checkNull(model, "model");
 		this.titleModel = model;
@@ -145,12 +146,13 @@ public class MIStaticFrameClient extends GuiContainer {
 	 * @param component 要添加的组件
 	 * @throws NullPointerException 如果component == null
 	 */
-	public void add(IComponent component) {
+	@Override
+	public void add(IComponent component, EntityPlayer player) {
 		WaitList.checkNull(component, "component");
+		component.onAddToGUI(this, player);
 		components.add(component);
-		if (component.isString()) stringComponents.add(component);
 	}
-	
+
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		this.drawDefaultBackground();
@@ -180,11 +182,6 @@ public class MIStaticFrameClient extends GuiContainer {
 			location = titleLocation;
 		}
 		fontRenderer.drawString(temp, location.x, location.y, 0);
-		
-		for (IComponent component : stringComponents) {
-			fontRenderer.drawString(
-					component.getString(), component.getX(), component.getY(), component.getStringColor());
-		}
 	}
 	
 	@Override
@@ -202,5 +199,8 @@ public class MIStaticFrameClient extends GuiContainer {
 	public static void drawBackground(Graphics g, int width, int height) {
 		g.drawImage(ImageData.getImage(SOURCE_NAME, width, height), 0, 0, null);
 	}
-	
+
+	@Override
+	public void init(World world) { }
+
 }

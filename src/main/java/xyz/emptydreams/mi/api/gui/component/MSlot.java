@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.gui.component;
 
-import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -11,32 +10,28 @@ import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.util.List;
 
 /**
+ * 物品框
  * @author EmptyDreams
- * @version V1.0
  */
-public class MInput extends MComponent {
+public class MSlot extends MComponent {
 	
-	public static final String RESOUCE_NAME = "slot";
+	public static final String RESOURCE_NAME = "slot";
 	
 	private Slot slot;
-	private int xOffset, yOffset;
 	
-	public MInput() {
+	public MSlot() {
 		this(null);
 	}
 	
-	public MInput(Slot slot) {
+	public MSlot(Slot slot) {
 		this(slot, 1, 1);
 	}
 	
-	public MInput(Slot slot, int xOffset, int yOffset) {
+	public MSlot(Slot slot, int xOffset, int yOffset) {
 		width = 18;
 		height = 18;
-		this.xOffset = xOffset;
-		this.yOffset = yOffset;
 		if (slot != null) {
 			this.slot = slot;
 			x = slot.xPos - xOffset;
@@ -44,33 +39,20 @@ public class MInput extends MComponent {
 		}
 	}
 	
-	public void setSlot(Slot slot) {
-		setSlot(slot, xOffset, yOffset);
-	}
-	
-	public void setSlot(Slot slot, int xOffset, int yOffset) {
-		WaitList.checkNull(slot, "slot");
-		this.slot = slot;
-		this.xOffset = xOffset;
-		this.yOffset = yOffset;
-		x = slot.xPos - xOffset;
-		y = slot.yPos - yOffset;
-	}
-	
 	public Slot getSlot() { return slot; }
 	
 	@Override
 	public void setSize(int width, int height) { }
 	@Override
-	public void setLocation(int x, int y) { }
-	@Override
-	public boolean hasSlot() { return true; }
-	@Override
-	public List<Slot> getSlots() { return Lists.newArrayList(slot); }
+	public void setLocation(int x, int y) {
+		super.setLocation(x, y);
+		slot.xPos = x + 1;
+		slot.yPos = y + 1;
+	}
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {
-		g.drawImage(ImageData.getImage(RESOUCE_NAME, getWidth(), getHeight()), 0, 0, null);
+		g.drawImage(ImageData.getImage(RESOURCE_NAME, getWidth(), getHeight()), 0, 0, null);
 	}
 	
 	private int index = -1;
@@ -85,7 +67,7 @@ public class MInput extends MComponent {
 			MISysInfo.err("MBackpack不支持：" + con.getClass());
 		}
 	}
-	
+
 	@Override
 	public void onRemoveFromGUI(Container con) {
 		con.inventorySlots.remove(index);

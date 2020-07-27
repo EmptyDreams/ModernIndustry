@@ -1,34 +1,22 @@
 package xyz.emptydreams.mi.api.gui.component;
 
-import javax.annotation.Nonnull;
-import java.awt.*;
-import java.util.List;
-
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+import java.awt.*;
+
 /**
+ * 一般组件的父类
  * @author EmptyDreams
- * @version V1.0
  */
 public abstract class MComponent implements IComponent {
 	
 	protected int x, y, width, height;
 	private int code;
-	
-	@Override
-	public String getString() { return null; }
-	@Override
-	public boolean isString() { return false; }
-	@Override
-	public int getStringColor() { return 0; }
-	@Override
-	public void setStringColor(int color) { }
-	@Override
-	public void setString(String str) { }
 	
 	@Override
 	public void setLocation(int x, int y) {
@@ -52,10 +40,6 @@ public abstract class MComponent implements IComponent {
 	public int getHeight() { return height; }
 	@Override
 	public int getWidth() { return width; }
-	@Override
-	public boolean hasSlot() { return false; }
-	@Override
-	public List<Slot> getSlots() { return null; }
 	
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -63,7 +47,10 @@ public abstract class MComponent implements IComponent {
 	
 	@Override
 	public void onAddToGUI(Container con, EntityPlayer player) { }
-	
+
+	@Override
+	public void onAddToGUI(GuiContainer con, EntityPlayer player) { }
+
 	@Override
 	public void onRemoveFromGUI(Container con) { }
 	

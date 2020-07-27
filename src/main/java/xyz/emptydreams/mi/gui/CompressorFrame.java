@@ -6,12 +6,12 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.GuiLoader;
 import xyz.emptydreams.mi.api.gui.IContainerCreater;
+import xyz.emptydreams.mi.api.gui.IFrame;
 import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
-import xyz.emptydreams.mi.api.gui.component.MInput;
-import xyz.emptydreams.mi.api.gui.component.MOutput;
+import xyz.emptydreams.mi.api.gui.component.MSlot;
 import xyz.emptydreams.mi.blocks.te.user.EUCompressor;
 
 import javax.annotation.Nonnull;
@@ -44,28 +44,16 @@ public final class CompressorFrame {
 			return client;
 		}
 		
-		private void init(Object o, World world, BlockPos pos, EntityPlayer player) {
+		private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
 			EUCompressor compressor = (EUCompressor) world.getTileEntity(pos);
-			if (o instanceof MIFrame) {
-				MIFrame frame = (MIFrame) o;
-				frame.init(world);
-				frame.setTitle(LOCATION_NAME);
-				frame.setTitleModel(TitleModelEnum.CENTRAL);
-				frame.add(new MBackpack(8, 84), player);
-				frame.add(new MInput(compressor.getSlot(0)), player);
-				frame.add(new MInput(compressor.getSlot(1)), player);
-				frame.add(new MOutput(compressor.getSlot(2)), player);
-				frame.add(compressor.getProgressBar(), player);
-			} else {
-				MIStaticFrameClient frame = (MIStaticFrameClient) o;
-				frame.setTitle(LOCATION_NAME);
-				frame.setTitleModel(TitleModelEnum.CENTRAL);
-				frame.add(new MBackpack(8, 84));
-				frame.add(new MInput(compressor.getSlot(0)));
-				frame.add(new MInput(compressor.getSlot(1)));
-				frame.add(new MOutput(compressor.getSlot(2)));
-				frame.add(compressor.getProgressBar());
-			}
+			frame.init(world);
+			frame.setTitle(LOCATION_NAME);
+			frame.setTitleModel(TitleModelEnum.CENTRAL);
+			frame.add(new MBackpack(8, 84), player);
+			frame.add(new MSlot(compressor.getSlot(0)), player);
+			frame.add(new MSlot(compressor.getSlot(1)), player);
+			frame.add(new MSlot(compressor.getSlot(2)), player);
+			frame.add(compressor.getProgressBar(), player);
 		}
 		
 	});

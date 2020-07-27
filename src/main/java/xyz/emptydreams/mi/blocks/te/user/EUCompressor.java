@@ -50,7 +50,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	private final ItemStackHandler item = new ItemStackHandler(3);
 	private final SlotMI up = new SlotMI(item, 0, 56, 17);
 	private final SlotMI down = new SlotMI(item, 1, 56, 53);
-	private final SlotItemHandler out = new SlotItemHandler(item, 2, 120, 34) {
+	private final SlotItemHandler out = new SlotItemHandler(item, 2, 125, 40) {
 		@Override
 		public boolean isItemValid(ItemStack stack) {
 			return false;

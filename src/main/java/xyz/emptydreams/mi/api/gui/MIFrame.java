@@ -23,11 +23,10 @@ import java.util.List;
  * MI版本窗体，通过该类可以便捷的创建和控制UI界面
  *
  * @author EmptyDreams
- * @version V1.0
  */
 @SuppressWarnings("unused")
 @Mod.EventBusSubscriber
-public class MIFrame extends Container {
+public class MIFrame extends Container implements IFrame {
 	
 	/** 存储窗体的尺寸，可以更改 */
 	private int width, height;
@@ -58,6 +57,7 @@ public class MIFrame extends Container {
 	 * @throws NullPointerException 如果world == null || pos == null
 	 * @throws IllegalArgumentException 如果第二次调用该函数
 	 */
+	@Override
 	public void init(World world) {
 		WaitList.checkNull(world, "world");
 		this.world = world;
@@ -81,8 +81,10 @@ public class MIFrame extends Container {
 	}
 	
 	/** 获取宽度 */
+	@Override
 	public int getWidth() { return width; }
 	/** 获取高度 */
+	@Override
 	public int getHeight() { return height; }
 	/** 获取所在世界 */
 	public World getWorld() { return world; }
@@ -155,7 +157,7 @@ public class MIFrame extends Container {
 	/** 是否绘制默认背景颜色 */
 	private boolean isPaintBackGround = true;
 	/** 标题 */
-	private String title = "by minedreams";
+	private String title = "";
 	/** 标题位置 */
 	private Point titleLocation = null;
 	/** 标题模式 */
@@ -174,11 +176,13 @@ public class MIFrame extends Container {
 	 * 设置标题
 	 * @param text 该文本内部通过{@link I18n}转化
 	 */
+	@Override
 	public void setTitle(String text) {
-		if (text == null) title = "by minedreams";
-		else title = text;
+		WaitList.checkNull(text, "text");
+		title = text;
 	}
 	/** 获取标题 */
+	@Override
 	public String getTitle() { return title; }
 	
 	/**
@@ -196,13 +200,8 @@ public class MIFrame extends Container {
 	 */
 	@Nullable
 	public Point getTitleLocation() { return titleLocation; }
-	
-	/**
-	 * 设置标题显示模式，当标题位置不为默认时该设置无效
-	 * @param model 指定的模式
-	 *
-	 * @throws NullPointerException 如果model == null
-	 */
+
+	@Override
 	public void setTitleModel(TitleModelEnum model) {
 		WaitList.checkNull(model, "model");
 		this.titleModel = model;

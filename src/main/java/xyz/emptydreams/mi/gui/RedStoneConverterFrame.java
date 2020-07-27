@@ -6,11 +6,12 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.GuiLoader;
 import xyz.emptydreams.mi.api.gui.IContainerCreater;
+import xyz.emptydreams.mi.api.gui.IFrame;
 import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
-import xyz.emptydreams.mi.api.gui.component.MInput;
+import xyz.emptydreams.mi.api.gui.component.MSlot;
 import xyz.emptydreams.mi.blocks.te.maker.EMRedStoneConverter;
 
 import javax.annotation.Nonnull;
@@ -43,28 +44,16 @@ public class RedStoneConverterFrame {
 			return client;
 		}
 
-		private void init(Object o, World world, BlockPos pos, EntityPlayer player) {
+		private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
 			EMRedStoneConverter firepower = (EMRedStoneConverter) world.getTileEntity(pos);
-			if (o instanceof MIFrame) {
-				MIFrame frame = (MIFrame) o;
-				frame.init(world);
-				frame.setTitle(LOCATION_NAME);
-				frame.setTitleModel(TitleModelEnum.CENTRAL);
-				frame.add(new MBackpack(6, 77), player);
-				frame.add(new MInput(firepower.getInput()), player);
-				frame.add(firepower.getEnergyPro(), player);
-				frame.add(firepower.getBurnPro(), player);
-				frame.add(firepower.getStringShower(), player);
-			} else {
-				MIStaticFrameClient frame = (MIStaticFrameClient) o;
-				frame.setTitle(LOCATION_NAME);
-				frame.setTitleModel(TitleModelEnum.CENTRAL);
-				frame.add(new MBackpack(6, 77));
-				frame.add(new MInput(firepower.getInput()));
-				frame.add(firepower.getEnergyPro());
-				frame.add(firepower.getBurnPro());
-				frame.add(firepower.getStringShower());
-			}
+			frame.init(world);
+			frame.setTitle(LOCATION_NAME);
+			frame.setTitleModel(TitleModelEnum.CENTRAL);
+			frame.add(new MBackpack(6, 77), player);
+			frame.add(new MSlot(firepower.getInput()), player);
+			frame.add(firepower.getEnergyPro(), player);
+			frame.add(firepower.getBurnPro(), player);
+			frame.add(firepower.getStringShower(), player);
 		}
 
 	});

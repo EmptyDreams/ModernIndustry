@@ -6,11 +6,14 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.GuiLoader;
 import xyz.emptydreams.mi.api.gui.IContainerCreater;
+import xyz.emptydreams.mi.api.gui.IFrame;
 import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
-import xyz.emptydreams.mi.api.gui.component.MInput;
+import xyz.emptydreams.mi.api.gui.component.MSlot;
+import xyz.emptydreams.mi.api.gui.group.Group;
+import xyz.emptydreams.mi.api.gui.group.PanelCenter;
 import xyz.emptydreams.mi.blocks.te.user.EUFurnace;
 
 import javax.annotation.Nonnull;
@@ -43,26 +46,23 @@ public final class EleFurnaceFrame {
 			return client;
 		}
 
-		private void init(Object o, World world, BlockPos pos, EntityPlayer player) {
-			EUFurnace firepower = (EUFurnace) world.getTileEntity(pos);
-			if (o instanceof MIFrame) {
-				MIFrame frame = (MIFrame) o;
-				frame.init(world);
-				frame.setTitle(LOCATION_NAME);
-				frame.setTitleModel(TitleModelEnum.CENTRAL);
-				frame.add(new MBackpack(6, 72), player);
-				frame.add(new MInput(firepower.getInSlot()), player);
-				frame.add(new MInput(firepower.getOutSlot()), player);
-				frame.add(firepower.getProgressBar(), player);
-			} else {
-				MIStaticFrameClient frame = (MIStaticFrameClient) o;
-				frame.setTitle(LOCATION_NAME);
-				frame.setTitleModel(TitleModelEnum.CENTRAL);
-				frame.add(new MBackpack(6, 72));
-				frame.add(new MInput(firepower.getInSlot()));
-				frame.add(new MInput(firepower.getOutSlot()));
-				frame.add(firepower.getProgressBar());
-			}
+		private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
+			EUFurnace furnace = (EUFurnace) world.getTileEntity(pos);
+			frame.init(world);
+			frame.setTitle(LOCATION_NAME);
+			frame.setTitleModel(TitleModelEnum.CENTRAL);
+
+			Group group = new Group();
+			group.setLocation(0, 30);
+			group.setSize(frame.getWidth(), 0);
+			group.setControlPanel(PanelCenter.getInstance());
+			group.setMaxDistance(20);
+			group.add(new MSlot(furnace.getInSlot()));
+			group.add(furnace.getProgressBar());
+			group.add(new MSlot(furnace.getOutSlot()));
+
+			frame.add(new MBackpack(6, 72), player);
+			frame.add(group, player);
 		}
 
 	});

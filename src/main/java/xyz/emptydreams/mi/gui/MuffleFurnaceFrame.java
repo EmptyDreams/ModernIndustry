@@ -6,11 +6,12 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.GuiLoader;
 import xyz.emptydreams.mi.api.gui.IContainerCreater;
+import xyz.emptydreams.mi.api.gui.IFrame;
 import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
-import xyz.emptydreams.mi.api.gui.component.MInput;
+import xyz.emptydreams.mi.api.gui.component.MSlot;
 import xyz.emptydreams.mi.blocks.te.user.MuffleFurnace;
 
 import javax.annotation.Nonnull;
@@ -43,30 +44,17 @@ public class MuffleFurnaceFrame {
 			return client;
 		}
 		
-		private void init(Object o, World world, BlockPos pos, EntityPlayer player) {
+		private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
 			MuffleFurnace furnace = (MuffleFurnace) world.getTileEntity(pos);
-			if (o instanceof MIFrame) {
-				MIFrame frame = (MIFrame) o;
-				frame.init(world);
-				frame.setTitle(LOCATION_NAME);
-				frame.setTitleModel(TitleModelEnum.CENTRAL);
-				frame.add(new MBackpack(7, 83), player);
-				frame.add(new MInput(furnace.getUp()), player);
-				frame.add(new MInput(furnace.getDown()), player);
-				frame.add(new MInput(furnace.getOut()), player);
-				frame.add(furnace.getWorkProgress(), player);
-				frame.add(furnace.getBurnProgress(), player);
-			} else {
-				MIStaticFrameClient frame = (MIStaticFrameClient) o;
-				frame.setTitle(LOCATION_NAME);
-				frame.setTitleModel(TitleModelEnum.CENTRAL);
-				frame.add(new MBackpack(7, 83));
-				frame.add(new MInput(furnace.getUp()));
-				frame.add(new MInput(furnace.getDown()));
-				frame.add(new MInput(furnace.getOut()));
-				frame.add(furnace.getWorkProgress());
-				frame.add(furnace.getBurnProgress());
-			}
+			frame.init(world);
+			frame.setTitle(LOCATION_NAME);
+			frame.setTitleModel(TitleModelEnum.CENTRAL);
+			frame.add(new MBackpack(7, 83), player);
+			frame.add(new MSlot(furnace.getUp()), player);
+			frame.add(new MSlot(furnace.getDown()), player);
+			frame.add(new MSlot(furnace.getOut()), player);
+			frame.add(furnace.getWorkProgress(), player);
+			frame.add(furnace.getBurnProgress(), player);
 		}
 		
 	});

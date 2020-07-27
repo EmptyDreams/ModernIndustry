@@ -6,11 +6,12 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.GuiLoader;
 import xyz.emptydreams.mi.api.gui.IContainerCreater;
+import xyz.emptydreams.mi.api.gui.IFrame;
 import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
-import xyz.emptydreams.mi.api.gui.component.MInput;
+import xyz.emptydreams.mi.api.gui.component.MSlot;
 import xyz.emptydreams.mi.blocks.te.user.EUMFurnace;
 
 import javax.annotation.Nonnull;
@@ -43,26 +44,15 @@ public final class EleMFurnaceFrame {
 			return client;
 		}
 
-		private void init(Object o, World world, BlockPos pos, EntityPlayer player) {
+		private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
 			EUMFurnace firepower = (EUMFurnace) world.getTileEntity(pos);
-			if (o instanceof MIFrame) {
-				MIFrame frame = (MIFrame) o;
-				frame.init(world);
-				frame.setTitle(LOCATION_NAME);
-				frame.setTitleModel(TitleModelEnum.CENTRAL);
-				frame.add(new MBackpack(6, 72), player);
-				frame.add(new MInput(firepower.getInSlot()), player);
-				frame.add(new MInput(firepower.getOutSlot()), player);
-				frame.add(firepower.getProgressBar(), player);
-			} else {
-				MIStaticFrameClient frame = (MIStaticFrameClient) o;
-				frame.setTitle(LOCATION_NAME);
-				frame.setTitleModel(TitleModelEnum.CENTRAL);
-				frame.add(new MBackpack(6, 72));
-				frame.add(new MInput(firepower.getInSlot()));
-				frame.add(new MInput(firepower.getOutSlot()));
-				frame.add(firepower.getProgressBar());
-			}
+			frame.init(world);
+			frame.setTitle(LOCATION_NAME);
+			frame.setTitleModel(TitleModelEnum.CENTRAL);
+			frame.add(new MBackpack(6, 72), player);
+			frame.add(new MSlot(firepower.getInSlot()), player);
+			frame.add(new MSlot(firepower.getOutSlot()), player);
+			frame.add(firepower.getProgressBar(), player);
 		}
 
 	});

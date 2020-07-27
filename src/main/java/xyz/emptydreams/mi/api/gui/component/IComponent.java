@@ -4,34 +4,17 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.Slot;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.util.List;
 
 /**
+ * 所有控件的接口
  * @author EmptyDreams
- * @version V1.0
  */
 public interface IComponent {
-	
-	/**
-	 * 获取需要渲染的字符串
-	 * @return 若{@link #isString()}返回true需要返回具体值
-	 */
-	String getString();
-	/** 判断组件是否为字符串类组件 */
-	boolean isString();
-	/**
-	 * 获取字符串颜色.
-	 * @return 若{@link #isString()}返回true需要返回具体值
-	 */
-	int getStringColor();
-	/** 设置字符串颜色 */
-	void setStringColor(int color);
-	/** 设置字符串内容 */
-	void setString(String str);
 	
 	/**
 	 * 设置组件在GUI中的坐标
@@ -53,15 +36,9 @@ public interface IComponent {
 	int getHeight();
 	/** 获取宽度 */
 	int getWidth();
-	/** 当前组件是否包含Slot */
-	boolean hasSlot();
-	/** 获取Slot */
-	List<Slot> getSlots();
 	
 	/**
-	 * 绘制图像，在组件被渲染时调用.<br>
-	 * 在{@link #isString()}返回true时该方法依然被调用，
-	 * 但是渲染字符串是自动完成的，用户不需要在这个方法中绘制字符串
+	 * 绘制图像，在组件被渲染时调用.
 	 * @param g 画笔
 	 */
 	void paint(@Nonnull Graphics g);
@@ -70,11 +47,16 @@ public interface IComponent {
 	 */
 	void onAddToGUI(Container con, EntityPlayer player);
 	/**
+	 * 在组件被添加到客户端GUI时调用
+	 */
+	void onAddToGUI(GuiContainer con, EntityPlayer player);
+	/**
 	 * 在组件被移除GUI时
 	 */
 	void onRemoveFromGUI(Container con);
 	
 	/** 实时渲染 */
+	@SideOnly(Side.CLIENT)
 	default void realTimePaint(GuiContainer gui) { }
 	
 	/**
@@ -89,6 +71,7 @@ public interface IComponent {
 	 * @param data 数据信息
 	 * @return 若输入的数据代号符合要求则返回true，可以帮助客户端减少处理时长
 	 */
+	@SideOnly(Side.CLIENT)
 	default boolean update(int codeID, int data) { return false; }
 
 	/**

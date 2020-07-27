@@ -9,8 +9,6 @@ import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author EmptyDreams
@@ -18,7 +16,7 @@ import java.util.List;
  */
 public class MBackpack extends MComponent {
 	
-	public static final String RESOUCE_NAME = "backpack";
+	public static final String RESOURCE_NAME = "backpack";
 	
 	public MBackpack() {
 		this(0, 0);
@@ -37,22 +35,11 @@ public class MBackpack extends MComponent {
 	public void setLocation(int x, int y) { }
 	
 	@Override
-	public boolean hasSlot() {
-		return true;
-	}
-	
-	@Override
-	public List<Slot> getSlots() {
-		return SLOTS;
-	}
-	
-	@Override
 	public void paint(@Nonnull Graphics g) {
-		g.drawImage(ImageData.getImage(RESOUCE_NAME), 0, 0, null);
+		g.drawImage(ImageData.getImage(RESOURCE_NAME), 0, 0, null);
 	}
 	
 	private int startIndex = -1;
-	private final List<Slot> SLOTS = new ArrayList<>(36);
 	
 	@Override
 	public void onAddToGUI(Container gui, EntityPlayer player) {
@@ -65,14 +52,12 @@ public class MBackpack extends MComponent {
 					slot = new Slot(player.inventory,
 							k + i * 9 + 9 + startIndex, getX() + k * 18 + 1, getY() + i * 18 + 1);
 					frame.addSlotToContainer(slot);
-					SLOTS.add(slot);
 				}
 			}
 			for (int k = 0; k < 9; ++k) {
 				slot = new Slot(player.inventory,
 						k + startIndex, getX() + k * 18 + 1, getY() + 59);
 				frame.addSlotToContainer(slot);
-				SLOTS.add(slot);
 			}
 		} else {
 			MISysInfo.err("MBackpack不支持：" + gui.getClass());
