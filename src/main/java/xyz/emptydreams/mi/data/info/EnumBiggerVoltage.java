@@ -1,7 +1,5 @@
 package xyz.emptydreams.mi.data.info;
 
-import java.util.function.BiConsumer;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,7 +11,9 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.tools.property.IProperty;
-import xyz.emptydreams.mi.api.utils.BlockPosUtil;
+import xyz.emptydreams.mi.api.utils.BlockUtil;
+
+import java.util.function.BiConsumer;
 
 /**
  * 机器过载操作
@@ -38,7 +38,7 @@ public enum EnumBiggerVoltage {
 	FIRE((te, bigger) -> {
 		BlockPos pos = te.getPos();
 		if (bigger.getFireRadius() == 1) {
-			BlockPosUtil.setFire(te.getWorld(), pos);
+			BlockUtil.setFire(te.getWorld(), pos);
 		} else {
 			int r = bigger.getFireRadius();
 			int x = pos.getX() - r;
@@ -48,7 +48,7 @@ public enum EnumBiggerVoltage {
 				for (int k = 1; k <= r; ++k) {
 					for (int j = 1; j <= r; ++j) {
 						if (bigger.getFirePer() > IProperty.RANDOM_PROPERTY.nextFloat()) {
-							BlockPosUtil.setFire(te.getWorld(), new BlockPos(x + i, y + k, z + j));
+							BlockUtil.setFire(te.getWorld(), new BlockPos(x + i, y + k, z + j));
 						}
 					}
 				}

@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.items.common;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
@@ -7,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -21,6 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.blocks.base.MachineBlock;
 import xyz.emptydreams.mi.blocks.machine.user.MuffleFurnaceBlock;
@@ -49,28 +52,42 @@ public class SpannerItem extends Item {
 	public SpannerItem() {
 		setMaxStackSize(64);
 		setMaxDamage(256);
+		setFull3D();
 		setCreativeTab(ModernIndustry.TAB_TOOL);
 	}
-	
+
+	@Override
+	public boolean canItemEditBlocks() {
+		return true;
+	}
+
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos,
 	                                  EnumHand hand, EnumFacing facing,
 	                                  float hitX, float hitY, float hitZ) {
+		if (!player.capabilities.allowEdit) return EnumActionResult.FAIL;
+
 		IBlockState state = worldIn.getBlockState(pos);
 		if (player.isSneaking()) {
-			if (!isSupportRemove(state)) return EnumActionResult.FAIL;
+			if (!isSupportRemove(worldIn, pos, state)) return EnumActionResult.FAIL;
 			if (worldIn.isRemote) return EnumActionResult.SUCCESS;
 			worldIn.setBlockToAir(pos);
 			worldIn.markBlockRangeForRenderUpdate(pos, pos);
+			Block.spawnAsEntity(worldIn, pos, new ItemStack(state.getBlock()));
 			return EnumActionResult.SUCCESS;
 		}
 
 		EnumFacing decide = decideFacing(facing, hitX, hitY, hitZ);
-		PropertyDirection property = getPropertyDirection(state);
+		PropertyDirection property = getPropertyDirection(worldIn, pos, state);
 		if (property == null || !property.getAllowedValues().contains(decide)) return EnumActionResult.PASS;
 		WorldUtil.setBlockState(worldIn, pos, state, state.withProperty(property, decide));
 
 		return EnumActionResult.SUCCESS;
+	}
+
+	/** 获取{@link PropertyDirection}的对象 */
+	public static PropertyDirection getPropertyDirection(World world, BlockPos pos) {
+		return getPropertyDirection(world, pos, world.getBlockState(pos));
 	}
 
 	/**
@@ -79,7 +96,8 @@ public class SpannerItem extends Item {
 	 * @return 若state中不包含方向则返回null
 	 */
 	@Nullable
-	public static PropertyDirection getPropertyDirection(IBlockState state) {
+	public static PropertyDirection getPropertyDirection(World world, BlockPos pos, IBlockState state) {
+		if (!BlockUtil.isFullBlock(world, pos)) return null;
 		for (IProperty<?> property : state.getProperties().keySet()) {
 			if (property instanceof PropertyDirection) return (PropertyDirection) property;
 		}
@@ -137,9 +155,11 @@ public class SpannerItem extends Item {
 	@SubscribeEvent
 	public static void stopGUI(PlayerInteractEvent.RightClickBlock event) {
 		EntityPlayer player = event.getEntityPlayer();
+		World world = event.getWorld();
+		BlockPos pos = event.getPos();
 		if ((player.getHeldItemMainhand().getItem() == getInstance() ||
 				player.getHeldItemOffhand().getItem() == getInstance()) &&
-				getPropertyDirection(event.getWorld().getBlockState(event.getPos())) != null)
+				getPropertyDirection(world, pos) != null)
 			event.setUseBlock(Event.Result.DENY);
 	}
 
@@ -176,8 +196,7 @@ public class SpannerItem extends Item {
 		BlockPos pos = mouseOver.getBlockPos();
 		if (pos == null) return false;
 		if (player.getHeldItemMainhand().getItem() != getInstance()) return false;
-		IBlockState state = Minecraft.getMinecraft().world.getBlockState(pos);
-		return getPropertyDirection(state) != null;
+		return getPropertyDirection(Minecraft.getMinecraft().world, pos) != null;
 	}
 
 	/** 绘制线条 */
@@ -221,8 +240,10 @@ public class SpannerItem extends Item {
 	}
 
 	/** 判断扳手是否支持拆除该方块 */
-	public static boolean isSupportRemove(IBlockState state) {
-		return state.getBlock() instanceof MachineBlock || state.getBlock() instanceof MuffleFurnaceBlock;
+	public static boolean isSupportRemove(World world, BlockPos pos, IBlockState state) {
+		return state.getBlock() instanceof MachineBlock ||
+				state.getBlock() instanceof MuffleFurnaceBlock ||
+				getPropertyDirection(world, pos, state) != null;
 	}
 	
 }

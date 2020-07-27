@@ -1,12 +1,12 @@
 package xyz.emptydreams.mi.api.electricity.interfaces;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
-import xyz.emptydreams.mi.api.utils.BlockPosUtil;
+import xyz.emptydreams.mi.api.utils.BlockUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 可以输入电能的方块托管
@@ -60,7 +60,7 @@ public interface IEleInputer extends IRegister {
 	 */
 	default Map<TileEntity, IEleTransfer> getTransferAround(TileEntity now) {
 		Map<TileEntity, IEleTransfer> list = new HashMap<>(4);
-		BlockPosUtil.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
+		BlockUtil.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
 			IEleTransfer et = EleWorker.getTransfer(te);
 			if (et != null && et.isLink(te, now)) list.put(te,et);
 		});
@@ -73,7 +73,7 @@ public interface IEleInputer extends IRegister {
 	 */
 	default Map<TileEntity, IEleOutputer> getOutputerAround(TileEntity now) {
 		Map<TileEntity, IEleOutputer> list = new HashMap<>(3);
-		BlockPosUtil.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
+		BlockUtil.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
 			IEleOutputer out = EleWorker.getOutputer(te);
 			if (out != null && isAllowable(now, facing) && out.isAllowable(te, facing.getOpposite()))
 				list.put(te, out);

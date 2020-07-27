@@ -1,25 +1,45 @@
 package xyz.emptydreams.mi.api.utils;
 
-import java.util.function.BiConsumer;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.blocks.base.TransferBlock;
 
 import javax.annotation.Nullable;
+import java.util.function.BiConsumer;
 
 /**
  * 这个类种包含一些常用的工具类方法
  * @author EmptyDremas
- * @version V1.0
  */
-public final class BlockPosUtil {
-	
+public final class BlockUtil {
+
+	/**
+	 * 判断指定方块是否为完整方块或接近于完整方块
+	 * @param access 所在世界
+	 * @param pos 方块坐标
+	 */
+	public static boolean isFullBlock(IBlockAccess access, BlockPos pos) {
+		IBlockState state = access.getBlockState(pos);
+		if (state.isFullBlock() && state.isFullCube()) return true;
+		AxisAlignedBB box = state.getBoundingBox(access, pos);
+		double width = box.maxX - box.minX;
+		double height = box.maxY - box.minY;
+		double length = box.maxZ - box.minZ;
+		return (width * height * length) >= 0.75;
+	}
+
+	/**
+	 * 使指定位置着火
+	 * @param world 所在世界
+	 * @param pos 坐标
+	 */
 	public static void setFire(World world, BlockPos pos) {
 		IBlockState state = world.getBlockState(pos);
 		if (state.getBlock().isReplaceable(world, pos) ||

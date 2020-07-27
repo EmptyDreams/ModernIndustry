@@ -15,7 +15,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.utils.BlockPosUtil;
+import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.blocks.te.EleSrcCable;
 
 /**
@@ -65,7 +65,7 @@ public final class TransferItem extends ItemBlock {
 	            nbt.setPos(blockPos);
 	            nbt.setBlockType(this.block);
 	            if (pos != blockPos) nbt.link(pos);
-	            BlockPosUtil.forEachAroundTE(worldIn, blockPos, (te, fa) -> {
+	            BlockUtil.forEachAroundTE(worldIn, blockPos, (te, fa) -> {
 	            	if (pos != te.getPos()) nbt.link(te.getPos());
 	            });
 	            worldIn.setTileEntity(blockPos, nbt);

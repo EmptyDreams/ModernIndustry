@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.INBTSerializable;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.utils.BlockPosUtil;
+import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.wrapper.Wrapper;
 
 import java.lang.reflect.Field;
@@ -191,10 +191,10 @@ public final class DataOperator {
 
 	public static void writePos(NBTTagCompound nbt, String name, BlockPos data) {
 		if (data == null) return;
-		BlockPosUtil.writeBlockPos(nbt, data, name);
+		BlockUtil.writeBlockPos(nbt, data, name);
 	}
 	public static void readPos(NBTTagCompound nbt, String name, Consumer<BlockPos> setter) {
-		BlockPos pos = BlockPosUtil.readBlockPos(nbt, name);
+		BlockPos pos = BlockUtil.readBlockPos(nbt, name);
 		if (pos != null) setter.accept(pos);
 	}
 
