@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.tools.item;
 
 import net.minecraft.item.ItemAxe;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.register.AutoRegister;
 
 /**
  * 斧子
@@ -15,7 +16,7 @@ public class MIAxe extends ItemAxe implements IToolMaterial {
 	}
 
 	public MIAxe setRegistry(String modid, String name) {
-		setRegistryName(modid, name).setUnlocalizedName(name);
+		setRegistryName(modid, name).setUnlocalizedName(AutoRegister.getUnlocalizedName(modid, name));
 		return this;
 	}
 

@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 public final class FirePowerFrame {
 
 	public static final String NAME = "firepower";
-	public static final String LOCATION_NAME = "tile.fire_power.name";
+	public static final String LOCATION_NAME = "tile.mi.fire_power.name";
 
 	public static final int ID = GuiLoader.register(new IContainerCreater() {
 		@Nonnull

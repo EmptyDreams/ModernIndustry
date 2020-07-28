@@ -21,6 +21,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.blocks.te.EleSrcCable;
+import xyz.emptydreams.mi.register.AutoRegister;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -66,7 +67,7 @@ abstract public class TransferBlock extends TEBlockBase {
 		setHardness(0.35F);
 		setCreativeTab(ModernIndustry.TAB_WIRE);
 		setRegistryName(ModernIndustry.MODID, name);
-		setUnlocalizedName(name);
+		setUnlocalizedName(AutoRegister.getUnlocalizedName(name));
 		setDefaultState(getDefaultState().withProperty(SOUTH, false)
 				.withProperty(NORTH, false).withProperty(WEST, false).withProperty(EAST, false)
 				.withProperty(DOWN, false).withProperty(UP, false));

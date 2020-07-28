@@ -1,10 +1,10 @@
 package xyz.emptydreams.mi.register.item;
 
+import xyz.emptydreams.mi.ModernIndustry;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-
-import xyz.emptydreams.mi.ModernIndustry;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -23,15 +23,16 @@ public @interface AutoItemRegister {
 	/** 物品名称（不包括MOD ID） */
 	String value();
 
+	/** 本地名称，留空为自动 */
+	String unlocalizedName() default "";
+
 	/** 矿物词典，留空为不添加矿物词典 */
 	String[] oreDic() default { };
-
-	String ID = ModernIndustry.MODID;
 	
 	/** MOD ID */
-	String ID() default ID;
+	String modid() default ModernIndustry.MODID;
 	
 	/** 将注册的物品对象存储到该类中的某个对象上 */
-	String object() default "";
+	String field() default "";
 	
 }

@@ -1,5 +1,7 @@
 package xyz.emptydreams.mi.register.block;
 
+import xyz.emptydreams.mi.ModernIndustry;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -16,7 +18,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface AutoBlockRegister {
-	
+
+	/** modid */
+	String modid() default ModernIndustry.MODID;
+
 	/** 方块的注册名称 */
 	String registryName();
 	

@@ -3,9 +3,10 @@ package xyz.emptydreams.mi.blocks.common;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.items.common.CommonItems;
 import xyz.emptydreams.mi.register.AutoManager;
 import xyz.emptydreams.mi.register.block.OreCreate;
+
+import static xyz.emptydreams.mi.register.AutoRegister.getUnlocalizedName;
 
 /**
  * @author EmptyDreams
@@ -27,11 +28,11 @@ public final class CommonBlocks {
 	/** 机器外壳 */
 	public static final String NAME_MACHINE_SHELL = "machine_shell";
 	public static final Block MACHINE_SHELL = new BlockHelper(Material.IRON, TC_PICKAXE, 1)
-			                                          .setRegistryName(NAME_MACHINE_SHELL)
-			                                          .setUnlocalizedName(NAME_MACHINE_SHELL)
-				                                      .setCreativeTab(ModernIndustry.TAB_BLOCK)
-				                                      .setHardness(2.5F)
-					                                  .setResistance(15);
+							.setRegistryName(ModernIndustry.MODID, NAME_MACHINE_SHELL)
+							.setUnlocalizedName(getUnlocalizedName(NAME_MACHINE_SHELL))
+							.setCreativeTab(ModernIndustry.TAB_BLOCK)
+							.setHardness(2.5F)
+							.setResistance(15);
 	
 	private static final class BlockHelper extends Block {
 		

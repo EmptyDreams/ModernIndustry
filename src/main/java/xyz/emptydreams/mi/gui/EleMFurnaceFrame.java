@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 public final class EleMFurnaceFrame {
 
 	public static final String NAME = "ele_mfurnace";
-	public static final String LOCATION_NAME = "tile.ele_mfurnace.name";
+	public static final String LOCATION_NAME = "tile.mi.ele_mfurnace.name";
 
 	public static final int ID = GuiLoader.register(new IContainerCreater() {
 		@Nonnull

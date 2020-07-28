@@ -27,6 +27,7 @@ import xyz.emptydreams.mi.register.json.ItemJsonBuilder;
 import xyz.emptydreams.mi.register.te.AutoTileEntity;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -188,8 +189,8 @@ public final class AutoRegister {
 		for (ASMData data : classSet) {
 			Class<?> nowClass = Class.forName(data.getClassName());
 			Object o = nowClass.newInstance();
-			String field = data.getAnnotationInfo().getOrDefault("value", "").toString();
-			if (!field.equals("")) {
+			String field = (String) data.getAnnotationInfo().getOrDefault("value", null);
+			if (field != null) {
 				Field declaredField = nowClass.getDeclaredField(field);
 				declaredField.setAccessible(true);
 				declaredField.set(o, o);
@@ -231,23 +232,23 @@ public final class AutoRegister {
 		if (classSet != null) {
 			for (ASMData data : classSet) {
 				Map<String, Object> valueMap = data.getAnnotationInfo();
-				String ID = valueMap.getOrDefault("ID", AutoItemRegister.ID).toString();
+				String modid = valueMap.getOrDefault("modid", ModernIndustry.MODID).toString();
 				String name = valueMap.get("value").toString();
-				String object = valueMap.getOrDefault("object", "").toString();
+				String field = (String) valueMap.getOrDefault("field", null);
 				Class<?> nowClass = Class.forName(data.getClassName());
 				String[] ores = (String[]) valueMap.getOrDefault("oreDic", null);
 				Item item = (Item) nowClass.newInstance();
 
-				item.setRegistryName(ID, name);
-				item.setUnlocalizedName(name);
+				item.setRegistryName(modid, name);
+				item.setUnlocalizedName(getUnlocalizedName(valueMap, name, modid));
 				if (ores != null)
 					for (String ore : ores)
 						OreDictionary.registerOre(ore, item);
 				addAutoItem(item);
-				if (!object.equals("")) {
-					Field field = nowClass.getDeclaredField(object);
-					field.setAccessible(true);
-					field.set(null, item);
+				if (field != null) {
+					Field deField = nowClass.getDeclaredField(field);
+					deField.setAccessible(true);
+					deField.set(null, item);
 				}
 			}
 		}
@@ -299,18 +300,19 @@ public final class AutoRegister {
 				Map<String, Object> valueMap = data.getAnnotationInfo();
 				Class<?> nowClass = Class.forName(data.getClassName());
 				Block block = (Block) nowClass.newInstance();
-				String unName = valueMap.getOrDefault("unlocalizedName", "").toString();
-				String field = valueMap.getOrDefault("field", "").toString();
+				String field = (String) valueMap.getOrDefault("field", null);
 				String[] ores = (String[]) valueMap.getOrDefault("oreDic", null);
+				String reName = valueMap.get("registryName").toString();
+				String modid = valueMap.getOrDefault("modid", ModernIndustry.MODID).toString();
 
-				block.setRegistryName(ModernIndustry.MODID, (String) valueMap.get("registryName"));
-				block.setUnlocalizedName(unName.equals("") ? block.getRegistryName().getResourcePath() : unName);
+				block.setRegistryName(ModernIndustry.MODID, reName);
+				block.setUnlocalizedName(getUnlocalizedName(valueMap, reName, modid));
 
 				Blocks.blocks.add(block);
 				if (ores != null)
 					for (String ore : ores)
 						OreDictionary.registerOre(ore, block);
-				if (!field.equals("")) {
+				if (field != null) {
 					Field declaredField = nowClass.getDeclaredField(field);
 					declaredField.setAccessible(true);
 					declaredField.set(block, block);
@@ -323,6 +325,24 @@ public final class AutoRegister {
 					Blocks.selfRegister.put(register, block);
 			}
 		}
+	}
+
+	/** 获取modid */
+	@Nonnull
+	public static String getUnlocalizedName(String modid, String name) {
+		return modid + "." + name;
+	}
+
+	/** 获取modid */
+	public static String getUnlocalizedName(String name) {
+		return ModernIndustry.MODID + "." + name;
+	}
+
+	@Nonnull
+	private static String getUnlocalizedName(Map<String, Object> valueMap, String reName, String modid) {
+		Object value = valueMap.getOrDefault("unlocalizedName", null);
+		if (value == null) return modid + "." + reName;
+		return value.toString();
 	}
 	
 }

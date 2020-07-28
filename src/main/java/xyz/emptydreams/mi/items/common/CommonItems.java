@@ -8,11 +8,12 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.capabilities.nonburn.NonBurnProvider;
 import xyz.emptydreams.mi.register.AutoLoader;
 import xyz.emptydreams.mi.register.AutoManager;
+import xyz.emptydreams.mi.register.AutoRegister;
 import xyz.emptydreams.mi.register.OreDicRegister;
 
 import java.util.function.Supplier;
 
-import static xyz.emptydreams.mi.items.common.CommonItemHelper.*;
+import static xyz.emptydreams.mi.items.common.CommonItemHelper.CAPS;
 
 /**
  * 放置一些普通物品
@@ -91,8 +92,8 @@ public final class CommonItems {
 	private static final class MItem extends Item {
 
 		public MItem(String registryName) {
-			setRegistryName(registryName);
-			setUnlocalizedName(registryName);
+			setRegistryName(ModernIndustry.MODID, registryName);
+			setUnlocalizedName(AutoRegister.getUnlocalizedName(registryName));
 			setNoRepair();
 			setMaxDamage(0);
 			setCreativeTab(ModernIndustry.TAB_ITEM);

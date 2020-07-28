@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.tools.item;
 
 import net.minecraft.item.ItemHoe;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.register.AutoRegister;
 
 /**
  * 锄头
@@ -15,7 +16,7 @@ public class MIHoe extends ItemHoe implements IToolMaterial {
 	}
 
 	public MIHoe setRegistry(String modid, String name) {
-		setRegistryName(modid, name).setUnlocalizedName(name);
+		setRegistryName(modid, name).setUnlocalizedName(AutoRegister.getUnlocalizedName(modid, name));
 		return this;
 	}
 	

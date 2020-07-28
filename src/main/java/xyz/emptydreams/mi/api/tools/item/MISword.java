@@ -7,10 +7,10 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemSword;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.register.AutoRegister;
 
 /**
  * @author EmptyDreams
- * @version V1.0
  */
 public class MISword extends ItemSword implements IToolMaterial {
 	
@@ -42,7 +42,7 @@ public class MISword extends ItemSword implements IToolMaterial {
 	}
 
 	public MISword setRegistry(String modid, String name) {
-		setRegistryName(modid, name).setUnlocalizedName(name);
+		setRegistryName(modid, name).setUnlocalizedName(AutoRegister.getUnlocalizedName(modid, name));
 		return this;
 	}
 

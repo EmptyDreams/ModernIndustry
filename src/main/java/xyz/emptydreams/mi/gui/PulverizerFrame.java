@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 public final class PulverizerFrame {
 
 	public static final String NAME = "pulverizer";
-	public static final String LOCATION_NAME = "tile.pulverizer.name";
+	public static final String LOCATION_NAME = "tile.mi.pulverizer.name";
 
 	public static final int ID = GuiLoader.register(new IContainerCreater() {
 		@Nonnull

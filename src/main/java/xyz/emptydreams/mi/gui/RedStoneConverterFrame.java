@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 public class RedStoneConverterFrame {
 
 	public static final String NAME = "red_stone_converter";
-	public static final String LOCATION_NAME = "tile.red_stone_converter.name";
+	public static final String LOCATION_NAME = "tile.mi.red_stone_converter.name";
 
 	public static final int ID = GuiLoader.register(new IContainerCreater() {
 		@Nonnull
