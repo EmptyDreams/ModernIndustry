@@ -30,7 +30,8 @@ public class StringComponent extends MComponent {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void realTimePaint(GuiContainer gui) {
-		gui.drawString(gui.mc.fontRenderer, getString(), getX(), getY(), getColor());
+		gui.mc.fontRenderer.drawString(getString(),
+				getX() + gui.getGuiLeft(), getY() + gui.getGuiLeft(), getColor());
 	}
 
 	/** 设置字符串颜色 */

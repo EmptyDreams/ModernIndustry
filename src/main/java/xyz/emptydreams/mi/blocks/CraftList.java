@@ -6,14 +6,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xyz.emptydreams.mi.api.craftguide.CraftRegistry;
 import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
 import xyz.emptydreams.mi.blocks.common.OreBlock;
-import xyz.emptydreams.mi.register.AutoLoader;
 
-import static net.minecraft.init.Items.*;
 import static net.minecraft.init.Blocks.*;
+import static net.minecraft.init.Items.COAL;
+import static xyz.emptydreams.mi.api.utils.CraftUtil.createOneCraft;
 import static xyz.emptydreams.mi.blocks.common.OreBlock.getInstance;
 import static xyz.emptydreams.mi.items.common.CommonItems.*;
-import static xyz.emptydreams.mi.api.utils.CraftUtil.createOneCraft;
-import static xyz.emptydreams.mi.items.common.CommonItems.ITEM_COAL_BURN_POWDER;
 
 /**
  * 存储各种合成表
@@ -26,6 +24,8 @@ public final class CraftList {
 	public static final CraftRegistry FIRE_POWER = CraftRegistry.instance("fire_powder");
 	/** 粉碎机 */
 	public static final CraftRegistry PULVERIZER = CraftRegistry.instance("pulverizer");
+	/** 压缩机 */
+	public static final CraftRegistry COMPRESSOR = CraftRegistry.instance("compressor");
 
 	@SubscribeEvent
 	public static void registryCraft(CraftGuideRegistryEvent event) {

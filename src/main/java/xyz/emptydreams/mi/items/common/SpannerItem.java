@@ -81,6 +81,11 @@ public class SpannerItem extends Item {
 		PropertyDirection property = getPropertyDirection(worldIn, pos, state);
 		if (property == null || !property.getAllowedValues().contains(decide)) return EnumActionResult.PASS;
 		WorldUtil.setBlockState(worldIn, pos, state, state.withProperty(property, decide));
+		for (EnumFacing value : EnumFacing.values()) {
+			BlockPos blockPos = pos.offset(value);
+			IBlockState blockState = worldIn.getBlockState(blockPos);
+			//blockState.getBlock().neighborChanged(blockState, worldIn, blockPos, );
+		}
 
 		return EnumActionResult.SUCCESS;
 	}

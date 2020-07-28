@@ -1,10 +1,7 @@
 package xyz.emptydreams.mi.blocks.te.maker;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -13,8 +10,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.api.electricity.clock.NonCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
-import xyz.emptydreams.mi.api.gui.component.IComponent;
-import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
@@ -42,26 +37,6 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 									CommonProgress.Style.STRIPE, CommonProgress.Front.RIGHT);
 	private final CommonProgress burnPro = new CommonProgress(
 									CommonProgress.Style.ARROW_DOWN, CommonProgress.Front.DOWN);
-	/** 能量数据显示 */
-	private final StringComponent stringShower = new StringComponent() {
-		@Override
-		public void send(Container con, IContainerListener listener) {
-			listener.sendWindowProperty(con, getCodeID(0), getNowEnergy());
-		}
-
-		@Override
-		public boolean update(int codeID, int data) {
-			if (codeID == getCodeID(0)) {
-				((EMRedStoneConverter) world.getTileEntity(pos)).setNowEnergy(data);
-				stringShower.setString(data + " / " + getMaxEnergy());
-				stringShower.setLocation(
-						(176 - Minecraft.getMinecraft().fontRenderer
-								.getStringWidth(stringShower.getString())) / 2, 60);
-				return true;
-			}
-			return false;
-		}
-	};
 	@Storage(INT) private int burnTime = 0;
 	@Storage(INT) private int maxTime = 0;
 
@@ -80,6 +55,7 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 
 		energyPro.setMax(5000);
 		energyPro.setLocation(44, 68);
+		energyPro.setStringShower(CommonProgress.ProgressStyle.DOWN);
 		burnPro.setLocation(80, 38);
 	}
 
@@ -131,8 +107,6 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 	public CommonProgress getEnergyPro() { return energyPro; }
 	/** 获取燃烧进度条 */
 	public CommonProgress getBurnPro() { return burnPro; }
-	/** 获取进度条显示 */
-	public IComponent getStringShower() { return stringShower; }
 
 	@Nullable
 	@Override

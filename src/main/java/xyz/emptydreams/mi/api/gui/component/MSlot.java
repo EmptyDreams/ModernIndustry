@@ -40,9 +40,7 @@ public class MSlot extends MComponent {
 	}
 	
 	public Slot getSlot() { return slot; }
-	
-	@Override
-	public void setSize(int width, int height) { }
+
 	@Override
 	public void setLocation(int x, int y) {
 		super.setLocation(x, y);

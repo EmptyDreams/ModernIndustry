@@ -1,9 +1,6 @@
 package xyz.emptydreams.mi.blocks.te.maker;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
@@ -15,7 +12,6 @@ import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.electricity.clock.NonCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.IProgressBar;
-import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.utils.ItemUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.blocks.CommonUtil;
@@ -41,7 +37,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	/** 能量进度条 */
 	private final CommonProgress energyPro = new CommonProgress();
 	/** 能量数据显示 */
-	private final StringComponent stringShower = new StringComponent() {
+	/*private final StringComponent stringShower = new StringComponent() {
 		@Override
 		public void send(Container con, IContainerListener listener) {
 			listener.sendWindowProperty(con, getCodeID(0), getNowEnergy());
@@ -53,13 +49,13 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 				((EMFirePower) world.getTileEntity(pos)).setNowEnergy(data);
 				stringShower.setString(data + " / " + getMaxEnergy());
 				stringShower.setLocation(
-						(176 - Minecraft.getMinecraft().fontRenderer
-								.getStringWidth(stringShower.getString())) / 2, 56);
+						(Minecraft.getMinecraft().displayWidth - Minecraft.getMinecraft().fontRenderer
+								.getStringWidth(stringShower.getString())) / 2, getY());
 				return true;
 			}
 			return false;
 		}
-	};
+	};*/
 	/** 输入/输出框 */
 	@Storage(SERIALIZABLE) private final ItemStackHandler item = new ItemStackHandler(2);
 	/** 输入框 */
@@ -81,10 +77,9 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 		setReceive(false);
 		setMaxEnergy(10000);
 		setCounter(NonCounter.getInstance());
-		progressBar.setLocation(76, 30);
-		energyPro.setLocation(44, 51);
 		energyPro.setStyle(CommonProgress.Style.STRIPE);
 		energyPro.setMax(getMaxEnergy());
+		energyPro.setStringShower(CommonProgress.ProgressStyle.DOWN);
 	}
 
 	@Override
@@ -135,7 +130,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 		markDirty();
 	}
 
-	public StringComponent getStringShower() { return stringShower; }
+	//public StringComponent getStringShower() { return stringShower; }
 	public IProgressBar getEnergyProBar() { return energyPro; }
 	public IProgressBar getProgressBar() { return progressBar; }
 	public SlotItemHandler getInSlot() { return in; }

@@ -63,4 +63,5 @@ public abstract class MComponent implements IComponent {
 	public void setCodeStart(int code) {
 		this.code = code;
 	}
+
 }

@@ -1,6 +1,8 @@
 package xyz.emptydreams.mi.api.gui.component;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraftforge.fml.relauncher.Side;
@@ -11,22 +13,28 @@ import xyz.emptydreams.mi.api.net.WaitList;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static xyz.emptydreams.mi.api.gui.component.IProgressBar.getTexture;
 
 /**
  * 通用进度条
  * @author EmptyDreams
- * @version V1.0
  */
-@SuppressWarnings("unused")
 public class CommonProgress extends MComponent implements IProgressBar {
-	
+
+	/** 最大 */
 	private int max;
+	/** 现在 */
 	private int now;
+	/** 样式 */
 	private Style style;
+	/** 方向 */
 	private Front front;
+	/** 是否含有进度条 */
+	private ProgressStyle shower = null;
 	
 	/** 创建一个默认风格({@link Style#ARROW})和方向({@link Front#RIGHT})的进度条 */
 	public CommonProgress() {
@@ -43,7 +51,9 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void realTimePaint(GuiContainer gui) {
+		GlStateManager.color(1, 1, 1);
 		front.accept(new Node(gui));
+		if (shower != null) shower.draw(this, gui);
 	}
 	
 	@Override
@@ -51,46 +61,44 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		g.drawImage(ImageData.getImage(RESOURCE_NAME).getSubimage(
 				style.getX(), style.getY(), style.getWidth(), style.getHeight()), 0, 0, null);
 	}
-	
+
 	@Override
-	public int getNow() {
-		return now;
+	public int getWidth() {
+		if (shower == null) return super.getWidth();
+		return shower.getter.apply(this)[0];
 	}
-	
+
 	@Override
-	public int getMax() {
-		return max;
+	public int getHeight() {
+		if (shower == null) return super.getHeight();
+		return shower.getter.apply(this)[1];
 	}
-	
-	public Style getStyle() {
-		return style;
-	}
-	
-	public Front getFront() {
-		return front;
-	}
-	
+
+	/** 是否含有进度条显示 */
+	public ProgressStyle getStringShower() { return shower; }
+	/** 设置进度条显示 */
+	public void setStringShower(ProgressStyle value) { shower = value; }
 	@Override
-	public void setMax(int max) {
-		this.max = max;
-	}
-	
+	public int getNow() { return now; }
 	@Override
-	public void setNow(int now) {
-		this.now = Math.min(now, getMax());
-	}
-	
+	public int getMax() { return max; }
+	/** 获取显示风格 */
+	public Style getStyle() { return style; }
+	/** 获取进度条方向 */
+	public Front getFront() { return front; }
 	@Override
-	public boolean isReverse() {
-		return style.isReverse();
-	}
-	
+	public void setMax(int max) { this.max = max; }
+	@Override
+	public void setNow(int now) { this.now = Math.min(now, getMax()); }
+	@Override
+	public boolean isReverse() { return style.isReverse(); }
+	/** 设置进度条风格 */
 	public void setStyle(Style style) {
 		WaitList.checkNull(style, "style");
 		this.style = style;
 		setSize(style.getWidth(), style.getHeight());
 	}
-	
+	/** 设置进度条方向 */
 	public void setFront(Front front) {
 		WaitList.checkNull(front, "front");
 		this.front = front;
@@ -111,7 +119,44 @@ public class CommonProgress extends MComponent implements IProgressBar {
 			default: return false;
 		}
 	}
-	
+
+	public enum ProgressStyle {
+
+		UP((bar, con) -> drawHelper(bar, con, bar.getY() - 9),
+				bar -> new int[] { bar.style.getWidth(), bar.style.getHeight() + 9 }),
+		DOWN((bar, con) -> drawHelper(bar, con, bar.getY() + bar.style.getHeight()),
+				bar -> new int[] { bar.style.getWidth(), bar.style.getHeight() + 9 }),
+		CENTER((bar, con) -> drawHelper(bar, con, (bar.getHeight() - 9) / 2 + bar.getY()),
+				bar -> new int[] { bar.style.getWidth(), Math.max(bar.style.getHeight(), 9) });
+
+		private final BiConsumer<CommonProgress, GuiContainer> task;
+		private final Function<CommonProgress, int[]> getter;
+
+		ProgressStyle(BiConsumer<CommonProgress, GuiContainer> task, Function<CommonProgress, int[]> getter) {
+			this.task = task;
+			this.getter = getter;
+		}
+
+		/** 绘制 */
+		@SideOnly(Side.CLIENT)
+		public void draw(CommonProgress bar, GuiContainer con) {
+			task.accept(bar, con);
+		}
+
+		/** 格式化字符串 */
+		private static String format(CommonProgress bar) {
+			return bar.getNow() + "/" + bar.getMax();
+		}
+
+		private static void drawHelper(CommonProgress bar, GuiContainer con, int y) {
+			String show = format(bar);
+			Minecraft mc = Minecraft.getMinecraft();
+			int x = (bar.getWidth() - mc.fontRenderer.getStringWidth(show)) / 2;
+			mc.fontRenderer.drawString(show, x + con.getGuiLeft() + bar.getX(), y + con.getGuiTop(), 0);
+		}
+
+	}
+
 	/** 风格 */
 	public enum Style {
 
@@ -126,34 +171,41 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		/** 向下的箭头 */
 		ARROW_DOWN(0, 30, 0, 52, 15, 22, false);
 		
-		private final int x, y, x2, y2, width, height;
+		private final int x, y, fillX, fillY, width, height;
 		private final boolean reverse;
 
 		/**
 		 * @param x 空进度条的起点
 		 * @param y 空进度条的起点
-		 * @param x2 满进度条的起点
-		 * @param y2 满进度条的起点
+		 * @param fillX 满进度条的起点
+		 * @param fillY 满进度条的起点
 		 * @param width 进度条的宽度
 		 * @param height 进度条的高度
 		 * @param reverse 是否颠倒进度
 		 */
-		Style(int x, int y, int x2, int y2, int width, int height, boolean reverse) {
+		Style(int x, int y, int fillX, int fillY, int width, int height, boolean reverse) {
 			this.x = x;
 			this.y = y;
-			this.x2 = x2;
-			this.y2 = y2;
+			this.fillX = fillX;
+			this.fillY = fillY;
 			this.width = width;
 			this.height = height;
 			this.reverse = reverse;
 		}
-		
+
+		/** 获取空进度条的起点 */
 		public int getX() { return x; }
+		/** 获取空进度条的起点 */
 		public int getY() { return y; }
-		public int getFillX() { return x2; }
-		public int getFillY() { return y2; }
+		/** 获取填充条的起点 */
+		public int getFillX() { return fillX; }
+		/** 获取填充条的终点 */
+		public int getFillY() { return fillY; }
+		/** 获取宽度 */
 		public int getWidth() { return width; }
+		/** 获取高度 */
 		public int getHeight() { return height; }
+		/** 是否反转 */
 		public boolean isReverse() { return reverse; }
 		
 	}
@@ -183,7 +235,8 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		}
 		
 	}
-	
+
+	@SideOnly(Side.CLIENT)
 	private class Node {
 		/** 图形在窗口中的坐标 */
 		final int x, y;
@@ -200,16 +253,17 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	}
 	
 	/** 绘制从下到上的图形 */
+	@SideOnly(Side.CLIENT)
 	public static void paintUp(Node node) {
 		Style style = node.getThis().style;
 		int height = (int) (style.getHeight() * node.getThis().getPer());
 		int y = node.y + style.getHeight() - height;
-		int tY = style.getFillY() + style.getHeight() - height;
 		RuntimeTexture texture = getTexture();
 		texture.drawToFrame(node.x, y, style.getFillX(), style.getFillY(), style.getWidth(), height);
 	}
 	
 	/** 绘制从上到下的图形 */
+	@SideOnly(Side.CLIENT)
 	public static void paintDown(Node node) {
 		Style style = node.getThis().style;
 		int height = (int) (style.getHeight() * node.getThis().getPer());
@@ -218,6 +272,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	}
 	
 	/** 绘制从右到左的图形 */
+	@SideOnly(Side.CLIENT)
 	public static void paintLeft(Node node) {
 		Style style = node.getThis().style;
 		int width = (int) (style.getWidth() * node.getThis().getPer());
@@ -228,6 +283,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	}
 	
 	/** 绘制从左到右的图形 */
+	@SideOnly(Side.CLIENT)
 	public static void paintRight(Node node) {
 		Style style = node.getThis().style;
 		int width = (int) (style.getWidth() * node.getThis().getPer());

@@ -12,6 +12,8 @@ import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
+import xyz.emptydreams.mi.api.gui.group.Group;
+import xyz.emptydreams.mi.api.gui.group.Panels;
 import xyz.emptydreams.mi.blocks.te.user.EUMFurnace;
 
 import javax.annotation.Nonnull;
@@ -50,9 +52,12 @@ public final class EleMFurnaceFrame {
 			frame.setTitle(LOCATION_NAME);
 			frame.setTitleModel(TitleModelEnum.CENTRAL);
 			frame.add(new MBackpack(6, 72), player);
-			frame.add(new MSlot(firepower.getInSlot()), player);
-			frame.add(new MSlot(firepower.getOutSlot()), player);
-			frame.add(firepower.getProgressBar(), player);
+
+			Group group = new Group(0, 30, frame.getWidth(), 0, Panels::horizontalCenter);
+			group.setMaxDistance(10);
+			group.adds(new MSlot(firepower.getInSlot()),
+							firepower.getProgressBar(), new MSlot(firepower.getOutSlot()));
+			frame.add(group, player);
 		}
 
 	});

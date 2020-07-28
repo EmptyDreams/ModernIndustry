@@ -12,6 +12,8 @@ import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
+import xyz.emptydreams.mi.api.gui.group.Group;
+import xyz.emptydreams.mi.api.gui.group.Panels;
 import xyz.emptydreams.mi.blocks.te.user.EUPulverizer;
 
 import javax.annotation.Nonnull;
@@ -45,14 +47,16 @@ public final class PulverizerFrame {
 		}
 
 		private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
-			EUPulverizer firepower = (EUPulverizer) world.getTileEntity(pos);
+			EUPulverizer pulverizer = (EUPulverizer) world.getTileEntity(pos);
 			frame.init(world);
 			frame.setTitle(LOCATION_NAME);
 			frame.setTitleModel(TitleModelEnum.CENTRAL);
 			frame.add(new MBackpack(6, 72), player);
-			frame.add(new MSlot(firepower.getInSlot()), player);
-			frame.add(new MSlot(firepower.getOutSlot()), player);
-			frame.add(firepower.getProgress(), player);
+
+			Group group = new Group(0, 5, frame.getWidth(), 70, Panels::horizontalCenter);
+			group.adds(new MSlot(pulverizer.getInSlot()),
+						pulverizer.getProgress(), new MSlot(pulverizer.getOutSlot()));
+			frame.add(group, player);
 		}
 
 	});

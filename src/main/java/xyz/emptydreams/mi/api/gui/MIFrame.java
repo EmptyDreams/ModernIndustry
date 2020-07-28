@@ -235,10 +235,13 @@ public class MIFrame extends Container implements IFrame {
 		WaitList.checkNull(component, "component");
 		components.add(component);
 		component.onAddToGUI(this, player);
+	}
+
+	public void allocID(IComponent component) {
 		component.setCodeStart(codeStart);
 		codeStart += 100;
 	}
-	
+
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();

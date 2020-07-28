@@ -12,6 +12,8 @@ import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
+import xyz.emptydreams.mi.api.gui.group.Group;
+import xyz.emptydreams.mi.api.gui.group.Panels;
 import xyz.emptydreams.mi.blocks.te.user.MuffleFurnace;
 
 import javax.annotation.Nonnull;
@@ -50,11 +52,13 @@ public class MuffleFurnaceFrame {
 			frame.setTitle(LOCATION_NAME);
 			frame.setTitleModel(TitleModelEnum.CENTRAL);
 			frame.add(new MBackpack(7, 83), player);
-			frame.add(new MSlot(furnace.getUp()), player);
-			frame.add(new MSlot(furnace.getDown()), player);
-			frame.add(new MSlot(furnace.getOut()), player);
-			frame.add(furnace.getWorkProgress(), player);
-			frame.add(furnace.getBurnProgress(), player);
+
+			Group left = new Group(0, 0, 18, 70, Panels::verticalCenter);
+			Group group = new Group(0, 10, frame.getWidth(), 0, Panels::horizontalCenter);
+			left.setMaxDistance(5);
+			left.adds(new MSlot(furnace.getUp()), furnace.getBurnProgress(), new MSlot(furnace.getDown()));
+			group.adds(left, furnace.getWorkProgress(), new MSlot(furnace.getOut()));
+			frame.add(group, player);
 		}
 		
 	});

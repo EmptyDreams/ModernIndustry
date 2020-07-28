@@ -20,9 +20,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
-import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
-import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.blocks.te.EleSrcCable;
 
 import javax.annotation.Nonnull;
@@ -139,13 +136,7 @@ abstract public class TransferBlock extends TEBlockBase {
 		if (block == Blocks.AIR) {
 			tew.deleteLink(fromPos);
 		} else if (fromEntity != null) {
-			tew.link(fromPos);
-			ILink link = fromEntity.getCapability(LinkCapability.LINK, null);
-			if (link != null) {
-				if (link.canLink(BlockUtil.whatFacing(fromPos, pos))) {
-					tew.link(fromPos);
-				}
-			}
+			if (!tew.link(fromPos)) tew.deleteLink(fromPos);
 		}
 	}
 	

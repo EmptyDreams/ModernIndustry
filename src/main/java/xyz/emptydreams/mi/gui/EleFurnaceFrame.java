@@ -13,7 +13,7 @@ import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
 import xyz.emptydreams.mi.api.gui.group.Group;
-import xyz.emptydreams.mi.api.gui.group.PanelCenter;
+import xyz.emptydreams.mi.api.gui.group.Panels;
 import xyz.emptydreams.mi.blocks.te.user.EUFurnace;
 
 import javax.annotation.Nonnull;
@@ -52,11 +52,8 @@ public final class EleFurnaceFrame {
 			frame.setTitle(LOCATION_NAME);
 			frame.setTitleModel(TitleModelEnum.CENTRAL);
 
-			Group group = new Group();
-			group.setLocation(0, 30);
-			group.setSize(frame.getWidth(), 0);
-			group.setControlPanel(PanelCenter.getInstance());
-			group.setMaxDistance(20);
+			Group group = new Group(0, 30, frame.getWidth(), 0, Panels::horizontalCenter);
+			group.setMaxDistance(15);
 			group.add(new MSlot(furnace.getInSlot()));
 			group.add(furnace.getProgressBar());
 			group.add(new MSlot(furnace.getOutSlot()));

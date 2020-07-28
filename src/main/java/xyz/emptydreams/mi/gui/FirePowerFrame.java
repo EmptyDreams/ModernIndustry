@@ -12,6 +12,8 @@ import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
+import xyz.emptydreams.mi.api.gui.group.Group;
+import xyz.emptydreams.mi.api.gui.group.Panels;
 import xyz.emptydreams.mi.blocks.te.maker.EMFirePower;
 
 import javax.annotation.Nonnull;
@@ -50,11 +52,15 @@ public final class FirePowerFrame {
 			frame.setTitle(LOCATION_NAME);
 			frame.setTitleModel(TitleModelEnum.CENTRAL);
 			frame.add(new MBackpack(6, 72), player);
-			frame.add(new MSlot(firepower.getInSlot()), player);
-			frame.add(new MSlot(firepower.getOutSlot()), player);
-			frame.add(firepower.getProgressBar(), player);
-			frame.add(firepower.getEnergyProBar(), player);
-			frame.add(firepower.getStringShower(), player);
+
+			Group up = new Group(0, 0, frame.getWidth(), 18, Panels::horizontalCenter);
+			Group group = new Group(0, 12, 0, 70, Panels::verticalCenter);
+			up.setMaxDistance(10);
+			group.setMaxDistance(8);
+
+			up.adds(new MSlot(firepower.getInSlot()), firepower.getProgressBar(), new MSlot(firepower.getOutSlot()));
+			group.adds(up, firepower.getEnergyProBar());
+			frame.add(group, player);
 		}
 		
 	});

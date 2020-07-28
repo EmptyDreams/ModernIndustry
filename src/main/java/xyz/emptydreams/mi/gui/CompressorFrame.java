@@ -12,6 +12,8 @@ import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
+import xyz.emptydreams.mi.api.gui.group.Group;
+import xyz.emptydreams.mi.api.gui.group.Panels;
 import xyz.emptydreams.mi.blocks.te.user.EUCompressor;
 
 import javax.annotation.Nonnull;
@@ -50,10 +52,14 @@ public final class CompressorFrame {
 			frame.setTitle(LOCATION_NAME);
 			frame.setTitleModel(TitleModelEnum.CENTRAL);
 			frame.add(new MBackpack(8, 84), player);
-			frame.add(new MSlot(compressor.getSlot(0)), player);
-			frame.add(new MSlot(compressor.getSlot(1)), player);
-			frame.add(new MSlot(compressor.getSlot(2)), player);
-			frame.add(compressor.getProgressBar(), player);
+
+			Group fir = new Group(0, 0, 18, 54, Panels::verticalCenter);
+			Group group = new Group(0, 15, frame.getWidth(), 0, Panels::horizontalCenter);
+			group.setMaxDistance(10);
+
+			fir.adds(new MSlot(compressor.getSlot(0)), new MSlot(compressor.getSlot(1)));
+			group.adds(fir, compressor.getProgressBar(), new MSlot(compressor.getSlot(2)));
+			frame.add(group, player);
 		}
 		
 	});

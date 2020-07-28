@@ -7,15 +7,17 @@ import net.minecraft.inventory.IContainerListener;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.IFrame;
+import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.IComponent;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.net.WaitList;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 /**
  * 控件包，支持自动排版
@@ -24,13 +26,25 @@ import java.util.List;
 public class Group extends MComponent implements Iterable<IComponent> {
 
 	/** 包含的控件 */
-	private final List<IComponent> components = new ArrayList<>();
+	private final List<IComponent> components = new LinkedList<>();
 	/** 对齐模式 */
-	private IControlPanel mode = null;
+	private BiConsumer<IFrame, Group> mode = null;
 	/** 两个控件间的最短距离(像素) */
 	private int minDistance = 3;
 	/** 两个控件间的最远距离(像素) */
-	private int maxDistance = 100;
+	private int maxDistance = 10;
+
+	public Group() {
+		this(0, 0, 0, 0, null);
+	}
+
+	public Group(int x, int y, int width, int height, BiConsumer<IFrame, Group> panel) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		mode = panel;
+	}
 
 	/**
 	 * 移除一个组件
@@ -50,6 +64,16 @@ public class Group extends MComponent implements Iterable<IComponent> {
 		components.add(component);
 	}
 
+	/**
+	 * 添加多个组件
+	 * @throws NullPointerException 如果components == null或其中包含null
+	 */
+	public void adds(IComponent... components) {
+		for (IComponent iComponent : components) {
+			add(iComponent);
+		}
+	}
+
 	/** 获取两个控件间的最短距离 */
 	public int getMinDistance() { return minDistance; }
 	/** 设置两个控件间的最短距离 */
@@ -59,9 +83,9 @@ public class Group extends MComponent implements Iterable<IComponent> {
 	/** 设置两个控件间的最远距离 */
 	public void setMaxDistance(int maxDistance) { this.maxDistance = maxDistance; }
 	/** 获取排列模式 */
-	public IControlPanel getArrangeMode() { return mode; }
+	public BiConsumer<IFrame, Group> getArrangeMode() { return mode; }
 	/** 设置排列模式，传入为空表示不自动进行排列 */
-	public void setControlPanel(IControlPanel mode) { this.mode = mode; }
+	public void setControlPanel(BiConsumer<IFrame, Group> mode) { this.mode = mode; }
 	/** 获取控件数量 */
 	public int size() { return components.size(); }
 	/** 遍历控件 */
@@ -71,7 +95,13 @@ public class Group extends MComponent implements Iterable<IComponent> {
 	@Override
 	public void onAddToGUI(Container con, EntityPlayer player) {
 		if (mode != null && con instanceof IFrame) mode.accept((IFrame) con, this);
-		components.forEach(it -> it.onAddToGUI(con, player));
+		if (con instanceof MIFrame) {
+			MIFrame frame = (MIFrame) con;
+			components.forEach(it -> {
+				frame.allocID(it);
+				it.onAddToGUI(con, player);
+			});
+		} else components.forEach(it -> it.onAddToGUI(con, player));
 	}
 
 	@Override
@@ -93,27 +123,21 @@ public class Group extends MComponent implements Iterable<IComponent> {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean update(int codeID, int data) {
-		for (IComponent component : components) {
+		for (IComponent component : components)
 			if (component.update(codeID, data)) return true;
-		}
 		return false;
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void paint(@Nonnull Graphics g) {
-		for (IComponent component : components) {
-			component.paint(g.create(component.getX() - getX(), component.getY() - getY(),
-					component.getWidth(), component.getHeight()));
-		}
+		components.forEach(it -> paintHelper(g, it));
 	}
 
-	public int getRealX(IComponent component) {
-		return 200;
-	}
-
-	public int getRealY(IComponent component) {
-		return 150;
+	@SideOnly(Side.CLIENT)
+	private void paintHelper(Graphics g, IComponent component) {
+		component.paint(g.create(component.getX() - getX(), component.getY() - getY(),
+				component.getWidth(), component.getHeight()));
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -124,39 +148,9 @@ public class Group extends MComponent implements Iterable<IComponent> {
 
 	@Override
 	public String toString() {
-		return "Group{控件数量：" + components.size() +
+		return "Group{控件数量：" + size() +
 				"；坐标：(" + getX() + "," + getY() + ")；" +
 				"大小：(" + getWidth() + "," + getHeight() + ")}";
-	}
-
-	private final class ListIterator implements Iterator<IComponent> {
-
-		/** 起始位置 */
-		private final int start = size() / 2;
-		/** 当前位置 */
-		private int now = start;
-		/** 已遍历数量 */
-		private int amount = 0;
-		/** 当前方向，true为右，false为左 */
-		private boolean direction = true;
-
-		@Override
-		public boolean hasNext() {
-			return amount < size();
-		}
-
-		@Override
-		public IComponent next() {
-			++amount;
-			int index = now;
-			now += direction ? 1 : -1;
-			if (now >= size()) {
-				now = start - 1;
-				direction = false;
-			}
-			return components.get(index);
-		}
-
 	}
 
 }

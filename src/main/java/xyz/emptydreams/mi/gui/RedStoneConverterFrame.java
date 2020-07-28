@@ -12,6 +12,8 @@ import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MBackpack;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
+import xyz.emptydreams.mi.api.gui.group.Group;
+import xyz.emptydreams.mi.api.gui.group.Panels;
 import xyz.emptydreams.mi.blocks.te.maker.EMRedStoneConverter;
 
 import javax.annotation.Nonnull;
@@ -45,15 +47,16 @@ public class RedStoneConverterFrame {
 		}
 
 		private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
-			EMRedStoneConverter firepower = (EMRedStoneConverter) world.getTileEntity(pos);
+			EMRedStoneConverter converter = (EMRedStoneConverter) world.getTileEntity(pos);
 			frame.init(world);
 			frame.setTitle(LOCATION_NAME);
 			frame.setTitleModel(TitleModelEnum.CENTRAL);
 			frame.add(new MBackpack(6, 77), player);
-			frame.add(new MSlot(firepower.getInput()), player);
-			frame.add(firepower.getEnergyPro(), player);
-			frame.add(firepower.getBurnPro(), player);
-			frame.add(firepower.getStringShower(), player);
+
+			Group group = new Group(0, 12, frame.getWidth(), 70, Panels::verticalCenter);
+			group.adds(new MSlot(converter.getInput()), converter.getBurnPro(), converter.getEnergyPro());
+			group.setMaxDistance(2);
+			frame.add(group, player);
 		}
 
 	});

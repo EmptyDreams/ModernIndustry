@@ -4,20 +4,18 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.craftguide.CraftRegistry;
 import xyz.emptydreams.mi.api.craftguide.ICraftGuide;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.IProgressBar;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.DataType;
+import xyz.emptydreams.mi.blocks.CraftList;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.machine.user.CompressorBlock;
 import xyz.emptydreams.mi.blocks.te.FrontTileEntity;
@@ -37,10 +35,6 @@ import static xyz.emptydreams.mi.api.utils.ItemUtil.merge;
  */
 @AutoTileEntity(CompressorBlock.NAME)
 public class EUCompressor extends FrontTileEntity implements ITickable {
-
-	/** 压缩机的合成表 */
-	public static final CraftRegistry CRAFT = CraftRegistry.instance(
-			new ResourceLocation(ModernIndustry.MODID, CompressorBlock.NAME));
 	
 	/**
 	 * 三个物品框<br>
@@ -154,7 +148,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	private ItemStack checkInput() {
 		if (!hasEmpty(up.getStack(), down.getStack())) {
 			List<ItemStack> inputs = merge(up.getStack(), down.getStack());
-			ICraftGuide craft = CRAFT.apply(inputs);
+			ICraftGuide craft = CraftList.COMPRESSOR.apply(inputs);
 			if (craft == null) return null;
 			return craft.getFirstOut().getStack();
 		}
@@ -223,7 +217,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		
 		@Override
 		public boolean isItemValid(ItemStack stack) {
-			boolean b = stack != null && CRAFT.hasItem(stack.getItem())
+			boolean b = stack != null && CraftList.COMPRESSOR.hasItem(stack.getItem())
 					            && super.isItemValid(stack);
 			if (b && !isEmptyForInput()) {
 				SlotItemHandler s = getSlot(getSlotIndex() == 0 ? 1 : 0);
