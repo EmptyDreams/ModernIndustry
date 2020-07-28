@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.blocks.te.user;
+package xyz.emptydreams.mi.blocks.tileentity.user;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -13,7 +13,7 @@ import xyz.emptydreams.mi.api.gui.component.CommonProgress.Style;
 import xyz.emptydreams.mi.api.gui.component.IProgressBar;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
-import xyz.emptydreams.mi.register.te.AutoTileEntity;
+import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
 import static xyz.emptydreams.mi.api.utils.data.DataType.INT;

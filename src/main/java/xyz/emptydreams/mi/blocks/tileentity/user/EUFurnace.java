@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.blocks.te.user;
+package xyz.emptydreams.mi.blocks.tileentity.user;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -12,16 +12,16 @@ import xyz.emptydreams.mi.api.gui.component.IProgressBar;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.DataType;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
-import xyz.emptydreams.mi.blocks.te.FrontTileEntity;
+import xyz.emptydreams.mi.blocks.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
-import xyz.emptydreams.mi.register.te.AutoTileEntity;
+import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 import javax.annotation.Nullable;
 
 import static xyz.emptydreams.mi.api.utils.data.DataType.INT;
-import static xyz.emptydreams.mi.blocks.te.user.MuffleFurnace.getResult;
+import static xyz.emptydreams.mi.blocks.tileentity.user.MuffleFurnace.getResult;
 
 /**
  * @author EmptyDreams

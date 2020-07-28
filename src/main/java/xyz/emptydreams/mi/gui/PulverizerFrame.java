@@ -14,7 +14,7 @@ import xyz.emptydreams.mi.api.gui.component.MBackpack;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
 import xyz.emptydreams.mi.api.gui.group.Group;
 import xyz.emptydreams.mi.api.gui.group.Panels;
-import xyz.emptydreams.mi.blocks.te.user.EUPulverizer;
+import xyz.emptydreams.mi.blocks.tileentity.user.EUPulverizer;
 
 import javax.annotation.Nonnull;
 

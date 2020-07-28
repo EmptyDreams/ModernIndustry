@@ -1,11 +1,11 @@
 package xyz.emptydreams.mi.api.utils;
 
-import java.util.Collection;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.net.WaitList;
-import xyz.emptydreams.mi.blocks.te.EleSrcCable;
+import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
+
+import java.util.Collection;
 
 import static xyz.emptydreams.mi.api.net.WaitList.checkNull;
 

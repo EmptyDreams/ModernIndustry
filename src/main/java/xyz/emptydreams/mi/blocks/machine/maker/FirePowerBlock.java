@@ -17,7 +17,7 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.MachineBlock;
 import xyz.emptydreams.mi.blocks.common.CommonBlocks;
-import xyz.emptydreams.mi.blocks.te.maker.EMFirePower;
+import xyz.emptydreams.mi.blocks.tileentity.maker.EMFirePower;
 import xyz.emptydreams.mi.gui.FirePowerFrame;
 import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 

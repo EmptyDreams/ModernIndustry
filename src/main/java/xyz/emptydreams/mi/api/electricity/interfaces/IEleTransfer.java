@@ -2,12 +2,9 @@ package xyz.emptydreams.mi.api.electricity.interfaces;
 
 import net.minecraft.tileentity.TileEntity;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
-import xyz.emptydreams.mi.api.electricity.info.EleLineCache;
 import xyz.emptydreams.mi.api.electricity.info.PathInfo;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,35 +85,6 @@ public interface IEleTransfer extends IRegister {
 	 * @return 损耗的能量
 	 */
 	double getEnergyLoss(TileEntity now, int energy, IVoltage voltage);
-	
-	/**
-	 * 获取当前线缆所在的线路的缓存信息.
-	 * 系统不会自动触发该方法，一般由{@link #findPath(TileEntity, TileEntity, IEleInputer)}调用
-	 * @param now 当前方块
-	 * @return 若没有缓存信息则返回null
-	 */
-	@Nullable
-	EleLineCache getLineCache(TileEntity now);
-	
-	/**
-	 * 给目标方块设置新的缓存
-	 * @param now 目标方块
-	 * @param cache 缓存
-	 */
-	void setLineCache(TileEntity now, EleLineCache cache);
-	
-	/**
-	 * 创建一个新的线路缓存，该方法不修改now中的数据
-	 * @param now 目标方块
-	 */
-	@Nonnull
-	EleLineCache createLineCache(TileEntity now);
-	
-	/**
-	 * 获取当前方块连接的电缆数量
-	 * @param now 当前方块
-	 */
-	int getLinkAmount(TileEntity now);
 	
 	default Map<TileEntity, IEleOutputer> getOutputerAround(TileEntity now) {
 		Map<TileEntity, IEleOutputer> list = new HashMap<>(3);

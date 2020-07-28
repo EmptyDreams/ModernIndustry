@@ -24,7 +24,7 @@ import xyz.emptydreams.mi.register.block.WorldCreater;
 import xyz.emptydreams.mi.register.item.AutoItemRegister;
 import xyz.emptydreams.mi.register.json.BlockJsonBuilder;
 import xyz.emptydreams.mi.register.json.ItemJsonBuilder;
-import xyz.emptydreams.mi.register.te.AutoTileEntity;
+import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 
 import javax.annotation.Nonnull;

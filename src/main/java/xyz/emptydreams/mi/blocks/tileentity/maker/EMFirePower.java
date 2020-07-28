@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.blocks.te.maker;
+package xyz.emptydreams.mi.blocks.tileentity.maker;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -17,10 +17,10 @@ import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.CraftList;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
-import xyz.emptydreams.mi.blocks.te.FrontTileEntity;
+import xyz.emptydreams.mi.blocks.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.capabilities.nonburn.NonBurnCapability;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
-import xyz.emptydreams.mi.register.te.AutoTileEntity;
+import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 import static xyz.emptydreams.mi.api.utils.data.DataType.INT;
 import static xyz.emptydreams.mi.api.utils.data.DataType.SERIALIZABLE;

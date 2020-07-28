@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
-import xyz.emptydreams.mi.blocks.te.EleSrcCable;
+import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
 
 /**
  * 普通电线物品

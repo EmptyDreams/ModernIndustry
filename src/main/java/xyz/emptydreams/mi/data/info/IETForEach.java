@@ -1,9 +1,9 @@
 package xyz.emptydreams.mi.data.info;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.tileentity.TileEntity;
-import xyz.emptydreams.mi.blocks.te.EleSrcCable;
+import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author EmptyDreams

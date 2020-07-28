@@ -1,11 +1,11 @@
 package xyz.emptydreams.mi.blocks.machine;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.blocks.base.TransferBlock;
-import xyz.emptydreams.mi.blocks.te.EleSrcCable;
+import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.register.AutoManager;
+
+import javax.annotation.Nullable;
 
 /**
  * 电线的管理类

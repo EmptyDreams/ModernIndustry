@@ -1,11 +1,5 @@
 package xyz.emptydreams.mi.api.electricity;
 
-import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.Mod;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
@@ -18,10 +12,15 @@ import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
 
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
 /**
  * 关于电力系统的工作都在这里进行
  * @author EmptyDreams
- * @version V2.0
  */
 @Mod.EventBusSubscriber
 public final class EleWorker {

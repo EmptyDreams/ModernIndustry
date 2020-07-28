@@ -9,27 +9,24 @@ import xyz.emptydreams.mi.api.electricity.info.PathInfo;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.blocks.te.EleSrcCable;
+import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.data.info.WireLinkInfo;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 /**
  * @author EmptyDreams
- * @version V1.0
  */
 @AutoTrusteeshipRegister
 public class EleSrcTransfer implements IEleTransfer {
 	
 	@Override
 	public PathInfo findPath(TileEntity start, TileEntity user, IEleInputer inputer) {
-		EleLineCache cache = getLineCache(start);
+		EleSrcCable cable = (EleSrcCable) start;
+		EleLineCache cache = cable.getCache();
 		if (cache == null) return null;
 		PathInfo info = cache.read(start, user, inputer);
 		if (info != null) return info;
-		info = WireLinkInfo.calculate((EleSrcCable) start, user, inputer);
+		info = WireLinkInfo.calculate(cable, user, inputer);
 		if (info == null) return null;
 		cache.writeInfo(info);
 		return info;
@@ -43,7 +40,7 @@ public class EleSrcTransfer implements IEleTransfer {
 			cable.clearTransfer();
 			cable.getCounter().plus();
 			if (cable.getCounter().getTime() > cable.getBiggerMaxTime()) {
-				EleLineCache cache = getLineCache(now);
+				EleLineCache cache = cable.getCache();
 				if (info == cache && info != null) cable.getCounter().clean();
 				else cable.getCounter().overload();
 				return cache;
@@ -79,28 +76,6 @@ public class EleSrcTransfer implements IEleTransfer {
 	@Override
 	public double getEnergyLoss(TileEntity now, int energy, IVoltage voltage) {
 		return ((EleSrcCable) now).getLoss(new EleEnergy(energy, voltage));
-	}
-	
-	@Nullable
-	@Override
-	public EleLineCache getLineCache(TileEntity now) {
-		return ((EleSrcCable) now).getCache();
-	}
-	
-	@Override
-	public void setLineCache(TileEntity now, EleLineCache cache) {
-		((EleSrcCable) now).setCache((WireLinkInfo) cache);
-	}
-	
-	@Nonnull
-	@Override
-	public EleLineCache createLineCache(TileEntity now) {
-		return new WireLinkInfo();
-	}
-	
-	@Override
-	public int getLinkAmount(TileEntity now) {
-		return getLineCache(now).getOutputerAmount();
 	}
 	
 	@Override

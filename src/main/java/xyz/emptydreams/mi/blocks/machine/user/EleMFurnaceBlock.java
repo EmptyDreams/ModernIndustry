@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.MachineBlock;
-import xyz.emptydreams.mi.blocks.te.user.EUMFurnace;
+import xyz.emptydreams.mi.blocks.tileentity.user.EUMFurnace;
 import xyz.emptydreams.mi.gui.EleMFurnaceFrame;
 import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 

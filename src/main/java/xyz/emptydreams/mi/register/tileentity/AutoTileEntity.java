@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.register.te;
+package xyz.emptydreams.mi.register.tileentity;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

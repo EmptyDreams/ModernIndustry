@@ -1,9 +1,8 @@
-package xyz.emptydreams.mi.blocks.te;
+package xyz.emptydreams.mi.blocks.tileentity;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import xyz.emptydreams.mi.api.electricity.EleTileEntity;
-import xyz.emptydreams.mi.register.te.AutoTileEntity;
 
 import javax.annotation.Nullable;
 

@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.blocks.base.MachineBlock;
-import xyz.emptydreams.mi.blocks.te.user.EUCompressor;
+import xyz.emptydreams.mi.blocks.tileentity.user.EUCompressor;
 import xyz.emptydreams.mi.gui.CompressorFrame;
 import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 

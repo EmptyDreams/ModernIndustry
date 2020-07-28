@@ -10,7 +10,7 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.wrapper.Wrapper;
-import xyz.emptydreams.mi.blocks.te.EleSrcCable;
+import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -105,9 +105,8 @@ public final class WireLinkInfo extends EleLineCache {
 		} else {
 			PathInfo info0 = calculateHelper(start, start.getPrev(), user, inputer);
 			PathInfo info1 = calculateHelper(start, start.getNext(), user, inputer);
-			
-			int k = info0.compareTo(info1);
-			switch (k) {
+
+			switch (info0.compareTo(info1)) {
 				case -1: return info0;
 				case  1: return info1;
 				case  0:

@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.MachineBlock;
-import xyz.emptydreams.mi.blocks.te.user.EUFurnace;
+import xyz.emptydreams.mi.blocks.tileentity.user.EUFurnace;
 import xyz.emptydreams.mi.gui.EleFurnaceFrame;
 import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 

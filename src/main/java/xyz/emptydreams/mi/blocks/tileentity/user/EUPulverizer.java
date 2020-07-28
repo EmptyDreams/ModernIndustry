@@ -1,25 +1,21 @@
-package xyz.emptydreams.mi.blocks.te.user;
+package xyz.emptydreams.mi.blocks.tileentity.user;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.craftguide.CraftRegistry;
-import xyz.emptydreams.mi.api.craftguide.ICraftGuide;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.IProgressBar;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.CraftList;
-import xyz.emptydreams.mi.blocks.te.FrontTileEntity;
+import xyz.emptydreams.mi.blocks.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
-import xyz.emptydreams.mi.register.te.AutoTileEntity;
+import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

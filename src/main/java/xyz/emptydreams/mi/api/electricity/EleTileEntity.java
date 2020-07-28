@@ -22,7 +22,6 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.event.EnergyEvent;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
-import xyz.emptydreams.mi.register.te.AutoTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

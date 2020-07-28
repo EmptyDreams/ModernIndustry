@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.blocks.te;
+package xyz.emptydreams.mi.blocks.tileentity;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -11,6 +11,8 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
@@ -30,7 +32,7 @@ import xyz.emptydreams.mi.data.info.BiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.data.info.IETForEach;
 import xyz.emptydreams.mi.data.info.WireLinkInfo;
-import xyz.emptydreams.mi.register.te.AutoTileEntity;
+import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -155,7 +157,6 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 				if (prev == null || !prev.equals(target)) {
 					next = target;
 					nextShip = et;
-					cache.merge(nextShip.getLineCache(getNext()));
 					updateLinkShow();
 					return true;
 				}
@@ -164,7 +165,6 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 			} else if (prev == null) {
 				prev = target;
 				prevShip = et;
-				cache.merge(prevShip.getLineCache(getPrev()));
 				updateLinkShow();
 				return true;
 			} else return prev.equals(target);
@@ -291,7 +291,8 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	}
 	
 	//--------------------常规--------------------//
-	
+
+	@SideOnly(Side.CLIENT)
 	private static final WireLinkInfo CLIENT_CACHE = new WireLinkInfo();
 	@Override
 	public void update() {
