@@ -287,7 +287,8 @@ public final class DataOperator {
 
 	public static void writeClass(NBTTagCompound nbt, String name, Class<?> data) {
 		if (data == null) return;
-		nbt.setInteger(name, ClassMap.loadWorld().loadClass(data));
+		int key = ClassMap.loadWorld().loadClass(data);
+		nbt.setInteger(name, key);
 	}
 	public static void readClass(NBTTagCompound nbt, String name, Consumer<Class<?>> setter) {
 		int value = nbt.getInteger(name);

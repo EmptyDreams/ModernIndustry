@@ -77,10 +77,8 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	};
 	/** 上一根电线 */
 	@Storage(POS) private BlockPos prev = null;
-	private IEleTransfer prevShip = null;
 	/** 下一根电线 */
 	@Storage(POS) private BlockPos next = null;
-	private IEleTransfer nextShip = null;
 	/** 最大电流量 */
 	protected int meMax = 5000;
 	/** 当前电流量 */
@@ -156,7 +154,6 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 			if (next == null) {
 				if (prev == null || !prev.equals(target)) {
 					next = target;
-					nextShip = et;
 					updateLinkShow();
 					return true;
 				}
@@ -164,7 +161,6 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 				return true;
 			} else if (prev == null) {
 				prev = target;
-				prevShip = et;
 				updateLinkShow();
 				return true;
 			} else return prev.equals(target);
@@ -302,8 +298,6 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 				WorldUtil.removeTickable(this);
 			} else {
 				WireLinkInfo.calculateCache(this);
-				nextShip = EleWorker.getTransfer(getNext());
-				prevShip = EleWorker.getTransfer(getPrev());
 			}
 		}
 		

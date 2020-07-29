@@ -5,9 +5,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author EmptyDreams
@@ -15,7 +15,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class ClassMap extends WorldSavedData {
 
 	private final Map<Integer, Class<?>> MAP = new HashMap<>();
-	private static final AtomicInteger count = new AtomicInteger(1);
 
 	public ClassMap(String name) {
 		super(name);
@@ -36,15 +35,19 @@ public final class ClassMap extends WorldSavedData {
 		return (ClassMap) data;
 	}
 
-	/** 装载一个类 */
+	/**
+	 * 装载一个类<br>
+	 * <b>因为匿名类的特殊性，所以不建议用户存储匿名类，如果需要这类功能，可以考虑动态生成默认值</b>
+	 * @throws IllegalArgumentException 如果clazz是一个抽象类，或clazz是一个直接从抽象类继承的匿名类
+	 */
 	public int loadClass(Class<?> clazz) {
+		clazz = getRealClass(clazz);
 		for (Map.Entry<Integer, Class<?>> entry : MAP.entrySet()) {
 			if (entry.getValue() == clazz) return entry.getKey();
 		}
-		int k = count.getAndAdd(1);
-		MAP.put(k, clazz);
+		MAP.put(clazz.hashCode(), clazz);
 		markDirty();
-		return k;
+		return clazz.hashCode();
 	}
 
 	/** 读取一个类 */
@@ -56,8 +59,9 @@ public final class ClassMap extends WorldSavedData {
 	public void readFromNBT(NBTTagCompound nbt) {
 		try {
 			int size = nbt.getInteger("size");
-			for (int key = 1; key <= size; ++key) {
-				MAP.put(key, Class.forName(nbt.getString(String.valueOf(key))));
+			for (int key = 0; key < size; ++key) {
+				int hash = nbt.getInteger(String.valueOf(key));
+				MAP.put(hash, Class.forName(nbt.getString(key + ":name")));
 			}
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("ClassMap读取错误", e);
@@ -67,8 +71,22 @@ public final class ClassMap extends WorldSavedData {
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound.setInteger("size", MAP.size());
-		MAP.forEach((key, value) -> compound.setString(String.valueOf(key), value.getName()));
+		int i = 0;
+		for (Map.Entry<Integer, Class<?>> entry : MAP.entrySet()) {
+			compound.setInteger(String.valueOf(i), entry.getKey());
+			compound.setString(i + ":name", entry.getValue().getName());
+			++i;
+		}
 		return compound;
+	}
+
+	private static Class<?> getRealClass(Class<?> clazz) {
+		if (clazz.getName().contains("$")) {
+			return getRealClass(clazz.getSuperclass());
+		}
+		if (Modifier.isAbstract(clazz.getModifiers()))
+			throw new IllegalArgumentException("ClassMap不支持存储抽象类");
+		return clazz;
 	}
 
 }

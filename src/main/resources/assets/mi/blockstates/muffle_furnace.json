@@ -3,8 +3,8 @@
   "defaults": {
     "model": "orientable",
     "textures": {
-      "top": "mi:blocks/machine/shell",
-      "side": "mi:blocks/machine/shell",
+      "top": "mi:blocks/machine/muffle_furnace/up",
+      "side": "mi:blocks/machine/muffle_furnace/side",
       "front": "mi:blocks/machine/muffle_furnace/src"
     }
   },

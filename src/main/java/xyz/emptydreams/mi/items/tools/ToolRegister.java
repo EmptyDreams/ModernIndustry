@@ -1,8 +1,5 @@
 package xyz.emptydreams.mi.items.tools;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -30,10 +27,10 @@ import xyz.emptydreams.mi.api.tools.property.PropertyManager;
 import xyz.emptydreams.mi.register.AutoManager;
 import xyz.emptydreams.mi.register.item.RecipeRegister;
 
-import static net.minecraft.inventory.EntityEquipmentSlot.CHEST;
-import static net.minecraft.inventory.EntityEquipmentSlot.FEET;
-import static net.minecraft.inventory.EntityEquipmentSlot.HEAD;
-import static net.minecraft.inventory.EntityEquipmentSlot.LEGS;
+import java.util.LinkedList;
+import java.util.List;
+
+import static net.minecraft.inventory.EntityEquipmentSlot.*;
 import static xyz.emptydreams.mi.ModernIndustry.MODID;
 
 /**
@@ -46,23 +43,23 @@ import static xyz.emptydreams.mi.ModernIndustry.MODID;
 public class ToolRegister {
 	
 	/** 铜斧 */
-	public static final String NAME_COPPER_AXE = "copper_axe_tool";
+	public static final String NAME_COPPER_AXE = "copper_axe";
 	public static final Item ITEM_COPPER_AXE = new MIAxe(MITool.COPPER, 8, -3.1F)
 			                                           .setRegistry(MODID, NAME_COPPER_AXE);
 	/** 铜镐 */
-	public static final String NAME_COPPER_PICKAXE = "copper_pickaxe_tool";
+	public static final String NAME_COPPER_PICKAXE = "copper_pickaxe";
 	public static final Item ITEM_COPPER_PICKAXE = new MIPickaxe(MITool.COPPER)
 														.setRegistry(MODID, NAME_COPPER_PICKAXE);
 	/** 铜剑 */
-	public static final String NAME_COPPER_SWORD = "copper_sword_tool";
+	public static final String NAME_COPPER_SWORD = "copper_sword";
 	public static final Item ITEM_COPPER_SWORD = new MISword(MITool.COPPER, 5, -2.5F)
 			                                             .setRegistry(MODID, NAME_COPPER_SWORD);
 	/** 铜铲 */
-	public static final String NAME_COPPER_SHOVEL = "copper_shovel_tool";
+	public static final String NAME_COPPER_SHOVEL = "copper_shovel";
 	public static final Item ITEM_COPPER_SHOVEL = new MISpade(MITool.COPPER)
 			                                              .setRegistry(MODID, NAME_COPPER_SHOVEL);
 	/** 铜锄 */
-	public static final String NAME_COPPER_HOE = "copper_hoe_tool";
+	public static final String NAME_COPPER_HOE = "copper_hoe";
 	public static final Item ITEM_COPPER_HOE = new MIHoe(MITool.COPPER)
 			                                           .setRegistry(MODID, NAME_COPPER_HOE);
 	/** 铜头盔 */

@@ -1,9 +1,15 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "cube_all",
+    "model": "cube",
     "textures": {
-      "all": "mi:blocks/machine/shell"
+      "particle": "mi:blocks/machine/side",
+      "down": "mi:blocks/machine/down",
+      "up": "mi:blocks/machine/up",
+      "north": "mi:blocks/machine/side",
+      "east": "mi:blocks/machine/side",
+      "south": "mi:blocks/machine/side",
+      "west": "mi:blocks/machine/side"
     }
   },
   "variants": {

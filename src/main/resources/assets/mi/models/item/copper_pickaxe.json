@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "mi:items/tools/copper_sword_tool"
+    "layer0": "mi:items/tools/copper_pickaxe"
   }
 }

@@ -26,6 +26,7 @@ public abstract class MixinItemStack {
 	/**
 	 * 在amount为负数时不触发事件，在amount为整数时触发事件
 	 * @author EmptyDreams
+	 * @reason 为了触发ItemDamageEvent事件
 	 */
 	@Overwrite
 	public void damageItem(int amount, EntityLivingBase entityIn) {
