@@ -6,7 +6,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.Mod;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.capabilities.nonburn.NonBurnProvider;
-import xyz.emptydreams.mi.register.AutoLoader;
 import xyz.emptydreams.mi.register.AutoManager;
 import xyz.emptydreams.mi.register.AutoRegister;
 import xyz.emptydreams.mi.register.OreDicRegister;
@@ -21,29 +20,32 @@ import static xyz.emptydreams.mi.items.common.CommonItemHelper.CAPS;
  */
 @SuppressWarnings("unused")
 @Mod.EventBusSubscriber
-@AutoLoader
 @AutoManager(item = true)
 public final class CommonItems {
 
 	//--------------------金属锭--------------------//
 
 	/** 铜锭 */
-	public static final String NAME_COPPER = "copper_item";
+	public static final String NAME_COPPER = "copper_ingot";
 	public static final Item ITEM_COPPER = new MItem(NAME_COPPER, "ingotCopper");
 	/** 锡锭 */
-	public static final String NAME_TIN = "tin_item";
+	public static final String NAME_TIN = "tin_ingot";
 	public static final Item ITEM_TIN = new MItem(NAME_TIN, "ingotTin");
+	/** 青铜锭 */
+	public static final String NAME_BRONZE = "bronze_ingot";
+	public static final Item ITEM_BRONZE = new MItem(NAME_BRONZE, "ingotBronze");
 
 	//--------------------粉--------------------//
 
 	/** 石粉 */
 	public static final String NAME_STONE_POWDER = "stone_powder";
-	public static final Item ITEM_STONE_POWDER = new MItem(NAME_STONE_POWDER, "dustStone", "powderStone");
+	public static final Item ITEM_STONE_POWDER = new MItem(NAME_STONE_POWDER,
+											"dustStone", "powderStone");
 	/** 燃烧剩余的煤粉 */
 	public static final String NAME_COAL_BURN_POWDER = "coal_burn_powder";
 	public static final Item ITEM_COAL_BURN_POWDER = new MItem(NAME_COAL_BURN_POWDER,
-													"dustCoalBurn", "powderCoalBurn")
-													.registryFuel(100).addCapability(CommonItems::getNonBurn);
+											"dustCoalBurn", "powderCoalBurn")
+											.registryFuel(100).addCapability(CommonItems::getNonBurn);
 	/** 煤粉 */
 	public static final String NAME_COAL_POWDER = "coal_powder";
 	public static final Item ITEM_COAL_POWDER = new MItem(NAME_COAL_POWDER,
@@ -52,6 +54,10 @@ public final class CommonItems {
 	public static final String NAME_COPPER_POWDER = "copper_powder";
 	public static final Item ITEM_COPPER_POWDER = new MItem(NAME_COPPER_POWDER,
 											"dustCopper", "powderCopper");
+	/** 青铜粉 */
+	public static final String NAME_BRONZE_POWDER = "bronze_powder";
+	public static final Item ITEM_BRONZE_POWDER = new MItem(NAME_BRONZE_POWDER,
+											"dustBronze", "powderBronze");
 	/** 锡粉 */
 	public static final String NAME_TIN_POWDER = "tin_powder";
 	public static final Item ITEM_TIN_POWER = new MItem(NAME_TIN_POWDER, "dustTin", "powderCopper");
@@ -120,7 +126,11 @@ public final class CommonItems {
 			CAPS.put(this, supplier);
 			return this;
 		}
-
+		
+		@Override
+		public String toString() {
+			return getRegistryName().toString();
+		}
 	}
 
 	//---------------工具方法---------------//

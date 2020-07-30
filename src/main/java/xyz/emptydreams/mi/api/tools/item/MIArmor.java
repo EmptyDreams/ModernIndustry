@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.tools.item;
 
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
+import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.register.AutoRegister;
 
 /**
@@ -10,8 +11,9 @@ import xyz.emptydreams.mi.register.AutoRegister;
  */
 public class MIArmor extends ItemArmor implements IToolMaterial {
 
-	public MIArmor(ArmorMaterial materialIn, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn) {
-		super(materialIn, renderIndexIn, equipmentSlotIn);
+	public MIArmor(ArmorMaterial materialIn, EntityEquipmentSlot equipmentSlotIn) {
+		super(materialIn, materialIn.ordinal(), equipmentSlotIn);
+		setCreativeTab(ModernIndustry.TAB_TOOL);
 	}
 
 	public MIArmor setRegistry(String modid, String name) {

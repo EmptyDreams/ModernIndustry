@@ -1,0 +1,28 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mi:machine",
+    "textures": { "front": "mi:blocks/machine/compressor/src" }
+  },
+  "variants": {
+    "inventory": [{ }],
+    "facing": {
+      "north": { },
+      "east": { "y": 90 },
+      "west": { "y": 270 },
+      "south": { "y": 180 }
+    },
+    "working": {
+      "true": {
+        "textures": { "front": "mi:blocks/machine/compressor/working" }
+      },
+      "false": { }
+    },
+    "isempty": {
+      "false": {
+        "textures": { "front": "mi:blocks/machine/compressor/empty" }
+      },
+      "true": { }
+    }
+  }
+}

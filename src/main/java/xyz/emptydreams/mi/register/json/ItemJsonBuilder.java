@@ -2,7 +2,10 @@ package xyz.emptydreams.mi.register.json;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
+import xyz.emptydreams.mi.api.tools.item.IToolMaterial;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.register.AutoRegister;
 
@@ -69,7 +72,8 @@ public final class ItemJsonBuilder {
 	}
 
 	private static Type getType(Item item) {
-		if (item instanceof ItemTool ||
+		if (item instanceof ItemTool || item instanceof ItemSword ||
+				item instanceof ItemHoe || item instanceof IToolMaterial ||
 				item.getRegistryName().getResourcePath().contains("debug")) return Type.HANDHELD;
 		if (item instanceof ItemArmor) return Type.ARMOR;
 		return Type.COMMON;

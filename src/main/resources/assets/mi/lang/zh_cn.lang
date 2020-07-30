@@ -5,8 +5,9 @@
 #agree to use=false
 
 #锭
-item.mi.copper_item.name=铜锭
-item.mi.tin_item.name=锡锭
+item.mi.copper_ingot.name=铜锭
+item.mi.tin_ingot.name=锡锭
+item.mi.bronze_ingot.name=青铜锭
 #粉
 item.mi.copper_powder.name=铜粉
 item.mi.tin_powder.name=锡粉
@@ -16,6 +17,7 @@ item.mi.iron_powder.name=铁粉
 item.mi.gold_powder.name=金粉
 item.mi.diamond_powder.name=钻石粉
 item.mi.stone_powder.name=石粉
+item.mi.bronze_powder.name=青铜粉
 #粉碎矿石
 item.mi.copper_crush.name=粉碎铜矿石
 item.mi.tin_crush.name=粉碎锡矿石
@@ -25,16 +27,20 @@ item.mi.gold_crush.name=粉碎金矿石
 item.mi.diamond_crush.name=粉碎钻石矿石
 #工具
 item.mi.spanner.name=扳手
-item.mi.copper_pickaxe_tool.name=铜镐
-item.mi.copper_axe_tool.name=铜斧
-item.mi.copper_shovel_tool.name=铜铲
-item.mi.copper_sword_tool.name=铜剑
-item.mi.copper_hoe_tool.name=铜锄
+item.mi.copper_pickaxe.name=铜镐
+item.mi.copper_axe.name=铜斧
+item.mi.copper_shovel.name=铜铲
+item.mi.copper_sword.name=铜剑
+item.mi.copper_hoe.name=铜锄
 #装备
-item.mi.copper_head.name=铜头盔
-item.mi.copper_chest.name=铜盔甲
-item.mi.copper_leg.name=铜护腿
-item.mi.copper_boot.name=铜靴子
+item.mi.copper_helmet.name=铜头盔
+item.mi.copper_chestplate.name=铜盔甲
+item.mi.copper_leggings.name=铜护腿
+item.mi.copper_boots.name=铜靴子
+item.mi.bronze_helmet.name=青铜头盔
+item.mi.bronze_chestplate.name=青铜盔甲
+item.mi.bronze_leggings.name=青铜护腿
+item.mi.bronze_boots.name=青铜靴子
 #调试物品
 item.mi.wireinfo_viewer.name=线缆信息查看器
 #矿物方块
@@ -42,7 +48,7 @@ tile.mi.copper_ore_block.name=铜矿
 tile.mi.tin_ore_block.name=锡矿
 #电器
 tile.mi.machine_shell.name=机器外壳
-tile.mi.compressor_tblock.name=压缩机
+tile.mi.compressor.name=压缩机
 tile.mi.perpetual.name=无限电能方块
 tile.mi.fire_power.name=火力发电机
 tile.mi.muffle_furnace.name=高温熔炉

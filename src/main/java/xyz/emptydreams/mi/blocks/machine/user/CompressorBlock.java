@@ -29,14 +29,12 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.*;
 /**
  * 压缩机
  * @author EmptyDremas
- * @version V1.0
  */
-@SuppressWarnings("deprecation")
 @AutoBlockRegister(registryName = CompressorBlock.NAME)
 public class CompressorBlock extends MachineBlock {
 	
 	/** 方块内部名称 */
-	public static final String NAME = "compressor_tblock";
+	public static final String NAME = "compressor";
 	
 	private final Item ITEM;
 	
@@ -45,7 +43,7 @@ public class CompressorBlock extends MachineBlock {
 		ITEM = new ItemBlock(this).setRegistryName(ModernIndustry.MODID, NAME);
 		
 		setDefaultState(blockState.getBaseState().withProperty(
-				FACING, EnumFacing.EAST).withProperty(WORKING, false).withProperty(EMPTY, false));
+				FACING, EnumFacing.EAST).withProperty(WORKING, false).withProperty(EMPTY, true));
 	}
 	
 	@Nonnull

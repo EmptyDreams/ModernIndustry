@@ -1,6 +1,6 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "mi:items/tools/copper_head"
+    "layer0": "mi:items/tools/copper_helmet"
   }
 }

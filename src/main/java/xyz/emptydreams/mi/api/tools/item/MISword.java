@@ -17,7 +17,7 @@ public class MISword extends ItemSword implements IToolMaterial {
 	private final double SPEED;
 	private final double DAMAGE;
 	
-	public MISword(ToolMaterial materialIn, float damage, float speed) {
+	public MISword(ToolMaterial materialIn, float damage, double speed) {
 		super(materialIn);
 		DAMAGE = damage;
 		SPEED = speed;

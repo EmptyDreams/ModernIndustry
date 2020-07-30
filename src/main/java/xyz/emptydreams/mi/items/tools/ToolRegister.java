@@ -11,7 +11,6 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.tools.capabilities.PropertyCapability;
 import xyz.emptydreams.mi.api.tools.capabilities.PropertyProvider;
 import xyz.emptydreams.mi.api.tools.item.IToolMaterial;
@@ -31,7 +30,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static net.minecraft.inventory.EntityEquipmentSlot.*;
+import static net.minecraft.item.Item.ToolMaterial.IRON;
+import static net.minecraft.item.ItemArmor.ArmorMaterial;
 import static xyz.emptydreams.mi.ModernIndustry.MODID;
+import static xyz.emptydreams.mi.items.tools.MITool.COPPER;
+import static xyz.emptydreams.mi.items.tools.MITool.COPPER_ARMOR;
 
 /**
  * 工具
@@ -44,48 +47,79 @@ public class ToolRegister {
 	
 	/** 铜斧 */
 	public static final String NAME_COPPER_AXE = "copper_axe";
-	public static final Item ITEM_COPPER_AXE = new MIAxe(MITool.COPPER, 8, -3.1F)
+	public static final Item ITEM_COPPER_AXE = new MIAxe(COPPER, 8, -3.1F)
 			                                           .setRegistry(MODID, NAME_COPPER_AXE);
+	/** 青铜斧 */
+	public static final String NAME_BRONZE_AXE = "bronze_axe";
+	public static final Item ITEM_BRONZE_AXE = new MIAxe(IRON, 9, -3.0F)
+														.setRegistry(MODID, NAME_BRONZE_AXE);
+	
 	/** 铜镐 */
 	public static final String NAME_COPPER_PICKAXE = "copper_pickaxe";
-	public static final Item ITEM_COPPER_PICKAXE = new MIPickaxe(MITool.COPPER)
+	public static final Item ITEM_COPPER_PICKAXE = new MIPickaxe(COPPER)
 														.setRegistry(MODID, NAME_COPPER_PICKAXE);
+	/** 青铜镐 */
+	public static final String NAME_BRONZE_PICKAXE = "bronze_pickaxe";
+	public static final Item ITEM_BRONZE_PICKAXE = new MIPickaxe(IRON)
+														.setRegistry(MODID, NAME_BRONZE_PICKAXE);
+			
 	/** 铜剑 */
 	public static final String NAME_COPPER_SWORD = "copper_sword";
-	public static final Item ITEM_COPPER_SWORD = new MISword(MITool.COPPER, 5, -2.5F)
+	public static final Item ITEM_COPPER_SWORD = new MISword(COPPER, 5, -2.5D)
 			                                             .setRegistry(MODID, NAME_COPPER_SWORD);
+	public static final String NAME_BRONZE_SWORD = "bronze_sword";
+	public static final Item ITEM_BRONZE_SWORD = new MISword(IRON, 6, -2.4000000953674316D)
+														.setRegistry(MODID, NAME_BRONZE_SWORD);
+	
 	/** 铜铲 */
 	public static final String NAME_COPPER_SHOVEL = "copper_shovel";
-	public static final Item ITEM_COPPER_SHOVEL = new MISpade(MITool.COPPER)
-			                                              .setRegistry(MODID, NAME_COPPER_SHOVEL);
+	public static final Item ITEM_COPPER_SHOVEL = new MISpade(COPPER).setRegistry(MODID, NAME_COPPER_SHOVEL);
+	/** 青铜铲 */
+	public static final String NAME_BRONZE_SHOVEL = "bronze_shovel";
+	public static final Item ITEM_BRONZE_SHOVEL = new MISpade(IRON).setRegistry(MODID, NAME_BRONZE_SHOVEL);
+	
 	/** 铜锄 */
 	public static final String NAME_COPPER_HOE = "copper_hoe";
-	public static final Item ITEM_COPPER_HOE = new MIHoe(MITool.COPPER)
-			                                           .setRegistry(MODID, NAME_COPPER_HOE);
+	public static final Item ITEM_COPPER_HOE = new MIHoe(COPPER).setRegistry(MODID, NAME_COPPER_HOE);
+	/** 青铜锄 */
+	public static final String NAME_BRONZE_HOE = "bronze_hoe";
+	public static final Item ITEM_BRONZE_HOE = new MIHoe(IRON).setRegistry(MODID, NAME_BRONZE_HOE);
+	
 	/** 铜头盔 */
-	public static final String NAME_COPPER_HEAD = "copper_head";
-	public static final Item ITEM_COPPER_HEAD =
-			new MIArmor(MITool.COPPER_ARMOR, MITool.COPPER_ARMOR.ordinal(), HEAD)
-					.setRegistry(MODID, NAME_COPPER_HEAD)
-					.setCreativeTab(ModernIndustry.TAB_TOOL);
+	public static final String NAME_COPPER_HELMET = "copper_helmet";
+	public static final Item ITEM_COPPER_HELMET = new MIArmor(COPPER_ARMOR, HEAD)
+														.setRegistry(MODID, NAME_COPPER_HELMET);
+	/** 青铜头盔 */
+	public static final String NAME_BRONZE_HELMET = "bronze_helmet";
+	public static final Item ITEM_BRONZE_HELMET = new MIArmor(ArmorMaterial.IRON, HEAD)
+														.setRegistry(MODID, NAME_BRONZE_HELMET);
+	
 	/** 铜胸甲 */
-	public static final String NAME_COPPER_CHEST = "copper_chest";
-	public static final Item ITEM_COPPER_CHEST =
-			new MIArmor(MITool.COPPER_ARMOR, MITool.COPPER_ARMOR.ordinal(), CHEST)
-					.setRegistry(MODID, NAME_COPPER_CHEST)
-					.setCreativeTab(ModernIndustry.TAB_TOOL);
+	public static final String NAME_COPPER_CHEST = "copper_chestplate";
+	public static final Item ITEM_COPPER_CHEST = new MIArmor(COPPER_ARMOR, CHEST)
+														.setRegistry(MODID, NAME_COPPER_CHEST);
+	/** 青铜胸甲 */
+	public static final String NAME_BRONZE_CHEST = "bronze_chestplate";
+	public static final Item ITEM_BRONZE_CHEST = new MIArmor(ArmorMaterial.IRON, CHEST)
+														.setRegistry(MODID, NAME_BRONZE_CHEST);
+	
 	/** 铜护腿 */
-	public static final String NAME_COPPER_LEG = "copper_leg";
-	public static final Item ITEM_COPPER_LEG =
-			new MIArmor(MITool.COPPER_ARMOR, MITool.COPPER_ARMOR.ordinal(), LEGS)
-					.setRegistry(MODID, NAME_COPPER_LEG)
-					.setCreativeTab(ModernIndustry.TAB_TOOL);
+	public static final String NAME_COPPER_LEG = "copper_leggings";
+	public static final Item ITEM_COPPER_LEG = new MIArmor(COPPER_ARMOR, LEGS)
+														.setRegistry(MODID, NAME_COPPER_LEG);
+	/** 青铜护腿 */
+	public static final String NAME_BRONZE_LEG = "bronze_leggings";
+	public static final Item ITEM_BRONZE_LEG = new MIArmor(ArmorMaterial.IRON, LEGS)
+														.setRegistry(MODID, NAME_BRONZE_LEG);
+	
 	/** 铜靴子 */
-	public static final String NAME_COPPER_BOOT = "copper_boot";
-	public static final Item ITEM_COPPER_BOOT =
-			new MIArmor(MITool.COPPER_ARMOR, MITool.COPPER_ARMOR.ordinal(), FEET)
-					.setRegistry(MODID, NAME_COPPER_BOOT)
-					.setCreativeTab(ModernIndustry.TAB_TOOL);
+	public static final String NAME_COPPER_BOOT = "copper_boots";
+	public static final Item ITEM_COPPER_BOOT = new MIArmor(COPPER_ARMOR, FEET)
+														.setRegistry(MODID, NAME_COPPER_BOOT);
+	/** 青铜靴子 */
+	public static final String NAME_BRONZE_BOOT = "bronze_boots";
+	public static final Item ITEM_BRONZE_BOOT = new MIArmor(ArmorMaterial.IRON, FEET)
+														.setRegistry(MODID, NAME_BRONZE_BOOT);
 
 	public static void itemCustom(Item item) {
 		if (item instanceof IToolMaterial)

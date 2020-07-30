@@ -24,6 +24,8 @@ import xyz.emptydreams.mi.register.block.WorldCreater;
 import xyz.emptydreams.mi.register.item.AutoItemRegister;
 import xyz.emptydreams.mi.register.json.BlockJsonBuilder;
 import xyz.emptydreams.mi.register.json.ItemJsonBuilder;
+import xyz.emptydreams.mi.register.sorter.BlockSorter;
+import xyz.emptydreams.mi.register.sorter.ItemSorter;
 import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 
@@ -37,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 自动注册的总类，自动注册的功能由init()函数完成，该类的注册顺序如下：
@@ -58,25 +61,26 @@ public final class AutoRegister {
 		/** 所有方块 */
 		public static final List<Block> blocks = new ArrayList<>(50);
 		/** 需要自动注册的方块 */
-		public static final ArrayList<Block> autoRegister = new ArrayList<>();
+		public static final List<Block> autoRegister = new ArrayList<>(50);
 		/** 不需要自动注册的方块的注册地址 */
 		public static final HashMap<Class<?>, Block> selfRegister = new HashMap<>();
 		/** 地图生成方块 */
 		public static final HashMap<Block, WorldGenerator> worldCreate = new HashMap<>();
 		/** 不注册物品的方块 */
-		public static final ArrayList<Block> noItem = new ArrayList<>();
+		public static final Set<Block> noItem = new TreeSet<>(BlockSorter::compare);
 	}
 	
 	public static final class Items {
 		/** 所有物品 */
 		public static final List<Item> items = new ArrayList<>(50);
 		/** 需要注册的物品 */
-		public static final ArrayList<Item> autoItems = new ArrayList<>();
+		public static final List<Item> autoItems = new ArrayList<>(50);
 	}
 	
 	public static boolean isRun = false;
 	
 	public static void init() {
+		
 		if (isRun) return;
 		isRun = true;
 		//是否为客户端
@@ -96,6 +100,9 @@ public final class AutoRegister {
 			reAutoTR(ASM);
 			triggerAutoLoader(ASM);
 
+			Blocks.autoRegister.sort(BlockSorter::compare);
+			Items.autoItems.sort(ItemSorter::compare);
+			
 			BlockJsonBuilder.build();
 			ItemJsonBuilder.build();
 		} catch (IllegalAccessException e) {
