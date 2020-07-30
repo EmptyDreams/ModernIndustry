@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 public final class CompressorFrame {
 
 	public static String NAME = "compressor";
-	public static String LOCATION_NAME = "tile.mi.compressor_tblock.name";
+	public static String LOCATION_NAME = "tile.mi.compressor.name";
 
 	public static final int ID = GuiLoader.register(new IContainerCreater() {
 		@Nonnull

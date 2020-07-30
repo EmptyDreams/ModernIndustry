@@ -32,6 +32,11 @@ item.mi.copper_axe.name=铜斧
 item.mi.copper_shovel.name=铜铲
 item.mi.copper_sword.name=铜剑
 item.mi.copper_hoe.name=铜锄
+item.mi.bronze_pickaxe.name=青铜镐
+item.mi.bronze_axe.name=青铜斧
+item.mi.bronze_shovel.name=青铜铲
+item.mi.bronze_sword.name=青铜剑
+item.mi.bronze_hoe.name=青铜锄
 #装备
 item.mi.copper_helmet.name=铜头盔
 item.mi.copper_chestplate.name=铜盔甲
