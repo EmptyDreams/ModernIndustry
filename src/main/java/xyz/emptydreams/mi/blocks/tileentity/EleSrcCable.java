@@ -26,12 +26,13 @@ import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.net.NetworkRegister;
 import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.TEHelper;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
+import xyz.emptydreams.mi.data.info.CableCache;
 import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.data.info.IETForEach;
-import xyz.emptydreams.mi.data.info.WireLinkInfo;
 import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 import javax.annotation.Nonnull;
@@ -43,8 +44,8 @@ import java.util.Set;
 import static xyz.emptydreams.mi.api.utils.data.DataType.POS;
 
 /**
+ * 默认电线
  * @author EmptyDreams
- * @version V2.0
  */
 @AutoTileEntity("IN_FATHER_ELECTRICITY_TRANSFER")
 public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, TEHelper {
@@ -86,7 +87,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	/** 电力损耗指数，指数越大损耗越多 */
 	protected double loss = 0;
 	/** 所属电路缓存 */
-	WireLinkInfo cache = null;
+	CableCache cache = null;
 	/** 在客户端存储电线连接数量 */
 	private int _amount = 0;
 	/** 过载最长时间 */
@@ -149,30 +150,49 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 		TileEntity targetEntity = world.getTileEntity(target);
 		if (targetEntity == null) return false;
 		IEleTransfer et = EleWorker.getTransfer(targetEntity);
-		if (et != null) {
-			if (!et.canLink(targetEntity, this)) return false;
-			if (next == null) {
-				if (prev == null || !prev.equals(target)) {
-					next = target;
-					updateLinkShow();
-					return true;
-				}
-			} else if (next.equals(target)) {
-				return true;
-			} else if (prev == null) {
-				prev = target;
-				updateLinkShow();
-				return true;
-			} else return prev.equals(target);
-		} else {
-			EnumFacing facing = BlockUtil.whatFacing(target, pos);
-			ILink link = targetEntity.getCapability(LinkCapability.LINK, facing);
-			if (link == null) return false;
-			if (link.canLink(facing)) {
-				if (!linkedBlocks.contains(target)) linkedBlocks.add(target);
+		if (et != null) return linkWire(et, targetEntity);
+		return linkMachine(targetEntity);
+	}
+	
+	/**
+	 * 连接一根电线
+	 * @param target 电线坐标
+	 * @return 是否连接成功
+	 */
+	public boolean linkWire(IEleTransfer transfer, TileEntity target) {
+		if (!transfer.canLink(target, this)) return false;
+		if (next == null) {
+			if (prev == null || !prev.equals(target.getPos())) {
+				next = target.getPos();
 				updateLinkShow();
 				return true;
 			}
+		} else if (next.equals(target.getPos())) {
+			return true;
+		} else if (prev == null) {
+			prev = target.getPos();
+			updateLinkShow();
+			return true;
+		} else {
+			return prev.equals(target.getPos());
+		}
+		return false;
+	}
+	
+	/**
+	 * 连接一个机器
+	 * @param target 机器坐标
+	 * @return 是否连接成功
+	 */
+	public boolean linkMachine(TileEntity target) {
+		EnumFacing facing = BlockUtil.whatFacing(target.getPos(), pos);
+		ILink link = target.getCapability(LinkCapability.LINK, facing);
+		if (link == null) return false;
+		if (link.canLink(facing)) {
+			if (!linkedBlocks.contains(target.getPos())) linkedBlocks.add(target.getPos());
+			if (EleWorker.isOutputer(target)) getCache().addOutputer(getPos(), target.getPos());
+			updateLinkShow();
+			return true;
 		}
 		return false;
 	}
@@ -227,12 +247,13 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 		if (pos == null) return;
 		if (pos.equals(next)) {
 			next = null;
-			WireLinkInfo.calculateCache(this);
+			CableCache.calculate(this);
 		} else if (pos.equals(prev)) {
 			prev = null;
-			WireLinkInfo.calculateCache(this);
+			CableCache.calculate(this);
 		} else {
 			linkedBlocks.remove(pos);
+			getCache().removeOuter(this, pos);
 		}
 		updateLinkShow();
 	}
@@ -289,7 +310,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	//--------------------常规--------------------//
 
 	@SideOnly(Side.CLIENT)
-	private static final WireLinkInfo CLIENT_CACHE = new WireLinkInfo();
+	private static final CableCache CLIENT_CACHE = new CableCache();
 	@Override
 	public void update() {
 		if (cache == null) {
@@ -297,16 +318,17 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 				cache = CLIENT_CACHE;
 				WorldUtil.removeTickable(this);
 			} else {
-				WireLinkInfo.calculateCache(this);
+				CableCache.calculate(this);
 			}
 		}
 		
 		TileEntity entity;
 		IStorage storage;
+		boolean remove = false;
 		for (BlockPos block : linkedBlocks) {
 			entity = world.getTileEntity(block);
 			if (entity == null) {
-				deleteLink(block);
+				remove = true;
 			} else {
 				storage = entity.getCapability(EleCapability.ENERGY, BlockUtil.whatFacing(block, pos));
 				if (storage != null && storage.canReceive()) {
@@ -314,6 +336,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 				}
 			}
 		}
+		if (remove) linkedBlocks.removeIf(blockPos -> world.getTileEntity(blockPos) == null);
 	}
 	
 	/** 设置最大电流指数 */
@@ -327,9 +350,9 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	/** 电流归零 */
 	public final void clearTransfer() { me = 0; }
 	/** 设置线路缓存 */
-	public final void setCache(WireLinkInfo info) { this.cache = info; }
+	public final void setCache(CableCache info) { this.cache = info; }
 	/** 获取线路缓存 */
-	public final WireLinkInfo getCache() { return cache; }
+	public final CableCache getCache() { return cache; }
 	/** 获取上方是否连接方块 */
 	public final boolean getUp() { return (linkInfo & 0b100000) == 0b100000; }
 	/** 获取下方是否连接方块 */
@@ -513,6 +536,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 		super.readFromNBT(compound);
 		linkInfo = compound.getByte("linkInfo");
 		TEHelper.super.readFromNBT(compound);
+		MISysInfo.print();
 	}
 	
 	@Override

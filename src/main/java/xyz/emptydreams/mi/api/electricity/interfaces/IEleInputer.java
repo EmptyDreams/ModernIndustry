@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.api.electricity.interfaces;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
+import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
 
 import java.util.HashMap;
@@ -45,6 +46,13 @@ public interface IEleInputer extends IRegister {
 	 * @throws ClassCastException 如果不支持输入的TE
 	 */
 	IVoltage getVoltage(TileEntity now, IVoltage voltage);
+	
+	/**
+	 * 获取用电器可接受的电压范围
+	 * @param now 对应方块的TE
+	 * @throws ClassCastException 如果不支持输入的TE
+	 */
+	VoltageRange getVoltageRange(TileEntity now);
 	
 	/**
 	 * 判断当前方块能否从指定方向获取电能

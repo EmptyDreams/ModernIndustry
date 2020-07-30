@@ -33,7 +33,7 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 	private final SlotItemHandler up = new SlotItemHandler(item, 0, 55, 21) {
 		@Override
 		public boolean isItemValid(ItemStack stack) {
-			ItemStack result = FurnaceRecipes.instance().getSmeltingResult(stack);
+			ItemStack result = getResult(stack);
 			if (getHasStack()) return super.isItemValid(stack) &&
 					                          result.getItem() == getResult(getStack()).getItem();
 			else return super.isItemValid(stack) && !result.isEmpty();

@@ -7,7 +7,6 @@ import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
 
 import javax.annotation.Nonnull;
@@ -23,7 +22,6 @@ import java.util.List;
  *  3.当{@code output == null} 时不要求其它数据格式、内容正确</pre>
  * </b>
  * @author EmptyDreams
- * @version V1.0
  */
 public class PathInfo implements Comparable<PathInfo> {
 	
@@ -46,17 +44,19 @@ public class PathInfo implements Comparable<PathInfo> {
 	
 	public PathInfo() { }
 	
-	@SuppressWarnings("unchecked")
 	public PathInfo(int lossEnergy, IVoltage voltage, List<? extends TileEntity> path,
-	                TileEntity outer, IEleOutputer outputer, TileEntity user, IEleInputer inputer) {
+	                TileEntity outer, TileEntity user) {
 		this.lossEnergy = lossEnergy;
 		this.voltage = voltage;
+		//noinspection unchecked
 		this.path = (List<TileEntity>) path;
 		this.outer = outer.getPos();
-		this.outputer = outputer;
-		this.user = user.getPos();
-		this.inputer = inputer;
-		this.world = user.getWorld();
+		this.outputer = EleWorker.getOutputer(outer);
+		if (user != null) {
+			this.user = user.getPos();
+			this.inputer = EleWorker.getInputer(user);
+		}
+		this.world = outer.getWorld();
 	}
 	
 	/**
@@ -66,7 +66,8 @@ public class PathInfo implements Comparable<PathInfo> {
 	public final EleEnergy invoke() {
 		int energy = getEnergy();
 		if (energy <= 0) return new EleEnergy(0, EnumVoltage.NON);
-		EleEnergy real = outputer.output(getOuter(), energy + lossEnergy, voltage, false);
+		EleEnergy real = outputer.output(getOuter(), energy + lossEnergy,
+										VoltageRange.instance(voltage), false);
 		if (real.getEnergy() <= 0 || real.getVoltage().getVoltage() <= 0) return real;
 		int e = inputer.useEnergy(getUser(), real.getEnergy(), real.getVoltage());
 		if (e <= 0) {
@@ -109,8 +110,10 @@ public class PathInfo implements Comparable<PathInfo> {
 	}
 	
 	public int getEnergy() {
-		return Math.min(inputer.getEnergy(getUser()),
-				outputer.output(getOuter(), Integer.MAX_VALUE, EnumVoltage.D, true).getEnergy());
+		TileEntity user = getUser();
+		return Math.min(inputer.getEnergy(user),
+				outputer.output(getOuter(), Integer.MAX_VALUE,
+						inputer.getVoltageRange(user), true).getEnergy());
 	}
 	
 	public IVoltage getVoltage() {
@@ -151,15 +154,12 @@ public class PathInfo implements Comparable<PathInfo> {
 	
 	public PathInfo setUser(TileEntity user) {
 		this.user = user.getPos();
+		this.inputer = EleWorker.getInputer(user);
 		return this;
 	}
 	
 	public IEleInputer getInputer() {
 		return inputer;
-	}
-	
-	public void setInputer(IEleInputer inputer) {
-		this.inputer = inputer;
 	}
 	
 	/** 计算线路能量损耗 */

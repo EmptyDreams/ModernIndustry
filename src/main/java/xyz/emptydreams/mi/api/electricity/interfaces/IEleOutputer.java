@@ -3,11 +3,11 @@ package xyz.emptydreams.mi.api.electricity.interfaces;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
+import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 
 /**
  * 可输出电能的方块的托管接口
  * @author EmptyDreams
- * @version V1.1
  */
 public interface IEleOutputer extends IRegister {
 	
@@ -21,7 +21,7 @@ public interface IEleOutputer extends IRegister {
 	 * @throws NullPointerException if te == null || voltage == null
 	 * @throws ClassCastException 如果不支持输入的TE
 	 */
-	EleEnergy output(TileEntity te, int energy, IVoltage voltage, boolean simulation);
+	EleEnergy output(TileEntity te, int energy, VoltageRange voltage, boolean simulation);
 	
 	/**
 	 * 用于当计算失误时回退能量操作

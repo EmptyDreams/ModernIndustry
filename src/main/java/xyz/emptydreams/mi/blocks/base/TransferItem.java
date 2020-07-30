@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -15,13 +16,17 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.electricity.EleWorker;
+import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
+import xyz.emptydreams.mi.api.utils.wrapper.BooleanWrapper;
 import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
+import xyz.emptydreams.mi.data.info.CableCache;
+import xyz.emptydreams.mi.data.trusteeship.EleSrcTransfer;
 
 /**
  * 普通电线物品
  * @author EmptyDremas
- * @version V1.2.1
  */
 public final class TransferItem extends ItemBlock {
 	
@@ -56,28 +61,51 @@ public final class TransferItem extends ItemBlock {
         
         ItemStack itemstack = player.getHeldItem(hand);
         if (!itemstack.isEmpty() && player.canPlayerEdit(blockPos, facing, itemstack)) {
-        	//Object[] os = whatState(worldIn, this.block, blockPos, new BlockPos[] { pos });
-            IBlockState iblockstate1 = placeBlockAt(itemstack, player, worldIn, blockPos, this.block.getDefaultState());
-            if (iblockstate1 != null) {
-            	//更新TileEntity
-	            EleSrcCable nbt = (EleSrcCable) ((TransferBlock) this.block).createNewTileEntity(worldIn, 0);
-	            nbt.setWorld(worldIn);
-	            nbt.setPos(blockPos);
-	            nbt.setBlockType(this.block);
-	            if (pos != blockPos) nbt.link(pos);
-	            BlockUtil.forEachAroundTE(worldIn, blockPos, (te, fa) -> {
-	            	if (pos != te.getPos()) nbt.link(te.getPos());
-	            });
-	            worldIn.setTileEntity(blockPos, nbt);
-            	
-                SoundType soundtype = this.block.getSoundType(iblockstate1, worldIn, blockPos, player);
-                worldIn.playSound(player, blockPos, soundtype.getPlaceSound(),
-		                SoundCategory.BLOCKS,
-		                (soundtype.getVolume() + 1.0F) / 2.0F,
-		                soundtype.getPitch() * 0.8F);
-                if (!player.isCreative()) itemstack.shrink(1);
-            }
-            
+            @SuppressWarnings("SpellCheckingInspection")
+            IBlockState iblockstate1 = placeBlockAt(itemstack, player,
+		                        worldIn, blockPos, this.block.getDefaultState());
+           if (iblockstate1 == null) return EnumActionResult.FAIL;
+	        //更新TileEntity
+	        EleSrcCable cable = (EleSrcCable) ((TransferBlock) this.block).createNewTileEntity(worldIn, 0);
+	        cable.setWorld(worldIn);
+	        cable.setPos(blockPos);
+	        cable.setBlockType(this.block);
+	        BooleanWrapper isLink = new BooleanWrapper();
+	        if (pos != blockPos) {
+		        TileEntity te = worldIn.getTileEntity(pos);
+		        if (te instanceof EleSrcCable) {
+			        isLink.set(cable.linkWire(EleSrcTransfer.instance(), te));
+			        if (isLink.get()) cable.setCache(((EleSrcCable) te).getCache());
+		        } else if (te != null) {
+			        IEleTransfer transfer = EleWorker.getTransfer(te);
+			        if (transfer == null) cable.linkMachine(te);
+			        else cable.linkWire(transfer, te);
+		        }
+	        }
+	        if (cable.getCache() == null) cable.setCache(new CableCache());
+	        BlockUtil.forEachAroundTE(worldIn, blockPos, (te, fa) -> {
+		        if (pos != te.getPos()) {
+		        	if (te instanceof EleSrcCable) {
+				        cable.linkWire(EleSrcTransfer.instance(), te);
+				        EleSrcCable linked = (EleSrcCable) te;
+				        linked.getCache().merge(cable.getCache());
+				        cable.forEach(linked.getPos(), (it, isEnd, next) -> {
+					        it.setCache(linked.getCache());
+					        return true;
+				        });
+			        } else if (te != null) {
+		        		IEleTransfer transfer = EleWorker.getTransfer(te);
+				        if (transfer == null) cable.linkMachine(te);
+				        else cable.linkWire(transfer, te);
+			        }
+		        }
+	        });
+	        worldIn.setTileEntity(blockPos, cable);
+	
+	        SoundType soundtype = this.block.getSoundType(iblockstate1, worldIn, blockPos, player);
+	        worldIn.playSound(player, blockPos, soundtype.getPlaceSound(), SoundCategory.BLOCKS,
+			        (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+	        if (!player.isCreative()) itemstack.shrink(1);
             return EnumActionResult.SUCCESS;
         } else {
             return EnumActionResult.FAIL;

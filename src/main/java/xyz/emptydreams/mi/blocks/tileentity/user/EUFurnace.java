@@ -39,8 +39,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 	private final SlotItemHandler in = new SlotItemHandler(item, 0, 52, 32) {
 		@Override
 		public boolean isItemValid(ItemStack stack) {
-			return super.isItemValid(stack) &&
-					!getResult(stack).isEmpty();
+			return super.isItemValid(stack) && !getResult(stack).isEmpty();
 		}
 	};
 	/** 输出框 */

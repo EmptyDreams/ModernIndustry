@@ -18,6 +18,7 @@ import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.EnergyRange;
 import xyz.emptydreams.mi.api.electricity.info.EnumEleState;
+import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.event.EnergyEvent;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
@@ -212,30 +213,25 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		
 		@Override
 		public int receiveEnergy(EleEnergy energy, boolean simulate) {
-			if (world.isRemote) return 0;
-			if (canReceive()) {
-				//若当前储存能量已满则不再接收能量
-				if (nowEnergy < getMaxEnergy()) {
-					if (simulate) {
-						return receiveRange.getOptimalEnergy(Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy()));
-					} else {
-						int k = receiveRange.getOptimalEnergy(Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy()));
-						IVoltage voltage = receiveRange.getOptimalVoltage(energy.getVoltage());
-						if (!onReceive(new EleEnergy(k, voltage))) return 0;
-						//若输入电压不在适用电压范围内，则增加计数器
-						if (voltage.getVoltage() != energy.getVoltage().getVoltage()) {
-							getCounter().plus();
-						}
-						nowEnergy += k;
-						if (reVoltage == null) reVoltage = energy.getVoltage().copy();
-						//触发事件
-						MinecraftForge.EVENT_BUS.post(
-								new EnergyEvent.Receive(new EleEnergy(k, voltage), EleTileEntity.this));
-						return k;
-					}
-				}
+			if (world.isRemote || !canReceive()) return 0;
+			//若当前储存能量已满则不再接收能量
+			if (nowEnergy >= getMaxEnergy()) return 0;
+			if (simulate) {
+				return receiveRange.getOptimalEnergy(Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy()));
 			}
-			return 0;
+			int k = receiveRange.getOptimalEnergy(Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy()));
+			IVoltage voltage = receiveRange.getOptimalVoltage(energy.getVoltage());
+			if (!onReceive(new EleEnergy(k, voltage))) return 0;
+			//若输入电压不在适用电压范围内，则增加计数器
+			if (voltage.getVoltage() != energy.getVoltage().getVoltage()) {
+				getCounter().plus();
+			}
+			nowEnergy += k;
+			if (reVoltage == null) reVoltage = energy.getVoltage().copy();
+			//触发事件
+			MinecraftForge.EVENT_BUS.post(
+					new EnergyEvent.Receive(new EleEnergy(k, voltage), EleTileEntity.this));
+			return k;
 		}
 		
 		@Override
@@ -245,21 +241,26 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		}
 		
 		@Override
-		public EleEnergy extractEnergy(EleEnergy energy, boolean simulate) {
+		public VoltageRange getReceiveVoltageRange() {
+			return new VoltageRange(receiveRange.getMinVoltage(), receiveRange.getMaxVoltage());
+		}
+		
+		@Override
+		public EleEnergy extractEnergy(int energy, VoltageRange voltageRange, boolean simulate) {
 			if (world.isRemote) return EMPTY_ENERGY.copy();
 			if (canExtract()) {
 				//若存储能量或需要输出的能量小于等于0则直接返回
-				if (nowEnergy <= 0 || energy.getEnergy() <= 0) return EMPTY_ENERGY.copy();
+				if (nowEnergy <= 0 || energy <= 0) return EMPTY_ENERGY.copy();
 				
 				//计算应该输出的电能
-				int k = Math.min(nowEnergy, energy.getEnergy());
+				int k = Math.min(nowEnergy, energy);
 				//计算最适电压
-				IVoltage voltage = extractRange.getOptimalVoltage(energy.getVoltage());
+				IVoltage voltage = voltageRange.getOptimalVoltage(extractRange);
 				//若需要输出的电压不在可输出的范围则输出最适电压
 				EleEnergy reEnergy = new EleEnergy(k, voltage);
 				if (!simulate) {
 					if (!onExtract(new EleEnergy(k, voltage))) return EMPTY_ENERGY.copy();
-					if (exVoltage == null) exVoltage = energy.getVoltage().copy();
+					if (exVoltage == null) exVoltage = voltage.copy();
 					nowEnergy -= k;
 					//触发事件
 					MinecraftForge.EVENT_BUS.post(

@@ -4,31 +4,32 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
-import xyz.emptydreams.mi.api.electricity.info.EleLineCache;
 import xyz.emptydreams.mi.api.electricity.info.PathInfo;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
-import xyz.emptydreams.mi.data.info.WireLinkInfo;
+import xyz.emptydreams.mi.data.info.CableCache;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 
 /**
  * @author EmptyDreams
  */
-@AutoTrusteeshipRegister
+@AutoTrusteeshipRegister("INSTANCE")
 public class EleSrcTransfer implements IEleTransfer {
+	
+	private static EleSrcTransfer INSTANCE;
+	
+	public static EleSrcTransfer instance() { return INSTANCE; }
 	
 	@Override
 	public PathInfo findPath(TileEntity start, TileEntity user, IEleInputer inputer) {
 		EleSrcCable cable = (EleSrcCable) start;
-		EleLineCache cache = cable.getCache();
+		CableCache cache = cable.getCache();
 		if (cache == null) return null;
-		PathInfo info = cache.read(start, user, inputer);
-		if (info != null) return info;
-		info = WireLinkInfo.calculate(cable, user, inputer);
+		PathInfo info = cache.calculate(cable, inputer.getEnergy(user), inputer.getVoltageRange(user));
 		if (info == null) return null;
-		cache.writeInfo(info);
+		info.setUser(user);
 		return info;
 	}
 	
@@ -40,7 +41,7 @@ public class EleSrcTransfer implements IEleTransfer {
 			cable.clearTransfer();
 			cable.getCounter().plus();
 			if (cable.getCounter().getTime() > cable.getBiggerMaxTime()) {
-				EleLineCache cache = cable.getCache();
+				CableCache cache = cable.getCache();
 				if (info == cache && info != null) cable.getCounter().clean();
 				else cable.getCounter().overload();
 				return cache;

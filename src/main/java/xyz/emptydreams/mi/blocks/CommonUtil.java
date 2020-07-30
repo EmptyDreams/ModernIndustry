@@ -82,7 +82,7 @@ public final class CommonUtil {
 
 	/** 依据IBlockState获取meta */
 	public static int getMetaFromState(@Nonnull IBlockState state) {
-		return state.getValue(FACING).getHorizontalIndex() | (state.getValue(WORKING) ? 0b0100 : 0);
+		return state.getValue(FACING).ordinal() | (state.getValue(WORKING) ? 0b1000 : 0b0000);
 	}
 
 	/**
@@ -92,7 +92,7 @@ public final class CommonUtil {
 	 */
 	@Nonnull
 	public static IBlockState getStateFromMeta(Block block, int meta) {
-		EnumFacing facing = EnumFacing.getHorizontal(meta & 0b0011);
+		EnumFacing facing = EnumFacing.values()[meta & 0b0111];
 		if (facing.getAxis() == EnumFacing.Axis.Y) {
 			facing = EnumFacing.NORTH;
 		}

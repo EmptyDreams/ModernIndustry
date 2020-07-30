@@ -1,12 +1,13 @@
 package xyz.emptydreams.mi.api.electricity.capabilities;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.EnumEleState;
+import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
+
+import javax.annotation.Nonnull;
 
 /**
  * 表示能量
@@ -42,6 +43,9 @@ public interface IStorage {
 	@Nonnull
 	IVoltage getVoltage(EnumEleState state, IVoltage voltage);
 	
+	/** 获取电压范围 */
+	VoltageRange getReceiveVoltageRange();
+	
 	/**
 	 * 尝试输出能量，当需求输出的能量的电压不在可输出电压范围内时，输出最适电压而非不输出
 	 * @param energy 输出的能量值
@@ -49,7 +53,7 @@ public interface IStorage {
 	 * @return 实际输出的能量
 	 */
 	@Nonnull
-	EleEnergy extractEnergy(EleEnergy energy, boolean simulate);
+	EleEnergy extractEnergy(int energy, VoltageRange voltage, boolean simulate);
 	
 	/** @see xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer#fallback(TileEntity, int)  */
 	void fallback(int energy);

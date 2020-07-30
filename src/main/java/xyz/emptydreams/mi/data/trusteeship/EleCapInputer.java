@@ -8,6 +8,7 @@ import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
 import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.EnumEleState;
+import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
@@ -16,9 +17,7 @@ import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 /**
  * 提供对能力系统的输入支持
  * @author EmptyDreams
- * @version V1.0
  */
-@SuppressWarnings("unused")
 @AutoTrusteeshipRegister
 public class EleCapInputer implements IEleInputer {
 	
@@ -46,6 +45,11 @@ public class EleCapInputer implements IEleInputer {
 	@Override
 	public IVoltage getVoltage(TileEntity now, IVoltage voltage) {
 		return now.getCapability(EleCapability.ENERGY, null).getVoltage(EnumEleState.IN, voltage);
+	}
+	
+	@Override
+	public VoltageRange getVoltageRange(TileEntity now) {
+		return now.getCapability(EleCapability.ENERGY, null).getReceiveVoltageRange();
 	}
 	
 	@Override
