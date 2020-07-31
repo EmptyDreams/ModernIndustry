@@ -98,7 +98,7 @@ public final class CommonUtil {
 		}
 		return block.getDefaultState()
 				.withProperty(FACING, facing)
-				.withProperty(WORKING, (meta & 0b0100) == 0b0100);
+				.withProperty(WORKING, (meta & 0b1000) == 0b1000);
 	}
 
 }
