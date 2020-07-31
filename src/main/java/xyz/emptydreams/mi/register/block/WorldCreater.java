@@ -1,20 +1,19 @@
 package xyz.emptydreams.mi.register.block;
 
-import javax.annotation.Nonnull;
-import java.util.Map;
-import java.util.Random;
-
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 
+import javax.annotation.Nonnull;
+import java.util.Map;
+import java.util.Random;
+
 /**
+ * 生成矿物
  * @author EmptyDremas
- * @version V1.0
  */
 public class WorldCreater extends WorldGenerator {
 	
@@ -42,15 +41,6 @@ public class WorldCreater extends WorldGenerator {
 		INFO.yRange = (int) map.getOrDefault("yRange", OreCreate.Y_RANGE);
 		INFO.probability = (float) map.getOrDefault("probability", OreCreate.PROBABILITY);
 		creater = new WorldGenMinable(block.getDefaultState(), INFO.count);
-	}
-	
-	public WorldCreater(OreCreate info, IBlockState block) {
-		INFO.count = info.count();
-		INFO.time = info.time();
-		INFO.yMin = info.yMin();
-		INFO.yRange = info.yRange();
-		INFO.probability = info.probability();
-		creater = new WorldGenMinable(block, info.count());
 	}
 	
 	@Override

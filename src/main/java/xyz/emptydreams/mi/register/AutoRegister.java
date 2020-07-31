@@ -189,7 +189,7 @@ public final class AutoRegister {
 		}
 	}
 	
-	/* 自动注册托管 */
+	/** 自动注册托管 */
 	private static void reAutoTR(ASMDataTable ASM)
 			throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
 		Set<ASMData> classSet = ASM.getAll(AutoTrusteeshipRegister.class.getName());
@@ -219,7 +219,7 @@ public final class AutoRegister {
 		}
 	}
 	
-	/* 注册管理类 */
+	/** 注册管理类 */
 	private static void reRegisterManager(ASMDataTable ASM)
 					throws ClassNotFoundException, NoSuchMethodException,
 							InvocationTargetException, IllegalAccessException {
@@ -261,7 +261,7 @@ public final class AutoRegister {
 		}
 	}
 	
-	/* 注册TE */
+	/** 注册TE */
 	@SuppressWarnings("unchecked")
 	private static void reAutoTE(ASMDataTable ASM) throws ClassNotFoundException {
 		Set<ASMData> classSet = ASM.getAll(AutoTileEntity.class.getName());
@@ -274,7 +274,7 @@ public final class AutoRegister {
 		}
 	}
 	
-	/* 矿石生成器 */
+	/** 矿石生成器 */
 	private static void reOreCreate(ASMDataTable ASM) {
 		Set<ASMData> classSet = ASM.getAll(OreCreate.class.getName());
 		if (classSet != null) {
@@ -298,7 +298,7 @@ public final class AutoRegister {
 		}
 	}
 	
-	/* 自动注册方块 */
+	/** 自动注册方块 */
 	private static void reAutoBlock(ASMDataTable ASM)
 			throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchFieldException {
 		Set<ASMData> classSet = ASM.getAll(AutoBlockRegister.class.getName());

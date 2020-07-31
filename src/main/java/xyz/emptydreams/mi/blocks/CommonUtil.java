@@ -1,6 +1,8 @@
 package xyz.emptydreams.mi.blocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -82,7 +84,7 @@ public final class CommonUtil {
 
 	/** 依据IBlockState获取meta */
 	public static int getMetaFromState(@Nonnull IBlockState state) {
-		return state.getValue(FACING).ordinal() | (state.getValue(WORKING) ? 0b1000 : 0b0000);
+		return state.getValue(getFacing(state)).ordinal() | (state.getValue(WORKING) ? 0b1000 : 0b0000);
 	}
 
 	/**
@@ -97,8 +99,15 @@ public final class CommonUtil {
 			facing = EnumFacing.NORTH;
 		}
 		return block.getDefaultState()
-				.withProperty(FACING, facing)
+				.withProperty(getFacing(block.getDefaultState()), facing)
 				.withProperty(WORKING, (meta & 0b1000) == 0b1000);
 	}
 
+	private static PropertyDirection getFacing(IBlockState state) {
+		for (IProperty<?> key : state.getPropertyKeys()) {
+			if (key instanceof PropertyDirection) return (PropertyDirection) key;
+		}
+		return null;
+	}
+	
 }

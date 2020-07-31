@@ -28,8 +28,9 @@ public class OreBlock extends BlockBase {
 	}
 
 	private final Item ITEM;
+	private final Item OUT;
 	
-	public OreBlock(String name) {
+	public OreBlock(String name, Item out) {
 		super(Material.ROCK);
 		setRegistryName(ModernIndustry.MODID, name);
 		setUnlocalizedName(AutoRegister.getUnlocalizedName(name));
@@ -37,6 +38,7 @@ public class OreBlock extends BlockBase {
 		setSoundType(SoundType.STONE);
 		setHardness(2.5F);
 		setHarvestLevel("pickaxe", 1);
+		OUT = out;
 		ITEM = new ItemBlock(this).setRegistryName(name);
 		LIST.put(name, this);
 	}
@@ -50,6 +52,10 @@ public class OreBlock extends BlockBase {
 	@Override
 	public int quantityDropped(Random random) {
 		return 1;
+	}
+	
+	public Item getBurnOut() {
+		return OUT;
 	}
 	
 }

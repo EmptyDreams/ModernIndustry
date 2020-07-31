@@ -68,8 +68,7 @@ public final class OreDicRegister {
 	public static void registryDic(RegistryEvent.Register<IRecipe> event) {
 		itemMap.forEach(OreDicRegister::registryDic);
 		for (OreBlock block : OreBlock.LIST.values()) {
-			GameRegistry.addSmelting(block.getBlockItem(),
-					new ItemStack(OreBlock.LIST.get(block.getRegistryName().getResourcePath())), 0.5F);
+			GameRegistry.addSmelting(block.getBlockItem(), block.getBurnOut().getDefaultInstance(), 0.5F);
 		}
 		//使itemMap得以被GC回收
 		itemMap = null;
