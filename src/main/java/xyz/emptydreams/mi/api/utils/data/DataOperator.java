@@ -4,6 +4,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.INBTSerializable;
+import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.wrapper.Wrapper;
@@ -296,6 +297,14 @@ public final class DataOperator {
 			setter.accept(ClassMap.loadWorld().readClass(value));
 	}
 
+	public static void writeElement(NBTTagCompound nbt, String name, ItemElement data) {
+		if (data == null) return;
+		nbt.setTag(name, data.serializeNBT());
+	}
+	public static void readElement(NBTTagCompound nbt, String name, Consumer<ItemElement> setter) {
+		if (nbt.hasKey(name)) setter.accept(ItemElement.instance(nbt.getCompoundTag(name)));
+	}
+	
 	public static void writeAuto(NBTTagCompound nbt, String name, Object data) {
 		DataType.from(data.getClass()).write(nbt, name, data);
 	}

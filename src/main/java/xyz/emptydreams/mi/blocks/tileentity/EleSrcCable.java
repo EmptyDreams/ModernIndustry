@@ -26,7 +26,6 @@ import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.net.NetworkRegister;
 import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
-import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.TEHelper;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
@@ -536,7 +535,6 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 		super.readFromNBT(compound);
 		linkInfo = compound.getByte("linkInfo");
 		TEHelper.super.readFromNBT(compound);
-		MISysInfo.print();
 	}
 	
 	@Override

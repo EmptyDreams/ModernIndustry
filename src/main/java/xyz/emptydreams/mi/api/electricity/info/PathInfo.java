@@ -52,10 +52,8 @@ public class PathInfo implements Comparable<PathInfo> {
 		this.path = (List<TileEntity>) path;
 		this.outer = outer.getPos();
 		this.outputer = EleWorker.getOutputer(outer);
-		if (user != null) {
-			this.user = user.getPos();
-			this.inputer = EleWorker.getInputer(user);
-		}
+		this.user = user.getPos();
+		this.inputer = EleWorker.getInputer(user);
 		this.world = outer.getWorld();
 	}
 	

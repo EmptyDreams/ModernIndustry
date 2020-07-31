@@ -4,8 +4,11 @@ import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenMinable;
-import net.minecraft.world.gen.feature.WorldGenerator;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.terraingen.OreGenEvent;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import xyz.emptydreams.mi.register.AutoRegister;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -15,7 +18,11 @@ import java.util.Random;
  * 生成矿物
  * @author EmptyDremas
  */
-public class WorldCreater extends WorldGenerator {
+public class WorldCreater {
+	
+	static {
+		MinecraftForge.ORE_GEN_BUS.register(WorldCreater.class);
+	}
 	
 	private static final class Infos {
 		/** 生成规模 */
@@ -43,7 +50,6 @@ public class WorldCreater extends WorldGenerator {
 		creater = new WorldGenMinable(block.getDefaultState(), INFO.count);
 	}
 	
-	@Override
 	public boolean generate(@Nonnull World world, @Nonnull Random rand, @Nonnull BlockPos pos) {
 		for (int i = 0; i < INFO.time; ++i) {
 			int x = pos.getX() + rand.nextInt(16);
@@ -55,6 +61,15 @@ public class WorldCreater extends WorldGenerator {
 			}
 		}
 		return true;
+	}
+	
+	@SubscribeEvent
+	public static void onOreGenPost(OreGenEvent.Post event) {
+		if (!event.getWorld().isRemote) {
+			for (WorldCreater generator : AutoRegister.Blocks.worldCreate.values()) {
+				generator.generate(event.getWorld(), event.getRand(), event.getPos());
+			}
+		}
 	}
 	
 }

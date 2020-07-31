@@ -5,7 +5,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -18,9 +17,8 @@ import java.util.Set;
 /**
  * 代表一个物品
  * @author EmptyDreams
- * @version V1.0
  */
-public final class ItemElement implements INBTSerializable<NBTTagCompound> {
+public final class ItemElement {
 	
 	private final static Set<ItemElement> instances = new HashSet<>(10);
 	
@@ -52,8 +50,11 @@ public final class ItemElement implements INBTSerializable<NBTTagCompound> {
 	}
 
 	public static ItemElement instance(NBTTagCompound tag) {
-		ItemElement element = new ItemElement();
-		element.deserializeNBT(tag);
+		Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(
+				tag.getString("modid"), tag.getString("name")));
+		int meta = tag.getInteger("meta");
+		int amount = tag.getInteger("amount");
+		ItemElement element = new ItemElement(item, amount, meta);
 		for (ItemElement instance : instances) {
 			if (instance.element == element.element &&
 					instance.amount == element.amount &&
@@ -84,9 +85,13 @@ public final class ItemElement implements INBTSerializable<NBTTagCompound> {
 		this.meta = meta;
 	}
 	
-	public Item getElement() { return element; }
+	/** 获取物品 */
+	public Item getItem() { return element; }
+	/** 获取数量 */
 	public int getAmount() { return amount; }
+	/** 获取矿物词典 */
 	public int[] getDic() { return dic.clone(); }
+	/** 获取物品的Meta */
 	public int getMeta() { return meta; }
 	
 	/**
@@ -160,7 +165,6 @@ public final class ItemElement implements INBTSerializable<NBTTagCompound> {
 				       "}";
 	}
 	
-	@Override
 	public NBTTagCompound serializeNBT() {
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setInteger("amount", amount);
@@ -171,11 +175,4 @@ public final class ItemElement implements INBTSerializable<NBTTagCompound> {
 		return compound;
 	}
 	
-	@Override
-	public void deserializeNBT(NBTTagCompound nbt) {
-		element = ForgeRegistries.ITEMS.getValue(new ResourceLocation(
-				nbt.getString("modid"), nbt.getString("name")));
-		meta = nbt.getInteger("meta");
-		amount = nbt.getInteger("amount");
-	}
 }

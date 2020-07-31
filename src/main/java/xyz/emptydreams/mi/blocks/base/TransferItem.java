@@ -71,7 +71,7 @@ public final class TransferItem extends ItemBlock {
 	        cable.setPos(blockPos);
 	        cable.setBlockType(this.block);
 	        BooleanWrapper isLink = new BooleanWrapper();
-	        if (pos != blockPos) {
+	        if (!pos.equals(blockPos)) {
 		        TileEntity te = worldIn.getTileEntity(pos);
 		        if (te instanceof EleSrcCable) {
 			        isLink.set(cable.linkWire(EleSrcTransfer.instance(), te));
@@ -84,15 +84,17 @@ public final class TransferItem extends ItemBlock {
 	        }
 	        if (cable.getCache() == null) cable.setCache(new CableCache());
 	        BlockUtil.forEachAroundTE(worldIn, blockPos, (te, fa) -> {
-		        if (pos != te.getPos()) {
+		        if (!(pos.equals(te.getPos()) || te == cable)) {
 		        	if (te instanceof EleSrcCable) {
 				        cable.linkWire(EleSrcTransfer.instance(), te);
 				        EleSrcCable linked = (EleSrcCable) te;
-				        linked.getCache().merge(cable.getCache());
-				        cable.forEach(linked.getPos(), (it, isEnd, next) -> {
-					        it.setCache(linked.getCache());
-					        return true;
-				        });
+				        if (linked.getCache() != cable.getCache()) {
+					        linked.getCache().merge(cable.getCache());
+					        cable.forEach(linked.getPos(), (it, isEnd, next) -> {
+						        it.setCache(linked.getCache());
+						        return true;
+					        });
+				        }
 			        } else if (te != null) {
 		        		IEleTransfer transfer = EleWorker.getTransfer(te);
 				        if (transfer == null) cable.linkMachine(te);

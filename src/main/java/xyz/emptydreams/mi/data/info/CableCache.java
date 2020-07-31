@@ -6,6 +6,7 @@ import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.PathInfo;
 import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
+import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
@@ -79,29 +80,35 @@ public class CableCache {
 		wire.add(cable);
 	}
 	
+	/** 合并两个缓存 */
 	public void merge(CableCache cache) {
-		cache.outputers.forEach((key, value) -> {
+		if (this == cache) return;
+		for (Map.Entry<BlockPos, List<BlockPos>> entry : cache.outputers.entrySet()) {
+			BlockPos key = entry.getKey();
+			List<BlockPos> value = entry.getValue();
 			for (BlockPos pos : value) {
-				addOutputer(key, pos);
+				this.addOutputer(pos, key);
 			}
-		});
+		}
 		datas.addAll(cache.datas);
 	}
 	
 	/** 最大能量值 */
-	private static final Data MAX_DATA = new Data(null, null, Double.MAX_VALUE, null, null);
+	private static final Data MAX_DATA = new Data(
+					null, null, Double.MAX_VALUE, null, null);
 	
 	/**
-	 * 读取或计算缓存信息，当没有缓存信息时自动计算<br>
-	 * <b>注意：返回值中的{@link PathInfo#getUser()}值不可用，需要手动设置</b>
+	 * 读取或计算缓存信息，当没有缓存信息时自动计算
 	 * @param start 起点
-	 * @param energy 需要的电脑
+	 * @param user 用电器的TE
+	 * @param inputer 用电器的托管
 	 * @return 计算结果，当线路中没有可用的发电机时返回null
 	 */
 	@Nullable
-	public PathInfo calculate(EleSrcCable start, int energy, VoltageRange voltage) {
+	public PathInfo calculate(EleSrcCable start, TileEntity user, IEleInputer inputer) {
 		if (getOutputerAmount() <= 0) return null;
-		
+		int energy = inputer.getEnergy(user);
+		VoltageRange voltage = inputer.getVoltageRange(user);
 		Data min = MAX_DATA;
 		TileEntity realOutputer = null;
 		for (Map.Entry<BlockPos, List<BlockPos>> entry : outputers.entrySet()) {
@@ -123,7 +130,7 @@ public class CableCache {
 		
 		if (realOutputer == null) return null;
 		int loss = (min.energy % 1 == 0) ? (int) min.energy : ((int) min.energy) + 1;
-		return new PathInfo(loss, min.voltage, min.path, realOutputer,null);
+		return new PathInfo(loss, min.voltage, min.path, realOutputer, user);
 	}
 	
 	/**
@@ -145,7 +152,8 @@ public class CableCache {
 		}
 		Wrapper<List<EleSrcCable>> path = new Wrapper<>();
 		double loss = getLoss(start, end, energy, path);
-		if (loss <= 0) throw new IllegalArgumentException("传入的起点和终点不在一条线路内");
+		if (loss <= 0)
+			 throw new IllegalArgumentException("传入的起点和终点不在一条线路内");
 		Data data = new Data(start.getPos(), end, loss, energy.getVoltage(), path.get());
 		datas.add(data);
 		return data;

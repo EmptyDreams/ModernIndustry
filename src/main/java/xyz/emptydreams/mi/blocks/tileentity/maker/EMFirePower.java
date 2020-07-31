@@ -36,26 +36,6 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	private final CommonProgress progressBar = new CommonProgress();
 	/** 能量进度条 */
 	private final CommonProgress energyPro = new CommonProgress();
-	/** 能量数据显示 */
-	/*private final StringComponent stringShower = new StringComponent() {
-		@Override
-		public void send(Container con, IContainerListener listener) {
-			listener.sendWindowProperty(con, getCodeID(0), getNowEnergy());
-		}
-		
-		@Override
-		public boolean update(int codeID, int data) {
-			if (codeID == getCodeID(0)) {
-				((EMFirePower) world.getTileEntity(pos)).setNowEnergy(data);
-				stringShower.setString(data + " / " + getMaxEnergy());
-				stringShower.setLocation(
-						(Minecraft.getMinecraft().displayWidth - Minecraft.getMinecraft().fontRenderer
-								.getStringWidth(stringShower.getString())) / 2, getY());
-				return true;
-			}
-			return false;
-		}
-	};*/
 	/** 输入/输出框 */
 	@Storage(SERIALIZABLE) private final ItemStackHandler item = new ItemStackHandler(2);
 	/** 输入框 */

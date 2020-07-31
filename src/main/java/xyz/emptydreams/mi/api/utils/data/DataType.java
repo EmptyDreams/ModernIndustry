@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.INBTSerializable;
+import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.interfaces.ThConsumer;
 import xyz.emptydreams.mi.api.utils.wrapper.Wrapper;
@@ -76,6 +77,8 @@ public enum  DataType {
 	VOLTAGE(DataOperator::writeVoltage, DataOperator::readVoltage),
 	/** 表示{@link Class} */
 	CLASS(DataOperator::writeClass, DataOperator::readClass),
+	/** 表示{@link ItemElement} */
+	ELEMENT(DataOperator::writeElement, DataOperator::readElement),
 	/** 表示自动判断 */
 	AUTO(DataOperator::writeAuto, null);
 
@@ -129,6 +132,7 @@ public enum  DataType {
 		else if (type == boolean.class || type == Boolean.class) return BOOLEAN;
 		else if (NBTBase.class.isAssignableFrom(type)) return TAG;
 		else if (INBTSerializable.class.isAssignableFrom(type)) return SERIALIZABLE;
+		else if (type == ItemElement.class) return ELEMENT;
 		else if (type == BlockPos.class) return POS;
 		else if (IVoltage.class.isAssignableFrom(type)) return VOLTAGE;
 		else if (Enum.class.isAssignableFrom(type)) return ENUM;

@@ -27,9 +27,7 @@ public class EleSrcTransfer implements IEleTransfer {
 		EleSrcCable cable = (EleSrcCable) start;
 		CableCache cache = cable.getCache();
 		if (cache == null) return null;
-		PathInfo info = cache.calculate(cable, inputer.getEnergy(user), inputer.getVoltageRange(user));
-		if (info == null) return null;
-		info.setUser(user);
+		PathInfo info = cache.calculate(cable, user, inputer);
 		return info;
 	}
 	
