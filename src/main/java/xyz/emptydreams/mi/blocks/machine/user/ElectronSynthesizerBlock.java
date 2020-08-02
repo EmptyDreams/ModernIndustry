@@ -11,8 +11,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.MachineBlock;
 import xyz.emptydreams.mi.blocks.tileentity.user.EUElectronSynthesizer;
+import xyz.emptydreams.mi.gui.ElectronSynthesizerFrame;
 import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 
 import javax.annotation.Nonnull;
@@ -37,7 +39,7 @@ public class ElectronSynthesizerBlock extends MachineBlock {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
-		
+		CommonUtil.openGui(playerIn, ElectronSynthesizerFrame.ID, worldIn, pos);
 		return true;
 	}
 	

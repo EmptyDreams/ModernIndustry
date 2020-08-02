@@ -101,7 +101,8 @@ public final class ItemElement {
 	 * 该方法与{@link #contrastWith(ItemElement)}不同，忽视数量区别
 	 */
 	public boolean contrastWith(@Nullable ItemStack stack) {
-		if (stack == null || getItem() != stack.getItem() || getMeta() != stack.getMetadata()) return false;
+		if (stack == null) return false;
+		if (getItem() == stack.getItem() && getMeta() == stack.getMetadata()) return true;
 		int[] other = OreDictionary.getOreIDs(stack);
 		if (getDic().length <= other.length) {
 			for (int i : other) {

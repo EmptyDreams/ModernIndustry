@@ -4,12 +4,11 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.blocks.common.OreBlock;
 
@@ -65,7 +64,7 @@ public final class OreDicRegister {
 
 	/** 用于注册矿物词典，因为没有专用的事件，所以这里使用注册注册表的事件取代 */
 	@SubscribeEvent
-	public static void registryDic(RegistryEvent.Register<IRecipe> event) {
+	public static void registryDic(CraftGuideRegistryEvent event) {
 		itemMap.forEach(OreDicRegister::registryDic);
 		for (OreBlock block : OreBlock.LIST.values()) {
 			GameRegistry.addSmelting(block.getBlockItem(), block.getBurnOut().getDefaultInstance(), 0.5F);
