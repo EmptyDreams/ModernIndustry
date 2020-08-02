@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.gui.group;
 
-import xyz.emptydreams.mi.api.gui.IFrame;
 import xyz.emptydreams.mi.api.gui.component.IComponent;
 
 /**
@@ -18,10 +17,9 @@ public final class Panels {
 	 *      <b>如果Group是嵌套在另一个Group中的，
 	 *      那么内层的Group必须手动设置大小，
 	 *      外层Group的高度最好手动设置</b>
-	 * @param frame 所在窗体
 	 * @param group 组
 	 */
-	public static void horizontalCenter(IFrame frame, Group group) {
+	public static void horizontalCenter(Group group) {
 		int size = group.size();
 		int width = group.getWidth();
 		if (size <= 0) return;
@@ -58,10 +56,9 @@ public final class Panels {
 	 *      <b>如果Group是嵌套在另一个Group中的，
 	 *      那么内层的Group必须手动设置大小，
 	 *      外层Group的高度最好手动设置</b>
-	 * @param frame 所在窗体
 	 * @param group 组
 	 */
-	public static void verticalCenter(IFrame frame, Group group) {
+	public static void verticalCenter(Group group) {
 		int size = group.size();
 		int height = group.getHeight();
 		if (size <= 0) return;

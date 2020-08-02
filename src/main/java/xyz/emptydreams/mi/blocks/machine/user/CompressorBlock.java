@@ -36,14 +36,12 @@ public class CompressorBlock extends MachineBlock {
 	/** 方块内部名称 */
 	public static final String NAME = "compressor";
 	
-	private final Item ITEM;
+	private final Item ITEM = new ItemBlock(this);
 	
 	public CompressorBlock() {
 		super(Material.ROCK);
-		ITEM = new ItemBlock(this).setRegistryName(ModernIndustry.MODID, NAME);
-		
 		setDefaultState(blockState.getBaseState().withProperty(
-				FACING, EnumFacing.EAST).withProperty(WORKING, false).withProperty(EMPTY, true));
+				HORIZONTAL, EnumFacing.EAST).withProperty(WORKING, false).withProperty(EMPTY, true));
 	}
 	
 	@Nonnull
@@ -75,7 +73,7 @@ public class CompressorBlock extends MachineBlock {
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, FACING, WORKING, EMPTY);
+		return new BlockStateContainer(this, HORIZONTAL, WORKING, EMPTY);
 	}
 	
 	@Override
@@ -92,7 +90,7 @@ public class CompressorBlock extends MachineBlock {
 	    if (enumfacing.getAxis() == EnumFacing.Axis.Y) {
 	        enumfacing = EnumFacing.NORTH;
 	    }
-	    return getDefaultState().withProperty(FACING, enumfacing)
+	    return getDefaultState().withProperty(HORIZONTAL, enumfacing)
 	    		.withProperty(WORKING, burning).withProperty(EMPTY, isEmpty);
 	}
 	
@@ -103,7 +101,7 @@ public class CompressorBlock extends MachineBlock {
 	 */
 	@Override
 	public int getMetaFromState(@Nonnull IBlockState state) {
-		return state.getValue(FACING).getHorizontalIndex()
+		return state.getValue(HORIZONTAL).getHorizontalIndex()
 				       | (state.getValue(WORKING) ? 0b0100 : 0b0000)
 				       | (state.getValue(EMPTY) ? 0b1000 : 0b0000);
 	}

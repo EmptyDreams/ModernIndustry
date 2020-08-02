@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
+import static xyz.emptydreams.mi.blocks.base.MIProperty.HORIZONTAL;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 
 /**
@@ -42,7 +42,7 @@ public class FirePowerBlock extends MachineBlock {
 		super(Material.IRON);
 		setHarvestLevel(CommonBlocks.TC_PICKAXE, 2);
 		setDefaultState(blockState.getBaseState()
-				                .withProperty(FACING, EnumFacing.NORTH).withProperty(WORKING, false));
+				                .withProperty(HORIZONTAL, EnumFacing.NORTH).withProperty(WORKING, false));
 		ITEM = new ItemBlock(this).setRegistryName(ModernIndustry.MODID, "fire_power");
 	}
 	

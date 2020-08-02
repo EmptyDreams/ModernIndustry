@@ -7,8 +7,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import xyz.emptydreams.mi.api.craftguide.ICraftGuide;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
+import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.electricity.clock.NonCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.IProgressBar;
@@ -96,10 +96,9 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	/** 更新输出 */
 	private void updateProduction() {
 		maxTime = burningTime = 0;
-		ICraftGuide out = CraftList.FIRE_POWER.apply(burnItem.getStack());
-		if (out == null) return;
-		ItemElement element = out.getFirstOut();
-		ItemUtil.putItemTo(this.out.getStack(), element.getStack(), false);
+		ItemElement element = CraftList.FIRE_POWER.apply(new ItemSet(burnItem));
+		if (element == null) return;
+		ItemUtil.putItemTo(out.getStack(), element.getStack(), false);
 	}
 
 	/** 更新燃烧时间 */
@@ -128,7 +127,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	
 	@Override
 	public EnumFacing getFront() {
-		return world.getBlockState(pos).getValue(MIProperty.FACING);
+		return world.getBlockState(pos).getValue(MIProperty.HORIZONTAL);
 	}
 
 }

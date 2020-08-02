@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static net.minecraft.util.EnumFacing.NORTH;
-import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
+import static xyz.emptydreams.mi.blocks.base.MIProperty.HORIZONTAL;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 
 /**
@@ -39,7 +39,7 @@ public class EleMFurnaceBlock extends MachineBlock {
 	public EleMFurnaceBlock() {
 		super(Material.IRON);
 		setDefaultState(blockState.getBaseState()
-				.withProperty(FACING, NORTH)
+				.withProperty(HORIZONTAL, NORTH)
 				.withProperty(WORKING, false));
 	}
 
@@ -58,7 +58,7 @@ public class EleMFurnaceBlock extends MachineBlock {
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, FACING, WORKING);
+		return new BlockStateContainer(this, HORIZONTAL, WORKING);
 	}
 
 	@Override

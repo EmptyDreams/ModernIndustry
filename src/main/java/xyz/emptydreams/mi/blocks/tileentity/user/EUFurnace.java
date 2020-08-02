@@ -58,7 +58,6 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 		setCounter(counter);
 		setReceive(true);
 		setMaxEnergy(10);
-		progressBar.setLocation(76, 30);
 		progressBar.setMax(getNeedTime());
 	}
 
@@ -102,7 +101,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 	@Nullable
 	@Override
 	public EnumFacing getFront() {
-		return world.getBlockState(pos).getValue(MIProperty.FACING);
+		return world.getBlockState(pos).getValue(MIProperty.HORIZONTAL);
 	}
 
 	@Override

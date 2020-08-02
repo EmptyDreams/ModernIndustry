@@ -9,7 +9,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import xyz.emptydreams.mi.api.craftguide.ICraftGuide;
+import xyz.emptydreams.mi.api.craftguide.ItemElement;
+import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.IProgressBar;
@@ -24,10 +25,7 @@ import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
 import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
-import java.util.List;
-
 import static xyz.emptydreams.mi.api.utils.ItemUtil.hasEmpty;
-import static xyz.emptydreams.mi.api.utils.ItemUtil.merge;
 
 /**
  * 压缩机的TileEntity，存储方块内物品、工作时间等内容
@@ -65,8 +63,6 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		setCounter(counter);
 		setReceive(true);
 		setMaxEnergy(20);
-		
-		progressBar.setLocation(80, 35);
 	}
 
 	/** 设置世界时更新计数器的设置 */
@@ -121,7 +117,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 				workingTime = 0;
 				item.extractItem(0, 1, false);
 				item.extractItem(1, 1, false);
-				nowOut.grow(1);
+				nowOut.grow(outStack.getCount());
 			}
 			shrinkEnergy(getNeedEnergy());
 		} else {
@@ -147,10 +143,12 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	 */
 	private ItemStack checkInput() {
 		if (!hasEmpty(up.getStack(), down.getStack())) {
-			List<ItemStack> inputs = merge(up.getStack(), down.getStack());
-			ICraftGuide craft = CraftList.COMPRESSOR.apply(inputs);
+			ItemSet set = new ItemSet();
+			set.add(ItemElement.instance(up.getStack()));
+			set.add(ItemElement.instance(down.getStack()));
+			ItemElement craft = CraftList.COMPRESSOR.apply(set);
 			if (craft == null) return null;
-			return craft.getFirstOut().getStack();
+			return craft.getStack();
 		}
 		return null;
 	}
@@ -207,7 +205,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		return false;
 	}
 	@Override
-	public EnumFacing getFront() { return world.getBlockState(pos).getValue(MIProperty.FACING); }
+	public EnumFacing getFront() { return world.getBlockState(pos).getValue(MIProperty.HORIZONTAL); }
 	
 	private final class SlotMI extends SlotItemHandler {
 		
@@ -217,7 +215,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		
 		@Override
 		public boolean isItemValid(ItemStack stack) {
-			boolean b = stack != null && CraftList.COMPRESSOR.hasItem(stack.getItem())
+			boolean b = stack != null && CraftList.COMPRESSOR.rawHas(stack)
 					            && super.isItemValid(stack);
 			if (b && !isEmptyForInput()) {
 				SlotItemHandler s = getSlot(getSlotIndex() == 0 ? 1 : 0);

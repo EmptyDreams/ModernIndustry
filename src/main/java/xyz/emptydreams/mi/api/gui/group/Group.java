@@ -17,7 +17,7 @@ import java.awt.*;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * 控件包，支持自动排版
@@ -28,7 +28,7 @@ public class Group extends MComponent implements Iterable<IComponent> {
 	/** 包含的控件 */
 	private final List<IComponent> components = new LinkedList<>();
 	/** 对齐模式 */
-	private BiConsumer<IFrame, Group> mode = null;
+	private Consumer<Group> mode;
 	/** 两个控件间的最短距离(像素) */
 	private int minDistance = 3;
 	/** 两个控件间的最远距离(像素) */
@@ -38,7 +38,7 @@ public class Group extends MComponent implements Iterable<IComponent> {
 		this(0, 0, 0, 0, null);
 	}
 
-	public Group(int x, int y, int width, int height, BiConsumer<IFrame, Group> panel) {
+	public Group(int x, int y, int width, int height, Consumer<Group> panel) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -83,9 +83,9 @@ public class Group extends MComponent implements Iterable<IComponent> {
 	/** 设置两个控件间的最远距离 */
 	public void setMaxDistance(int maxDistance) { this.maxDistance = maxDistance; }
 	/** 获取排列模式 */
-	public BiConsumer<IFrame, Group> getArrangeMode() { return mode; }
+	public Consumer<Group> getArrangeMode() { return mode; }
 	/** 设置排列模式，传入为空表示不自动进行排列 */
-	public void setControlPanel(BiConsumer<IFrame, Group> mode) { this.mode = mode; }
+	public void setControlPanel(Consumer<Group> mode) { this.mode = mode; }
 	/** 获取控件数量 */
 	public int size() { return components.size(); }
 	/** 遍历控件 */
@@ -94,7 +94,7 @@ public class Group extends MComponent implements Iterable<IComponent> {
 
 	@Override
 	public void onAddToGUI(Container con, EntityPlayer player) {
-		if (mode != null && con instanceof IFrame) mode.accept((IFrame) con, this);
+		if (mode != null && con instanceof IFrame) mode.accept(this);
 		if (con instanceof MIFrame) {
 			MIFrame frame = (MIFrame) con;
 			components.forEach(it -> {
@@ -106,7 +106,7 @@ public class Group extends MComponent implements Iterable<IComponent> {
 
 	@Override
 	public void onAddToGUI(GuiContainer con, EntityPlayer player) {
-		if (mode != null && con instanceof IFrame) mode.accept((IFrame) con, this);
+		if (mode != null && con instanceof IFrame) mode.accept(this);
 		components.forEach(it -> it.onAddToGUI(con, player));
 	}
 

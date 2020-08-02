@@ -41,18 +41,14 @@ public interface IComponent {
 	 * 绘制图像，在组件被渲染时调用.
 	 * @param g 画笔
 	 */
+	@SideOnly(Side.CLIENT)
 	void paint(@Nonnull Graphics g);
-	/**
-	 * 在组件被添加到GUI时调用
-	 */
+	/** 在组件被添加到GUI时调用 */
 	void onAddToGUI(Container con, EntityPlayer player);
-	/**
-	 * 在组件被添加到客户端GUI时调用
-	 */
+	/** 在组件被添加到客户端GUI时调用 */
+	@SideOnly(Side.CLIENT)
 	void onAddToGUI(GuiContainer con, EntityPlayer player);
-	/**
-	 * 在组件被移除GUI时
-	 */
+	/** 在组件被移除GUI时 */
 	void onRemoveFromGUI(Container con);
 	
 	/** 实时渲染 */

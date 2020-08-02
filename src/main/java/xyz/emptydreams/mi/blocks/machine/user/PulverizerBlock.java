@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static net.minecraft.util.EnumFacing.NORTH;
-import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
+import static xyz.emptydreams.mi.blocks.base.MIProperty.HORIZONTAL;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 
 /**
@@ -39,7 +39,7 @@ public class PulverizerBlock extends MachineBlock {
 	public PulverizerBlock() {
 		super(Material.IRON);
 		setDefaultState(blockState.getBaseState()
-									.withProperty(FACING, NORTH)
+									.withProperty(HORIZONTAL, NORTH)
 									.withProperty(WORKING, false));
 	}
 

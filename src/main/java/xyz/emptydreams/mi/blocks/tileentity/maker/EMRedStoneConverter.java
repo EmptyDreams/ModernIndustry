@@ -111,7 +111,7 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 	@Nullable
 	@Override
 	public EnumFacing getFront() {
-		return world.getBlockState(pos).getValue(MIProperty.FACING);
+		return world.getBlockState(pos).getValue(MIProperty.HORIZONTAL);
 	}
 
 	@Override

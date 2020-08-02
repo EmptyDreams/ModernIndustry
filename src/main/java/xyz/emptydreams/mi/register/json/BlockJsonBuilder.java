@@ -38,6 +38,11 @@ public final class BlockJsonBuilder {
 		OUTPUTS[0] = new File(FATHER,"src/main/resources/assets/mi/blockstates");
 		OUTPUTS[1] = new File(FATHER, "out/production/ModernIndustry.main/assets/mi/blockstates");
 		TEMPLATE = new File(FATHER, "src/main/resources/assets/mi/templates/block");
+		
+		for (File output : OUTPUTS) {
+			output.mkdirs();
+		}
+		
 		try {
 			TEMPLATE_DATA = getTemplates();
 		} catch (IOException e) {
@@ -73,8 +78,9 @@ public final class BlockJsonBuilder {
 	private static Type getTemplateType(Block block) {
 		ImmutableMap<IProperty<?>, Comparable<?>> properties = block.getDefaultState().getProperties();
 		if (properties.isEmpty()) return Type.NON;
+		if (properties.containsKey(MIProperty.EMPTY)) return Type.EMPTY;
 		if (properties.containsKey(MIProperty.WORKING)) return Type.WORKING;
-		if (properties.containsKey(MIProperty.FACING)) return Type.FACING;
+		if (properties.containsKey(MIProperty.HORIZONTAL)) return Type.FACING;
 		throw new IllegalArgumentException("输入了不支持的方块：" + block.getRegistryName());
 	}
 
@@ -162,8 +168,9 @@ public final class BlockJsonBuilder {
 	private enum Type {
 
 		NON("template_non.json"),
-		FACING("template_facing.json"),
-		WORKING("template_working.json");
+		FACING("template_horizontal.json"),
+		WORKING("template_working.json"),
+		EMPTY("template_empty.json");
 
 		private final String name;
 

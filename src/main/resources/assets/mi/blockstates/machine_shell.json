@@ -4,16 +4,16 @@
     "model": "cube",
     "textures": {
       "particle": "mi:blocks/machine/side",
-      "down": "mi:blocks/machine/down",
       "up": "mi:blocks/machine/up",
-      "north": "mi:blocks/machine/side",
+      "down": "mi:blocks/machine/down",
       "east": "mi:blocks/machine/side",
-      "south": "mi:blocks/machine/side",
-      "west": "mi:blocks/machine/side"
+      "west": "mi:blocks/machine/side",
+      "north": "mi:blocks/machine/side",
+      "south": "mi:blocks/machine/side"
     }
   },
   "variants": {
-    "inventory": [{  }],
+    "inventory": [{ }],
     "normal": [{ }]
   }
 }

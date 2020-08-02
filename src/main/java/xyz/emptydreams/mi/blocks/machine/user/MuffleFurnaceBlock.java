@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
+import static xyz.emptydreams.mi.blocks.base.MIProperty.HORIZONTAL;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 
 /**
@@ -43,7 +43,7 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 	public MuffleFurnaceBlock() {
 		super(Material.ROCK);
 		setDefaultState(blockState.getBaseState()
-				                .withProperty(FACING, EnumFacing.NORTH)
+				                .withProperty(HORIZONTAL, EnumFacing.NORTH)
 				                .withProperty(WORKING, false));
 		setCreativeTab(ModernIndustry.TAB_BLOCK);
 		setSoundType(SoundType.STONE);
@@ -85,7 +85,7 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 			facing = EnumFacing.NORTH;
 		}
 		return getDefaultState()
-				       .withProperty(FACING, facing)
+				       .withProperty(HORIZONTAL, facing)
 				       .withProperty(WORKING, (meta & 0b0100) == 0b0100);
 	}
 	
@@ -93,19 +93,19 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing,
 	                                        float hitX, float hitY, float hitZ, int meta,
 	                                        EntityLivingBase placer, EnumHand hand) {
-		return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+		return getDefaultState().withProperty(HORIZONTAL, placer.getHorizontalFacing().getOpposite());
 	}
 	
 	@Override
 	public int getMetaFromState(@Nonnull IBlockState state) {
-		return state.getValue(FACING).getHorizontalIndex() | (state.getValue(WORKING) ? 0b0100 : 0);
+		return state.getValue(HORIZONTAL).getHorizontalIndex() | (state.getValue(WORKING) ? 0b0100 : 0);
 	}
 	
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
 		//阻止折叠
-		return new BlockStateContainer(this, FACING, WORKING);
+		return new BlockStateContainer(this, HORIZONTAL, WORKING);
 	}
 	
 	@Override

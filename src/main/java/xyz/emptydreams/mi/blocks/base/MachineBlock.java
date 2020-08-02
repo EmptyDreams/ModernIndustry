@@ -24,7 +24,7 @@ import xyz.emptydreams.mi.blocks.common.CommonBlocks;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
+import static xyz.emptydreams.mi.blocks.base.MIProperty.HORIZONTAL;
 
 /**
  * MI中所有耗电机器的父类
@@ -35,7 +35,7 @@ public abstract class MachineBlock extends TEBlockBase {
 	public MachineBlock(Material materialIn) {
 		super(materialIn);
 		setSoundType(SoundType.STONE);
-		setHarvestLevel("pickaxe", 1);
+		setHarvestLevel("pickaxe", 2);
 		setHardness(3);
 		setResistance(20);
 		setCreativeTab(ModernIndustry.TAB_BLOCK);
@@ -72,10 +72,10 @@ public abstract class MachineBlock extends TEBlockBase {
 	                                        EntityLivingBase placer, EnumHand hand) {
 		if (hasFacing == null) {
 			IBlockState state = getDefaultState();
-			hasFacing = new BooleanWrapper(state.getProperties().containsKey(FACING));
+			hasFacing = new BooleanWrapper(state.getProperties().containsKey(HORIZONTAL));
 		}
 		if (hasFacing.get())
-			return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+			return getDefaultState().withProperty(HORIZONTAL, placer.getHorizontalFacing().getOpposite());
 		return getDefaultState();
 	}
 	

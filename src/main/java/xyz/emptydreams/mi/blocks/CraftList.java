@@ -1,15 +1,20 @@
 package xyz.emptydreams.mi.blocks;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import xyz.emptydreams.mi.api.craftguide.CraftRegistry;
+import xyz.emptydreams.mi.api.craftguide.CraftGuide;
+import xyz.emptydreams.mi.api.craftguide.ItemElement;
+import xyz.emptydreams.mi.api.craftguide.multi.OrderlyShape;
+import xyz.emptydreams.mi.api.craftguide.only.UnorderlyShapeOnly;
+import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
 import xyz.emptydreams.mi.blocks.common.OreBlock;
 
 import static net.minecraft.init.Blocks.*;
 import static net.minecraft.init.Items.COAL;
-import static xyz.emptydreams.mi.api.utils.CraftUtil.createOneCraft;
 import static xyz.emptydreams.mi.blocks.common.OreBlock.getInstance;
 import static xyz.emptydreams.mi.items.common.CommonItems.*;
 
@@ -21,19 +26,25 @@ import static xyz.emptydreams.mi.items.common.CommonItems.*;
 public final class CraftList {
 
 	/** 火力发电机 */
-	public static final CraftRegistry FIRE_POWER = CraftRegistry.instance("fire_powder");
+	public static final CraftGuide<UnorderlyShapeOnly, ItemElement> FIRE_POWER =
+															CraftGuide.instance("fire_powder");
 	/** 粉碎机 */
-	public static final CraftRegistry PULVERIZER = CraftRegistry.instance("pulverizer");
+	public static final CraftGuide<UnorderlyShapeOnly, ItemElement> PULVERIZER =
+															CraftGuide.instance("pulverizer");
 	/** 压缩机 */
-	public static final CraftRegistry COMPRESSOR = CraftRegistry.instance("compressor");
+	public static final CraftGuide<UnorderlyShapeOnly, ItemElement> COMPRESSOR =
+															CraftGuide.instance("compressor");
+	/** 电子合成台 */
+	public static final CraftGuide<OrderlyShape, ItemSet> SYNTHESIZER =
+															CraftGuide.instance("electron_synthesizer");
 
 	@SubscribeEvent
 	public static void registryCraft(CraftGuideRegistryEvent event) {
-		FIRE_POWER.register(
-				createOneCraft(COAL, ITEM_COAL_BURN_POWDER),
+		FIRE_POWER.registry(
+				createOneCraft(new ItemStack(COAL), ITEM_COAL_BURN_POWDER.getDefaultInstance()),
 				createOneCraft(new ItemStack(COAL, 1, 1), ITEM_COAL_BURN_POWDER.getDefaultInstance())
 		);
-		PULVERIZER.register(
+		PULVERIZER.registry(
 				createOneCraft(COAL_ORE, ITEM_COAL_CRUSH),
 				createOneCraft(IRON_ORE, ITEM_IRON_CRUSH),
 				createOneCraft(GOLD_ORE, ITEM_GOLD_CRUSH),
@@ -43,4 +54,16 @@ public final class CraftList {
 		);
 	}
 
+	private static UnorderlyShapeOnly createOneCraft(Block input, Item output) {
+		ItemSet set = new ItemSet();
+		set.add(ItemElement.instance(input, 1));
+		return new UnorderlyShapeOnly(set, ItemElement.instance(output, 2));
+	}
+	
+	private static UnorderlyShapeOnly createOneCraft(ItemStack input, ItemStack output) {
+		ItemSet set = new ItemSet();
+		set.add(ItemElement.instance(input));
+		return new UnorderlyShapeOnly(set, ItemElement.instance(output));
+	}
+	
 }

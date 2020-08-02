@@ -1,12 +1,12 @@
 package xyz.emptydreams.mi.api.utils.data;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public final class ClassMap extends WorldSavedData {
 
-	private final Map<Integer, Class<?>> MAP = new HashMap<>();
+	private final Int2ObjectOpenHashMap<Class<?>> MAP = new Int2ObjectOpenHashMap<>();
 
 	public ClassMap(String name) {
 		super(name);

@@ -2,12 +2,10 @@
   "forge_marker": 1,
   "defaults": {
     "model": "cube_all",
-    "textures": {
-      "all": "mi:blocks/machine/all_maker"
-    }
+    "textures": { "all": "mi:blocks/machine/all_maker" }
   },
   "variants": {
-    "inventory": [{  }],
+    "inventory": [{ }],
     "normal": [{ }]
   }
 }

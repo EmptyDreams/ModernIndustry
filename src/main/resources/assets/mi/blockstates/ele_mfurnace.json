@@ -6,7 +6,7 @@
   },
   "variants": {
     "inventory": [{ }],
-    "facing": {
+    "horizontal": {
       "north": { },
       "east": { "y": 90 },
       "west": { "y": 270 },

@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
-import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
+import static xyz.emptydreams.mi.blocks.base.MIProperty.HORIZONTAL;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 
 /**
@@ -79,7 +79,7 @@ public final class CommonUtil {
 
 	/** 为指定方块生成一个带方向与工作状态的{@link BlockStateContainer} */
 	public static BlockStateContainer createBlockState(Block block) {
-		return new BlockStateContainer(block, FACING, WORKING);
+		return new BlockStateContainer(block, HORIZONTAL, WORKING);
 	}
 
 	/** 依据IBlockState获取meta */

@@ -17,7 +17,7 @@ import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
 import static xyz.emptydreams.mi.api.utils.data.DataType.INT;
-import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
+import static xyz.emptydreams.mi.blocks.base.MIProperty.HORIZONTAL;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 
 /**
@@ -62,11 +62,6 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 	
 	private final CommonProgress workProgress = new CommonProgress();
 	private final CommonProgress burnProgress = new CommonProgress(Style.FIRE, Front.UP);
-	
-	public MuffleFurnace() {
-		workProgress.setLocation(80, 40);
-		burnProgress.setLocation(57, 42);
-	}
 	
 	@Override
 	public void update() {
@@ -131,7 +126,7 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 	/** 是否正在工作 */
 	public boolean isWorking() { return maxBurningTime != 0; }
 	/** 获取正面 */
-	public EnumFacing getFront() { return world.getBlockState(pos).getValue(FACING); }
+	public EnumFacing getFront() { return world.getBlockState(pos).getValue(HORIZONTAL); }
 	
 	/** 获取工作进度条 */
 	public IProgressBar getWorkProgress() { return workProgress; }

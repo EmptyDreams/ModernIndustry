@@ -6,11 +6,23 @@
   },
   "variants": {
     "inventory": [{ }],
-    "facing": {
+    "horizontal": {
       "north": { },
       "east": { "y": 90 },
       "west": { "y": 270 },
       "south": { "y": 180 }
+    },
+    "working": {
+      "true": {
+        "textures": { "front": "template:working" }
+      },
+      "false": { }
+    },
+    "empty": {
+      "true": {
+        "textures": { "front": "template:empty" }
+      },
+      "false": { }
     }
   }
 }

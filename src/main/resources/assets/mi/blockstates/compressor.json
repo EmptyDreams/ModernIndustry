@@ -6,7 +6,7 @@
   },
   "variants": {
     "inventory": [{ }],
-    "facing": {
+    "horizontal": {
       "north": { },
       "east": { "y": 90 },
       "west": { "y": 270 },
@@ -18,11 +18,11 @@
       },
       "false": { }
     },
-    "isempty": {
-      "false": {
+    "empty": {
+      "true": {
         "textures": { "front": "mi:blocks/machine/compressor/empty" }
       },
-      "true": { }
+      "false": { }
     }
   }
 }

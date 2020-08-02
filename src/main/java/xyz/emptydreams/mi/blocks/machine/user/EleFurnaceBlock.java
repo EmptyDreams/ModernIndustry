@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static net.minecraft.util.EnumFacing.NORTH;
-import static xyz.emptydreams.mi.blocks.base.MIProperty.FACING;
+import static xyz.emptydreams.mi.blocks.base.MIProperty.HORIZONTAL;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 
 /**
@@ -41,7 +41,7 @@ public class EleFurnaceBlock extends MachineBlock {
 		super(Material.IRON);
 		setCreativeTab(ModernIndustry.TAB_BLOCK);
 		setDefaultState(blockState.getBaseState()
-				.withProperty(FACING, NORTH)
+				.withProperty(HORIZONTAL, NORTH)
 				.withProperty(WORKING, false));
 		setHardness(3.5F);
 	}
