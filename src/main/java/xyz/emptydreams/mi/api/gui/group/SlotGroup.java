@@ -4,6 +4,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.api.gui.MIFrame;
@@ -13,6 +14,7 @@ import xyz.emptydreams.mi.api.gui.component.MSlot;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
 /**
@@ -41,16 +43,24 @@ public class SlotGroup extends MComponent {
 		setSize(width * (size + interval), height * (size + interval));
 	}
 	
+	public void writeFrom(int start, IntFunction<SlotItemHandler> builder) {
+		for (int y = 0; y < getYSize(); ++y) {
+			for (int x = 0; x < getXSize(); ++x) {
+				setSlot(x, y, builder.apply(start++));
+			}
+		}
+	}
+	
 	/**
 	 * 自动创建所有Slot
 	 * @param handler 指定ItemStackHandler
 	 * @param start 下标起点
 	 * @param test 测试是否允许输入
 	 */
-	public void writeFrom(ItemStackHandler handler, int start, Predicate<ItemStack> test) {
+	public void writeFrom(ItemStackHandler handler, TileEntity entity, int start, Predicate<ItemStack> test) {
 		for (int y = 0; y < getYSize(); ++y) {
 			for (int x = 0; x < getXSize(); ++x) {
-				setSlot(x, y, new SlotItemHandler(handler, start++, 0, 0) {
+				setSlot(x, y, new MSlot.SlotHandler(handler, entity, start++) {
 					@Override
 					public boolean isItemValid(@Nonnull ItemStack stack) {
 						return test.test(stack) && super.isItemValid(stack);

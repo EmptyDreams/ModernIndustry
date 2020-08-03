@@ -24,7 +24,6 @@ import static xyz.emptydreams.mi.items.common.CommonItemHelper.CAPS;
 public final class CommonItems {
 
 	//--------------------金属锭--------------------//
-
 	/** 铜锭 */
 	public static final String NAME_COPPER = "copper_ingot";
 	public static final Item ITEM_COPPER = new MItem(NAME_COPPER, "ingotCopper");
@@ -36,7 +35,6 @@ public final class CommonItems {
 	public static final Item ITEM_BRONZE = new MItem(NAME_BRONZE, "ingotBronze");
 
 	//--------------------粉--------------------//
-
 	/** 石粉 */
 	public static final String NAME_STONE_POWDER = "stone_powder";
 	public static final Item ITEM_STONE_POWDER = new MItem(NAME_STONE_POWDER,
@@ -73,7 +71,6 @@ public final class CommonItems {
 												"dustDiamond", "powderDiamond");
 
 	//--------------------粉碎矿石--------------------//
-
 	/** 粉碎铜矿石 */
 	public static final String NAME_COPPER_CRUSH = "copper_crush";
 	public static final Item ITEM_COPPER_CRUSH = new MItem(NAME_COPPER_CRUSH, "crushedCopper");
@@ -92,9 +89,30 @@ public final class CommonItems {
 	/** 粉碎煤矿石 */
 	public static final String NAME_COAL_CRUSH = "coal_crush";
 	public static final Item ITEM_COAL_CRUSH = new MItem(NAME_COAL_CRUSH, "crushedCoal");
-
+	
+	//--------------------电子元件--------------------//
+	/** 电动机 */
+	public static final String NAME_MOTOR = "motor";
+	public static final Item ITEM_MOTOR = new MItem(NAME_MOTOR, "mi_motor");
+	
+	
+	//--------------------机械元件--------------------//
+	/** 铁棍 */
+	public static final String NAME_IRON_ROD = "iron_rod";
+	public static final Item ITEM_IRON_ROD = new MItem(NAME_IRON_ROD, "mi_iron_rod");
+	/** 铜棍 */
+	public static final String NAME_COPPER_ROD = "copper_rod";
+	public static final Item ITEM_COPPER_ROD = new MItem(NAME_COPPER_ROD, "mi_copper_rod");
+	/** 青铜棍 */
+	public static final String NAME_BRONZE_ROD = "bronze_rod";
+	public static final Item ITEM_BRONZE_ROD = new MItem(NAME_BRONZE_ROD, "mi_bronze_rod");
+	/** 机械刀片 */
+	public static final String NAME_BLADE = "blade";
+	public static final Item ITEM_BLADE = new MItem(NAME_BLADE, "mi_blade");
+	
 	//--------------------其他--------------------//
 
+	/** 普通物品的父类 */
 	private static final class MItem extends Item {
 
 		public MItem(String registryName) {

@@ -9,6 +9,7 @@ import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.craftguide.multi.OrderlyShape;
 import xyz.emptydreams.mi.api.craftguide.only.UnorderlyShapeOnly;
+import xyz.emptydreams.mi.api.craftguide.sol.ItemList;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
 import xyz.emptydreams.mi.blocks.common.OreBlock;
@@ -52,6 +53,10 @@ public final class CraftList {
 				createOneCraft(getInstance(OreBlock.NAME_TIN), ITEM_TIN_CRUSH),
 				createOneCraft(getInstance(OreBlock.NAME_COPPER), ITEM_COPPER_CRUSH)
 		);
+		ItemList input = new ItemList(2, 2);
+		input.set(0, 0, ItemElement.instance(COAL, 1));
+		ItemSet output = new ItemSet(ItemElement.instance(COAL, 1, 1));
+		SYNTHESIZER.registry(new OrderlyShape(input, output));
 	}
 
 	private static UnorderlyShapeOnly createOneCraft(Block input, Item output) {

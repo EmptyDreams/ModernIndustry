@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.blocks.tileentity.user;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -23,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static xyz.emptydreams.mi.blocks.base.MIProperty.HORIZONTAL;
+import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 
 /**
  * 粉碎机的TileEntity
@@ -67,6 +69,8 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 	private void updateShow() {
 		progressBar.setMax(getNeedTime());
 		progressBar.setNow(workingTime);
+		IBlockState old = world.getBlockState(pos);
+		WorldUtil.setBlockState(world, pos, old, old.withProperty(WORKING, workingTime > 0));
 	}
 
 	/** 更新内部数据 */

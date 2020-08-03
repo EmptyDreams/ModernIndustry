@@ -67,7 +67,7 @@ public class ItemSet implements ItemSol, Iterable<ItemElement> {
 		if (elements.size() != that.elements.size()) return false;
 		o : for (ItemElement element : elements) {
 			for (ItemElement inner : that.elements) {
-				if (element.contrastWith(inner)) continue o;
+				if (inner.contrastWith(element)) continue o;
 			}
 			return false;
 		}

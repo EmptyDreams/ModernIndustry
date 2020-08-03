@@ -3,6 +3,10 @@ package xyz.emptydreams.mi.api.gui.component;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.net.WaitList;
@@ -69,6 +73,32 @@ public class MSlot extends MComponent {
 	@Override
 	public void onRemoveFromGUI(Container con) {
 		con.inventorySlots.remove(index);
+	}
+	
+	/**
+	 * 可以自动调用{@link TileEntity#markDirty()}的SlotItemHandler
+	 */
+	public static class SlotHandler extends SlotItemHandler {
+		
+		private final TileEntity entity;
+		
+		public SlotHandler(IItemHandler itemHandler, TileEntity entity, int index) {
+			super(itemHandler, index, 0, 0);
+			this.entity = entity;
+		}
+		
+		@Override
+		public boolean canTakeStack(EntityPlayer playerIn) {
+			ItemStack stack = getStack();
+			return stack.getCount() < stack.getMaxStackSize() &&
+					playerIn.canPlayerEdit(entity.getPos(), playerIn.getHorizontalFacing(), stack);
+		}
+		
+		@Override
+		public void onSlotChanged() {
+			super.onSlotChanged();
+			entity.markDirty();
+		}
 	}
 	
 }

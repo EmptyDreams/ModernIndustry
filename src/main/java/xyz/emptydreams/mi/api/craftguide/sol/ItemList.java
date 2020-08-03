@@ -102,7 +102,7 @@ public class ItemList implements ItemSol, Iterable<ItemList.Node> {
 			ItemElement gt = that.get(node.getX(), node.getY());
 			if (gt == null) {
 				if (node.getElement() != null) return false;
-			} else if (gt.contrastWith(node.getElement())) return false;
+			} else if (!gt.contrastWith(node.getElement())) return false;
 		}
 		return true;
 	}
@@ -158,7 +158,7 @@ public class ItemList implements ItemSol, Iterable<ItemList.Node> {
 		ItemList copy = new ItemList(realWidth, realHeight);
 		for (int x = startX; x <= endX; ++x) {
 			for (int y = startY; y <= endY; ++y) {
-				copy.set(x, y, get(x, y));
+				copy.set(x - startX, y - startY, get(x, y));
 			}
 		}
 		return copy;

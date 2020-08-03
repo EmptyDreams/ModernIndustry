@@ -61,6 +61,7 @@ tile.mi.ele_furnace.name=电炉
 tile.mi.pulverizer.name=粉碎机
 tile.mi.ele_mfurnace.name=高温电炉
 tile.mi.red_stone_converter.name=红石能转换机
+tile.mi.electron_synthesizer.name=电子合成台
 #线缆
 tile.mi.wire_copper.name=铜线
 #TAB
@@ -69,5 +70,11 @@ itemGroup.mi_block=方块
 itemGroup.mi_tool=工具
 itemGroup.mi_debug=测试
 itemGroup.mi_wire=线缆
+#零件
+item.mi.blade.name=机械刀片
+item.mi.bronze_rod.name=青铜棍
+item.mi.iron_rod.name=铁棍
+item.mi.copper_rod.name=铜棍
+item.mi.motor.name=电动机
 #属性
 mi.property.poor_quality.name=劣质

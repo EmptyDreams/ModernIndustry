@@ -103,6 +103,7 @@ public final class ItemElement {
 	public boolean contrastWith(@Nullable ItemStack stack) {
 		if (stack == null) return false;
 		if (getItem() == stack.getItem() && getMeta() == stack.getMetadata()) return true;
+		if (getAmount() < stack.getCount()) return false;
 		int[] other = OreDictionary.getOreIDs(stack);
 		if (getDic().length <= other.length) {
 			for (int i : other) {
@@ -122,8 +123,10 @@ public final class ItemElement {
 	 * 只要矿物词典和meta相等同时该元素的数量大于等于目标元素的数量即返回true
 	 */
 	public boolean contrastWith(@Nullable ItemElement ele) {
-		if (ele == null || ele.meta != meta) return false;
 		if (ele == this) return true;
+		if (ele == null || ele.meta != meta) return false;
+		if (getAmount() < ele.getAmount()) return false;
+		if (ele.getItem() == getItem()) return true;
 		if (dic.length <= ele.dic.length) {
 			for (int i : ele.dic) {
 				if (ArrayUtils.contains(dic, i)) return true;

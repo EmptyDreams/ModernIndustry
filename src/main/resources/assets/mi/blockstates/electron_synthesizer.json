@@ -1,14 +1,22 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mi:machine",
-    "textures": { "front": "mi:blocks/machine/electron_synthesizer/src" }
+    "model": "cube_all",
+    "textures": {
+      "particle": "mi:blocks/machine/electron_synthesizer/src",
+      "down": "mi:blocks/machine/down",
+      "up": "mi:blocks/machine/electron_synthesizer/src",
+      "north": "mi:blocks/machine/side",
+      "east": "mi:blocks/machine/side",
+      "south": "mi:blocks/machine/side",
+      "west": "mi:blocks/machine/side"
+    }
   },
   "variants": {
     "inventory": [{ }],
     "working": {
       "true": {
-        "textures": { "front": "mi:blocks/machine/electron_synthesizer/working" }
+        "textures": { "up": "mi:blocks/machine/electron_synthesizer/working" }
       },
       "false": { }
     }

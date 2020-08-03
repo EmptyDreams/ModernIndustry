@@ -1,12 +1,12 @@
 package xyz.emptydreams.mi.api.utils;
 
+import net.minecraft.item.ItemStack;
+import xyz.emptydreams.mi.api.net.WaitList;
+
 import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
-
-import net.minecraft.item.ItemStack;
-import xyz.emptydreams.mi.api.net.WaitList;
 
 /**
  * 关于物品的一些常用操作的封装
@@ -56,7 +56,9 @@ public final class ItemUtil {
 		WaitList.checkNull(stacks, "stacks");
 		List<ItemStack> list = new LinkedList<>();
 		o : for (ItemStack stack : stacks) {
+			if (stack == null) continue;
 			for (ItemStack it : list) {
+				if (it == null) continue;
 				if (it.getMetadata() == stack.getMetadata() &&
 					it.getItem() == stack.getItem() &&
 						    it.getItemDamage() == stack.getItemDamage()) {
