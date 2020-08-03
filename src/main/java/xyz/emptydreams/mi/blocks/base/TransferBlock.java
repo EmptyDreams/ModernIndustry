@@ -22,6 +22,7 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.register.AutoRegister;
+import xyz.emptydreams.mi.register.OreDicRegister;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -29,8 +30,7 @@ import java.util.Random;
 
 /**
  * 普通电线
- * @author EmptyDremas
- * @version V1.0
+ * @author EmptyDreams
  */
 @SuppressWarnings("deprecation")
 abstract public class TransferBlock extends TEBlockBase {
@@ -61,7 +61,7 @@ abstract public class TransferBlock extends TEBlockBase {
 	 *
 	 * @param name 电线名称，协定规定线缆名称以"wire_"开头但是该构造函数不会自动添加"wire_"
 	 */
-	public TransferBlock(String name) {
+	public TransferBlock(String name, String... ores) {
 		super(Material.CIRCUITS);
 		setSoundType(SoundType.SNOW);
 		setHardness(0.35F);
@@ -71,6 +71,7 @@ abstract public class TransferBlock extends TEBlockBase {
 		setDefaultState(getDefaultState().withProperty(SOUTH, false)
 				.withProperty(NORTH, false).withProperty(WEST, false).withProperty(EAST, false)
 				.withProperty(DOWN, false).withProperty(UP, false));
+		OreDicRegister.registry(this, ores);
 		ITEM = new TransferItem(this, name);
 	}
 	

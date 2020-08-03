@@ -76,5 +76,13 @@ item.mi.bronze_rod.name=青铜棍
 item.mi.iron_rod.name=铁棍
 item.mi.copper_rod.name=铜棍
 item.mi.motor.name=电动机
+item.mi.circuit.name=电路板
+item.mi.coil.name=线圈
+item.mi.electromagnet.name=电磁铁
+item.mi.iron_plate.name=铁板
+item.mi.copper_plate.name=铜板
+item.mi.bronze_plate.name=青铜板
+item.mi.tin_plate.name=锡板
+item.mi.gold_plate.name=金板
 #属性
 mi.property.poor_quality.name=劣质

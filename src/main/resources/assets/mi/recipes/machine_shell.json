@@ -1,0 +1,13 @@
+{
+  "type": "forge:ore_shaped",
+  "group": "mi:machine_shell",
+  "result": { "item": "mi:machine_shell" },
+  "pattern": [
+    "###",
+    "# #",
+    "###"
+  ],
+  "key": {
+    "#": { "type": "forge:ore_dict", "ore": "plateIron" }
+  }
+}

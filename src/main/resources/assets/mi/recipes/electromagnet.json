@@ -1,0 +1,10 @@
+{
+  "type": "forge:ore_shaped",
+  "group": "mi:circuit",
+  "result": { "item": "mi:circuit" },
+  "pattern": [ "#@#" ],
+  "key": {
+    "#": { "type": "forge:ore_dict", "ore": "mi_coil" },
+    "@": { "type": "forge:ore_dict", "ore": "ingotIron" }
+  }
+}

@@ -2,13 +2,13 @@ package xyz.emptydreams.mi.register;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
+import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.blocks.common.OreBlock;
 
@@ -23,10 +23,12 @@ import java.util.Map;
 public final class OreDicRegister {
 
 	private static Map<ItemStack, String[]> itemMap = new HashMap<>();
+	private static Map<Block, String[]> blockMap = new HashMap<>();
 
 	/** @see #registry(ItemStack, String...)  */
 	public static void registry(Block block, String... names) {
-		registry(new ItemBlock(block), names);
+		WaitList.checkNull(block, "block");
+		blockMap.put(block, names);
 	}
 
 	/** @see #registry(ItemStack, String...)  */
@@ -42,16 +44,13 @@ public final class OreDicRegister {
 	 * @throws UnsupportedOperationException 如果注册矿物词典的事件已经被触发且传入的方块/物品没有注册到MC
 	 */
 	public static void registry(ItemStack stack, String... names) {
-		String[] src = null;
-		ItemStack end = stack;
-		Item item = stack.getItem();
-		//如果物品已经注册到MC中则直接注册否则写入到注册列表中
-		if (item.delegate.name() != null) {
+		if (itemMap == null) {
 			registryDic(stack, names);
 			return;
 		}
-		if (itemMap == null) throw new UnsupportedOperationException(
-				"列表注册的事件已经被触发，对于未注册到MC中的方块/物品，该方法已经不支持为其注册矿物词典");
+		String[] src = null;
+		ItemStack end = stack;
+		Item item = stack.getItem();
 		for (Map.Entry<ItemStack, String[]> entry : itemMap.entrySet()) {
 			if (entry.getKey().getItem() == item) {
 				src = entry.getValue();
@@ -66,6 +65,7 @@ public final class OreDicRegister {
 	@SubscribeEvent
 	public static void registryDic(CraftGuideRegistryEvent event) {
 		itemMap.forEach(OreDicRegister::registryDic);
+		blockMap.forEach(OreDicRegister::registryDic);
 		for (OreBlock block : OreBlock.LIST.values()) {
 			GameRegistry.addSmelting(block.getBlockItem(), block.getBurnOut().getDefaultInstance(), 0.5F);
 		}
@@ -73,6 +73,10 @@ public final class OreDicRegister {
 		itemMap = null;
 	}
 
+	private static void registryDic(Block block, String[] names) {
+		registryDic(new ItemStack(block), names);
+	}
+	
 	private static void registryDic(ItemStack stack, String[] names) {
 		for (String name : names) {
 			OreDictionary.registerOre(name, stack);

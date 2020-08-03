@@ -94,21 +94,47 @@ public final class CommonItems {
 	/** 电动机 */
 	public static final String NAME_MOTOR = "motor";
 	public static final Item ITEM_MOTOR = new MItem(NAME_MOTOR, "mi_motor");
+	/** 电路板 */
+	public static final String NAME_CIRCUIT = "circuit";
+	public static final Item ITEM_CIRCUIT = new MItem(NAME_CIRCUIT, "circuitBasic");
+	/** 线圈 */
+	public static final String NAME_COIL = "coil";
+	public static final Item ITEM_COIL = new MItem(NAME_COIL, "mi_coil");
+	/** 电磁铁 */
+	public static final String NAME_ELECTROMAGNET = "electromagnet";
+	public static final Item ITEM_ELECTROMAGNET = new MItem(NAME_ELECTROMAGNET, "mi_electromagnet");
 	
 	
 	//--------------------机械元件--------------------//
 	/** 铁棍 */
 	public static final String NAME_IRON_ROD = "iron_rod";
-	public static final Item ITEM_IRON_ROD = new MItem(NAME_IRON_ROD, "mi_iron_rod");
+	public static final Item ITEM_IRON_ROD = new MItem(NAME_IRON_ROD, "mi_ironRod");
 	/** 铜棍 */
 	public static final String NAME_COPPER_ROD = "copper_rod";
-	public static final Item ITEM_COPPER_ROD = new MItem(NAME_COPPER_ROD, "mi_copper_rod");
+	public static final Item ITEM_COPPER_ROD = new MItem(NAME_COPPER_ROD, "mi_copperRod");
 	/** 青铜棍 */
 	public static final String NAME_BRONZE_ROD = "bronze_rod";
-	public static final Item ITEM_BRONZE_ROD = new MItem(NAME_BRONZE_ROD, "mi_bronze_rod");
+	public static final Item ITEM_BRONZE_ROD = new MItem(NAME_BRONZE_ROD, "mi_bronzeRod");
 	/** 机械刀片 */
 	public static final String NAME_BLADE = "blade";
 	public static final Item ITEM_BLADE = new MItem(NAME_BLADE, "mi_blade");
+	
+	//--------------------板--------------------//
+	/** 铁板 */
+	public static final String NAME_IRON_PLATE = "iron_plate";
+	public static final Item ITEM_IRON_PLATE = new MItem(NAME_IRON_PLATE, "plateIron");
+	/** 铜板 */
+	public static final String NAME_COPPER_PLATE = "copper_plate";
+	public static final Item ITEM_COPPER_PLATE = new MItem(NAME_COPPER_PLATE, "plateCopper");
+	/** 锡板 */
+	public static final String NAME_TIN_PLATE = "tin_plate";
+	public static final Item ITEM_TIN_PLATE = new MItem(NAME_TIN_PLATE, "plateTin");
+	/** 青铜板 */
+	public static final String NAME_BRONZE_PLATE = "bronze_plate";
+	public static final Item ITEM_BRONZE_PLATE = new MItem(NAME_BRONZE_PLATE, "plateBronze");
+	/** 金板 */
+	public static final String NAME_GOLD_PLATE = "gold_plate";
+	public static final Item ITEM_GOLD_PLATE = new MItem(NAME_GOLD_PLATE, "plateGold");
 	
 	//--------------------其他--------------------//
 

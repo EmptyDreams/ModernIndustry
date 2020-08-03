@@ -10,10 +10,8 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -124,7 +122,6 @@ public final class RecipeRegister {
 
 	@SubscribeEvent
 	public static void registerRecipe(RegistryEvent.Register<IRecipe> event) {
-		MinecraftForge.EVENT_BUS.post(new CraftGuideRegistryEvent());
 		IForgeRegistry<IRecipe> registry = event.getRegistry();
 		HOES.forEach((hoe, material) -> registry.register(getRecipe(hoe, new Object[] { "##", " |", " |",
 															'#', material, '|', STICK })));
@@ -137,6 +134,7 @@ public final class RecipeRegister {
 		SWORDS.forEach((sword, material) -> registry.register(getRecipe(sword, new Object[] { "#", "#", "|",
 															'#', material, '|', STICK })));
 		ARMORS.forEach((armor, material) -> registryArmor(armor, material, registry));
+		MinecraftForge.EVENT_BUS.post(new CraftGuideRegistryEvent());
 	}
 
 	private static void registryArmor(ItemArmor armor, String material, IForgeRegistry<IRecipe> registry) {

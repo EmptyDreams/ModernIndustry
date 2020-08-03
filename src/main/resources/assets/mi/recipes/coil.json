@@ -1,0 +1,13 @@
+{
+  "type": "forge:ore_shaped",
+  "group": "mi:coil",
+  "result": { "item": "mi:coil" },
+  "pattern": [
+    "###",
+    "# #",
+    "###"
+  ],
+  "key": {
+    "#": { "type": "forge:ore_dict", "ore": "cable" }
+  }
+}
