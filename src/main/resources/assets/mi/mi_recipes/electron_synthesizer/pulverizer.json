@@ -1,0 +1,22 @@
+{
+  "type": "ItemList",
+  "result": {
+    "type": "ItemSet",
+    "pattern": "*"
+  },
+  "pattern": [
+    "#%%%#",
+    "#^^^#",
+    "=---=",
+    "#^^^#",
+    "#%%%#"
+  ],
+  "key": {
+    "#": { "item": "mi:machine_shell" },
+    "^": { "item": "mi:blade" },
+    "=": { "item": "mi:electromagnet" },
+    "-": { "item": "mi:iron_rod" },
+    "%": { "item": "mi:circuit" },
+    "*": { "item": "mi:pulverizer" }
+  }
+}

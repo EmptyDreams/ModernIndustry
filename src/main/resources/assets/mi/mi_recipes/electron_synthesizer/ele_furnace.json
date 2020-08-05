@@ -1,0 +1,21 @@
+{
+  "type": "ItemList",
+  "result": {
+    "type": "ItemSet",
+    "pattern": "*"
+  },
+  "pattern": [
+    "#===#",
+    "#   #",
+    "#   #",
+    "#=%=#",
+    "#%^%#"
+  ],
+  "key": {
+    "#": { "item": "mi:machine_shell" },
+    "=": { "item": "mi:iron_plate" },
+    "%": { "item": "mi:coil" },
+    "^": { "item": "mi:circuit" },
+    "*": { "item": "mi:ele_furnace" }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "ItemList",
+  "result": {
+    "type": "ItemSet",
+    "pattern": "&"
+  },
+  "pattern": [
+    "#% %#",
+    "#@$@#",
+    "#@$@#",
+    "#$ $#",
+    "#^^^#"
+  ],
+  "key": {
+    "#": { "item": "mi:machine_shell" },
+    "%": { "item": "mi:circuit" },
+    "@": { "item": "mi:coil" },
+    "$": { "item": "mi:iron_plate" },
+    "^": { "item": "minecraft:furnace" },
+    "&": { "item": "mi:fire_power" }
+  }
+}

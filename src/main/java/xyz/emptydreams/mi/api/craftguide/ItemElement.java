@@ -124,7 +124,10 @@ public final class ItemElement {
 	 */
 	public boolean contrastWith(@Nullable ItemElement ele) {
 		if (ele == this) return true;
-		if (ele == null || ele.meta != meta) return false;
+		if (ele == null) {
+			return isEmpty();
+		}
+		if (ele.meta != meta) return false;
 		if (getAmount() < ele.getAmount()) return false;
 		if (ele.getItem() == getItem()) return true;
 		if (dic.length <= ele.dic.length) {

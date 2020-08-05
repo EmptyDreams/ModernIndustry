@@ -1,0 +1,22 @@
+{
+  "type": "ItemList",
+  "result": {
+    "type": "ItemSet",
+    "pattern": "*"
+  },
+  "pattern": [
+    "#$$$#",
+    "#---#",
+    "#   #",
+    "#===#",
+    "#%=%#"
+  ],
+  "key": {
+    "#": { "item": "mi:machine_shell" },
+    "$": { "item": "mi:coil" },
+    "-": { "item": "minecraft:piston" },
+    "=": { "item": "mi:iron_plate" },
+    "%": { "item": "mi:circuit" },
+    "*": { "item": "mi:compressor" }
+  }
+}

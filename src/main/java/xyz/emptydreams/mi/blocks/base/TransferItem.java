@@ -78,7 +78,11 @@ public final class TransferItem extends ItemBlock {
 			        if (isLink.get()) cable.setCache(((EleSrcCable) te).getCache());
 		        } else if (te != null) {
 			        IEleTransfer transfer = EleWorker.getTransfer(te);
-			        if (transfer == null) cable.linkMachine(te);
+			        if (transfer == null) {
+			        	cable.setCache(new CableCache());
+			        	cable.linkMachine(te);
+			        	isLink.set(true);
+			        }
 			        else cable.linkWire(transfer, te);
 		        }
 	        }

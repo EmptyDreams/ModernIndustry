@@ -22,7 +22,6 @@ import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
 import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,12 +69,12 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 			ItemList input = calculateProduction();
 			ItemSet output = CraftList.SYNTHESIZER.apply(input.offset());
 			if (check(output)) {
-				workingTime = 0;
+				workingTime = Math.max(workingTime, 0);
 				maxTime = getMaxTime(input, output);
 				PROGRESS.setMax(maxTime);
 			}
 		}
-		if (!OUTPUT.isEmpty() && shrinkEnergy(4) && ++workingTime > maxTime) {
+		if (!OUTPUT.isEmpty() && shrinkEnergy(1) && ++workingTime > maxTime) {
 			export();
 			clear();
 		}
@@ -110,6 +109,7 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 			workingTime = -10;
 			return false;
 		}
+		OUTPUT.clear();
 		output.forEach(OUTPUT::add);
 		merge();
 		if (MERGE == null) {
@@ -144,11 +144,6 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 	/** 创建一个{@link SlotItemHandler} */
 	private SlotItemHandler createHandler(int index) {
 		return new SlotHandler(HANDLER, this, index) {
-			@Override
-			public boolean isItemValid(@Nonnull ItemStack stack) {
-				return CraftList.SYNTHESIZER.rawHas(stack) && super.isItemValid(stack);
-			}
-			
 			@Override
 			public void onSlotChanged() {
 				super.onSlotChanged();

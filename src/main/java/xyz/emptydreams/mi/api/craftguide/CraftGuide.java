@@ -54,7 +54,7 @@ public class CraftGuide<T extends IShape, R> {
 	}
 	
 	/**
-	 * 移除一个实例，可以用来清空合成表
+	 * 移除一个实例，<b>不可以用来清空合成表，因为该方法不会影响已经创建的实例</b>
 	 * @param name 注册名
 	 */
 	public static void deleteInstance(ResourceLocation name) {
@@ -84,11 +84,12 @@ public class CraftGuide<T extends IShape, R> {
 	private static final JsonParser PARSER = new JsonParser();
 	/**
 	 * 注册指定的JSON合成表，目前只支持MI
-	 * @param path json在recipes中的路径
+	 * @param path json在mi_recipes中的路径
 	 * @param builder 通过传入原料列表和产品构建一个合成表
 	 */
 	public void registry(String path, BiFunction<ItemSol, R, T> builder) {
-		InputStream stream = ModernIndustry.class.getResourceAsStream("../../../assets/mi/recipes/" + path);
+		InputStream stream =
+				ModernIndustry.class.getResourceAsStream("../../../assets/mi/mi_recipes/" + path);
 		JsonObject jsonObject = PARSER.parse(
 				new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
 		JsonObject resultInfo = jsonObject.getAsJsonObject("result");
@@ -101,6 +102,15 @@ public class CraftGuide<T extends IShape, R> {
 		}
 		ItemSol sol = JsonUtil.getItemSol(jsonObject, keyMap);
 		shapes.add(builder.apply(sol, result));
+	}
+	/**
+	 * 注册多个JSON合成表
+	 * @see #registry(String, BiFunction)
+	 */
+	public void registry(BiFunction<ItemSol, R, T> builder, String... paths) {
+		for (String path : paths) {
+			registry(path, builder);
+		}
 	}
 	
 	/**

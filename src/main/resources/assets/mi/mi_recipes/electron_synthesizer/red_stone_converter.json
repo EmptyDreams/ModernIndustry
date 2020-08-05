@@ -1,0 +1,23 @@
+{
+  "type": "ItemList",
+  "result": {
+    "type": "ItemSet",
+    "pattern": "*"
+  },
+  "pattern": [
+    "#   #",
+    "#===#",
+    "#^ ^#",
+    "#-|-#",
+    "#$$$#"
+  ],
+  "key": {
+    "#": { "item": "mi:machine_shell" },
+    "=": { "item": "mi:circuit" },
+    "^": { "item": "minecraft:comparator" },
+    "-": { "item": "minecraft:repeater" },
+    "|": { "item": "minecraft:redstone_torch" },
+    "$": { "item": "minecraft:redstone" },
+    "*": { "item": "mi:red_stone_converter" }
+  }
+}

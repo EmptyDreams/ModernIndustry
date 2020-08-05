@@ -31,8 +31,10 @@ public final class JsonUtil {
 		return ItemElement.instance(item, count, meta);
 	}
 	
+	/** 读取keyMap */
 	public static Char2ObjectMap<ItemElement> getKeyMap(JsonObject keyJson) {
 		Char2ObjectMap<ItemElement> keyMap = new Char2ObjectOpenHashMap<>();
+		keyMap.put(' ', ItemElement.empty());
 		for (Map.Entry<String, JsonElement> entry : keyJson.entrySet()) {
 			keyMap.put(entry.getKey().charAt(0), getElement(entry.getValue().getAsJsonObject()));
 		}
