@@ -3,7 +3,6 @@ package xyz.emptydreams.mi.api.craftguide;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
-import jdk.internal.util.xml.impl.ReaderUTF8;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import xyz.emptydreams.mi.ModernIndustry;
@@ -13,6 +12,8 @@ import xyz.emptydreams.mi.api.utils.JsonUtil;
 
 import javax.annotation.Nullable;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -88,7 +89,8 @@ public class CraftGuide<T extends IShape, R> {
 	 */
 	public void registry(String path, BiFunction<ItemSol, R, T> builder) {
 		InputStream stream = ModernIndustry.class.getResourceAsStream("../../../assets/mi/recipes/" + path);
-		JsonObject jsonObject = PARSER.parse(new ReaderUTF8(stream)).getAsJsonObject();
+		JsonObject jsonObject = PARSER.parse(
+				new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
 		JsonObject resultInfo = jsonObject.getAsJsonObject("result");
 		Char2ObjectMap<ItemElement> keyMap = JsonUtil.getKeyMap(jsonObject.getAsJsonObject("key"));
 		R result;
