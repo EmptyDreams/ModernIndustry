@@ -17,7 +17,7 @@ public final class WireManager {
 	
 	/** 铜质导线 */
 	public final static TransferBlock COPPER = new TransferBlock(
-						"wire_copper", "itemCopperCable", "cable") {
+						"wire_copper", "itemCopperCable", "mi_cable") {
 		@Nullable
 		@Override
 		public EleSrcCable createNewTileEntity(World worldIn, int meta) {

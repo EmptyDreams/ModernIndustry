@@ -1,6 +1,8 @@
 package xyz.emptydreams.mi.api.craftguide.sol;
 
 import com.google.common.collect.Sets;
+import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import net.minecraft.item.ItemStack;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
 
@@ -95,4 +97,15 @@ public class ItemSet implements ItemSol, Iterable<ItemElement> {
 	public Iterator<ItemElement> iterator() {
 		return elements.iterator();
 	}
+	
+	/** 解析JSON */
+	public static ItemSet parse(JsonObject json, Char2ObjectMap<ItemElement> keyMap) {
+		String input = json.get("pattern").getAsString();
+		ItemSet set = new ItemSet();
+		for (int i = 0; i < input.length(); ++i) {
+			set.add(keyMap.get(input.charAt(i)));
+		}
+		return set;
+	}
+	
 }

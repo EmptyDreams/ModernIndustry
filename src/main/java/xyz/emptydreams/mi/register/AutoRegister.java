@@ -21,8 +21,6 @@ import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 import xyz.emptydreams.mi.register.block.OreCreate;
 import xyz.emptydreams.mi.register.block.WorldCreater;
 import xyz.emptydreams.mi.register.item.AutoItemRegister;
-import xyz.emptydreams.mi.register.json.BlockJsonBuilder;
-import xyz.emptydreams.mi.register.json.ItemJsonBuilder;
 import xyz.emptydreams.mi.register.sorter.BlockSorter;
 import xyz.emptydreams.mi.register.sorter.ItemSorter;
 import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
@@ -102,8 +100,8 @@ public final class AutoRegister {
 			Blocks.autoRegister.sort(BlockSorter::compare);
 			Items.autoItems.sort(ItemSorter::compare);
 			
-			BlockJsonBuilder.build();
-			ItemJsonBuilder.build();
+			//BlockJsonBuilder.build();
+			//ItemJsonBuilder.build();
 		} catch (IllegalAccessException e) {
 			MISysInfo.err("需要的函数不可见，原因可能是：",
 							"用户提供的需初始化的类没有提供可视的构造函数");

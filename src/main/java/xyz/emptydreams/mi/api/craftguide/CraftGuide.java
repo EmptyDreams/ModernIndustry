@@ -1,17 +1,24 @@
 package xyz.emptydreams.mi.api.craftguide;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
+import jdk.internal.util.xml.impl.ReaderUTF8;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSol;
 import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.api.utils.JsonUtil;
 
 import javax.annotation.Nullable;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 /**
  * 合成表管理器
@@ -71,6 +78,27 @@ public class CraftGuide<T extends IShape, R> {
 	public void registry(T... shapes) {
 		WaitList.checkNull(shapes, "shapes");
 		Collections.addAll(this.shapes, shapes);
+	}
+	
+	private static final JsonParser PARSER = new JsonParser();
+	/**
+	 * 注册指定的JSON合成表，目前只支持MI
+	 * @param path json在recipes中的路径
+	 * @param builder 通过传入原料列表和产品构建一个合成表
+	 */
+	public void registry(String path, BiFunction<ItemSol, R, T> builder) {
+		InputStream stream = ModernIndustry.class.getResourceAsStream("../../../assets/mi/recipes/" + path);
+		JsonObject jsonObject = PARSER.parse(new ReaderUTF8(stream)).getAsJsonObject();
+		JsonObject resultInfo = jsonObject.getAsJsonObject("result");
+		Char2ObjectMap<ItemElement> keyMap = JsonUtil.getKeyMap(jsonObject.getAsJsonObject("key"));
+		R result;
+		if (resultInfo.get("type").getAsString().equals("ItemElement")) {
+			result = (R) JsonUtil.getElement(resultInfo);
+		} else {
+			result = (R) JsonUtil.getItemSol(resultInfo, keyMap);
+		}
+		ItemSol sol = JsonUtil.getItemSol(jsonObject, keyMap);
+		shapes.add(builder.apply(sol, result));
 	}
 	
 	/**

@@ -53,10 +53,7 @@ public final class CraftList {
 				createOneCraft(getInstance(OreBlock.NAME_TIN), ITEM_TIN_CRUSH),
 				createOneCraft(getInstance(OreBlock.NAME_COPPER), ITEM_COPPER_CRUSH)
 		);
-		ItemList input = new ItemList(2, 2);
-		input.set(0, 0, ItemElement.instance(COAL, 1));
-		ItemSet output = new ItemSet(ItemElement.instance(COAL, 1, 1));
-		SYNTHESIZER.registry(new OrderlyShape(input, output));
+		SYNTHESIZER.registry("electron_synthesizer/test.json", (sol, set) -> new OrderlyShape((ItemList) sol, set));
 	}
 
 	private static UnorderlyShapeOnly createOneCraft(Block input, Item output) {

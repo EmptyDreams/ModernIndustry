@@ -104,7 +104,6 @@ public final class CommonItems {
 	public static final String NAME_ELECTROMAGNET = "electromagnet";
 	public static final Item ITEM_ELECTROMAGNET = new MItem(NAME_ELECTROMAGNET, "mi_electromagnet");
 	
-	
 	//--------------------机械元件--------------------//
 	/** 铁棍 */
 	public static final String NAME_IRON_ROD = "iron_rod";

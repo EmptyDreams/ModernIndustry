@@ -1,5 +1,8 @@
 package xyz.emptydreams.mi.api.craftguide.sol;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import net.minecraft.item.ItemStack;
 import scala.actors.threadpool.Arrays;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
@@ -180,6 +183,28 @@ public class ItemList implements ItemSol, Iterable<ItemList.Node> {
 	public String toString() {
 		return "[width,height]=[" + getWidth() + "," +getHeight() +
 				"],elements=" + Arrays.toString(elements);
+	}
+	
+	/** 解析JSON */
+	public static ItemList parse(JsonObject json, Char2ObjectMap<ItemElement> keyMap) {
+		JsonArray pattern = json.getAsJsonArray("pattern");                     //合成表列表
+		String[] sols = new String[pattern.size()];                                         //存储原料列表
+		//解析原料列表
+		for (int i = 0; i < pattern.size(); i++) {
+			sols[i] = pattern.get(i).getAsString();
+		}
+		
+		//创建ItemList
+		int width = sols[0].length();
+		int height = sols.length;
+		ItemList list = new ItemList(width, height);
+		//填充
+		for (int y = 0; y < height; ++y) {
+			for (int x = 0; x < width; ++x) {
+				list.set(x, y, keyMap.get(sols[y].charAt(x)));
+			}
+		}
+		return list;
 	}
 	
 	@Override

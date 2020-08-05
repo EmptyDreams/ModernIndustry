@@ -8,6 +8,6 @@
     "###"
   ],
   "key": {
-    "#": { "type": "forge:ore_dict", "ore": "cable" }
+    "#": { "type": "forge:ore_dict", "ore": "mi_cable" }
   }
 }
