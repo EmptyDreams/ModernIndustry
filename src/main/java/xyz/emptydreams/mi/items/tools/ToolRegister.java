@@ -11,6 +11,8 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.tools.capabilities.PropertyCapability;
 import xyz.emptydreams.mi.api.tools.capabilities.PropertyProvider;
 import xyz.emptydreams.mi.api.tools.item.IToolMaterial;
@@ -150,6 +152,7 @@ public class ToolRegister {
 	}
 	
 	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
 	public static void addTooltip(ItemTooltipEvent event) {
 		if (event.getItemStack() == null) return;
 		PropertyManager manager = event.getItemStack().getCapability(PropertyCapability.PROPERTY, null);

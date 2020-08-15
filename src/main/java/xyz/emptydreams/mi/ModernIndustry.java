@@ -1,7 +1,5 @@
 package xyz.emptydreams.mi;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,8 +16,10 @@ import xyz.emptydreams.mi.blocks.machine.WireManager;
 import xyz.emptydreams.mi.items.common.CommonItems;
 import xyz.emptydreams.mi.items.tools.ToolRegister;
 import xyz.emptydreams.mi.proxy.CommonProxy;
-import xyz.emptydreams.mi.register.block.BlockRegister;
-import xyz.emptydreams.mi.register.item.ItemRegister;
+
+import javax.annotation.Nonnull;
+
+import static xyz.emptydreams.mi.api.utils.ItemUtil.newStack;
 
 @Mod(modid = ModernIndustry.MODID, name = ModernIndustry.NAME, version = ModernIndustry.VERSION)
 public final class ModernIndustry {
@@ -42,7 +42,7 @@ public final class ModernIndustry {
 		@Override
 		@Nonnull
 		public ItemStack getTabIconItem() {
-			return CommonItems.ITEM_COPPER.getDefaultInstance();
+			return newStack(CommonItems.ITEM_COPPER);
 		}
 	};
 	/** 物品栏-工具 */
@@ -50,7 +50,7 @@ public final class ModernIndustry {
 		@Override
 		@Nonnull
 		public ItemStack getTabIconItem() {
-			return ToolRegister.ITEM_COPPER_PICKAXE.getDefaultInstance();
+			return newStack(ToolRegister.ITEM_COPPER_PICKAXE);
 		}
 	};
 	/** 物品栏-方块 */
@@ -58,7 +58,7 @@ public final class ModernIndustry {
 		@Override
 		@Nonnull
 		public ItemStack getTabIconItem() {
-			return CommonBlocks.ORE_COPPER.getBlockItem().getDefaultInstance();
+			return newStack(CommonBlocks.ORE_COPPER.getBlockItem());
 		}
 	};
 	/** 物品栏-线缆 */
@@ -66,7 +66,7 @@ public final class ModernIndustry {
 		@Override
 		@Nonnull
 		public ItemStack getTabIconItem() {
-			return WireManager.COPPER.getBlockItem().getDefaultInstance();
+			return newStack(WireManager.COPPER.getBlockItem());
 		}
 	};
 	//内部物品，用于加载图片
@@ -75,7 +75,7 @@ public final class ModernIndustry {
 	public static final CreativeTabs TAB_DEBUG = new CreativeTabs(MODID + "_debug") {
 		@Override
 		@Nonnull
-		public ItemStack getTabIconItem() { return new ItemStack(DEBUG); }
+		public ItemStack getTabIconItem() { return newStack(DEBUG); }
 	};
 	
 	@EventHandler

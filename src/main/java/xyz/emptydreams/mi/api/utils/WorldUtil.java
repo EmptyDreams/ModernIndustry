@@ -101,7 +101,6 @@ public final class WorldUtil {
 	}
 
 	/** 客户端移除列表 */
-	@SideOnly(Side.CLIENT)
 	private static final Map<World, List<TileEntity>> CLIENT_REMOVES = new LinkedHashMap<>();
 	/** 服务端移除列表 */
 	private static final Map<World, List<TileEntity>> SERVER_REMOVES = new LinkedHashMap<>();

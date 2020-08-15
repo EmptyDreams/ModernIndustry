@@ -11,8 +11,6 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
@@ -307,8 +305,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	}
 	
 	//--------------------常规--------------------//
-
-	@SideOnly(Side.CLIENT)
+	
 	private static final CableCache CLIENT_CACHE = new CableCache();
 	@Override
 	public void update() {

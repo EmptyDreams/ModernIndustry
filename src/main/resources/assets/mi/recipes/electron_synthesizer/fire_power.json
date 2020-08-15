@@ -1,7 +1,7 @@
 {
-  "type": "ItemList",
+  "type": "mi:orderly_shape",
+  "group": "mi:electron_synthesizer",
   "result": {
-    "type": "ItemSet",
     "pattern": "&"
   },
   "pattern": [

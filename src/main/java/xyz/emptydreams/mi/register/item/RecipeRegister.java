@@ -139,7 +139,7 @@ public final class RecipeRegister {
 
 	private static void registryArmor(ItemArmor armor, String material, IForgeRegistry<IRecipe> registry) {
 		ResourceLocation registryName = armor.getRegistryName();
-		switch (armor.getEquipmentSlot()) {
+		switch (armor.armorType) {
 			case FEET:
 				registry.register(getRecipe(armor, new Object[]{ "# #", "# #",
 						'#', material}));

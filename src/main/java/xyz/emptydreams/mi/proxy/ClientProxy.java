@@ -1,11 +1,12 @@
 package xyz.emptydreams.mi.proxy;
 
-import javax.annotation.Nonnull;
-
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import xyz.emptydreams.mi.register.AutoRegister;
+
+import javax.annotation.Nonnull;
 
 public class ClientProxy extends CommonProxy {
 	
@@ -19,6 +20,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void preInit(@Nonnull FMLPreInitializationEvent event){
 		ASM = event.getAsmData();
+		AutoRegister.init();
 		super.preInit(event);
 	}
 

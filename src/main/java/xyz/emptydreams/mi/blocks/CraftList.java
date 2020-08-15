@@ -9,14 +9,13 @@ import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.craftguide.multi.OrderlyShape;
 import xyz.emptydreams.mi.api.craftguide.only.UnorderlyShapeOnly;
-import xyz.emptydreams.mi.api.craftguide.sol.ItemList;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
-import xyz.emptydreams.mi.api.craftguide.sol.ItemSol;
 import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
 import xyz.emptydreams.mi.blocks.common.OreBlock;
 
 import static net.minecraft.init.Blocks.*;
 import static net.minecraft.init.Items.COAL;
+import static xyz.emptydreams.mi.api.utils.ItemUtil.newStack;
 import static xyz.emptydreams.mi.blocks.common.OreBlock.getInstance;
 import static xyz.emptydreams.mi.items.common.CommonItems.*;
 
@@ -43,8 +42,8 @@ public final class CraftList {
 	@SubscribeEvent
 	public static void registryCraft(CraftGuideRegistryEvent event) {
 		FIRE_POWER.registry(
-				createOneCraft(new ItemStack(COAL), ITEM_COAL_BURN_POWDER.getDefaultInstance()),
-				createOneCraft(new ItemStack(COAL, 1, 1), ITEM_COAL_BURN_POWDER.getDefaultInstance())
+				createOneCraft(new ItemStack(COAL), newStack(ITEM_COAL_BURN_POWDER)),
+				createOneCraft(new ItemStack(COAL, 1, 1), newStack(ITEM_COAL_BURN_POWDER))
 		);
 		PULVERIZER.registry(
 				createOneCraft(COAL_ORE, ITEM_COAL_CRUSH),
@@ -54,22 +53,6 @@ public final class CraftList {
 				createOneCraft(getInstance(OreBlock.NAME_TIN), ITEM_TIN_CRUSH),
 				createOneCraft(getInstance(OreBlock.NAME_COPPER), ITEM_COPPER_CRUSH)
 		);
-		registrySynthesizer();
-	}
-
-	private static void registrySynthesizer() {
-		SYNTHESIZER.registry(CraftList::toOrderlyShape,
-				 "electron_synthesizer/fire_power.json",
-						"electron_synthesizer/pulverizer.json",
-						"electron_synthesizer/red_stone_converter.json",
-						"electron_synthesizer/ele_mfurnace.json",
-						"electron_synthesizer/ele_furnace.json",
-						"electron_synthesizer/compressor.json"
-		);
-	}
-	
-	private static OrderlyShape toOrderlyShape(ItemSol sol, ItemSet output) {
-		return new OrderlyShape((ItemList) sol, output);
 	}
 	
 	private static UnorderlyShapeOnly createOneCraft(Block input, Item output) {

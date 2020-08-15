@@ -80,7 +80,7 @@ public final class ItemElement {
 	private ItemElement(Item item, int amount, int meta) {
 		element = item;
 		this.amount = amount;
-		ItemStack stack = item.getDefaultInstance();
+		ItemStack stack = new ItemStack(item, amount, meta);
 		dic = stack.isEmpty() ? new int[0] : OreDictionary.getOreIDs(stack);
 		this.meta = meta;
 	}

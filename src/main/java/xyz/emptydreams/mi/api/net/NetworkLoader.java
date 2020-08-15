@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.net.guinet.GUIMessage;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 import static net.minecraftforge.fml.relauncher.Side.SERVER;
@@ -23,9 +24,11 @@ public final class NetworkLoader {
 	private int nextID = -1;
 	 
 	public NetworkLoader() {
-		registerMessage(MessageBase.ClientHandler.class, MessageBase.class, CLIENT);
-		registerMessage(GUIMessage.ClientHandler.class, GUIMessage.class, CLIENT);
 		registerMessage(MessageBase.ServiceHandler.class, MessageBase.class, SERVER);
+		if (WorldUtil.isClient(null)) {
+			registerMessage(MessageBase.ClientHandler.class, MessageBase.class, CLIENT);
+			registerMessage(GUIMessage.ClientHandler.class, GUIMessage.class, CLIENT);
+		}
 	}
 	
 	private <REQ extends IMessage, REPLY extends IMessage> void registerMessage(

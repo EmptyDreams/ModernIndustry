@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.utils;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import xyz.emptydreams.mi.api.net.WaitList;
 
@@ -13,7 +14,15 @@ import java.util.function.Function;
  * @author EmptyDreams
  */
 public final class ItemUtil {
-
+	
+	/**
+	 * 创建一个新的{@link ItemStack}对象，用于在服务端替代{@link Item#getDefaultInstance()}
+	 * @param item 物品
+	 */
+	public static ItemStack newStack(Item item) {
+		return new ItemStack(item);
+	}
+	
 	/**
 	 * 将指定的Stack传入到指定的Stack中.<br>
 	 * 若stack可以完全容纳下input，则正常计算，否则放弃计算，

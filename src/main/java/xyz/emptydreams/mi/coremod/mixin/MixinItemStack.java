@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import xyz.emptydreams.mi.api.event.ItemDamageEvent;
 
 /**
+ * 拓展ItemStack的功能
  * @author EmptyDreams
- * @version V1.0
  */
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack {

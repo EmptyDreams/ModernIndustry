@@ -15,6 +15,8 @@ import xyz.emptydreams.mi.blocks.common.OreBlock;
 import java.util.HashMap;
 import java.util.Map;
 
+import static xyz.emptydreams.mi.api.utils.ItemUtil.newStack;
+
 /**
  * 用于自动注册矿物词典
  * @author EmptyDreams
@@ -33,7 +35,7 @@ public final class OreDicRegister {
 
 	/** @see #registry(ItemStack, String...)  */
 	public static void registry(Item item, String... names) {
-		registry(item.getDefaultInstance(), names);
+		registry(new ItemStack(item), names);
 	}
 
 	/**
@@ -67,7 +69,7 @@ public final class OreDicRegister {
 		itemMap.forEach(OreDicRegister::registryDic);
 		blockMap.forEach(OreDicRegister::registryDic);
 		for (OreBlock block : OreBlock.LIST.values()) {
-			GameRegistry.addSmelting(block.getBlockItem(), block.getBurnOut().getDefaultInstance(), 0.5F);
+			GameRegistry.addSmelting(block.getBlockItem(), newStack(block.getBurnOut()), 0.5F);
 		}
 		//使itemMap得以被GC回收
 		itemMap = null;
