@@ -4,7 +4,6 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -13,6 +12,7 @@ import xyz.emptydreams.mi.api.gui.IFrame;
 import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.gui.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.component.IComponent;
+import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.net.WaitList;
 
 import javax.annotation.Nonnull;
@@ -27,16 +27,19 @@ import java.util.NoSuchElementException;
  * 静态GUI，注意：该类只能用于静态GUI的显示
  * @author EmptyDreams
  */
+@SuppressWarnings("unused")
 @SideOnly(Side.CLIENT)
-public class MIStaticFrameClient extends GuiContainer implements IFrame {
+public class StaticFrameClient extends GuiContainer implements IFrame {
 	
 	/** GUI背景的资源名称 */
 	public static final String SOURCE_NAME = "background";
+	/** 玩家背包的本地名称 */
+	private static final String INVENTORY = I18n.format("container.inventory");
 	
 	/** 是否绘制默认背景颜色 */
 	private boolean isPaintBackGround = true;
 	/** 标题 */
-	private String title = null;
+	private String title;
 	/** 标题位置 */
 	private Point titleLocation = null;
 	/** 标题模式 */
@@ -48,10 +51,23 @@ public class MIStaticFrameClient extends GuiContainer implements IFrame {
 	/** 资源名称 */
 	private String name;
 	
-	public MIStaticFrameClient(MIFrame inventorySlotsIn) {
+	public StaticFrameClient(MIFrame inventorySlotsIn, String title) {
 		super(inventorySlotsIn);
+		WaitList.checkNull(title, "title");
 		xSize = inventorySlotsIn.getWidth();
 		ySize = inventorySlotsIn.getHeight();
+		this.title = title;
+		setResourceName(ModernIndustry.MODID, title);
+		if (inventorySlotsIn.hasBackpack()) {
+			StringComponent shower = new StringComponent(INVENTORY);
+			shower.setLocation(inventorySlotsIn.getBackpackX(), inventorySlotsIn.getBackpackY() - 10);
+			add(shower, null);
+		}
+	}
+	
+	/** 设置GUI使用的资源名称，默认使用"<b>{@link ModernIndustry#MODID}:{@link #getTitle()}</b>" */
+	public void setResourceName(String modid, String name) {
+		this.name = modid + ":" + name;
 	}
 	
 	/**
@@ -61,8 +77,7 @@ public class MIStaticFrameClient extends GuiContainer implements IFrame {
 	@SuppressWarnings("SameParameterValue")
 	private void init(boolean isReset) {
 		if (title == null) throw new NoSuchElementException("GUI的名称不存在！");
-		ResourceLocation location = new ResourceLocation(ModernIndustry.MODID, title);
-		name = location.toString();
+		if (name == null) throw new NoSuchElementException("资源名称不存在！");
 		RuntimeTexture texture = RuntimeTexture.getInstance(name);
 		if (texture == null || isReset) {
 			BufferedImage image = new BufferedImage(xSize, ySize, 6);
@@ -97,7 +112,6 @@ public class MIStaticFrameClient extends GuiContainer implements IFrame {
 	 * 设置标题
 	 * @param text 该文本内部通过{@link I18n}转化
 	 */
-	@Override
 	public void setTitle(String text) {
 		WaitList.checkNull(text, "text");
 		title = text;
@@ -108,7 +122,6 @@ public class MIStaticFrameClient extends GuiContainer implements IFrame {
 	@Override
 	public int getHeight() { return ySize; }
 	/** 获取标题 */
-	@Override
 	public String getTitle() { return title; }
 	
 	/**
@@ -126,8 +139,8 @@ public class MIStaticFrameClient extends GuiContainer implements IFrame {
 	 */
 	@Nullable
 	public Point getTitleLocation() { return titleLocation; }
-
-	@Override
+	
+	/** 设置标题显示模式 */
 	public void setTitleModel(TitleModelEnum model) {
 		WaitList.checkNull(model, "model");
 		this.titleModel = model;
@@ -197,8 +210,14 @@ public class MIStaticFrameClient extends GuiContainer implements IFrame {
 		}
 	}
 	
-	public static void drawBackground(Graphics g, int width, int height) {
+	public void drawBackground(Graphics g, int width, int height) {
 		g.drawImage(ImageData.getImage(SOURCE_NAME, width, height), 0, 0, null);
+		if (!(inventorySlots instanceof MIFrame)) return;
+		MIFrame frame = (MIFrame) inventorySlots;
+		if (frame.hasBackpack()) {
+			g.drawImage(ImageData.getImage("backpack"),
+					frame.getBackpackX(), frame.getBackpackY(), null);
+		}
 	}
 
 	@Override

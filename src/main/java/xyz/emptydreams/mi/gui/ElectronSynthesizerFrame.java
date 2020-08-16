@@ -3,14 +3,11 @@ package xyz.emptydreams.mi.gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.GuiLoader;
 import xyz.emptydreams.mi.api.gui.IContainerCreater;
 import xyz.emptydreams.mi.api.gui.IFrame;
 import xyz.emptydreams.mi.api.gui.MIFrame;
-import xyz.emptydreams.mi.api.gui.TitleModelEnum;
-import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
-import xyz.emptydreams.mi.api.gui.component.MBackpack;
+import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.group.Group;
 import xyz.emptydreams.mi.api.gui.group.Panels;
 import xyz.emptydreams.mi.blocks.tileentity.user.EUElectronSynthesizer;
@@ -29,17 +26,17 @@ public class ElectronSynthesizerFrame {
 		@Nonnull
 		@Override
 		public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(ModernIndustry.MODID, NAME, 230, 210);
+			MIFrame frame = new MIFrame(230, 210, player, 34, 126);
 			init(frame, world, pos, player);
 			return frame;
 		}
 		
 		@Nonnull
 		@Override
-		public MIStaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(ModernIndustry.MODID, NAME, 230, 210);
+		public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
+			MIFrame frame = new MIFrame(230, 210, player, 34, 126);
 			init(frame, world, pos, player);
-			MIStaticFrameClient client = new MIStaticFrameClient(frame);
+			StaticFrameClient client = new StaticFrameClient(frame, LOCATION_NAME);
 			init(client, world, pos, player);
 			return client;
 		}
@@ -47,11 +44,8 @@ public class ElectronSynthesizerFrame {
 		private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
 			EUElectronSynthesizer synthesizer = (EUElectronSynthesizer) world.getTileEntity(pos);
 			frame.init(world);
-			frame.setTitle(LOCATION_NAME);
-			frame.setTitleModel(TitleModelEnum.CENTRAL);
 			
 			Group backpack = new Group(0, 125, 230, 0, Panels::horizontalCenter);
-			backpack.add(new MBackpack());
 			Group group = new Group(0, 18, 230, 0, Panels::horizontalCenter);
 			group.adds(synthesizer.getInput(), synthesizer.getProgress(), synthesizer.getOutput());
 			

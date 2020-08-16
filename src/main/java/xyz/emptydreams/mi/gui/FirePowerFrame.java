@@ -3,14 +3,11 @@ package xyz.emptydreams.mi.gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.GuiLoader;
 import xyz.emptydreams.mi.api.gui.IContainerCreater;
 import xyz.emptydreams.mi.api.gui.IFrame;
 import xyz.emptydreams.mi.api.gui.MIFrame;
-import xyz.emptydreams.mi.api.gui.TitleModelEnum;
-import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
-import xyz.emptydreams.mi.api.gui.component.MBackpack;
+import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
 import xyz.emptydreams.mi.api.gui.group.Group;
 import xyz.emptydreams.mi.api.gui.group.Panels;
@@ -31,17 +28,17 @@ public final class FirePowerFrame {
 		@Nonnull
 		@Override
 		public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(ModernIndustry.MODID, NAME, 176, 156);
+			MIFrame frame = new MIFrame(176, 156, player, 6, 72);
 			init(frame, world, pos, player);
 			return frame;
 		}
 		
 		@Nonnull
 		@Override
-		public MIStaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(ModernIndustry.MODID, NAME, 176, 156);
+		public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
+			MIFrame frame = new MIFrame(176, 156, player, 6, 72);
 			init(frame, world, pos, player);
-			MIStaticFrameClient client = new MIStaticFrameClient(frame);
+			StaticFrameClient client = new StaticFrameClient(frame, LOCATION_NAME);
 			init(client, world, pos, player);
 			return client;
 		}
@@ -49,9 +46,6 @@ public final class FirePowerFrame {
 		private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
 			EMFirePower firepower = (EMFirePower) world.getTileEntity(pos);
 			frame.init(world);
-			frame.setTitle(LOCATION_NAME);
-			frame.setTitleModel(TitleModelEnum.CENTRAL);
-			frame.add(new MBackpack(6, 72), player);
 
 			Group up = new Group(0, 0, frame.getWidth(), 18, Panels::horizontalCenter);
 			Group group = new Group(0, 12, 0, 70, Panels::verticalCenter);

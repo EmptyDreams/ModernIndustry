@@ -31,7 +31,7 @@ public class StringComponent extends MComponent {
 	@Override
 	public void realTimePaint(GuiContainer gui) {
 		gui.mc.fontRenderer.drawString(getString(),
-				getX() + gui.getGuiLeft(), getY() + gui.getGuiLeft(), getColor());
+				getX() + gui.getGuiLeft(), getY() + gui.getGuiTop(), getColor());
 	}
 
 	/** 设置字符串颜色 */

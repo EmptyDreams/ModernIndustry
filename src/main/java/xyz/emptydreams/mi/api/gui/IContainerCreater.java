@@ -1,17 +1,18 @@
 package xyz.emptydreams.mi.api.gui;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.gui.client.MIStaticFrameClient;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
+
+import javax.annotation.Nonnull;
 
 /**
  * {@link GuiLoader}同过该类为方块创建UI对象
  *
  * @author EmptyDreams
- * @version V1.0
  */
 public interface IContainerCreater {
 	
@@ -33,6 +34,7 @@ public interface IContainerCreater {
 	 * @return 一个完成创建的完整对象
 	 */
 	@Nonnull
-	MIStaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos);
+	@SideOnly(Side.CLIENT)
+	StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos);
 	
 }
