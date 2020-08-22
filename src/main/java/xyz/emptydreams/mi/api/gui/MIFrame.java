@@ -28,6 +28,11 @@ public class MIFrame extends Container implements IFrame {
 	/** 玩家背包的位置 */
 	private final int backpackX, backpackY;
 	
+	/**
+	 * 通过该构造函数创建一个指定尺寸的UI，不包含玩家背包
+	 * @param width GUI宽度
+	 * @param height GUI高度
+	 */
 	public MIFrame(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -36,35 +41,45 @@ public class MIFrame extends Container implements IFrame {
 	}
 	
 	/**
-	 * 通过该构造函数创建一个指定尺寸的UI并且包含玩家背包
-	 * @param width 宽度
-	 * @param height 高度
+	 * 通过该构造函数创建一个指定尺寸的UI并且包含玩家背包，背包坐标根据尺寸自动计算，放置在GUI下方
+	 * @param width GUI宽度
+	 * @param height GUI高度
 	 * @param player 玩家对象
 	 */
+	public MIFrame(int width, int height, EntityPlayer player) {
+		this(width, height, player, (width - 162) / 2, height - 76 - 6);
+	}
+	
+	/**
+	 * 通过该构造函数创建一个指定尺寸的UI并且包含玩家背包
+	 * @param width GUI宽度
+	 * @param height GUI高度
+	 * @param player 玩家对象
+	 * @param backpackX 背包坐标
+	 * @param backpackY 背包坐标
+	 */
 	public MIFrame(int width, int height, EntityPlayer player, int backpackX, int backpackY) {
+		WaitList.checkNull(player, "player");
 		this.width = width;
 		this.height = height;
 		this.backpackX = backpackX;
 		this.backpackY = backpackY;
-		if (player != null) {
-			hasBackpack = true;
-			Slot slot;
-			for (int i = 0; i < 3; ++i) {
-				for (int k = 0; k < 9; ++k) {
-					slot = new Slot(player.inventory, k + i * 9 + 9,
-							backpackX + k * 18 + 1, backpackY + i * 18 + 1);
-					addSlotToContainer(slot);
-				}
-			}
+		hasBackpack = true;
+		for (int i = 0; i < 3; ++i) {
 			for (int k = 0; k < 9; ++k) {
-				slot = new Slot(player.inventory,
-						k, backpackX + k * 18 + 1, backpackY + 59);
+				Slot slot = new Slot(player.inventory, k + i * 9 + 9,
+						backpackX + k * 18 + 1, backpackY + i * 18 + 1);
 				addSlotToContainer(slot);
 			}
-			StringComponent shower = new StringComponent();
-			shower.setLocation(backpackX, backpackY - 10);
-			add(shower, player);
-		} else hasBackpack = false;
+		}
+		for (int k = 0; k < 9; ++k) {
+			Slot slot = new Slot(player.inventory,
+					k, backpackX + k * 18 + 1, backpackY + 59);
+			addSlotToContainer(slot);
+		}
+		StringComponent shower = new StringComponent();
+		shower.setLocation(backpackX, backpackY - 10);
+		add(shower, player);
 	}
 	
 	/**

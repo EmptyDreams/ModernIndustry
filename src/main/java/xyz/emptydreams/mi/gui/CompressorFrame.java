@@ -8,6 +8,7 @@ import xyz.emptydreams.mi.api.gui.IContainerCreater;
 import xyz.emptydreams.mi.api.gui.IFrame;
 import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
+import xyz.emptydreams.mi.api.gui.component.ButtonComponent;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
 import xyz.emptydreams.mi.api.gui.group.Group;
 import xyz.emptydreams.mi.api.gui.group.Panels;
@@ -29,7 +30,7 @@ public final class CompressorFrame {
 		@Nonnull
 		@Override
 		public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(176, 166, player, 8, 84);
+			MIFrame frame = new MIFrame(176, 166, player);
 			init(frame, world, pos, player);
 			return frame;
 		}
@@ -37,7 +38,7 @@ public final class CompressorFrame {
 		@Nonnull
 		@Override
 		public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(176, 166, player, 8, 84);
+			MIFrame frame = new MIFrame(176, 166, player);
 			init(frame, world, pos, player);
 			StaticFrameClient client = new StaticFrameClient(frame, LOCATION_NAME);
 			init(client, world, pos, player);
@@ -50,6 +51,7 @@ public final class CompressorFrame {
 
 			Group fir = new Group(0, 0, 18, 54, Panels::verticalCenter);
 			Group group = new Group(0, 15, frame.getWidth(), 0, Panels::horizontalCenter);
+			ButtonComponent button = new ButtonComponent(50, 20);
 			group.setMaxDistance(10);
 
 			fir.adds(new MSlot(compressor.getSlot(0)), new MSlot(compressor.getSlot(1)));

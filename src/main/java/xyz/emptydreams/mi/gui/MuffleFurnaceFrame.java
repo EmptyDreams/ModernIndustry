@@ -28,7 +28,7 @@ public class MuffleFurnaceFrame {
 		@Nonnull
 		@Override
 		public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(176, 166, player, 7, 83);
+			MIFrame frame = new MIFrame(176, 166, player);
 			init(frame, world, pos, player);
 			return frame;
 		}
@@ -36,7 +36,7 @@ public class MuffleFurnaceFrame {
 		@Nonnull
 		@Override
 		public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(176, 166, player, 7, 83);
+			MIFrame frame = new MIFrame(176, 166, player);
 			init(frame, world, pos, player);
 			StaticFrameClient client = new StaticFrameClient(frame, LOCATION_NAME);
 			init(client, world, pos, player);

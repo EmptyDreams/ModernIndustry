@@ -6,9 +6,12 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.gui.listener.IListener;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * 所有控件的接口
@@ -92,5 +95,33 @@ public interface IComponent {
 	
 	/** 设置code起点，该方法由GUI类调用 */
 	void setCodeStart(int code);
+	
+	/**
+	 * 获取GUI监听的事件列表
+	 * @return 返回值需经过保护性拷贝
+	 */
+	Object getListeners();
+	
+	/** 触发指定事件 */
+	void activateListener(Consumer<IListener> consumer);
+	
+	/**
+	 * 注册指定事件
+	 * @return 是否注册成功
+	 */
+	boolean registryListener(IListener listener);
+	
+	/**
+	 * 删除满足指定条件的事件
+	 * @param test 指定条件
+	 * @return 是否移除成功
+	 */
+	boolean removeListenerIf(Predicate<IListener> test);
+	
+	/**
+	 * 移除指定事件
+	 * @return 是否移除成功
+	 */
+	boolean removeListener(IListener listener);
 	
 }

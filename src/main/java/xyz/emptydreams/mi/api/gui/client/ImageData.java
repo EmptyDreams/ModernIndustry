@@ -6,7 +6,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.component.IProgressBar;
-import xyz.emptydreams.mi.api.utils.wrapper.Wrapper;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -36,7 +35,7 @@ public final class ImageData {
 		BufferedImage image = ImageIO.read(
 				Minecraft.getMinecraft().getResourceManager().getResource(location).getInputStream());
 		for (Node value : resourceInfo.values()) {
-			value.wrapper.set(image.getSubimage(value.x, value.y, value.w, value.h));
+			value.image = image.getSubimage(value.x, value.y, value.w, value.h);
 		}
 	}
 	
@@ -50,11 +49,10 @@ public final class ImageData {
 	public static Image getImage(String name, int width, int height) {
 		Node node = resourceInfo.getOrDefault(name, null);
 		if (node == null) return null;
-		BufferedImage image = node.wrapper.get();
-		if (image.getWidth(null) == width && image.getHeight(null) == height) {
-			return image;
+		if (node.image.getWidth(null) == width && node.image.getHeight(null) == height) {
+			return node.image;
 		}
-		return image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
+		return node.image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
 	}
 	
 	/**
@@ -65,17 +63,18 @@ public final class ImageData {
 	public static BufferedImage getImage(String name) {
 		Node node = resourceInfo.getOrDefault(name, null);
 		if (node == null) return null;
-		return node.wrapper.get();
+		return node.image;
 	}
 	
 	/** 存储资源 */
 	private final static Map<String, Node> resourceInfo = new HashMap<String, Node>() {
 		{
-			put("background",   new Node(new Wrapper<>(), 162, 0, 256, 256));
-			put("slot",         new Node(new Wrapper<>(), 0, 76, 26, 26));
-			put("backpack",     new Node(new Wrapper<>(), 0, 0, 162, 76));
-			put(IProgressBar.RESOURCE_NAME,
-						new Node(new Wrapper<>(), 0, 102, 111, 74));
+			put("background",                   new Node(162, 0, 256, 256));
+			put("slot",                         new Node(0, 76, 26, 26));
+			put("backpack",                     new Node(0, 0, 162, 76));
+			put(IProgressBar.RESOURCE_NAME,     new Node(0, 102, 111, 74));
+			put("button",                       new Node(162, 256, 200, 20));
+			put("buttonClicked",                new Node(162, 276, 200, 20));
 		}
 	};
 	
@@ -89,11 +88,10 @@ public final class ImageData {
 	
 	private final static class Node {
 		
-		Wrapper<BufferedImage> wrapper;
+		BufferedImage image;
 		int x, y, w, h;
 		
-		Node(Wrapper<BufferedImage> wrapper, int x, int y, int width, int height) {
-			this.wrapper = wrapper;
+		Node(int x, int y, int width, int height) {
 			this.x = x;
 			this.y = y;
 			w = width;

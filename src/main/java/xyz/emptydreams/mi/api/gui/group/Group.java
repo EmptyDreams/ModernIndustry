@@ -136,8 +136,10 @@ public class Group extends MComponent implements Iterable<IComponent> {
 
 	@SideOnly(Side.CLIENT)
 	private void paintHelper(Graphics g, IComponent component) {
-		component.paint(g.create(component.getX() - getX(), component.getY() - getY(),
-				component.getWidth(), component.getHeight()));
+		Graphics graphics = g.create(component.getX() - getX(), component.getY() - getY(),
+				component.getWidth(), component.getHeight());
+		component.paint(graphics);
+		graphics.dispose();
 	}
 
 	@SideOnly(Side.CLIENT)

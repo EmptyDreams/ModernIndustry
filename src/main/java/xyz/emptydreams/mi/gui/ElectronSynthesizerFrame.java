@@ -26,7 +26,7 @@ public class ElectronSynthesizerFrame {
 		@Nonnull
 		@Override
 		public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(230, 210, player, 34, 126);
+			MIFrame frame = new MIFrame(230, 210, player);
 			init(frame, world, pos, player);
 			return frame;
 		}
@@ -34,7 +34,7 @@ public class ElectronSynthesizerFrame {
 		@Nonnull
 		@Override
 		public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(230, 210, player, 34, 126);
+			MIFrame frame = new MIFrame(230, 210, player);
 			init(frame, world, pos, player);
 			StaticFrameClient client = new StaticFrameClient(frame, LOCATION_NAME);
 			init(client, world, pos, player);

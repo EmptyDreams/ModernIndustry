@@ -19,9 +19,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.NoSuchElementException;
+
+import static xyz.emptydreams.mi.api.gui.listener.mouse.MouseListenerTrigger.*;
 
 /**
  * 静态GUI，注意：该类只能用于静态GUI的显示
@@ -47,7 +49,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	/** 标题颜色 */
 	private int titleColor = 0x000000;
 	/** 保存组件 */
-	private final List<IComponent> components = new LinkedList<>();
+	private final LinkedList<IComponent> components = new LinkedList<>();
 	/** 资源名称 */
 	private String name;
 	
@@ -84,8 +86,10 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 			Graphics g = image.getGraphics();
 			drawBackground(g, xSize, ySize);
 			for (IComponent component : components) {
-				component.paint(g.create(
-						component.getX(), component.getY(), component.getWidth(), component.getHeight()));
+				Graphics graphics = g.create(
+						component.getX(), component.getY(), component.getWidth(), component.getHeight());
+				component.paint(graphics);
+				graphics.dispose();
 			}
 			RuntimeTexture.setInstance(name, image);
 		}
@@ -198,18 +202,58 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		fontRenderer.drawString(temp, location.x, location.y, 0);
 	}
 	
+	private IComponent preComponent = null;
+	
 	@Override
 	protected final void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F);
 		if (isPaintBackGround) drawDefaultBackground();
+		else GlStateManager.color(1.0F, 1.0F, 1.0F);
 		RuntimeTexture texture = getTexture();
 		int offsetX = (this.width - this.xSize) / 2, offsetY = (this.height - this.ySize) / 2;
 		texture.drawToFrame(offsetX, offsetY, 0, 0, xSize, ySize);
+		
+		if (mouseX >= 0 && mouseY >= 0 && mouseX <= getXSize() && mouseY <= getYSize()) {
+			IComponent onComponent = getComponentFromMouse(mouseX, mouseY);
+			if (preComponent != onComponent) {
+				if (preComponent != null) activateExited(preComponent, mouseX, mouseY);
+				if (onComponent != null) activateEntered(onComponent, mouseX, mouseY);
+			}
+			preComponent = onComponent;
+		} else if (preComponent != null) {
+			activateExited(preComponent, mouseX, mouseY);
+			preComponent = null;
+		}
+		
 		for (IComponent component : components) {
 			component.realTimePaint(this);
 		}
 	}
 	
+	@Override
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+		super.mouseClicked(mouseX, mouseY, mouseButton);
+		IComponent component = getComponentFromMouse(mouseX, mouseY);
+		if (component != null) {
+			if (mouseButton == 0) activateAction(component, mouseX, mouseY);
+			activateClick(component, mouseX, mouseY, mouseButton);
+		}
+	}
+	
+	@Override
+	protected void mouseReleased(int mouseX, int mouseY, int state) {
+		super.mouseReleased(mouseX, mouseY, state);
+		IComponent component = getComponentFromMouse(mouseX, mouseY);
+		if (component != null) {
+			activateReleased(component, mouseX, mouseY, state);
+		}
+	}
+	
+	/**
+	 * 绘制GUI背景，若GUI包含玩家背包则同时绘制玩家背包
+	 * @param g 画笔
+	 * @param width 图像宽度
+	 * @param height 图像高度
+	 */
 	public void drawBackground(Graphics g, int width, int height) {
 		g.drawImage(ImageData.getImage(SOURCE_NAME, width, height), 0, 0, null);
 		if (!(inventorySlots instanceof MIFrame)) return;
@@ -219,7 +263,23 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 					frame.getBackpackX(), frame.getBackpackY(), null);
 		}
 	}
-
+	
+	/**
+	 * 根据鼠标坐标查找控件
+	 * @return 若没有则返回null
+	 */
+	@Nullable
+	public IComponent getComponentFromMouse(float mouseX, float mouseY) {
+		mouseX -= getGuiLeft();
+		mouseY -= getGuiTop();
+		for (IComponent component : components) {
+			if (component.getX() <= mouseX && component.getY() <= mouseY &&
+				component.getX() + component.getWidth() >= mouseX &&
+				component.getY() + component.getHeight() >= mouseY) return component;
+		}
+		return null;
+	}
+	
 	@Override
 	public void init(World world) { }
 
