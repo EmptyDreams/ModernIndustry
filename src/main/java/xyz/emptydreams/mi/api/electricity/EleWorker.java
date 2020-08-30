@@ -8,7 +8,6 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
 
@@ -17,6 +16,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+
+import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
 
 /**
  * 关于电力系统的工作都在这里进行
@@ -34,8 +35,7 @@ public final class EleWorker {
 	 * @throws NullPointerException 如果outputer == null
 	 */
 	public static void registerOutputer(IEleOutputer outputer) {
-		WaitList.checkNull(outputer, "outputer");
-		OUTPUTERS.add(outputer);
+		OUTPUTERS.add(checkNull(outputer, "outputer"));
 	}
 	
 	/**
@@ -43,8 +43,7 @@ public final class EleWorker {
 	 * @throws NullPointerException 如果inputer == null
 	 */
 	public static void registerInputer(IEleInputer inputer) {
-		WaitList.checkNull(inputer, "inputer");
-		INPUTERS.add(inputer);
+		INPUTERS.add(checkNull(inputer, "inputer"));
 	}
 	
 	/**
@@ -52,8 +51,7 @@ public final class EleWorker {
 	 * @throws NullPointerException 如果transfer == null
 	 */
 	public static void registerTransfer(IEleTransfer transfer) {
-		WaitList.checkNull(transfer, "transfer");
-		TRANSFERS.add(transfer);
+		TRANSFERS.add(checkNull(transfer, "transfer"));
 	}
 	
 	/**

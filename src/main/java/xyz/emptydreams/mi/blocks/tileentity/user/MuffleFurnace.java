@@ -16,7 +16,7 @@ import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
-import static xyz.emptydreams.mi.api.utils.data.DataType.INT;
+import static xyz.emptydreams.mi.api.utils.data.auto.DataType.INT;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.HORIZONTAL;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 

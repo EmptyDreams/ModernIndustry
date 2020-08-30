@@ -3,12 +3,18 @@ package xyz.emptydreams.mi.api.utils;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 /**
  * 关于一些字符串操作的封装
  * @author EmptyDreams
  */
 public class StringUtil {
+	
+	/** 判空检查 */
+	public static <T> T checkNull(T object, String name) {
+		return Objects.requireNonNull(object, () -> "name=" + name);
+	}
 	
 	/**
 	 * 向目标RL的Path中追加信息

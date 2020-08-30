@@ -22,8 +22,8 @@ import xyz.emptydreams.mi.capabilities.nonburn.NonBurnCapability;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
 import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
-import static xyz.emptydreams.mi.api.utils.data.DataType.INT;
-import static xyz.emptydreams.mi.api.utils.data.DataType.SERIALIZABLE;
+import static xyz.emptydreams.mi.api.utils.data.auto.DataType.INT;
+import static xyz.emptydreams.mi.api.utils.data.auto.DataType.SERIALIZABLE;
 
 /**
  * 火力发电机的TE

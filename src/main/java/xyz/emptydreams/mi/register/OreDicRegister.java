@@ -8,7 +8,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
-import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.blocks.common.OreBlock;
 
@@ -29,8 +28,7 @@ public final class OreDicRegister {
 
 	/** @see #registry(ItemStack, String...)  */
 	public static void registry(Block block, String... names) {
-		WaitList.checkNull(block, "block");
-		blockMap.put(block, names);
+		blockMap.put(StringUtil.checkNull(block, "block"), names);
 	}
 
 	/** @see #registry(ItemStack, String...)  */
@@ -71,8 +69,9 @@ public final class OreDicRegister {
 		for (OreBlock block : OreBlock.LIST.values()) {
 			GameRegistry.addSmelting(block.getBlockItem(), newStack(block.getBurnOut()), 0.5F);
 		}
-		//使itemMap得以被GC回收
+		//使Map得以被GC回收
 		itemMap = null;
+		blockMap = null;
 	}
 
 	private static void registryDic(Block block, String[] names) {

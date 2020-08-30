@@ -1,32 +1,17 @@
 package xyz.emptydreams.mi.api.utils;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
 
 import java.util.Collection;
 
-import static xyz.emptydreams.mi.api.net.WaitList.checkNull;
+import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
 
 /**
  * 用于各个类的调试
- *
  * @author EmptyDreams
- * @version V1.0
  */
+@SuppressWarnings("SpellCheckingInspection")
 public final class DebugHelper {
-	
-	/**
-	 * 打印客户端等待列表的信息
-	 */
-	@SideOnly(Side.CLIENT)
-	public static void printWaitListClientMessage() {
-		StringBuilder sb = new StringBuilder("WaitList{ size=").append(WaitList.getAmount()).append('\n');
-		WaitList.toString(sb);
-		sb.append('}');
-		MISysInfo.print(sb);
-	}
 	
 	/**
 	 * 打印电线连接的上一个及下一个电线，只在服务端打印
@@ -52,8 +37,7 @@ public final class DebugHelper {
 	 * @throws NullPointerException 如果bools==null
 	 */
 	public static boolean hasTrue(Collection<Boolean> bools) {
-		WaitList.checkNull(bools, "bools");
-		
+		StringUtil.checkNull(bools, "bools");
 		for (boolean b : bools)
 			if (b) return true;
 		return false;
@@ -65,8 +49,7 @@ public final class DebugHelper {
 	 * @throws NullPointerException 如果bools==null
 	 */
 	public static boolean hasTrue(boolean... bools) {
-		WaitList.checkNull(bools, "bools");
-		
+		StringUtil.checkNull(bools, "bools");
 		for (boolean b : bools)
 			if (b) return true;
 		return false;

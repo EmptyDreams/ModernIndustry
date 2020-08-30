@@ -8,11 +8,12 @@ import xyz.emptydreams.mi.api.craftguide.multi.OrderlyShape;
 import xyz.emptydreams.mi.api.craftguide.multi.UnorderlyShape;
 import xyz.emptydreams.mi.api.craftguide.only.OrderlyShapeOnly;
 import xyz.emptydreams.mi.api.craftguide.only.UnorderlyShapeOnly;
-import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.JsonUtil;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
+
+import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
 
 /**
  * 供JSON注册合成表
@@ -31,9 +32,7 @@ public final class JsonCraftRegistry {
 	 */
 	public static void registryInstance(String name,
 	                                    BiConsumer<JsonObject, Char2ObjectMap<ItemElement>> accept) {
-		WaitList.checkNull(name, "name");
-		WaitList.checkNull(accept, "accept");
-		INSTANCE.put(name, accept);
+		INSTANCE.put(checkNull(name, "name"), checkNull(accept, "accept"));
 	}
 	
 	/**
@@ -41,8 +40,7 @@ public final class JsonCraftRegistry {
 	 * @return 是否注册成功
 	 */
 	public static boolean registryJson(JsonObject json) {
-		WaitList.checkNull(json, "json");
-		String type = json.get("type").getAsString();
+		String type = checkNull(json, "json").get("type").getAsString();
 		if (type == null) return false;
 		BiConsumer<JsonObject, Char2ObjectMap<ItemElement>> predicate =
 										INSTANCE.getOrDefault(type, null);

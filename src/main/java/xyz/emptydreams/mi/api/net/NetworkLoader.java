@@ -6,7 +6,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.net.guinet.GUIMessage;
+import xyz.emptydreams.mi.api.newnet.handler.ClientHandler;
+import xyz.emptydreams.mi.api.newnet.handler.CommonMessage;
+import xyz.emptydreams.mi.api.newnet.handler.ServerHandler;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import static net.minecraftforge.fml.relauncher.Side.CLIENT;
@@ -15,7 +17,6 @@ import static net.minecraftforge.fml.relauncher.Side.SERVER;
 /**
  * 网络信息传递总注册器
  * @author EmptyDremas
- * @version V1.0
  */
 public final class NetworkLoader {
 
@@ -24,10 +25,9 @@ public final class NetworkLoader {
 	private int nextID = -1;
 	 
 	public NetworkLoader() {
-		registerMessage(MessageBase.ServiceHandler.class, MessageBase.class, SERVER);
+		registerMessage(ServerHandler.class, CommonMessage.class, SERVER);
 		if (WorldUtil.isClient(null)) {
-			registerMessage(MessageBase.ClientHandler.class, MessageBase.class, CLIENT);
-			registerMessage(GUIMessage.ClientHandler.class, GUIMessage.class, CLIENT);
+			registerMessage(ClientHandler.class, CommonMessage.class, CLIENT);
 		}
 	}
 	

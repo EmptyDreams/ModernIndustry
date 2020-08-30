@@ -16,10 +16,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.registries.IForgeRegistry;
 import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
-import xyz.emptydreams.mi.api.net.WaitList;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
 
 
 /**
@@ -47,9 +48,7 @@ public final class RecipeRegister {
 	 * @param material 材质
 	 */
 	public static void registry(ItemHoe hoe, String material) {
-		WaitList.checkNull(hoe, "hoe");
-		WaitList.checkNull(material, "material");
-		HOES.put(hoe, material);
+		HOES.put(checkNull(hoe, "hoe"), checkNull(material, "material"));
 	}
 
 	/**
@@ -57,9 +56,7 @@ public final class RecipeRegister {
 	 * @param material 材质
 	 */
 	public static void registry(ItemAxe axe, String material) {
-		WaitList.checkNull(axe, "axe");
-		WaitList.checkNull(material, "material");
-		AXES.put(axe, material);
+		AXES.put(checkNull(axe, "axe"), checkNull(material, "material"));
 	}
 
 	/**
@@ -67,9 +64,7 @@ public final class RecipeRegister {
 	 * @param material 材质
 	 */
 	public static void registry(ItemPickaxe pickaxe, String material) {
-		WaitList.checkNull(pickaxe, "pickaxe");
-		WaitList.checkNull(material, "material");
-		PICKAXES.put(pickaxe, material);
+		PICKAXES.put(checkNull(pickaxe, "pickaxe"), checkNull(material, "material"));
 	}
 
 	/**
@@ -77,9 +72,7 @@ public final class RecipeRegister {
 	 * @param material 材质
 	 */
 	public static void registry(ItemSpade spade, String material) {
-		WaitList.checkNull(spade, "spade");
-		WaitList.checkNull(material, "material");
-		SPADES.put(spade, material);
+		SPADES.put(checkNull(spade, "spade"), checkNull(material, "material"));
 	}
 
 	/**
@@ -87,9 +80,7 @@ public final class RecipeRegister {
 	 * @param material 材质
 	 */
 	public static void registry(ItemSword sword, String material) {
-		WaitList.checkNull(sword, "sword");
-		WaitList.checkNull(material, "material");
-		SWORDS.put(sword, material);
+		SWORDS.put(checkNull(sword, "sword"), checkNull(material, "material"));
 	}
 
 	/**
@@ -97,9 +88,7 @@ public final class RecipeRegister {
 	 * @param material 材质
 	 */
 	public static void registry(ItemArmor armor, String material) {
-		WaitList.checkNull(armor, "armor");
-		WaitList.checkNull(material, "material");
-		ARMORS.put(armor, material);
+		ARMORS.put(checkNull(armor, "armor"), checkNull(material, "material"));
 	}
 
 	/**

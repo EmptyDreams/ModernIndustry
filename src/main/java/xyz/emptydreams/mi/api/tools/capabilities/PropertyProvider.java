@@ -1,16 +1,17 @@
 package xyz.emptydreams.mi.api.tools.capabilities;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
-import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.tools.property.IProperty;
 import xyz.emptydreams.mi.api.tools.property.PropertyManager;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
 
 /**
  * @author EmptyDreams
@@ -38,8 +39,7 @@ public class PropertyProvider implements ICapabilityProvider, INBTSerializable<N
 	
 	/** @see PropertyManager#addProperty(IProperty)  */
 	public void addProperty(IProperty property) {
-		WaitList.checkNull(this.property, "this.property");
-		this.property.addProperty(property);
+		checkNull(this.property, "this.property").addProperty(checkNull(property, "property"));
 	}
 	
 	/** @see PropertyManager#getProperty(String)  */

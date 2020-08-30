@@ -1,13 +1,13 @@
 package xyz.emptydreams.mi.api.tools.property;
 
+import com.google.common.base.Throwables;
+import net.minecraft.nbt.NBTTagCompound;
+import xyz.emptydreams.mi.api.utils.StringUtil;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import com.google.common.base.Throwables;
-import net.minecraft.nbt.NBTTagCompound;
-import xyz.emptydreams.mi.api.net.WaitList;
 
 /**
  * @author EmptyDreams
@@ -22,8 +22,7 @@ public class PropertyManager implements Iterable<IProperty> {
 	 * @param pro 要添加的属性，不能为null
 	 */
 	public void addProperty(IProperty pro) {
-		WaitList.checkNull(pro, "pro");
-		PROS.add(pro);
+		PROS.add(StringUtil.checkNull(pro, "pro"));
 	}
 	
 	/**

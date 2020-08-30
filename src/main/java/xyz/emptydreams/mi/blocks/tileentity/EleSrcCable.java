@@ -2,8 +2,6 @@ package xyz.emptydreams.mi.blocks.tileentity;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -11,6 +9,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
@@ -21,11 +20,14 @@ import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
-import xyz.emptydreams.mi.api.net.NetworkRegister;
-import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
+import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
+import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
-import xyz.emptydreams.mi.api.utils.data.TEHelper;
+import xyz.emptydreams.mi.api.utils.data.Point3D;
+import xyz.emptydreams.mi.api.utils.data.Range3D;
+import xyz.emptydreams.mi.api.utils.data.auto.TEHelper;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
 import xyz.emptydreams.mi.data.info.CableCache;
 import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
@@ -34,11 +36,10 @@ import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import static xyz.emptydreams.mi.api.utils.data.DataType.POS;
+import static xyz.emptydreams.mi.api.utils.data.auto.DataType.POS;
 
 /**
  * 默认电线
@@ -47,11 +48,8 @@ import static xyz.emptydreams.mi.api.utils.data.DataType.POS;
 @AutoTileEntity("IN_FATHER_ELECTRICITY_TRANSFER")
 public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, TEHelper {
 	
-	public EleSrcCable() {
-		NetworkRegister.register(this);
-	}
+	public EleSrcCable() { }
 	public EleSrcCable(int meMax, double loss) {
-		this();
 		this.meMax = meMax;
 		this.loss = loss;
 	}
@@ -69,8 +67,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 		private static final long serialVersionUID = 8683452581122892180L;
 		@Override
 		public boolean add(BlockPos tileEntity) {
-			WaitList.checkNull(tileEntity, "tileEntity");
-			return super.add(tileEntity);
+			return super.add(StringUtil.checkNull(tileEntity, "tileEntity"));
 		}
 	};
 	/** 上一根电线 */
@@ -318,21 +315,20 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 			}
 		}
 		
-		TileEntity entity;
-		IStorage storage;
-		boolean remove = false;
-		for (BlockPos block : linkedBlocks) {
-			entity = world.getTileEntity(block);
+		send();
+		Iterator<BlockPos> it = linkedBlocks.iterator();
+		while (it.hasNext()) {
+			BlockPos block = it.next();
+			TileEntity entity = world.getTileEntity(block);
 			if (entity == null) {
-				remove = true;
+				it.remove();
 			} else {
-				storage = entity.getCapability(EleCapability.ENERGY, BlockUtil.whatFacing(block, pos));
+				IStorage storage = entity.getCapability(EleCapability.ENERGY, BlockUtil.whatFacing(block, pos));
 				if (storage != null && storage.canReceive()) {
 					EleWorker.useEleEnergy(entity);
 				}
 			}
 		}
-		if (remove) linkedBlocks.removeIf(blockPos -> world.getTileEntity(blockPos) == null);
 	}
 	
 	/** 设置最大电流指数 */
@@ -446,8 +442,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	}
 	/** 设置计数器 */
 	public final void setCounter(OverloadCounter counter) {
-		WaitList.checkNull(counter, "counter");
-		this.counter = counter;
+		this.counter = StringUtil.checkNull(counter, "counter");
 	}
 
 	@Override
@@ -462,6 +457,13 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	 * 		方块暂时“删除”后此列表将重置以保证所有玩家可以正常渲染电线方块
 	 */
 	private final List<String> players = new ArrayList<>(1);
+	private Range3D net_range;
+	
+	@Override
+	public void setPos(BlockPos posIn) {
+		super.setPos(posIn);
+		net_range = new Range3D(pos.getX(), pos.getY(), pos.getZ(), 128);
+	}
 	
 	@Override
 	public void receive(@Nonnull NBTTagCompound message) {
@@ -472,43 +474,18 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	
 	/**
 	 * 这其中写有更新内部数据的代码，重写时应该调用
-	 *
-	 * @return null
 	 */
-	@Override
-	public NBTTagCompound send() {
-		if (world.isRemote) return null;
-		
-		if (players.size() == world.playerEntities.size()) return null;
-		Set<String> sendPlayers = new HashSet<>();
+	public void send() {
+		if (world.isRemote) return;
+		if (players.size() == world.playerEntities.size()) return;
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setByte("linkInfo", (byte) linkInfo);
-		
-		//遍历所有玩家
-		for (EntityPlayer player : world.playerEntities) {
-			//如果玩家已经更新过则跳过
-			if (players.contains(player.getName())) continue;
-			
-			//判断玩家是否在范围之内（判断方法借用World中的代码）
-			double d = player.getDistance(pos.getX(), pos.getY(), pos.getZ());
-			if (d < 4096) {
-				if (player instanceof EntityPlayerMP) {
-					players.add(player.getName());
-					sendPlayers.add(player.getName());
-				} else {
-					players.remove(player.getName());
-				}
-			}
-		}
-		
-		compound.setInteger("playerAmount", sendPlayers.size());
-		int i = 0;
-		for (String player : sendPlayers) {
-			compound.setString("player" + i, player);
-			++i;
-		}
-		
-		return compound;
+		IMessage message = BlockMessage.instance().create(compound, new BlockAddition(this));
+		xyz.emptydreams.mi.api.newnet.handler.MessageSender.sendToClientIf(message, world, player -> {
+			if (players.contains(player.getName()) || !net_range.isIn(new Point3D(player))) return false;
+			players.add(player.getName());
+			return true;
+		});
 	}
 	
 	@Override

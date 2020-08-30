@@ -8,8 +8,8 @@ import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemList;
-import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.JsonUtil;
+import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
 
@@ -23,9 +23,8 @@ public class OrderlyShapeOnly implements IShape<ItemList, ItemElement> {
 	private final ItemElement production;
 	
 	public OrderlyShapeOnly(ItemList list, ItemElement production) {
-		WaitList.checkNull(production, "production");
 		this.list = list.offset();
-		this.production = production;
+		this.production = StringUtil.checkNull(production, "production");
 	}
 	
 	@Override

@@ -7,19 +7,23 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSol;
-import xyz.emptydreams.mi.api.net.WaitList;
 import xyz.emptydreams.mi.api.utils.JsonUtil;
+import xyz.emptydreams.mi.api.utils.StringUtil;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 /**
  * 合成表管理器
@@ -28,7 +32,7 @@ import java.util.function.BiFunction;
  * @author EmptyDreams
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class CraftGuide<T extends IShape, R> {
+public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 	
 	/** 存储所有实例 */
 	private static final Map<ResourceLocation, CraftGuide> instances = new HashMap<>();
@@ -50,7 +54,7 @@ public class CraftGuide<T extends IShape, R> {
 	 * @return 如果实例不存在则返回新的实例，存在则返回已有的实例
 	 */
 	public static <T extends IShape, R> CraftGuide<T, R> instance(ResourceLocation name) {
-		return instances.computeIfAbsent(name, it -> new CraftGuide<>());
+		return instances.computeIfAbsent(name, it -> new CraftGuide<>(it.toString()));
 	}
 	
 	/**
@@ -65,20 +69,21 @@ public class CraftGuide<T extends IShape, R> {
 	private final List<T> shapes = new LinkedList<T>() {
 		@Override
 		public boolean add(T t) {
-			WaitList.checkNull(t, "shape");
-			return super.add(t);
+			return super.add(StringUtil.checkNull(t, "shape"));
 		}
 	};
+	private final String name;
 	
-	private CraftGuide() { }
+	private CraftGuide(String name) {
+		this.name = name;
+	}
 	
 	/**
 	 * 注册一个合成表
 	 * @param shapes 合成表
 	 */
 	public void registry(T... shapes) {
-		WaitList.checkNull(shapes, "shapes");
-		Collections.addAll(this.shapes, shapes);
+		Collections.addAll(this.shapes, StringUtil.checkNull(shapes, "shapes"));
 	}
 	
 	private static final JsonParser PARSER = new JsonParser();
@@ -154,6 +159,24 @@ public class CraftGuide<T extends IShape, R> {
 			if (shape.apply(sol)) return (R) shape.getProduction();
 		}
 		return null;
+	}
+	
+	/** 获取合成表的名称 */
+	@Nonnull
+	public String getName() {
+		return name;
+	}
+	
+	/** @see Collection#stream()  */
+	@Nonnull
+	public Stream<T> stream() {
+		return shapes.stream();
+	}
+	
+	@Override
+	@Nonnull
+	public Iterator<T> iterator() {
+		return shapes.iterator();
 	}
 	
 }

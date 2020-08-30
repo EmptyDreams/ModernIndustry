@@ -2,12 +2,13 @@ package xyz.emptydreams.mi.api.utils;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import xyz.emptydreams.mi.api.net.WaitList;
 
 import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
+
+import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
 
 /**
  * 关于物品的一些常用操作的封装
@@ -62,7 +63,7 @@ public final class ItemUtil {
 	 */
 	@Nonnull
 	public static List<ItemStack> merge(ItemStack... stacks) {
-		WaitList.checkNull(stacks, "stacks");
+		checkNull(stacks, "stacks");
 		List<ItemStack> list = new LinkedList<>();
 		o : for (ItemStack stack : stacks) {
 			if (stack == null) continue;
@@ -97,8 +98,8 @@ public final class ItemUtil {
 	@SuppressWarnings("unused")
 	@SafeVarargs
 	public static<T> List<ItemStack> merge(Function<T, ItemStack> accept, T... inputs) {
-		WaitList.checkNull(accept, "accept");
-		WaitList.checkNull(inputs, "inputs");
+		checkNull(accept, "accept");
+		checkNull(inputs, "inputs");
 		ItemStack[] stacks = new ItemStack[inputs.length];
 		for (int i = 0; i < inputs.length; i++) {
 			stacks[i] = accept.apply(inputs[i]);

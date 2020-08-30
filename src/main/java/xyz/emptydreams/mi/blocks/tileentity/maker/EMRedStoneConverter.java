@@ -19,8 +19,8 @@ import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 import javax.annotation.Nullable;
 
-import static xyz.emptydreams.mi.api.utils.data.DataType.INT;
-import static xyz.emptydreams.mi.api.utils.data.DataType.SERIALIZABLE;
+import static xyz.emptydreams.mi.api.utils.data.auto.DataType.INT;
+import static xyz.emptydreams.mi.api.utils.data.auto.DataType.SERIALIZABLE;
 
 /**
  * 红石能转换器

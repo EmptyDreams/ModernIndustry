@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static xyz.emptydreams.mi.api.utils.data.DataType.*;
+import static xyz.emptydreams.mi.api.utils.data.auto.DataType.*;
 
 /**
  * @author EmptyDreams

@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.utils.data;
+package xyz.emptydreams.mi.api.utils.data.auto;
 
 import io.netty.handler.codec.UnsupportedMessageTypeException;
 import net.minecraft.nbt.NBTBase;

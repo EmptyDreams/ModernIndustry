@@ -1,37 +1,96 @@
 package xyz.emptydreams.mi.api.utils;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.api.utils.data.Point3D;
+import xyz.emptydreams.mi.api.utils.data.Range3D;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * 关于世界的操作
  * @author EmptyDreams
- * @version V1.0
  */
 @Mod.EventBusSubscriber
 public final class WorldUtil {
-
+	
+	/**
+	 * 遍历指定世界中在指定范围内的所有玩家
+	 * @param world 指定世界
+	 * @param range 范围
+	 * @param consumer 操作
+	 */
+	public static void forEachPlayers(World world, Range3D range, Consumer<EntityPlayer> consumer) {
+		world.playerEntities.forEach(player -> {
+			if (range.isIn(new Point3D(player))) consumer.accept(player);
+		});
+	}
+	
+	/**
+	 * 遍历所有世界中的所有玩家
+	 * @param consumer 操作
+	 */
+	public static void forEachPlayers(Consumer<EntityPlayer> consumer) {
+		if (isServer(null)) {
+			for (WorldServer world : FMLCommonHandler.instance().getMinecraftServerInstance().worlds) {
+				world.playerEntities.forEach(consumer);
+			}
+		} else {
+			getClientWorld().playerEntities.forEach(consumer);
+		}
+	}
+	
+	/**
+	 * 遍历指定世界中的所有玩家
+	 * @param world 指定世界
+	 * @param consumer 操作
+	 */
+	public static void forEachPlayers(World world, Consumer<EntityPlayer> consumer) {
+		world.playerEntities.forEach(consumer);
+	}
+	
+	/**
+	 * 根据dimension获取世界对象
+	 * @return 若客户端当前世界的dimension不为输入值则返回null
+	 * @see #getClientWorld()
+	 */
+	@Nonnull
+	public static World getWorld(int dimension) {
+		return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dimension);
+	}
+	
+	/**
+	 * 获取客户端世界对象
+	 */
+	@SideOnly(Side.CLIENT)
+	@Nonnull
+	public static World getClientWorld() {
+		return Minecraft.getMinecraft().world;
+	}
+	
 	/**
 	 * 将指定任务从每Tick的循环中移除
 	 * @param tickable 要移除的任务
 	 */
 	public static void removeTickable(TileEntity tickable) {
-		WaitList.checkNull(tickable, "tickable");
+		StringUtil.checkNull(tickable, "tickable");
 		if (tickable.getWorld().isRemote)
 			CLIENT_REMOVES.computeIfAbsent(tickable.getWorld(), key -> new LinkedList<>()).add(tickable);
 		else
@@ -69,7 +128,7 @@ public final class WorldUtil {
 		if (!isServer && isServer(world)) {
 			try {
 				Class.forName(net.minecraft.client.Minecraft.class.getName());
-			} catch (ClassNotFoundException e) {
+			} catch (Throwable e) {
 				isServer = true;
 			}
 		}
@@ -100,6 +159,8 @@ public final class WorldUtil {
 		return !isServer(world);
 	}
 
+	//---------------------私有内容---------------------//
+	
 	/** 客户端移除列表 */
 	private static final Map<World, List<TileEntity>> CLIENT_REMOVES = new LinkedHashMap<>();
 	/** 服务端移除列表 */
@@ -117,5 +178,5 @@ public final class WorldUtil {
 		CLIENT_REMOVES.forEach((key, value) -> key.tickableTileEntities.removeAll(value));
 		CLIENT_REMOVES.clear();
 	}
-
+	
 }

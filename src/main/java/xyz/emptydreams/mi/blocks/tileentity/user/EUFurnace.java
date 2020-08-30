@@ -10,7 +10,7 @@ import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.IProgressBar;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
-import xyz.emptydreams.mi.api.utils.data.DataType;
+import xyz.emptydreams.mi.api.utils.data.auto.DataType;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
@@ -20,7 +20,7 @@ import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 import javax.annotation.Nullable;
 
-import static xyz.emptydreams.mi.api.utils.data.DataType.INT;
+import static xyz.emptydreams.mi.api.utils.data.auto.DataType.INT;
 import static xyz.emptydreams.mi.blocks.tileentity.user.MuffleFurnace.getResult;
 
 /**
