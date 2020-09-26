@@ -59,6 +59,11 @@ public class ItemList implements ItemSol, Iterable<ItemList.Node> {
 		return elements[y][x];
 	}
 	
+	@Override
+	public int size() {
+		return getWidth() * getHeight();
+	}
+	
 	/** 获取列表的宽度 */
 	public int getWidth() {
 		return width;

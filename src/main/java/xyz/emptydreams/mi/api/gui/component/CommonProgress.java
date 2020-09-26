@@ -9,7 +9,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
-import xyz.emptydreams.mi.api.net.WaitList;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -18,6 +17,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static xyz.emptydreams.mi.api.gui.component.IProgressBar.getTexture;
+import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
 
 /**
  * 通用进度条
@@ -26,9 +26,9 @@ import static xyz.emptydreams.mi.api.gui.component.IProgressBar.getTexture;
 public class CommonProgress extends MComponent implements IProgressBar {
 
 	/** 最大 */
-	private int max;
+	private int max = Integer.MAX_VALUE;
 	/** 现在 */
-	private int now;
+	private int now = 0;
 	/** 样式 */
 	private Style style;
 	/** 方向 */
@@ -94,14 +94,12 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	public boolean isReverse() { return style.isReverse(); }
 	/** 设置进度条风格 */
 	public void setStyle(Style style) {
-		WaitList.checkNull(style, "style");
-		this.style = style;
+		this.style = checkNull(style, "style");
 		setSize(style.getWidth(), style.getHeight());
 	}
 	/** 设置进度条方向 */
 	public void setFront(Front front) {
-		WaitList.checkNull(front, "front");
-		this.front = front;
+		this.front = checkNull(front, "front");
 	}
 	
 	@Override

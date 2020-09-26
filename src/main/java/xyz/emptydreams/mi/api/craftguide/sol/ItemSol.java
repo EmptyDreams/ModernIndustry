@@ -25,6 +25,9 @@ public interface ItemSol {
 	/** 判断物品序列是否为空 */
 	boolean isEmpty();
 	
+	/** 获取列表大小 */
+	int size();
+	
 	/** 拷贝内容 */
 	ItemSol copy();
 	

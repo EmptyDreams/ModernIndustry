@@ -17,7 +17,7 @@ public class StringUtil {
 	}
 	
 	/**
-	 * 向目标RL的Path中追加信息
+	 * 向目标ResourceLocation的Path中追加信息
 	 * @param src 目标RL
 	 * @param pathAddition 要追加的信息
 	 * @return 修改后的RL

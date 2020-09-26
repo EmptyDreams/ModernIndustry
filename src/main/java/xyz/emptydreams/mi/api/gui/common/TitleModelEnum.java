@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.gui;
+package xyz.emptydreams.mi.api.gui.common;
 
 /**
  * 标题样式

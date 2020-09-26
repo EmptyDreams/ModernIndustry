@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.gui;
+package xyz.emptydreams.mi.api.gui.common;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.gui.component.IComponent;
 import xyz.emptydreams.mi.api.gui.component.StringComponent;
-import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,15 +29,22 @@ public class MIFrame extends Container implements IFrame {
 	private final int backpackX, backpackY;
 	
 	/**
+	 * 创建一个大小未知，不包含玩家背包的GUI
+	 */
+	protected MIFrame() {
+		hasBackpack = false;
+		backpackX = backpackY = Integer.MIN_VALUE;
+	}
+	
+	/**
 	 * 通过该构造函数创建一个指定尺寸的UI，不包含玩家背包
 	 * @param width GUI宽度
 	 * @param height GUI高度
 	 */
 	public MIFrame(int width, int height) {
+		this();
 		this.width = width;
 		this.height = height;
-		hasBackpack = false;
-		backpackX = backpackY = Integer.MIN_VALUE;
 	}
 	
 	/**
@@ -59,7 +66,7 @@ public class MIFrame extends Container implements IFrame {
 	 * @param backpackY 背包坐标
 	 */
 	public MIFrame(int width, int height, EntityPlayer player, int backpackX, int backpackY) {
-		WaitList.checkNull(player, "player");
+		StringUtil.checkNull(player, "player");
 		this.width = width;
 		this.height = height;
 		this.backpackX = backpackX;
@@ -91,8 +98,7 @@ public class MIFrame extends Container implements IFrame {
 	 */
 	@Override
 	public void init(World world) {
-		WaitList.checkNull(world, "world");
-		this.world = world;
+		this.world = StringUtil.checkNull(world, "world");
 	}
 	
 	/**
@@ -175,6 +181,10 @@ public class MIFrame extends Container implements IFrame {
 	/** 保存组件 */
 	private final List<IComponent> components = new LinkedList<>();
 	
+	public void removeAllComponent() {
+		components.clear();
+	}
+	
 	/**
 	 * 移除一个组件
 	 * @param component 要移除的组件
@@ -192,8 +202,7 @@ public class MIFrame extends Container implements IFrame {
 	 * @throws NullPointerException 如果component == null
 	 */
 	public void add(IComponent component, EntityPlayer player) {
-		WaitList.checkNull(component, "component");
-		components.add(component);
+		components.add(StringUtil.checkNull(component, "component"));
 		component.onAddToGUI(this, player);
 	}
 

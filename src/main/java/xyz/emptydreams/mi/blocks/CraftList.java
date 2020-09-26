@@ -11,6 +11,7 @@ import xyz.emptydreams.mi.api.craftguide.multi.OrderlyShape;
 import xyz.emptydreams.mi.api.craftguide.only.UnorderlyShapeOnly;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
+import xyz.emptydreams.mi.api.utils.data.Size2D;
 import xyz.emptydreams.mi.blocks.common.OreBlock;
 
 import static net.minecraft.init.Blocks.*;
@@ -26,18 +27,33 @@ import static xyz.emptydreams.mi.items.common.CommonItems.*;
 @Mod.EventBusSubscriber
 public final class CraftList {
 
+	private static final Size2D ONLY = size(1, 1);
+	
 	/** 火力发电机 */
-	public static final CraftGuide<UnorderlyShapeOnly, ItemElement> FIRE_POWER =
-															CraftGuide.instance("fire_powder");
+	public static final CraftGuide<UnorderlyShapeOnly, ItemElement> FIRE_POWER
+				= CraftGuide.instance("fire_powder",
+									  ONLY, ONLY,
+									  UnorderlyShapeOnly.class,
+									  ItemElement.class);
 	/** 粉碎机 */
-	public static final CraftGuide<UnorderlyShapeOnly, ItemElement> PULVERIZER =
-															CraftGuide.instance("pulverizer");
+	public static final CraftGuide<UnorderlyShapeOnly, ItemElement> PULVERIZER
+				= CraftGuide.instance("pulverizer",
+									  ONLY, ONLY,
+									  UnorderlyShapeOnly.class,
+									  ItemElement.class);
 	/** 压缩机 */
-	public static final CraftGuide<UnorderlyShapeOnly, ItemElement> COMPRESSOR =
-															CraftGuide.instance("compressor");
+	public static final CraftGuide<UnorderlyShapeOnly, ItemElement> COMPRESSOR
+				= CraftGuide.instance("compressor",
+									  ONLY, ONLY,
+									  UnorderlyShapeOnly.class,
+									  ItemElement.class);
 	/** 电子合成台 */
-	public static final CraftGuide<OrderlyShape, ItemSet> SYNTHESIZER =
-															CraftGuide.instance("electron_synthesizer");
+	public static final CraftGuide<OrderlyShape, ItemSet> SYNTHESIZER
+				= CraftGuide.instance("electron_synthesizer",
+									  size(5, 5),
+									  size(2, 2),
+									  OrderlyShape.class,
+									  ItemSet.class);
 
 	@SubscribeEvent
 	public static void registryCraft(CraftGuideRegistryEvent event) {
@@ -65,6 +81,10 @@ public final class CraftList {
 		ItemSet set = new ItemSet();
 		set.add(ItemElement.instance(input));
 		return new UnorderlyShapeOnly(set, ItemElement.instance(output));
+	}
+	
+	private static Size2D size(int width, int height) {
+		return new Size2D(width, height);
 	}
 	
 }

@@ -56,7 +56,7 @@ public class OrderlyShape implements IShape<ItemList, ItemSet> {
 		ItemSet result = ItemSet.parse(json.getAsJsonObject("result"), keyMap);
 		ItemList input = ItemList.parse(json, keyMap);
 		String group = json.get("group").getAsString();
-		CraftGuide.instance(new ResourceLocation(group)).registry(new OrderlyShape(input, result));
+		CraftGuide.getInstance(new ResourceLocation(group)).registry(new OrderlyShape(input, result));
 	}
 	
 }

@@ -7,8 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import xyz.emptydreams.mi.api.gui.MIFrame;
+import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
+import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
 
@@ -81,6 +82,16 @@ public class SlotGroup extends MComponent {
 		slots[y][x] = slot;
 	}
 	
+	/** 设置指定位置的物品 */
+	public void setItem(int x, int y, ItemStack stack) {
+		getSlot(x, y).putStack(stack);
+	}
+	
+	/** 设置指定位置的物品 */
+	public void setItem(int x, int y, ItemElement element) {
+		getSlot(x, y).putStack(element.getStack());
+	}
+	
 	/**
 	 * 获取指定位置的Slot
 	 * @param x X轴坐标
@@ -134,11 +145,26 @@ public class SlotGroup extends MComponent {
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {
-		Image image = ImageData.getImage(MSlot.RESOURCE_NAME, getSlotSize(), getSlotSize());
-		for (int y = 0; y < getYSize(); ++y) {
-			for (int x = 0; x < getXSize(); ++x) {
-				int drawX = (getSlotSize() * x) + (getInterval() * x);
-				int drawY = (getSlotSize() * y) + (getInterval() * y);
+		paintGroup(g, 0, 0, getSlotSize(), getXSize(), getYSize(), getInterval());
+	}
+	
+	/**
+	 * 绘制图像
+	 * @param g 画笔
+	 * @param offsetX X轴偏移量
+	 * @param offsetY Y轴偏移量
+	 * @param slotSize 单个Slot的大小
+	 * @param xSize X轴方向Slot数量
+	 * @param ySize Y轴方向Slot数量
+	 * @param interval Slot之间的间隔
+	 */
+	public static void paintGroup(Graphics g, int offsetX, int offsetY,
+	                              int slotSize, int xSize, int ySize, int interval) {
+		Image image = ImageData.getImage(MSlot.RESOURCE_NAME, slotSize, slotSize);
+		for (int y = 0; y < ySize; ++y) {
+			for (int x = 0; x < xSize; ++x) {
+				int drawX = (slotSize * x) + (interval * x) + offsetX;
+				int drawY = (slotSize * y) + (interval * y) + offsetY;
 				g.drawImage(image, drawX, drawY, null);
 			}
 		}

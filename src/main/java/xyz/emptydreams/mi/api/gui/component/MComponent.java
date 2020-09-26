@@ -6,7 +6,7 @@ import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.listener.IListener;
-import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -55,8 +55,7 @@ public abstract class MComponent implements IComponent {
 	
 	@Override
 	public boolean registryListener(IListener listener) {
-		WaitList.checkNull(listener, "listener");
-		return listeners.add(listener);
+		return listeners.add(StringUtil.checkNull(listener, "listener"));
 	}
 	
 	@Override

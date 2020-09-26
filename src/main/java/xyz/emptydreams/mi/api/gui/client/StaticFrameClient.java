@@ -8,12 +8,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.gui.IFrame;
-import xyz.emptydreams.mi.api.gui.MIFrame;
-import xyz.emptydreams.mi.api.gui.TitleModelEnum;
+import xyz.emptydreams.mi.api.gui.common.IFrame;
+import xyz.emptydreams.mi.api.gui.common.MIFrame;
+import xyz.emptydreams.mi.api.gui.common.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.component.IComponent;
 import xyz.emptydreams.mi.api.gui.component.StringComponent;
-import xyz.emptydreams.mi.api.net.WaitList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,12 +23,12 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 import static xyz.emptydreams.mi.api.gui.listener.mouse.MouseListenerTrigger.*;
+import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
 
 /**
  * 静态GUI，注意：该类只能用于静态GUI的显示
  * @author EmptyDreams
  */
-@SuppressWarnings("unused")
 @SideOnly(Side.CLIENT)
 public class StaticFrameClient extends GuiContainer implements IFrame {
 	
@@ -55,11 +54,10 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	
 	public StaticFrameClient(MIFrame inventorySlotsIn, String title) {
 		super(inventorySlotsIn);
-		WaitList.checkNull(title, "title");
 		xSize = inventorySlotsIn.getWidth();
 		ySize = inventorySlotsIn.getHeight();
 		this.title = title;
-		setResourceName(ModernIndustry.MODID, title);
+		setResourceName(ModernIndustry.MODID, checkNull(title, "title"));
 		if (inventorySlotsIn.hasBackpack()) {
 			StringComponent shower = new StringComponent(INVENTORY);
 			shower.setLocation(inventorySlotsIn.getBackpackX(), inventorySlotsIn.getBackpackY() - 10);
@@ -117,8 +115,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	 * @param text 该文本内部通过{@link I18n}转化
 	 */
 	public void setTitle(String text) {
-		WaitList.checkNull(text, "text");
-		title = text;
+		title = checkNull(text, "text");
 	}
 
 	@Override
@@ -146,8 +143,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	
 	/** 设置标题显示模式 */
 	public void setTitleModel(TitleModelEnum model) {
-		WaitList.checkNull(model, "model");
-		this.titleModel = model;
+		this.titleModel = checkNull(model, "model");
 	}
 	/** 获取标题显示模式 */
 	@Nonnull
@@ -166,9 +162,8 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	 */
 	@Override
 	public void add(IComponent component, EntityPlayer player) {
-		WaitList.checkNull(component, "component");
+		components.add(checkNull(component, "component"));
 		component.onAddToGUI(this, player);
-		components.add(component);
 	}
 
 	@Override
@@ -180,7 +175,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		String temp = I18n.format(title);
+		String temp = calculateTitle();
 		int length = fontRenderer.getStringWidth(temp);
 		Point location;
 		if (titleLocation == null) {
@@ -200,6 +195,11 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 			location = titleLocation;
 		}
 		fontRenderer.drawString(temp, location.x, location.y, 0);
+	}
+	
+	/** 计算要显示的名称 */
+	protected String calculateTitle() {
+		return I18n.format(getTitle());
 	}
 	
 	private IComponent preComponent = null;

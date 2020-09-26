@@ -57,7 +57,7 @@ public class OrderlyShapeOnly implements IShape<ItemList, ItemElement> {
 		ItemList input = ItemList.parse(json, keyMap);
 		ItemElement result = JsonUtil.getElement(json.getAsJsonObject("result"));
 		String group = json.get("group").getAsString();
-		CraftGuide.instance(new ResourceLocation(group)).registry(new OrderlyShapeOnly(input, result));
+		CraftGuide.getInstance(new ResourceLocation(group)).registry(new OrderlyShapeOnly(input, result));
 	}
 	
 }

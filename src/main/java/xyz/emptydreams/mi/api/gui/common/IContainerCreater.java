@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.gui;
+package xyz.emptydreams.mi.api.gui.common;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;

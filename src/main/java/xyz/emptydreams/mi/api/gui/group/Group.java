@@ -6,11 +6,11 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.emptydreams.mi.api.gui.IFrame;
-import xyz.emptydreams.mi.api.gui.MIFrame;
+import xyz.emptydreams.mi.api.gui.common.IFrame;
+import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.IComponent;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
-import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -60,8 +60,7 @@ public class Group extends MComponent implements Iterable<IComponent> {
 	 * @throws NullPointerException 如果component == null
 	 */
 	public void add(IComponent component) {
-		WaitList.checkNull(component, "component");
-		components.add(component);
+		components.add(StringUtil.checkNull(component, "component"));
 	}
 
 	/**

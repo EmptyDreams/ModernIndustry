@@ -1,7 +1,4 @@
-package xyz.emptydreams.mi.api.gui;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
+package xyz.emptydreams.mi.api.gui.common;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
@@ -9,6 +6,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import xyz.emptydreams.mi.ModernIndustry;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * GUI的总加载器

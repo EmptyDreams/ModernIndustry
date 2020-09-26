@@ -5,10 +5,12 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import net.minecraft.item.ItemStack;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
+import xyz.emptydreams.mi.api.utils.wrapper.IntWrapper;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.function.ObjIntConsumer;
 
 /**
  * 无序物品列表
@@ -77,6 +79,11 @@ public class ItemSet implements ItemSol, Iterable<ItemElement> {
 	}
 	
 	@Override
+	public int size() {
+		return elements.size();
+	}
+	
+	@Override
 	public boolean isEmpty() {
 		return elements.isEmpty();
 	}
@@ -96,6 +103,12 @@ public class ItemSet implements ItemSol, Iterable<ItemElement> {
 	@Override
 	public Iterator<ItemElement> iterator() {
 		return elements.iterator();
+	}
+	
+	/** 根据下标遍历所有元素（无序） */
+	public void forEachIndex(ObjIntConsumer<ItemElement> consumer) {
+		IntWrapper index = new IntWrapper();
+		forEach(it -> consumer.accept(it, index.getAndIncrement()));
 	}
 	
 	/** 解析JSON */

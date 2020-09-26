@@ -55,7 +55,7 @@ public class UnorderlyShape implements IShape<ItemSet, ItemSet> {
 		ItemSet input = ItemSet.parse(json, keyMap);
 		ItemSet result = ItemSet.parse(json.getAsJsonObject("result"), keyMap);
 		String group = json.get("group").getAsString();
-		CraftGuide.instance(new ResourceLocation(group)).registry(new UnorderlyShape(input, result));
+		CraftGuide.getInstance(new ResourceLocation(group)).registry(new UnorderlyShape(input, result));
 	}
 	
 }

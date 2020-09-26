@@ -3,7 +3,7 @@ package xyz.emptydreams.mi.api.gui.component;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -23,8 +23,7 @@ public class StringComponent extends MComponent {
 
 	/** 创建一个包含指定字符串的组件 */
 	public StringComponent(String str) {
-		WaitList.checkNull(str, "str");
-		value = str;
+		value = StringUtil.checkNull(str, "str");
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -42,8 +41,7 @@ public class StringComponent extends MComponent {
 	public String getString() { return value; }
 	/** 设置要显示的字符串 */
 	public void setString(String str) {
-		WaitList.checkNull(str, "str");
-		this.value = str;
+		this.value = StringUtil.checkNull(str, "str");
 	}
 
 	@Override

@@ -7,10 +7,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import xyz.emptydreams.mi.api.gui.MIFrame;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
-import xyz.emptydreams.mi.api.net.WaitList;
+import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
+import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -61,7 +61,7 @@ public class MSlot extends MComponent {
 	
 	@Override
 	public void onAddToGUI(Container con, EntityPlayer player) {
-		WaitList.checkNull(getSlot(), "slot");
+		StringUtil.checkNull(getSlot(), "slot");
 		if (con instanceof MIFrame) {
 			index = con.inventorySlots.size();
 			((MIFrame) con).addSlotToContainer(slot);
