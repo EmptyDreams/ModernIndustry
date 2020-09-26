@@ -1,84 +1,52 @@
 package xyz.emptydreams.mi.api.gui.craft;
 
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
-import xyz.emptydreams.mi.api.craftguide.IShape;
+import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
+import xyz.emptydreams.mi.api.gui.common.GuiLoader;
+import xyz.emptydreams.mi.api.gui.common.IContainerCreater;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
-import xyz.emptydreams.mi.api.gui.component.CommonProgress;
-import xyz.emptydreams.mi.api.gui.craft.handle.CraftHandle;
-import xyz.emptydreams.mi.api.gui.group.Group;
-import xyz.emptydreams.mi.api.gui.group.Panels;
+
+import javax.annotation.Nonnull;
+import java.util.Map;
 
 /**
- * 用于显示合成表
+ * 用于创建{@link CraftFrame}
  * @author EmptyDreams
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
-public class CraftShower extends MIFrame {
-
-	/** 目标合成表 */
-	private final CraftGuide craft;
-	/** 大小缓存，用于判断合成表是否变化，虽然不准确但是基本不会出问题 */
-	private int size = -1;
-	/** 当前合成表下标 */
-	private int index = -1;
-	/** 对应的{@link CraftHandle.Node} */
-	CraftHandle.Node node;
+public final class CraftShower {
 	
-	public CraftShower(CraftGuide craft, EntityPlayer player, int width, int height) {
-		this.craft = craft;
-		init(player);
-		setSize(width, height);
-	}
-
-	/** 解析合成表 */
-	private void init(EntityPlayer player) {
-		if (size == craft.size()) return;
-		removeAllComponent();
-		size = craft.size();
-		index = -1;
-		CraftHandle handle = HandleRegister.get(craft);
-		node = handle.createGroup();
-		CommonProgress progress = new CommonProgress();
-		
-		Group group = new Group(0, 0, getWidth(), getHeight(), Panels::horizontalCenter);
-		group.adds(node.raw, progress, node.pro);
-		add(group, player);
-		
-		handle.update(node, craft.getShape(++index));
-	}
+	private static final Map<CraftGuide<?, ?>, Integer> FRAMES = new Object2IntArrayMap<>();
 	
-	/** 强制重新初始化缓存 */
-	public void reInit(EntityPlayer player) {
-		size = -1;
-		init(player);
-	}
-	
-	/** 切换到下一个合成表并刷新显示 */
-	public void nextShape() {
-		int now = ++index;
-		if (now >= size) now = index = 0;
-		CraftHandle handle = HandleRegister.get(craft);
-		handle.update(node, craft.getShape(now));
-	}
-	
-	/** 切换到上一个合成表并刷新显示 */
-	public void preShape() {
-		int now = --index;
-		if (now < 0) now = index = size - 1;
-		CraftHandle handle = HandleRegister.get(craft);
-		handle.update(node, craft.getShape(now));
-	}
-	
-	/** 获取当前显示的合成表 */
-	public IShape getShape() {
-		return craft.getShape(index);
-	}
-	
-	/** 重新绘制当前合成表 */
-	public void repaint() {
-		CraftHandle handle = HandleRegister.get(craft);
-		handle.update(node, getShape());
+	/**
+	 * 使指定玩家打开GUI
+	 * @param craft 要显示的合成表
+	 * @param player 要打开GUI的玩家
+	 */
+	public static void show(CraftGuide<?, ?> craft, EntityPlayer player) {
+		int frame = FRAMES.computeIfAbsent(craft,
+				key -> GuiLoader.register(new IContainerCreater() {
+					@Nonnull
+					@Override
+					public MIFrame createService(World world, EntityPlayer player1, BlockPos pos) {
+						return new CraftFrame(craft);
+					}
+					
+					@Nonnull
+					@Override
+					public StaticFrameClient createClient(World world, EntityPlayer player1, BlockPos pos) {
+						return new StaticFrameClient(
+								new CraftFrame(craft), craft.getLocalName());
+					}
+				}
+		));
+		player.openGui(ModernIndustry.instance, frame,
+				FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0], 0, 0, 0);
 	}
 	
 }

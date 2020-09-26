@@ -50,7 +50,7 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 	public static <T extends IShape, R> CraftGuide<T, R>
 			instance(ResourceLocation name, Size2D shapeSize, Size2D proSize, Class<T> shape, Class<R> product) {
 		return instances.computeIfAbsent(name,
-				it -> new CraftGuide<>(it.toString(), shapeSize, proSize, shape, product));
+				it -> new CraftGuide<>(it, shapeSize, proSize, shape, product));
 	}
 	
 	/**
@@ -83,13 +83,13 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 			return super.add(StringUtil.checkNull(t, "shape"));
 		}
 	};
-	private final String name;
+	private final ResourceLocation name;
 	/** 存储最大尺寸 */
 	private final Size2D maxSize;
 	/** 存储产品列表最大尺寸 */
 	private final Size2D proSize;
 	
-	private CraftGuide(String name, Size2D size, Size2D proSize, Class<T> shape, Class<R> product) {
+	private CraftGuide(ResourceLocation name, Size2D size, Size2D proSize, Class<T> shape, Class<R> product) {
 		this.name = name;
 		this.maxSize = size;
 		this.proSize = proSize;
@@ -183,10 +183,14 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 		return rClass;
 	}
 	
+	public String getLocalName() {
+		return name.getResourceDomain() + ".craft." + name.getResourcePath();
+	}
+	
 	/** 获取合成表的名称 */
 	@Nonnull
 	public String getName() {
-		return name;
+		return name.toString();
 	}
 	
 	/** @see Collection#stream()  */

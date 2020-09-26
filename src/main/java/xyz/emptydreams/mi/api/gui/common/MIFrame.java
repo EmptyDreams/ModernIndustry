@@ -12,6 +12,7 @@ import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * MI版本窗体，通过该类可以便捷的创建和控制UI界面
@@ -181,6 +182,16 @@ public class MIFrame extends Container implements IFrame {
 	/** 保存组件 */
 	private final List<IComponent> components = new LinkedList<>();
 	
+	public void forEachComponent(Consumer<? super IComponent> consumer) {
+		components.forEach(consumer);
+	}
+	
+	/** 获取组件数量 */
+	public int componentSize() {
+		return components.size();
+	}
+	
+	/** 移除所有组件 */
 	public void removeAllComponent() {
 		components.clear();
 	}

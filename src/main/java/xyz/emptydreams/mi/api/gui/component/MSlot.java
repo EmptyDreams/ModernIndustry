@@ -90,6 +90,7 @@ public class MSlot extends MComponent {
 		@Override
 		public boolean canTakeStack(EntityPlayer playerIn) {
 			ItemStack stack = getStack();
+			if (entity == null) return stack.getCount() < stack.getMaxStackSize();
 			return stack.getCount() < stack.getMaxStackSize() &&
 					playerIn.canPlayerEdit(entity.getPos(), playerIn.getHorizontalFacing(), stack);
 		}
@@ -97,7 +98,7 @@ public class MSlot extends MComponent {
 		@Override
 		public void onSlotChanged() {
 			super.onSlotChanged();
-			entity.markDirty();
+			if (entity != null) entity.markDirty();
 		}
 	}
 	

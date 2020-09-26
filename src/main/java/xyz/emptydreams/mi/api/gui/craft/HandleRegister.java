@@ -18,9 +18,7 @@ public final class HandleRegister {
 	private static final Map<HandleInfo, Function<CraftGuide, CraftHandle>>
 					registries = new Object2ObjectArrayMap<>();
 	
-	/**
-	 * 注册一个{@link CraftHandle}，若已经有同样的Handle注册，那么该注册将覆盖上一次注册
-	 */
+	/** 注册一个{@link CraftHandle}，若已经有同样的Handle注册，那么该注册将覆盖上一次注册 */
 	public static void registry(HandleInfo info, Function<CraftGuide, CraftHandle> creater) {
 		StringUtil.checkNull(info,"clazz");
 		StringUtil.checkNull(creater, "creater");

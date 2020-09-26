@@ -63,6 +63,9 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 			shower.setLocation(inventorySlotsIn.getBackpackX(), inventorySlotsIn.getBackpackY() - 10);
 			add(shower, null);
 		}
+		if (inventorySlotsIn.componentSize() != 0) {
+			inventorySlotsIn.forEachComponent(it -> add(it, null));
+		}
 	}
 	
 	/** 设置GUI使用的资源名称，默认使用"<b>{@link ModernIndustry#MODID}:{@link #getTitle()}</b>" */

@@ -15,7 +15,7 @@ public abstract class CraftHandle<T extends ItemSol, R> {
 	/**
 	 * 在创建窗口时会通过该方法创建Slot对象.<br>
 	 * 返回的两个{@link SlotGroup}不需要设置坐标，只需设置尺寸等信息即可，具体坐标由MI自动计算
-	 * @return [0]对应原料列表，
+	 * @return 返回的任何组件都不得依赖玩家对象，组件初始化时传入的EntityPlayer对象永远为null
 	 */
 	@Nonnull
 	abstract public Node createGroup();

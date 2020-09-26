@@ -13,6 +13,7 @@ import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
 import xyz.emptydreams.mi.api.utils.data.Size2D;
 import xyz.emptydreams.mi.blocks.common.OreBlock;
+import xyz.emptydreams.mi.register.AutoLoader;
 
 import static net.minecraft.init.Blocks.*;
 import static net.minecraft.init.Items.COAL;
@@ -24,6 +25,7 @@ import static xyz.emptydreams.mi.items.common.CommonItems.*;
  * 存储各种合成表
  * @author EmptyDreams
  */
+@AutoLoader
 @Mod.EventBusSubscriber
 public final class CraftList {
 
