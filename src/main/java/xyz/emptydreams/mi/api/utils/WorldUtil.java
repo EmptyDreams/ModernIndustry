@@ -140,9 +140,11 @@ public final class WorldUtil {
 	public static void optimizeSideCalculate(@Nullable World world) {
 		if (!isServer && isServer(world)) {
 			try {
-				Class.forName(net.minecraft.client.Minecraft.class.getName());
-			} catch (Throwable e) {
+				Class.forName("xyz.emptydreams.mi.api.utils.WorldUtil$ServerTest");
 				isServer = true;
+			} catch (Throwable e) {
+				MISysInfo.print("系统检测到当前环境不为服务端，跳过服务端优化");
+				MISysInfo.print("如果你在服务端看到这条消息，请发送报告给作者！");
 			}
 		}
 	}
@@ -161,7 +163,7 @@ public final class WorldUtil {
 		if (isServer) return true;
 		if (world == null) {
 			if (FMLCommonHandler.instance().getSide().isServer()) return true;
-			return Thread.currentThread().getName().contains("Server Thread");
+			return Thread.currentThread().getName().contains("Server");
 		} else {
 			return !world.isRemote;
 		}
@@ -190,6 +192,10 @@ public final class WorldUtil {
 	public static void atClientTickEnd(TickEvent.ClientTickEvent event) {
 		CLIENT_REMOVES.forEach((key, value) -> key.tickableTileEntities.removeAll(value));
 		CLIENT_REMOVES.clear();
+	}
+	
+	@SideOnly(Side.SERVER)
+	private static final class ServerTest {
 	}
 	
 }
