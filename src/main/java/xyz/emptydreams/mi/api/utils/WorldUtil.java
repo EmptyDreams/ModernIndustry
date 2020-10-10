@@ -163,7 +163,7 @@ public final class WorldUtil {
 		if (isServer) return true;
 		if (world == null) {
 			if (FMLCommonHandler.instance().getSide().isServer()) return true;
-			return Thread.currentThread().getName().contains("Server");
+			return Thread.currentThread().getName().toLowerCase().contains("server");
 		} else {
 			return !world.isRemote;
 		}
