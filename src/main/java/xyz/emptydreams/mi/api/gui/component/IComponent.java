@@ -1,12 +1,18 @@
 package xyz.emptydreams.mi.api.gui.component;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.listener.IListener;
+import xyz.emptydreams.mi.api.net.handler.MessageSender;
+import xyz.emptydreams.mi.api.net.message.gui.GuiAddition;
+import xyz.emptydreams.mi.api.net.message.gui.GuiMessage;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -72,7 +78,27 @@ public interface IComponent {
 	 */
 	@SideOnly(Side.CLIENT)
 	default boolean update(int codeID, int data) { return false; }
-
+	
+	/**
+	 * 接收由{@link GuiMessage}发送的信息
+	 * @param data 数据内容
+	 */
+	default void receive(NBTTagCompound data) { }
+	
+	/**
+	 * 发送信息到服务端
+	 * @param data 数据内容
+	 */
+	@SideOnly(Side.CLIENT)
+	default void sendToServer(NBTTagCompound data) {
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setTag("data", data);
+		tag.setInteger("id", getCode());
+		EntityPlayer player = Minecraft.getMinecraft().player;
+		IMessage message = GuiMessage.instance().create(tag, new GuiAddition(player));
+		MessageSender.sendToServer(message);
+	}
+	
 	/**
 	 * 获取传输数据用的codeID
 	 * @param code 私有ID，大于等于0
@@ -102,8 +128,12 @@ public interface IComponent {
 	 */
 	Object getListeners();
 	
-	/** 触发指定事件 */
-	void activateListener(Consumer<IListener> consumer);
+	/**
+	 * 触发指定事件
+	 * @param name 事件名称，所有继承自该类的事件都将被触发
+	 * @param consumer 需要执行的操作
+	 */
+	void activateListener(Class<? extends IListener> name, Consumer<IListener> consumer);
 	
 	/**
 	 * 注册指定事件

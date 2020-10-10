@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.newnet.handler;
+package xyz.emptydreams.mi.api.net.handler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

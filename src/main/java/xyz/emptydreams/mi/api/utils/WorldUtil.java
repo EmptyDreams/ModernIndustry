@@ -32,6 +32,19 @@ import java.util.function.Consumer;
 public final class WorldUtil {
 	
 	/**
+	 * 获取所有世界中指定名称的玩家的对象
+	 * @param name 名称
+	 * @return 若玩家不存在则返回null
+	 */
+	public static EntityPlayer getPlayerAtService(String name) {
+		for (WorldServer world : FMLCommonHandler.instance().getMinecraftServerInstance().worlds) {
+			EntityPlayer player = world.getPlayerEntityByName(name);
+			if (player != null) return player;
+		}
+		return null;
+	}
+	
+	/**
 	 * 遍历指定世界中在指定范围内的所有玩家
 	 * @param world 指定世界
 	 * @param range 范围

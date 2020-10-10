@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.api.net;
 import net.minecraft.nbt.NBTTagCompound;
 import xyz.emptydreams.mi.api.net.message.IMessageHandle;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
+import xyz.emptydreams.mi.api.net.message.gui.GuiMessage;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
@@ -64,6 +65,7 @@ public final class MessageRegister {
 	
 	static {
 		registry(BlockMessage.instance());
+		registry(GuiMessage.instance());
 	}
 	
 }

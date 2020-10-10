@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.gui.component;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
@@ -10,6 +11,7 @@ import xyz.emptydreams.mi.api.gui.listener.mouse.MouseExitedListener;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.function.Consumer;
 
@@ -36,7 +38,29 @@ public class InvisibleButton extends MComponent {
 	public void onAddToGUI(GuiContainer con, EntityPlayer player) {
 		registryListener((MouseEnteredListener) (mouseX, mouseY) -> mouse = true);
 		registryListener((MouseExitedListener) (mouseX, mouseY) -> mouse = false);
-		registryListener((MouseActionListener) (mouseX, mouseY) -> onAction.accept(con));
+		registryListener(new MouseActionListener() {
+			float mouseX, mouseY;
+			@Override
+			public void mouseAction(float mouseX, float mouseY) {
+				this.mouseX = mouseX;
+				this.mouseY = mouseY;
+				onAction.accept(con);
+			}
+			
+			@Nullable
+			@Override
+			public NBTTagCompound writeTo() {
+				NBTTagCompound data = new NBTTagCompound();
+				data.setFloat("x", mouseX);
+				data.setFloat("y", mouseY);
+				return data;
+			}
+			
+			@Override
+			public void readFrom(NBTTagCompound data) {
+				mouseAction(data.getFloat("x"), data.getFloat("y"));
+			}
+		});
 	}
 	
 	/** 判断鼠标是否在控件中 */
@@ -49,4 +73,5 @@ public class InvisibleButton extends MComponent {
 	
 	@Override
 	public void paint(@Nonnull Graphics g) { }
+	
 }

@@ -13,8 +13,7 @@ public final class MouseListenerTrigger {
 	
 	/** 尝试触发鼠标松开事件 */
 	public static void activateReleased(IComponent component, float mouseX, float mouseY, int mouseButton) {
-		component.activateListener(it -> {
-			if (!(it instanceof MouseReleasedListener)) return;
+		component.activateListener(MouseReleasedListener.class, it -> {
 			MouseReleasedListener listener = (MouseReleasedListener) it;
 			listener.mouseReleased(mouseX, mouseY, mouseButton);
 		});
@@ -22,8 +21,7 @@ public final class MouseListenerTrigger {
 	
 	/** 尝试触发鼠标离开事件 */
 	public static void activateExited(IComponent component, float mouseX, float mouseY) {
-		component.activateListener(it -> {
-			if (!(it instanceof MouseExitedListener)) return;
+		component.activateListener(MouseExitedListener.class, it -> {
 			MouseExitedListener listener = (MouseExitedListener) it;
 			listener.mouseExited(mouseX, mouseY);
 		});
@@ -31,8 +29,7 @@ public final class MouseListenerTrigger {
 	
 	/** 尝试触发鼠标左键单击事件 */
 	public static void activateAction(IComponent component, float mouseX, float mouseY) {
-		component.activateListener(it -> {
-			if (!(it instanceof MouseActionListener)) return;
+		component.activateListener(MouseActionListener.class, it -> {
 			MouseActionListener listener = (MouseActionListener) it;
 			listener.mouseAction(mouseX, mouseY);
 		});
@@ -40,8 +37,7 @@ public final class MouseListenerTrigger {
 	
 	/** 尝试触发鼠标点击事件 */
 	public static void activateClick(IComponent component, float mouseX, float mouseY, int mouseButton) {
-		component.activateListener(it -> {
-			if (!(it instanceof MouseClickListener)) return;
+		component.activateListener(MouseClickListener.class, it -> {
 			MouseClickListener listener = (MouseClickListener) it;
 			listener.mouseClick(mouseX, mouseY, mouseButton);
 		});
@@ -49,8 +45,7 @@ public final class MouseListenerTrigger {
 	
 	/** 尝试触发鼠标进入的事件 */
 	public static void activateEntered(IComponent component, float mouseX, float mouseY) {
-		component.activateListener(it -> {
-			if (!(it instanceof MouseEnteredListener)) return;
+		component.activateListener(MouseExitedListener.class, it -> {
 			MouseEnteredListener listener = (MouseEnteredListener) it;
 			listener.mouseEntered(mouseX, mouseY);
 		});

@@ -3,10 +3,16 @@ package xyz.emptydreams.mi.api.gui.component;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.listener.IListener;
+import xyz.emptydreams.mi.api.net.handler.MessageSender;
+import xyz.emptydreams.mi.api.net.message.gui.GuiAddition;
+import xyz.emptydreams.mi.api.net.message.gui.GuiMessage;
 import xyz.emptydreams.mi.api.utils.StringUtil;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -49,8 +55,33 @@ public abstract class MComponent implements IComponent {
 	}
 	
 	@Override
-	public void activateListener(Consumer<IListener> consumer) {
-		listeners.forEach(consumer);
+	public void activateListener(Class<? extends IListener> name, Consumer<IListener> consumer) {
+		int index = 0;
+		NBTTagCompound data = new NBTTagCompound();
+		for (IListener listener : listeners) {
+			if (name.isAssignableFrom(listener.getClass())) {
+				consumer.accept(listener);
+				if (WorldUtil.isClient(null)) {
+					NBTTagCompound info = listener.writeTo();
+					if (info != null) data.setTag(String.valueOf(index), info);
+				}
+			}
+			++index;
+		}
+		if (WorldUtil.isClient(null) && data.getSize() > 0) {
+			GuiAddition addition = new GuiAddition(getClientPlayer());
+			IMessage message = GuiMessage.instance().create(data, addition);
+			MessageSender.sendToServer(message);
+		}
+	}
+	
+	@Override
+	public void receive(NBTTagCompound data) {
+		for (String key : data.getKeySet()) {
+			int index = Integer.parseInt(key);
+			IListener listener = listeners.get(index);
+			listener.readFrom(data.getCompoundTag("key"));
+		}
 	}
 	
 	@Override
@@ -99,6 +130,16 @@ public abstract class MComponent implements IComponent {
 	@Override
 	public void setCodeStart(int code) {
 		this.code = code;
+	}
+	
+	private static EntityPlayer getClientPlayer() {
+		try {
+			Class<?> clazz = Class.forName("net.minecraft.client.Minecraft");
+			Object mc = clazz.getMethod("getMinecraft").invoke(null, (Object[]) null);
+			return (EntityPlayer) clazz.getField("player").get(mc);
+		} catch (Throwable e) {
+			throw new RuntimeException("获取客户端玩家对象时出错", e);
+		}
 	}
 	
 }

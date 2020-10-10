@@ -20,6 +20,7 @@ import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
+import xyz.emptydreams.mi.api.net.handler.MessageSender;
 import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
@@ -481,7 +482,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setByte("linkInfo", (byte) linkInfo);
 		IMessage message = BlockMessage.instance().create(compound, new BlockAddition(this));
-		xyz.emptydreams.mi.api.newnet.handler.MessageSender.sendToClientIf(message, world, player -> {
+		MessageSender.sendToClientIf(message, world, player -> {
 			if (players.contains(player.getName()) || !net_range.isIn(new Point3D(player))) return false;
 			players.add(player.getName());
 			return true;

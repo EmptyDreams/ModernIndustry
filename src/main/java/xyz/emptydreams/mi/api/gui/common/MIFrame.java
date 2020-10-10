@@ -5,9 +5,11 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.gui.component.IComponent;
 import xyz.emptydreams.mi.api.gui.component.StringComponent;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import java.util.LinkedList;
@@ -175,6 +177,23 @@ public class MIFrame extends Container implements IFrame {
 		if (success) return oldStack;
 		success = mergeItemStack(stack, index + 1, inventoryItemStacks.size(), false);
 		return success ? oldStack : ItemStack.EMPTY;
+	}
+	
+	/** 接收网络信息 */
+	public void receive(NBTTagCompound data) {
+		int id = data.getInteger("id");
+		IComponent target = null;
+		for (IComponent component : components) {
+			if (component.getCode() == id) {
+				target = component;
+				break;
+			}
+		}
+		if (target == null) {
+			MISysInfo.err("网络信息丢失：" + id);
+			return;
+		}
+		target.receive(data.getCompoundTag("data"));
 	}
 	
 	//--------------------关于组件的操作--------------------//
