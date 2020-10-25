@@ -7,8 +7,9 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.gui.component.IComponent;
 import xyz.emptydreams.mi.api.gui.component.StringComponent;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IButton;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
@@ -234,13 +235,22 @@ public class MIFrame extends Container implements IFrame {
 	public void add(IComponent component, EntityPlayer player) {
 		components.add(StringUtil.checkNull(component, "component"));
 		component.onAddToGUI(this, player);
+		allocID(component);
 	}
-
+	
+	@Override
+	public void addButton(IButton button) {
+		//add(button, null);
+	}
+	
+	/** 为指定组件分配网络ID */
 	public void allocID(IComponent component) {
 		component.setCodeStart(codeStart);
 		codeStart += 100;
 	}
 
+	
+	
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();

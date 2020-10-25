@@ -60,7 +60,7 @@ public class MSlot extends MComponent {
 	private int index = -1;
 	
 	@Override
-	public void onAddToGUI(Container con, EntityPlayer player) {
+	public void onAddToGUI(MIFrame con, EntityPlayer player) {
 		StringUtil.checkNull(getSlot(), "slot");
 		if (con instanceof MIFrame) {
 			index = con.inventorySlots.size();

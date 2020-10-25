@@ -1,12 +1,14 @@
 package xyz.emptydreams.mi.api.gui.component;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
+import xyz.emptydreams.mi.api.gui.common.MIFrame;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.listener.IListener;
 import xyz.emptydreams.mi.api.net.handler.MessageSender;
 import xyz.emptydreams.mi.api.net.message.gui.GuiAddition;
@@ -113,11 +115,11 @@ public abstract class MComponent implements IComponent {
 	public abstract void paint(@Nonnull Graphics g);
 	
 	@Override
-	public void onAddToGUI(Container con, EntityPlayer player) { }
+	public void onAddToGUI(MIFrame con, EntityPlayer player) { }
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void onAddToGUI(GuiContainer con, EntityPlayer player) { }
+	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) { }
 
 	@Override
 	public void onRemoveFromGUI(Container con) { }

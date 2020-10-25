@@ -10,7 +10,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress.Front;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress.Style;
-import xyz.emptydreams.mi.api.gui.component.IProgressBar;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;

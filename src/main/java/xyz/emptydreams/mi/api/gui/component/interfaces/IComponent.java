@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.gui.component;
+package xyz.emptydreams.mi.api.gui.component.interfaces;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -9,6 +9,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
+import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.listener.IListener;
 import xyz.emptydreams.mi.api.net.handler.MessageSender;
 import xyz.emptydreams.mi.api.net.message.gui.GuiAddition;
@@ -52,11 +54,17 @@ public interface IComponent {
 	 */
 	@SideOnly(Side.CLIENT)
 	void paint(@Nonnull Graphics g);
-	/** 在组件被添加到GUI时调用 */
-	void onAddToGUI(Container con, EntityPlayer player);
-	/** 在组件被添加到客户端GUI时调用 */
+	/**
+	 * 在组件被添加到GUI时调用
+	 * @throws NullPointerException 如果需要使用con或player却传入了null
+	 */
+	void onAddToGUI(MIFrame con, EntityPlayer player);
+	/**
+	 * 在组件被添加到客户端GUI时调用
+	 * @throws NullPointerException 如果需要使用con或player却传入了null
+	 */
 	@SideOnly(Side.CLIENT)
-	void onAddToGUI(GuiContainer con, EntityPlayer player);
+	void onAddToGUI(StaticFrameClient con, EntityPlayer player);
 	/** 在组件被移除GUI时 */
 	void onRemoveFromGUI(Container con);
 	

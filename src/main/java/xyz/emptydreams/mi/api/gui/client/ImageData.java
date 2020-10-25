@@ -5,7 +5,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.gui.component.IProgressBar;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

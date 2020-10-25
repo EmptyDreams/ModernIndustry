@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.gui.component;
+package xyz.emptydreams.mi.api.gui.component.interfaces;
 
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 

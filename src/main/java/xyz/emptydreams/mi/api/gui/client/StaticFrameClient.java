@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.gui.client;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -11,8 +12,9 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.common.TitleModelEnum;
-import xyz.emptydreams.mi.api.gui.component.IComponent;
 import xyz.emptydreams.mi.api.gui.component.StringComponent;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IButton;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -66,6 +68,13 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		if (inventorySlotsIn.componentSize() != 0) {
 			inventorySlotsIn.forEachComponent(it -> add(it, null));
 		}
+	}
+	
+	private boolean isOriginal = true;
+	@Override
+	public void initGui() {
+		isOriginal = false;
+		super.initGui();
 	}
 	
 	/** 设置GUI使用的资源名称，默认使用"<b>{@link ModernIndustry#MODID}:{@link #getTitle()}</b>" */
@@ -168,7 +177,13 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		components.add(checkNull(component, "component"));
 		component.onAddToGUI(this, player);
 	}
-
+	
+	@Override
+	public void addButton(IButton button) {
+		//add(button, null);
+		addButton(button.createGuiButtonObject(buttonList.size()));
+	}
+	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		this.drawDefaultBackground();
@@ -230,6 +245,11 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		for (IComponent component : components) {
 			component.realTimePaint(this);
 		}
+	}
+	
+	@Override
+	protected void actionPerformed(GuiButton button) throws IOException {
+	
 	}
 	
 	@Override

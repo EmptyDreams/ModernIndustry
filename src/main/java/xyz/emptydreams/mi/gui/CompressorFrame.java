@@ -8,9 +8,11 @@ import xyz.emptydreams.mi.api.gui.common.GuiLoader;
 import xyz.emptydreams.mi.api.gui.common.IContainerCreater;
 import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
+import xyz.emptydreams.mi.api.gui.component.ButtonRec;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
 import xyz.emptydreams.mi.api.gui.group.Group;
 import xyz.emptydreams.mi.api.gui.group.Panels;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.blocks.tileentity.user.EUCompressor;
 
 import javax.annotation.Nonnull;
@@ -47,7 +49,10 @@ public final class CompressorFrame {
 		private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
 			EUCompressor compressor = (EUCompressor) world.getTileEntity(pos);
 			frame.init(world);
-
+			
+			ButtonRec button = new ButtonRec((mc, x, y) -> {}, buttonRec -> MISysInfo.print("13"));
+			button.setSize(100, 100);
+			
 			Group fir = new Group(0, 0, 18, 54, Panels::verticalCenter);
 			Group group = new Group(0, 15, frame.getWidth(), 0, Panels::horizontalCenter);
 			group.setMaxDistance(10);
@@ -55,6 +60,7 @@ public final class CompressorFrame {
 			fir.adds(new MSlot(compressor.getSlot(0)), new MSlot(compressor.getSlot(1)));
 			group.adds(fir, compressor.getProgressBar(), new MSlot(compressor.getSlot(2)));
 			frame.add(group, player);
+			frame.add(button, player);
 		}
 		
 	});

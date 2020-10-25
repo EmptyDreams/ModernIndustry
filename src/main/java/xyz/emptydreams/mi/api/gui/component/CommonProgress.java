@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -16,7 +17,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static xyz.emptydreams.mi.api.gui.component.IProgressBar.getTexture;
+import static xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar.getTexture;
 import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
 
 /**

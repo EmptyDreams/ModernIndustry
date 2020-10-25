@@ -1,6 +1,6 @@
 package xyz.emptydreams.mi.api.gui.group;
 
-import xyz.emptydreams.mi.api.gui.component.IComponent;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 
 /**
  * 存储一系列居中的排列方案

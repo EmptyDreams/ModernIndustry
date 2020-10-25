@@ -2,7 +2,7 @@ package xyz.emptydreams.mi.api.gui.listener.mouse;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.emptydreams.mi.api.gui.component.IComponent;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 
 /**
  * 鼠标按键触发器

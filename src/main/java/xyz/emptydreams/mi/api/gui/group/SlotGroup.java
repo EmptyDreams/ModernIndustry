@@ -1,14 +1,13 @@
 package xyz.emptydreams.mi.api.gui.group;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
+import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
@@ -123,18 +122,18 @@ public class SlotGroup extends MComponent {
 	}
 	
 	@Override
-	public void onAddToGUI(Container con, EntityPlayer player) {
+	public void onAddToGUI(MIFrame con, EntityPlayer player) {
 		for (int y = 0; y < getYSize(); ++y) {
 			for (int x = 0; x < getXSize(); ++x) {
 				getSlot(x, y).xPos = getX() + (getSlotSize() * x) + (getInterval() * x) + 1;
 				getSlot(x, y).yPos = getY() + (getSlotSize() * y) + (getInterval() * y) + 1;
-				((MIFrame) con).addSlotToContainer(getSlot(x, y));
+				con.addSlotToContainer(getSlot(x, y));
 			}
 		}
 	}
 	
 	@Override
-	public void onAddToGUI(GuiContainer con, EntityPlayer player) {
+	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
 		for (int y = 0; y < getYSize(); ++y) {
 			for (int x = 0; x < getXSize(); ++x) {
 				getSlot(x, y).xPos = getX() + (getSlotSize() * x) + (getInterval() * x) + 1;

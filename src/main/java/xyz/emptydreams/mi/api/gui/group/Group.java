@@ -6,10 +6,11 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
-import xyz.emptydreams.mi.api.gui.component.IComponent;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
@@ -92,19 +93,18 @@ public class Group extends MComponent implements Iterable<IComponent> {
 	public Iterator<IComponent> iterator() { return components.iterator(); }
 
 	@Override
-	public void onAddToGUI(Container con, EntityPlayer player) {
-		if (mode != null && con instanceof IFrame) mode.accept(this);
+	public void onAddToGUI(MIFrame con, EntityPlayer player) {
+		if (mode != null) mode.accept(this);
 		if (con instanceof MIFrame) {
-			MIFrame frame = (MIFrame) con;
 			components.forEach(it -> {
-				frame.allocID(it);
+				con.allocID(it);
 				it.onAddToGUI(con, player);
 			});
 		} else components.forEach(it -> it.onAddToGUI(con, player));
 	}
 
 	@Override
-	public void onAddToGUI(GuiContainer con, EntityPlayer player) {
+	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
 		if (mode != null && con instanceof IFrame) mode.accept(this);
 		components.forEach(it -> it.onAddToGUI(con, player));
 	}

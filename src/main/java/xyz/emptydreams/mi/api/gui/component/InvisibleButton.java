@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseEnteredListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseExitedListener;
@@ -35,7 +36,7 @@ public class InvisibleButton extends MComponent {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void onAddToGUI(GuiContainer con, EntityPlayer player) {
+	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
 		registryListener((MouseEnteredListener) (mouseX, mouseY) -> mouse = true);
 		registryListener((MouseExitedListener) (mouseX, mouseY) -> mouse = false);
 		registryListener(new MouseActionListener() {
