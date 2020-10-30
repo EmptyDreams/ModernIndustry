@@ -9,13 +9,11 @@ import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.registries.IForgeRegistry;
-import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -123,7 +121,6 @@ public final class RecipeRegister {
 		SWORDS.forEach((sword, material) -> registry.register(getRecipe(sword, new Object[] { "#", "#", "|",
 															'#', material, '|', STICK })));
 		ARMORS.forEach((armor, material) -> registryArmor(armor, material, registry));
-		MinecraftForge.EVENT_BUS.post(new CraftGuideRegistryEvent());
 	}
 
 	private static void registryArmor(ItemArmor armor, String material, IForgeRegistry<IRecipe> registry) {

@@ -13,7 +13,6 @@ import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.common.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.component.StringComponent;
-import xyz.emptydreams.mi.api.gui.component.interfaces.IButton;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 
 import javax.annotation.Nonnull;
@@ -179,12 +178,6 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	}
 	
 	@Override
-	public void addButton(IButton button) {
-		//add(button, null);
-		addButton(button.createGuiButtonObject(buttonList.size()));
-	}
-	
-	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		this.drawDefaultBackground();
 		super.drawScreen(mouseX, mouseY, partialTicks);
@@ -298,7 +291,8 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		for (IComponent component : components) {
 			if (component.getX() <= mouseX && component.getY() <= mouseY &&
 				component.getX() + component.getWidth() >= mouseX &&
-				component.getY() + component.getHeight() >= mouseY) return component;
+				component.getY() + component.getHeight() >= mouseY &&
+					component.isMouseInside(mouseX, mouseY)) return component;
 		}
 		return null;
 	}

@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.api.gui.common;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.gui.component.interfaces.IButton;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 
 /**
@@ -23,12 +22,6 @@ public interface IFrame {
 	 * @param player 打开GUI的玩家的对象，若调用端在客户端则player允许为null
 	 */
 	void add(IComponent component, EntityPlayer player);
-	
-	/**
-	 * 添加一个按钮
-	 * @param button 按钮的绘制操作
-	 */
-	void addButton(IButton button);
 	
 	/** 初始化内部数据 */
 	void init(World world);

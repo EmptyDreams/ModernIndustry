@@ -13,42 +13,32 @@ public final class MouseListenerTrigger {
 	
 	/** 尝试触发鼠标松开事件 */
 	public static void activateReleased(IComponent component, float mouseX, float mouseY, int mouseButton) {
-		component.activateListener(MouseReleasedListener.class, it -> {
-			MouseReleasedListener listener = (MouseReleasedListener) it;
-			listener.mouseReleased(mouseX, mouseY, mouseButton);
-		});
+		component.activateListener(MouseReleasedListener.class,
+						it -> it.mouseReleased(mouseX, mouseY, mouseButton));
 	}
 	
 	/** 尝试触发鼠标离开事件 */
 	public static void activateExited(IComponent component, float mouseX, float mouseY) {
-		component.activateListener(MouseExitedListener.class, it -> {
-			MouseExitedListener listener = (MouseExitedListener) it;
-			listener.mouseExited(mouseX, mouseY);
-		});
+		component.activateListener(MouseExitedListener.class,
+						it -> it.mouseExited(mouseX, mouseY));
 	}
 	
 	/** 尝试触发鼠标左键单击事件 */
 	public static void activateAction(IComponent component, float mouseX, float mouseY) {
-		component.activateListener(MouseActionListener.class, it -> {
-			MouseActionListener listener = (MouseActionListener) it;
-			listener.mouseAction(mouseX, mouseY);
-		});
+		component.activateListener(MouseActionListener.class,
+						it -> it.mouseAction(mouseX, mouseY));
 	}
 	
 	/** 尝试触发鼠标点击事件 */
 	public static void activateClick(IComponent component, float mouseX, float mouseY, int mouseButton) {
-		component.activateListener(MouseClickListener.class, it -> {
-			MouseClickListener listener = (MouseClickListener) it;
-			listener.mouseClick(mouseX, mouseY, mouseButton);
-		});
+		component.activateListener(MouseClickListener.class,
+						it -> it.mouseClick(mouseX, mouseY, mouseButton));
 	}
 	
 	/** 尝试触发鼠标进入的事件 */
 	public static void activateEntered(IComponent component, float mouseX, float mouseY) {
-		component.activateListener(MouseExitedListener.class, it -> {
-			MouseEnteredListener listener = (MouseEnteredListener) it;
-			listener.mouseEntered(mouseX, mouseY);
-		});
+		component.activateListener(MouseEnteredListener.class,
+						it -> it.mouseEntered(mouseX, mouseY));
 	}
 	
 }

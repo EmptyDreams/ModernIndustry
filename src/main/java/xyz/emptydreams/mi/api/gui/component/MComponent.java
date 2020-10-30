@@ -57,12 +57,13 @@ public abstract class MComponent implements IComponent {
 	}
 	
 	@Override
-	public void activateListener(Class<? extends IListener> name, Consumer<IListener> consumer) {
+	public <T extends IListener> void activateListener(Class<T> name, Consumer<T> consumer) {
 		int index = 0;
 		NBTTagCompound data = new NBTTagCompound();
 		for (IListener listener : listeners) {
 			if (name.isAssignableFrom(listener.getClass())) {
-				consumer.accept(listener);
+				//noinspection unchecked
+				consumer.accept((T) listener);
 				if (WorldUtil.isClient(null)) {
 					NBTTagCompound info = listener.writeTo();
 					if (info != null) data.setTag(String.valueOf(index), info);

@@ -68,6 +68,15 @@ public interface IComponent {
 	/** 在组件被移除GUI时 */
 	void onRemoveFromGUI(Container con);
 	
+	/**
+	 * 判断鼠标是否在组件内
+	 * @param mouseX 鼠标X轴坐标（相对于GUI）
+	 * @param mouseY 鼠标Y轴坐标（相对于GUI）
+	 */
+	default boolean isMouseInside(float mouseX, float mouseY) {
+		return true;
+	}
+	
 	/** 实时渲染 */
 	@SideOnly(Side.CLIENT)
 	default void realTimePaint(GuiContainer gui) { }
@@ -141,7 +150,7 @@ public interface IComponent {
 	 * @param name 事件名称，所有继承自该类的事件都将被触发
 	 * @param consumer 需要执行的操作
 	 */
-	void activateListener(Class<? extends IListener> name, Consumer<IListener> consumer);
+	<T extends IListener> void activateListener(Class<T> name, Consumer<T> consumer);
 	
 	/**
 	 * 注册指定事件

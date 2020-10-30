@@ -1,12 +1,14 @@
 package xyz.emptydreams.mi.api.net;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import xyz.emptydreams.mi.api.event.NetWorkRegistryEvent;
 import xyz.emptydreams.mi.api.net.message.IMessageHandle;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.net.message.gui.GuiMessage;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
-import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -17,16 +19,20 @@ import java.util.List;
  * 保证在接收端可以正确解析信息。
  * @author EmptyDreams
  */
+@Mod.EventBusSubscriber
 public final class MessageRegister {
 	
 	private static final List<IMessageHandle<?>> INSTANCES = new LinkedList<>();
-	private static final List<IMessageHandle<?>> INSTANCES_CLIENT = new LinkedList<>();
 	
-	/** 注册一个信息类型 */
+	/**
+	 * 注册一个信息类型
+	 * @deprecated 请使用NetWorkRegistryEvent事件注册
+	 * @see NetWorkRegistryEvent
+	 */
+	@Deprecated
 	public static void registry(IMessageHandle<?> handle) {
 		StringUtil.checkNull(handle, "handle");
-		if (WorldUtil.isServer(null)) INSTANCES.add(handle);
-		else INSTANCES_CLIENT.add(handle);
+		if (!INSTANCES.contains(handle)) INSTANCES.add(handle);
 	}
 	
 	/**
@@ -52,7 +58,7 @@ public final class MessageRegister {
 	 * @return 是否解析成功
 	 */
 	public static boolean parseClient(NBTTagCompound message) {
-		for (IMessageHandle<?> it : INSTANCES_CLIENT) {
+		for (IMessageHandle<?> it : INSTANCES) {
 			if (it.match(message)) {
 				if (it.parseOnClient(message)) return true;
 				MISysInfo.err("有一个信息解析失败：" + it.getInfo(message));
@@ -63,9 +69,9 @@ public final class MessageRegister {
 		return false;
 	}
 	
-	static {
-		registry(BlockMessage.instance());
-		registry(GuiMessage.instance());
+	@SubscribeEvent
+	public static void registryMessage(NetWorkRegistryEvent event) {
+		event.registry(BlockMessage.instance(), GuiMessage.instance());
 	}
 	
 }

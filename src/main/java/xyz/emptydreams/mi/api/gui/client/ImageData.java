@@ -73,8 +73,8 @@ public final class ImageData {
 			put("slot",                         new Node(0, 76, 26, 26));
 			put("backpack",                     new Node(0, 0, 162, 76));
 			put(IProgressBar.RESOURCE_NAME,     new Node(0, 102, 111, 74));
-			put("button",                       new Node(162, 256, 200, 20));
-			put("buttonClicked",                new Node(162, 276, 200, 20));
+			put("button",                       new Node(162, 256, 15, 20));
+			put("buttonClicked",                new Node(162, 276, 15, 20));
 		}
 	};
 	

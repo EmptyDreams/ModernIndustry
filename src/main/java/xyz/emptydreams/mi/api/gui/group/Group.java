@@ -11,6 +11,7 @@ import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
+import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
@@ -146,7 +147,17 @@ public class Group extends MComponent implements Iterable<IComponent> {
 	public void realTimePaint(GuiContainer gui) {
 		components.forEach(it -> it.realTimePaint(gui));
 	}
-
+	
+	@Override
+	public boolean isMouseInside(float mouseX, float mouseY) {
+		mouseX -= getX();
+		mouseY -= getY();
+		for (IComponent component : components) {
+			if (MathUtil.checkMouse2DRec(mouseX, mouseY, component)) return true;
+		}
+		return false;
+	}
+	
 	@Override
 	public String toString() {
 		return "Group{控件数量：" + size() +
