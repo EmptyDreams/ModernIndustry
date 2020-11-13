@@ -180,17 +180,17 @@ public class MIFrame extends Container implements IFrame {
 	}
 	
 	/** 接收网络信息 */
-	public void receive(NBTTagCompound data) {
-		int id = data.getInteger("id");
+	public void receive(NBTTagCompound data, int id) {
 		IComponent target = null;
 		for (IComponent component : components) {
-			if (component.getCode() == id) {
+			component = component.containCode(id);
+			if (component != null) {
 				target = component;
 				break;
 			}
 		}
 		if (target == null) {
-			MISysInfo.err("网络信息丢失：" + id);
+			MISysInfo.err("[MIFrame]网络信息丢失：ID = " + id);
 			return;
 		}
 		target.receive(data.getCompoundTag("data"));
@@ -242,8 +242,6 @@ public class MIFrame extends Container implements IFrame {
 		component.setCodeStart(codeStart);
 		codeStart += 100;
 	}
-
-	
 	
 	@Override
 	public void detectAndSendChanges() {

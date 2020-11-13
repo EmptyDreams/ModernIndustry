@@ -10,8 +10,8 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
-import xyz.emptydreams.mi.api.utils.wrapper.DoubleWrapper;
-import xyz.emptydreams.mi.api.utils.wrapper.Wrapper;
+import xyz.emptydreams.mi.api.utils.container.DoubleWrapper;
+import xyz.emptydreams.mi.api.utils.container.Wrapper;
 import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
 
 import javax.annotation.Nonnull;

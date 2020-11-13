@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.utils.wrapper;
+package xyz.emptydreams.mi.api.utils.container;
 
 /**
  * 用于盛放int的容器

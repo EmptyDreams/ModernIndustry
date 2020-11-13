@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import net.minecraft.item.ItemStack;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
-import xyz.emptydreams.mi.api.utils.wrapper.IntWrapper;
+import xyz.emptydreams.mi.api.utils.container.IntWrapper;
 
 import java.util.HashSet;
 import java.util.Iterator;

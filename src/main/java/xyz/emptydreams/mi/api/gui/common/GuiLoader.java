@@ -36,7 +36,6 @@ public class GuiLoader implements IGuiHandler {
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		IContainerCreater creater = IDS.getOrDefault(new Int(ID), null);
 		return creater == null ? null : creater.createClient(world, player, new BlockPos(x, y, z));
-		
 	}
 	
 	/** 存储ID自动分配位点 */

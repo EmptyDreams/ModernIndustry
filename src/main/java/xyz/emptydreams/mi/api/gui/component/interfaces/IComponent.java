@@ -74,7 +74,17 @@ public interface IComponent {
 	 * @param mouseY 鼠标Y轴坐标（相对于GUI）
 	 */
 	default boolean isMouseInside(float mouseX, float mouseY) {
-		return true;
+		return getMouseTarget(mouseX, mouseY) != null;
+	}
+	
+	/**
+	 * 获取鼠标指向的组件
+	 * @param mouseX 鼠标X轴坐标（相对于GUI）
+	 * @param mouseY 鼠标Y轴坐标（相对于GUI）
+	 * @return 若鼠标坐标不在组件范围内或指定地点无组件则返回null
+	 */
+	default IComponent getMouseTarget(float mouseX, float mouseY) {
+		return this;
 	}
 	
 	/** 实时渲染 */
@@ -112,7 +122,7 @@ public interface IComponent {
 		tag.setTag("data", data);
 		tag.setInteger("id", getCode());
 		EntityPlayer player = Minecraft.getMinecraft().player;
-		IMessage message = GuiMessage.instance().create(tag, new GuiAddition(player));
+		IMessage message = GuiMessage.instance().create(tag, new GuiAddition(player, getCode()));
 		MessageSender.sendToServer(message);
 	}
 	
@@ -134,10 +144,19 @@ public interface IComponent {
 		return code - getCode();
 	}
 
+	/** 获取传输数据用的codeID */
 	int getCode();
 	
 	/** 设置code起点，该方法由GUI类调用 */
 	void setCodeStart(int code);
+	
+	/**
+	 * 判断指定的网络传输ID是否在当前组件范围内
+	 * @return 是则返回具体值，不是则返回null
+	 */
+	default IComponent containCode(int code) {
+		return (code >= getCode() && code < getCode() + 100) ? this : null;
+	}
 	
 	/**
 	 * 获取GUI监听的事件列表

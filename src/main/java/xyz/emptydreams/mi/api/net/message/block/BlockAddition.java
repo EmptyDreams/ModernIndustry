@@ -1,9 +1,12 @@
 package xyz.emptydreams.mi.api.net.message.block;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.net.message.IMessageAddition;
+import xyz.emptydreams.mi.api.utils.BlockUtil;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 
 /**
@@ -12,8 +15,8 @@ import xyz.emptydreams.mi.api.net.message.IMessageAddition;
  */
 public class BlockAddition implements IMessageAddition {
 	
-	private final World world;
-	private final BlockPos pos;
+	private World world;
+	private BlockPos pos;
 	
 	public BlockAddition(TileEntity te) {
 		this(te.getWorld(), te.getPos());
@@ -24,8 +27,22 @@ public class BlockAddition implements IMessageAddition {
 		this.pos = pos;
 	}
 	
+	BlockAddition() { }
+	
 	public World getWorld() { return world; }
 	public BlockPos getPos() { return pos; }
+	
+	@Override
+	public void writeTo(NBTTagCompound tag) {
+		tag.setInteger("world", world.provider.getDimension());
+		BlockUtil.writeBlockPos(tag, pos, "pos");
+	}
+	
+	@Override
+	public void readFrom(NBTTagCompound tag) {
+		world = WorldUtil.getWorld(tag.getInteger("world"));
+		pos = BlockUtil.readBlockPos(tag, "pos");
+	}
 	
 	@Override
 	public boolean equals(Object o) {
@@ -50,4 +67,5 @@ public class BlockAddition implements IMessageAddition {
 		return "world=" + world.getProviderName() +
 				", pos=" + pos;
 	}
+	
 }

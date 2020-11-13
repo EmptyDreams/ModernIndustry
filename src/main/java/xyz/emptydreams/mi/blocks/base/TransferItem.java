@@ -19,7 +19,7 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
-import xyz.emptydreams.mi.api.utils.wrapper.BooleanWrapper;
+import xyz.emptydreams.mi.api.utils.container.BooleanWrapper;
 import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.data.info.CableCache;
 import xyz.emptydreams.mi.data.trusteeship.EleSrcTransfer;

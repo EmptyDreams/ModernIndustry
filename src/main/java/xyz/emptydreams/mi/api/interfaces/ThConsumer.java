@@ -5,6 +5,7 @@ package xyz.emptydreams.mi.api.interfaces;
  * @see java.util.function.BiConsumer
  * @author EmptyDreams
  */
+@FunctionalInterface
 public interface ThConsumer<T, U, V> {
 
 	/**

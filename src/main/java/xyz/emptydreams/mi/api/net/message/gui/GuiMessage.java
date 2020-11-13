@@ -2,18 +2,19 @@ package xyz.emptydreams.mi.api.net.message.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.net.message.IMessageHandle;
-import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
+ * GUI网络通信<br>
+ * <pre>附加信息：
+ *  处理端：服务端、客户端</pre>
  * @author EmptyDreams
  */
 public class GuiMessage implements IMessageHandle<GuiAddition> {
@@ -34,21 +35,25 @@ public class GuiMessage implements IMessageHandle<GuiAddition> {
 			message.setBoolean("cast", false);
 			return false;
 		}
+		GuiAddition addition = new GuiAddition();
+		addition.readFrom(message);
 		MIFrame frame = (MIFrame) container;
-		frame.receive(message.getCompoundTag("data"));
+		frame.receive(message.getCompoundTag("data"), addition.getId());
 		return true;
 	}
 	
 	@Override
 	public boolean parseOnServer(@Nonnull NBTTagCompound message) {
-		EntityPlayer player = WorldUtil.getPlayerAtService(message.getString("player"));
-		Container container = player.openContainer;
+		GuiAddition addition = new GuiAddition();
+		addition.readFrom(message);
+		Container container = addition.getPlayer().openContainer;
 		if (!(container instanceof MIFrame)) {
 			message.setBoolean("cast", false);
 			return false;
 		}
+		
 		MIFrame frame = (MIFrame) container;
-		frame.receive(message.getCompoundTag("data"));
+		frame.receive(message.getCompoundTag("data"), addition.getId());
 		return true;
 	}
 	
@@ -68,7 +73,7 @@ public class GuiMessage implements IMessageHandle<GuiAddition> {
 		NBTTagCompound result = new NBTTagCompound();
 		result.setBoolean("type_gui", false);
 		result.setTag("data", data);
-		result.setString("player", addition.getPlayer().getName());
+		addition.writeTo(result);
 		return result;
 	}
 	

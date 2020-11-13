@@ -1,7 +1,7 @@
 package xyz.emptydreams.mi.api.gui.component;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
+import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 /**
@@ -17,7 +17,7 @@ public class CraftButton extends InvisibleButton {
 		setAction(this::onAction);
 	}
 	
-	public void onAction(GuiContainer gui) {
+	public void onAction(IFrame gui, boolean isClient) {
 		
 	}
 	

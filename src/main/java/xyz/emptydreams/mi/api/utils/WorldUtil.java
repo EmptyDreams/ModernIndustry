@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
@@ -33,12 +34,23 @@ public final class WorldUtil {
 	
 	/**
 	 * 获取所有世界中指定名称的玩家的对象
-	 * @param name 名称
 	 * @return 若玩家不存在则返回null
 	 */
 	public static EntityPlayer getPlayerAtService(String name) {
 		for (WorldServer world : FMLCommonHandler.instance().getMinecraftServerInstance().worlds) {
 			EntityPlayer player = world.getPlayerEntityByName(name);
+			if (player != null) return player;
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取所有世界中指定UUID的玩家的对象
+	 * @return 若玩家不存在则返回null
+	 */
+	public static EntityPlayer getPlayerAtService(UUID uuid) {
+		for (WorldServer world : FMLCommonHandler.instance().getMinecraftServerInstance().worlds) {
+			EntityPlayer player = world.getPlayerEntityByUUID(uuid);
 			if (player != null) return player;
 		}
 		return null;
@@ -61,7 +73,7 @@ public final class WorldUtil {
 	 * @param consumer 操作
 	 */
 	public static void forEachPlayers(Consumer<EntityPlayer> consumer) {
-		if (isServer(null)) {
+		if (isServer()) {
 			for (WorldServer world : FMLCommonHandler.instance().getMinecraftServerInstance().worlds) {
 				world.playerEntities.forEach(consumer);
 			}
@@ -133,36 +145,25 @@ public final class WorldUtil {
 		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
-	/**
-	 * 优化客户端/服务端判断<br>
-	 * <b>注意：该方法对单机游戏无效</b>
-	 */
-	public static void optimizeSideCalculate(@Nullable World world) {
-		if (!isServer && isServer(world)) {
-			try {
-				Class.forName("xyz.emptydreams.mi.api.utils.WorldUtil$ServerTest");
-				isServer = true;
-			} catch (Throwable e) {
-				MISysInfo.print("系统检测到当前环境不为服务端，跳过服务端优化");
-				MISysInfo.print("如果你在服务端看到这条消息，请发送报告给作者！");
-			}
-		}
+	/** 判断是否为服务端 */
+	public static boolean isServer() {
+		return isServer(null);
 	}
 	
-	private static boolean isServer = false;
+	/** 判断是否为客户端 */
+	public static boolean isClient() {
+		return !isServer(null);
+	}
 	
 	/**
 	 * 判断是否为服务端.
 	 * 因为判断方法不必须依赖世界对象，所以world也可以为null。
 	 * 使用null时将启动与使用world不同的算法。
-	 * 在非ServerThread或ClientThread时可能会出现误判，
-	 * 但是该方法误判代表FMLCommonHandler.instance().getSize()一定会误判
 	 * @param world 世界对象（可为null）
 	 */
 	public static boolean isServer(@Nullable World world) {
-		if (isServer) return true;
 		if (world == null) {
-			if (FMLCommonHandler.instance().getSide().isServer()) return true;
+			if (FMLCommonHandler.instance().getEffectiveSide().isServer()) return true;
 			return Thread.currentThread().getName().toLowerCase().contains("server");
 		} else {
 			return !world.isRemote;
@@ -192,10 +193,6 @@ public final class WorldUtil {
 	public static void atClientTickEnd(TickEvent.ClientTickEvent event) {
 		CLIENT_REMOVES.forEach((key, value) -> key.tickableTileEntities.removeAll(value));
 		CLIENT_REMOVES.clear();
-	}
-	
-	@SideOnly(Side.SERVER)
-	private static final class ServerTest {
 	}
 	
 }

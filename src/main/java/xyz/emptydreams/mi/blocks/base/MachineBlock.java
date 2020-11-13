@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
-import xyz.emptydreams.mi.api.utils.wrapper.BooleanWrapper;
+import xyz.emptydreams.mi.api.utils.container.BooleanWrapper;
 import xyz.emptydreams.mi.blocks.common.CommonBlocks;
 
 import javax.annotation.Nonnull;

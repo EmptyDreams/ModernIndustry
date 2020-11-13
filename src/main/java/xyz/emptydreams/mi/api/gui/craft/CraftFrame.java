@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.api.gui.craft;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
+import xyz.emptydreams.mi.api.gui.component.ButtonComponent;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.craft.handle.CraftHandle;
 import xyz.emptydreams.mi.api.gui.group.Group;
@@ -43,9 +44,18 @@ public class CraftFrame extends MIFrame {
 		node = handle.createGroup();
 		CommonProgress progress = new CommonProgress();
 		
-		Group group = new Group(0, 10, getWidth(), getHeight() - 10, Panels::horizontalCenter);
+		Group group = new Group(0, 20, getWidth(), 0, Panels::horizontalCenter);
 		group.adds(node.raw, progress, node.pro);
 		add(group, null);
+		
+		Group buttonGroup = new Group(0, group.getHeight() + group.getY() + 7,
+								getWidth(), 0, Panels::horizontalCenter);
+		ButtonComponent prevButton = new ButtonComponent(10, 10);
+		ButtonComponent nextButton = new ButtonComponent(10, 10);
+		prevButton.setAction((frame, isClient) -> preShape());
+		nextButton.setAction((frame, isClient) -> nextShape());
+		buttonGroup.adds(prevButton, nextButton);
+		add(buttonGroup, null);
 		
 		handle.update(node, craft.getShape(++index));
 	}

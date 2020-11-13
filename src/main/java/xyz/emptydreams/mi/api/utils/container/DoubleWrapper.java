@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.utils.wrapper;
+package xyz.emptydreams.mi.api.utils.container;
 
 /**
  * 存储double的容器

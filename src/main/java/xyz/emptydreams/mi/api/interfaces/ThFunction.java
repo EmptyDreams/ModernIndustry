@@ -5,6 +5,7 @@ package xyz.emptydreams.mi.api.interfaces;
  * @see java.util.function.BiFunction
  * @author EmptyDreams
  */
+@FunctionalInterface
 public interface ThFunction<T, U, V, R> {
 
 	/**

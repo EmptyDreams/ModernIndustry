@@ -8,7 +8,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.interfaces.ThConsumer;
-import xyz.emptydreams.mi.api.utils.wrapper.Wrapper;
+import xyz.emptydreams.mi.api.utils.container.Wrapper;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;

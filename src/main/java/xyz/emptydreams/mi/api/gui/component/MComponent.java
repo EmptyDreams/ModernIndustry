@@ -3,16 +3,13 @@ package xyz.emptydreams.mi.api.gui.component;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.listener.IListener;
-import xyz.emptydreams.mi.api.net.handler.MessageSender;
-import xyz.emptydreams.mi.api.net.message.gui.GuiAddition;
-import xyz.emptydreams.mi.api.net.message.gui.GuiMessage;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
@@ -64,26 +61,29 @@ public abstract class MComponent implements IComponent {
 			if (name.isAssignableFrom(listener.getClass())) {
 				//noinspection unchecked
 				consumer.accept((T) listener);
-				if (WorldUtil.isClient(null)) {
+				if (WorldUtil.isClient()) {
 					NBTTagCompound info = listener.writeTo();
-					if (info != null) data.setTag(String.valueOf(index), info);
+					if (info != null)
+						data.setTag(String.valueOf(index), info);
 				}
 			}
 			++index;
 		}
-		if (WorldUtil.isClient(null) && data.getSize() > 0) {
-			GuiAddition addition = new GuiAddition(getClientPlayer());
-			IMessage message = GuiMessage.instance().create(data, addition);
-			MessageSender.sendToServer(message);
-		}
+		//如果事件在客户端触发并且需要进行网络传输则发送消息给服务端
+		//如果事件在服务端触发不需要发送给客户端，因为在服务端触发的事件大部分在客户端也可以触发
+		if (WorldUtil.isClient() && data.getSize() > 0) sendToServer(data);
 	}
 	
 	@Override
 	public void receive(NBTTagCompound data) {
-		for (String key : data.getKeySet()) {
-			int index = Integer.parseInt(key);
-			IListener listener = listeners.get(index);
-			listener.readFrom(data.getCompoundTag("key"));
+		try {
+			for (String key : data.getKeySet()) {
+				int index = Integer.parseInt(key);
+				IListener listener = listeners.get(index);
+				listener.readFrom(data.getCompoundTag(key));
+			}
+		} catch (IndexOutOfBoundsException e) {
+			MISysInfo.err("事件网络通讯异常，key值超出范围：" + e.getMessage());
 		}
 	}
 	
@@ -133,16 +133,6 @@ public abstract class MComponent implements IComponent {
 	@Override
 	public void setCodeStart(int code) {
 		this.code = code;
-	}
-	
-	private static EntityPlayer getClientPlayer() {
-		try {
-			Class<?> clazz = Class.forName("net.minecraft.client.Minecraft");
-			Object mc = clazz.getMethod("getMinecraft").invoke(null, (Object[]) null);
-			return (EntityPlayer) clazz.getField("player").get(mc);
-		} catch (Throwable e) {
-			throw new RuntimeException("获取客户端玩家对象时出错", e);
-		}
 	}
 	
 }

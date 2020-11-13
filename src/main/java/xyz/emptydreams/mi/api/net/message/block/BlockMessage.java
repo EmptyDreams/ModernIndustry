@@ -16,7 +16,10 @@ import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 方块信息处理
+ * 方块信息处理<br>
+ * <pre>附加信息：
+ *  处理端：服务端、客户端</pre>
+ *
  * @author EmptyDreams
  */
 public final class BlockMessage implements IMessageHandle<BlockAddition> {
@@ -46,9 +49,9 @@ public final class BlockMessage implements IMessageHandle<BlockAddition> {
 	
 	@Override
 	public boolean parseOnServer(@Nonnull NBTTagCompound message) {
-		World world = WorldUtil.getWorld(message.getInteger("world"));
-		BlockPos pos = BlockUtil.readBlockPos(message, "pos");
-		TileEntity te = world.getTileEntity(pos);
+		BlockAddition addition = new BlockAddition();
+		addition.readFrom(message);
+		TileEntity te = addition.getWorld().getTileEntity(addition.getPos());
 		if (!(te instanceof IAutoNetwork)) {
 			message.setByte("cast", (byte) 0);
 			return false;
@@ -72,8 +75,7 @@ public final class BlockMessage implements IMessageHandle<BlockAddition> {
 	public NBTTagCompound packaging(@Nonnull NBTTagCompound data, @Nullable BlockAddition addition) {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger("type_block", id.getAndIncrement());
-		tag.setInteger("world", addition.getWorld().provider.getDimension());
-		BlockUtil.writeBlockPos(tag, addition.getPos(), "pos");
+		addition.writeTo(tag);
 		tag.setTag("data", data);
 		return tag;
 	}

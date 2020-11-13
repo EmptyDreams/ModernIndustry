@@ -26,7 +26,7 @@ public final class NetworkLoader {
 	 
 	public NetworkLoader() {
 		registerMessage(ServerHandler.class, CommonMessage.class, SERVER);
-		if (WorldUtil.isClient(null)) {
+		if (WorldUtil.isClient()) {
 			registerMessage(ClientHandler.class, CommonMessage.class, CLIENT);
 		}
 	}

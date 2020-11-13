@@ -74,7 +74,18 @@ public class Group extends MComponent implements Iterable<IComponent> {
 			add(iComponent);
 		}
 	}
-
+	
+	@Override
+	public IComponent containCode(int code) {
+		IComponent component = super.containCode(code);
+		if (component != null) return component;
+		for (IComponent c : components) {
+			component = c.containCode(code);
+			if (component != null) return component;
+		}
+		return null;
+	}
+	
 	/** 获取两个控件间的最短距离 */
 	public int getMinDistance() { return minDistance; }
 	/** 设置两个控件间的最短距离 */
@@ -148,14 +159,13 @@ public class Group extends MComponent implements Iterable<IComponent> {
 		components.forEach(it -> it.realTimePaint(gui));
 	}
 	
+	@Nonnull
 	@Override
-	public boolean isMouseInside(float mouseX, float mouseY) {
-		mouseX -= getX();
-		mouseY -= getY();
+	public IComponent getMouseTarget(float mouseX, float mouseY) {
 		for (IComponent component : components) {
-			if (MathUtil.checkMouse2DRec(mouseX, mouseY, component)) return true;
+			if (MathUtil.checkMouse2DRec(mouseX, mouseY, component)) return component;
 		}
-		return false;
+		return this;
 	}
 	
 	@Override

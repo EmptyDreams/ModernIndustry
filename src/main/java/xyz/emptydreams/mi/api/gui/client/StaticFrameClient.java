@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.gui.client;
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -217,6 +216,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	
 	@Override
 	protected final void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+		mouseX -= getGuiLeft();     mouseY -= getGuiTop();
 		if (isPaintBackGround) drawDefaultBackground();
 		else GlStateManager.color(1.0F, 1.0F, 1.0F);
 		RuntimeTexture texture = getTexture();
@@ -241,13 +241,9 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	}
 	
 	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
-	
-	}
-	
-	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
+		mouseX -= getGuiLeft();     mouseY -= getGuiTop();
 		IComponent component = getComponentFromMouse(mouseX, mouseY);
 		if (component != null) {
 			if (mouseButton == 0) activateAction(component, mouseX, mouseY);
@@ -258,6 +254,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
 		super.mouseReleased(mouseX, mouseY, state);
+		mouseX -= getGuiLeft();     mouseY -= getGuiTop();
 		IComponent component = getComponentFromMouse(mouseX, mouseY);
 		if (component != null) {
 			activateReleased(component, mouseX, mouseY, state);
@@ -286,13 +283,13 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	 */
 	@Nullable
 	public IComponent getComponentFromMouse(float mouseX, float mouseY) {
-		mouseX -= getGuiLeft();
-		mouseY -= getGuiTop();
 		for (IComponent component : components) {
-			if (component.getX() <= mouseX && component.getY() <= mouseY &&
-				component.getX() + component.getWidth() >= mouseX &&
-				component.getY() + component.getHeight() >= mouseY &&
-					component.isMouseInside(mouseX, mouseY)) return component;
+			if (component.getX() <= mouseX && component.getY() <= mouseY
+					&& component.getX() + component.getWidth() >= mouseX
+					&& component.getY() + component.getHeight() >= mouseY) {
+				IComponent c = component.getMouseTarget(mouseX, mouseY);
+				if (c != null) return c;
+			}
 		}
 		return null;
 	}
