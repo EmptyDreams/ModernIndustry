@@ -17,6 +17,7 @@ import xyz.emptydreams.mi.api.net.message.gui.GuiAddition;
 import xyz.emptydreams.mi.api.net.message.gui.GuiMessage;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -83,6 +84,7 @@ public interface IComponent {
 	 * @param mouseY 鼠标Y轴坐标（相对于GUI）
 	 * @return 若鼠标坐标不在组件范围内或指定地点无组件则返回null
 	 */
+	@Nullable
 	default IComponent getMouseTarget(float mouseX, float mouseY) {
 		return this;
 	}
@@ -175,6 +177,7 @@ public interface IComponent {
 	 * 注册指定事件
 	 * @return 是否注册成功
 	 */
+	@SuppressWarnings("UnusedReturnValue")
 	boolean registryListener(IListener listener);
 	
 	/**
@@ -182,6 +185,7 @@ public interface IComponent {
 	 * @param test 指定条件
 	 * @return 是否移除成功
 	 */
+	@SuppressWarnings("unused")
 	boolean removeListenerIf(Predicate<IListener> test);
 	
 	/**

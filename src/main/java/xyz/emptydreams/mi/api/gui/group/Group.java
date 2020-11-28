@@ -15,6 +15,7 @@ import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -106,6 +107,7 @@ public class Group extends MComponent implements Iterable<IComponent> {
 
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
+		super.onAddToGUI(con, player);
 		if (mode != null) mode.accept(this);
 		if (con instanceof MIFrame) {
 			components.forEach(it -> {
@@ -117,6 +119,7 @@ public class Group extends MComponent implements Iterable<IComponent> {
 
 	@Override
 	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
+		super.onAddToGUI(con, player);
 		if (mode != null && con instanceof IFrame) mode.accept(this);
 		components.forEach(it -> it.onAddToGUI(con, player));
 	}
@@ -159,13 +162,16 @@ public class Group extends MComponent implements Iterable<IComponent> {
 		components.forEach(it -> it.realTimePaint(gui));
 	}
 	
-	@Nonnull
+	@Nullable
 	@Override
 	public IComponent getMouseTarget(float mouseX, float mouseY) {
 		for (IComponent component : components) {
-			if (MathUtil.checkMouse2DRec(mouseX, mouseY, component)) return component;
+			if (MathUtil.checkMouse2DRec(mouseX, mouseY, component)) {
+				IComponent result = component.getMouseTarget(mouseX, mouseY);
+				if (result != null) return result;
+			}
 		}
-		return this;
+		return null;
 	}
 	
 	@Override

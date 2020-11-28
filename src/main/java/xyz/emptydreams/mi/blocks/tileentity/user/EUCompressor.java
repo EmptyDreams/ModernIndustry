@@ -63,6 +63,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		setCounter(counter);
 		setReceive(true);
 		setMaxEnergy(20);
+		progressBar.setCraftButton(CraftList.COMPRESSOR);
 	}
 
 	/** 设置世界时更新计数器的设置 */

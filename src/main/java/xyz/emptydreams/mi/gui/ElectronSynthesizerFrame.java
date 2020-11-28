@@ -36,9 +36,7 @@ public class ElectronSynthesizerFrame {
 		public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
 			MIFrame frame = new MIFrame(230, 210, player);
 			init(frame, world, pos, player);
-			StaticFrameClient client = new StaticFrameClient(frame, LOCATION_NAME);
-			init(client, world, pos, player);
-			return client;
+			return new StaticFrameClient(frame, LOCATION_NAME);
 		}
 		
 		private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {

@@ -34,7 +34,7 @@ public final class RawQueue {
 		if (world == null || queue.isEmpty()) return;
 		for (NBTTagCompound data : queue) {
 			boolean sup = MessageRegister.parseClient(data);
-			if (!sup) MISysInfo.err("有一个信息没有成功被处理：" + data);
+			if (!sup) MISysInfo.err("[RawQueue]有一个信息没有成功被处理：" + data);
 		}
 		queue.clear();
 	}

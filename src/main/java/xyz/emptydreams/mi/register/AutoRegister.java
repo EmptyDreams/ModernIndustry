@@ -81,7 +81,7 @@ public final class AutoRegister {
 		if (isRun) return;
 		isRun = true;
 		//是否为客户端
-		final boolean client = WorldUtil.isClient(null);
+		final boolean client = WorldUtil.isClient();
 		
 		try {
 			//注册debug物品

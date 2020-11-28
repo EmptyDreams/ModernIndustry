@@ -34,14 +34,14 @@ public final class CraftShower {
 					@Nonnull
 					@Override
 					public MIFrame createService(World world, EntityPlayer player1, BlockPos pos) {
-						return new CraftFrame(craft);
+						return new CraftFrame(craft, player1);
 					}
 					
 					@Nonnull
 					@Override
 					public StaticFrameClient createClient(World world, EntityPlayer player1, BlockPos pos) {
 						return new StaticFrameClient(
-								new CraftFrame(craft), craft.getLocalName());
+								new CraftFrame(craft, player1), craft.getLocalName());
 					}
 				}
 		));

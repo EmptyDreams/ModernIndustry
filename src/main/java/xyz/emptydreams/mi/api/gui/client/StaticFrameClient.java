@@ -11,7 +11,6 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.common.TitleModelEnum;
-import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 
 import javax.annotation.Nonnull;
@@ -19,7 +18,7 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static xyz.emptydreams.mi.api.gui.listener.mouse.MouseListenerTrigger.*;
@@ -29,6 +28,7 @@ import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
  * 静态GUI，注意：该类只能用于静态GUI的显示
  * @author EmptyDreams
  */
+@SuppressWarnings("unused")
 @SideOnly(Side.CLIENT)
 public class StaticFrameClient extends GuiContainer implements IFrame {
 	
@@ -48,7 +48,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	/** 标题颜色 */
 	private int titleColor = 0x000000;
 	/** 保存组件 */
-	private final LinkedList<IComponent> components = new LinkedList<>();
+	private final List<IComponent> components;
 	/** 资源名称 */
 	private String name;
 	
@@ -57,22 +57,8 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		xSize = inventorySlotsIn.getWidth();
 		ySize = inventorySlotsIn.getHeight();
 		this.title = title;
+		components = inventorySlotsIn.cloneComponent();
 		setResourceName(ModernIndustry.MODID, checkNull(title, "title"));
-		if (inventorySlotsIn.hasBackpack()) {
-			StringComponent shower = new StringComponent(INVENTORY);
-			shower.setLocation(inventorySlotsIn.getBackpackX(), inventorySlotsIn.getBackpackY() - 10);
-			add(shower, null);
-		}
-		if (inventorySlotsIn.componentSize() != 0) {
-			inventorySlotsIn.forEachComponent(it -> add(it, null));
-		}
-	}
-	
-	private boolean isOriginal = true;
-	@Override
-	public void initGui() {
-		isOriginal = false;
-		super.initGui();
 	}
 	
 	/** 设置GUI使用的资源名称，默认使用"<b>{@link ModernIndustry#MODID}:{@link #getTitle()}</b>" */

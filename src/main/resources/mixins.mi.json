@@ -2,6 +2,8 @@
   "package": "xyz.emptydreams.mi.coremod.mixin",
   "mixins": [
     "MixinCraftingHelper",
+    "MixinEntityPlayerMP",
+    "MixinFMLNetworkHandler",
     "MixinItemStack"
   ],
   "client": [],

@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import xyz.emptydreams.mi.api.gui.craft.CraftShower;
+import xyz.emptydreams.mi.ModernIndustry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -73,8 +73,8 @@ public final class CommonUtil {
 	 */
 	public static boolean openGui(EntityPlayer player, int id, World world, BlockPos pos) {
 		if (world.isRemote) return true;
-		//player.openGui(ModernIndustry.instance, id, world, pos.getX(), pos.getY(), pos.getZ());
-		CraftShower.show(CraftList.SYNTHESIZER, player);
+		player.openGui(ModernIndustry.instance, id, world, pos.getX(), pos.getY(), pos.getZ());
+		//CraftShower.show(CraftList.SYNTHESIZER, player);
 		return true;
 	}
 

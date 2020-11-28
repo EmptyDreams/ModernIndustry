@@ -44,11 +44,11 @@ public final class MessageRegister {
 		for (IMessageHandle<?> it : INSTANCES) {
 			if (it.match(message)) {
 				if (it.parseOnServer(message)) return true;
-				MISysInfo.err("有一个信息解析失败：" + it.getInfo(message));
+				MISysInfo.err("[MessageRegister]有一个信息解析失败：" + it.getInfo(message));
 				return false;
 			}
 		}
-		MISysInfo.err("信息未找到处理器：" + message);
+		MISysInfo.err("[MessageRegister]信息未找到处理器：" + message);
 		return false;
 	}
 	
@@ -61,11 +61,11 @@ public final class MessageRegister {
 		for (IMessageHandle<?> it : INSTANCES) {
 			if (it.match(message)) {
 				if (it.parseOnClient(message)) return true;
-				MISysInfo.err("有一个信息解析失败：" + it.getInfo(message));
+				MISysInfo.err("[MessageRegister]有一个信息解析失败：" + it.getInfo(message));
 				return false;
 			}
 		}
-		MISysInfo.err("信息未找到处理器：" + message);
+		MISysInfo.err("[MessageRegister]信息未找到处理器：" + message);
 		return false;
 	}
 	

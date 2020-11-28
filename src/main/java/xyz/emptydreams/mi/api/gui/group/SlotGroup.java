@@ -11,6 +11,7 @@ import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -123,6 +124,7 @@ public class SlotGroup extends MComponent {
 	
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
+		super.onAddToGUI(con, player);
 		for (int y = 0; y < getYSize(); ++y) {
 			for (int x = 0; x < getXSize(); ++x) {
 				getSlot(x, y).xPos = getX() + (getSlotSize() * x) + (getInterval() * x) + 1;
@@ -134,6 +136,7 @@ public class SlotGroup extends MComponent {
 	
 	@Override
 	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
+		super.onAddToGUI(con, player);
 		for (int y = 0; y < getYSize(); ++y) {
 			for (int x = 0; x < getXSize(); ++x) {
 				getSlot(x, y).xPos = getX() + (getSlotSize() * x) + (getInterval() * x) + 1;
@@ -145,6 +148,11 @@ public class SlotGroup extends MComponent {
 	@Override
 	public void paint(@Nonnull Graphics g) {
 		paintGroup(g, 0, 0, getSlotSize(), getXSize(), getYSize(), getInterval());
+	}
+	
+	@Override
+	public IComponent getMouseTarget(float mouseX, float mouseY) {
+		return null;
 	}
 	
 	/**

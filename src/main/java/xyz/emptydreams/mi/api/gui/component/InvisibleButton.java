@@ -53,11 +53,13 @@ public class InvisibleButton extends MComponent {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
+		super.onAddToGUI(con, player);
 		if (getListeners().isEmpty()) onAddToGUI((MIFrame) null, player);
 	}
 	
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
+		super.onAddToGUI(con, player);
 		registryListener((MouseEnteredListener) (mouseX, mouseY) -> mouse = true);
 		registryListener((MouseExitedListener) (mouseX, mouseY) -> mouse = false);
 		registryListener(new MouseActionListener() {

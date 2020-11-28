@@ -32,6 +32,12 @@ import java.util.function.Consumer;
 @Mod.EventBusSubscriber
 public final class WorldUtil {
 	
+	/** 获取本地玩家对象 */
+	@SideOnly(Side.CLIENT)
+	public static EntityPlayer getPlayerAtClient() {
+		return Minecraft.getMinecraft().player;
+	}
+	
 	/**
 	 * 获取所有世界中指定名称的玩家的对象
 	 * @return 若玩家不存在则返回null

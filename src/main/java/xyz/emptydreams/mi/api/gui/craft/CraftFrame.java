@@ -1,5 +1,9 @@
 package xyz.emptydreams.mi.api.gui.craft;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerPlayer;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
@@ -8,6 +12,9 @@ import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.craft.handle.CraftHandle;
 import xyz.emptydreams.mi.api.gui.group.Group;
 import xyz.emptydreams.mi.api.gui.group.Panels;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
+
+import java.util.Map;
 
 /**
  * 用于显示合成表
@@ -23,15 +30,18 @@ public class CraftFrame extends MIFrame {
 	/** 当前合成表下标 */
 	private int index = -1;
 	/** 对应的{@link CraftHandle.Node} */
-	CraftHandle.Node node;
+	private CraftHandle.Node node;
+	/** 存储打开GUI前的窗体 */
+	private final Container preGui;
 	
-	public CraftFrame(CraftGuide craft) {
+	public CraftFrame(CraftGuide craft, EntityPlayer player) {
 		this.craft = craft;
 		int width = (craft.getShapeWidth() + craft.getProtectedWidth()) * 18
 						+ CommonProgress.Style.ARROW.getWidth() + 15 * 4;
 		int height = Math.max(craft.getProtectedHeight(), craft.getShapeHeight()) * 18 + 50;
 		setSize(width, height);
 		init();
+		this.preGui = player.openContainer;
 	}
 
 	/** 解析合成表 */
@@ -41,6 +51,10 @@ public class CraftFrame extends MIFrame {
 		size = craft.size();
 		index = -1;
 		CraftHandle handle = HandleRegister.get(craft);
+		if (handle == null) {
+			MISysInfo.err("[CraftFrame]合成表显示暂时不支持该类型的合成表：" + craft.getClass().getName());
+			return;
+		}
 		node = handle.createGroup();
 		CommonProgress progress = new CommonProgress();
 		
@@ -91,6 +105,48 @@ public class CraftFrame extends MIFrame {
 	public void repaint() {
 		CraftHandle handle = HandleRegister.get(craft);
 		handle.update(node, getShape());
+	}
+	
+	@Override
+	public void onContainerClosed(EntityPlayer playerIn) {
+		super.onContainerClosed(playerIn);
+		if (preGui.getClass() == getClass() || preGui.getClass() == ContainerPlayer.class
+				|| preGui instanceof CraftFrame) return;
+		//Node node = MAP.get(playerIn);
+		//playerIn.openGui(node.mod, preGui.windowId, getWorld(), node.x, node.y, node.z);
+	}
+	
+	private static final Map<EntityPlayer, Node> MAP = new Object2ObjectArrayMap<>();
+	
+	/**
+	 * 在玩家打开GUI时记录信息
+	 * @deprecated 内部方法，请勿调用
+	 */
+	@Deprecated
+	public static void onOpenGui(EntityPlayer player, Object mod, int x, int y, int z) {
+		MAP.put(player, new Node(mod, x, y, z));
+	}
+	
+	/**
+	 * 在玩家关闭GUI时记录信息
+	 */
+	@Deprecated
+	public static void onCloseGui(EntityPlayer player) {
+		MAP.remove(player);
+	}
+	
+	private static final class Node {
+		
+		Object mod;
+		int x, y, z;
+		
+		Node(Object mod, int x, int y, int z) {
+			this.mod = mod;
+			this.x = x;
+			this.y = y;
+			this.z = z;
+		}
+		
 	}
 	
 }

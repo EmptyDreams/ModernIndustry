@@ -12,6 +12,7 @@ import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -201,8 +202,14 @@ public class MIFrame extends Container implements IFrame {
 	/** 保存组件 */
 	private final List<IComponent> components = new LinkedList<>();
 	
+	/** 遍历所有组件 */
 	public void forEachComponent(Consumer<? super IComponent> consumer) {
 		components.forEach(consumer);
+	}
+	
+	/** 获取复制的组件列表 */
+	public List<IComponent> cloneComponent() {
+		return new ArrayList<>(components);
 	}
 	
 	/** 获取组件数量 */

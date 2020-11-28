@@ -5,10 +5,13 @@ import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.listener.IListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.MouseListenerTrigger;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
@@ -33,6 +36,8 @@ public abstract class MComponent implements IComponent {
 	private int code;
 	/** 存储事件列表 */
 	private final List<IListener> listeners = new LinkedList<>();
+	/** 是否支持CraftShower */
+	private CraftGuide<?, ?> craftGuide = null;
 	
 	@Override
 	public void setLocation(int x, int y) {
@@ -71,7 +76,7 @@ public abstract class MComponent implements IComponent {
 		}
 		//如果事件在客户端触发并且需要进行网络传输则发送消息给服务端
 		//如果事件在服务端触发不需要发送给客户端，因为在服务端触发的事件大部分在客户端也可以触发
-		if (WorldUtil.isClient() && data.getSize() > 0) sendToServer(data);
+		if (data.getSize() > 0) sendToServer(data);
 	}
 	
 	@Override
@@ -83,7 +88,7 @@ public abstract class MComponent implements IComponent {
 				listener.readFrom(data.getCompoundTag(key));
 			}
 		} catch (IndexOutOfBoundsException e) {
-			MISysInfo.err("事件网络通讯异常，key值超出范围：" + e.getMessage());
+			MISysInfo.err("[MComponent]事件网络通讯异常，key值超出范围：" + e.getMessage());
 		}
 	}
 	
@@ -111,17 +116,53 @@ public abstract class MComponent implements IComponent {
 	@Override
 	public int getWidth() { return width; }
 	
+	/** 为当前按钮设置合成表按钮 */
+	public void setCraftButton(CraftGuide<?, ?> craft) {
+		craftGuide = craft;
+	}
+	/** 移除合成表按钮，<b>仅在添加到GUI前有效</b> */
+	public void deleteCraftButton() {
+		craftGuide = null;
+	}
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public abstract void paint(@Nonnull Graphics g);
 	
+	/**
+	 * {@inheritDoc}<br>
+	 * <b>子类重写该方法时务必使用{@code super.onAddToGUI}调用该方法，
+	 *      否则会导致部分功能无法正常工作</b>
+	 */
 	@Override
-	public void onAddToGUI(MIFrame con, EntityPlayer player) { }
-
+	public void onAddToGUI(MIFrame con, EntityPlayer player) {
+		if (craftGuide != null) {
+			CraftButton button = new CraftButton(craftGuide, this, player);
+			con.add(button, player);
+			registryButton(button);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}<br>
+	 * <b>子类重写该方法时务必使用{@code super.onAddToGUI}调用该方法，
+	 *      否则会导致部分功能无法正常工作</b>
+	 */
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) { }
+	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
+		if (craftGuide != null) {
+			CraftButton button = new CraftButton(craftGuide, this, player);
+			con.add(button, player);
+			registryButton(button);
+		}
+	}
 
+	private void registryButton(CraftButton button) {
+		registryListener((MouseActionListener) (mouseX, mouseY) ->
+				MouseListenerTrigger.activateAction(button, mouseX, mouseY));
+	}
+	
 	@Override
 	public void onRemoveFromGUI(Container con) { }
 	

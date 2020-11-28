@@ -129,7 +129,7 @@ public final class EleWorker {
 				return useEleEnergy(te, inputer);
 			}
 		}
-		MISysInfo.err("该方块没有找到可用的托管：" + te);
+		MISysInfo.err("[EleWorker]该方块没有找到可用的托管：" + te);
 		return null;
 	}
 	

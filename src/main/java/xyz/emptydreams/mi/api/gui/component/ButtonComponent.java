@@ -47,7 +47,8 @@ public class ButtonComponent extends InvisibleButton {
 				texture = RuntimeTexture.instance(name, buffered);
 			}
 			texture.bindTexture();
-			texture.drawToFrame(getX() + gui.getGuiLeft(), getY() + gui.getGuiTop(), 0, 0, getWidth(), getHeight());
+			texture.drawToFrame(getX() + gui.getGuiLeft(), getY() + gui.getGuiTop(),
+					0, 0, getWidth(), getHeight());
 		}
 	}
 	
