@@ -1,8 +1,16 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mi:machine",
-    "textures": { "front": "mi:blocks/machine/muffle_furnace/src" }
+    "model": "cube",
+    "textures": {
+      "particle": "mi:blocks/machine/muffle_furnace/src",
+      "down": "mi:blocks/machine/muffle_furnace/down",
+      "up": "mi:blocks/machine/muffle_furnace/up",
+      "north": "mi:blocks/machine/muffle_furnace/src",
+      "east": "mi:blocks/machine/muffle_furnace/side",
+      "south": "mi:blocks/machine/muffle_furnace/side",
+      "west": "mi:blocks/machine/muffle_furnace/side"
+    }
   },
   "variants": {
     "inventory": [{ }],
@@ -14,7 +22,7 @@
     },
     "working": {
       "true": {
-        "textures": { "front": "mi:blocks/machine/muffle_furnace/working" }
+        "textures": { "north": "mi:blocks/machine/muffle_furnace/working" }
       },
       "false": { }
     }

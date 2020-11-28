@@ -31,11 +31,12 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
  * 粉碎机的Block
  * @author EmptyDreams
  */
-@AutoBlockRegister(registryName = "pulverizer")
+@AutoBlockRegister(registryName = "pulverizer", field = "INSTANCE")
 public class PulverizerBlock extends MachineBlock {
 
 	private final Item ITEM = new ItemBlock(this);
-
+	private static PulverizerBlock INSTANCE;
+	
 	public PulverizerBlock() {
 		super(Material.IRON);
 		setDefaultState(blockState.getBaseState()
@@ -83,4 +84,9 @@ public class PulverizerBlock extends MachineBlock {
 	public Item getBlockItem() {
 		return ITEM;
 	}
+
+	public static PulverizerBlock instance() {
+		return INSTANCE;
+	}
+	
 }

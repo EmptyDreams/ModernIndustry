@@ -33,9 +33,10 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
  * @author EmptyDreams
  * @version V1.0
  */
-@AutoBlockRegister(registryName = "fire_power")
+@AutoBlockRegister(registryName = "fire_power", field = "INSTANCE")
 public class FirePowerBlock extends MachineBlock {
 	
+	private static FirePowerBlock INSTANCE;
 	private final Item ITEM;
 	
 	public FirePowerBlock() {
@@ -86,6 +87,10 @@ public class FirePowerBlock extends MachineBlock {
 	@Override
 	public Item getBlockItem() {
 		return ITEM;
+	}
+	
+	public static FirePowerBlock instance() {
+		return INSTANCE;
 	}
 	
 }

@@ -25,9 +25,10 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 /**
  * @author EmptyDreams
  */
-@AutoBlockRegister(registryName = "electron_synthesizer")
+@AutoBlockRegister(registryName = "electron_synthesizer", field = "INSTANCE")
 public class ElectronSynthesizerBlock extends MachineBlock {
 	
+	private static ElectronSynthesizerBlock INSTANCE;
 	private final Item ITEM = new ItemBlock(this);
 	
 	public ElectronSynthesizerBlock() {
@@ -70,6 +71,10 @@ public class ElectronSynthesizerBlock extends MachineBlock {
 	@Override
 	public Item getBlockItem() {
 		return ITEM;
+	}
+	
+	public static ElectronSynthesizerBlock instance() {
+		return INSTANCE;
 	}
 	
 }

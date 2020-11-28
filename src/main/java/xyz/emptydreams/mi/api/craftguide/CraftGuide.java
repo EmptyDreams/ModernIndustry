@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.craftguide;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import xyz.emptydreams.mi.ModernIndustry;
@@ -32,13 +33,21 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 	
 	/**
 	 * 获取实例
-	 * @param name 注册名，MODID使用{@link ModernIndustry#MODID}
+	 * @param impl 注册名，MODID使用{@link ModernIndustry#MODID}
+	 * @param shapeSize 原料列表尺寸
+	 * @param proSize 产物列表尺寸
+	 * @param shape 原料列表的Class
+	 * @param product 产物列表的Class
 	 * @param <T> 合成表的类型
+	 * @param <R> 产物列表类型
 	 * @return 如果实例不存在则返回新的实例，存在则返回已有的实例
 	 */
 	public static <T extends IShape, R> CraftGuide<T, R>
-			instance(String name, Size2D shapeSize, Size2D proSize, Class<T> shape, Class<R> product) {
-		return instance(new ResourceLocation(ModernIndustry.MODID, name), shapeSize, proSize, shape, product);
+			instance(Block impl,
+			         Size2D shapeSize, Size2D proSize, Class<T> shape, Class<R> product) {
+		return instance(new ResourceLocation(
+				impl.getRegistryName().getResourceDomain(), impl.getUnlocalizedName()),
+					shapeSize, proSize, shape, product);
 	}
 	
 	/**
@@ -184,7 +193,7 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 	}
 	
 	public String getLocalName() {
-		return name.getResourceDomain() + ".craft." + name.getResourcePath();
+		return name.getResourcePath() + ".name";
 	}
 	
 	/** 获取合成表的名称 */

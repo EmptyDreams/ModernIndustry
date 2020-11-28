@@ -30,11 +30,12 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.*;
  * 压缩机
  * @author EmptyDremas
  */
-@AutoBlockRegister(registryName = CompressorBlock.NAME)
+@AutoBlockRegister(registryName = CompressorBlock.NAME, field = "INSTANCE")
 public class CompressorBlock extends MachineBlock {
 	
 	/** 方块内部名称 */
 	public static final String NAME = "compressor";
+	private static CompressorBlock INSTANCE;
 	
 	private final Item ITEM = new ItemBlock(this);
 	
@@ -109,6 +110,10 @@ public class CompressorBlock extends MachineBlock {
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
 		return new EUCompressor();
+	}
+	
+	public static CompressorBlock instance() {
+		return INSTANCE;
 	}
 	
 }

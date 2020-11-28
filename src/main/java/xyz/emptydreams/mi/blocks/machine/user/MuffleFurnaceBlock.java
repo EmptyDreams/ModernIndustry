@@ -16,6 +16,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.TEBlockBase;
 import xyz.emptydreams.mi.blocks.tileentity.user.MuffleFurnace;
 import xyz.emptydreams.mi.gui.MuffleFurnaceFrame;
@@ -31,6 +32,7 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.HORIZONTAL;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 
 /**
+ * 高温熔炉
  * @author EmptyDreams
  * @version V1.0
  */
@@ -52,7 +54,6 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 	}
 	
 	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
-		//防止折叠
 		return new ItemStack(this);
 	}
 	
@@ -80,13 +81,7 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		EnumFacing facing = EnumFacing.getFront(meta & 0b0011);
-		if (facing.getAxis() == EnumFacing.Axis.Y) {
-			facing = EnumFacing.NORTH;
-		}
-		return getDefaultState()
-				       .withProperty(HORIZONTAL, facing)
-				       .withProperty(WORKING, (meta & 0b0100) == 0b0100);
+		return CommonUtil.getStateFromMeta(this, meta);
 	}
 	
 	@Override
@@ -98,14 +93,13 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 	
 	@Override
 	public int getMetaFromState(@Nonnull IBlockState state) {
-		return state.getValue(HORIZONTAL).getHorizontalIndex() | (state.getValue(WORKING) ? 0b0100 : 0);
+		return CommonUtil.getMetaFromState(state);
 	}
 	
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		//阻止折叠
-		return new BlockStateContainer(this, HORIZONTAL, WORKING);
+		return CommonUtil.createBlockState(this);
 	}
 	
 	@Override

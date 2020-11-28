@@ -53,12 +53,16 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	private String name;
 	
 	public StaticFrameClient(MIFrame inventorySlotsIn, String title) {
+		this(inventorySlotsIn, title, title);
+	}
+	
+	public StaticFrameClient(MIFrame inventorySlotsIn, String title, String id) {
 		super(inventorySlotsIn);
 		xSize = inventorySlotsIn.getWidth();
 		ySize = inventorySlotsIn.getHeight();
 		this.title = title;
 		components = inventorySlotsIn.cloneComponent();
-		setResourceName(ModernIndustry.MODID, checkNull(title, "title"));
+		setResourceName(ModernIndustry.MODID, checkNull(id, "title"));
 	}
 	
 	/** 设置GUI使用的资源名称，默认使用"<b>{@link ModernIndustry#MODID}:{@link #getTitle()}</b>" */

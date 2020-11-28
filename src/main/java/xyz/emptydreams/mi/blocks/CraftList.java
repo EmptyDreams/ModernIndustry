@@ -13,6 +13,10 @@ import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
 import xyz.emptydreams.mi.api.utils.data.Size2D;
 import xyz.emptydreams.mi.blocks.common.OreBlock;
+import xyz.emptydreams.mi.blocks.machine.maker.FirePowerBlock;
+import xyz.emptydreams.mi.blocks.machine.user.CompressorBlock;
+import xyz.emptydreams.mi.blocks.machine.user.ElectronSynthesizerBlock;
+import xyz.emptydreams.mi.blocks.machine.user.PulverizerBlock;
 import xyz.emptydreams.mi.register.AutoLoader;
 
 import static net.minecraft.init.Blocks.*;
@@ -33,25 +37,25 @@ public final class CraftList {
 	
 	/** 火力发电机 */
 	public static final CraftGuide<UnorderlyShapeOnly, ItemElement> FIRE_POWER
-				= CraftGuide.instance("fire_powder",
+				= CraftGuide.instance(FirePowerBlock.instance(),
 									  ONLY, ONLY,
 									  UnorderlyShapeOnly.class,
 									  ItemElement.class);
 	/** 粉碎机 */
 	public static final CraftGuide<UnorderlyShapeOnly, ItemElement> PULVERIZER
-				= CraftGuide.instance("pulverizer",
+				= CraftGuide.instance(PulverizerBlock.instance(),
 									  ONLY, ONLY,
 									  UnorderlyShapeOnly.class,
 									  ItemElement.class);
 	/** 压缩机 */
 	public static final CraftGuide<UnorderlyShapeOnly, ItemElement> COMPRESSOR
-				= CraftGuide.instance("compressor",
+				= CraftGuide.instance(CompressorBlock.instance(),
 									  ONLY, ONLY,
 									  UnorderlyShapeOnly.class,
 									  ItemElement.class);
 	/** 电子合成台 */
 	public static final CraftGuide<OrderlyShape, ItemSet> SYNTHESIZER
-				= CraftGuide.instance("electron_synthesizer",
+				= CraftGuide.instance(ElectronSynthesizerBlock.instance(),
 									  size(5, 5),
 									  size(2, 2),
 									  OrderlyShape.class,

@@ -41,7 +41,7 @@ public final class CraftShower {
 					@Override
 					public StaticFrameClient createClient(World world, EntityPlayer player1, BlockPos pos) {
 						return new StaticFrameClient(
-								new CraftFrame(craft, player1), craft.getLocalName());
+								new CraftFrame(craft, player1), craft.getLocalName(), craft.getName());
 					}
 				}
 		));

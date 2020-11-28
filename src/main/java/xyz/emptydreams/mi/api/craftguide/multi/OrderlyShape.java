@@ -2,6 +2,8 @@ package xyz.emptydreams.mi.api.craftguide.multi;
 
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
@@ -56,7 +58,19 @@ public class OrderlyShape implements IShape<ItemList, ItemSet> {
 		ItemSet result = ItemSet.parse(json.getAsJsonObject("result"), keyMap);
 		ItemList input = ItemList.parse(json, keyMap);
 		String group = json.get("group").getAsString();
-		CraftGuide.getInstance(new ResourceLocation(group)).registry(new OrderlyShape(input, result));
+		Block block = Block.getBlockFromName(group);
+		if (block != null) {
+			CraftGuide.getInstance(new ResourceLocation(
+					block.getRegistryName().getResourceDomain(), block.getUnlocalizedName()))
+					.registry(new OrderlyShape(input, result));
+		} else {
+			Item item = Item.getByNameOrId(group);
+			if (item != null) {
+				CraftGuide.getInstance(new ResourceLocation(
+						item.getRegistryName().getResourceDomain(), block.getUnlocalizedName()))
+						.registry(new OrderlyShape(input, result));
+			}
+		}
 	}
 	
 }
