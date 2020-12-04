@@ -17,6 +17,7 @@ import xyz.emptydreams.mi.api.gui.craft.CraftFrame;
 @Mixin(FMLNetworkHandler.class)
 public class MixinFMLNetworkHandler {
 	
+	@SuppressWarnings("deprecation")
 	@Inject(method = "openGui", at = @At("HEAD"), cancellable = true)
 	private static void openGui(EntityPlayer entityPlayer, Object mod, int modGuiId,
 	                            World world, int x, int y, int z, CallbackInfo ci) {

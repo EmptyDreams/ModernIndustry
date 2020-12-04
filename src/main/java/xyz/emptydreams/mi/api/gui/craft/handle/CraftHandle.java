@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.gui.craft.handle;
 
+import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSol;
 import xyz.emptydreams.mi.api.gui.group.SlotGroup;
@@ -11,6 +12,21 @@ import javax.annotation.Nonnull;
  * @author EmptyDreams
  */
 public abstract class CraftHandle<T extends ItemSol, R> {
+	
+	/**
+	 * 检查{@link CraftHandle}对象的原料栏和输出栏是否为指定的{@link Class}
+	 * @param craft 要检查的CraftHandle对象
+	 * @param rawClass 原料栏的Class
+	 * @param proClass 输出栏的Class
+	 */
+	@SuppressWarnings("rawtypes")
+	public static void check(CraftGuide craft, Class rawClass, Class proClass) {
+		if (craft.getRawClass() == rawClass && craft.getProtectClass() == proClass) return;
+		throw new IllegalArgumentException("传入的CraftHandle对象的原料栏[" + craft.getRawClass().getSimpleName()
+							+ "]不为：[" + rawClass.getSimpleName()
+						+ "]，输出栏[" + craft.getProtectClass().getSimpleName()
+							+ "]不为：[" + proClass.getSimpleName() + "]");
+	}
 	
 	/**
 	 * 在创建窗口时会通过该方法创建Slot对象.<br>

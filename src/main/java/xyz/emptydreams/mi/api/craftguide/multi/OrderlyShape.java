@@ -53,6 +53,18 @@ public class OrderlyShape implements IShape<ItemList, ItemSet> {
 		return list.hasItem(stack);
 	}
 	
+	@Nonnull
+	@Override
+	public Class<ItemList> getItemSolClass() {
+		return ItemList.class;
+	}
+	
+	@Nonnull
+	@Override
+	public Class<ItemSet> getProtectedClass() {
+		return ItemSet.class;
+	}
+	
 	/** 注册一个JSON */
 	public static void pares(JsonObject json, Char2ObjectMap<ItemElement> keyMap) {
 		ItemSet result = ItemSet.parse(json.getAsJsonObject("result"), keyMap);
@@ -67,7 +79,7 @@ public class OrderlyShape implements IShape<ItemList, ItemSet> {
 			Item item = Item.getByNameOrId(group);
 			if (item != null) {
 				CraftGuide.getInstance(new ResourceLocation(
-						item.getRegistryName().getResourceDomain(), block.getUnlocalizedName()))
+						item.getRegistryName().getResourceDomain(), item.getUnlocalizedName()))
 						.registry(new OrderlyShape(input, result));
 			}
 		}

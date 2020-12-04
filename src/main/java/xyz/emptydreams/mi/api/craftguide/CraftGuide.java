@@ -82,9 +82,10 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 		instances.remove(name);
 	}
 	
-	/** 存储类型 */
+	/* 存储类型 */
 	private final Class<T> tClass;
 	private final Class<R> rClass;
+	private Class<? extends IShape> rawClass;
 	/** 存储合成表 */
 	private final List<T> shapes = new LinkedList<T>() {
 		@Override
@@ -104,6 +105,7 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 		this.proSize = proSize;
 		this.tClass = shape;
 		this.rClass = product;
+		
 	}
 	
 	/**
@@ -186,6 +188,15 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 	/** 获取合成表的Class */
 	public Class<T> getShapeClass() {
 		return tClass;
+	}
+	
+	/**
+	 * 获取合成表的原料列表的Class
+	 * @throws IllegalArgumentException 如果管理器中还未添加任何合成表
+	 */
+	public Class<? extends ItemSol> getRawClass() {
+		if (shapes.isEmpty()) throw new IllegalArgumentException("管理器内还未添加任何合成表，无法获取合成表原料类型");
+		return shapes.get(0).getItemSolClass();
 	}
 	/** 获取产物的Class */
 	public Class<R> getProtectClass() {

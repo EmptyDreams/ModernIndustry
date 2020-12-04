@@ -3,6 +3,8 @@ package xyz.emptydreams.mi.api.craftguide;
 import net.minecraft.item.ItemStack;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSol;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author EmptyDreams
  */
@@ -37,5 +39,13 @@ public interface IShape<T extends ItemSol, R> {
 	 * @param stack 物品
 	 */
 	boolean hasItem(ItemStack stack);
+	
+	/** 获取原料列表的Class */
+	@Nonnull
+	Class<T> getItemSolClass();
+	
+	/** 获取的Class */
+	@Nonnull
+	Class<R> getProtectedClass();
 	
 }

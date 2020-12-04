@@ -52,6 +52,18 @@ public class OrderlyShapeOnly implements IShape<ItemList, ItemElement> {
 		return list.hasItem(stack);
 	}
 	
+	@Nonnull
+	@Override
+	public Class<ItemList> getItemSolClass() {
+		return ItemList.class;
+	}
+	
+	@Nonnull
+	@Override
+	public Class<ItemElement> getProtectedClass() {
+		return ItemElement.class;
+	}
+	
 	/** 注册一个JSON */
 	public static void pares(JsonObject json, Char2ObjectMap<ItemElement> keyMap) {
 		ItemList input = ItemList.parse(json, keyMap);

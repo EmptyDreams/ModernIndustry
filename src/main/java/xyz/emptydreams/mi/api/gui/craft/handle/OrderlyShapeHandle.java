@@ -1,9 +1,5 @@
 package xyz.emptydreams.mi.api.gui.craft.handle;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
 import xyz.emptydreams.mi.api.craftguide.multi.OrderlyShape;
@@ -19,10 +15,11 @@ import xyz.emptydreams.mi.register.AutoLoader;
 import javax.annotation.Nonnull;
 
 /**
+ * 匹配{@link OrderlyShape}的Handle
  * @author EmptyDreams
  */
 @AutoLoader
-public class OrderlyShapeHandle extends CraftHandle<ItemList, ItemSet> {
+public final class OrderlyShapeHandle extends CraftHandle<ItemList, ItemSet> {
 	
 	static {
 		HandleRegister.registry(new HandleRegister.HandleInfo(
@@ -40,6 +37,7 @@ public class OrderlyShapeHandle extends CraftHandle<ItemList, ItemSet> {
 	 */
 	@SuppressWarnings({"rawtypes"})
 	public OrderlyShapeHandle(CraftGuide craft) {
+		CraftHandle.check(craft, ItemList.class, ItemSet.class);
 		rawSize = craft.getShapeSize();
 		proSize = craft.getProtectSize();
 	}
@@ -47,33 +45,7 @@ public class OrderlyShapeHandle extends CraftHandle<ItemList, ItemSet> {
 	@Nonnull
 	@Override
 	public Node createGroup() {
-		SlotGroup raw = new SlotGroup(rawSize.getWidth(), rawSize.getHeight(), 18, 0);
-		SlotGroup pro = new SlotGroup(proSize.getWidth(), proSize.getHeight(), 18, 0);
-		ItemStackHandler rawHandler = new ItemStackHandler(raw.getXSize() * raw.getYSize());
-		ItemStackHandler proHandler = new ItemStackHandler(pro.getXSize() * pro.getYSize());
-		raw.writeFrom(0, index -> new SlotItemHandler(rawHandler, index, 0, 0) {
-			@Override
-			public boolean isItemValid(@Nonnull ItemStack stack) {
-				return false;
-			}
-			
-			@Override
-			public boolean canTakeStack(EntityPlayer playerIn) {
-				return false;
-			}
-		});
-		pro.writeFrom(0, index -> new SlotItemHandler(proHandler, index, 0, 0) {
-			@Override
-			public boolean isItemValid(@Nonnull ItemStack stack) {
-				return false;
-			}
-			
-			@Override
-			public boolean canTakeStack(EntityPlayer playerIn) {
-				return false;
-			}
-		});
-		return createNode(raw, pro);
+		return HandleUtils.createGroup(rawSize, proSize, this::createNode);
 	}
 	
 	@Override

@@ -50,6 +50,18 @@ public class UnorderlyShapeOnly implements IShape<ItemSet, ItemElement> {
 		return set.hasItem(stack);
 	}
 	
+	@Nonnull
+	@Override
+	public Class<ItemSet> getItemSolClass() {
+		return ItemSet.class;
+	}
+	
+	@Nonnull
+	@Override
+	public Class<ItemElement> getProtectedClass() {
+		return ItemElement.class;
+	}
+	
 	/** 注册一个JSON */
 	public static void pares(JsonObject json, Char2ObjectMap<ItemElement> keyMap) {
 		ItemSet input = ItemSet.parse(json, keyMap);

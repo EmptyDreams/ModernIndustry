@@ -29,6 +29,7 @@ public final class CraftShower {
 	 * @param player 要打开GUI的玩家
 	 */
 	public static void show(CraftGuide<?, ?> craft, EntityPlayer player) {
+		if (craft.size() == 0) return;
 		int frame = FRAMES.computeIfAbsent(craft,
 				key -> GuiLoader.register(new IContainerCreater() {
 					@Nonnull

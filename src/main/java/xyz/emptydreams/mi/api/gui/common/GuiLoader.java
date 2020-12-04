@@ -13,11 +13,8 @@ import java.util.Map;
 /**
  * GUI的总加载器
  * @author EmptyDremas
- * @version V1.0
  */
 public class GuiLoader implements IGuiHandler {
-	
-	public static final int GUI_COMPRESSOR = 1;
 	
 	/** 存储每个ID及其对应的构建器 */
 	private final static Map<Int, IContainerCreater> IDS = new LinkedHashMap<>();
@@ -39,7 +36,7 @@ public class GuiLoader implements IGuiHandler {
 	}
 	
 	/** 存储ID自动分配位点 */
-	private static int IDnow = 99;
+	private static int IDown = 99;
 	
 	/**
 	 * 创建一个ID，由系统自动分配
@@ -48,8 +45,8 @@ public class GuiLoader implements IGuiHandler {
 	public static int register(IContainerCreater creater) {
 		int i;
 		do {
-			i = register(++IDnow, creater);
-		} while (i == -1 && IDnow != Integer.MAX_VALUE);
+			i = register(++IDown, creater);
+		} while (i == -1 && IDown != Integer.MAX_VALUE);
 		return i;
 	}
 	
