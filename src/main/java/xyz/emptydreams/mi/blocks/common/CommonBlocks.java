@@ -11,6 +11,7 @@ import xyz.emptydreams.mi.register.block.OreCreate;
 import static xyz.emptydreams.mi.register.AutoRegister.getUnlocalizedName;
 
 /**
+ * 普通方块
  * @author EmptyDreams
  */
 @AutoManager(block = true)

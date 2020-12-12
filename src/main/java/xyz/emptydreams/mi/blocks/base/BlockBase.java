@@ -1,18 +1,17 @@
 package xyz.emptydreams.mi.blocks.base;
 
-import javax.annotation.Nonnull;
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import xyz.emptydreams.mi.register.block.BlockItemHelper;
 
+import javax.annotation.Nonnull;
+import java.util.Random;
+
 /**
  * 基础方块，定义了经常需要重写的函数
  * @author EmptyDremas
- * @version V1.0
  */
 public abstract class BlockBase extends Block implements BlockItemHelper {
 	

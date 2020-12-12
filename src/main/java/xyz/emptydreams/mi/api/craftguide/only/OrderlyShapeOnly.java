@@ -14,7 +14,7 @@ import xyz.emptydreams.mi.api.utils.StringUtil;
 import javax.annotation.Nonnull;
 
 /**
- * 有序合成表
+ * 单项有序合成表
  * @author EmptyDreams
  */
 public class OrderlyShapeOnly implements IShape<ItemList, ItemElement> {

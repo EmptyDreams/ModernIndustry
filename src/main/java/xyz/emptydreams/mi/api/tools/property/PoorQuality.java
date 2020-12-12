@@ -7,10 +7,9 @@ import xyz.emptydreams.mi.api.event.ItemDamageEvent;
 import xyz.emptydreams.mi.api.tools.capabilities.PropertyCapability;
 
 /**
- * 劣质属性.
+ * 劣质属性.<br>
  * 当玩家使用具有该属性的工具时耐久度有一定可能性损耗更多
  * @author EmptyDreams
- * @version V1.0
  */
 @Mod.EventBusSubscriber
 public class PoorQuality implements IProperty {

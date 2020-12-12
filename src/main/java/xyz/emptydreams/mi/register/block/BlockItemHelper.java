@@ -1,13 +1,13 @@
 package xyz.emptydreams.mi.register.block;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
 import javax.annotation.Nonnull;
 
 /**
- * 方块物品辅助注册工具，其中实现方法来返回Item对象来减少Item构造函数的调用
+ * 方块物品辅助注册工具，其中实现方法来返回Item对象来减少{@link Item#getItemFromBlock(Block)}的调用
  * @author EmptyDreams
- * @version V1.0
  */
 public interface BlockItemHelper {
 	

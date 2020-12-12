@@ -28,6 +28,8 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 @AutoBlockRegister(registryName = "electron_synthesizer", field = "INSTANCE")
 public class ElectronSynthesizerBlock extends MachineBlock {
 	
+	//该字段通过反射赋值
+	@SuppressWarnings("unused")
 	private static ElectronSynthesizerBlock INSTANCE;
 	private final Item ITEM = new ItemBlock(this);
 	

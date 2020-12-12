@@ -7,8 +7,8 @@ import net.minecraftforge.common.util.EnumHelper;
 import xyz.emptydreams.mi.ModernIndustry;
 
 /**
+ * MI中的工具材质
  * @author EmptyDremas
- * @version V1.0
  */
 public class MITool {
 

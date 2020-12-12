@@ -29,6 +29,7 @@ import java.util.List;
 import static xyz.emptydreams.mi.api.utils.data.auto.DataType.*;
 
 /**
+ * 电子工作台
  * @author EmptyDreams
  */
 @AutoTileEntity("electron_synthesizer")
@@ -154,6 +155,7 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 	}
 	
 	/** 获取工作需要的时间 */
+	@SuppressWarnings("unused")
 	public int getMaxTime(ItemList input, ItemSet output) {
 		return 100;
 	}

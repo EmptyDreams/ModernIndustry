@@ -3,7 +3,6 @@ package xyz.emptydreams.mi.api.electricity.clock;
 /**
  * 没有任何作用的计数器
  * @author EmptyDreams
- * @version V1.0
  */
 public final class NonCounter extends OverloadCounter {
 	

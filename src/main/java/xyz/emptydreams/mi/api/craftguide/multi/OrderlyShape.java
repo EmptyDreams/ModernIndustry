@@ -15,6 +15,7 @@ import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import javax.annotation.Nonnull;
 
 /**
+ * 多项有序合成表
  * @author EmptyDreams
  */
 public class OrderlyShape implements IShape<ItemList, ItemSet> {

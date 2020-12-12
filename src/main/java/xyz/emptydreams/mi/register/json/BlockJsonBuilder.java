@@ -40,6 +40,7 @@ public final class BlockJsonBuilder {
 		TEMPLATE = new File(FATHER, "src/main/resources/assets/mi/templates/block");
 		
 		for (File output : OUTPUTS) {
+			//noinspection ResultOfMethodCallIgnored
 			output.mkdirs();
 		}
 		

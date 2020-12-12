@@ -17,9 +17,7 @@ import java.util.function.BiConsumer;
 
 /**
  * 机器过载操作
- *
  * @author EmptyDreams
- * @version V1.0
  */
 public enum EnumBiggerVoltage {
 	

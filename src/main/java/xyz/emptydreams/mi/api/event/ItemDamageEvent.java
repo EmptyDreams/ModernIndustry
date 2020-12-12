@@ -12,7 +12,6 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  *    应该调用{@link #damageItem(int)}，
  *    否则会导致无限递归！
  * @author EmptyDreams
- * @version V1.0
  */
 public class ItemDamageEvent extends Event {
 

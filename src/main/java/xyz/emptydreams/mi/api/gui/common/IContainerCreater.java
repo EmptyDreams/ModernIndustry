@@ -11,7 +11,6 @@ import javax.annotation.Nonnull;
 
 /**
  * {@link GuiLoader}同过该类为方块创建UI对象
- *
  * @author EmptyDreams
  */
 public interface IContainerCreater {

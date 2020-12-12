@@ -3,7 +3,6 @@ package xyz.emptydreams.mi.api.gui.common;
 /**
  * 标题样式
  * @author EmptyDreams
- * @version V1.0
  */
 public enum TitleModelEnum {
 	

@@ -6,6 +6,7 @@ import xyz.emptydreams.mi.api.craftguide.sol.ItemSol;
 import javax.annotation.Nonnull;
 
 /**
+ * 合成表接口
  * @author EmptyDreams
  */
 public interface IShape<T extends ItemSol, R> {

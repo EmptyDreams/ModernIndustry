@@ -16,8 +16,8 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
+ * 永恒发电机
  * @author EmptyDreams
- * @version V1.0
  */
 @AutoBlockRegister(registryName = "perpetual")
 public class PerpetualBlock extends MachineBlock {

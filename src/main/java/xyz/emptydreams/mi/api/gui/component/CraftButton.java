@@ -8,6 +8,7 @@ import xyz.emptydreams.mi.api.gui.craft.CraftShower;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 /**
+ * 触发显示合成表的按钮
  * @author EmptyDreams
  */
 public class CraftButton extends InvisibleButton {

@@ -15,7 +15,6 @@ import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
 
 /**
  * @author EmptyDreams
- * @version V1.0
  */
 public class PropertyProvider implements ICapabilityProvider, INBTSerializable<NBTTagCompound> {
 	

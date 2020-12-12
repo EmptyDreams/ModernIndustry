@@ -17,9 +17,7 @@ import java.util.Map;
 /**
  * 存储GUI相关的图像资源
  * @author EmptyDreams
- * @version V1.0
  */
-@SuppressWarnings({"CanBeFinal", "unused"})
 @SideOnly(Side.CLIENT)
 public final class ImageData {
 	

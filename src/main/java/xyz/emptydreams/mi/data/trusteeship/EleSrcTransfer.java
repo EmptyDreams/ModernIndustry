@@ -13,11 +13,14 @@ import xyz.emptydreams.mi.data.info.CableCache;
 import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 
 /**
+ * 线缆的代理
  * @author EmptyDreams
  */
 @AutoTrusteeshipRegister("INSTANCE")
 public class EleSrcTransfer implements IEleTransfer {
 	
+	//该字段通过反射赋值
+	@SuppressWarnings("unused")
 	private static EleSrcTransfer INSTANCE;
 	
 	public static EleSrcTransfer instance() { return INSTANCE; }
@@ -27,8 +30,7 @@ public class EleSrcTransfer implements IEleTransfer {
 		EleSrcCable cable = (EleSrcCable) start;
 		CableCache cache = cable.getCache();
 		if (cache == null) return null;
-		PathInfo info = cache.calculate(cable, user, inputer);
-		return info;
+		return cache.calculate(cable, user, inputer);
 	}
 	
 	@Override

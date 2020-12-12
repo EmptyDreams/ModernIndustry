@@ -11,7 +11,6 @@ import java.util.Map;
 /**
  * 电力传输工具的托管
  * @author EmptyDreams
- * @version V1.1
  */
 public interface IEleTransfer extends IRegister {
 	

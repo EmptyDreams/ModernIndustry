@@ -3,8 +3,8 @@ package xyz.emptydreams.mi.api.gui.component.interfaces;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 
 /**
+ * 进度条接口
  * @author EmptyDreams
- * @version V1.0
  */
 public interface IProgressBar extends IComponent {
 	

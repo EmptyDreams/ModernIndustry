@@ -33,9 +33,12 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
  */
 @AutoBlockRegister(registryName = "pulverizer", field = "INSTANCE")
 public class PulverizerBlock extends MachineBlock {
-
-	private final Item ITEM = new ItemBlock(this);
+	
+	//该字段通过反射赋值
+	@SuppressWarnings("unused")
 	private static PulverizerBlock INSTANCE;
+	
+	private final Item ITEM = new ItemBlock(this);
 	
 	public PulverizerBlock() {
 		super(Material.IRON);

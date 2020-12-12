@@ -10,7 +10,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * 自动注册类中所有被(public static)修饰的元素
  * @author EmptyDreams
- * @version 1.0
  */
 @Documented
 @Retention(RUNTIME)

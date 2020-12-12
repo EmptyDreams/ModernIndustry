@@ -28,7 +28,6 @@ import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
  * 静态GUI，注意：该类只能用于静态GUI的显示
  * @author EmptyDreams
  */
-@SuppressWarnings("unused")
 @SideOnly(Side.CLIENT)
 public class StaticFrameClient extends GuiContainer implements IFrame {
 	

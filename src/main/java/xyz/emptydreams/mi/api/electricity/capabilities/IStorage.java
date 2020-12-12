@@ -13,7 +13,6 @@ import java.util.Collection;
 /**
  * 表示能量
  * @author EmptyDreams
- * @version V1.0
  */
 public interface IStorage {
 	

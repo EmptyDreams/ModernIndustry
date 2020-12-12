@@ -12,7 +12,6 @@ import java.util.Map;
 /**
  * 可以输入电能的方块托管
  * @author EmptyDreams
- * @version V1.1
  */
 public interface IEleInputer extends IRegister {
 	

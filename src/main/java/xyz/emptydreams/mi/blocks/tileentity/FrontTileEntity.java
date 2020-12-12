@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 /**
  * 带方向的机器方块
  * @author EmptyDreams
- * @version V1.0
  */
 public abstract class FrontTileEntity extends EleTileEntity {
 	

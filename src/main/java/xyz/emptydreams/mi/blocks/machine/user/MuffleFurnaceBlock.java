@@ -34,9 +34,7 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 /**
  * 高温熔炉
  * @author EmptyDreams
- * @version V1.0
  */
-@SuppressWarnings({"deprecation", "unused"})
 @AutoBlockRegister(registryName = "muffle_furnace")
 public class MuffleFurnaceBlock extends TEBlockBase {
 	
@@ -53,6 +51,7 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 		setHarvestLevel("pickaxe", 1);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
 		return new ItemStack(this);
 	}

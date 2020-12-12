@@ -50,6 +50,7 @@ public class WorldCreater {
 		creater = new WorldGenMinable(block.getDefaultState(), INFO.count);
 	}
 	
+	@SuppressWarnings("UnusedReturnValue")
 	public boolean generate(@Nonnull World world, @Nonnull Random rand, @Nonnull BlockPos pos) {
 		for (int i = 0; i < INFO.time; ++i) {
 			int x = pos.getX() + rand.nextInt(16);

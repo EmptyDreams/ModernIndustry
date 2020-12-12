@@ -17,6 +17,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 
 /**
+ * 电能CAP
  * @author EmptyDreams
  */
 @AutoLoader

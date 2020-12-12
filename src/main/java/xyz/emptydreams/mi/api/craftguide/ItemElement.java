@@ -97,10 +97,10 @@ public final class ItemElement {
 	public boolean isEmpty() { return element == Items.AIR || getAmount() <= 0; }
 	
 	/**
-	 * 判断指定物品是否和该元素内的物品等价.
-	 * 该方法与{@link #contrastWith(ItemElement)}不同，忽视数量区别
+	 * 判断当前元素是否包含指定元素<br>
+	 * 该方法与{@link #contain(ItemElement)}不同，忽视数量区别
 	 */
-	public boolean contrastWith(@Nullable ItemStack stack) {
+	public boolean contain(@Nullable ItemStack stack) {
 		if (stack == null) return false;
 		if (getItem() == stack.getItem() && getMeta() == stack.getMetadata()) return true;
 		if (getAmount() < stack.getCount()) return false;
@@ -118,11 +118,11 @@ public final class ItemElement {
 	}
 	
 	/**
-	 * 判断两个元素是否等价.
+	 * 判断当前元素是否包含指定元素<br>
 	 * 该方法与{@link #equals(Object)}不同，
 	 * 只要矿物词典和meta相等同时该元素的数量大于等于目标元素的数量即返回true
 	 */
-	public boolean contrastWith(@Nullable ItemElement ele) {
+	public boolean contain(@Nullable ItemElement ele) {
 		if (ele == this) return true;
 		if (ele == null) {
 			return isEmpty();
@@ -150,7 +150,7 @@ public final class ItemElement {
 	 */
 	@Nullable
 	public ItemElement merge(@Nonnull ItemElement element) {
-		if (contrastWith(element.getStack())) {
+		if (contain(element.getStack())) {
 			return new ItemElement(getItem(), getAmount() + element.getAmount(), getMeta());
 		}
 		return null;

@@ -13,7 +13,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * 用于自动注册物品，
  * 注意：此接口注册物品的优先级小于在{@link ItemRegister}类中声明的物品
  * @author EmptyDreams
- * @version V1.0
  */
 @Documented
 @Target(TYPE)

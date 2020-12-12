@@ -8,7 +8,6 @@ import xyz.emptydreams.mi.register.AutoLoader;
 
 /**
  * @author EmptyDreams
- * @version V1.0
  */
 @AutoLoader
 public class PropertyCapability  {

@@ -15,6 +15,7 @@ import xyz.emptydreams.mi.blocks.tileentity.user.EUElectronSynthesizer;
 import javax.annotation.Nonnull;
 
 /**
+ * 电子工作台的GUI
  * @author EmptyDreams
  */
 public class ElectronSynthesizerFrame {

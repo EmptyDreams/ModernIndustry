@@ -7,7 +7,6 @@ import xyz.emptydreams.mi.data.info.BiggerVoltage;
 /**
  * 普通的通用计数器，因为导线有独立的计数器、发电机不会过载所以该计数器只支持用电器使用
  * @author EmptyDreams
- * @version V1.0
  */
 public class OrdinaryCounter extends OverloadCounter {
 	

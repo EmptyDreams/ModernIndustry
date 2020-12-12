@@ -47,7 +47,6 @@ import static xyz.emptydreams.mi.api.utils.data.auto.DataType.POS;
 @AutoTileEntity("IN_FATHER_ELECTRICITY_TRANSFER")
 public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, TEHelper {
 	
-	public EleSrcCable() { }
 	public EleSrcCable(int meMax, double loss) {
 		this.meMax = meMax;
 		this.loss = loss;
@@ -74,11 +73,11 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	/** 下一根电线 */
 	@Storage(POS) private BlockPos next = null;
 	/** 最大电流量 */
-	protected int meMax = 5000;
+	protected int meMax;
 	/** 当前电流量 */
 	private int me = 0;
 	/** 电力损耗指数，指数越大损耗越多 */
-	protected double loss = 0;
+	protected double loss;
 	/** 所属电路缓存 */
 	CableCache cache = null;
 	/** 在客户端存储电线连接数量 */

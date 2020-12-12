@@ -154,7 +154,7 @@ public final class EleWorker {
 		
 		if (realPath == null) return null;
 		lineTransfer(realPath.getPath(),
-				realPath.getEnergy() + realPath.getLossEnergy(), realPath.getVoltage());
+				realPath.getMachineEnergy() + realPath.getLossEnergy(), realPath.getVoltage());
 		return realPath.invoke();
 	}
 	

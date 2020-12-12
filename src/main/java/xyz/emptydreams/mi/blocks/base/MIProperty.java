@@ -7,7 +7,6 @@ import net.minecraft.util.EnumFacing;
 /**
  * 放置常用的Property
  * @author EmptyDreams
- * @version V1.0
  */
 public final class MIProperty {
 	

@@ -7,8 +7,8 @@ import xyz.emptydreams.mi.data.info.EnumVoltage;
 import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 /**
+ * 永恒发电机
  * @author EmptyDreams
- * @version V1.0
  */
 @AutoTileEntity("perpetual")
 public class EMPerpetual extends EleTileEntity {

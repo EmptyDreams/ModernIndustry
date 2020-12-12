@@ -12,6 +12,7 @@ import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import javax.annotation.Nonnull;
 
 /**
+ * 多项无序合成表
  * @author EmptyDreams
  */
 public class UnorderlyShape implements IShape<ItemSet, ItemSet> {
@@ -21,7 +22,7 @@ public class UnorderlyShape implements IShape<ItemSet, ItemSet> {
 	
 	public UnorderlyShape(ItemSet input, ItemSet output) {
 		raw = input.offset();
-		production = input.offset();
+		production = output.offset();
 	}
 	
 	@Nonnull

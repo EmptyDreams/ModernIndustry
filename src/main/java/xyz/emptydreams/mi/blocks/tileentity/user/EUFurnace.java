@@ -24,8 +24,8 @@ import static xyz.emptydreams.mi.api.utils.data.auto.DataType.INT;
 import static xyz.emptydreams.mi.blocks.tileentity.user.MuffleFurnace.getResult;
 
 /**
+ * 电炉
  * @author EmptyDreams
- * @version V1.0
  */
 @AutoTileEntity("ele_furnace")
 public class EUFurnace extends FrontTileEntity implements ITickable {

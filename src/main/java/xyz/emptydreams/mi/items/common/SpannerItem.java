@@ -42,7 +42,7 @@ import static org.lwjgl.opengl.GL11.*;
 @AutoItemRegister(value = "spanner", field = "ITEM")
 public class SpannerItem extends Item {
 
-	/** 该字段会通过反射赋值 */
+	//该字段会通过反射赋值
 	@SuppressWarnings("unused")
 	private static SpannerItem ITEM;
 

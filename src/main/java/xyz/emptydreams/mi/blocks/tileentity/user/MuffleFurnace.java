@@ -23,7 +23,6 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 /**
  * 高温火炉
  * @author EmptyDreams
- * @version V1.0
  */
 @AutoTileEntity("MuffleFurnace")
 public class MuffleFurnace extends BaseTileEntity implements ITickable {
@@ -141,6 +140,7 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 	}
 	
 	/** 获取工作需要的时间 */
+	@SuppressWarnings("unused")
 	public int getCookTime(ItemStack stack) {
 		return 130;
 	}

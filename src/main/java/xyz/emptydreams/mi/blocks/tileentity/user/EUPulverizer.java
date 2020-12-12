@@ -107,7 +107,7 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 		if (!out.isEmpty()) {
 			if (out.getCount() >= out.getMaxStackSize() ||
 					!CraftList.PULVERIZER.apply(new ItemSet(
-							ItemElement.instance(in.getStack()))).contrastWith(out)) {
+							ItemElement.instance(in.getStack()))).contain(out)) {
 				//如果输出框不为空但物品数量达到上限则不能正常运行
 				//               或产品与输出框不相符则不能正常运行
 				if (workingTime != 0) {

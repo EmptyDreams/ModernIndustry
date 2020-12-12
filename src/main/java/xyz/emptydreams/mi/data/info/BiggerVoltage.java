@@ -3,7 +3,6 @@ package xyz.emptydreams.mi.data.info;
 /**
  * 存储电压过大时操作
  * @author EmptyDremas
- * @version V1.0
  */
 public final class BiggerVoltage {
 	

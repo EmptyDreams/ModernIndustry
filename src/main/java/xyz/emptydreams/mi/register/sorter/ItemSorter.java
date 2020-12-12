@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * 为物品排序，保证注册顺序
  * @author EmptyDreams
  */
 public class ItemSorter {

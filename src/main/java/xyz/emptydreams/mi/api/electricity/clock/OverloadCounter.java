@@ -3,7 +3,6 @@ package xyz.emptydreams.mi.api.electricity.clock;
 /**
  * 通用的过载计数器
  * @author EmptyDreams
- * @version V1.0
  */
 public abstract class OverloadCounter {
 

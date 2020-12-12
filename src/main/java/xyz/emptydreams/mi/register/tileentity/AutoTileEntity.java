@@ -10,7 +10,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * 自动注册TE
  * @author EmptyDremas
- * @version V1.0
  */
 @Documented
 @Retention(RUNTIME)

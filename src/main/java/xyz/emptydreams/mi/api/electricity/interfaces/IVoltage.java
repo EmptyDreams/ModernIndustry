@@ -8,7 +8,6 @@ import javax.annotation.Nonnull;
  * 电压值.
  * 该类在读写后不保证依然是原对象，可能会替换为{@link EnumVoltage}或匿名内部类
  * @author EmptyDreams
- * @version V1.0
  */
 public interface IVoltage {
 	

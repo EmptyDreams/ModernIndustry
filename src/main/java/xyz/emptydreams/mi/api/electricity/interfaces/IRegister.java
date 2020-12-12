@@ -4,8 +4,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 /**
+ * 注册机接口
  * @author EmptyDreams
- * @version V1.0
  */
 public interface IRegister {
 	

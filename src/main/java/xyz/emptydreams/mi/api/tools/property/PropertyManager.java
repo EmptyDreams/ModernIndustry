@@ -11,7 +11,6 @@ import java.util.List;
 
 /**
  * @author EmptyDreams
- * @version V1.0
  */
 public class PropertyManager implements Iterable<IProperty> {
 	

@@ -13,6 +13,7 @@ import xyz.emptydreams.mi.api.utils.JsonUtil;
 import javax.annotation.Nonnull;
 
 /**
+ * 单项无序合成表
  * @author EmptyDreams
  */
 public class UnorderlyShapeOnly implements IShape<ItemSet, ItemElement> {

@@ -12,7 +12,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * 用于自动注册方块，其中所有有默认值的量都有对应的静态常量
  * @author EmptyDremas
- * @version V1.0
  */
 @Documented
 @Retention(RUNTIME)

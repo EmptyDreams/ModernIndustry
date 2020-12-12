@@ -1,16 +1,15 @@
 package xyz.emptydreams.mi.api.tools.capabilities;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import xyz.emptydreams.mi.api.tools.property.PropertyManager;
 
+import javax.annotation.Nullable;
+
 /**
  * @author EmptyDreams
- * @version V1.0
  */
 public class ProStorage implements Capability.IStorage<PropertyManager> {
 	

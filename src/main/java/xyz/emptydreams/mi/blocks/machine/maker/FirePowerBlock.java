@@ -31,13 +31,18 @@ import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 /**
  * 火力发电机
  * @author EmptyDreams
- * @version V1.0
  */
 @AutoBlockRegister(registryName = "fire_power", field = "INSTANCE")
 public class FirePowerBlock extends MachineBlock {
 	
+	//该字段通过反射赋值
+	@SuppressWarnings("unused")
 	private static FirePowerBlock INSTANCE;
 	private final Item ITEM;
+	
+	public static FirePowerBlock instance() {
+		return INSTANCE;
+	}
 	
 	public FirePowerBlock() {
 		super(Material.IRON);
@@ -87,10 +92,6 @@ public class FirePowerBlock extends MachineBlock {
 	@Override
 	public Item getBlockItem() {
 		return ITEM;
-	}
-	
-	public static FirePowerBlock instance() {
-		return INSTANCE;
 	}
 	
 }

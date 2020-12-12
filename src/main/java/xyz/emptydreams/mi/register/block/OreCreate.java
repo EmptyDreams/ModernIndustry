@@ -9,10 +9,10 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * 矿石注册类，目前有明显的BUG
+ * 矿石注册类
  * @author EmptyDremas
- * @version V1.0
  */
+@SuppressWarnings("unused")     //实际上都是使用过的
 @Documented
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD })

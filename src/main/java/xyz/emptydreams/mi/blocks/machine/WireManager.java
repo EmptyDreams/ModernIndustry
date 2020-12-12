@@ -10,9 +10,8 @@ import javax.annotation.Nullable;
 /**
  * 电线的管理类
  * @author EmptyDremas
- * @version V1.0
  */
-@AutoManager(block = true, item = false)
+@AutoManager(block = true)
 public final class WireManager {
 	
 	/** 铜质导线 */

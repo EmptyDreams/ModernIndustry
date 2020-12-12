@@ -10,6 +10,7 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.register.AutoRegister;
 
 /**
+ * 剑
  * @author EmptyDreams
  */
 public class MISword extends ItemSword implements IToolMaterial {

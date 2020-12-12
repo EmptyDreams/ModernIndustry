@@ -41,7 +41,7 @@ public class ItemSet implements ItemSol, Iterable<ItemElement> {
 		ItemElement real = element;
 		for (Iterator<ItemElement> iterator = elements.iterator(); iterator.hasNext(); ) {
 			ItemElement it = iterator.next();
-			if (it.contrastWith(element)) {
+			if (it.contain(element)) {
 				real = ItemElement.instance(element.getItem(),
 						element.getAmount() + it.getAmount(), it.getMeta());
 				iterator.remove();
@@ -59,7 +59,7 @@ public class ItemSet implements ItemSol, Iterable<ItemElement> {
 	@Override
 	public boolean hasItem(ItemStack stack) {
 		for (ItemElement element : elements) {
-			if (element.contrastWith(stack))return true;
+			if (element.contain(stack))return true;
 		}
 		return false;
 	}
@@ -71,7 +71,7 @@ public class ItemSet implements ItemSol, Iterable<ItemElement> {
 		if (elements.size() != that.elements.size()) return false;
 		o : for (ItemElement element : elements) {
 			for (ItemElement inner : that.elements) {
-				if (inner.contrastWith(element)) continue o;
+				if (inner.contain(element)) continue o;
 			}
 			return false;
 		}

@@ -15,7 +15,6 @@ import java.util.Map;
 /**
  * 运行时加载资源
  * @author EmptyDreams
- * @version V1.0
  */
 public class RuntimeTexture extends AbstractTexture {
 	

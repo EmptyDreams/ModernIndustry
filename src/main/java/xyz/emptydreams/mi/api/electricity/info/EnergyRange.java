@@ -1,13 +1,12 @@
 package xyz.emptydreams.mi.api.electricity.info;
 
-import javax.annotation.Nonnull;
-
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
+
+import javax.annotation.Nonnull;
 
 /**
  * 用于表示能量范围
  * @author EmptyDreams
- * @version V1.0
  */
 public final class EnergyRange {
 	

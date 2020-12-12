@@ -88,7 +88,7 @@ public class ItemList implements ItemSol, Iterable<ItemList.Node> {
 	@Override
 	public boolean hasElement(ItemElement element) {
 		for (Node node : this) {
-			if (node.getElement().contrastWith(element)) return true;
+			if (node.getElement().contain(element)) return true;
 		}
 		return false;
 	}
@@ -96,7 +96,7 @@ public class ItemList implements ItemSol, Iterable<ItemList.Node> {
 	@Override
 	public boolean hasItem(ItemStack stack) {
 		for (Node node : this) {
-			if (node.getElement().contrastWith(stack)) return true;
+			if (node.getElement().contain(stack)) return true;
 		}
 		return false;
 	}
@@ -110,7 +110,7 @@ public class ItemList implements ItemSol, Iterable<ItemList.Node> {
 			ItemElement gt = that.get(node.getX(), node.getY());
 			if (gt == null) {
 				if (node.getElement() != null) return false;
-			} else if (!gt.contrastWith(node.getElement())) return false;
+			} else if (!gt.contain(node.getElement())) return false;
 		}
 		return true;
 	}

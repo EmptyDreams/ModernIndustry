@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Random;
 
 /**
+ * 矿石方块
  * @author EmptyDremas
  */
 public class OreBlock extends BlockBase {
@@ -30,6 +31,10 @@ public class OreBlock extends BlockBase {
 	private final Item ITEM;
 	private final Item OUT;
 	
+	/**
+	 * @param name 方块注册名称
+	 * @param out 方块破坏时掉落的物品
+	 */
 	public OreBlock(String name, Item out) {
 		super(Material.ROCK);
 		setRegistryName(ModernIndustry.MODID, name);

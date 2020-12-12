@@ -31,7 +31,6 @@ import java.util.Set;
 /**
  * 机器的父类，其中包含了机器的一些默认实现
  * @author EmptyDreams
- * @version V2.1
  */
 @Mod.EventBusSubscriber
 public abstract class EleTileEntity extends BaseTileEntity {
@@ -94,6 +93,7 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	 * @param energy 这次接收的能量
 	 * @return 返回false可以阻止此次电能的消耗
 	 */
+	@SuppressWarnings("unused")
 	public boolean onReceive(EleEnergy energy) { return true; }
 	
 	/**
@@ -153,6 +153,7 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	/** 设置现在的能量 */
 	public void setNowEnergy(int nowEnergy) { this.nowEnergy = Math.min(Math.max(nowEnergy, 0), getMaxEnergy()); }
 	/** 增加能量 */
+	@SuppressWarnings("UnusedReturnValue")
 	public int growEnergy(int grow) {
 		int value = getNowEnergy() + grow;
 		setNowEnergy(value);
@@ -188,6 +189,7 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	/** 是否可以输出能量 */
 	public boolean isExtract() { return isExtract; }
 	/** 设置是否可以输出能量 */
+	@SuppressWarnings("SameParameterValue")
 	protected void setExtract(boolean extract) { isExtract = extract; }
 	/** 获取能量接口 */
 	public IStorage getStorage() { return storage; }

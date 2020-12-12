@@ -10,7 +10,6 @@ import xyz.emptydreams.mi.api.utils.data.auto.TEHelper;
 /**
  * 基础TE，提供了一些默认的功能
  * @author EmptyDreams
- * @version V1.0
  */
 public class BaseTileEntity extends TileEntity implements TEHelper {
 	

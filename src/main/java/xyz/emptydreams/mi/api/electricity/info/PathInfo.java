@@ -10,7 +10,7 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -26,11 +26,11 @@ import java.util.List;
 public class PathInfo implements Comparable<PathInfo> {
 	
 	/** 运输过程损耗的能量 */
-	private int lossEnergy = -1;
+	private int lossEnergy;
 	/** 实际提供的电压 */
 	private IVoltage voltage;
 	/** 路径 */
-	private List<TileEntity> path = new ArrayList<>();
+	private final List<TileEntity> path;
 	/** 输出电能的方块 */
 	private BlockPos outer;
 	/** 输出电能方块的托管 */
@@ -41,8 +41,6 @@ public class PathInfo implements Comparable<PathInfo> {
 	private IEleInputer inputer;
 	/** 所在世界 */
 	private World world;
-	
-	public PathInfo() { }
 	
 	public PathInfo(int lossEnergy, IVoltage voltage, List<? extends TileEntity> path,
 	                TileEntity outer, TileEntity user) {
@@ -62,15 +60,10 @@ public class PathInfo implements Comparable<PathInfo> {
 	 * @return 返回用电详单
 	 */
 	public final EleEnergy invoke() {
-		int energy = getEnergy();
-		if (energy <= 0) return new EleEnergy(0, EnumVoltage.NON);
-		EleEnergy real = outputer.output(getOuter(), energy + lossEnergy,
-										VoltageRange.instance(voltage), false);
+		EleEnergy real = getEnergy();
 		if (real.getEnergy() <= 0 || real.getVoltage().getVoltage() <= 0) return real;
 		int e = inputer.useEnergy(getUser(), real.getEnergy(), real.getVoltage());
-		if (e <= 0) {
-			throw new IllegalArgumentException("线路数据计算错误：energy=" + e);
-		}
+		if (e <= 0) throw new IllegalArgumentException("线路数据计算错误：energy=" + e);
 		TileEntity transfer;
 		for (TileEntity tileEntity : path) {
 			transfer = tileEntity;
@@ -98,38 +91,75 @@ public class PathInfo implements Comparable<PathInfo> {
 		}
 	}
 	
+	/** 获取线路起点的线缆方块的TE */
+	@Nonnull
 	public TileEntity getStart() { return path.get(0); }
 	
+	/** 获取线路终点的线缆方块的TE */
+	@Nonnull
 	public TileEntity getEnd() { return path.get(path.size() - 1); }
 	
+	/** 获取线缆消耗的能量 */
 	public int getLossEnergy() {
 		return lossEnergy;
 	}
 	
-	public int getEnergy() {
+	/** 获取机器需要的能量（不包括线缆消耗的能量） */
+	public int getMachineEnergy() {
 		TileEntity user = getUser();
 		return Math.min(inputer.getEnergy(user),
 				outputer.output(getOuter(), Integer.MAX_VALUE,
 						inputer.getVoltageRange(user), true).getEnergy());
 	}
 	
+	/** 获取线路需要的能量（包括线缆消耗的能量） */
+	public EleEnergy getEnergy() {
+		int energy = getMachineEnergy();
+		if (energy <= 0) return new EleEnergy(0, EnumVoltage.NON);
+		calculateLossEnergy();
+		return outputer.output(getOuter(), energy + lossEnergy,
+				VoltageRange.instance(voltage), false);
+	}
+	
+	/** 获取线路电压 */
+	@Nonnull
 	public IVoltage getVoltage() {
 		return voltage;
 	}
 	
+	/** 设置线路电压 */
+	@Nonnull
 	public PathInfo setVoltage(IVoltage voltage) {
 		this.voltage = voltage;
 		return this;
 	}
 	
+	/**
+	 * 获取线路内容.<br>
+	 *     <b>返回的内容没有经过保护性拷贝，切勿修改！</b>
+	 */
+	@Nonnull
 	public List<TileEntity> getPath() {
 		return path;
 	}
 	
+	/**
+	 * 获取发电机方块的TE
+	 * @return 若没有发电机方块则返回null
+	 */
+	@Nullable
 	public TileEntity getOuter() {
 		return outer == null ? null : world.getTileEntity(outer);
 	}
 	
+	/**
+	 * 设置发电机方块.
+	 * 修改时会一同修改outputer和world，不需要手动调用
+	 * {@link #setWorld(World)}
+	 * @param outer 发电机方块的TE
+	 * @return 当前对象
+	 */
+	@Nonnull
 	public PathInfo setOuter(TileEntity outer) {
 		this.outer = outer.getPos();
 		outputer = EleWorker.getOutputer(outer);
@@ -137,24 +167,34 @@ public class PathInfo implements Comparable<PathInfo> {
 		return this;
 	}
 	
+	/** 设置缓存对应的世界 */
 	public void setWorld(World world) {
 		this.world = world;
 	}
 	
+	/** 获取缓存对应的世界 */
 	public World getWorld() {
 		return world;
 	}
 	
+	/**
+	 * 获取用电器方块的TE
+	 * @return 若没有用电器方块则返回null
+	 */
+	@Nullable
 	public TileEntity getUser() {
 		return user == null ? null : world.getTileEntity(user);
 	}
 	
+	/** 设置用电器方块的TE */
+	@Nonnull
 	public PathInfo setUser(TileEntity user) {
 		this.user = user.getPos();
 		this.inputer = EleWorker.getInputer(user);
 		return this;
 	}
 	
+	/** 获取用电器方块对应的Inputer */
 	public IEleInputer getInputer() {
 		return inputer;
 	}
@@ -162,7 +202,7 @@ public class PathInfo implements Comparable<PathInfo> {
 	/** 计算线路能量损耗 */
 	public void calculateLossEnergy() {
 		if (lossEnergy == -1) {
-			int energy = getEnergy();
+			int energy = getMachineEnergy();
 			double result = path.stream().mapToDouble(it ->
 					EleWorker.getTransfer(it).getEnergyLoss(it, energy, voltage)).sum();
 			if (result > Integer.MAX_VALUE)
