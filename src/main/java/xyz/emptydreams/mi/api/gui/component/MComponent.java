@@ -59,7 +59,7 @@ public abstract class MComponent implements IComponent {
 	}
 	
 	@Override
-	public <T extends IListener> void activateListener(Class<T> name, Consumer<T> consumer) {
+	public <T extends IListener> void activateListener(MIFrame frame, Class<T> name, Consumer<T> consumer) {
 		int index = 0;
 		NBTTagCompound data = new NBTTagCompound();
 		for (IListener listener : listeners) {
@@ -76,7 +76,7 @@ public abstract class MComponent implements IComponent {
 		}
 		//如果事件在客户端触发并且需要进行网络传输则发送消息给服务端
 		//如果事件在服务端触发不需要发送给客户端，因为在服务端触发的事件大部分在客户端也可以触发
-		if (data.getSize() > 0) sendToServer(data);
+		if (data.getSize() > 0) sendToServer(frame, data);
 	}
 	
 	@Override
@@ -139,7 +139,7 @@ public abstract class MComponent implements IComponent {
 		if (craftGuide != null) {
 			CraftButton button = new CraftButton(craftGuide, this, player);
 			con.add(button, player);
-			registryButton(button);
+			registryButton(con, button);
 		}
 	}
 	
@@ -154,13 +154,13 @@ public abstract class MComponent implements IComponent {
 		if (craftGuide != null) {
 			CraftButton button = new CraftButton(craftGuide, this, player);
 			con.add(button, player);
-			registryButton(button);
+			registryButton(con.getInventorySlots(), button);
 		}
 	}
 
-	private void registryButton(CraftButton button) {
+	private void registryButton(MIFrame frame, CraftButton button) {
 		registryListener((MouseActionListener) (mouseX, mouseY) ->
-				MouseListenerTrigger.activateAction(button, mouseX, mouseY));
+				MouseListenerTrigger.activateAction(frame, button, mouseX, mouseY));
 	}
 	
 	@Override

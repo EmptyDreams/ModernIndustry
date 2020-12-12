@@ -20,14 +20,14 @@ import javax.annotation.Nonnull;
  */
 public class ElectronSynthesizerFrame {
 	
-	public static String NAME = "electron_synthesizer";
-	public static String LOCATION_NAME = "tile.mi.electron_synthesizer.name";
+	public final static String NAME = "electron_synthesizer";
+	public final static String LOCATION_NAME = "tile.mi.electron_synthesizer.name";
 	
 	public static final int ID = GuiLoader.register(new IContainerCreater() {
 		@Nonnull
 		@Override
 		public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(230, 210, player);
+			MIFrame frame = new MIFrame(LOCATION_NAME, 230, 210, player);
 			init(frame, world, pos, player);
 			return frame;
 		}
@@ -35,7 +35,7 @@ public class ElectronSynthesizerFrame {
 		@Nonnull
 		@Override
 		public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(230, 210, player);
+			MIFrame frame = new MIFrame(LOCATION_NAME, 230, 210, player);
 			init(frame, world, pos, player);
 			return new StaticFrameClient(frame, LOCATION_NAME);
 		}

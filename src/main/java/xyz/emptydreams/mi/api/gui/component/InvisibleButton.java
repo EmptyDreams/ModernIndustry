@@ -54,7 +54,7 @@ public class InvisibleButton extends MComponent {
 	@SideOnly(Side.CLIENT)
 	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
 		super.onAddToGUI(con, player);
-		if (getListeners().isEmpty()) onAddToGUI((MIFrame) null, player);
+		onAddToGUI((MIFrame) null, player);
 	}
 	
 	@Override
@@ -77,10 +77,14 @@ public class InvisibleButton extends MComponent {
 			@Nullable
 			@Override
 			public NBTTagCompound writeTo() {
-				NBTTagCompound data = new NBTTagCompound();
-				data.setFloat("x", mouseX);
-				data.setFloat("y", mouseY);
-				return data;
+				if (WorldUtil.isClient()) {
+					NBTTagCompound data = new NBTTagCompound();
+					data.setFloat("x", mouseX);
+					data.setFloat("y", mouseY);
+					return data;
+				} else {
+					return null;
+				}
 			}
 			
 			@Override

@@ -38,6 +38,7 @@ public class GuiMessage implements IMessageHandle<GuiAddition> {
 		GuiAddition addition = new GuiAddition();
 		addition.readFrom(message);
 		MIFrame frame = (MIFrame) container;
+		if (!frame.getID().equals(addition.getGuiID())) return true;
 		frame.receive(message.getCompoundTag("data"), addition.getId());
 		return true;
 	}
@@ -51,8 +52,8 @@ public class GuiMessage implements IMessageHandle<GuiAddition> {
 			message.setBoolean("cast", false);
 			return false;
 		}
-		
 		MIFrame frame = (MIFrame) container;
+		if (!frame.getID().equals(addition.getGuiID())) return true;
 		frame.receive(message.getCompoundTag("data"), addition.getId());
 		return true;
 	}

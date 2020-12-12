@@ -32,7 +32,7 @@ public final class EleMFurnaceFrame {
 		@Nonnull
 		@Override
 		public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(WIDTH, HEIGHT, player);
+			MIFrame frame = new MIFrame(LOCATION_NAME, WIDTH, HEIGHT, player);
 			init(frame, world, pos, player);
 			return frame;
 		}
@@ -41,7 +41,7 @@ public final class EleMFurnaceFrame {
 		@Override
 		@SideOnly(Side.CLIENT)
 		public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
-			MIFrame frame = new MIFrame(WIDTH, HEIGHT, player);
+			MIFrame frame = new MIFrame(LOCATION_NAME, WIDTH, HEIGHT, player);
 			init(frame, world, pos, player);
 			return new StaticFrameClient(frame, LOCATION_NAME);
 		}

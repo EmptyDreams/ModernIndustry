@@ -31,22 +31,27 @@ public class MIFrame extends Container implements IFrame {
 	private final boolean hasBackpack;
 	/** 玩家背包的位置 */
 	private final int backpackX, backpackY;
+	/** GUI ID */
+	private final String id;
 	
 	/**
 	 * 创建一个大小未知，不包含玩家背包的GUI
+	 * @param id GUI的资源名称
 	 */
-	protected MIFrame() {
+	protected MIFrame(String id) {
 		hasBackpack = false;
 		backpackX = backpackY = Integer.MIN_VALUE;
+		this.id = id;
 	}
 	
 	/**
 	 * 通过该构造函数创建一个指定尺寸的UI，不包含玩家背包
+	 * @param id GUI的资源名称
 	 * @param width GUI宽度
 	 * @param height GUI高度
 	 */
-	public MIFrame(int width, int height) {
-		this();
+	public MIFrame(String id, int width, int height) {
+		this(id);
 		this.width = width;
 		this.height = height;
 	}
@@ -57,8 +62,8 @@ public class MIFrame extends Container implements IFrame {
 	 * @param height GUI高度
 	 * @param player 玩家对象
 	 */
-	public MIFrame(int width, int height, EntityPlayer player) {
-		this(width, height, player, (width - 162) / 2, height - 76 - 6);
+	public MIFrame(String id, int width, int height, EntityPlayer player) {
+		this(id, width, height, player, (width - 162) / 2, height - 76 - 6);
 	}
 	
 	/**
@@ -69,12 +74,13 @@ public class MIFrame extends Container implements IFrame {
 	 * @param backpackX 背包坐标
 	 * @param backpackY 背包坐标
 	 */
-	public MIFrame(int width, int height, EntityPlayer player, int backpackX, int backpackY) {
+	public MIFrame(String id, int width, int height, EntityPlayer player, int backpackX, int backpackY) {
 		StringUtil.checkNull(player, "player");
 		this.width = width;
 		this.height = height;
 		this.backpackX = backpackX;
 		this.backpackY = backpackY;
+		this.id = id;
 		hasBackpack = true;
 		for (int i = 0; i < 3; ++i) {
 			for (int k = 0; k < 9; ++k) {
@@ -119,6 +125,8 @@ public class MIFrame extends Container implements IFrame {
 		this.height = height;
 	}
 	
+	/** 获取ID */
+	public String getID() { return id; }
 	/** 获取宽度 */
 	@Override
 	public int getWidth() { return width; }

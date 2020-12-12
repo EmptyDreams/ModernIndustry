@@ -50,18 +50,16 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	private final List<IComponent> components;
 	/** 资源名称 */
 	private String name;
+	private final MIFrame inventorySlots;
 	
 	public StaticFrameClient(MIFrame inventorySlotsIn, String title) {
-		this(inventorySlotsIn, title, title);
-	}
-	
-	public StaticFrameClient(MIFrame inventorySlotsIn, String title, String id) {
 		super(inventorySlotsIn);
+		inventorySlots = inventorySlotsIn;
 		xSize = inventorySlotsIn.getWidth();
 		ySize = inventorySlotsIn.getHeight();
 		this.title = title;
 		components = inventorySlotsIn.cloneComponent();
-		setResourceName(ModernIndustry.MODID, checkNull(id, "title"));
+		setResourceName(ModernIndustry.MODID, checkNull(inventorySlotsIn.getID(), "title"));
 	}
 	
 	/** 设置GUI使用的资源名称，默认使用"<b>{@link ModernIndustry#MODID}:{@link #getTitle()}</b>" */
@@ -117,6 +115,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		title = checkNull(text, "text");
 	}
 
+	public MIFrame getInventorySlots() { return inventorySlots; }
 	@Override
 	public int getWidth() { return xSize; }
 	@Override
@@ -215,12 +214,12 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		if (mouseX >= 0 && mouseY >= 0 && mouseX <= getXSize() && mouseY <= getYSize()) {
 			IComponent onComponent = getComponentFromMouse(mouseX, mouseY);
 			if (preComponent != onComponent) {
-				if (preComponent != null) activateExited(preComponent, mouseX, mouseY);
-				if (onComponent != null) activateEntered(onComponent, mouseX, mouseY);
+				if (preComponent != null) activateExited(inventorySlots, preComponent, mouseX, mouseY);
+				if (onComponent != null) activateEntered(inventorySlots, onComponent, mouseX, mouseY);
 			}
 			preComponent = onComponent;
 		} else if (preComponent != null) {
-			activateExited(preComponent, mouseX, mouseY);
+			activateExited(inventorySlots, preComponent, mouseX, mouseY);
 			preComponent = null;
 		}
 		
@@ -235,8 +234,8 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		mouseX -= getGuiLeft();     mouseY -= getGuiTop();
 		IComponent component = getComponentFromMouse(mouseX, mouseY);
 		if (component != null) {
-			if (mouseButton == 0) activateAction(component, mouseX, mouseY);
-			activateClick(component, mouseX, mouseY, mouseButton);
+			if (mouseButton == 0) activateAction(inventorySlots, component, mouseX, mouseY);
+			activateClick(inventorySlots, component, mouseX, mouseY, mouseButton);
 		}
 	}
 	
@@ -246,7 +245,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		mouseX -= getGuiLeft();     mouseY -= getGuiTop();
 		IComponent component = getComponentFromMouse(mouseX, mouseY);
 		if (component != null) {
-			activateReleased(component, mouseX, mouseY, state);
+			activateReleased(inventorySlots, component, mouseX, mouseY, state);
 		}
 	}
 	
@@ -259,10 +258,9 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	public void drawBackground(Graphics g, int width, int height) {
 		g.drawImage(ImageData.getImage(SOURCE_NAME, width, height), 0, 0, null);
 		if (!(inventorySlots instanceof MIFrame)) return;
-		MIFrame frame = (MIFrame) inventorySlots;
-		if (frame.hasBackpack()) {
+		if (inventorySlots.hasBackpack()) {
 			g.drawImage(ImageData.getImage("backpack"),
-					frame.getBackpackX(), frame.getBackpackY(), null);
+					inventorySlots.getBackpackX(), inventorySlots.getBackpackY(), null);
 		}
 	}
 	

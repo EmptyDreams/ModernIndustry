@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.gui.listener.mouse;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 
 /**
@@ -12,32 +13,34 @@ import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 public final class MouseListenerTrigger {
 	
 	/** 尝试触发鼠标松开事件 */
-	public static void activateReleased(IComponent component, float mouseX, float mouseY, int mouseButton) {
-		component.activateListener(MouseReleasedListener.class,
+	public static void activateReleased(MIFrame frame, IComponent component,
+	                                    float mouseX, float mouseY, int mouseButton) {
+		component.activateListener(frame, MouseReleasedListener.class,
 						it -> it.mouseReleased(mouseX, mouseY, mouseButton));
 	}
 	
 	/** 尝试触发鼠标离开事件 */
-	public static void activateExited(IComponent component, float mouseX, float mouseY) {
-		component.activateListener(MouseExitedListener.class,
+	public static void activateExited(MIFrame frame, IComponent component, float mouseX, float mouseY) {
+		component.activateListener(frame, MouseExitedListener.class,
 						it -> it.mouseExited(mouseX, mouseY));
 	}
 	
 	/** 尝试触发鼠标左键单击事件 */
-	public static void activateAction(IComponent component, float mouseX, float mouseY) {
-		component.activateListener(MouseActionListener.class,
+	public static void activateAction(MIFrame frame, IComponent component, float mouseX, float mouseY) {
+		component.activateListener(frame, MouseActionListener.class,
 						it -> it.mouseAction(mouseX, mouseY));
 	}
 	
 	/** 尝试触发鼠标点击事件 */
-	public static void activateClick(IComponent component, float mouseX, float mouseY, int mouseButton) {
-		component.activateListener(MouseClickListener.class,
+	public static void activateClick(MIFrame frame, IComponent component,
+	                                 float mouseX, float mouseY, int mouseButton) {
+		component.activateListener(frame, MouseClickListener.class,
 						it -> it.mouseClick(mouseX, mouseY, mouseButton));
 	}
 	
 	/** 尝试触发鼠标进入的事件 */
-	public static void activateEntered(IComponent component, float mouseX, float mouseY) {
-		component.activateListener(MouseEnteredListener.class,
+	public static void activateEntered(MIFrame frame, IComponent component, float mouseX, float mouseY) {
+		component.activateListener(frame, MouseEnteredListener.class,
 						it -> it.mouseEntered(mouseX, mouseY));
 	}
 	

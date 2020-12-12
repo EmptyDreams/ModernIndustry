@@ -211,12 +211,6 @@ public class PathInfo implements Comparable<PathInfo> {
 			else lossEnergy = (int) result;
 		}
 	}
-
-	/** 判断数据是否可用 */
-	public boolean isAvailable() {
-		TileEntity te = getOuter();
-		return te != null && EleWorker.isOutputer(te);
-	}
 	
 	@Override
 	public boolean equals(Object o) {

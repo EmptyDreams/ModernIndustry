@@ -35,6 +35,7 @@ public class CraftFrame extends MIFrame {
 	private final Container preGui;
 	
 	public CraftFrame(CraftGuide craft, EntityPlayer player) {
+		super(craft.getName() + ".gui");
 		this.craft = craft;
 		int width = (craft.getShapeWidth() + craft.getProtectedWidth()) * 18
 						+ CommonProgress.Style.ARROW.getWidth() + 15 * 4;
@@ -122,6 +123,7 @@ public class CraftFrame extends MIFrame {
 	 * 在玩家打开GUI时记录信息
 	 * @deprecated 内部方法，请勿调用
 	 */
+	@SuppressWarnings("DeprecatedIsStillUsed")
 	@Deprecated
 	public static void onOpenGui(EntityPlayer player, Object mod, int x, int y, int z) {
 		MAP.put(player, new Node(mod, x, y, z));

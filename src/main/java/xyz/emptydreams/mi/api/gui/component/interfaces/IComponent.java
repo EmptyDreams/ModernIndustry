@@ -119,12 +119,12 @@ public interface IComponent {
 	 * @param data 数据内容
 	 */
 	@SideOnly(Side.CLIENT)
-	default void sendToServer(NBTTagCompound data) {
+	default void sendToServer(MIFrame frame, NBTTagCompound data) {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setTag("data", data);
 		tag.setInteger("id", getCode());
 		EntityPlayer player = Minecraft.getMinecraft().player;
-		IMessage message = GuiMessage.instance().create(tag, new GuiAddition(player, getCode()));
+		IMessage message = GuiMessage.instance().create(tag, new GuiAddition(player, frame.getID(), getCode()));
 		MessageSender.sendToServer(message);
 	}
 	
@@ -171,7 +171,7 @@ public interface IComponent {
 	 * @param name 事件名称，所有继承自该类的事件都将被触发
 	 * @param consumer 需要执行的操作
 	 */
-	<T extends IListener> void activateListener(Class<T> name, Consumer<T> consumer);
+	<T extends IListener> void activateListener(MIFrame frame, Class<T> name, Consumer<T> consumer);
 	
 	/**
 	 * 注册指定事件

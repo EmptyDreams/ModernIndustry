@@ -30,24 +30,31 @@ public final class CraftShower {
 	 */
 	public static void show(CraftGuide<?, ?> craft, EntityPlayer player) {
 		if (craft.size() == 0) return;
-		int frame = FRAMES.computeIfAbsent(craft,
-				key -> GuiLoader.register(new IContainerCreater() {
-					@Nonnull
-					@Override
-					public MIFrame createService(World world, EntityPlayer player1, BlockPos pos) {
-						return new CraftFrame(craft, player1);
-					}
-					
-					@Nonnull
-					@Override
-					public StaticFrameClient createClient(World world, EntityPlayer player1, BlockPos pos) {
-						return new StaticFrameClient(
-								new CraftFrame(craft, player1), craft.getLocalName(), craft.getName());
-					}
-				}
-		));
+		int frame = FRAMES.computeIfAbsent(craft, c -> GuiLoader.register(new Frame(c)));
 		player.openGui(ModernIndustry.instance, frame,
 				FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0], 0, 0, 0);
+	}
+	
+	private static final class Frame implements IContainerCreater {
+		
+		private final CraftGuide<?, ?> craft;
+		
+		Frame(CraftGuide<?, ?> craft) {
+			this.craft = craft;
+		}
+		
+		@Nonnull
+		@Override
+		public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
+			return new CraftFrame(craft, player);
+		}
+		
+		@Nonnull
+		@Override
+		public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
+			return new StaticFrameClient(new CraftFrame(craft, player), craft.getLocalName());
+		}
+		
 	}
 	
 }

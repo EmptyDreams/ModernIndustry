@@ -47,6 +47,10 @@ import static xyz.emptydreams.mi.api.utils.data.auto.DataType.POS;
 @AutoTileEntity("IN_FATHER_ELECTRICITY_TRANSFER")
 public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, TEHelper {
 	
+	//MC反射调用
+	@SuppressWarnings("unused")
+	public EleSrcCable() { }
+	
 	public EleSrcCable(int meMax, double loss) {
 		this.meMax = meMax;
 		this.loss = loss;
