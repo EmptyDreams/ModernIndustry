@@ -16,8 +16,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
-import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
+import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
+import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
+import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.container.BooleanWrapper;
 import xyz.emptydreams.mi.blocks.common.CommonBlocks;
 
@@ -48,7 +49,7 @@ public abstract class MachineBlock extends TEBlockBase {
 	                            @Nonnull Block blockIn, @Nonnull BlockPos fromPos) {
 		TileEntity now = world.getTileEntity(pos);
 		@SuppressWarnings("ConstantConditions")
-		ILink link = now.getCapability(LinkCapability.LINK, null);
+		IStorage link = now.getCapability(EleCapability.ENERGY, BlockUtil.whatFacing(fromPos, pos));
 		blockIn = world.getBlockState(fromPos).getBlock();
 		if (link != null) {
 			if (blockIn == Blocks.AIR) {

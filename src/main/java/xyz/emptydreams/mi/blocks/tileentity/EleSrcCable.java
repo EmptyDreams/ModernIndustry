@@ -12,9 +12,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
-import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
-import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
@@ -181,7 +179,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	 */
 	public boolean linkMachine(TileEntity target) {
 		EnumFacing facing = BlockUtil.whatFacing(target.getPos(), pos);
-		ILink link = target.getCapability(LinkCapability.LINK, facing);
+		IStorage link = target.getCapability(EleCapability.ENERGY, facing);
 		if (link == null) return false;
 		if (link.canLink(facing)) {
 			if (!linkedBlocks.contains(target.getPos())) linkedBlocks.add(target.getPos());

@@ -28,11 +28,6 @@ public class EleCapOutputer implements IEleOutputer {
 	}
 	
 	@Override
-	public void fallback(TileEntity te, int energy) {
-		te.getCapability(EleCapability.ENERGY, null).fallback(energy);
-	}
-	
-	@Override
 	public boolean isAllowable(TileEntity te, EnumFacing facing) {
 		IStorage energy = te.getCapability(EleCapability.ENERGY, facing);
 		if (energy == null) return false;

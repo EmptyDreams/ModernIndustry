@@ -69,8 +69,7 @@ public class PathInfo implements Comparable<PathInfo> {
 		if (real.getEnergy() <= 0 || real.getVoltage().getVoltage() <= 0) return real;
 		int e = inputer.useEnergy(getUser(), real.getEnergy(), real.getVoltage());
 		if (e <= 0) {
-			outputer.fallback(getOuter(), energy + lossEnergy);
-			return new EleEnergy(0, EnumVoltage.NON);
+			throw new IllegalArgumentException("线路数据计算错误：energy=" + e);
 		}
 		TileEntity transfer;
 		for (TileEntity tileEntity : path) {

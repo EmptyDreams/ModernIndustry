@@ -11,9 +11,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
-import xyz.emptydreams.mi.api.electricity.capabilities.ILink;
 import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
-import xyz.emptydreams.mi.api.electricity.capabilities.LinkCapability;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.EnergyRange;
@@ -127,7 +125,7 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
 		if (super.hasCapability(capability, facing)) return true;
-		return capability == EleCapability.ENERGY || capability == LinkCapability.LINK;
+		return capability == EleCapability.ENERGY;
 	}
 	
 	/**
@@ -142,8 +140,6 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
 		if (capability == EleCapability.ENERGY) {
 			return EleCapability.ENERGY.cast(storage);
-		} else if (capability == LinkCapability.LINK) {
-			return LinkCapability.LINK.cast(linkInfo);
 		}
 		return super.getCapability(capability, facing);
 	}
@@ -197,8 +193,6 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	public IStorage getStorage() { return storage; }
 	/** 设置能量接口 */
 	protected void setStorage(IStorage storage) { this.storage = storage; }
-	/** 获取连接限制接口 */
-	public ILink getLinkInfo() { return linkInfo; }
 	/** 获取可存储的能量值 */
 	public int getMaxEnergy() { return maxEnergy; }
 	/** 设置可存储的最大能量值 */
@@ -272,11 +266,6 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		}
 		
 		@Override
-		public void fallback(int energy) {
-			nowEnergy += energy;
-		}
-		
-		@Override
 		public boolean isReAllowable(EnumFacing facing) {
 			return EleTileEntity.this.isReAllowable(facing);
 		}
@@ -285,8 +274,7 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		public boolean isExAllowable(EnumFacing facing) {
 			return EleTileEntity.this.isExAllowable(facing);
 		}
-	};
-	private final ILink linkInfo = new ILink() {
+		
 		@Override
 		public boolean canLink(EnumFacing facing) {
 			return EleTileEntity.this.canLink(facing);
@@ -306,6 +294,7 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		public boolean isLink(BlockPos pos) {
 			return linkedBlocks.contains(pos);
 		}
+		
 	};
 	
 	/** 在每Tick结尾将类中临时数据清空 */
