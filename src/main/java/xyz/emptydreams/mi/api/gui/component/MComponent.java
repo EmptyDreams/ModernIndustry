@@ -38,6 +38,8 @@ public abstract class MComponent implements IComponent {
 	private final List<IListener> listeners = new LinkedList<>();
 	/** 是否支持CraftShower */
 	private CraftGuide<?, ?> craftGuide = null;
+	/** 存储加载过的窗体 */
+	private final List<MIFrame> LOADED = new LinkedList<>();
 	
 	@Override
 	public void setLocation(int x, int y) {
@@ -130,13 +132,35 @@ public abstract class MComponent implements IComponent {
 	public abstract void paint(@Nonnull Graphics g);
 	
 	/**
+	 * 在服务端或客户端第一次将控件添加到窗体时调用.
+	 * @param frame 窗体对象
+	 * @param player 玩家对象
+	 */
+	protected void init(MIFrame frame, EntityPlayer player, CraftButton button) {
+		if (craftGuide != null) {
+			registryListener((MouseActionListener) (mouseX, mouseY) ->
+					MouseListenerTrigger.activateAction(frame, button, mouseX, mouseY));
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}<br>
 	 * <b>子类重写该方法时务必使用{@code super.onAddToGUI}调用该方法，
 	 *      否则会导致部分功能无法正常工作</b>
 	 */
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
-		registryButton(con, player);
+		CraftButton button = null;
+		if (craftGuide != null) {
+			button = new CraftButton(craftGuide, this, player);
+			con.add(button, player);
+		}
+		for (MIFrame frame : LOADED) {
+			if (frame.getID().hashCode() == con.getID().hashCode()
+				&& frame.getID().equals(con.getID())) return;
+		}
+		LOADED.add(con);
+		if (button != null) init(con, player, button);
 	}
 	
 	/**
@@ -147,17 +171,12 @@ public abstract class MComponent implements IComponent {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
-		registryButton(con.getInventorySlots(), player);
-	}
-
-	private void registryButton(MIFrame frame, EntityPlayer player) {
-		if (craftGuide != null) {
-			CraftButton button = new CraftButton(craftGuide, this, player);
-			ButtonClick click = new ButtonClick(frame, button);
-			if (listeners.contains(click)) return;
-			frame.add(button, player);
-			registryListener(click);
+		MIFrame client = con.getInventorySlots();
+		for (MIFrame frame : LOADED) {
+			if (frame.getID().hashCode() == client.getID().hashCode()
+					&& frame.getID().equals(client.getID())) return;
 		}
+		LOADED.add(client);
 	}
 	
 	@Override
@@ -171,38 +190,6 @@ public abstract class MComponent implements IComponent {
 	@Override
 	public void setCodeStart(int code) {
 		this.code = code;
-	}
-	
-	private static final class ButtonClick implements MouseActionListener {
-		
-		private final MIFrame frame;
-		private final CraftButton button;
-		
-		ButtonClick(MIFrame frame, CraftButton button) {
-			this.frame = frame;
-			this.button = button;
-		}
-		
-		@Override
-		public void mouseAction(float mouseX, float mouseY) {
-			MouseListenerTrigger.activateAction(frame, button, mouseX, mouseY);
-		}
-		
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-			
-			ButtonClick that = (ButtonClick) o;
-			
-			return frame.getID().equals(that.frame.getID());
-		}
-		
-		@Override
-		public int hashCode() {
-			return frame.getID().hashCode();
-		}
-		
 	}
 	
 }

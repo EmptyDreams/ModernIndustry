@@ -64,7 +64,7 @@ public class MSlot extends MComponent {
 		StringUtil.checkNull(getSlot(), "slot");
 		if (con instanceof MIFrame) {
 			index = con.inventorySlots.size();
-			((MIFrame) con).addSlotToContainer(slot);
+			con.addSlotToContainer(slot);
 		} else {
 			MISysInfo.err("[MSlot]MBackpack不支持：" + con.getClass());
 		}

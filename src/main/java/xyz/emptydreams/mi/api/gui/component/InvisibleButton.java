@@ -7,7 +7,6 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
@@ -51,15 +50,7 @@ public class InvisibleButton extends MComponent {
 	public void paint(@Nonnull Graphics g) { }
 	
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
-		super.onAddToGUI(con, player);
-		onAddToGUI((MIFrame) null, player);
-	}
-	
-	@Override
-	public void onAddToGUI(MIFrame con, EntityPlayer player) {
-		super.onAddToGUI(con, player);
+	protected void init(MIFrame frame, EntityPlayer player, CraftButton button) {
 		registryListener((MouseEnteredListener) (mouseX, mouseY) -> mouse = true);
 		registryListener((MouseExitedListener) (mouseX, mouseY) -> mouse = false);
 		registryListener(new MouseActionListener() {
@@ -68,7 +59,7 @@ public class InvisibleButton extends MComponent {
 			public void mouseAction(float mouseX, float mouseY) {
 				this.mouseX = mouseX;
 				this.mouseY = mouseY;
-				onAction.accept(con, WorldUtil.isClient());
+				onAction.accept(frame, WorldUtil.isClient());
 				if (WorldUtil.isClient()) {
 					Minecraft.getMinecraft().getSoundHandler().playSound(
 							PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
