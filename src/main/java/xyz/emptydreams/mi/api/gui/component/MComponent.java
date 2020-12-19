@@ -136,11 +136,7 @@ public abstract class MComponent implements IComponent {
 	 */
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
-		if (craftGuide != null) {
-			CraftButton button = new CraftButton(craftGuide, this, player);
-			con.add(button, player);
-			registryButton(con, button);
-		}
+		registryButton(con, player);
 	}
 	
 	/**
@@ -151,16 +147,17 @@ public abstract class MComponent implements IComponent {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
-		if (craftGuide != null) {
-			CraftButton button = new CraftButton(craftGuide, this, player);
-			con.add(button, player);
-			registryButton(con.getInventorySlots(), button);
-		}
+		registryButton(con.getInventorySlots(), player);
 	}
 
-	private void registryButton(MIFrame frame, CraftButton button) {
-		registryListener((MouseActionListener) (mouseX, mouseY) ->
-				MouseListenerTrigger.activateAction(frame, button, mouseX, mouseY));
+	private void registryButton(MIFrame frame, EntityPlayer player) {
+		if (craftGuide != null) {
+			CraftButton button = new CraftButton(craftGuide, this, player);
+			ButtonClick click = new ButtonClick(frame, button);
+			if (listeners.contains(click)) return;
+			frame.add(button, player);
+			registryListener(click);
+		}
 	}
 	
 	@Override
@@ -174,6 +171,38 @@ public abstract class MComponent implements IComponent {
 	@Override
 	public void setCodeStart(int code) {
 		this.code = code;
+	}
+	
+	private static final class ButtonClick implements MouseActionListener {
+		
+		private final MIFrame frame;
+		private final CraftButton button;
+		
+		ButtonClick(MIFrame frame, CraftButton button) {
+			this.frame = frame;
+			this.button = button;
+		}
+		
+		@Override
+		public void mouseAction(float mouseX, float mouseY) {
+			MouseListenerTrigger.activateAction(frame, button, mouseX, mouseY);
+		}
+		
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			
+			ButtonClick that = (ButtonClick) o;
+			
+			return frame.getID().equals(that.frame.getID());
+		}
+		
+		@Override
+		public int hashCode() {
+			return frame.getID().hashCode();
+		}
+		
 	}
 	
 }

@@ -69,9 +69,10 @@ public class InvisibleButton extends MComponent {
 				this.mouseX = mouseX;
 				this.mouseY = mouseY;
 				onAction.accept(con, WorldUtil.isClient());
-				if (WorldUtil.isClient())
+				if (WorldUtil.isClient()) {
 					Minecraft.getMinecraft().getSoundHandler().playSound(
 							PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+				}
 			}
 			
 			@Nullable
@@ -89,7 +90,9 @@ public class InvisibleButton extends MComponent {
 			
 			@Override
 			public void readFrom(NBTTagCompound data) {
-				mouseAction(data.getFloat("x"), data.getFloat("y"));
+				if (WorldUtil.isServer()) {
+					mouseAction(data.getFloat("x"), data.getFloat("y"));
+				}
 			}
 			
 		});

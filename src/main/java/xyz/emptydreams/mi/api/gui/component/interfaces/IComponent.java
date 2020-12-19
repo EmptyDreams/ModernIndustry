@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * 所有控件的接口
+ * 所有控件的接口.<br>
  * @author EmptyDreams
  */
 public interface IComponent {
@@ -56,12 +56,16 @@ public interface IComponent {
 	@SideOnly(Side.CLIENT)
 	void paint(@Nonnull Graphics g);
 	/**
-	 * 在组件被添加到GUI时调用
+	 * 在组件被添加到GUI时调用.<br>
+	 *     <b>和窗体无关的初始化操作不应该放在这个方法里，因为这可能会导致重复初始化，
+	 *          如果必须在该方法中进行初始化，须自行检查是否应当进行初始化</b>
 	 * @throws NullPointerException 如果需要使用con或player却传入了null
 	 */
 	void onAddToGUI(MIFrame con, EntityPlayer player);
 	/**
-	 * 在组件被添加到客户端GUI时调用
+	 * 在组件被添加到客户端GUI时调用.<br>
+	 *     <b>和窗体无关的初始化操作不应该放在这个方法里，因为这可能会导致重复初始化
+	 *          如果必须在该方法中进行初始化，须自行检查是否应当进行初始化</b>
 	 * @throws NullPointerException 如果需要使用con或player却传入了null
 	 */
 	@SideOnly(Side.CLIENT)
