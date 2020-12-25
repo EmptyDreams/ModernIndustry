@@ -10,13 +10,13 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.data.info.CableCache;
-import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
+import xyz.emptydreams.mi.register.agent.AutoAgentRegister;
 
 /**
  * 线缆的代理
  * @author EmptyDreams
  */
-@AutoTrusteeshipRegister("INSTANCE")
+@AutoAgentRegister("INSTANCE")
 public class EleSrcTransfer implements IEleTransfer {
 	
 	//该字段通过反射赋值

@@ -12,17 +12,23 @@ import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
-import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
+import xyz.emptydreams.mi.register.agent.AutoAgentRegister;
 
 /**
  * 提供对能力系统的输入支持
  * @author EmptyDreams
  */
-@AutoTrusteeshipRegister
+@AutoAgentRegister("INSTANCE")
 public class EleCapInputer implements IEleInputer {
 	
 	private static final ResourceLocation NAME =
 			new ResourceLocation(ModernIndustry.MODID, "EleSrcInputer");
+	
+	//该字段通过反射赋值
+	@SuppressWarnings("unused")
+	private static EleCapInputer INSTANCE;
+	
+	public static EleCapInputer instance() { return INSTANCE; }
 	
 	@Override
 	public int useEnergy(TileEntity now, int energy, IVoltage voltage) {

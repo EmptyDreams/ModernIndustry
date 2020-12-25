@@ -123,6 +123,7 @@ public abstract class MComponent implements IComponent {
 		craftGuide = craft;
 	}
 	/** 移除合成表按钮，<b>仅在添加到GUI前有效</b> */
+	@SuppressWarnings("unused")
 	public void deleteCraftButton() {
 		craftGuide = null;
 	}

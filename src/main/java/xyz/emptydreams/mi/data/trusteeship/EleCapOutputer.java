@@ -9,17 +9,23 @@ import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
-import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
+import xyz.emptydreams.mi.register.agent.AutoAgentRegister;
 
 /**
  * 提供对能力系统的输出支持
  * @author EmptyDreams
  */
-@AutoTrusteeshipRegister
+@AutoAgentRegister("INSTANCE")
 public class EleCapOutputer implements IEleOutputer {
 	
 	private static final ResourceLocation NAME =
 			new ResourceLocation(ModernIndustry.MODID, "EleSrcOutputer");
+	
+	//该字段通过反射赋值
+	@SuppressWarnings("unused")
+	private static EleCapOutputer INSTANCE;
+	
+	public static EleCapOutputer instance() { return INSTANCE; }
 	
 	@Override
 	public EleEnergy output(TileEntity te, int energy, VoltageRange voltage, boolean simulation) {

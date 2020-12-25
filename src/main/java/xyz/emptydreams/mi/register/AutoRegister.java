@@ -17,6 +17,7 @@ import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.proxy.ClientProxy;
 import xyz.emptydreams.mi.proxy.CommonProxy;
+import xyz.emptydreams.mi.register.agent.AutoAgentRegister;
 import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 import xyz.emptydreams.mi.register.block.OreCreate;
 import xyz.emptydreams.mi.register.block.WorldCreater;
@@ -26,7 +27,6 @@ import xyz.emptydreams.mi.register.json.ItemJsonBuilder;
 import xyz.emptydreams.mi.register.sorter.BlockSorter;
 import xyz.emptydreams.mi.register.sorter.ItemSorter;
 import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
-import xyz.emptydreams.mi.register.trusteeship.AutoTrusteeshipRegister;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -50,7 +50,7 @@ import java.util.TreeSet;
  * 4.被{@link AutoItemRegister}注解的物品
  * 5.被{@link AutoManager}注解的类
  * 6.被{@link OreCreate}注解的矿石生成器
- * 7.被{@link AutoTrusteeshipRegister}注解的托管
+ * 7.被{@link AutoAgentRegister}注解的托管
  * 8.被{@link AutoLoader}注解的类
  * </pre>
  * @author EmptyDremas
@@ -194,7 +194,7 @@ public final class AutoRegister {
 	/** 自动注册托管 */
 	private static void reAutoTR(ASMDataTable ASM)
 			throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
-		Set<ASMData> classSet = ASM.getAll(AutoTrusteeshipRegister.class.getName());
+		Set<ASMData> classSet = ASM.getAll(AutoAgentRegister.class.getName());
 		for (ASMData data : classSet) {
 			Class<?> nowClass = Class.forName(data.getClassName());
 			Object o = nowClass.newInstance();

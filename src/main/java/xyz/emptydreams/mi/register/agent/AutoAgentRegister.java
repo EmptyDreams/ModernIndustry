@@ -1,12 +1,12 @@
-package xyz.emptydreams.mi.register.trusteeship;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+package xyz.emptydreams.mi.register.agent;
 
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -18,7 +18,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface AutoTrusteeshipRegister {
+public @interface AutoAgentRegister {
 
 	/** 用于接收注册时生成的实例的变量，留空为不保留实例 */
 	String value() default "";
