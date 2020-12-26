@@ -11,10 +11,12 @@ public final class Panels {
 	private Panels() { throw new AssertionError("不应该被调用的构造函数"); }
 
 	/**
-	 * 水平居中对齐<br>
-	 * 该方法会修改的参数列表：1.Group的大小；2.Group中各组件的坐标<br>
-	 * 使用的注意事项：<br>
-	 *      <b>如果Group是嵌套在另一个Group中的，
+	 * 水平居中对齐
+	 * <h3>该方法会修改的参数列表：
+	 *      <ol><li>Group的大小
+	 *      <li>Group中各组件的坐标</ol>
+	 * <h3>使用的注意事项：
+	 *      <p><b>如果Group是嵌套在另一个Group中的，
 	 *      那么内层的Group必须手动设置大小，
 	 *      外层Group的高度最好手动设置</b>
 	 * @param group 组
@@ -48,12 +50,12 @@ public final class Panels {
 	}
 
 	/**
-	 * 竖直居中对齐<br>
-	 * 该方法会修改的参数列表：
-	 *      1.Group的大小；
-	 *      2.Group中各组件的坐标<br>
-	 * 使用的注意事项：<br>
-	 *      <b>如果Group是嵌套在另一个Group中的，
+	 * <p>竖直居中对齐
+	 * <h3>该方法会修改的参数列表：
+	 *      <ol><li>Group的大小
+	 *      <li>Group中各组件的坐标</ol>
+	 * <h3>使用的注意事项：
+	 *      <p><b>如果Group是嵌套在另一个Group中的，
 	 *      那么内层的Group必须手动设置大小，
 	 *      外层Group的高度最好手动设置</b>
 	 * @param group 组

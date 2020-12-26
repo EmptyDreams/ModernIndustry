@@ -38,6 +38,8 @@ public abstract class MComponent implements IComponent {
 	private final List<IListener> listeners = new LinkedList<>();
 	/** 是否支持CraftShower */
 	private CraftGuide<?, ?> craftGuide = null;
+	/** 合成表按钮 */
+	private CraftButton craftButton = null;
 	/** 存储加载过的窗体 */
 	private final List<MIFrame> LOADED = new LinkedList<>();
 	
@@ -137,10 +139,10 @@ public abstract class MComponent implements IComponent {
 	 * @param frame 窗体对象
 	 * @param player 玩家对象
 	 */
-	protected void init(MIFrame frame, EntityPlayer player, CraftButton button) {
+	protected void init(MIFrame frame, EntityPlayer player) {
 		if (craftGuide != null) {
 			registryListener((MouseActionListener) (mouseX, mouseY) ->
-					MouseListenerTrigger.activateAction(frame, button, mouseX, mouseY));
+					MouseListenerTrigger.activateAction(frame, craftButton, mouseX, mouseY));
 		}
 	}
 	
@@ -151,17 +153,16 @@ public abstract class MComponent implements IComponent {
 	 */
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
-		CraftButton button = null;
 		if (craftGuide != null) {
-			button = new CraftButton(craftGuide, this, player);
-			con.add(button, player);
+			craftButton = new CraftButton(craftGuide, this, player);
+			con.add(craftButton, player);
 		}
 		for (MIFrame frame : LOADED) {
 			if (frame.getID().hashCode() == con.getID().hashCode()
 				&& frame.getID().equals(con.getID())) return;
 		}
 		LOADED.add(con);
-		if (button != null) init(con, player, button);
+		init(con, player);
 	}
 	
 	/**

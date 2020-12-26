@@ -43,8 +43,8 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 	 * @return 如果实例不存在则返回新的实例，存在则返回已有的实例
 	 */
 	public static <T extends IShape, R> CraftGuide<T, R>
-			instance(Block impl,
-			         Size2D shapeSize, Size2D proSize, Class<T> shape, Class<R> product) {
+			instance(Block impl, Size2D shapeSize, Size2D proSize,
+			            Class<T> shape, Class<R> product) {
 		return instance(new ResourceLocation(
 				impl.getRegistryName().getResourceDomain(), impl.getUnlocalizedName()),
 					shapeSize, proSize, shape, product);
@@ -53,7 +53,12 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 	/**
 	 * 获取实例
 	 * @param name 注册名
+	 * @param shapeSize 原料列表尺寸
+	 * @param proSize 产物列表尺寸
+	 * @param shape 原料列表的Class
+	 * @param product 产物列表的Class
 	 * @param <T> 合成表的类型
+	 * @param <R> 产物列表类型
 	 * @return 如果实例不存在则返回新的实例，存在则返回已有的实例
 	 */
 	public static <T extends IShape, R> CraftGuide<T, R>
@@ -78,14 +83,14 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 	 * 移除一个实例，<b>不可以用来清空合成表，因为该方法不会影响已经创建的实例</b>
 	 * @param name 注册名
 	 */
+	@SuppressWarnings("unused")
 	public static void deleteInstance(ResourceLocation name) {
 		instances.remove(name);
 	}
 	
 	/* 存储类型 */
-	private final Class<T> tClass;
-	private final Class<R> rClass;
-	private Class<? extends IShape> rawClass;
+	private final Class<T> ipClass;
+	private final Class<R> opClass;
 	/** 存储合成表 */
 	private final List<T> shapes = new LinkedList<T>() {
 		@Override
@@ -103,8 +108,8 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 		this.name = name;
 		this.maxSize = size;
 		this.proSize = proSize;
-		this.tClass = shape;
-		this.rClass = product;
+		this.ipClass = shape;
+		this.opClass = product;
 		
 	}
 	
@@ -120,6 +125,7 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 	 * 根据原料删除一个合成表
 	 * @param sol 物品列表
 	 */
+	@SuppressWarnings("unused")
 	public void unregistry(ItemSol sol) {
 		shapes.removeIf(shape -> shape.apply(sol));
 	}
@@ -128,9 +134,9 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 	 * 判断原料中是否包含指定物品
 	 * @param stack 物品
 	 */
-	public boolean rawHas(ItemStack stack) {
+	public boolean haveInput(ItemStack stack) {
 		for (T shape : shapes) {
-			if (shape.hasItem(stack)) return true;
+			if (shape.haveItem(stack)) return true;
 		}
 		return false;
 	}
@@ -139,9 +145,10 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 	 * 判断原料中是否含有指定元素
 	 * @param element 元素
 	 */
-	public boolean rawHas(ItemElement element) {
+	@SuppressWarnings("unused")
+	public boolean haveInput(ItemElement element) {
 		for (T shape : shapes) {
-			if (shape.hasElement(element)) return true;
+			if (shape.haveElement(element)) return true;
 		}
 		return false;
 	}
@@ -154,7 +161,7 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 	@Nullable
 	public R apply(ItemSol sol) {
 		for (T shape : shapes) {
-			if (shape.apply(sol)) return (R) shape.getProduction();
+			if (shape.apply(sol)) return (R) shape.getOutput();
 		}
 		return null;
 	}
@@ -187,20 +194,20 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 	
 	/** 获取合成表的Class */
 	public Class<T> getShapeClass() {
-		return tClass;
+		return ipClass;
 	}
 	
 	/**
 	 * 获取合成表的原料列表的Class
 	 * @throws IllegalArgumentException 如果管理器中还未添加任何合成表
 	 */
-	public Class<? extends ItemSol> getRawClass() {
+	public Class<? extends ItemSol> getInputClass() {
 		if (shapes.isEmpty()) throw new IllegalArgumentException("管理器内还未添加任何合成表，无法获取合成表原料类型");
-		return shapes.get(0).getItemSolClass();
+		return shapes.get(0).getInputClass();
 	}
 	/** 获取产物的Class */
-	public Class<R> getProtectClass() {
-		return rClass;
+	public Class<R> getOutputClass() {
+		return opClass;
 	}
 	
 	public String getLocalName() {
@@ -214,6 +221,7 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 	}
 	
 	/** @see Collection#stream()  */
+	@SuppressWarnings("unused")
 	@Nonnull
 	public Stream<T> stream() {
 		return shapes.stream();

@@ -2,13 +2,13 @@ package xyz.emptydreams.mi.api.gui.component.interfaces;
 
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 
+import static xyz.emptydreams.mi.api.gui.client.ImageData.PROGRESS_BAR;
+
 /**
  * 进度条接口
  * @author EmptyDreams
  */
 public interface IProgressBar extends IComponent {
-	
-	String RESOURCE_NAME = "progress";
 	
 	/** 获取当前的进度时间 */
 	int getNow();
@@ -35,7 +35,7 @@ public interface IProgressBar extends IComponent {
 	}
 	
 	static RuntimeTexture getTexture() {
-		return RuntimeTexture.instance(RESOURCE_NAME).bindTexture();
+		return RuntimeTexture.instance(PROGRESS_BAR).bindTexture();
 	}
 	
 }

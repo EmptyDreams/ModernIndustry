@@ -53,11 +53,11 @@ public class UnorderlyShapeOnlyHandle extends CraftHandle<ItemSet, ItemElement> 
 	@Override
 	public void update(Node group, IShape<ItemSet, ItemElement> shape) {
 		SlotGroup slots = group.raw;
-		shape.getRawSol().forEachIndex((element, index) -> {
+		shape.getInput().forEachIndex((element, index) -> {
 			Point2D point = MathUtil.indexToMatrix(index, slots.getXSize());
 			slots.setItem(point.getX(), point.getY(), element);
 		});
-		group.pro.setItem(0, 0, shape.getProduction());
+		group.pro.setItem(0, 0, shape.getOutput());
 	}
 	
 	@Override

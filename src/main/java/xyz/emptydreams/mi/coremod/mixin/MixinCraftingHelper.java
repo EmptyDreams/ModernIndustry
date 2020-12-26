@@ -33,13 +33,14 @@ import static net.minecraftforge.common.crafting.CraftingHelper.findFiles;
 @Mixin(CraftingHelper.class)
 public class MixinCraftingHelper {
 	
-	@Shadow private static Gson GSON;
+	@Shadow(remap = false)
+	private static Gson GSON;
 	
 	/**
 	 * @reason 为了实现MI注册表的自动注册
 	 * @author EmptyDreams
 	 */
-	@Overwrite
+	@Overwrite(remap = false)
 	private static boolean loadRecipes(ModContainer mod) {
 		JsonContext ctx = new JsonContext(mod.getModId());
 		

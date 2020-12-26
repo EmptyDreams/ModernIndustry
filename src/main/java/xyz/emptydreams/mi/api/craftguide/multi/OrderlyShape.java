@@ -30,12 +30,12 @@ public class OrderlyShape implements IShape<ItemList, ItemSet> {
 	
 	@Nonnull
 	@Override
-	public ItemList getRawSol() {
+	public ItemList getInput() {
 		return list.copy();
 	}
 	
 	@Override
-	public ItemSet getProduction() {
+	public ItemSet getOutput() {
 		return production.copy();
 	}
 	
@@ -45,24 +45,24 @@ public class OrderlyShape implements IShape<ItemList, ItemSet> {
 	}
 	
 	@Override
-	public boolean hasElement(ItemElement element) {
+	public boolean haveElement(ItemElement element) {
 		return list.hasElement(element);
 	}
 	
 	@Override
-	public boolean hasItem(ItemStack stack) {
+	public boolean haveItem(ItemStack stack) {
 		return list.hasItem(stack);
 	}
 	
 	@Nonnull
 	@Override
-	public Class<ItemList> getItemSolClass() {
+	public Class<ItemList> getInputClass() {
 		return ItemList.class;
 	}
 	
 	@Nonnull
 	@Override
-	public Class<ItemSet> getProtectedClass() {
+	public Class<ItemSet> getOutputClass() {
 		return ItemSet.class;
 	}
 	

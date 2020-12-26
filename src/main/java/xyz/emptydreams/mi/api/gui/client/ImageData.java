@@ -1,17 +1,16 @@
 package xyz.emptydreams.mi.api.gui.client;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -64,15 +63,40 @@ public final class ImageData {
 		return node.image;
 	}
 	
+	/** GUI背景 */
+	public static final String BACKGROUND = "background";
+	/** 物品框 */
+	public static final String SLOT = "slot";
+	/** 玩家背包 */
+	public static final String BACKPACK = "backpack";
+	/** 进度条 */
+	public static final String PROGRESS_BAR = "progress";
+	/** 矩形按钮 */
+	public static final String BUTTON_REC = "button";
+	/** 矩形按钮（点击） */
+	public static final String BUTTON_REC_CLICK = "buttonClicked";
+	/** 三角形向右按钮 */
+	public static final String BUTTON_TRIANGLE_RIGHT = "rightButton";
+	/** 三角形向右按钮（点击） */
+	public static final String BUTTON_TRIANGLE_RIGHT_CLICK = "rightButtonClicked";
+	/** 三角形向左按钮 */
+	public static final String BUTTON_TRIANGLE_LEFT = "leftButton";
+	/** 三角形向左按钮（点击） */
+	public static final String BUTTON_TRIANGLE_LEFT_CLICK = "leftButtonClicked";
+	
 	/** 存储资源 */
-	private final static Map<String, Node> resourceInfo = new HashMap<String, Node>() {
+	private final static Map<String, Node> resourceInfo = new Object2ObjectArrayMap<String, Node>(10) {
 		{
-			put("background",                   new Node(162, 0, 256, 256));
-			put("slot",                         new Node(0, 76, 26, 26));
-			put("backpack",                     new Node(0, 0, 162, 76));
-			put(IProgressBar.RESOURCE_NAME,     new Node(0, 102, 111, 74));
-			put("button",                       new Node(162, 256, 15, 20));
-			put("buttonClicked",                new Node(162, 276, 15, 20));
+			put(BACKGROUND,                             new Node(162, 0, 256, 256));
+			put(SLOT,                                   new Node(0, 76, 26, 26));
+			put(BACKPACK,                               new Node(0, 0, 162, 76));
+			put(PROGRESS_BAR,                           new Node(0, 102, 111, 74));
+			put(BUTTON_REC,                             new Node(162, 256, 15, 20));
+			put(BUTTON_REC_CLICK,                       new Node(162, 276, 15, 20));
+			put(BUTTON_TRIANGLE_RIGHT,                  new Node(177, 256, 14, 22));
+			put(BUTTON_TRIANGLE_RIGHT_CLICK,            new Node(177, 278, 14, 22));
+			put(BUTTON_TRIANGLE_LEFT,                   new Node(191, 256, 14, 22));
+			put(BUTTON_TRIANGLE_LEFT_CLICK,             new Node(191, 278, 14, 22));
 		}
 	};
 	

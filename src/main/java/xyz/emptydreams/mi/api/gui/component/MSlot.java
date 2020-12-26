@@ -15,13 +15,13 @@ import xyz.emptydreams.mi.api.utils.StringUtil;
 import javax.annotation.Nonnull;
 import java.awt.*;
 
+import static xyz.emptydreams.mi.api.gui.client.ImageData.SLOT;
+
 /**
  * 物品框
  * @author EmptyDreams
  */
 public class MSlot extends MComponent {
-	
-	public static final String RESOURCE_NAME = "slot";
 	
 	private Slot slot;
 	
@@ -54,7 +54,7 @@ public class MSlot extends MComponent {
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {
-		g.drawImage(ImageData.getImage(RESOURCE_NAME, getWidth(), getHeight()), 0, 0, null);
+		g.drawImage(ImageData.getImage(SLOT, getWidth(), getHeight()), 0, 0, null);
 	}
 	
 	private int index = -1;

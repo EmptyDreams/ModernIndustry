@@ -36,7 +36,7 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 	/** 物品栏 */
 	@Storage private final ItemStackHandler item = new ItemStackHandler(2);
 	private final SlotItemHandler in = CommonUtil.createInputSlot(item, 0, 52, 32,
-																CraftList.PULVERIZER::rawHas);
+																CraftList.PULVERIZER::haveInput);
 	private final SlotItemHandler out = CommonUtil.createOutputSlot(item, 1, 106, 32);
 	/** 工作时间 */
 	private int workingTime = 0;

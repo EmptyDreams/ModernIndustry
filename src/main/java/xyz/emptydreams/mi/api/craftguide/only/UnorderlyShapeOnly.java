@@ -27,12 +27,12 @@ public class UnorderlyShapeOnly implements IShape<ItemSet, ItemElement> {
 	}
 	
 	@Override
-	public ItemSet getRawSol() {
+	public ItemSet getInput() {
 		return set.copy();
 	}
 	
 	@Override
-	public @Nonnull ItemElement getProduction() {
+	public @Nonnull ItemElement getOutput() {
 		return production;
 	}
 	
@@ -42,24 +42,24 @@ public class UnorderlyShapeOnly implements IShape<ItemSet, ItemElement> {
 	}
 	
 	@Override
-	public boolean hasElement(ItemElement element) {
+	public boolean haveElement(ItemElement element) {
 		return set.hasElement(element);
 	}
 	
 	@Override
-	public boolean hasItem(ItemStack stack) {
+	public boolean haveItem(ItemStack stack) {
 		return set.hasItem(stack);
 	}
 	
 	@Nonnull
 	@Override
-	public Class<ItemSet> getItemSolClass() {
+	public Class<ItemSet> getInputClass() {
 		return ItemSet.class;
 	}
 	
 	@Nonnull
 	@Override
-	public Class<ItemElement> getProtectedClass() {
+	public Class<ItemElement> getOutputClass() {
 		return ItemElement.class;
 	}
 	

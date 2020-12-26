@@ -167,7 +167,7 @@ public class SlotGroup extends MComponent {
 	 */
 	public static void paintGroup(Graphics g, int offsetX, int offsetY,
 	                              int slotSize, int xSize, int ySize, int interval) {
-		Image image = ImageData.getImage(MSlot.RESOURCE_NAME, slotSize, slotSize);
+		Image image = ImageData.getImage(ImageData.SLOT, slotSize, slotSize);
 		for (int y = 0; y < ySize; ++y) {
 			for (int x = 0; x < xSize; ++x) {
 				int drawX = (slotSize * x) + (interval * x) + offsetX;

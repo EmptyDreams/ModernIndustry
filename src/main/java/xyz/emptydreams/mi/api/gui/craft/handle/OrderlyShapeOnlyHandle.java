@@ -44,8 +44,8 @@ public final class OrderlyShapeOnlyHandle extends CraftHandle<ItemList, ItemElem
 	@Override
 	public void update(Node group, IShape<ItemList, ItemElement> shape) {
 		SlotGroup raw = group.raw;
-		shape.getRawSol().forEach(node -> raw.setItem(node.getX(), node.getY(), node.getElement()));
-		group.pro.setItem(0, 0, shape.getProduction());
+		shape.getInput().forEach(node -> raw.setItem(node.getX(), node.getY(), node.getElement()));
+		group.pro.setItem(0, 0, shape.getOutput());
 	}
 	
 	@Override

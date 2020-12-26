@@ -216,7 +216,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		
 		@Override
 		public boolean isItemValid(ItemStack stack) {
-			boolean b = stack != null && CraftList.COMPRESSOR.rawHas(stack)
+			boolean b = stack != null && CraftList.COMPRESSOR.haveInput(stack)
 					            && super.isItemValid(stack);
 			if (b && !isEmptyForInput()) {
 				SlotItemHandler s = getSlot(getSlotIndex() == 0 ? 1 : 0);

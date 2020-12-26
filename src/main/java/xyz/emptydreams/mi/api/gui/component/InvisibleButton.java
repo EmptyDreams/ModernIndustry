@@ -50,7 +50,8 @@ public class InvisibleButton extends MComponent {
 	public void paint(@Nonnull Graphics g) { }
 	
 	@Override
-	protected void init(MIFrame frame, EntityPlayer player, CraftButton button) {
+	protected void init(MIFrame frame, EntityPlayer player) {
+		super.init(frame, player);
 		registryListener((MouseEnteredListener) (mouseX, mouseY) -> mouse = true);
 		registryListener((MouseExitedListener) (mouseX, mouseY) -> mouse = false);
 		registryListener(new MouseActionListener() {

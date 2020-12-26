@@ -60,7 +60,7 @@ public final class HandleRegister {
 		public Class getShape() { return shape; }
 		
 		public boolean match(CraftGuide craft) {
-			return craft.getShapeClass() == shape && craft.getProtectClass() == product;
+			return craft.getShapeClass() == shape && craft.getOutputClass() == product;
 		}
 		
 		@Override

@@ -17,6 +17,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static xyz.emptydreams.mi.api.gui.client.ImageData.PROGRESS_BAR;
 import static xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar.getTexture;
 import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
 
@@ -54,25 +55,26 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	public void realTimePaint(GuiContainer gui) {
 		GlStateManager.color(1, 1, 1);
 		front.accept(new Node(gui));
-		if (shower != null) shower.draw(this, gui);
+		if (getStringShower() != null) getStringShower().draw(this, gui);
 	}
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {
-		g.drawImage(ImageData.getImage(RESOURCE_NAME).getSubimage(
-				style.getX(), style.getY(), style.getWidth(), style.getHeight()), 0, 0, null);
+		g.drawImage(ImageData.getImage(PROGRESS_BAR).getSubimage(
+				getStyle().getX(), getStyle().getY(), getStyle().getWidth(), getStyle().getHeight()),
+											0, 0, null);
 	}
 
 	@Override
 	public int getWidth() {
-		if (shower == null) return super.getWidth();
-		return shower.getter.apply(this)[0];
+		if (getStringShower() == null) return super.getWidth();
+		return getStringShower().getter.apply(this)[0];
 	}
 
 	@Override
 	public int getHeight() {
-		if (shower == null) return super.getHeight();
-		return shower.getter.apply(this)[1];
+		if (getStringShower() == null) return super.getHeight();
+		return getStringShower().getter.apply(this)[1];
 	}
 
 	/** 是否含有进度条显示 */
@@ -92,7 +94,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	@Override
 	public void setNow(int now) { this.now = Math.min(now, getMax()); }
 	@Override
-	public boolean isReverse() { return style.isReverse(); }
+	public boolean isReverse() { return getStyle().isReverse(); }
 	/** 设置进度条风格 */
 	public void setStyle(Style style) {
 		this.style = checkNull(style, "style");
@@ -122,11 +124,11 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	public enum ProgressStyle {
 
 		UP((bar, con) -> drawHelper(bar, con, bar.getY() - 9),
-				bar -> new int[] { bar.style.getWidth(), bar.style.getHeight() + 9 }),
-		DOWN((bar, con) -> drawHelper(bar, con, bar.getY() + bar.style.getHeight()),
-				bar -> new int[] { bar.style.getWidth(), bar.style.getHeight() + 9 }),
+				bar -> new int[] { bar.getStyle().getWidth(), bar.getStyle().getHeight() + 9 }),
+		DOWN((bar, con) -> drawHelper(bar, con, bar.getY() + bar.getStyle().getHeight()),
+				bar -> new int[] { bar.getStyle().getWidth(), bar.getStyle().getHeight() + 9 }),
 		CENTER((bar, con) -> drawHelper(bar, con, (bar.getHeight() - 9) / 2 + bar.getY()),
-				bar -> new int[] { bar.style.getWidth(), Math.max(bar.style.getHeight(), 9) });
+				bar -> new int[] { bar.getStyle().getWidth(), Math.max(bar.getStyle().getHeight(), 9) });
 
 		private final BiConsumer<CommonProgress, GuiContainer> task;
 		private final Function<CommonProgress, int[]> getter;
@@ -254,7 +256,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	/** 绘制从下到上的图形 */
 	@SideOnly(Side.CLIENT)
 	public static void paintUp(Node node) {
-		Style style = node.getThis().style;
+		Style style = node.getThis().getStyle();
 		int height = (int) (style.getHeight() * node.getThis().getPer());
 		int y = node.y + style.getHeight() - height;
 		RuntimeTexture texture = getTexture();
@@ -264,7 +266,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	/** 绘制从上到下的图形 */
 	@SideOnly(Side.CLIENT)
 	public static void paintDown(Node node) {
-		Style style = node.getThis().style;
+		Style style = node.getThis().getStyle();
 		int height = (int) (style.getHeight() * node.getThis().getPer());
 		RuntimeTexture texture = getTexture();
 		texture.drawToFrame(node.x, node.y, style.getFillX(), style.getFillY(), style.getWidth(), height);
@@ -273,7 +275,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	/** 绘制从右到左的图形 */
 	@SideOnly(Side.CLIENT)
 	public static void paintLeft(Node node) {
-		Style style = node.getThis().style;
+		Style style = node.getThis().getStyle();
 		int width = (int) (style.getWidth() * node.getThis().getPer());
 		int x = node.x + style.getWidth() - width;
 		int tX = style.getFillX() + style.getWidth() - width;
@@ -284,7 +286,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	/** 绘制从左到右的图形 */
 	@SideOnly(Side.CLIENT)
 	public static void paintRight(Node node) {
-		Style style = node.getThis().style;
+		Style style = node.getThis().getStyle();
 		int width = (int) (style.getWidth() * node.getThis().getPer());
 		RuntimeTexture texture = getTexture();
 		texture.drawToFrame(node.x, node.y, style.getFillX(), style.getFillY(), width, style.getHeight());

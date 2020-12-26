@@ -21,10 +21,10 @@ public abstract class CraftHandle<T extends ItemSol, R> {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static void check(CraftGuide craft, Class rawClass, Class proClass) {
-		if (craft.getRawClass() == rawClass && craft.getProtectClass() == proClass) return;
-		throw new IllegalArgumentException("传入的CraftHandle对象的原料栏[" + craft.getRawClass().getSimpleName()
+		if (craft.getInputClass() == rawClass && craft.getOutputClass() == proClass) return;
+		throw new IllegalArgumentException("传入的CraftHandle对象的原料栏[" + craft.getInputClass().getSimpleName()
 							+ "]不为：[" + rawClass.getSimpleName()
-						+ "]，输出栏[" + craft.getProtectClass().getSimpleName()
+						+ "]，输出栏[" + craft.getOutputClass().getSimpleName()
 							+ "]不为：[" + proClass.getSimpleName() + "]");
 	}
 	

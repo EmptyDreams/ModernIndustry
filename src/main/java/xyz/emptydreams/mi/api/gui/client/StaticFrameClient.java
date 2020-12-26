@@ -31,8 +31,6 @@ import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
 @SideOnly(Side.CLIENT)
 public class StaticFrameClient extends GuiContainer implements IFrame {
 	
-	/** GUI背景的资源名称 */
-	public static final String SOURCE_NAME = "background";
 	/** 玩家背包的本地名称 */
 	private static final String INVENTORY = I18n.format("container.inventory");
 	
@@ -256,10 +254,10 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	 * @param height 图像高度
 	 */
 	public void drawBackground(Graphics g, int width, int height) {
-		g.drawImage(ImageData.getImage(SOURCE_NAME, width, height), 0, 0, null);
+		g.drawImage(ImageData.getImage(ImageData.BACKGROUND, width, height), 0, 0, null);
 		if (!(inventorySlots instanceof MIFrame)) return;
 		if (inventorySlots.hasBackpack()) {
-			g.drawImage(ImageData.getImage("backpack"),
+			g.drawImage(ImageData.getImage(ImageData.BACKPACK),
 					inventorySlots.getBackpackX(), inventorySlots.getBackpackY(), null);
 		}
 	}

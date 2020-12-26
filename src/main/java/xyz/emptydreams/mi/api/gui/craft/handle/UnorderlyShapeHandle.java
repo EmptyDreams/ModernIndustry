@@ -57,9 +57,9 @@ public class UnorderlyShapeHandle extends CraftHandle<ItemSet, ItemSet> {
 			Point2D point = MathUtil.indexToMatrix(index, slots.get().getXSize());
 			slots.get().setItem(point.getX(), point.getY(), element);
 		};
-		shape.getRawSol().forEachIndex(consumer);
+		shape.getInput().forEachIndex(consumer);
 		slots.set(group.pro);
-		shape.getProduction().forEachIndex(consumer);
+		shape.getOutput().forEachIndex(consumer);
 	}
 	
 	@Override

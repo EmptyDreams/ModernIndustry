@@ -28,12 +28,12 @@ public class OrderlyShapeOnly implements IShape<ItemList, ItemElement> {
 	}
 	
 	@Override
-	public ItemList getRawSol() {
+	public ItemList getInput() {
 		return list.copy();
 	}
 	
 	@Override
-	public @Nonnull ItemElement getProduction() {
+	public @Nonnull ItemElement getOutput() {
 		return production;
 	}
 	
@@ -43,24 +43,24 @@ public class OrderlyShapeOnly implements IShape<ItemList, ItemElement> {
 	}
 	
 	@Override
-	public boolean hasElement(ItemElement element) {
+	public boolean haveElement(ItemElement element) {
 		return list.hasElement(element);
 	}
 	
 	@Override
-	public boolean hasItem(ItemStack stack) {
+	public boolean haveItem(ItemStack stack) {
 		return list.hasItem(stack);
 	}
 	
 	@Nonnull
 	@Override
-	public Class<ItemList> getItemSolClass() {
+	public Class<ItemList> getInputClass() {
 		return ItemList.class;
 	}
 	
 	@Nonnull
 	@Override
-	public Class<ItemElement> getProtectedClass() {
+	public Class<ItemElement> getOutputClass() {
 		return ItemElement.class;
 	}
 	
