@@ -7,6 +7,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.ModernIndustry;
 
+import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -43,6 +44,7 @@ public final class ImageData {
 	 * @param height 目标高度
 	 * @return 没有找到元素则返回null
 	 */
+	@Nonnull
 	public static Image getImage(String name, int width, int height) {
 		Node node = resourceInfo.getOrDefault(name, null);
 		if (node == null) return null;
@@ -57,10 +59,39 @@ public final class ImageData {
 	 * @param name 名称（一般存储在{@link xyz.emptydreams.mi.api.gui.component}包中的某个类中）
 	 * @return 没有找到元素则返回null
 	 */
+	@Nonnull
 	public static BufferedImage getImage(String name) {
 		Node node = resourceInfo.getOrDefault(name, null);
 		if (node == null) return null;
 		return node.image;
+	}
+	
+	/**
+	 * 创建一个RuntimeTexture
+	 * @param name 材质名称
+	 * @param textureName 资源名称
+	 */
+	@SuppressWarnings("unused")
+	@Nonnull
+	public static RuntimeTexture createTexture(String name, String textureName) {
+		return RuntimeTexture.instance(textureName, getImage(name));
+	}
+	
+	/**
+	 * 创建一个RuntimeTexture
+	 * @param name 材质名称
+	 * @param width 宽度
+	 * @param height 长度
+	 * @param textureName 资源名称
+	 */
+	@Nonnull
+	public static RuntimeTexture createTexture(String name, int width, int height, String textureName) {
+		Image image = getImage(name, width, height);
+		BufferedImage buffered = new BufferedImage(width, height, 6);
+		Graphics g = buffered.createGraphics();
+		g.drawImage(image, 0, 0, null);
+		g.dispose();
+		return RuntimeTexture.instance(textureName, buffered);
 	}
 	
 	/** GUI背景 */

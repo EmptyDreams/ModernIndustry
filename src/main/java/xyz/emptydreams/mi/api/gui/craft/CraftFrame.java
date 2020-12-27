@@ -16,6 +16,9 @@ import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 import java.util.Map;
 
+import static xyz.emptydreams.mi.api.gui.component.ButtonComponent.Style.TRIANGLE_LEFT;
+import static xyz.emptydreams.mi.api.gui.component.ButtonComponent.Style.TRIANGLE_RIGHT;
+
 /**
  * 用于显示合成表
  * @author EmptyDreams
@@ -65,8 +68,8 @@ public class CraftFrame extends MIFrame {
 		
 		Group buttonGroup = new Group(0, group.getHeight() + group.getY() + 7,
 								getWidth(), 0, Panels::horizontalCenter);
-		ButtonComponent prevButton = new ButtonComponent(10, 10);
-		ButtonComponent nextButton = new ButtonComponent(10, 10);
+		ButtonComponent prevButton = new ButtonComponent(10, 10, TRIANGLE_LEFT);
+		ButtonComponent nextButton = new ButtonComponent(10, 10, TRIANGLE_RIGHT);
 		prevButton.setAction((frame, isClient) -> preShape());
 		nextButton.setAction((frame, isClient) -> nextShape());
 		buttonGroup.adds(prevButton, nextButton);

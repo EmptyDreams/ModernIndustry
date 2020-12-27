@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
@@ -15,11 +14,10 @@ import xyz.emptydreams.mi.api.utils.data.Size2D;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.function.BiConsumer;
 
-import static xyz.emptydreams.mi.api.gui.client.ImageData.BUTTON_REC;
-import static xyz.emptydreams.mi.api.gui.client.ImageData.BUTTON_REC_CLICK;
+import static net.minecraftforge.fml.relauncher.Side.CLIENT;
+import static xyz.emptydreams.mi.api.gui.client.ImageData.*;
 
 /**
  * 按钮
@@ -43,6 +41,7 @@ public class ButtonComponent extends InvisibleButton {
 	public ButtonComponent(int width, int height, Style style) {
 		super(width, height);
 		this.style = style;
+		name = getStyle().name() + width + "!" + height;
 	}
 	
 	/** 设置文字颜色 */
@@ -88,7 +87,7 @@ public class ButtonComponent extends InvisibleButton {
 	@Override
 	public void setSize(int width, int height) {
 		super.setSize(width, height);
-		name = BUTTON_REC + width + "!" + height;
+		if (style != null) name = getStyle().name() + width + "!" + height;
 	}
 	
 	@Override
@@ -104,19 +103,27 @@ public class ButtonComponent extends InvisibleButton {
 	}
 	
 	@Override
-	@SideOnly(Side.CLIENT)
+	@SideOnly(CLIENT)
 	public void paint(@Nonnull Graphics g) {
 		getStyle().paint(g, new Size2D(getWidth(), getHeight()));
 	}
 	
 	public enum Style {
 	
-		REC(Style::recPaint, Style::recDrawMouseIn, Style::recDrawString);
+		/** 矩形按钮 */
+		REC(Style::recPaint, Style::recDrawMouseIn, Style::stringPainter),
+		TRIANGLE_RIGHT(Style::triangleRightPaint, Style::triangleRightDrawMouseIn, Style::stringPainter),
+		TRIANGLE_LEFT(Style::triangleLeftPaint, Style::triangleLeftDrawMouseIn, Style::stringPainter);
 		
 		private final BiConsumer<Graphics, Size2D> printer;
 		private final ThConsumer<GuiContainer, IComponent, String> clickEffect;
 		private final BiConsumer<GuiContainer, ButtonComponent> stringPainter;
 		
+		/**
+		 * @param painter 底层图样绘制器
+		 * @param clickEffect 点击效果绘制器
+		 * @param stringPainter 字符串绘制器
+		 */
 		Style(BiConsumer<Graphics, Size2D> painter, ThConsumer<GuiContainer, IComponent, String> clickEffect,
 		      BiConsumer<GuiContainer, ButtonComponent> stringPainter) {
 			this.printer = painter;
@@ -124,53 +131,65 @@ public class ButtonComponent extends InvisibleButton {
 			this.stringPainter = stringPainter;
 		}
 		
-		@SideOnly(Side.CLIENT)
+		/** 在按钮上绘制文本 */
+		@SideOnly(CLIENT)
 		public void drawString(GuiContainer gui, ButtonComponent button) {
 			stringPainter.accept(gui, button);
 		}
 		
-		@SideOnly(Side.CLIENT)
+		/** 绘制材质资源 */
+		@SideOnly(CLIENT)
 		public void paint(Graphics g, Size2D size) {
 			printer.accept(g, size);
 		}
 		
 		/** 绘制鼠标在按钮范围内时的效果 */
-		@SideOnly(Side.CLIENT)
+		@SideOnly(CLIENT)
 		public void drawOnMouseIn(GuiContainer gui, IComponent component, String name) {
 			clickEffect.accept(gui, component, name);
 		}
 		
-		@SideOnly(Side.CLIENT)
+		//--------------------以下为工具方法-----------------//
+		
+		@SideOnly(CLIENT)
 		private static void recPaint(Graphics g, Size2D size) {
 			g.drawImage(ImageData.getImage(BUTTON_REC,
 					size.getWidth(), size.getHeight()), 0, 0, null);
 		}
 		
-		@SideOnly(Side.CLIENT)
-		private static void recDrawMouseIn(GuiContainer gui, IComponent component, String name) {
-			GlStateManager.color(1, 1, 1);
-			RuntimeTexture texture = RuntimeTexture.getInstance(name);
-			int width = component.getWidth(), height = component.getHeight();
-			if (texture == null) {
-				Image image = ImageData.getImage(BUTTON_REC_CLICK, width, height);
-				BufferedImage buffered = new BufferedImage(width, height, 6);
-				Graphics g = buffered.getGraphics();
-				g.drawImage(image, 0, 0, null);
-				g.dispose();
-				texture = RuntimeTexture.instance(name, buffered);
-			}
-			texture.bindTexture();
-			texture.drawToFrame(component.getX() + gui.getGuiLeft(), component.getY() + gui.getGuiTop(),
-					0, 0, width, height);
+		@SideOnly(CLIENT)
+		private static void triangleRightPaint(Graphics g, Size2D size) {
+			g.drawImage(ImageData.getImage(BUTTON_TRIANGLE_RIGHT,
+					size.getWidth(), size.getHeight()), 0, 0, null);
 		}
 		
-		@SideOnly(Side.CLIENT)
-		private static void recDrawString(GuiContainer gui, ButtonComponent button) {
+		private static void triangleLeftPaint(Graphics g, Size2D size) {
+			g.drawImage(ImageData.getImage(BUTTON_TRIANGLE_LEFT,
+					size.getWidth(), size.getHeight()), 0, 0, null);
+		}
+		
+		@SideOnly(CLIENT)
+		private static void recDrawMouseIn(GuiContainer gui, IComponent component, String name) {
+			imageDrawMouseIn(gui, component, name, BUTTON_REC_CLICK);
+		}
+		
+		@SideOnly(CLIENT)
+		private static void triangleRightDrawMouseIn(GuiContainer gui, IComponent component, String name) {
+			imageDrawMouseIn(gui, component, name, BUTTON_TRIANGLE_RIGHT_CLICK);
+		}
+		
+		private static void triangleLeftDrawMouseIn(GuiContainer gui, IComponent component, String name) {
+			imageDrawMouseIn(gui, component, name, BUTTON_TRIANGLE_LEFT_CLICK);
+		}
+		
+		@SideOnly(CLIENT)
+		private static void stringPainter(GuiContainer gui, ButtonComponent button) {
 			FontRenderer font = Minecraft.getMinecraft().fontRenderer;
 			int width = button.getWidth(), height = button.getHeight();
 			int x = button.getX(), y = button.getY();
 			int textWidth = font.getStringWidth(button.getText());
-			int textX;
+			
+			int textX;  //文本X轴坐标
 			if (textWidth < width) {
 				textX = x + (textWidth / 2) + gui.getGuiLeft();
 			} else if (textWidth == width) {
@@ -178,7 +197,7 @@ public class ButtonComponent extends InvisibleButton {
 			} else {
 				textX = x - (textWidth - width) / 2 + gui.getGuiLeft();
 			}
-			int textY;
+			int textY;  //文本Y轴坐标
 			if (10 < height) {
 				textY = y + 5 + gui.getGuiTop();
 			} else if (10 == height) {
@@ -186,7 +205,27 @@ public class ButtonComponent extends InvisibleButton {
 			} else {
 				textY = y - (10 - height) / 2 + gui.getGuiTop();
 			}
+			
 			font.drawString(button.getText(), textX, textY, button.getTextColor());
+		}
+		
+		/**
+		 * 绘制鼠标进入按钮后的图像
+		 * @param gui 当前GUI
+		 * @param component 按钮对象
+		 * @param name 资源名称
+		 * @param click 点击图像名称
+		 */
+		private static void imageDrawMouseIn(GuiContainer gui, IComponent component, String name, String click) {
+			GlStateManager.color(1, 1, 1);
+			RuntimeTexture texture = RuntimeTexture.getInstance(name);
+			int width = component.getWidth(), height = component.getHeight();
+			if (texture == null) {
+				texture = ImageData.createTexture(click, width, height, name);
+			}
+			texture.bindTexture();
+			texture.drawToFrame(component.getX() + gui.getGuiLeft(), component.getY() + gui.getGuiTop(),
+					0, 0, width, height);
 		}
 		
 	}
