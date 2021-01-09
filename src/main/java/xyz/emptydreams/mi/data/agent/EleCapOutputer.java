@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.data.anent;
+package xyz.emptydreams.mi.data.agent;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;

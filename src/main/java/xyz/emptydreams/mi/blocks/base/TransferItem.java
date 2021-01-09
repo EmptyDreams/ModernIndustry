@@ -21,7 +21,7 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.container.BooleanWrapper;
 import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
-import xyz.emptydreams.mi.data.anent.EleSrcTransfer;
+import xyz.emptydreams.mi.data.agent.EleSrcTransfer;
 import xyz.emptydreams.mi.data.info.CableCache;
 
 /**

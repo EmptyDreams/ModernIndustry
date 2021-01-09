@@ -1,0 +1,8 @@
+<root>
+    <item name='net.minecraft.util.ResourceLocation java.lang.String getResourcePath()'>
+        <annotation name='org.jetbrains.annotations.Contract'>
+            <val name="value" val="&quot;-&gt; !null&quot;"/>
+            <val name="pure" val="true"/>
+        </annotation>
+    </item>
+</root>
