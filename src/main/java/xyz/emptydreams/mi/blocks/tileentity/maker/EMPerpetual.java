@@ -3,8 +3,8 @@ package xyz.emptydreams.mi.blocks.tileentity.maker;
 import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.electricity.EleTileEntity;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
+import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
-import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 /**
  * 永恒发电机

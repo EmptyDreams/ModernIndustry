@@ -86,3 +86,12 @@ item.mi.tin_plate.name=锡板
 item.mi.gold_plate.name=金板
 #属性
 mi.property.poor_quality.name=劣质
+#配置--system
+mi.config.system=系统配置
+mi.config.system.blockSize=方块数量
+mi.config.system.itemSize=物品数量
+mi.config.system.autoBlockSize=自动注册方块
+mi.config.system.autoItemSize=自动注册物品
+#配置--machine
+mi.config.machine=机器配置
+mi.config.machine.compressorEnergy=压缩机能量

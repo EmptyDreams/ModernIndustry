@@ -11,13 +11,13 @@ import xyz.emptydreams.mi.api.craftguide.multi.OrderlyShape;
 import xyz.emptydreams.mi.api.craftguide.only.UnorderlyShapeOnly;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
+import xyz.emptydreams.mi.api.register.AutoLoader;
 import xyz.emptydreams.mi.api.utils.data.Size2D;
 import xyz.emptydreams.mi.blocks.common.OreBlock;
 import xyz.emptydreams.mi.blocks.machine.maker.FirePowerBlock;
 import xyz.emptydreams.mi.blocks.machine.user.CompressorBlock;
 import xyz.emptydreams.mi.blocks.machine.user.ElectronSynthesizerBlock;
 import xyz.emptydreams.mi.blocks.machine.user.PulverizerBlock;
-import xyz.emptydreams.mi.register.AutoLoader;
 
 import static net.minecraft.init.Blocks.*;
 import static net.minecraft.init.Items.COAL;

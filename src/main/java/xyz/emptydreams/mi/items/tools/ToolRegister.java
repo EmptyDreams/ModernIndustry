@@ -13,6 +13,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.register.AutoManager;
+import xyz.emptydreams.mi.api.register.item.RecipeRegister;
 import xyz.emptydreams.mi.api.tools.capabilities.PropertyCapability;
 import xyz.emptydreams.mi.api.tools.capabilities.PropertyProvider;
 import xyz.emptydreams.mi.api.tools.item.IToolMaterial;
@@ -25,8 +27,6 @@ import xyz.emptydreams.mi.api.tools.item.MISword;
 import xyz.emptydreams.mi.api.tools.property.IProperty;
 import xyz.emptydreams.mi.api.tools.property.PoorQuality;
 import xyz.emptydreams.mi.api.tools.property.PropertyManager;
-import xyz.emptydreams.mi.register.AutoManager;
-import xyz.emptydreams.mi.register.item.RecipeRegister;
 
 import java.util.LinkedList;
 import java.util.List;

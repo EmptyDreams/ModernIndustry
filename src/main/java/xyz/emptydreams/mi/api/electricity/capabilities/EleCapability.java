@@ -10,7 +10,7 @@ import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.EnumEleState;
 import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.register.AutoLoader;
+import xyz.emptydreams.mi.api.register.AutoLoader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

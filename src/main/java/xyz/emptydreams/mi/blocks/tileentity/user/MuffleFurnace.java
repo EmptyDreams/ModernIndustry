@@ -11,9 +11,9 @@ import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress.Front;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress.Style;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
+import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
-import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
 import static xyz.emptydreams.mi.api.utils.data.auto.DataType.INT;

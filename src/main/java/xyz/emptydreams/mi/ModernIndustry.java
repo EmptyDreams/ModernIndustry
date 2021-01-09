@@ -21,7 +21,8 @@ import javax.annotation.Nonnull;
 
 import static xyz.emptydreams.mi.api.utils.ItemUtil.newStack;
 
-@Mod(modid = ModernIndustry.MODID, name = ModernIndustry.NAME, version = ModernIndustry.VERSION)
+@Mod(modid = ModernIndustry.MODID, name = ModernIndustry.NAME,
+		version = ModernIndustry.VERSION, guiFactory = "xyz.emptydreams.mi.data.config.ConfigFactory")
 public final class ModernIndustry {
 	
 	public static final String MODID = "mi";

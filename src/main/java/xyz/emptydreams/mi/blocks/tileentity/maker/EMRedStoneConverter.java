@@ -10,12 +10,12 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.api.electricity.clock.NonCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
+import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
-import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 import javax.annotation.Nullable;
 

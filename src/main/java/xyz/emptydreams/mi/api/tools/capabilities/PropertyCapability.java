@@ -3,8 +3,8 @@ package xyz.emptydreams.mi.api.tools.capabilities;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import xyz.emptydreams.mi.api.register.AutoLoader;
 import xyz.emptydreams.mi.api.tools.property.PropertyManager;
-import xyz.emptydreams.mi.register.AutoLoader;
 
 /**
  * @author EmptyDreams

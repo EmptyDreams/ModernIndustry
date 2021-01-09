@@ -14,6 +14,7 @@ import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
+import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.auto.DataType;
 import xyz.emptydreams.mi.blocks.CraftList;
@@ -23,7 +24,6 @@ import xyz.emptydreams.mi.blocks.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
-import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 import static xyz.emptydreams.mi.api.utils.ItemUtil.hasEmpty;
 

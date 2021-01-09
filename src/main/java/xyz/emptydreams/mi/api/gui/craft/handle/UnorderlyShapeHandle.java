@@ -7,11 +7,11 @@ import xyz.emptydreams.mi.api.craftguide.multi.UnorderlyShape;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.gui.craft.HandleRegister;
 import xyz.emptydreams.mi.api.gui.group.SlotGroup;
+import xyz.emptydreams.mi.api.register.AutoLoader;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.container.Wrapper;
 import xyz.emptydreams.mi.api.utils.data.Point2D;
 import xyz.emptydreams.mi.api.utils.data.Size2D;
-import xyz.emptydreams.mi.register.AutoLoader;
 
 import javax.annotation.Nonnull;
 import java.util.function.ObjIntConsumer;

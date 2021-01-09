@@ -7,8 +7,8 @@ import xyz.emptydreams.mi.api.craftguide.only.OrderlyShapeOnly;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemList;
 import xyz.emptydreams.mi.api.gui.craft.HandleRegister;
 import xyz.emptydreams.mi.api.gui.group.SlotGroup;
+import xyz.emptydreams.mi.api.register.AutoLoader;
 import xyz.emptydreams.mi.api.utils.data.Size2D;
-import xyz.emptydreams.mi.register.AutoLoader;
 
 import javax.annotation.Nonnull;
 

@@ -3,12 +3,12 @@ package xyz.emptydreams.mi.blocks.common;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.register.AutoManager;
+import xyz.emptydreams.mi.api.register.OreDicRegister;
+import xyz.emptydreams.mi.api.register.block.OreCreate;
 import xyz.emptydreams.mi.items.common.CommonItems;
-import xyz.emptydreams.mi.register.AutoManager;
-import xyz.emptydreams.mi.register.OreDicRegister;
-import xyz.emptydreams.mi.register.block.OreCreate;
 
-import static xyz.emptydreams.mi.register.AutoRegister.getUnlocalizedName;
+import static xyz.emptydreams.mi.api.register.AutoRegister.getUnlocalizedName;
 
 /**
  * 普通方块

@@ -5,10 +5,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.Mod;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.register.AutoManager;
+import xyz.emptydreams.mi.api.register.AutoRegister;
+import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.capabilities.nonburn.NonBurnProvider;
-import xyz.emptydreams.mi.register.AutoManager;
-import xyz.emptydreams.mi.register.AutoRegister;
-import xyz.emptydreams.mi.register.OreDicRegister;
 
 import java.util.function.Supplier;
 

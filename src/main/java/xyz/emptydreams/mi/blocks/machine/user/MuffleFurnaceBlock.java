@@ -16,12 +16,12 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.register.block.AutoBlockRegister;
 import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.TEBlockBase;
 import xyz.emptydreams.mi.blocks.tileentity.user.MuffleFurnace;
 import xyz.emptydreams.mi.gui.MuffleFurnaceFrame;
 import xyz.emptydreams.mi.items.common.SpannerItem;
-import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

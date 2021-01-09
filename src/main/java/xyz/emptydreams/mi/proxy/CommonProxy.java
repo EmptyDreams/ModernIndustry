@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import xyz.emptydreams.mi.api.gui.common.GuiLoader;
 import xyz.emptydreams.mi.api.net.NetworkLoader;
-import xyz.emptydreams.mi.register.AutoRegister;
+import xyz.emptydreams.mi.api.register.AutoRegister;
 
 import javax.annotation.Nonnull;
 

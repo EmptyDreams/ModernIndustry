@@ -5,7 +5,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import xyz.emptydreams.mi.register.AutoLoader;
+import xyz.emptydreams.mi.api.register.AutoLoader;
 
 import javax.annotation.Nullable;
 

@@ -20,9 +20,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.register.AutoRegister;
+import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
-import xyz.emptydreams.mi.register.AutoRegister;
-import xyz.emptydreams.mi.register.OreDicRegister;
 
 import javax.annotation.Nonnull;
 import java.util.List;

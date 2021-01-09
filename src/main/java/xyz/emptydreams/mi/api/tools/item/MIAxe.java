@@ -2,7 +2,7 @@ package xyz.emptydreams.mi.api.tools.item;
 
 import net.minecraft.item.ItemAxe;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.register.AutoRegister;
+import xyz.emptydreams.mi.api.register.AutoRegister;
 
 /**
  * 斧子

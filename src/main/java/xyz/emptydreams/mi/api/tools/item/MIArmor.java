@@ -3,7 +3,7 @@ package xyz.emptydreams.mi.api.tools.item;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.register.AutoRegister;
+import xyz.emptydreams.mi.api.register.AutoRegister;
 
 /**
  * 盔甲

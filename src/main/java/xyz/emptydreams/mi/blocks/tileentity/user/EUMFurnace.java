@@ -1,7 +1,7 @@
 package xyz.emptydreams.mi.blocks.tileentity.user;
 
+import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
-import xyz.emptydreams.mi.register.tileentity.AutoTileEntity;
 
 /**
  * 高温火炉的TileEntity

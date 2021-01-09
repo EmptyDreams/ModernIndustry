@@ -23,11 +23,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.register.item.AutoItemRegister;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.blocks.base.MachineBlock;
 import xyz.emptydreams.mi.blocks.machine.user.MuffleFurnaceBlock;
-import xyz.emptydreams.mi.register.item.AutoItemRegister;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

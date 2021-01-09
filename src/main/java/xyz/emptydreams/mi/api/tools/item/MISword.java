@@ -7,7 +7,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemSword;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.register.AutoRegister;
+import xyz.emptydreams.mi.api.register.AutoRegister;
 
 /**
  * 剑

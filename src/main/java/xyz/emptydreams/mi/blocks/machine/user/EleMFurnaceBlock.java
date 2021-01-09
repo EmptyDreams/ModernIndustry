@@ -13,11 +13,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import xyz.emptydreams.mi.api.register.block.AutoBlockRegister;
 import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.MachineBlock;
 import xyz.emptydreams.mi.blocks.tileentity.user.EUMFurnace;
 import xyz.emptydreams.mi.gui.EleMFurnaceFrame;
-import xyz.emptydreams.mi.register.block.AutoBlockRegister;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

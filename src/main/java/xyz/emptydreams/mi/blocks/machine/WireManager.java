@@ -1,9 +1,9 @@
 package xyz.emptydreams.mi.blocks.machine;
 
 import net.minecraft.world.World;
+import xyz.emptydreams.mi.api.register.AutoManager;
 import xyz.emptydreams.mi.blocks.base.TransferBlock;
 import xyz.emptydreams.mi.blocks.tileentity.EleSrcCable;
-import xyz.emptydreams.mi.register.AutoManager;
 
 import javax.annotation.Nullable;
 
