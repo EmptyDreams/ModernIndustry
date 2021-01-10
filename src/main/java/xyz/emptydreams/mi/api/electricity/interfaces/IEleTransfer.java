@@ -1,12 +1,7 @@
 package xyz.emptydreams.mi.api.electricity.interfaces;
 
 import net.minecraft.tileentity.TileEntity;
-import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.info.PathInfo;
-import xyz.emptydreams.mi.api.utils.BlockUtil;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 电力传输工具的托管
@@ -84,15 +79,5 @@ public interface IEleTransfer extends IRegister {
 	 * @return 损耗的能量
 	 */
 	double getEnergyLoss(TileEntity now, int energy, IVoltage voltage);
-	
-	default Map<TileEntity, IEleOutputer> getOutputerAround(TileEntity now) {
-		Map<TileEntity, IEleOutputer> list = new HashMap<>(3);
-		BlockUtil.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
-			IEleOutputer out = EleWorker.getOutputer(te);
-			if (out != null && isLink(now, te) && out.isAllowable(te, facing.getOpposite()))
-				list.put(te, out);
-		});
-		return list;
-	}
 	
 }

@@ -67,6 +67,7 @@ public class PathInfo implements Comparable<PathInfo> {
 		TileEntity transfer;
 		for (TileEntity tileEntity : path) {
 			transfer = tileEntity;
+			//noinspection ConstantConditions
 			EleWorker.getTransfer(transfer).transfer(transfer, real.getEnergy(), real.getVoltage(), null);
 		}
 		return real;
@@ -77,7 +78,7 @@ public class PathInfo implements Comparable<PathInfo> {
 	 * @param info 目标信息
 	 * @return 是否合并成功，当两者信息都有效时无法自动合并
 	 */
-	@SuppressWarnings("UnusedReturnValue")
+	@SuppressWarnings("unused")
 	public boolean merge(PathInfo info) {
 		lossEnergy += info.lossEnergy;
 		path.addAll(info.path);
@@ -159,6 +160,7 @@ public class PathInfo implements Comparable<PathInfo> {
 	 * @param outer 发电机方块的TE
 	 * @return 当前对象
 	 */
+	@SuppressWarnings("unused")
 	@Nonnull
 	public PathInfo setOuter(TileEntity outer) {
 		this.outer = outer.getPos();
@@ -195,6 +197,7 @@ public class PathInfo implements Comparable<PathInfo> {
 	}
 	
 	/** 获取用电器方块对应的Inputer */
+	@SuppressWarnings("unused")
 	public IEleInputer getInputer() {
 		return inputer;
 	}
@@ -203,6 +206,7 @@ public class PathInfo implements Comparable<PathInfo> {
 	public void calculateLossEnergy() {
 		if (lossEnergy == -1) {
 			int energy = getMachineEnergy();
+			@SuppressWarnings("ConstantConditions")
 			double result = path.stream().mapToDouble(it ->
 					EleWorker.getTransfer(it).getEnergyLoss(it, energy, voltage)).sum();
 			if (result > Integer.MAX_VALUE)

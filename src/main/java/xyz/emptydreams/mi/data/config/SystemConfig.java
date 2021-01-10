@@ -10,7 +10,7 @@ import xyz.emptydreams.mi.ModernIndustry;
 @Config(modid = ModernIndustry.MODID, name = "mi.config.system")
 @Config.LangKey("mi.config.system")
 @Config.RequiresMcRestart
-public final class MISystemConfig {
+public final class SystemConfig {
 	
 	@Config.Comment("自动化注册系统中注册方块的数量，不需要人为修改")
 	@Config.RangeInt(min = 1, max = Integer.MAX_VALUE - 500)  //MAX_VALUE-8是ArrayList的最大大小，保险起见取小一些

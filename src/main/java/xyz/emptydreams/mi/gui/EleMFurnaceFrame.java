@@ -52,6 +52,7 @@ public final class EleMFurnaceFrame {
 
 			Group group = new Group(0, 30, frame.getWidth(), 0, Panels::horizontalCenter);
 			group.setMaxDistance(10);
+			//noinspection ConstantConditions
 			group.adds(new MSlot(firepower.getInSlot()),
 							firepower.getProgressBar(), new MSlot(firepower.getOutSlot()));
 			frame.add(group, player);

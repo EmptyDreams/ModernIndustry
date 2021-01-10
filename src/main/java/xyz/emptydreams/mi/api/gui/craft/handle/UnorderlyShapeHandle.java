@@ -54,6 +54,7 @@ public class UnorderlyShapeHandle extends CraftHandle<ItemSet, ItemSet> {
 	public void update(Node group, IShape<ItemSet, ItemSet> shape) {
 		Wrapper<SlotGroup> slots = new Wrapper<>(group.raw);
 		ObjIntConsumer<ItemElement> consumer = (element, index) -> {
+			@SuppressWarnings("ConstantConditions")
 			Point2D point = MathUtil.indexToMatrix(index, slots.get().getXSize());
 			slots.get().setItem(point.getX(), point.getY(), element);
 		};

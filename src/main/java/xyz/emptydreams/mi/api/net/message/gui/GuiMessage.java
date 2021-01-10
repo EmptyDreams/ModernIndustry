@@ -68,6 +68,7 @@ public class GuiMessage implements IMessageHandle<GuiAddition> {
 		return true;
 	}
 	
+	@SuppressWarnings("ConstantConditions")
 	@Nonnull
 	@Override
 	public NBTTagCompound packaging(@Nonnull NBTTagCompound data, @Nullable GuiAddition addition) {

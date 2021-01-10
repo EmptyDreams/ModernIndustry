@@ -47,6 +47,7 @@ public final class EleFurnaceFrame {
 
 			Group group = new Group(0, 30, frame.getWidth(), 0, Panels::horizontalCenter);
 			group.setMaxDistance(15);
+			//noinspection ConstantConditions
 			group.add(new MSlot(furnace.getInSlot()));
 			group.add(furnace.getProgressBar());
 			group.add(new MSlot(furnace.getOutSlot()));

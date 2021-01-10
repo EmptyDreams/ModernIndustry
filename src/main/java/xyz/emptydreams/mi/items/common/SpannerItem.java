@@ -194,7 +194,6 @@ public class SpannerItem extends Item {
 	private static boolean check(RayTraceResult mouseOver, EntityPlayer player) {
 		if (mouseOver == null) return false;
 		BlockPos pos = mouseOver.getBlockPos();
-		if (pos == null) return false;
 		if (player.getHeldItemMainhand().getItem() != getInstance()) return false;
 		return getPropertyDirection(Minecraft.getMinecraft().world, pos) != null;
 	}

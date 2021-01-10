@@ -120,6 +120,7 @@ public final class DataOperator {
 	public static void readPackByteArray(NBTTagCompound nbt, String name, Consumer<Byte[]> setter) {
 		Wrapper<byte[]> read = new Wrapper<>();
 		readByteArray(nbt, name, read::set);
+		@SuppressWarnings("ConstantConditions")
 		Byte[] result = new Byte[read.get().length];
 		for (int i = 0; i < result.length; i++) {
 			result[i] = read.get()[i];
@@ -134,6 +135,7 @@ public final class DataOperator {
 	public static void readPackIntArray(NBTTagCompound nbt, String name, Consumer<Integer[]> setter) {
 		Wrapper<int[]> read = new Wrapper<>();
 		readIntArray(nbt, name, read::set);
+		//noinspection ConstantConditions
 		setter.accept(Arrays.stream(read.get()).boxed().toArray(Integer[]::new));
 	}
 
@@ -160,6 +162,7 @@ public final class DataOperator {
 		try {
 			Wrapper<Class<?>> clazz = new Wrapper<>();
 			readClass(nbt, name, clazz::set);
+			//noinspection ConstantConditions
 			setter.accept(((Enum<?>[]) clazz.get().getMethod("values", (Class<?>) null)
 											.invoke(null, (Object) null))[index]);
 		} catch (Exception e) {
@@ -175,12 +178,12 @@ public final class DataOperator {
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public static void readSerializable(NBTTagCompound nbt, String name, DataInfo<INBTSerializable<?>> setter) {
 		NBTBase base = nbt.getTag(name);
-		if (base == null) return;
 		try {
 			INBTSerializable serializable = setter.getDefault();
 			if (serializable == null) {
 				Wrapper<Class<?>> clazz = new Wrapper<>();
 				readClass(nbt, name, clazz::set);
+				//noinspection ConstantConditions
 				serializable = (INBTSerializable) clazz.get().newInstance();
 			}
 			serializable.deserializeNBT(base);
@@ -196,7 +199,7 @@ public final class DataOperator {
 	}
 	public static void readPos(NBTTagCompound nbt, String name, Consumer<BlockPos> setter) {
 		BlockPos pos = BlockUtil.readBlockPos(nbt, name);
-		if (pos != null) setter.accept(pos);
+		setter.accept(pos);
 	}
 
 	public static void writeCollection(NBTTagCompound nbt, String name, Collection<?> data) {
@@ -220,6 +223,7 @@ public final class DataOperator {
 			try {
 				Wrapper<Class<?>> temp = new Wrapper<>();
 				readClass(nbt, name + ":name", temp::set);
+				//noinspection ConstantConditions
 				collection = (Collection) temp.get().newInstance();
 			} catch (Exception e) {
 				throw new RuntimeException("数据自动读写出现了意料之外的错误", e);
@@ -256,6 +260,7 @@ public final class DataOperator {
 			try {
 				Wrapper<Class<?>> clazz = new Wrapper<>();
 				readClass(nbt, name + "name", clazz::set);
+				//noinspection ConstantConditions
 				map = (Map) clazz.get().newInstance();
 			} catch (Exception e) {
 				throw new RuntimeException("数据自动读写出现了意料之外的错误", e);

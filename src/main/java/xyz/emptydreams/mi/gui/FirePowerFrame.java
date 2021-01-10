@@ -49,7 +49,8 @@ public final class FirePowerFrame {
 			Group group = new Group(0, 12, 0, 70, Panels::verticalCenter);
 			up.setMaxDistance(10);
 			group.setMaxDistance(8);
-
+			
+			//noinspection ConstantConditions
 			up.adds(new MSlot(firepower.getInSlot()), firepower.getProgressBar(), new MSlot(firepower.getOutSlot()));
 			group.adds(up, firepower.getEnergyProBar());
 			frame.add(group, player);

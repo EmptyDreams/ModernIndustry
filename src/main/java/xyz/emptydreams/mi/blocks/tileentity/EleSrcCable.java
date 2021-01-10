@@ -282,6 +282,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	 * @param run 要运行的内容
 	 * @param isNow 是否遍历当前电线
 	 */
+	@SuppressWarnings("ConstantConditions")
 	private void forEach(BlockPos prev, IETForEach run, boolean isNow) {
 		TileEntity next = next(prev);
 		prev = pos;

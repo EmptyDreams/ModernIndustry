@@ -57,6 +57,7 @@ public class EleFurnaceBlock extends MachineBlock {
 	@Override
 	public List<ItemStack> getItemDrops(World world, BlockPos pos) {
 		EUFurnace furnace = (EUFurnace) world.getTileEntity(pos);
+		//noinspection ConstantConditions
 		return Lists.newArrayList(furnace.getInSlot().getStack(), furnace.getOutSlot().getStack());
 	}
 

@@ -74,18 +74,4 @@ public interface IEleInputer extends IRegister {
 		return list;
 	}
 	
-	/**
-	 * 获取当前方块周围的可供电发电机方块
-	 * @param now 当前方块
-	 */
-	default Map<TileEntity, IEleOutputer> getOutputerAround(TileEntity now) {
-		Map<TileEntity, IEleOutputer> list = new HashMap<>(3);
-		BlockUtil.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
-			IEleOutputer out = EleWorker.getOutputer(te);
-			if (out != null && isAllowable(now, facing) && out.isAllowable(te, facing.getOpposite()))
-				list.put(te, out);
-		});
-		return list;
-	}
-	
 }

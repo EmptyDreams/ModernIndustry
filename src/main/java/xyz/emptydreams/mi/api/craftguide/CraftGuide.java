@@ -126,7 +126,7 @@ public final class CraftGuide<T extends IShape, R> implements Iterable<T> {
 	 * @param sol 物品列表
 	 */
 	@SuppressWarnings("unused")
-	public void unregistry(ItemSol sol) {
+	public void unregister(ItemSol sol) {
 		shapes.removeIf(shape -> shape.apply(sol));
 	}
 	

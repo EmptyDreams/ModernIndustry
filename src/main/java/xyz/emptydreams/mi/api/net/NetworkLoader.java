@@ -6,9 +6,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.newnet.handler.ClientHandler;
-import xyz.emptydreams.mi.api.newnet.handler.CommonMessage;
-import xyz.emptydreams.mi.api.newnet.handler.ServerHandler;
+import xyz.emptydreams.mi.api.net.handler.ClientHandler;
+import xyz.emptydreams.mi.api.net.handler.CommonMessage;
+import xyz.emptydreams.mi.api.net.handler.ServerHandler;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import static net.minecraftforge.fml.relauncher.Side.CLIENT;

@@ -4,7 +4,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.emptydreams.mi.api.newnet.handler.CommonMessage;
+import xyz.emptydreams.mi.api.net.handler.CommonMessage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

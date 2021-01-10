@@ -32,29 +32,34 @@ public class EleCapInputer implements IEleInputer {
 	
 	@Override
 	public int useEnergy(TileEntity now, int energy, IVoltage voltage) {
+		//noinspection ConstantConditions
 		return now.getCapability(EleCapability.ENERGY, null)
 				.receiveEnergy(new EleEnergy(energy, voltage), false);
 	}
 	
 	@Override
 	public int getEnergy(TileEntity te) {
+		//noinspection ConstantConditions
 		return te.getCapability(EleCapability.ENERGY, null)
 				       .receiveEnergy(new EleEnergy(Integer.MAX_VALUE, EnumVoltage.NON), true);
 	}
 	
 	@Override
 	public int getEnergy(TileEntity now, int energy) {
+		//noinspection ConstantConditions
 		return now.getCapability(EleCapability.ENERGY, null)
 				.receiveEnergy(new EleEnergy(energy, EnumVoltage.NON), true);
 	}
 	
 	@Override
 	public IVoltage getVoltage(TileEntity now, IVoltage voltage) {
+		//noinspection ConstantConditions
 		return now.getCapability(EleCapability.ENERGY, null).getVoltage(EnumEleState.IN, voltage);
 	}
 	
 	@Override
 	public VoltageRange getVoltageRange(TileEntity now) {
+		//noinspection ConstantConditions
 		return now.getCapability(EleCapability.ENERGY, null).getReceiveVoltageRange();
 	}
 	

@@ -128,6 +128,7 @@ public class ToolRegister {
 			RecipeRegister.registry(item, ((IToolMaterial) item).getMaterial());
 	}
 	
+	@SuppressWarnings("ConstantConditions")
 	@SubscribeEvent
 	public static void onPlayerCrafted(PlayerEvent.ItemCraftedEvent event) {
 		if (event.crafting.hasCapability(PropertyCapability.PROPERTY, null)) {
@@ -154,7 +155,6 @@ public class ToolRegister {
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public static void addTooltip(ItemTooltipEvent event) {
-		if (event.getItemStack() == null) return;
 		PropertyManager manager = event.getItemStack().getCapability(PropertyCapability.PROPERTY, null);
 		if (manager == null) return;
 		List<String> list = new LinkedList<>();

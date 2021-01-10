@@ -11,7 +11,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.blocks.base.TransferBlock;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import java.util.function.BiConsumer;
 
 /**
@@ -68,10 +68,11 @@ public final class BlockUtil {
 	 * @param compound 要读取的标签
 	 * @param name 名称
 	 * @return 坐标
+	 * @throws IllegalArgumentException 如果输入的名称在NBT中不存在
 	 */
-	@Nullable
+	@Nonnull
 	public static BlockPos readBlockPos(NBTTagCompound compound, String name) {
-		if (!compound.hasKey(name + "_x")) return null;
+		if (!compound.hasKey(name + "_x")) throw new IllegalArgumentException("Key值不存在：" + name);
 		return new BlockPos(compound.getInteger(name + "_x"),
 				compound.getInteger(name + "_y"), compound.getInteger(name + "_z"));
 	}
@@ -96,25 +97,6 @@ public final class BlockUtil {
 			if (now.offset(facing).equals(other)) return facing;
 		}
 		throw new IllegalArgumentException("now和other不相邻！");
-	}
-	
-	/** 去除数组中的null元素 */
-	public static BlockPos[] removeNull(BlockPos[] array) {
-		if (array == null) return null;
-		int i = 0;
-		for (Object t : array) {
-			if (t != null) ++i;
-		}
-		if (i == 0) return null;
-		BlockPos[] ts = new BlockPos[i];
-		i = 0;
-		for (BlockPos t : array) {
-			if (t != null) {
-				ts[i] = t;
-				++i;
-			}
-		}
-		return ts;
 	}
 	
 }

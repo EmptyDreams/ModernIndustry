@@ -46,6 +46,7 @@ public final class PulverizerFrame {
 			frame.init(world);
 
 			Group group = new Group(0, 5, frame.getWidth(), 70, Panels::horizontalCenter);
+			//noinspection ConstantConditions
 			group.adds(new MSlot(pulverizer.getInSlot()),
 						pulverizer.getProgress(), new MSlot(pulverizer.getOutSlot()));
 			frame.add(group, player);

@@ -7,7 +7,6 @@ import net.minecraft.inventory.IContainerListener;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
-import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
@@ -109,18 +108,16 @@ public class Group extends MComponent implements Iterable<IComponent> {
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
 		super.onAddToGUI(con, player);
 		if (mode != null) mode.accept(this);
-		if (con instanceof MIFrame) {
-			components.forEach(it -> {
-				con.allocID(it);
-				it.onAddToGUI(con, player);
-			});
-		} else components.forEach(it -> it.onAddToGUI(con, player));
+		components.forEach(it -> {
+			con.allocID(it);
+			it.onAddToGUI(con, player);
+		});
 	}
 
 	@Override
 	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
 		super.onAddToGUI(con, player);
-		if (mode != null && con instanceof IFrame) mode.accept(this);
+		if (mode != null) mode.accept(this);
 		components.forEach(it -> it.onAddToGUI(con, player));
 	}
 

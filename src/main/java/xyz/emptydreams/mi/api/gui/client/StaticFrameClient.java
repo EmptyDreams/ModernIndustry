@@ -96,6 +96,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 			init(false);
 			texture = RuntimeTexture.getInstance(name);
 		}
+		//noinspection ConstantConditions
 		texture.bindTexture();
 		return texture;
 	}
@@ -255,7 +256,6 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	 */
 	public void drawBackground(Graphics g, int width, int height) {
 		g.drawImage(ImageData.getImage(ImageData.BACKGROUND, width, height), 0, 0, null);
-		if (!(inventorySlots instanceof MIFrame)) return;
 		if (inventorySlots.hasBackpack()) {
 			g.drawImage(ImageData.getImage(ImageData.BACKPACK),
 					inventorySlots.getBackpackX(), inventorySlots.getBackpackY(), null);

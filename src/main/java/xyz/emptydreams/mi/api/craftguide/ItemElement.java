@@ -148,6 +148,7 @@ public final class ItemElement {
 	 * @param element 指定元素
 	 * @return 合并失败则返回null
 	 */
+	@SuppressWarnings("unused")
 	@Nullable
 	public ItemElement merge(@Nonnull ItemElement element) {
 		if (contain(element.getStack())) {

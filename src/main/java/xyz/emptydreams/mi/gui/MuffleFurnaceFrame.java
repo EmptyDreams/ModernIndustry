@@ -48,6 +48,7 @@ public class MuffleFurnaceFrame {
 			Group left = new Group(0, 0, 18, 70, Panels::verticalCenter);
 			Group group = new Group(0, 10, frame.getWidth(), 0, Panels::horizontalCenter);
 			left.setMaxDistance(5);
+			//noinspection ConstantConditions
 			left.adds(new MSlot(furnace.getUp()), furnace.getBurnProgress(), new MSlot(furnace.getDown()));
 			group.adds(left, furnace.getWorkProgress(), new MSlot(furnace.getOut()));
 			frame.add(group, player);

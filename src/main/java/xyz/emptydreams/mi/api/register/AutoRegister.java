@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static xyz.emptydreams.mi.data.config.MISystemConfig.*;
+import static xyz.emptydreams.mi.data.config.SystemConfig.*;
 
 /**
  * 自动注册的总类，自动注册的功能由init()函数完成，该类的注册顺序如下：

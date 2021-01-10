@@ -46,6 +46,7 @@ public class RedStoneConverterFrame {
 			frame.init(world);
 
 			Group group = new Group(0, 12, frame.getWidth(), 70, Panels::verticalCenter);
+			//noinspection ConstantConditions
 			group.adds(new MSlot(converter.getInput()), converter.getBurnPro(), converter.getEnergyPro());
 			group.setMaxDistance(2);
 			frame.add(group, player);

@@ -31,6 +31,7 @@ public final class EnergyRange {
 		this.maxVoltage = maxVoltage;
 	}
 	
+	@SuppressWarnings("unused")
 	public int getMinEnergy() {
 		return minEnergy;
 	}
@@ -39,6 +40,7 @@ public final class EnergyRange {
 		this.minEnergy = minEnergy;
 	}
 	
+	@SuppressWarnings("unused")
 	public int getMaxEnergy() {
 		return maxEnergy;
 	}

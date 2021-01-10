@@ -33,6 +33,7 @@ public final class ItemUtil {
 	 * @param modifyInput 是否修改需要传入的Stack
 	 * @return 若方法对stack或input产生了修改返回true，否则返回false
 	 */
+	@SuppressWarnings("UnusedReturnValue")
 	public static boolean putItemTo(ItemStack stack, ItemStack input, boolean modifyInput) {
 		if (stack.getItem() == input.getItem() && stack.getMetadata() == input.getMetadata()) {
 			int value = input.getCount() + stack.getCount();

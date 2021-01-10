@@ -46,6 +46,7 @@ public class ElectronSynthesizerFrame {
 			
 			Group backpack = new Group(0, 125, 230, 0, Panels::horizontalCenter);
 			Group group = new Group(0, 18, 230, 0, Panels::horizontalCenter);
+			//noinspection ConstantConditions
 			group.adds(synthesizer.getInput(), synthesizer.getProgress(), synthesizer.getOutput());
 			
 			frame.add(backpack, player);

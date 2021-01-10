@@ -89,6 +89,7 @@ public class CraftFrame extends MIFrame {
 		int now = ++index;
 		if (now >= size) now = index = 0;
 		CraftHandle handle = HandleRegister.get(craft);
+		//noinspection ConstantConditions
 		handle.update(node, craft.getShape(now));
 	}
 	
@@ -97,6 +98,7 @@ public class CraftFrame extends MIFrame {
 		int now = --index;
 		if (now < 0) now = index = size - 1;
 		CraftHandle handle = HandleRegister.get(craft);
+		//noinspection ConstantConditions
 		handle.update(node, craft.getShape(now));
 	}
 	
@@ -108,6 +110,7 @@ public class CraftFrame extends MIFrame {
 	/** 重新绘制当前合成表 */
 	public void repaint() {
 		CraftHandle handle = HandleRegister.get(craft);
+		//noinspection ConstantConditions
 		handle.update(node, getShape());
 	}
 	

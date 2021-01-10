@@ -24,7 +24,6 @@ public class CommonProxy {
 		AutoRegister.init();
 		new NetworkLoader();
 		new GuiLoader();
-		//Loader.instance().getModList().forEach(MICraftingHelper::loadRecipes);
     }
     public void init(FMLInitializationEvent event){
     }

@@ -35,6 +35,7 @@ public class CompressorBlock extends MachineBlock {
 	
 	/** 方块内部名称 */
 	public static final String NAME = "compressor";
+	@SuppressWarnings("unused")
 	private static CompressorBlock INSTANCE;
 	
 	private final Item ITEM = new ItemBlock(this);
@@ -61,6 +62,7 @@ public class CompressorBlock extends MachineBlock {
 		return true;
 	}
 	
+	@SuppressWarnings("ConstantConditions")
 	@Nullable
 	@Override
 	public List<ItemStack> getItemDrops(World world, BlockPos pos) {

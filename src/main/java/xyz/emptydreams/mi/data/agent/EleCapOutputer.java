@@ -29,6 +29,7 @@ public class EleCapOutputer implements IEleOutputer {
 	
 	@Override
 	public EleEnergy output(TileEntity te, int energy, VoltageRange voltage, boolean simulation) {
+		//noinspection ConstantConditions
 		return te.getCapability(EleCapability.ENERGY, null)
 				           .extractEnergy(energy, voltage, simulation);
 	}

@@ -72,6 +72,7 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 	@Override
 	public List<ItemStack> getItemDrops(World world, BlockPos pos) {
 		MuffleFurnace furnace = (MuffleFurnace) world.getTileEntity(pos);
+		//noinspection ConstantConditions
 		return Lists.newArrayList(furnace.getDown().getStack(),
 									furnace.getUp().getStack(),
 									furnace.getOut().getStack());

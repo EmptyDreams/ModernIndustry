@@ -114,6 +114,7 @@ public class CableCache {
 		for (Map.Entry<BlockPos, List<BlockPos>> entry : outputers.entrySet()) {
 			TileEntity outputer = start.getWorld().getTileEntity(entry.getKey());
 			IEleOutputer ele = EleWorker.getOutputer(outputer);
+			@SuppressWarnings("ConstantConditions")
 			EleEnergy eleEnergy = ele.output(outputer, energy, voltage, true);
 			if (eleEnergy.getEnergy() <= 0) continue;
 			

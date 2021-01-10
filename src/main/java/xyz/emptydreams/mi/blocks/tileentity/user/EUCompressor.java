@@ -221,7 +221,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 			if (b && !isEmptyForInput()) {
 				SlotItemHandler s = getSlot(getSlotIndex() == 0 ? 1 : 0);
 				if (s.getHasStack() && !getHasStack()) {
-					b &= s.getStack().getItem().equals(getStack().getItem());
+					b = s.getStack().getItem().equals(getStack().getItem());
 				}
 			}
 			

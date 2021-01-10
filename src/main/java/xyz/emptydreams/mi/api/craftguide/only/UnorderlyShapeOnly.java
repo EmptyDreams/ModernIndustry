@@ -63,7 +63,13 @@ public class UnorderlyShapeOnly implements IShape<ItemSet, ItemElement> {
 		return ItemElement.class;
 	}
 	
-	/** 注册一个JSON */
+	/**
+	 * 注册一个JSON
+	 * @param json json内容
+	 * @param keyMap KEY值
+	 * @throws NullPointerException 如果json中对应的合成表不存在
+	 */
+	@SuppressWarnings("ConstantConditions")
 	public static void pares(JsonObject json, Char2ObjectMap<ItemElement> keyMap) {
 		ItemSet input = ItemSet.parse(json, keyMap);
 		ItemElement result = JsonUtil.getElement(json.getAsJsonObject("result"));

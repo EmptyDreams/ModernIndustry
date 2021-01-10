@@ -9,7 +9,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
-import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
@@ -62,12 +61,8 @@ public class MSlot extends MComponent {
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
 		StringUtil.checkNull(getSlot(), "slot");
-		if (con instanceof MIFrame) {
-			index = con.inventorySlots.size();
-			con.addSlotToContainer(slot);
-		} else {
-			MISysInfo.err("[MSlot]MBackpack不支持：" + con.getClass());
-		}
+		index = con.inventorySlots.size();
+		con.addSlotToContainer(slot);
 	}
 
 	@Override

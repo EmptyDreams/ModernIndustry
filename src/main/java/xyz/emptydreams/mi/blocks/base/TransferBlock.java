@@ -85,6 +85,7 @@ abstract public class TransferBlock extends TEBlockBase {
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 		EleSrcCable nbt = (EleSrcCable) worldIn.getTileEntity(pos);
+		//noinspection ConstantConditions
 		state = state.withProperty(UP, nbt.getUp()).withProperty(DOWN, nbt.getDown())
 							.withProperty(EAST, nbt.getEast()).withProperty(WEST, nbt.getWest())
 							.withProperty(NORTH, nbt.getNorth()).withProperty(SOUTH, nbt.getSouth());
@@ -130,6 +131,7 @@ abstract public class TransferBlock extends TEBlockBase {
 		return false;
 	}
 	
+	@SuppressWarnings("ConstantConditions")
 	@Override
 	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
 		TileEntity fromEntity = worldIn.getTileEntity(fromPos);

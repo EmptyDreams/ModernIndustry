@@ -42,12 +42,12 @@ public final class ImageData {
 	 * @param name 名称（一般存储在{@link xyz.emptydreams.mi.api.gui.component}包中的某个类中）
 	 * @param width 目标宽度
 	 * @param height 目标高度
-	 * @return 没有找到元素则返回null
+	 * @throws IllegalArgumentException 如果输入的名称不存在
 	 */
 	@Nonnull
 	public static Image getImage(String name, int width, int height) {
 		Node node = resourceInfo.getOrDefault(name, null);
-		if (node == null) return null;
+		if (node == null) throw new IllegalArgumentException("名称不存在：" + name);
 		if (node.image.getWidth(null) == width && node.image.getHeight(null) == height) {
 			return node.image;
 		}
@@ -57,12 +57,12 @@ public final class ImageData {
 	/**
 	 * 获取指定名称的图像资源，不进行缩放
 	 * @param name 名称（一般存储在{@link xyz.emptydreams.mi.api.gui.component}包中的某个类中）
-	 * @return 没有找到元素则返回null
+	 * @throws IllegalArgumentException 如果输入的名称不存在
 	 */
 	@Nonnull
 	public static BufferedImage getImage(String name) {
 		Node node = resourceInfo.getOrDefault(name, null);
-		if (node == null) return null;
+		if (node == null) throw new IllegalArgumentException("名称不存在：" + name);
 		return node.image;
 	}
 	

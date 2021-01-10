@@ -171,6 +171,7 @@ public final class EleWorker {
 		try {
 			for (TileEntity entity : line) {
 				transfer = getTransfer(entity);
+				//noinspection ConstantConditions
 				infos.put(transfer, transfer.transfer(
 						entity, energy, voltage, infos.getOrDefault(transfer, null)));
 			}

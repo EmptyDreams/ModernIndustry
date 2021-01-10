@@ -9,7 +9,7 @@ import xyz.emptydreams.mi.ModernIndustry;
 @SuppressWarnings("unused")
 @Config(modid = ModernIndustry.MODID, name = "mi.config.machine")
 @Config.LangKey("mi.config.machine")
-public class MIMachineConfig {
+public class MachineConfig {
 	
 	@Config.Comment("压缩机每Tick消耗的电能")
 	@Config.RangeInt(min = 0)

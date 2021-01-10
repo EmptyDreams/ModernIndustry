@@ -67,6 +67,7 @@ public final class TransferItem extends ItemBlock {
            if (iblockstate1 == null) return EnumActionResult.FAIL;
 	        //更新TileEntity
 	        EleSrcCable cable = (EleSrcCable) ((TransferBlock) this.block).createNewTileEntity(worldIn, 0);
+	        //noinspection ConstantConditions
 	        cable.setWorld(worldIn);
 	        cable.setPos(blockPos);
 	        cable.setBlockType(this.block);
@@ -99,7 +100,7 @@ public final class TransferItem extends ItemBlock {
 						        return true;
 					        });
 				        }
-			        } else if (te != null) {
+			        } else {
 		        		IEleTransfer transfer = EleWorker.getTransfer(te);
 				        if (transfer == null) cable.linkMachine(te);
 				        else cable.linkWire(transfer, te);

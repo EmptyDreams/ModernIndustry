@@ -36,16 +36,19 @@ public class EleCapability {
 			@Override
 			public void readNBT(Capability<IStorage> capability, IStorage instance, EnumFacing side, NBTBase nbt) { }
 		}, () -> new IStorage() {
+			{ throwException(); }
 			@Override
 			public boolean canReceive() { return false; }
 			@Override
 			public boolean canExtract() { return false; }
 			@Override
 			public int receiveEnergy(EleEnergy energy, boolean simulate) { return 0; }
+			@SuppressWarnings("ConstantConditions")
 			@Override
 			public IVoltage getVoltage(EnumEleState state, IVoltage voltage) { return null; }
 			@Override
 			public VoltageRange getReceiveVoltageRange() { return null; }
+			@SuppressWarnings("ConstantConditions")
 			@Override
 			public EleEnergy extractEnergy(int energy, VoltageRange range, boolean simulate) { return null; }
 			@Override
@@ -60,10 +63,15 @@ public class EleCapability {
 			public boolean unLink(BlockPos pos) { return false; }
 			@Override
 			public boolean isLink(BlockPos pos) { return false; }
+			@SuppressWarnings("ConstantConditions")
 			@Nonnull
 			@Override
 			public Collection<BlockPos> getLinks() { return null; }
 		});
+	}
+	
+	private static void throwException() {
+		throw new UnsupportedOperationException();
 	}
 	
 }

@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.newnet.handler;
+package xyz.emptydreams.mi.api.net.handler;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;

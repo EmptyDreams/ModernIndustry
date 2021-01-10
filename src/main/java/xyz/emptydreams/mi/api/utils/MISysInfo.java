@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * 此类用于输出mod发出的系统信息
  * @author EmptyDremas
- * @version V1.0
  */
 public final class MISysInfo {
 

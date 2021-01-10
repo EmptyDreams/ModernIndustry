@@ -75,6 +75,7 @@ public final class BlockMessage implements IMessageHandle<BlockAddition> {
 	public NBTTagCompound packaging(@Nonnull NBTTagCompound data, @Nullable BlockAddition addition) {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger("type_block", id.getAndIncrement());
+		//noinspection ConstantConditions
 		addition.writeTo(tag);
 		tag.setTag("data", data);
 		return tag;

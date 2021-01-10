@@ -104,11 +104,12 @@ public final class CommonUtil {
 				.withProperty(WORKING, (meta & 0b1000) == 0b1000);
 	}
 
+	@Nonnull
 	private static PropertyDirection getFacing(IBlockState state) {
 		for (IProperty<?> key : state.getPropertyKeys()) {
 			if (key instanceof PropertyDirection) return (PropertyDirection) key;
 		}
-		return null;
+		throw new IllegalArgumentException("没有对应的值：" + state);
 	}
 	
 }

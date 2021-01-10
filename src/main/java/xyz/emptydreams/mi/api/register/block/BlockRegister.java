@@ -72,6 +72,7 @@ public class BlockRegister {
 		}
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	private static Item getItem(Block block) {
 		//noinspection IfStatementWithIdenticalBranches
 		if (block instanceof BlockItemHelper) {

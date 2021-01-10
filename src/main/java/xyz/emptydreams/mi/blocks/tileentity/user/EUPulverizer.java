@@ -75,6 +75,7 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 	}
 
 	/** 更新内部数据 */
+	@SuppressWarnings("ConstantConditions")
 	private void updateData() {
 		if (++workingTime >= getNeedTime()) {
 			if (out.getHasStack()) {
@@ -105,6 +106,7 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 		}
 		ItemStack out = this.out.getStack();
 		if (!out.isEmpty()) {
+			//noinspection ConstantConditions
 			if (out.getCount() >= out.getMaxStackSize() ||
 					!CraftList.PULVERIZER.apply(new ItemSet(
 							ItemElement.instance(in.getStack()))).contain(out)) {

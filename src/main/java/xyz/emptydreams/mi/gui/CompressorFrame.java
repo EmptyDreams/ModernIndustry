@@ -49,7 +49,8 @@ public final class CompressorFrame {
 			Group fir = new Group(0, 0, 18, 54, Panels::verticalCenter);
 			Group group = new Group(0, 15, frame.getWidth(), 0, Panels::horizontalCenter);
 			group.setMaxDistance(10);
-
+			
+			//noinspection ConstantConditions
 			fir.adds(new MSlot(compressor.getSlot(0)), new MSlot(compressor.getSlot(1)));
 			group.adds(fir, compressor.getProgressBar(), new MSlot(compressor.getSlot(2)));
 			frame.add(group, player);

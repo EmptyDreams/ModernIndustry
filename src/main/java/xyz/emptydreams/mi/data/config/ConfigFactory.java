@@ -27,7 +27,7 @@ public final class ConfigFactory implements IModGuiFactory {
 	
 	@Override
 	public GuiScreen createConfigGui(GuiScreen parentScreen) {
-		return new GuiConfig(parentScreen, ConfigElement.from(MISystemConfig.class).getChildElements(),
+		return new GuiConfig(parentScreen, ConfigElement.from(SystemConfig.class).getChildElements(),
 				ModernIndustry.MODID, false, false,
 				"MI配置", "系统配置");
 	}

@@ -48,6 +48,7 @@ public final class DataInfo<T> implements Consumer<T> {
 	}
 
 	/** 赋值 */
+	@SuppressWarnings("ConstantConditions")
 	@Override
 	public void accept(T t) {
 		if (FIELD == null) OTHER.accept(t);

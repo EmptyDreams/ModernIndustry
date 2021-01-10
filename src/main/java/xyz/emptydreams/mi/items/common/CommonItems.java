@@ -106,14 +106,14 @@ public final class CommonItems {
 	
 	//--------------------机械元件--------------------//
 	/** 铁棍 */
-	public static final String NAME_IRON_ROD = "iron_rod";
-	public static final Item ITEM_IRON_ROD = new MItem(NAME_IRON_ROD, "mi_ironRod");
+	public static final String NAME_IRON_STICK = "iron_stick";
+	public static final Item ITEM_IRON_STICK = new MItem(NAME_IRON_STICK, "mi_ironStick");
 	/** 铜棍 */
-	public static final String NAME_COPPER_ROD = "copper_rod";
-	public static final Item ITEM_COPPER_ROD = new MItem(NAME_COPPER_ROD, "mi_copperRod");
+	public static final String NAME_COPPER_STICK = "copper_stick";
+	public static final Item ITEM_COPPER_STICK = new MItem(NAME_COPPER_STICK, "mi_copperStick");
 	/** 青铜棍 */
-	public static final String NAME_BRONZE_ROD = "bronze_rod";
-	public static final Item ITEM_BRONZE_ROD = new MItem(NAME_BRONZE_ROD, "mi_bronzeRod");
+	public static final String NAME_BRONZE_STICK = "bronze_stick";
+	public static final Item ITEM_BRONZE_STICK = new MItem(NAME_BRONZE_STICK, "mi_bronzeStick");
 	/** 机械刀片 */
 	public static final String NAME_BLADE = "blade";
 	public static final Item ITEM_BLADE = new MItem(NAME_BLADE, "mi_blade");
