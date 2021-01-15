@@ -1,9 +1,13 @@
 buildscript {
     repositories {
-        jcenter()
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url = "http://files.minecraftforge.net/maven" }
         maven { url = "https://repo.spongepowered.org/maven" }
         maven { url "https://plugins.gradle.org/m2/" }
+        google()
+        jcenter()
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -11,6 +15,7 @@ buildscript {
         classpath 'gradle.plugin.de.set.gradle:gradle-eclipse-compiler-plugin:1.4.1'
     }
 }
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: "de.set.ecj"
@@ -102,7 +107,7 @@ jar {
     }
 
 //    manifest.attributes([
-//            "TweakClass": "com.elementtimes.elementcore.coremod.ECMixinTweaker"
+//            "TweakClass": "xyz.emptydreams.mi.coremod.MIMixinTweaker"
 //    ])
 
     manifest.attributes([

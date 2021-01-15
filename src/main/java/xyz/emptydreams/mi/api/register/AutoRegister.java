@@ -19,13 +19,13 @@ import xyz.emptydreams.mi.api.register.block.AutoBlockRegister;
 import xyz.emptydreams.mi.api.register.block.OreCreate;
 import xyz.emptydreams.mi.api.register.block.WorldCreater;
 import xyz.emptydreams.mi.api.register.item.AutoItemRegister;
-import xyz.emptydreams.mi.api.register.json.BlockJsonBuilder;
-import xyz.emptydreams.mi.api.register.json.ItemJsonBuilder;
 import xyz.emptydreams.mi.api.register.sorter.BlockSorter;
 import xyz.emptydreams.mi.api.register.sorter.ItemSorter;
 import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
+import xyz.emptydreams.mi.data.json.ItemJsonBuilder;
+import xyz.emptydreams.mi.data.json.block.BlockJsonBuilder;
 import xyz.emptydreams.mi.proxy.ClientProxy;
 import xyz.emptydreams.mi.proxy.CommonProxy;
 

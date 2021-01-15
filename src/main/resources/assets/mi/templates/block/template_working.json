@@ -2,7 +2,7 @@
   "forge_marker": 1,
   "defaults": {
     "model": "mi:machine",
-    "textures": { "front": "template:src" }
+    "textures": { "front": "template::src" }
   },
   "variants": {
     "inventory": [{ }],
@@ -14,7 +14,7 @@
     },
     "working": {
       "true": {
-        "textures": { "front": "template:working" }
+        "textures": { "front": "template::working" }
       },
       "false": { }
     }

@@ -34,7 +34,7 @@ public class CommonMessage implements IMessage {
 	/** 客户端解析数据 */
 	@SideOnly(Side.CLIENT)
 	public void parseClient() {
-		xyz.emptydreams.mi.api.newnet.handler.RawQueue.add(data);
+		RawQueue.add(data);
 	}
 	
 	@Override

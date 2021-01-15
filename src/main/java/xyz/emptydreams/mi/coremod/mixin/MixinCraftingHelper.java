@@ -47,7 +47,7 @@ public class MixinCraftingHelper {
 		return findFiles(mod, "assets/" + mod.getModId() + "/recipes",
 				root -> {
 					Path fPath = root.resolve("_constants.json");
-					if (fPath != null && Files.exists(fPath)) {
+					if (Files.exists(fPath)) {
 						try (BufferedReader reader = Files.newBufferedReader(fPath)) {
 							JsonObject[] json = JsonUtils.fromJson(GSON, reader, JsonObject[].class);
 							Method constants = ctx.getClass().getDeclaredMethod(
@@ -76,6 +76,7 @@ public class MixinCraftingHelper {
 					
 					try (BufferedReader reader = Files.newBufferedReader(file)) {
 						JsonObject json = JsonUtils.fromJson(GSON, reader, JsonObject.class);
+						//noinspection ConstantConditions
 						if (json.has("conditions") &&
 								!CraftingHelper.processConditions(
 										JsonUtils.getJsonArray(json, "conditions"), ctx))

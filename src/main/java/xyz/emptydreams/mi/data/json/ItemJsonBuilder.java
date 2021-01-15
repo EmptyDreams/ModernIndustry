@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.register.json;
+package xyz.emptydreams.mi.data.json;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -8,6 +8,7 @@ import net.minecraft.item.ItemTool;
 import xyz.emptydreams.mi.api.register.AutoRegister;
 import xyz.emptydreams.mi.api.tools.item.IToolMaterial;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
+import xyz.emptydreams.mi.data.json.block.BlockJsonBuilder;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,7 +18,7 @@ import java.io.OutputStreamWriter;
 import java.util.EnumMap;
 import java.util.Map;
 
-import static xyz.emptydreams.mi.api.register.json.BlockJsonBuilder.readFile;
+import static xyz.emptydreams.mi.data.json.BlockJsonBuilder.readFile;
 
 /**
  * 物品Json生成器

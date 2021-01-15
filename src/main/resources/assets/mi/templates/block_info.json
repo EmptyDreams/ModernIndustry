@@ -1,0 +1,43 @@
+{
+  "non": {
+    "name": "template_non.json",
+    "check": {
+      "name": [ ], "type": [ ]
+    }
+  },
+  "empty": {
+    "name": "template_empty.json",
+    "check": {
+      "name": ["empty", "*",     "working"],
+      "type": ["bool",  "dir_h", "bool"]
+    }
+  },
+  "working": {
+    "name": "template_working.json",
+    "check": {
+      "name": ["*",     "working"],
+      "type": ["dir_h", "bool"]
+    }
+  },
+  "horizontal": {
+    "name": "template_horizontal.json",
+    "check": {
+      "name": ["*"],
+      "type": ["dir_h"]
+    }
+  },
+  "cable": {
+    "name": "template_cable.json",
+    "check": {
+      "name": ["up",   "down", "east", "west", "north","south"],
+      "type": ["bool", "bool", "bool", "bool", "bool", "bool"]
+    }
+  },
+  "workbench": {
+    "name": "template_workbench.json",
+    "check": {
+      "name": ["working"],
+      "type": ["bool"]
+    }
+  }
+}
