@@ -5,6 +5,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
+import xyz.emptydreams.mi.api.exception.IntransitException;
 import xyz.emptydreams.mi.api.tools.property.IProperty;
 import xyz.emptydreams.mi.api.tools.property.PropertyManager;
 
@@ -82,7 +83,7 @@ public class PropertyProvider implements ICapabilityProvider, INBTSerializable<N
 				addProperty(pro);
 			}
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw new IntransitException(e);
 		}
 	}
 }

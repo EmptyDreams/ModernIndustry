@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.INBTSerializable;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
+import xyz.emptydreams.mi.api.exception.IntransitException;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.container.Wrapper;
 
@@ -166,7 +167,7 @@ public final class DataOperator {
 			setter.accept(((Enum<?>[]) clazz.get().getMethod("values", (Class<?>) null)
 											.invoke(null, (Object) null))[index]);
 		} catch (Exception e) {
-			throw new RuntimeException("数据自动读写出现了意料之外的错误", e);
+			throw new IntransitException("数据自动读写出现了意料之外的错误", e);
 		}
 	}
 
@@ -189,7 +190,7 @@ public final class DataOperator {
 			serializable.deserializeNBT(base);
 			setter.accept(serializable);
 		} catch (Exception e) {
-			throw new RuntimeException("数据自动读写出现了意料之外的错误", e);
+			throw new IntransitException("数据自动读写出现了意料之外的错误", e);
 		}
 	}
 
@@ -226,7 +227,7 @@ public final class DataOperator {
 				//noinspection ConstantConditions
 				collection = (Collection) temp.get().newInstance();
 			} catch (Exception e) {
-				throw new RuntimeException("数据自动读写出现了意料之外的错误", e);
+				throw new IntransitException("数据自动读写出现了意料之外的错误", e);
 			}
 		}
 		Wrapper<Class<?>> clazz = new Wrapper<>();
@@ -263,7 +264,7 @@ public final class DataOperator {
 				//noinspection ConstantConditions
 				map = (Map) clazz.get().newInstance();
 			} catch (Exception e) {
-				throw new RuntimeException("数据自动读写出现了意料之外的错误", e);
+				throw new IntransitException("数据自动读写出现了意料之外的错误", e);
 			}
 		}
 		Wrapper<Class<?>> keyClazz = new Wrapper<>();
@@ -330,7 +331,7 @@ public final class DataOperator {
 		try {
 			field.set(obj, variable);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException("程序出现了意料之外的错误，可能是用户传入了错误的Field导致的", e);
+			throw new IntransitException("程序出现了意料之外的错误，可能是用户传入了错误的Field导致的", e);
 		}
 	}
 

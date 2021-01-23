@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.tools.property;
 
 import com.google.common.base.Throwables;
 import net.minecraft.nbt.NBTTagCompound;
+import xyz.emptydreams.mi.api.exception.IntransitException;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nullable;
@@ -72,7 +73,7 @@ public class PropertyManager implements Iterable<IProperty> {
 			}
 		} catch (Exception e) {
 			Throwables.throwIfUnchecked(e);
-			throw new RuntimeException(e);
+			throw new IntransitException(e);
 		}
 	}
 	

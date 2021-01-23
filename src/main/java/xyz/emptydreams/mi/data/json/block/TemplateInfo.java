@@ -6,11 +6,14 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.properties.IProperty;
+import xyz.emptydreams.mi.api.exception.IntransitException;
+import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Set;
 
 import static xyz.emptydreams.mi.data.json.block.BlockJsonBuilder.ROOT;
@@ -25,6 +28,7 @@ public class TemplateInfo {
 	private final String[] name;
 	private final PropertyType[] type;
 	private final String text;
+	private final Method checkMethod;
 	
 	/**
 	 * 构建一个INFO
@@ -46,16 +50,19 @@ public class TemplateInfo {
 			name[i] = jsonName.get(i).getAsString();
 			type[i] = PropertyType.from(jsonType.get(i).getAsString());
 		}
+		try {
+			checkMethod = StringUtil.getMethod(json.get("class").getAsString());
+		} catch (Exception e) {
+			throw new IntransitException("方法获取失败", e);
+		}
 		
-		String text = "";
 		try(BufferedReader reader = new BufferedReader(new FileReader(path))) {
 			text = reader.lines().reduce(new StringBuilder(),
 					(stringBuilder, str) -> stringBuilder.append(str).append('\n'),
 					(arg0, arg1) -> null).toString();
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new IntransitException("模板文件读取失败：" + path, e);
 		}
-		this.text = text;
 	}
 	
 	/**
@@ -80,7 +87,15 @@ public class TemplateInfo {
 			}
 			return false;
 		}
-		return true;
+		return classCheck();
+	}
+	
+	private boolean classCheck() {
+		try {
+			return (boolean) checkMethod.invoke(null, (Object) null);
+		} catch (Exception e) {
+			throw new IntransitException("方法调用异常", e);
+		}
 	}
 	
 	public String getText() {

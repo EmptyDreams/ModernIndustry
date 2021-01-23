@@ -17,10 +17,12 @@ public final class MISysInfo {
 		LOGGER.info(linkObjects(objects));
 	}
 	
-	public static void err(Object... objects) {
-		LOGGER.error(linkObjects(objects));
+	/** 输出错误信息 */
+	public static void err(Object object, Throwable throwable) {
+		LOGGER.error(object, throwable);
 	}
 	
+	/** 输出错误信息 */
 	public static void err(Object object) {
 		LOGGER.error(object);
 	}

@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import xyz.emptydreams.mi.api.exception.IntransitException;
 
 import java.lang.reflect.Modifier;
 import java.util.Map;
@@ -64,7 +65,7 @@ public final class ClassMap extends WorldSavedData {
 				MAP.put(hash, Class.forName(nbt.getString(key + ":name")));
 			}
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("ClassMap读取错误", e);
+			throw new IntransitException("ClassMap读取错误", e);
 		}
 	}
 

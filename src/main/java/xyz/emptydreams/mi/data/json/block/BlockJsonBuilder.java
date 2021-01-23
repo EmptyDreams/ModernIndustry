@@ -25,6 +25,7 @@ import java.util.function.Function;
 import static net.minecraft.client.Minecraft.getMinecraft;
 
 /**
+ * 方块Json生成器
  * @author EmptyDreams
  */
 public final class BlockJsonBuilder {
@@ -131,8 +132,7 @@ public final class BlockJsonBuilder {
 		try (BufferedReader reader = new BufferedReader(new FileReader(TEMPLATE_INFO))) {
 			reader.lines().forEach(builder::append);
 		} catch (IOException e) {
-			MISysInfo.err("BlockJson生成失败");
-			e.printStackTrace();
+			MISysInfo.err("BlockJson生成失败", e);
 			return;
 		}
 		

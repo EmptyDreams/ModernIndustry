@@ -1,5 +1,7 @@
 package xyz.emptydreams.mi.api.utils.data.auto;
 
+import xyz.emptydreams.mi.api.exception.IntransitException;
+
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
 
@@ -43,7 +45,7 @@ public final class DataInfo<T> implements Consumer<T> {
 			if (FIELD == null) return null;
 			return (T) FIELD.get(OBJ);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw new IntransitException(e);
 		}
 	}
 

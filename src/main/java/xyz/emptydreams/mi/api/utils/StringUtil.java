@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.api.utils;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
@@ -10,6 +11,24 @@ import java.util.Objects;
  * @author EmptyDreams
  */
 public class StringUtil {
+	
+	/**
+	 * <p>根据字符串获取一个{@link Method}对象
+	 * <p>字符串格式：[类名]#[方法名]
+	 * <p>例：xyz.emptydreams.mi.api.register.AutoRegister#init
+	 * <p>注：不支持解析带参数的方法，指定的方法必须为共有静态方法
+	 * @param name 字符串
+	 * @throws ClassNotFoundException 如果类不存在
+	 * @throws NoSuchMethodException 如果方法不存在
+	 */
+	@Nonnull
+	public static Method getMethod(String name) throws ClassNotFoundException, NoSuchMethodException {
+		int index = name.indexOf('#');
+		String className = name.substring(0, index);
+		String methodName = name.substring(index + 1);
+		Class<?> clazz = Class.forName(className);
+		return clazz.getMethod(methodName, (Class<?>) null);
+	}
 	
 	/** 判空检查 */
 	public static <T> T checkNull(T object, String name) {

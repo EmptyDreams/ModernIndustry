@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.data.json.block;
+package xyz.emptydreams.mi.data.json;
 
 /**
  * 模板类型

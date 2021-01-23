@@ -5,27 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7ec122a7-2681-4091-bbc4-eb037c8a101d" name="默认的" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/register/json/KeyList.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/register/json/block/NewBlockJsonBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/register/json/block/PropertyType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/register/json/block/TemplateInfo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/register/json/block/TemplateType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/assets/mi/templates/block/template_cable.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/assets/mi/templates/block_info.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/assets/mi/templates/info_explain.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/net/handler/CommonMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/net/handler/CommonMessage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/exception/IntransitException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/data/json/item/ItemJsonBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ModernIndustry.iws" beforeDir="false" afterPath="$PROJECT_DIR$/ModernIndustry.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/gui/client/ImageData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/gui/client/ImageData.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/register/AutoRegister.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/register/AutoRegister.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/coremod/MIMixinTweaker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/coremod/MIMixinTweaker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/coremod/mixin/MixinCraftingHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/coremod/mixin/MixinCraftingHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/mi/blockstates/copper_ore_block.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/mi/blockstates/copper_ore_block.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/mi/blockstates/wire_copper.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/mi/blockstates/wire_copper.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/mi/models/block/wire/copper/north.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/mi/models/block/wire_copper/north.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/mi/models/block/wire/copper/point.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/mi/models/block/wire_copper/point.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/mi/templates/block/template_empty.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/mi/templates/block/template_empty.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/mi/templates/block/template_horizontal.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/mi/templates/block/template_horizontal.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/mi/templates/block/template_non.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/mi/templates/block/template_non.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/mi/templates/block/template_working.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/mi/templates/block/template_working.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/register/block/BlockRegister.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/register/block/BlockRegister.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/tools/capabilities/PropertyProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/tools/capabilities/PropertyProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/tools/property/PropertyManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/tools/property/PropertyManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/utils/MISysInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/utils/MISysInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/utils/StringUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/utils/StringUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/utils/data/auto/ClassMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/utils/data/auto/ClassMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/utils/data/auto/DataInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/utils/data/auto/DataInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/utils/data/auto/DataOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/utils/data/auto/DataOperator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/utils/data/auto/TEHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/api/utils/data/auto/TEHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/data/json/ItemJsonBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/data/json/ItemJsonBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/data/json/block/BlockJsonBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/data/json/block/BlockJsonBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/data/json/block/PropertyType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/data/json/block/PropertyType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/data/json/block/TemplateInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/data/json/block/TemplateInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/data/json/block/TemplateType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/data/json/TemplateType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/proxy/ClientProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/proxy/ClientProxy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/proxy/CommonProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/emptydreams/mi/proxy/CommonProxy.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -180,6 +180,8 @@
       <recent name="D:\Workspace\ModernIndustry\src\main\resources\assets\mi\models\block\wire_copper" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="xyz.emptydreams.mi.data.json" />
+      <recent name="xyz.emptydreams.mi.data" />
       <recent name="xyz.emptydreams.mi.api.register.json.block" />
       <recent name="xyz.emptydreams.mi.api" />
     </key>
@@ -370,8 +372,27 @@
       <option name="project" value="LOCAL" />
       <updated>1610246550045</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="重写了`BlockJsonBuilder`">
+      <created>1610721815240</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1610721815240</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
@@ -383,7 +404,8 @@
     <MESSAGE value="修改`agent`拼写错误" />
     <MESSAGE value="更新材质&amp;较少代码警告" />
     <MESSAGE value="漏掉的提交" />
-    <option name="LAST_COMMIT_MESSAGE" value="漏掉的提交" />
+    <MESSAGE value="重写了`BlockJsonBuilder`" />
+    <option name="LAST_COMMIT_MESSAGE" value="重写了`BlockJsonBuilder`" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>

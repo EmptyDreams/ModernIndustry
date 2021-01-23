@@ -12,6 +12,7 @@ import static xyz.emptydreams.mi.data.json.block.BlockJsonBuilder.HOR;
 import static xyz.emptydreams.mi.data.json.block.BlockJsonBuilder.VER;
 
 /**
+ * 方块类型
  * @author EmptyDreams
  */
 public enum PropertyType {
@@ -37,7 +38,9 @@ public enum PropertyType {
 			return VER.containsAll(values);
 		}
 		return false;
-	});
+	}),
+	/** 所有类型 */
+	ALL("*", it -> true);
 	
 	private final String name;
 	private final Predicate<IProperty<?>> test;

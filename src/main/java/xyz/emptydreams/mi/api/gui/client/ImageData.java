@@ -6,6 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.exception.IntransitException;
 
 import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
@@ -135,7 +136,7 @@ public final class ImageData {
 		try {
 			updateResource(new ResourceLocation(ModernIndustry.MODID, "textures/gui/tools.png"));
 		} catch (IOException e) {
-			throw new RuntimeException("MI GuiHelper读取材质文件时出现异常！", e);
+			throw new IntransitException("MI GuiHelper读取材质文件时出现异常！", e);
 		}
 	}
 	

@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.utils.data.auto;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import xyz.emptydreams.mi.api.exception.IntransitException;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -43,7 +44,7 @@ public interface TEHelper {
 						field.setAccessible(true);
 						type.write(data, name, field.get(this));
 					} catch (IllegalAccessException e) {
-						throw new RuntimeException(e);
+						throw new IntransitException(e);
 					} catch (ClassCastException e) {
 						e.initCause(new ClassCastException("标记的需要读写的数据类型不继承自INBTSerializable"));
 						throw e;
@@ -80,7 +81,7 @@ public interface TEHelper {
 							field.set(this, clazz.getDeclaredMethod(storage.def(), (Class<?>) null));
 						type.read(data, name, this, field);
 					} catch (ClassCastException | NoSuchMethodException | IllegalAccessException e) {
-						throw new RuntimeException(e);
+						throw new IntransitException(e);
 					}
 				}
 			}

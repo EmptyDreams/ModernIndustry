@@ -14,6 +14,7 @@ import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
+import xyz.emptydreams.mi.api.exception.IntransitException;
 import xyz.emptydreams.mi.api.register.agent.AutoAgentRegister;
 import xyz.emptydreams.mi.api.register.block.AutoBlockRegister;
 import xyz.emptydreams.mi.api.register.block.OreCreate;
@@ -24,13 +25,10 @@ import xyz.emptydreams.mi.api.register.sorter.ItemSorter;
 import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
-import xyz.emptydreams.mi.data.json.ItemJsonBuilder;
-import xyz.emptydreams.mi.data.json.block.BlockJsonBuilder;
 import xyz.emptydreams.mi.proxy.ClientProxy;
 import xyz.emptydreams.mi.proxy.CommonProxy;
 
 import javax.annotation.Nonnull;
-import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,16 +43,16 @@ import static xyz.emptydreams.mi.data.config.SystemConfig.*;
 
 /**
  * 自动注册的总类，自动注册的功能由init()函数完成，该类的注册顺序如下：
- * <pre>
- * 1.被{@link AutoBlockRegister}注解的方块
- * 2.被{@link RegisterManager}注解的类
- * 3.被{@link AutoTileEntity}注解的TileEntity
- * 4.被{@link AutoItemRegister}注解的物品
- * 5.被{@link AutoManager}注解的类
- * 6.被{@link OreCreate}注解的矿石生成器
- * 7.被{@link AutoAgentRegister}注解的托管
- * 8.被{@link AutoLoader}注解的类
- * </pre>
+ * <ol>
+ * <li>被{@link AutoBlockRegister}注解的方块
+ * <li>被{@link RegisterManager}注解的类
+ * <li>被{@link AutoTileEntity}注解的TileEntity
+ * <li>被{@link AutoItemRegister}注解的物品
+ * <li>被{@link AutoManager}注解的类
+ * <li>被{@link OreCreate}注解的矿石生成器
+ * <li>被{@link AutoAgentRegister}注解的托管
+ * <li>被{@link AutoLoader}注解的类
+ * </ol>
  * @author EmptyDremas
  */
 public final class AutoRegister {
@@ -79,12 +77,17 @@ public final class AutoRegister {
 		public static final List<Item> autoItems = new ArrayList<>(autoItemSize);
 	}
 	
-	public static boolean isRun = false;
+	public static boolean isInit = false;
+	
+	/** 判断是否已经进行初始化操作 */
+	public static boolean isInit() {
+		return isInit;
+	}
 	
 	public static void init() {
 		
-		if (isRun) return;
-		isRun = true;
+		if (isInit) return;
+		isInit = true;
 		//是否为客户端
 		final boolean client = WorldUtil.isClient();
 		
@@ -92,7 +95,7 @@ public final class AutoRegister {
 			//注册debug物品
 			addAutoItem(ModernIndustry.DEBUG);
 			final ASMDataTable ASM = client ? ClientProxy.getAsm() : CommonProxy.getAsm();
-
+			//注册其它物品
 			reAutoBlock(ASM);
 			reAutoTE(ASM);
 			reAutoItem(ASM);
@@ -101,40 +104,30 @@ public final class AutoRegister {
 			reOreCreate(ASM);
 			reAutoTR(ASM);
 			triggerAutoLoader(ASM);
-
+			//排序
 			Blocks.autoRegister.sort(BlockSorter::compare);
 			Items.autoItems.sort(ItemSorter::compare);
-			
-			blockSize = Blocks.blocks.size();
-			itemSize = Items.items.size();
-			autoBlockSize = Blocks.autoRegister.size();
-			autoItemSize = Items.autoItems.size();
-			
-			if (!new File(".").getAbsolutePath().endsWith(".jar")) {
-				BlockJsonBuilder.build();
-				ItemJsonBuilder.build();
-			}
 		} catch (IllegalAccessException e) {
-			MISysInfo.err("需要的函数不可见，原因可能是：",
-							"用户提供的需初始化的类没有提供可视的构造函数");
-			throw new RuntimeException(e);
+			MISysInfo.err("需要的函数不可见，原因可能是："
+							+ "用户提供的需初始化的类没有提供可视的构造函数");
+			throw new IntransitException(e);
 		} catch (NoSuchMethodException e) {
-			MISysInfo.err("没有找到对应的方法，原因可能可能是：\n",
-					              "1).用户的类使用了RegisterManager注解却未在类中定义static register()\n",
-							      "2).使用@AutoTrusteeshipRegister注解的托管没有提供默认构造函数\n");
-			throw new RuntimeException(e);
+			MISysInfo.err("没有找到对应的方法，原因可能可能是：\n"
+					            +  "1).用户的类使用了RegisterManager注解却未在类中定义static register()\n"
+							    +  "2).使用@AutoTrusteeshipRegister注解的托管没有提供默认构造函数\n");
+			throw new IntransitException(e);
 		} catch (NullPointerException e) {
-			MISysInfo.err("反射过程中发生了空指针错误，原因可能是：\n",
-							"\t1).本程序内部错误\n",
-							"\t2).用户修改本程序导致反射过程中出现空指针");
+			MISysInfo.err("反射过程中发生了空指针错误，原因可能是：\n"
+							+ "\t1).本程序内部错误\n"
+							+ "\t2).用户修改本程序导致反射过程中出现空指针");
 			throw e;
 		} catch (ClassNotFoundException e) {
-			MISysInfo.err("反射过程中寻找类时出现错误，原因可能是：\n",
-							"\t1).用户或程序内部的类因为某些原因被卸载\n",
-							"\t2).用户提供的类路径错误");
-			throw new RuntimeException(e);
+			MISysInfo.err("反射过程中寻找类时出现错误，原因可能是：\n"
+							+ "\t1).用户或程序内部的类因为某些原因被卸载\n"
+							+ "\t2).用户提供的类路径错误");
+			throw new IntransitException(e);
 		} catch (Exception e) {
-			throw new RuntimeException("发生了未知错误！", e);
+			throw new IntransitException("发生了未知错误！", e);
 		}
 	}
 	
@@ -298,8 +291,8 @@ public final class AutoRegister {
 					}
 				}
 				if (b == null) {
-					MISysInfo.err("发现了一个没有对应方块的矿石生成器[",
-							valueMap.get("name"), "] -> continue");
+					MISysInfo.err("发现了一个没有对应方块的矿石生成器["
+							+ valueMap.get("name") + "] -> continue");
 					continue;
 				}
 				Blocks.worldCreate.put(b, new WorldCreater(data, b));

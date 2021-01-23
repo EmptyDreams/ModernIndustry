@@ -4,13 +4,13 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import xyz.emptydreams.mi.api.register.AutoRegister;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
+@SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
-	
-	private static ASMDataTable ASM;
 	
 	@Nonnull
 	public static ASMDataTable getAsm() {
@@ -19,8 +19,6 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	public void preInit(@Nonnull FMLPreInitializationEvent event){
-		ASM = event.getAsmData();
-		AutoRegister.init();
 		super.preInit(event);
 	}
 
