@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
+import xyz.emptydreams.mi.api.register.AutoManager;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.blocks.common.CommonBlocks;
 import xyz.emptydreams.mi.blocks.machine.WireManager;
@@ -23,6 +24,7 @@ import static xyz.emptydreams.mi.api.utils.ItemUtil.newStack;
 
 @Mod(modid = ModernIndustry.MODID, name = ModernIndustry.NAME,
 		version = ModernIndustry.VERSION, guiFactory = "xyz.emptydreams.mi.data.config.ConfigFactory")
+@AutoManager(item = true)
 public final class ModernIndustry {
 	
 	public static final String MODID = "mi";

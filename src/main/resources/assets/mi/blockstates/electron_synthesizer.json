@@ -4,12 +4,12 @@
     "model": "cube_all",
     "textures": {
       "particle": "mi:blocks/machine/electron_synthesizer/src",
-      "down": "mi:blocks/machine/down",
+      "down": "mi:blocks/machine/electron_synthesizer/down",
       "up": "mi:blocks/machine/electron_synthesizer/src",
-      "north": "mi:blocks/machine/side",
-      "east": "mi:blocks/machine/side",
-      "south": "mi:blocks/machine/side",
-      "west": "mi:blocks/machine/side"
+      "north": "mi:blocks/machine/electron_synthesizer/side",
+      "east": "mi:blocks/machine/electron_synthesizer/side",
+      "south": "mi:blocks/machine/electron_synthesizer/side",
+      "west": "mi:blocks/machine/electron_synthesizer/side"
     }
   },
   "variants": {

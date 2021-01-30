@@ -1,0 +1,24 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "cube_all",
+    "textures": {
+      "particle": "mi:blocks/machine/template::name/src",
+      "down": "mi:blocks/machine/template::name/down",
+      "up": "mi:blocks/machine/template::name/src",
+      "north": "mi:blocks/machine/template::name/side",
+      "east": "mi:blocks/machine/template::name/side",
+      "south": "mi:blocks/machine/template::name/side",
+      "west": "mi:blocks/machine/template::name/side"
+    }
+  },
+  "variants": {
+    "inventory": [{ }],
+    "working": {
+      "true": {
+        "textures": { "up": "mi:blocks/machine/template::name/working" }
+      },
+      "false": { }
+    }
+  }
+}

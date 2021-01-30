@@ -93,7 +93,6 @@ public final class AutoRegister {
 		
 		try {
 			//注册debug物品
-			addAutoItem(ModernIndustry.DEBUG);
 			final ASMDataTable ASM = client ? ClientProxy.getAsm() : CommonProxy.getAsm();
 			//注册其它物品
 			reAutoBlock(ASM);

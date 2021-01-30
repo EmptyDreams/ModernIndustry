@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.blocks.tileentity.user;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -17,6 +18,7 @@ import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.ItemUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.blocks.CraftList;
+import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
@@ -74,6 +76,11 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 				workingTime = Math.max(workingTime, 0);
 				maxTime = getMaxTime(input, output);
 				PROGRESS.setMax(maxTime);
+				IBlockState state = world.getBlockState(getPos());
+				IBlockState newState = state.withProperty(MIProperty.WORKING, true);
+				WorldUtil.setBlockState(world, pos, state, newState);
+			} else {
+				clear();
 			}
 		}
 		if (!OUTPUT.isEmpty() && shrinkEnergy(1) && ++workingTime > maxTime) {
@@ -89,6 +96,9 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 		workingTime = -2;
 		MERGE = null;
 		refresh = true;
+		IBlockState state = world.getBlockState(getPos());
+		IBlockState newState = state.withProperty(MIProperty.WORKING, false);
+		WorldUtil.setBlockState(world, pos, state, newState);
 	}
 	
 	/** 输出产物 */

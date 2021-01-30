@@ -52,7 +52,9 @@ public class BlockTemplateInfo {
 			type[i] = BlockPropertyType.from(jsonType.get(i).getAsString());
 		}
 		try {
-			checkMethod = StringUtil.getMethod(json.get("class").getAsString());
+			if (json.has("class"))
+				checkMethod = StringUtil.getMethod(json.get("class").getAsString());
+			else checkMethod = null;
 		} catch (Exception e) {
 			throw new IntransitException("方法获取失败", e);
 		}
@@ -94,6 +96,7 @@ public class BlockTemplateInfo {
 	
 	private boolean classCheck(IBlockState state) {
 		try {
+			if (checkMethod == null) return true;
 			return (boolean) checkMethod.invoke(null, state);
 		} catch (Exception e) {
 			throw new IntransitException("方法调用异常", e);
