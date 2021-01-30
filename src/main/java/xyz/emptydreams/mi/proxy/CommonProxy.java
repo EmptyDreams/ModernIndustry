@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import xyz.emptydreams.mi.api.gui.common.GuiLoader;
 import xyz.emptydreams.mi.api.net.NetworkLoader;
 import xyz.emptydreams.mi.api.register.AutoRegister;
-import xyz.emptydreams.mi.data.json.ItemJsonBuilder;
+import xyz.emptydreams.mi.data.json.item.ItemJsonBuilder;
 import xyz.emptydreams.mi.data.json.block.BlockJsonBuilder;
 
 import javax.annotation.Nonnull;

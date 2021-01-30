@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
 import xyz.emptydreams.mi.api.exception.IntransitException;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
@@ -23,10 +24,10 @@ import static xyz.emptydreams.mi.data.json.block.BlockJsonBuilder.TEMPLATE_INFO;
  * 存储模板信息
  * @author EmptyDreams
  */
-public class TemplateInfo {
+public class BlockTemplateInfo {
 	
 	private final String[] name;
-	private final PropertyType[] type;
+	private final BlockPropertyType[] type;
 	private final String text;
 	private final Method checkMethod;
 	
@@ -35,20 +36,20 @@ public class TemplateInfo {
 	 * @param jsonObject check属性的JsonObject对象
 	 * @param templateName 当前模板名称
 	 */
-	public TemplateInfo(JsonObject jsonObject, String templateName) {
+	public BlockTemplateInfo(JsonObject jsonObject, String templateName) {
 		File path = new File(ROOT, "src/main/resources/assets/mi/templates/block/"
 												+ jsonObject.get("name").getAsString());
 		JsonObject json = jsonObject.getAsJsonObject("check");
 		JsonArray jsonName = json.getAsJsonArray("name");
 		JsonArray jsonType = json.getAsJsonArray("type");
 		name = new String[jsonName.size()];
-		type = new PropertyType[jsonType.size()];
+		type = new BlockPropertyType[jsonType.size()];
 		if (name.length != type.length)
 			throw new IllegalArgumentException(TEMPLATE_INFO.getName()
 					+ "文件中[" + templateName + "]的`check`属性中`name`数量和`type`数量不一致");
 		for (int i = 0; i < name.length; ++i) {
 			name[i] = jsonName.get(i).getAsString();
-			type[i] = PropertyType.from(jsonType.get(i).getAsString());
+			type[i] = BlockPropertyType.from(jsonType.get(i).getAsString());
 		}
 		try {
 			checkMethod = StringUtil.getMethod(json.get("class").getAsString());
@@ -67,9 +68,10 @@ public class TemplateInfo {
 	
 	/**
 	 * 判断指定的Properties是否符合要求
-	 * @param properties 列表
+	 * @param state 方块默认的状态
 	 */
-	public boolean match(Set<IProperty<?>> properties) {
+	public boolean match(IBlockState state) {
+		Set<IProperty<?>> properties = state.getProperties().keySet();
 		if (properties.size() != name.length) return false;
 		if (name.length == 0) return true;
 		IntList index = new IntArrayList(name.length);
@@ -87,12 +89,12 @@ public class TemplateInfo {
 			}
 			return false;
 		}
-		return classCheck();
+		return classCheck(state);
 	}
 	
-	private boolean classCheck() {
+	private boolean classCheck(IBlockState state) {
 		try {
-			return (boolean) checkMethod.invoke(null, (Object) null);
+			return (boolean) checkMethod.invoke(null, state);
 		} catch (Exception e) {
 			throw new IntransitException("方法调用异常", e);
 		}

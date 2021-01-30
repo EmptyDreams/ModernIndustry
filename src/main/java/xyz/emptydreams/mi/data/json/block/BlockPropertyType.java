@@ -15,7 +15,7 @@ import static xyz.emptydreams.mi.data.json.block.BlockJsonBuilder.VER;
  * 方块类型
  * @author EmptyDreams
  */
-public enum PropertyType {
+public enum BlockPropertyType {
 	
 	/** bool类型 */
 	BOOL("bool", it -> it instanceof PropertyBool),
@@ -45,7 +45,7 @@ public enum PropertyType {
 	private final String name;
 	private final Predicate<IProperty<?>> test;
 	
-	PropertyType(String name, Predicate<IProperty<?>> test) {
+	BlockPropertyType(String name, Predicate<IProperty<?>> test) {
 		this.name = name;
 		this.test = test;
 	}
@@ -54,8 +54,8 @@ public enum PropertyType {
 		return test.test(property);
 	}
 	
-	public static PropertyType from(String name) {
-		for (PropertyType value : PropertyType.values()) {
+	public static BlockPropertyType from(String name) {
+		for (BlockPropertyType value : BlockPropertyType.values()) {
 			if (value.name.equals(name)) return value;
 		}
 		throw new IllegalArgumentException("输入的名称不存在：" + name);

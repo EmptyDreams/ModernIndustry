@@ -13,21 +13,43 @@ import java.util.Objects;
 public class StringUtil {
 	
 	/**
+	 * 将字符串数组转化为Class数组
+	 * @param names 类名数组
+	 * @throws ClassNotFoundException 如果数组中有任意一个类不存在
+	 */
+	@Nonnull
+	public static Class<?>[] castToClass(String... names) throws ClassNotFoundException {
+		Class<?>[] clazz = new Class<?>[names.length];
+		for (int i = 0; i < names.length; i++) {
+			clazz[i] = Class.forName(names[i]);
+		}
+		return clazz;
+	}
+	
+	/**
 	 * <p>根据字符串获取一个{@link Method}对象
-	 * <p>字符串格式：[类名]#[方法名]
-	 * <p>例：xyz.emptydreams.mi.api.register.AutoRegister#init
-	 * <p>注：不支持解析带参数的方法，指定的方法必须为共有静态方法
+	 * <p>字符串格式：[类名]#[方法名](参数1,参数2)
+	 * <p>例：xyz.emptydreams.mi.api.utils.StringUtil#checkNull(java.lang.Object,java.lang.String)
+	 * <p>注：指定的方法必须为共有静态方法，字符串中无空格
 	 * @param name 字符串
 	 * @throws ClassNotFoundException 如果类不存在
 	 * @throws NoSuchMethodException 如果方法不存在
+	 * @throws IllegalArgumentException 如果字符串不合法
 	 */
 	@Nonnull
 	public static Method getMethod(String name) throws ClassNotFoundException, NoSuchMethodException {
-		int index = name.indexOf('#');
-		String className = name.substring(0, index);
-		String methodName = name.substring(index + 1);
+		int nameIndex = name.indexOf('#');
+		int argIndex = name.indexOf("(");
+		
+		if (!name.endsWith(")")) throw new IllegalArgumentException("字符串应该以')'结尾：" + name);
+		if (nameIndex == -1) throw new IllegalArgumentException("字符串中没有包含'#'：" + name);
+		if (argIndex == -1) throw new IllegalArgumentException("字符串中没有包含'('：" + name);
+		
+		String className = name.substring(0, nameIndex);
+		String methodName = name.substring(nameIndex + 1, argIndex);
+		Class<?>[] argList = castToClass(name.substring(argIndex + 1, name.length() - 1).split(","));
 		Class<?> clazz = Class.forName(className);
-		return clazz.getMethod(methodName, (Class<?>) null);
+		return clazz.getMethod(methodName, argList);
 	}
 	
 	/** 判空检查 */

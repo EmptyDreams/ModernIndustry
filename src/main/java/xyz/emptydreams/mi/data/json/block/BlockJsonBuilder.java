@@ -40,7 +40,7 @@ public final class BlockJsonBuilder {
 	public static final File TEMPLATE = new File(ROOT, "src/main/resources/assets/mi/templates");
 	public static final File TEMPLATE_INFO = new File(TEMPLATE, "block_info.json");
 	
-	static final List<TemplateInfo> INFO_LIST = new ObjectArrayList<>();
+	static final List<BlockTemplateInfo> INFO_LIST = new ObjectArrayList<>();
 	
 	/**
 	 * 构建JSON
@@ -99,9 +99,9 @@ public final class BlockJsonBuilder {
 	}
 	
 	/** 获取模板 */
-	private static TemplateInfo getTemplate(Block block) {
-		for (TemplateInfo info : INFO_LIST) {
-			if (info.match(block.getDefaultState().getProperties().keySet())) return info;
+	private static BlockTemplateInfo getTemplate(Block block) {
+		for (BlockTemplateInfo info : INFO_LIST) {
+			if (info.match(block.getDefaultState())) return info;
 		}
 		throw new IllegalArgumentException("没有适配的模板[" + block.getRegistryName() + "]");
 	}
@@ -139,7 +139,7 @@ public final class BlockJsonBuilder {
 		JsonParser parser = new JsonParser();
 		JsonObject json = parser.parse(builder.toString()).getAsJsonObject();
 		for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-			INFO_LIST.add(new TemplateInfo(entry.getValue().getAsJsonObject(), entry.getKey()));
+			INFO_LIST.add(new BlockTemplateInfo(entry.getValue().getAsJsonObject(), entry.getKey()));
 		}
 	}
 	
