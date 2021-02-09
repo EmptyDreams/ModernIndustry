@@ -31,9 +31,6 @@ import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
 @SideOnly(Side.CLIENT)
 public class StaticFrameClient extends GuiContainer implements IFrame {
 	
-	/** 玩家背包的本地名称 */
-	private static final String INVENTORY = I18n.format("container.inventory");
-	
 	/** 是否绘制默认背景颜色 */
 	private boolean isPaintBackGround = true;
 	/** 标题 */

@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.blocks.base.TransferBlock;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
 
 /**
@@ -73,6 +74,18 @@ public final class BlockUtil {
 	@Nonnull
 	public static BlockPos readBlockPos(NBTTagCompound compound, String name) {
 		if (!compound.hasKey(name + "_x")) throw new IllegalArgumentException("Key值不存在：" + name);
+		return new BlockPos(compound.getInteger(name + "_x"),
+				compound.getInteger(name + "_y"), compound.getInteger(name + "_z"));
+	}
+	
+	/**
+	 * 尝试读取坐标，如果NBT中不包含指定信息则返回null
+	 * @param compound 要读取的标签
+	 * @param name 名称
+	 */
+	@Nullable
+	public static BlockPos tryReadBlockPos(NBTTagCompound compound, String name) {
+		if (!compound.hasKey(name + "_x")) return null;
 		return new BlockPos(compound.getInteger(name + "_x"),
 				compound.getInteger(name + "_y"), compound.getInteger(name + "_z"));
 	}

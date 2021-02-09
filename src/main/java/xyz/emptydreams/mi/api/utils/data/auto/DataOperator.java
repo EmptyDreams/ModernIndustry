@@ -190,7 +190,7 @@ public final class DataOperator {
 			serializable.deserializeNBT(base);
 			setter.accept(serializable);
 		} catch (Exception e) {
-			throw new IntransitException("数据自动读写出现了意料之外的错误", e);
+			throw new IntransitException("数据自动读写出现了意料之外的错误[" + name + "]", e);
 		}
 	}
 
@@ -199,7 +199,7 @@ public final class DataOperator {
 		BlockUtil.writeBlockPos(nbt, data, name);
 	}
 	public static void readPos(NBTTagCompound nbt, String name, Consumer<BlockPos> setter) {
-		BlockPos pos = BlockUtil.readBlockPos(nbt, name);
+		BlockPos pos = BlockUtil.tryReadBlockPos(nbt, name);
 		setter.accept(pos);
 	}
 

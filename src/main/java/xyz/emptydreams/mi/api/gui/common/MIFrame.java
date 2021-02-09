@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.gui.common;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
@@ -94,7 +95,7 @@ public class MIFrame extends Container implements IFrame {
 					k, backpackX + k * 18 + 1, backpackY + 59);
 			addSlotToContainer(slot);
 		}
-		StringComponent shower = new StringComponent();
+		StringComponent shower = new StringComponent(I18n.format("container.inventory"));
 		shower.setLocation(backpackX, backpackY - 10);
 		add(shower, player);
 	}

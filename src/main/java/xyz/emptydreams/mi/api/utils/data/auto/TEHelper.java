@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.api.utils.data.auto;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import xyz.emptydreams.mi.api.exception.IntransitException;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -23,6 +24,7 @@ public interface TEHelper {
 	 * 向指定NBT写入需要自动写入的数据
 	 */
 	default NBTTagCompound writeToNBT(NBTTagCompound data) {
+		if (WorldUtil.isClient()) return data;
 		Class<?> clazz = getClass();
 		while (clazz != null && clazz != TileEntity.class) {
 			Field[] fields = clazz.getDeclaredFields();
@@ -58,6 +60,7 @@ public interface TEHelper {
 	
 	/** 读取数据 */
 	default void readFromNBT(NBTTagCompound data) {
+		if (WorldUtil.isClient()) return;
 		Class<?> clazz = getClass();
 		while (clazz != null && clazz != TileEntity.class) {
 			Field[] fields = clazz.getDeclaredFields();
