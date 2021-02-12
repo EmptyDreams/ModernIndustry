@@ -4,13 +4,14 @@ import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
+import xyz.emptydreams.mi.api.gui.client.LocalChildFrame;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.GuiLoader;
 import xyz.emptydreams.mi.api.gui.common.IContainerCreater;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -29,10 +30,12 @@ public final class CraftShower {
 	 * @param player 要打开GUI的玩家
 	 */
 	public static void show(CraftGuide<?, ?> craft, EntityPlayer player) {
+		if (WorldUtil.isServer()) return;
 		if (craft.size() == 0) return;
 		int frame = FRAMES.computeIfAbsent(craft, c -> GuiLoader.register(new Frame(c)));
-		player.openGui(ModernIndustry.instance, frame,
-				FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0], 0, 0, 0);
+		LocalChildFrame.openGUI(ModernIndustry.instance, frame, 0, 0, 0);
+		//player.openGui(ModernIndustry.instance, frame,
+		//		FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0], 0, 0, 0);
 	}
 	
 	private static final class Frame implements IContainerCreater {

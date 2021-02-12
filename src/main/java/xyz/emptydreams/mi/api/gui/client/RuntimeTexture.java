@@ -98,7 +98,6 @@ public class RuntimeTexture extends AbstractTexture {
 	public void loadTexture(@Nullable IResourceManager resourceManager) {
 		deleteGlTexture();
 		BufferedImage image = name == null ? this.image : ImageData.getImage(name);
-		//noinspection ConstantConditions
 		width = image.getWidth(null);
 		height = image.getHeight(null);
 		TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), image, false, true);

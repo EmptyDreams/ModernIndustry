@@ -2,11 +2,16 @@
   "package": "xyz.emptydreams.mi.coremod.mixin",
   "mixins": [
     "MixinCraftingHelper",
-    "MixinEntityPlayerMP",
-    "MixinFMLNetworkHandler",
     "MixinItemStack"
   ],
-  "client": [],
+  "client": [
+    "gui.MixinEntityRenderer",
+    "gui.MixinFMLClientHandler",
+    "gui.MixinGuiContainer",
+    "gui.MixinGuiScreen",
+    "gui.MixinGuiTextField",
+    "gui.MixinMinecraft"
+  ],
   "server": [],
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.6",

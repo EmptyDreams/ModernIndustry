@@ -24,6 +24,7 @@ public class CommonProxy {
 	
 	public void preInit(@Nonnull FMLPreInitializationEvent event){
 		ASM = event.getAsmData();
+		
 		AutoRegister.init();
 		if (!new File(".").getAbsolutePath().endsWith(".jar")) {
 			BlockJsonBuilder.build();
