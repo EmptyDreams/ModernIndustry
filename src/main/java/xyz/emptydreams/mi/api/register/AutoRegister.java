@@ -15,6 +15,8 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.exception.IntransitException;
+import xyz.emptydreams.mi.api.net.message.player.PlayerHandle;
+import xyz.emptydreams.mi.api.net.message.player.PlayerHandleRegistry;
 import xyz.emptydreams.mi.api.register.agent.AutoAgentRegister;
 import xyz.emptydreams.mi.api.register.block.AutoBlockRegister;
 import xyz.emptydreams.mi.api.register.block.OreCreate;
@@ -29,6 +31,7 @@ import xyz.emptydreams.mi.proxy.ClientProxy;
 import xyz.emptydreams.mi.proxy.CommonProxy;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -51,6 +54,7 @@ import static xyz.emptydreams.mi.data.config.SystemConfig.*;
  * <li>被{@link AutoManager}注解的类
  * <li>被{@link OreCreate}注解的矿石生成器
  * <li>被{@link AutoAgentRegister}注解的托管
+ * <li>被{@link AutoPlayerHandle}注解的处理器
  * <li>被{@link AutoLoader}注解的类
  * </ol>
  * @author EmptyDremas
@@ -102,6 +106,7 @@ public final class AutoRegister {
 			reRegisterManager(ASM);
 			reOreCreate(ASM);
 			reAutoTR(ASM);
+			reAutoPlayerHandle(ASM);
 			triggerAutoLoader(ASM);
 			//排序
 			Blocks.autoRegister.sort(BlockSorter::compare);
@@ -152,6 +157,24 @@ public final class AutoRegister {
 		Items.items.add(item);
 	}
 
+	/** 注册PlayerHandle处理器 */
+	private static void reAutoPlayerHandle(ASMDataTable ASM) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+		Set<ASMData> classSet = ASM.getAll(AutoPlayerHandle.class.getName());
+		for (ASMData data : classSet) {
+			Class<?> clazz = Class.forName(data.getClassName());
+			Constructor<?> constructor = clazz.getConstructor((Class<?>[]) null);
+			constructor.setAccessible(true);
+			Object instance = constructor.newInstance((Object[]) null);
+			
+			Map<String, Object> info = data.getAnnotationInfo();
+			String modid = info.getOrDefault("modid", ModernIndustry.MODID).toString();
+			String name = info.get("value").toString();
+			ResourceLocation key = new ResourceLocation(modid, name);
+			
+			PlayerHandleRegistry.registry(key, (PlayerHandle) instance);
+		}
+	}
+	
 	/** 注册自动注册管理器 */
 	private static void reManager(ASMDataTable ASM)
 					throws ClassNotFoundException, IllegalAccessException,
@@ -182,7 +205,7 @@ public final class AutoRegister {
 		}
 	}
 	
-	/** 自动加载 */
+	/** 触发自动加载 */
 	private static void triggerAutoLoader(ASMDataTable ASM) throws ClassNotFoundException {
 		Set<ASMData> classSet = ASM.getAll(AutoLoader.class.getName());
 		for (ASMData data : classSet) {

@@ -39,6 +39,15 @@ public final class WorldUtil {
 	}
 	
 	/**
+	 * 获取所有世界中指定UUID的玩家的对象
+	 * @return 若玩家不存在则返回null
+	 */
+	public static EntityPlayer getPlayer(UUID uuid) {
+		if (isClient()) return getPlayerAtClient();
+		return getPlayerAtService(uuid);
+	}
+	
+	/**
 	 * 获取所有世界中指定名称的玩家的对象
 	 * @return 若玩家不存在则返回null
 	 */

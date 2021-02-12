@@ -7,7 +7,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.net.handler.CommonMessage;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * 用于处理消息.<br>
@@ -63,11 +62,11 @@ public interface IMessageHandle<T extends IMessageAddition> {
 	 * @throws NullPointerException 如果data==null||addition==null
 	 */
 	@Nonnull
-	NBTTagCompound packaging(@Nonnull NBTTagCompound data, @Nullable T addition);
+	NBTTagCompound packaging(@Nonnull NBTTagCompound data, T addition);
 	
 	/**
 	 * 获取消息的字符串简略信息，用于在消息丢失时向后台输出错误信息，
-	 * 信息越精准越容易检查错误，简略信息不易过长，避免后台日志过于杂乱。
+	 * 信息越精准越容易检查错误，简略信息不宜过长，避免后台日志过于杂乱。
 	 * @param message 丢失的信息
 	 * @return 简略信息
 	 * @throws NullPointerException 如果message==null
