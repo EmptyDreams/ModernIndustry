@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import xyz.emptydreams.mi.api.gui.group.SlotGroup;
+import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.utils.data.Size2D;
 
 import javax.annotation.Nonnull;

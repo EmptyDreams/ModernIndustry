@@ -11,8 +11,8 @@ import xyz.emptydreams.mi.api.gui.common.IContainerCreater;
 import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
-import xyz.emptydreams.mi.api.gui.group.Group;
-import xyz.emptydreams.mi.api.gui.group.Panels;
+import xyz.emptydreams.mi.api.gui.component.group.Group;
+import xyz.emptydreams.mi.api.gui.component.group.Panels;
 import xyz.emptydreams.mi.blocks.tileentity.user.EUMFurnace;
 
 import javax.annotation.Nonnull;

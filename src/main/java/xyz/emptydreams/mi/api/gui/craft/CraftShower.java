@@ -11,6 +11,7 @@ import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.GuiLoader;
 import xyz.emptydreams.mi.api.gui.common.IContainerCreater;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
+import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nonnull;
@@ -27,35 +28,35 @@ public final class CraftShower {
 	/**
 	 * 使指定玩家打开GUI
 	 * @param craft 要显示的合成表
-	 * @param player 要打开GUI的玩家
+	 * @param slots 需要填充的SlotGroup
 	 */
-	public static void show(CraftGuide<?, ?> craft, EntityPlayer player) {
+	public static void show(CraftGuide<?, ?> craft, SlotGroup slots) {
 		if (WorldUtil.isServer()) return;
 		if (craft.size() == 0) return;
-		int frame = FRAMES.computeIfAbsent(craft, c -> GuiLoader.register(new Frame(c)));
+		int frame = FRAMES.computeIfAbsent(craft, c -> GuiLoader.register(new Frame(c, slots)));
 		LocalChildFrame.openGUI(ModernIndustry.instance, frame, 0, 0, 0);
-		//player.openGui(ModernIndustry.instance, frame,
-		//		FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0], 0, 0, 0);
 	}
 	
 	private static final class Frame implements IContainerCreater {
 		
 		private final CraftGuide<?, ?> craft;
+		private final SlotGroup slots;
 		
-		Frame(CraftGuide<?, ?> craft) {
+		Frame(CraftGuide<?, ?> craft, SlotGroup slots) {
 			this.craft = craft;
+			this.slots = slots;
 		}
 		
 		@Nonnull
 		@Override
 		public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
-			return new CraftFrame(craft, player);
+			return new CraftFrame(craft, player, slots);
 		}
 		
 		@Nonnull
 		@Override
 		public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
-			return new StaticFrameClient(new CraftFrame(craft, player), craft.getLocalName());
+			return new StaticFrameClient(new CraftFrame(craft, player, slots), craft.getLocalName());
 		}
 		
 	}

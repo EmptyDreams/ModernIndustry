@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.gui.group;
+package xyz.emptydreams.mi.api.gui.component.group;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -15,13 +15,14 @@ import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.Iterator;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
 /**
  * @author EmptyDreams
  */
-public class SlotGroup extends MComponent {
+public class SlotGroup extends MComponent implements Iterable<SlotGroup.Node> {
 	
 	private final int width, height;
 	private final SlotItemHandler[][] slots;
@@ -122,6 +123,21 @@ public class SlotGroup extends MComponent {
 		return interval;
 	}
 	
+	/** 是否为空 */
+	public boolean isEmpty() {
+		for (Node node : this) {
+			if (!node.get().getStack().isEmpty()) return false;
+		}
+		return true;
+	}
+	
+	/** 清空所有物品 */
+	public void clear() {
+		for (Node node : this) {
+			node.get().putStack(ItemStack.EMPTY);
+		}
+	}
+	
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
 		super.onAddToGUI(con, player);
@@ -175,6 +191,52 @@ public class SlotGroup extends MComponent {
 				g.drawImage(image, drawX, drawY, null);
 			}
 		}
+	}
+	
+	@Override
+	public Iterator<Node> iterator() {
+		return new NodeIterator();
+	}
+	
+	private final class NodeIterator implements Iterator<Node> {
+		
+		int x = 0, y = 0;
+		
+		@Override
+		public boolean hasNext() {
+			return x < getWidth() - 1 && y < getHeight() - 1;
+		}
+		
+		@Override
+		public Node next() {
+			if (x == getWidth()) {
+				x = 0;
+				++y;
+			}
+			return new Node(SlotGroup.this, x++, y);
+		}
+		
+	}
+	
+	public static final class Node {
+		
+		private final int x;
+		private final int y;
+		private final SlotItemHandler slot;
+		
+		Node(SlotGroup slots, int x, int y) {
+			this.x = x;
+			this.y = y;
+			slot = slots.getSlot(x, y);
+		}
+		
+		/** 获取X轴坐标 */
+		public int getX() { return x; }
+		/** 获取Y轴坐标 */
+		public int getY() { return y; }
+		/** 获取当前坐标对应的SlotItemHandler */
+		public SlotItemHandler get() { return slot; }
+		
 	}
 	
 }

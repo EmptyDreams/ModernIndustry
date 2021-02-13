@@ -8,6 +8,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
+import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.listener.IListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
@@ -38,6 +39,8 @@ public abstract class MComponent implements IComponent {
 	private final List<IListener> listeners = new LinkedList<>();
 	/** 是否支持CraftShower */
 	private CraftGuide<?, ?> craftGuide = null;
+	/** CraftShower用到的填充表 */
+	private SlotGroup slots = null;
 	/** 合成表按钮 */
 	private CraftButton craftButton = null;
 	/** 存储加载过的窗体 */
@@ -121,13 +124,15 @@ public abstract class MComponent implements IComponent {
 	public int getWidth() { return width; }
 	
 	/** 为当前按钮设置合成表按钮 */
-	public void setCraftButton(CraftGuide<?, ?> craft) {
+	public void setCraftButton(CraftGuide<?, ?> craft, SlotGroup slots) {
 		craftGuide = craft;
+		this.slots = slots;
 	}
 	/** 移除合成表按钮，<b>仅在添加到GUI前有效</b> */
 	@SuppressWarnings("unused")
 	public void deleteCraftButton() {
 		craftGuide = null;
+		slots = null;
 	}
 	
 	@Override
@@ -154,7 +159,7 @@ public abstract class MComponent implements IComponent {
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
 		if (craftGuide != null) {
-			craftButton = new CraftButton(craftGuide, this, player);
+			craftButton = new CraftButton(craftGuide, this, slots);
 			con.add(craftButton, player);
 		}
 		for (MIFrame frame : LOADED) {

@@ -3,7 +3,7 @@ package xyz.emptydreams.mi.api.gui.craft.handle;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSol;
-import xyz.emptydreams.mi.api.gui.group.SlotGroup;
+import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 
 import javax.annotation.Nonnull;
 

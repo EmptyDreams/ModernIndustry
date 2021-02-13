@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.gui.group;
+package xyz.emptydreams.mi.api.gui.component.group;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;

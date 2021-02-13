@@ -25,6 +25,13 @@ public interface ItemSol {
 	/** 判断物品序列是否为空 */
 	boolean isEmpty();
 	
+	/**
+	 * 尝试将该sol中的内容按顺序填充到sol中，如果不能完全填充则也应当尽量填充
+	 * @param sol 被填充的sol，该sol物品序列必须为空
+	 * @return 是否填充成功，未完全成功也返回true
+	 */
+	boolean fill(ItemList sol);
+	
 	/** 获取列表大小 */
 	int size();
 	

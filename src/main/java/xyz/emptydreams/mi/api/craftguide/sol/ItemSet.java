@@ -5,7 +5,9 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import net.minecraft.item.ItemStack;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
+import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.container.IntWrapper;
+import xyz.emptydreams.mi.api.utils.data.Point2D;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -86,6 +88,17 @@ public class ItemSet implements ItemSol, Iterable<ItemElement> {
 	@Override
 	public boolean isEmpty() {
 		return elements.isEmpty();
+	}
+	
+	@Override
+	public boolean fill(ItemList sol) {
+		int width = sol.getWidth();
+		if (width * sol.getHeight() > size()) return false;
+		forEachIndex((element, index) -> {
+			Point2D point = MathUtil.indexToMatrix(index, width);
+			sol.set(point.getX(), point.getY(), element);
+		});
+		return true;
 	}
 	
 	@Override

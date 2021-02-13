@@ -13,7 +13,7 @@ import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.MSlot.SlotHandler;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
-import xyz.emptydreams.mi.api.gui.group.SlotGroup;
+import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.ItemUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
@@ -59,7 +59,7 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 		setMaxEnergy(20);
 		SLOTS.writeFrom(0, this::createHandler);
 		OUTS.writeFrom(HANDLER, this, 25, it -> false);
-		PROGRESS.setCraftButton(CraftList.SYNTHESIZER);
+		PROGRESS.setCraftButton(CraftList.SYNTHESIZER, SLOTS);
 	}
 	
 	@Override

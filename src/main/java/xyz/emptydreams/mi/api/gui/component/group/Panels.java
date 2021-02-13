@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.gui.group;
+package xyz.emptydreams.mi.api.gui.component.group;
 
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 

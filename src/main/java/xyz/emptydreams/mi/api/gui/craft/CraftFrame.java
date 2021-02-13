@@ -1,23 +1,29 @@
 package xyz.emptydreams.mi.api.gui.craft;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerPlayer;
+import net.minecraft.item.ItemStack;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
+import xyz.emptydreams.mi.api.craftguide.sol.ItemList;
+import xyz.emptydreams.mi.api.craftguide.sol.ItemSol;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.ButtonComponent;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
+import xyz.emptydreams.mi.api.gui.component.group.Group;
+import xyz.emptydreams.mi.api.gui.component.group.Panels;
+import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.gui.craft.handle.CraftHandle;
-import xyz.emptydreams.mi.api.gui.group.Group;
-import xyz.emptydreams.mi.api.gui.group.Panels;
+import xyz.emptydreams.mi.api.utils.ItemUtil;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
+import xyz.emptydreams.mi.api.utils.StringUtil;
+import xyz.emptydreams.mi.api.utils.data.enums.OperateResult;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import static xyz.emptydreams.mi.api.gui.component.ButtonComponent.Style.TRIANGLE_LEFT;
 import static xyz.emptydreams.mi.api.gui.component.ButtonComponent.Style.TRIANGLE_RIGHT;
+import static xyz.emptydreams.mi.api.utils.data.enums.OperateResult.*;
 
 /**
  * 用于显示合成表
@@ -28,31 +34,46 @@ public class CraftFrame extends MIFrame {
 
 	/** 目标合成表 */
 	private final CraftGuide craft;
-	/** 大小缓存，用于判断合成表是否变化，虽然不准确但是基本不会出问题 */
-	private int size = -1;
 	/** 当前合成表下标 */
 	private int index = -1;
 	/** 对应的{@link CraftHandle.Node} */
 	private CraftHandle.Node node;
-	/** 存储打开GUI前的窗体 */
-	private final Container preGui;
+	/** 玩家对象 */
+	private final EntityPlayer player;
+	/** 盛放原料的SlotGroup */
+	private final SlotGroup slots;
 	
+	/**
+	 * 创建一个显示合成表的GUI，slots默认为null
+	 * @param craft 要显示的合成表
+	 * @param player 打开窗体的玩家
+	 */
 	public CraftFrame(CraftGuide craft, EntityPlayer player) {
+		this(craft, player, null);
+	}
+	
+	/**
+	 * 创建一个显示合成表的GUI
+	 * @param craft 要显示的合成表
+	 * @param player 打开窗体的玩家
+	 * @param slots 玩家当前打开的GUI中用于盛放原料的SlotGroup，为空表示不支持填充
+	 */
+	public CraftFrame(CraftGuide craft, EntityPlayer player, SlotGroup slots) {
 		super(craft.getName() + ".gui");
-		this.craft = craft;
+		this.craft = StringUtil.checkNull(craft, "craft");
+		this.player = StringUtil.checkNull(player, "player");
+		this.slots = slots;
 		int width = (craft.getShapeWidth() + craft.getProtectedWidth()) * 18
 						+ CommonProgress.Style.ARROW.getWidth() + 15 * 4;
 		int height = Math.max(craft.getProtectedHeight(), craft.getShapeHeight()) * 18 + 50;
 		setSize(width, height);
 		init();
-		this.preGui = player.openContainer;
 	}
 
 	/** 解析合成表 */
 	private void init() {
-		if (size == craft.size()) return;
+		if (index != -1) return;
 		removeAllComponent();
-		size = craft.size();
 		index = -1;
 		CraftHandle handle = HandleRegister.get(craft);
 		if (handle == null) {
@@ -66,28 +87,69 @@ public class CraftFrame extends MIFrame {
 		group.adds(node.raw, progress, node.pro);
 		add(group, null);
 		
+		//下方按钮
 		Group buttonGroup = new Group(0, group.getHeight() + group.getY() + 7,
 								getWidth(), 0, Panels::horizontalCenter);
 		ButtonComponent prevButton = new ButtonComponent(10, 10, TRIANGLE_LEFT);
 		ButtonComponent nextButton = new ButtonComponent(10, 10, TRIANGLE_RIGHT);
+		ButtonComponent fillButton = new ButtonComponent(10, 10, ButtonComponent.Style.REC);
 		prevButton.setAction((frame, isClient) -> preShape());
 		nextButton.setAction((frame, isClient) -> nextShape());
-		buttonGroup.adds(prevButton, nextButton);
+		fillButton.setAction((frame, isClient) -> fill());
+		buttonGroup.adds(prevButton, fillButton, nextButton);
 		add(buttonGroup, null);
 		
 		handle.update(node, craft.getShape(++index));
 	}
 	
+	/**
+	 * 尝试把当前显示的合成表填充到SlotGroup中
+	 * @return 运算结果
+	 */
+	@SuppressWarnings("UnusedReturnValue")
+	public OperateResult fill() {
+		if (slots == null) return FAIL;
+		List<ItemStack> inventory = new ArrayList<>(player.inventory.mainInventory);
+		if (!slots.isEmpty()) {
+			//若输入框内已有物品则尝试合并到玩家背包
+			for (SlotGroup.Node node : slots) {
+				ItemStack stack = node.get().getStack();
+				if (stack.isEmpty()) continue;
+				OperateResult result = ItemUtil.mergeItemStack(stack,
+						inventory, 0, 35, true);
+				//若玩家背包不能放下输入框内的物品则停止填充
+				if (result != SUCCESS) return FAIL;
+			}
+		}
+		//将合成表转换为ItemList类型
+		ItemSol input = getShape().getInput();
+		ItemList list = new ItemList(craft.getShapeWidth(), craft.getShapeHeight());
+		if (!input.fill(list)) return FAIL;
+		//清理输入框内已有的物品
+		slots.clear();
+		//尝试用玩家背包中的物品填充合成表
+		OperateResult result = ItemUtil.removeItemStack(inventory, list);
+		if (result == FAIL) return FAIL;
+		for (SlotGroup.Node node : slots) {
+			node.get().putStack(list.get(node.getX(), node.getY()).getStack());
+		}
+		//将更改同步到玩家
+		for (int i = 0; i < inventory.size(); i++) {
+			player.inventory.mainInventory.set(i, inventory.get(i));
+		}
+		return result;
+	}
+	
 	/** 强制重新初始化缓存 */
 	public void reInit() {
-		size = -1;
+		index = -1;
 		init();
 	}
 	
 	/** 切换到下一个合成表并刷新显示 */
 	public void nextShape() {
 		int now = ++index;
-		if (now >= size) now = index = 0;
+		if (now >= craft.size()) now = index = 0;
 		CraftHandle handle = HandleRegister.get(craft);
 		//noinspection ConstantConditions
 		handle.update(node, craft.getShape(now));
@@ -96,7 +158,7 @@ public class CraftFrame extends MIFrame {
 	/** 切换到上一个合成表并刷新显示 */
 	public void preShape() {
 		int now = --index;
-		if (now < 0) now = index = size - 1;
+		if (now < 0) now = index = craft.size() - 1;
 		CraftHandle handle = HandleRegister.get(craft);
 		//noinspection ConstantConditions
 		handle.update(node, craft.getShape(now));
@@ -112,35 +174,6 @@ public class CraftFrame extends MIFrame {
 		CraftHandle handle = HandleRegister.get(craft);
 		//noinspection ConstantConditions
 		handle.update(node, getShape());
-	}
-	
-	@Override
-	public void onContainerClosed(EntityPlayer playerIn) {
-		super.onContainerClosed(playerIn);
-		if (preGui.getClass() == getClass() || preGui.getClass() == ContainerPlayer.class
-				|| preGui instanceof CraftFrame) return;
-		//Node node = MAP.get(playerIn);
-		//playerIn.openGui(node.mod, preGui.windowId, getWorld(), node.x, node.y, node.z);
-	}
-	
-	private static final Map<EntityPlayer, Node> MAP = new Object2ObjectArrayMap<>();
-	
-	/**
-	 * 在玩家打开GUI时记录信息
-	 * @deprecated 内部方法，请勿调用
-	 */
-	@SuppressWarnings("DeprecatedIsStillUsed")
-	@Deprecated
-	public static void onOpenGui(EntityPlayer player, Object mod, int x, int y, int z) {
-		MAP.put(player, new Node(mod, x, y, z));
-	}
-	
-	/**
-	 * 在玩家关闭GUI时记录信息
-	 */
-	@Deprecated
-	public static void onCloseGui(EntityPlayer player) {
-		MAP.remove(player);
 	}
 	
 	private static final class Node {

@@ -121,6 +121,17 @@ public class ItemList implements ItemSol, Iterable<ItemList.Node> {
 	}
 	
 	@Override
+	public boolean fill(ItemList sol) {
+		if (sol.getHeight() <= getHeight() && sol.getWidth() <= getWidth()) {
+			for (Node node : sol) {
+				sol.set(node.getX(), node.getY(), get(node.getX(), node.getY()));
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
 	public ItemList copy() {
 		return new ItemList(this);
 	}
