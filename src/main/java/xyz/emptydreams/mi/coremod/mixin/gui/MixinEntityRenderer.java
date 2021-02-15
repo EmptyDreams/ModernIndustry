@@ -25,9 +25,12 @@ public class MixinEntityRenderer {
 	
 	@Final @Shadow private Minecraft mc;
 	
+	/**
+	 * @reason 为了渲染子GUI
+	 */
 	@Redirect(method = "updateCameraAndRender", at = @At(value = "INVOKE",
 			target = "Lnet/minecraftforge/client/ForgeHooksClient;" +
-					"drawScreen(Lnet/minecraft/client/gui/GuiScreen;IIF)V"))
+					"drawScreen(Lnet/minecraft/client/gui/GuiScreen;IIF)V"), remap = false)
 	private void updateCameraAndRender_drawScreen(GuiScreen screen,
 	                                              int mouseX, int mouseY, float partialTicks) {
 		GuiScreen child = LocalChildFrame.getContainer();
@@ -40,6 +43,9 @@ public class MixinEntityRenderer {
 		ForgeHooksClient.drawScreen(container, k1, l1, mc.getTickLength());
 	}
 	
+	/**
+	 * @reason 如果是子GUI发出了异常则打印子GUI的信息
+	 */
 	@Redirect(method = "updateCameraAndRender", at = @At(value = "INVOKE",
 			target = "Ljava/lang/Object;getClass()Ljava/lang/Class;"))
 	private Class<?> updateCameraAndRender_getClass(Object o) {

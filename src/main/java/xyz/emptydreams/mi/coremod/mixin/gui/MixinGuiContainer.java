@@ -18,10 +18,14 @@ import xyz.emptydreams.mi.api.gui.client.LocalChildFrame;
 @Mixin(GuiContainer.class)
 public abstract class MixinGuiContainer {
 	
+	/**
+	 * @reason 玩家退出GUI时只关闭子GUI不关闭其他GUI
+	 */
 	@Inject(method = "keyTyped", at = @At("HEAD"), cancellable = true)
 	private void keyTyped(char typedChar, int keyCode, CallbackInfo ci) {
 		GuiScreen child = LocalChildFrame.getContainer();
-		if ((keyCode == 1 || Minecraft.getMinecraft().gameSettings.keyBindInventory.isActiveAndMatches(keyCode))
+		if ((keyCode == 1
+				|| Minecraft.getMinecraft().gameSettings.keyBindInventory.isActiveAndMatches(keyCode))
 				&& child != null) {
 			LocalChildFrame.closeGUI();
 			//noinspection ConstantConditions

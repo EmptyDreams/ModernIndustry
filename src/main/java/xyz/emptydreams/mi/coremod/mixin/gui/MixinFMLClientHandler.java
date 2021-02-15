@@ -22,12 +22,13 @@ import java.io.IOException;
 @Mixin(FMLClientHandler.class)
 public class MixinFMLClientHandler {
 	
-	@Shadow private Minecraft client;
+	@Shadow(remap = false) private Minecraft client;
 	
 	/**
+	 * @reason 替换客户端GUI渲染方法
 	 * @author EmptyDreams
 	 */
-	@Overwrite
+	@Overwrite(remap = false)
 	public boolean handleLoadingScreen(ScaledResolution scaledResolution) throws IOException {
 		GuiScreen child = LocalChildFrame.getContainer();
 		GuiScreen container = child == null ? client.currentScreen : child;

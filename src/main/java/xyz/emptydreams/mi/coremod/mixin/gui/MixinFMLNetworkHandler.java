@@ -18,7 +18,10 @@ import xyz.emptydreams.mi.api.gui.common.ChildFrame;
 @Mixin(FMLNetworkHandler.class)
 public class MixinFMLNetworkHandler {
 	
-	@Redirect(method = "openGui",
+	/**
+	 * @reason 在玩家打开GUI时记录信息
+	 */
+	@Redirect(method = "openGui", remap = false,
 			at = @At(value = "INVOKE", target = "Lnet/minecraftforge/fml/common/network/NetworkRegistry;" +
 					"getLocalGuiContainer(Lnet/minecraftforge/fml/common/ModContainer;" +
 												"Lnet/minecraft/entity/player/EntityPlayer;" +

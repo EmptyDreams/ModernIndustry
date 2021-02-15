@@ -17,6 +17,9 @@ import xyz.emptydreams.mi.api.gui.client.LocalChildFrame;
 @Mixin(GuiTextField.class)
 public class MixinGuiTextField {
 	
+	/**
+	 * @reason 若子GUI存在，则将方法转发至子GUI
+	 */
 	@Redirect(method = "setFocused",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;setFocused(Z)V"))
 	private void setFocused(GuiScreen guiScreen, boolean hasFocusedControlIn) {
