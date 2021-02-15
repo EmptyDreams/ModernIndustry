@@ -9,19 +9,19 @@ import xyz.emptydreams.mi.api.utils.StringUtil;
 import java.util.Map;
 
 /**
- * {@link PlayerHandle}的注册机，<b>类必须具有无参构造函数（可私有）</b>
+ * {@link IPlayerHandle}的注册机，<b>类必须具有无参构造函数（可私有）</b>
  * @author EmptyDreams
  */
 public final class PlayerHandleRegistry {
 	
-	private static final Map<ResourceLocation, PlayerHandle> INSTANCES = new Object2ObjectArrayMap<>();
+	private static final Map<ResourceLocation, IPlayerHandle> INSTANCES = new Object2ObjectArrayMap<>();
 	
 	/**
 	 * 注册一个Handle
 	 * @param key 钥匙
 	 * @param handle 处理类
 	 */
-	public static void registry(ResourceLocation key, PlayerHandle handle) {
+	public static void registry(ResourceLocation key, IPlayerHandle handle) {
 		StringUtil.checkNull(key, "key");
 		StringUtil.checkNull(handle, "handle");
 		INSTANCES.put(key, handle);
@@ -35,7 +35,7 @@ public final class PlayerHandleRegistry {
 	 * @return 是否处理成功
 	 */
 	public static boolean apply(ResourceLocation key, EntityPlayer player, NBTTagCompound data) {
-		PlayerHandle handle = INSTANCES.getOrDefault(key, null);
+		IPlayerHandle handle = INSTANCES.getOrDefault(key, null);
 		if (handle == null) {
 			return false;
 		}

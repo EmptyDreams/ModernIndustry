@@ -2,10 +2,15 @@ package xyz.emptydreams.mi.api.gui.craft;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemList;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSol;
+import xyz.emptydreams.mi.api.gui.client.LocalChildFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.ButtonComponent;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
@@ -13,17 +18,21 @@ import xyz.emptydreams.mi.api.gui.component.group.Group;
 import xyz.emptydreams.mi.api.gui.component.group.Panels;
 import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.gui.craft.handle.CraftHandle;
+import xyz.emptydreams.mi.api.net.handler.MessageSender;
+import xyz.emptydreams.mi.api.net.message.player.PlayerAddition;
+import xyz.emptydreams.mi.api.net.message.player.PlayerMessage;
 import xyz.emptydreams.mi.api.utils.ItemUtil;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.data.enums.OperateResult;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static xyz.emptydreams.mi.api.gui.component.ButtonComponent.Style.TRIANGLE_LEFT;
 import static xyz.emptydreams.mi.api.gui.component.ButtonComponent.Style.TRIANGLE_RIGHT;
-import static xyz.emptydreams.mi.api.utils.data.enums.OperateResult.*;
+import static xyz.emptydreams.mi.api.gui.craft.CraftFrameUtil.removeItemStack;
+import static xyz.emptydreams.mi.api.utils.data.enums.OperateResult.FAIL;
+import static xyz.emptydreams.mi.api.utils.data.enums.OperateResult.SUCCESS;
 
 /**
  * 用于显示合成表
@@ -42,15 +51,6 @@ public class CraftFrame extends MIFrame {
 	private final EntityPlayer player;
 	/** 盛放原料的SlotGroup */
 	private final SlotGroup slots;
-	
-	/**
-	 * 创建一个显示合成表的GUI，slots默认为null
-	 * @param craft 要显示的合成表
-	 * @param player 打开窗体的玩家
-	 */
-	public CraftFrame(CraftGuide craft, EntityPlayer player) {
-		this(craft, player, null);
-	}
 	
 	/**
 	 * 创建一个显示合成表的GUI
@@ -109,7 +109,7 @@ public class CraftFrame extends MIFrame {
 	@SuppressWarnings("UnusedReturnValue")
 	public OperateResult fill() {
 		if (slots == null) return FAIL;
-		List<ItemStack> inventory = new ArrayList<>(player.inventory.mainInventory);
+		List<ItemStack> inventory = player.inventory.mainInventory;
 		if (!slots.isEmpty()) {
 			//若输入框内已有物品则尝试合并到玩家背包
 			for (SlotGroup.Node node : slots) {
@@ -128,8 +128,9 @@ public class CraftFrame extends MIFrame {
 		//清理输入框内已有的物品
 		slots.clear();
 		//尝试用玩家背包中的物品填充合成表
-		OperateResult result = ItemUtil.removeItemStack(inventory, list);
+		OperateResult result = removeItemStack(inventory, list);
 		if (result == FAIL) return FAIL;
+		LocalChildFrame.closeGUI();
 		for (SlotGroup.Node node : slots) {
 			node.get().putStack(list.get(node.getX(), node.getY()).getStack());
 		}
@@ -137,7 +138,18 @@ public class CraftFrame extends MIFrame {
 		for (int i = 0; i < inventory.size(); i++) {
 			player.inventory.mainInventory.set(i, inventory.get(i));
 		}
+		sendToServer();
 		return result;
+	}
+	
+	private void sendToServer() {
+		PlayerAddition addition = new PlayerAddition(player,
+				new ResourceLocation(ModernIndustry.MODID, "CraftFrame.record"));
+		NBTTagCompound data = new NBTTagCompound();
+		data.setString("craft", craft.getName());
+		data.setInteger("index", index);
+		IMessage message = PlayerMessage.instance().create(data, addition);
+		MessageSender.sendToServer(message);
 	}
 	
 	/** 强制重新初始化缓存 */
@@ -174,20 +186,6 @@ public class CraftFrame extends MIFrame {
 		CraftHandle handle = HandleRegister.get(craft);
 		//noinspection ConstantConditions
 		handle.update(node, getShape());
-	}
-	
-	private static final class Node {
-		
-		Object mod;
-		int x, y, z;
-		
-		Node(Object mod, int x, int y, int z) {
-			this.mod = mod;
-			this.x = x;
-			this.y = y;
-			this.z = z;
-		}
-		
 	}
 	
 }

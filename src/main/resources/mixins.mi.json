@@ -2,7 +2,8 @@
   "package": "xyz.emptydreams.mi.coremod.mixin",
   "mixins": [
     "MixinCraftingHelper",
-    "MixinItemStack"
+    "MixinItemStack",
+    "gui.MixinFMLNetworkHandler"
   ],
   "client": [
     "gui.MixinEntityRenderer",

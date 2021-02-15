@@ -15,7 +15,7 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.exception.IntransitException;
-import xyz.emptydreams.mi.api.net.message.player.PlayerHandle;
+import xyz.emptydreams.mi.api.net.message.player.IPlayerHandle;
 import xyz.emptydreams.mi.api.net.message.player.PlayerHandleRegistry;
 import xyz.emptydreams.mi.api.register.agent.AutoAgentRegister;
 import xyz.emptydreams.mi.api.register.block.AutoBlockRegister;
@@ -171,7 +171,7 @@ public final class AutoRegister {
 			String name = info.get("value").toString();
 			ResourceLocation key = new ResourceLocation(modid, name);
 			
-			PlayerHandleRegistry.registry(key, (PlayerHandle) instance);
+			PlayerHandleRegistry.registry(key, (IPlayerHandle) instance);
 		}
 	}
 	

@@ -4,12 +4,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.inventory.Container;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.emptydreams.mi.api.utils.WorldUtil;
+import xyz.emptydreams.mi.api.gui.craft.ICraftFrameHandle;
 
 import javax.annotation.Nullable;
 
@@ -22,24 +20,20 @@ public final class LocalChildFrame {
 	
 	/** 存储当前打开的子GUI */
 	private static GuiScreen container;
-	/** 存储打开子GUI前玩家代开的GUI */
+	/** 存储打开子GUI前玩家打开的GUI */
 	private static Container playerOpen;
 	
 	/**
 	 * 打开一个子GUI，若已经有子GUI被打开，则先打开的将被关闭
-	 * @param mod 模组主类
-	 * @param guiID GUI的ID
-	 * @param x　方块坐标
-	 * @param y　方块坐标
-	 * @param z　方块坐标
+	 * @param handle 生成GUI类对象的生成器
+	 * @param pos 方块坐标
 	 */
-	public static void openGUI(Object mod, int guiID, int x, int y, int z) {
-		playerOpen = Minecraft.getMinecraft().player.openContainer;
-		ModContainer modContainer = FMLCommonHandler.instance().findContainerFor(mod);
-		Object localGUI = NetworkRegistry.INSTANCE.getLocalGuiContainer(
-				modContainer, WorldUtil.getPlayerAtClient(), guiID, WorldUtil.getClientWorld(), x, y, z);
+	public static void openGUI(ICraftFrameHandle handle, BlockPos pos) {
+		Minecraft mc = Minecraft.getMinecraft();
+		playerOpen = mc.player.openContainer;
+		StaticFrameClient localGUI = handle.createFrame(mc.world, mc.player, pos);
 		if (container != null) container.onGuiClosed();
-		container = (GuiScreen) localGUI;
+		container = localGUI;
 		ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
 		int i = scaledresolution.getScaledWidth();
 		int j = scaledresolution.getScaledHeight();

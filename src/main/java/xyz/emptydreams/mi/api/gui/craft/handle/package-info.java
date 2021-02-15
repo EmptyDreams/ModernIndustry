@@ -12,7 +12,7 @@ import java.util.function.BiFunction;
 
 final class HandleUtils {
 	
-	public static CraftHandle.Node createGroup(Size2D rawSize, Size2D proSize,
+	static CraftHandle.Node createGroup(Size2D rawSize, Size2D proSize,
 	                                    BiFunction<SlotGroup, SlotGroup, CraftHandle.Node> creater) {
 		SlotGroup raw = new SlotGroup(rawSize.getWidth(), rawSize.getHeight(), 18, 0);
 		SlotGroup pro = new SlotGroup(proSize.getWidth(), proSize.getHeight(), 18, 0);

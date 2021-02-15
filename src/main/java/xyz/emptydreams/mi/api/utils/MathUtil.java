@@ -10,6 +10,19 @@ import xyz.emptydreams.mi.api.utils.data.Point2D;
 public final class MathUtil {
 	
 	/**
+	 * 计算出一个点数大于等于amount的正方形矩阵的边长
+	 * @param amount 点数
+	 * @return 正方形矩阵的边长
+	 */
+	public static int amount2Rec(int amount) {
+		for (int i = 1; i < amount; ++i) {
+			int result = i * i;
+			if (result >= amount) return i;
+		}
+		return -1;
+	}
+	
+	/**
 	 * 判断鼠标是否在指定的组件内，鼠标坐标必须与组件坐标使用同一坐标系
 	 * @param mouseX 鼠标X轴坐标
 	 * @param mouseY 鼠标Y轴坐标

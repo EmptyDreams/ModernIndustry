@@ -57,9 +57,32 @@ public class SlotGroup extends MComponent implements Iterable<SlotGroup.Node> {
 	 * 自动创建所有Slot
 	 * @param handler 指定ItemStackHandler
 	 * @param start 下标起点
+	 * @param size 创建数量
 	 * @param test 测试是否允许输入
 	 */
-	public void writeFrom(ItemStackHandler handler, TileEntity entity, int start, Predicate<ItemStack> test) {
+	public void writeFrom(ItemStackHandler handler, TileEntity entity,
+	                        int start, int size, Predicate<ItemStack> test) {
+		int nowSize = 0;
+		for (int y = 0; y < getYSize(); ++y) {
+			for (int x = 0; x < getXSize() && nowSize <= size; ++x, ++nowSize) {
+				setSlot(x, y, new MSlot.SlotHandler(handler, entity, start++) {
+					@Override
+					public boolean isItemValid(@Nonnull ItemStack stack) {
+						return test.test(stack) && super.isItemValid(stack);
+					}
+				});
+			}
+		}
+	}
+	
+	/**
+	 * 自动创建所有Slot
+	 * @param handler 指定ItemStackHandler
+	 * @param start 下标起点
+	 * @param test 测试是否允许输入
+	 */
+	public void writeFrom(ItemStackHandler handler, TileEntity entity,
+	                        int start, Predicate<ItemStack> test) {
 		for (int y = 0; y < getYSize(); ++y) {
 			for (int x = 0; x < getXSize(); ++x) {
 				setSlot(x, y, new MSlot.SlotHandler(handler, entity, start++) {
@@ -200,20 +223,20 @@ public class SlotGroup extends MComponent implements Iterable<SlotGroup.Node> {
 	
 	private final class NodeIterator implements Iterator<Node> {
 		
-		int x = 0, y = 0;
+		int x = -1, y = 0;
 		
 		@Override
 		public boolean hasNext() {
-			return x < getWidth() - 1 && y < getHeight() - 1;
+			return x < getXSize() - 1 || y < getYSize() - 1;
 		}
 		
 		@Override
 		public Node next() {
-			if (x == getWidth()) {
-				x = 0;
+			if (x >= getXSize() - 1) {
+				x = -1;
 				++y;
 			}
-			return new Node(SlotGroup.this, x++, y);
+			return new Node(SlotGroup.this, ++x, y);
 		}
 		
 	}

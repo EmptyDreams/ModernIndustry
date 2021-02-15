@@ -7,6 +7,7 @@ import xyz.emptydreams.mi.api.event.NetWorkRegistryEvent;
 import xyz.emptydreams.mi.api.net.message.IMessageHandle;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.net.message.gui.GuiMessage;
+import xyz.emptydreams.mi.api.net.message.player.PlayerMessage;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
@@ -71,7 +72,7 @@ public final class MessageRegister {
 	
 	@SubscribeEvent
 	public static void registryMessage(NetWorkRegistryEvent event) {
-		event.registry(BlockMessage.instance(), GuiMessage.instance());
+		event.registry(BlockMessage.instance(), GuiMessage.instance(), PlayerMessage.instance());
 	}
 	
 }

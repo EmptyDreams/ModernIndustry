@@ -12,8 +12,8 @@ import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.MSlot.SlotHandler;
-import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.ItemUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
@@ -40,9 +40,10 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 	@Storage(SERIALIZABLE) private final ItemStackHandler HANDLER = new ItemStackHandler(5 * 5 + 4);
 	private final SlotGroup SLOTS = new SlotGroup(5, 5, 18, 0);
 	private final SlotGroup OUTS = new SlotGroup(2, 2, 18, 0);
+	/** 进度条 */
 	private final CommonProgress PROGRESS = new CommonProgress(
 										CommonProgress.Style.ARROW, CommonProgress.Front.RIGHT);
-	
+	/** 工作时间 */
 	@Storage(INT) private int workingTime = -10;
 	@Storage(INT) private int maxTime = 0;
 	@Storage(COLLECTION) private final List<ItemElement> OUTPUT = new ArrayList<>(4);
@@ -57,9 +58,12 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 		setCounter(counter);
 		setReceive(true);
 		setMaxEnergy(20);
-		SLOTS.writeFrom(0, this::createHandler);
+		SLOTS.writeFrom(HANDLER, this, 0, 25, it -> true);
 		OUTS.writeFrom(HANDLER, this, 25, it -> false);
-		PROGRESS.setCraftButton(CraftList.SYNTHESIZER, SLOTS);
+		PROGRESS.setCraftButton(CraftList.SYNTHESIZER, te -> {
+			if (!(te instanceof EUElectronSynthesizer)) return null;
+			return ((EUElectronSynthesizer) te).SLOTS;
+		});
 	}
 	
 	@Override

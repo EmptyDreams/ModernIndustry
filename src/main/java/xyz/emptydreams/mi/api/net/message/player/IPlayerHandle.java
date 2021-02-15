@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
  * 用于在服务端/客户端接收到玩家信息时处理相关内容
  * @author EmptyDreams
  */
-public interface PlayerHandle {
+public interface IPlayerHandle {
 	
 	/**
 	 * 处理信息

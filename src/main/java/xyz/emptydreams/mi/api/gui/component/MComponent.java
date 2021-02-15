@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.api.gui.component;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -40,7 +42,7 @@ public abstract class MComponent implements IComponent {
 	/** 是否支持CraftShower */
 	private CraftGuide<?, ?> craftGuide = null;
 	/** CraftShower用到的填充表 */
-	private SlotGroup slots = null;
+	private Function<TileEntity, SlotGroup> slotGroupGetter = null;
 	/** 合成表按钮 */
 	private CraftButton craftButton = null;
 	/** 存储加载过的窗体 */
@@ -124,15 +126,15 @@ public abstract class MComponent implements IComponent {
 	public int getWidth() { return width; }
 	
 	/** 为当前按钮设置合成表按钮 */
-	public void setCraftButton(CraftGuide<?, ?> craft, SlotGroup slots) {
+	public void setCraftButton(CraftGuide<?, ?> craft, Function<TileEntity, SlotGroup> slotGroupGetter) {
 		craftGuide = craft;
-		this.slots = slots;
+		this.slotGroupGetter = slotGroupGetter;
 	}
 	/** 移除合成表按钮，<b>仅在添加到GUI前有效</b> */
 	@SuppressWarnings("unused")
 	public void deleteCraftButton() {
 		craftGuide = null;
-		slots = null;
+		slotGroupGetter = null;
 	}
 	
 	@Override
@@ -159,7 +161,7 @@ public abstract class MComponent implements IComponent {
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
 		if (craftGuide != null) {
-			craftButton = new CraftButton(craftGuide, this, slots);
+			craftButton = new CraftButton(craftGuide, this, player, slotGroupGetter);
 			con.add(craftButton, player);
 		}
 		for (MIFrame frame : LOADED) {

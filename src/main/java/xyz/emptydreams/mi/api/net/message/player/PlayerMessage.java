@@ -13,6 +13,14 @@ import javax.annotation.Nonnull;
  */
 public class PlayerMessage implements IMessageHandle<PlayerAddition> {
 	
+	public static PlayerMessage instance() {
+		return INSTANCE;
+	}
+	
+	private static final PlayerMessage INSTANCE = new PlayerMessage();
+	
+	private PlayerMessage() { }
+	
 	@Override
 	public boolean parseOnClient(@Nonnull NBTTagCompound message) {
 		return parse(message);

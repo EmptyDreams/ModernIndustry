@@ -14,6 +14,7 @@ import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.group.AbstractSlotGroup;
+import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
@@ -49,6 +50,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 			return false;
 		}
 	};
+	private final SlotGroup slotGroup = new AbstractSlotGroup(up, down);
 	/** 已工作时间 */
 	@Storage(DataType.INT)
 	private int workingTime = 0;
@@ -64,7 +66,10 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		setCounter(counter);
 		setReceive(true);
 		setMaxEnergy(20);
-		progressBar.setCraftButton(CraftList.COMPRESSOR, new AbstractSlotGroup(up, down));
+		progressBar.setCraftButton(CraftList.COMPRESSOR, te -> {
+			if (!(te instanceof EUCompressor)) return null;
+			return ((EUCompressor) te).slotGroup;
+		});
 	}
 
 	/** 设置世界时更新计数器的设置 */

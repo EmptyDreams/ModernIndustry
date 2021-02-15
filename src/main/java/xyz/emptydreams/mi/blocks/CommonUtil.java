@@ -74,7 +74,6 @@ public final class CommonUtil {
 	public static boolean openGui(EntityPlayer player, int id, World world, BlockPos pos) {
 		if (world.isRemote) return true;
 		player.openGui(ModernIndustry.instance, id, world, pos.getX(), pos.getY(), pos.getZ());
-		//CraftShower.show(CraftList.SYNTHESIZER, player);
 		return true;
 	}
 

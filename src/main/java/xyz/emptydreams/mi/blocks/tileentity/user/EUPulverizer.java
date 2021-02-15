@@ -11,6 +11,7 @@ import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.group.AbstractSlotGroup;
+import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
@@ -39,6 +40,7 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 	private final SlotItemHandler in = CommonUtil.createInputSlot(item, 0, 52, 32,
 																CraftList.PULVERIZER::haveInput);
 	private final SlotItemHandler out = CommonUtil.createOutputSlot(item, 1, 106, 32);
+	private final SlotGroup slotGroup = new AbstractSlotGroup(in);
 	/** 工作时间 */
 	private int workingTime = 0;
 	/** 工作进度条 */
@@ -51,7 +53,10 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 		setCounter(counter);
 		setReceive(true);
 		setMaxEnergy(20);
-		progressBar.setCraftButton(CraftList.PULVERIZER, new AbstractSlotGroup(in));
+		progressBar.setCraftButton(CraftList.PULVERIZER, te -> {
+			if (!(te instanceof EUPulverizer)) return null;
+			return ((EUPulverizer) te).slotGroup;
+		});
 	}
 
 	@Override
