@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 public interface IShape<T extends ItemSol, R> {
 	
 	/**
-	 * 获取产物列表
+	 * 获取原料列表
 	 * @return 返回值经过保护性拷贝
 	 */
 	T getInput();
