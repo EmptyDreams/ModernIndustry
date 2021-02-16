@@ -28,7 +28,7 @@ public class MixinFMLNetworkHandler {
 												"ILnet/minecraft/world/World;III)Ljava/lang/Object;"))
 	private static Object openGui(NetworkRegistry networkRegistry, ModContainer mc,
 	                              EntityPlayer player, int modGuiId, World world, int x, int y, int z) {
-		ChildFrame.setGui(world, new BlockPos(x, y, z), player);
+		ChildFrame.setGui(new BlockPos(x, y, z), player);
 		return networkRegistry.getLocalGuiContainer(mc, player, modGuiId, world, x, y, z);
 	}
 	
