@@ -53,10 +53,7 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 		setCounter(counter);
 		setReceive(true);
 		setMaxEnergy(20);
-		progressBar.setCraftButton(CraftList.PULVERIZER, te -> {
-			if (!(te instanceof EUPulverizer)) return null;
-			return ((EUPulverizer) te).slotGroup;
-		});
+		progressBar.setCraftButton(CraftList.PULVERIZER, te -> ((EUPulverizer) te).slotGroup);
 	}
 
 	@Override
