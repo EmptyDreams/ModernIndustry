@@ -34,7 +34,7 @@ public final class LocalChildFrame {
 		StaticFrameClient localGUI = handle.createFrame(mc.world, mc.player, pos);
 		if (container != null) container.onGuiClosed();
 		container = localGUI;
-		ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
+		ScaledResolution scaledresolution = new ScaledResolution(mc);
 		int i = scaledresolution.getScaledWidth();
 		int j = scaledresolution.getScaledHeight();
 		container.setWorldAndResolution(Minecraft.getMinecraft(), i, j);

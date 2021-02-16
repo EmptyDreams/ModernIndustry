@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static net.minecraft.client.Minecraft.getMinecraft;
-
 /**
  * 方块Json生成器
  * @author EmptyDreams
@@ -32,7 +30,7 @@ public final class BlockJsonBuilder {
 	
 	private BlockJsonBuilder() { throw new AssertionError(); }
 	
-	public static final File ROOT = getMinecraft().mcDataDir.getAbsoluteFile().getParentFile().getParentFile();
+	public static final File ROOT = new File("").getAbsoluteFile().getParentFile();
 	public static final List<File> OUT_PATH = Lists.asList(
 			new File(ROOT, "src/main/resources/assets/mi/blockstates"),
 			new File[] { new File(ROOT, "out/production/ModernIndustry.main/assets/mi/blockstates") }

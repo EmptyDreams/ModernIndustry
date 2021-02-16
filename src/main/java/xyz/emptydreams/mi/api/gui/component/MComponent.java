@@ -60,6 +60,7 @@ public abstract class MComponent implements IComponent {
 		if (height < 0) throw new IllegalArgumentException("height[" + height + "] < 0");
 		this.width = width;
 		this.height = height;
+		
 	}
 	
 	@Override
