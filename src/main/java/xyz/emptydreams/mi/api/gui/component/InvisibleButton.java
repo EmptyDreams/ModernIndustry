@@ -17,7 +17,6 @@ import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.awt.*;
 
 /**
@@ -26,7 +25,6 @@ import java.awt.*;
  */
 public class InvisibleButton extends MComponent {
 	
-	@SideOnly(Side.CLIENT)
 	private static final ObjBooleanConsumer<IFrame> SRC_ACTION = (frame, isClient) -> {};
 	
 	/** 鼠标是否在控件中 */
@@ -56,37 +54,33 @@ public class InvisibleButton extends MComponent {
 		registryListener((MouseExitedListener) (mouseX, mouseY) -> mouse = false);
 		registryListener(new MouseActionListener() {
 			float mouseX, mouseY;
+			
 			@Override
 			public void mouseAction(float mouseX, float mouseY) {
 				this.mouseX = mouseX;
 				this.mouseY = mouseY;
 				onAction.accept(frame, WorldUtil.isClient());
 				if (WorldUtil.isClient()) {
-					Minecraft.getMinecraft().getSoundHandler().playSound(
-							PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+					playSound();
 				}
 			}
 			
-			@Nullable
 			@Override
 			public NBTTagCompound writeTo() {
-				if (WorldUtil.isClient()) {
-					NBTTagCompound data = new NBTTagCompound();
-					data.setFloat("x", mouseX);
-					data.setFloat("y", mouseY);
-					return data;
-				} else {
-					return null;
-				}
+				return new NBTTagCompound();
 			}
 			
 			@Override
 			public void readFrom(NBTTagCompound data) {
-				if (WorldUtil.isServer()) {
-					mouseAction(data.getFloat("x"), data.getFloat("y"));
-				}
+				mouseAction(-1, -1);
 			}
-			
 		});
 	}
+	
+	@SideOnly(Side.CLIENT)
+	private static void playSound() {
+		Minecraft.getMinecraft().getSoundHandler().playSound(
+				PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+	}
+	
 }

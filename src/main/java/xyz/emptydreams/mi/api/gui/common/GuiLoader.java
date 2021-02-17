@@ -1,66 +1,121 @@
 package xyz.emptydreams.mi.api.gui.common;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.event.GuiRegistryEvent;
+import xyz.emptydreams.mi.api.register.AutoLoader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * GUI的总加载器
  * @author EmptyDremas
  */
+@AutoLoader
 public class GuiLoader implements IGuiHandler {
 	
+	/** 是否允许注册 */
+	@SuppressWarnings("UnusedAssignment")
+	private static boolean canRegistry = true;
 	/** 存储每个ID及其对应的构建器 */
-	private final static Int2ObjectMap<IContainerCreater> IDS = new Int2ObjectOpenHashMap<>();
+	private final static List<Node> INSTANCE = new ArrayList<>();
+	
+	static {
+		MinecraftForge.EVENT_BUS.post(new GuiRegistryEvent());
+		INSTANCE.sort(GuiLoader::compareNode);
+		canRegistry = false;
+	}
 	
 	public GuiLoader() {
 		NetworkRegistry.INSTANCE.registerGuiHandler(ModernIndustry.instance, this);
-		IDS.defaultReturnValue(null);
 	}
 	
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		IContainerCreater creator = IDS.get(ID);
+		IContainerCreater creator = INSTANCE.get(ID).getCreater();
 		return creator == null ? null : creator.createService(world, player, new BlockPos(x, y, z));
 	}
 	
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		IContainerCreater creator = IDS.get(ID);
+		IContainerCreater creator = INSTANCE.get(ID).getCreater();
 		return creator == null ? null : creator.createClient(world, player, new BlockPos(x, y, z));
 	}
 	
-	/** 存储ID自动分配位点 */
-	private static int IDown = 99;
-	
 	/**
-	 * 创建一个ID，由系统自动分配
-	 * @return 如果ID分配已经到达数量上限则返回-1
+	 * 通过KEY值获取GUI对应的ID
 	 */
-	public static int register(IContainerCreater creator) {
-		int i;
-		do {
-			i = register(++IDown, creator);
-		} while (i == -1 && IDown != Integer.MAX_VALUE);
-		return i;
-	}
-	
-	/**
-	 * 创建指定ID
-	 * @param ID 指定ID
-	 * @param creator 构建器
-	 * @return 当ID无法创建时返回-1
-	 */
-	private static int register(int ID, IContainerCreater creator) {
-		if (!IDS.containsKey(ID)) {
-			IDS.put(ID, creator);
-			return ID;
+	public static int getID(ResourceLocation key) {
+		if (canRegistry) throw new AssertionError("不应该在此时获取GUI的ID");
+		for (int i = 0; i < INSTANCE.size(); i++) {
+			if (INSTANCE.get(i).getKey().equals(key)) return i;
 		}
-		else return -1;
+		throw new IllegalArgumentException("key[" + key + "]值不存在");
 	}
+	
+	/**
+	 * 注册一个GUI.
+	 * <b>切勿使用该方法手动注册，不然可能导致出现异常</b>
+	 * @param key GUI的名称，用于打开GUI
+	 * @param creator GUI构造器
+	 * @return 传入的Key值
+	 * @deprecated 请使用GuiRegistryEvent事件进行注册
+	 */
+	@Deprecated
+	public static ResourceLocation registry(ResourceLocation key, IContainerCreater creator) {
+		if (!canRegistry) throw new AssertionError("不应该在此时注册GUI");
+		Node node = new Node(key, creator);
+		INSTANCE.remove(node);
+		INSTANCE.add(node);
+		return key;
+	}
+	
+	private static int compareNode(Node arg0, Node arg1) {
+		return arg0.compareTo(arg1);
+	}
+	
+	private static final class Node implements Comparable<Node> {
+		
+		private final IContainerCreater creater;
+		private final ResourceLocation key;
+		
+		Node(ResourceLocation key, IContainerCreater creater) {
+			this.key = key;
+			this.creater = creater;
+		}
+		
+		public IContainerCreater getCreater() { return creater; }
+		public ResourceLocation getKey() { return key; }
+		
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			Node node = (Node) o;
+			return key.equals(node.key);
+		}
+		
+		@Override
+		public int hashCode() {
+			return key.hashCode();
+		}
+		
+		@Override
+		public int compareTo(Node o) {
+			return key.compareTo(o.key);
+		}
+		
+		@Override
+		public String toString() {
+			return "key=" + key;
+		}
+	}
+	
 }

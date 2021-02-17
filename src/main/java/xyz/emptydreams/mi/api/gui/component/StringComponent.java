@@ -1,6 +1,7 @@
 package xyz.emptydreams.mi.api.gui.component;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.utils.StringUtil;
@@ -12,7 +13,6 @@ import java.awt.*;
  * 用于显示单行字符串
  * @author EmptyDreams
  */
-@SideOnly(Side.CLIENT)
 public class StringComponent extends MComponent {
 	
 	private String value;
@@ -26,10 +26,13 @@ public class StringComponent extends MComponent {
 		value = StringUtil.checkNull(str, "str");
 	}
 
+	@SideOnly(Side.CLIENT) private String text;
+	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void realTimePaint(GuiContainer gui) {
-		gui.mc.fontRenderer.drawString(getString(),
+		if (text == null) text = I18n.format(getString());
+		gui.mc.fontRenderer.drawString(text,
 				getX() + gui.getGuiLeft(), getY() + gui.getGuiTop(), getColor());
 	}
 

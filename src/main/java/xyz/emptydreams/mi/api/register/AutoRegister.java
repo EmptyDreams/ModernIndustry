@@ -117,7 +117,7 @@ public final class AutoRegister {
 			throw new IntransitException(e);
 		} catch (NoSuchMethodException e) {
 			MISysInfo.err("没有找到对应的方法，原因可能可能是：\n"
-					            +  "1).用户的类使用了RegisterManager注解却未在类中定义static register()\n"
+					            +  "1).用户的类使用了RegisterManager注解却未在类中定义static registry()\n"
 							    +  "2).使用@AutoTrusteeshipRegister注解的托管没有提供默认构造函数\n");
 			throw new IntransitException(e);
 		} catch (NullPointerException e) {
@@ -349,7 +349,7 @@ public final class AutoRegister {
 					declaredField.set(block, block);
 				}
 
-				Class<?> register = (Class<?>) valueMap.getOrDefault("register", AutoBlockRegister.REGISTER);
+				Class<?> register = (Class<?>) valueMap.getOrDefault("registry", AutoBlockRegister.REGISTER);
 				if (AutoBlockRegister.REGISTER.equals(register))
 					Blocks.autoRegister.add(block);
 				else

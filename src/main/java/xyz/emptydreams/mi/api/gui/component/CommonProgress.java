@@ -130,10 +130,10 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		CENTER((bar, con) -> drawHelper(bar, con, (bar.getHeight() - 9) / 2 + bar.getY()),
 				bar -> new int[] { bar.getStyle().getWidth(), Math.max(bar.getStyle().getHeight(), 9) });
 
-		private final BiConsumer<CommonProgress, GuiContainer> task;
+		private final BiConsumer<CommonProgress, Object> task;
 		private final Function<CommonProgress, int[]> getter;
 
-		ProgressStyle(BiConsumer<CommonProgress, GuiContainer> task, Function<CommonProgress, int[]> getter) {
+		ProgressStyle(BiConsumer<CommonProgress, Object> task, Function<CommonProgress, int[]> getter) {
 			this.task = task;
 			this.getter = getter;
 		}
@@ -149,7 +149,8 @@ public class CommonProgress extends MComponent implements IProgressBar {
 			return bar.getNow() + "/" + bar.getMax();
 		}
 
-		private static void drawHelper(CommonProgress bar, GuiContainer con, int y) {
+		private static void drawHelper(CommonProgress bar, Object con_object, int y) {
+			GuiContainer con = (GuiContainer) con_object;
 			String show = format(bar);
 			Minecraft mc = Minecraft.getMinecraft();
 			int x = (bar.getWidth() - mc.fontRenderer.getStringWidth(show)) / 2;
@@ -236,9 +237,8 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		}
 		
 	}
-
-	@SideOnly(Side.CLIENT)
-	private class Node {
+	
+	private final class Node {
 		/** 图形在窗口中的坐标 */
 		final int x, y;
 		
@@ -254,8 +254,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	}
 	
 	/** 绘制从下到上的图形 */
-	@SideOnly(Side.CLIENT)
-	public static void paintUp(Node node) {
+	private static void paintUp(Node node) {
 		Style style = node.getThis().getStyle();
 		int height = (int) (style.getHeight() * node.getThis().getPer());
 		int y = node.y + style.getHeight() - height;
@@ -264,8 +263,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	}
 	
 	/** 绘制从上到下的图形 */
-	@SideOnly(Side.CLIENT)
-	public static void paintDown(Node node) {
+	private static void paintDown(Node node) {
 		Style style = node.getThis().getStyle();
 		int height = (int) (style.getHeight() * node.getThis().getPer());
 		RuntimeTexture texture = getTexture();
@@ -273,8 +271,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	}
 	
 	/** 绘制从右到左的图形 */
-	@SideOnly(Side.CLIENT)
-	public static void paintLeft(Node node) {
+	private static void paintLeft(Node node) {
 		Style style = node.getThis().getStyle();
 		int width = (int) (style.getWidth() * node.getThis().getPer());
 		int x = node.x + style.getWidth() - width;
@@ -284,8 +281,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	}
 	
 	/** 绘制从左到右的图形 */
-	@SideOnly(Side.CLIENT)
-	public static void paintRight(Node node) {
+	private static void paintRight(Node node) {
 		Style style = node.getThis().getStyle();
 		int width = (int) (style.getWidth() * node.getThis().getPer());
 		RuntimeTexture texture = getTexture();

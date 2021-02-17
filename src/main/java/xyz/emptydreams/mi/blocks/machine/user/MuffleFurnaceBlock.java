@@ -61,11 +61,7 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
 		if (playerIn.getHeldItem(hand).getItem() == SpannerItem.getInstance()) return false;
-		if (!worldIn.isRemote) {
-			playerIn.openGui(ModernIndustry.instance,
-					MuffleFurnaceFrame.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
-		}
-		return true;
+		return CommonUtil.openGui(playerIn, MuffleFurnaceFrame.NAME, worldIn, pos);
 	}
 
 	@Nullable

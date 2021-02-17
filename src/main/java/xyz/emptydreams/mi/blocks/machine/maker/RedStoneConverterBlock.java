@@ -46,7 +46,7 @@ public class RedStoneConverterBlock extends MachineBlock {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
-		return CommonUtil.openGui(playerIn, RedStoneConverterFrame.ID,worldIn, pos);
+		return CommonUtil.openGui(playerIn, RedStoneConverterFrame.NAME,worldIn, pos);
 	}
 
 	@Nullable

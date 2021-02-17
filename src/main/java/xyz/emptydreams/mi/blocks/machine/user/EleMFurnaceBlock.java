@@ -44,8 +44,10 @@ public class EleMFurnaceBlock extends MachineBlock {
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		return CommonUtil.openGui(playerIn, EleMFurnaceFrame.ID, worldIn, pos);
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
+	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
+	                                float hitX, float hitY, float hitZ) {
+		return CommonUtil.openGui(playerIn, EleMFurnaceFrame.NAME, worldIn, pos);
 	}
 
 	@Nullable

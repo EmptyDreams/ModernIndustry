@@ -8,11 +8,13 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.gui.common.GuiLoader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -76,7 +78,21 @@ public final class CommonUtil {
 		player.openGui(ModernIndustry.instance, id, world, pos.getX(), pos.getY(), pos.getZ());
 		return true;
 	}
-
+	
+	/**
+	 * 打开一个GUI
+	 * @param player 要打开GUI的玩家
+	 * @param key GUI的key
+	 * @param world 所在世界
+	 * @param pos 方块坐标
+	 * @return true
+	 */
+	public static boolean openGui(EntityPlayer player, ResourceLocation key, World world, BlockPos pos) {
+		if (world.isRemote) return true;
+		int id = GuiLoader.getID(key);
+		return openGui(player, id, world, pos);
+	}
+	
 	/** 为指定方块生成一个带方向与工作状态的{@link BlockStateContainer} */
 	public static BlockStateContainer createBlockState(Block block) {
 		return new BlockStateContainer(block, HORIZONTAL, WORKING);

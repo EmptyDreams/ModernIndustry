@@ -33,7 +33,7 @@ public class BlockRegister {
 		/* 注册拥有独立注册机的方块 */
 		for (Class<?> c : Blocks.selfRegister.keySet()) {
 			try {
-				c.getDeclaredMethod("register", IForgeRegistry.class, Block.class)
+				c.getDeclaredMethod("registry", IForgeRegistry.class, Block.class)
 						.invoke(null, register, Blocks.selfRegister.get(c));
 			} catch (Exception e) {
 				throw new IntransitException("方块注册异常", e);

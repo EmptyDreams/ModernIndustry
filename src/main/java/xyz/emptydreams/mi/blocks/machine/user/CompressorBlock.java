@@ -13,8 +13,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.register.block.AutoBlockRegister;
+import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.MachineBlock;
 import xyz.emptydreams.mi.blocks.tileentity.user.EUCompressor;
 import xyz.emptydreams.mi.gui.CompressorFrame;
@@ -55,11 +55,7 @@ public class CompressorBlock extends MachineBlock {
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (!worldIn.isRemote) {
-			playerIn.openGui(ModernIndustry.instance,
-					CompressorFrame.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
-		}
-		return true;
+		return CommonUtil.openGui(playerIn, CompressorFrame.NAME, worldIn, pos);
 	}
 	
 	@SuppressWarnings("ConstantConditions")

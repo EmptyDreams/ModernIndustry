@@ -42,8 +42,7 @@ public class ElectronSynthesizerBlock extends MachineBlock {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
-		CommonUtil.openGui(playerIn, ElectronSynthesizerFrame.ID, worldIn, pos);
-		return true;
+		return CommonUtil.openGui(playerIn, ElectronSynthesizerFrame.NAME, worldIn, pos);
 	}
 	
 	@Nonnull
