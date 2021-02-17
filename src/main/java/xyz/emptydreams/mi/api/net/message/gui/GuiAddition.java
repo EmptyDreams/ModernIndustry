@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.net.message.gui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
@@ -9,6 +8,7 @@ import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nonnull;
+import java.util.UUID;
 
 /**
  * GUI的Addition
@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 public class GuiAddition implements IMessageAddition {
 	
 	/** 玩家对象 */
-	private EntityPlayer player;
+	private UUID player;
 	/** 组件ID */
 	private int id;
 	/** GUI ID */
@@ -29,7 +29,7 @@ public class GuiAddition implements IMessageAddition {
 	 * @param id 如果进行网络传输的为GUI组件，则填写{@link IComponent#getCode()}，否则为-1
 	 */
 	public GuiAddition(EntityPlayer player, String guiID, int id) {
-		this.player = player;
+		this.player = player.getUniqueID();
 		this.guiID = StringUtil.checkNull(guiID, "guiID");
 		this.id = id;
 	}
@@ -38,7 +38,7 @@ public class GuiAddition implements IMessageAddition {
 	public GuiAddition() { }
 	
 	public EntityPlayer getPlayer() {
-		return player;
+		return WorldUtil.getPlayer(player);
 	}
 	
 	public int getId() {
@@ -52,16 +52,14 @@ public class GuiAddition implements IMessageAddition {
 	
 	@Override
 	public void writeTo(NBTTagCompound tag) {
-		if (WorldUtil.isClient()) tag.setUniqueId("player", player.getUniqueID());
+		if (WorldUtil.isClient()) tag.setUniqueId("player", player);
 		tag.setInteger("id", id);
 		tag.setString("guiId", getGuiID());
 	}
 	
 	@Override
 	public void readFrom(NBTTagCompound tag) {
-		if (WorldUtil.isServer())
-			player = WorldUtil.getPlayerAtService(tag.getUniqueId("player"));
-		else player = Minecraft.getMinecraft().player;
+		player = tag.getUniqueId("player");
 		id = tag.getInteger("id");
 		guiID = tag.getString("guiId");
 	}

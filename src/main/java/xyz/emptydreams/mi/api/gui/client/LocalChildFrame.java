@@ -33,12 +33,12 @@ public final class LocalChildFrame {
 		playerOpen = mc.player.openContainer;
 		StaticFrameClient localGUI = handle.createFrame(mc.world, mc.player, pos);
 		if (container != null) container.onGuiClosed();
-		//container = localGUI;
+		container = localGUI;
 		ScaledResolution scaledresolution = new ScaledResolution(mc);
 		int i = scaledresolution.getScaledWidth();
 		int j = scaledresolution.getScaledHeight();
-		//container.mc = Minecraft.getMinecraft();
-		//container.setWorldAndResolution(Minecraft.getMinecraft(), i, j);
+		container.mc = Minecraft.getMinecraft();
+		container.setWorldAndResolution(Minecraft.getMinecraft(), i, j);
 	}
 	
 	/** 关闭当前显示的子GUI */

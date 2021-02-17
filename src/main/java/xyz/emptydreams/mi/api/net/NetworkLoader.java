@@ -25,9 +25,10 @@ public final class NetworkLoader {
 	private int nextID = -1;
 	 
 	public NetworkLoader() {
-		registerMessage(ServerHandler.class, CommonMessage.class, SERVER);
 		if (WorldUtil.isClient()) {
 			registerMessage(ClientHandler.class, CommonMessage.class, CLIENT);
+		} else {
+			registerMessage(ServerHandler.class, CommonMessage.class, SERVER);
 		}
 	}
 	
