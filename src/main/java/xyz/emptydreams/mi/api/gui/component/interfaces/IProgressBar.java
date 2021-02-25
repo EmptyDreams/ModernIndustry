@@ -30,8 +30,9 @@ public interface IProgressBar extends IComponent {
 	 * @return 0 <= result <= 1
 	 */
 	default double getPer() {
-		if (isReverse()) return ((double) getMax() - getNow()) / getMax();
-		return ((double) getNow()) / getMax();
+		int max = Math.max(0, getMax());
+		if (isReverse()) return ((double) max - getNow()) / max;
+		return ((double) getNow()) / max;
 	}
 	
 	static RuntimeTexture getTexture() {

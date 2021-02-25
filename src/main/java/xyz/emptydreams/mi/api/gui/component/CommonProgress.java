@@ -92,7 +92,10 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	@Override
 	public void setMax(int max) { this.max = max; }
 	@Override
-	public void setNow(int now) { this.now = Math.min(now, getMax()); }
+	public void setNow(int now) {
+		if (now < 0) now = 0;
+		this.now = Math.min(now, getMax());
+	}
 	@Override
 	public boolean isReverse() { return getStyle().isReverse(); }
 	/** 设置进度条风格 */
