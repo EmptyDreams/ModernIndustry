@@ -43,7 +43,7 @@ public final class CraftShower {
 	 * @throws NullPointerException 如果合成表未注册
 	 */
 	public static SlotGroup getSlotGroup(CraftGuide<?, ?> craft, TileEntity te) {
-		return FRAMES.getOrDefault(craft, null).getSlots(te);
+		return FRAMES.get(craft).getSlots(te);
 	}
 	
 	private static final class Frame implements ICraftFrameHandle {
