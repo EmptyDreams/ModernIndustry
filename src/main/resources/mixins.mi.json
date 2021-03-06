@@ -3,6 +3,7 @@
   "mixins": [
     "MixinCraftingHelper",
     "MixinItemStack",
+    "MixinNBTBase",
     "gui.MixinFMLNetworkHandler"
   ],
   "client": [
