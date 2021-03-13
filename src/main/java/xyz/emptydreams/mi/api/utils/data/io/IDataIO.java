@@ -3,6 +3,8 @@ package xyz.emptydreams.mi.api.utils.data.io;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.function.Supplier;
+
 /**
  * @author EmptyDreams
  */
@@ -20,8 +22,9 @@ public interface IDataIO<T> {
 	 * 从NBTTagCompound读取一个数据
 	 * @param nbt NBT对象
 	 * @param name 数据名称
+	 * @param getter 获取默认值，如果读取的值不需要默认值则可以为null
 	 */
-	T readFromNBT(NBTTagCompound nbt, String name);
+	T readFromNBT(NBTTagCompound nbt, String name, Supplier<T> getter);
 	
 	/**
 	 * 写入数据到ByteBuf
@@ -33,7 +36,8 @@ public interface IDataIO<T> {
 	/**
 	 * 从ByteBuf读取数据
 	 * @param buf buf对象
+	 * @param getter 获取默认值，如果读取的值不需要默认值则可以为null
 	 */
-	T readFromByteBuf(ByteBuf buf);
+	T readFromByteBuf(ByteBuf buf, Supplier<T> getter);
 	
 }

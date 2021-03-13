@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.net.message.IMessageHandle;
-import xyz.emptydreams.mi.api.utils.BlockUtil;
+import xyz.emptydreams.mi.api.utils.IOUtils;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nonnull;
@@ -37,7 +37,7 @@ public final class BlockMessage implements IMessageHandle<BlockAddition> {
 	@SideOnly(Side.CLIENT)
 	public boolean parseOnClient(@Nonnull NBTTagCompound message) {
 		World world = WorldUtil.getClientWorld();
-		BlockPos pos = BlockUtil.readBlockPos(message, "pos");
+		BlockPos pos = IOUtils.readBlockPos(message, "pos");
 		TileEntity te = world.getTileEntity(pos);
 		if (!(te instanceof IAutoNetwork)) {
 			message.setByte("cast", (byte) 0);

@@ -126,6 +126,11 @@
       <option name="name" value="forge" />
       <option name="url" value="https://files.minecraftforge.net/maven" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="deobfDeps" />
+      <option name="name" value="deobfDeps" />
+      <option name="url" value="file:/$USER_HOME$/.gradle/caches/minecraft/deobfedDeps" />
+    </remote-repository>
   </component>
   <component name="SvnBranchConfigurationManager">
     <option name="mySupportsUserInfoFilter" value="true" />
@@ -434,6 +439,9 @@
       </SOURCES>
     </library>
     <library name="Gradle: net.minecraftforge:forgeSrc:1.12.2-14.23.5.2768">
+      <ANNOTATIONS>
+        <root url="file://$PROJECT_DIR$/contract" />
+      </ANNOTATIONS>
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/minecraft/net/minecraftforge/forge/1.12.2-14.23.5.2768/snapshot/20171003/forgeSrc-1.12.2-14.23.5.2768.jar!/" />
       </CLASSES>

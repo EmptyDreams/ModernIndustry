@@ -7,7 +7,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.exception.IntransitException;
-import xyz.emptydreams.mi.api.utils.BlockUtil;
+import xyz.emptydreams.mi.api.utils.IOUtils;
 import xyz.emptydreams.mi.api.utils.container.Wrapper;
 
 import java.lang.reflect.Field;
@@ -196,10 +196,10 @@ public final class DataOperator {
 
 	public static void writePos(NBTTagCompound nbt, String name, BlockPos data) {
 		if (data == null) return;
-		BlockUtil.writeBlockPos(nbt, data, name);
+		IOUtils.writeBlockPos(nbt, data, name);
 	}
 	public static void readPos(NBTTagCompound nbt, String name, Consumer<BlockPos> setter) {
-		BlockPos pos = BlockUtil.tryReadBlockPos(nbt, name);
+		BlockPos pos = IOUtils.tryReadBlockPos(nbt, name);
 		setter.accept(pos);
 	}
 

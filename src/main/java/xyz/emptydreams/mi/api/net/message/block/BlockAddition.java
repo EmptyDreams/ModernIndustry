@@ -5,7 +5,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.net.message.IMessageAddition;
-import xyz.emptydreams.mi.api.utils.BlockUtil;
+import xyz.emptydreams.mi.api.utils.IOUtils;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 
@@ -35,13 +35,13 @@ public class BlockAddition implements IMessageAddition {
 	@Override
 	public void writeTo(NBTTagCompound tag) {
 		tag.setInteger("world", world.provider.getDimension());
-		BlockUtil.writeBlockPos(tag, pos, "pos");
+		IOUtils.writeBlockPos(tag, pos, "pos");
 	}
 	
 	@Override
 	public void readFrom(NBTTagCompound tag) {
 		world = WorldUtil.getWorld(tag.getInteger("world"));
-		pos = BlockUtil.readBlockPos(tag, "pos");
+		pos = IOUtils.readBlockPos(tag, "pos");
 	}
 	
 	@Override

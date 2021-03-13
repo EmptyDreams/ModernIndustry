@@ -1,24 +1,18 @@
 buildscript {
     repositories {
-        maven { url 'https://maven.aliyun.com/repository/google' }
-        maven { url 'https://maven.aliyun.com/repository/jcenter' }
-        maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url = "http://files.minecraftforge.net/maven" }
         maven { url = "https://repo.spongepowered.org/maven" }
-        maven { url "https://plugins.gradle.org/m2/" }
         google()
         jcenter()
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
-        classpath 'gradle.plugin.de.set.gradle:gradle-eclipse-compiler-plugin:1.4.1'
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
-apply plugin: "de.set.ecj"
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 version = "0.1"
@@ -106,16 +100,17 @@ jar {
         zipTree(it)
     }
 
-//    manifest.attributes([
-//            "TweakClass": "xyz.emptydreams.mi.coremod.MIMixinTweaker"
-//    ])
-
     manifest.attributes([
-            "FMLCorePlugin": "xyz.emptydreams.mi.coremod.MIMixinFMLPlugin",
+            "TweakClass": "xyz.emptydreams.mi.coremod.MIMixinTweaker",
             "FMLCorePluginContainsFMLMod": true
     ])
 
-    //manifest.attributes('FMLAT': 'mi_at.cfg')
+   // manifest.attributes([
+    //        "FMLCorePlugin": "xyz.emptydreams.mi.coremod.MIMixinFMLPlugin",
+   //         "FMLCorePluginContainsFMLMod": true
+   // ])
+
+    manifest.attributes('FMLAT': 'mi_at.cfg')
 }
 
 //UTF-8

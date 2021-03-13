@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.craftguide;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -9,6 +10,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.ArrayUtils;
+import xyz.emptydreams.mi.api.utils.IOUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,6 +58,23 @@ public final class ItemElement {
 				tag.getString("modid"), tag.getString("name")));
 		int meta = tag.getInteger("meta");
 		int amount = tag.getInteger("amount");
+		ItemElement element = new ItemElement(item, amount, meta);
+		for (ItemElement instance : instances) {
+			if (instance.element == element.element &&
+					instance.amount == element.amount &&
+					instance.meta == element.meta) {
+				return instance;
+			}
+		}
+		instances.add(element);
+		return element;
+	}
+	
+	public static ItemElement instance(ByteBuf buf) {
+		int amount = buf.readInt();
+		int meta = buf.readInt();
+		String itemName = IOUtils.readStringFromBuf(buf);
+		Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
 		ItemElement element = new ItemElement(item, amount, meta);
 		for (ItemElement instance : instances) {
 			if (instance.element == element.element &&
@@ -177,6 +196,12 @@ public final class ItemElement {
 		compound.setString("name", element.getRegistryName().getResourcePath());
 		compound.setString("modid", element.getRegistryName().getResourceDomain());
 		return compound;
+	}
+	
+	public void writeToBuf(ByteBuf buf) {
+		buf.writeInt(amount);
+		buf.writeInt(meta);
+		IOUtils.writeStringToBuf(buf, element.getRegistryName().toString());
 	}
 	
 }
