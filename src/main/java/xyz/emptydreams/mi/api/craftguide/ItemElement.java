@@ -10,6 +10,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.ArrayUtils;
+import xyz.emptydreams.mi.api.nbt.IDataReader;
+import xyz.emptydreams.mi.api.nbt.IDataWriter;
 import xyz.emptydreams.mi.api.utils.IOUtils;
 
 import javax.annotation.Nonnull;
@@ -74,6 +76,23 @@ public final class ItemElement {
 		int amount = buf.readInt();
 		int meta = buf.readInt();
 		String itemName = IOUtils.readStringFromBuf(buf);
+		Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
+		ItemElement element = new ItemElement(item, amount, meta);
+		for (ItemElement instance : instances) {
+			if (instance.element == element.element &&
+					instance.amount == element.amount &&
+					instance.meta == element.meta) {
+				return instance;
+			}
+		}
+		instances.add(element);
+		return element;
+	}
+	
+	public static ItemElement instance(IDataReader reader) {
+		int amount = reader.readVarint();
+		int meta = reader.readVarint();
+		String itemName = reader.readString();
 		Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
 		ItemElement element = new ItemElement(item, amount, meta);
 		for (ItemElement instance : instances) {
@@ -202,6 +221,12 @@ public final class ItemElement {
 		buf.writeInt(amount);
 		buf.writeInt(meta);
 		IOUtils.writeStringToBuf(buf, element.getRegistryName().toString());
+	}
+	
+	public void writeToData(IDataWriter writer) {
+		writer.writeVarint(amount);
+		writer.writeVarint(meta);
+		writer.writeString(element.getRegistryName().toString());
 	}
 	
 }

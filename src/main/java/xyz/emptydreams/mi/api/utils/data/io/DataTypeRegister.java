@@ -2,6 +2,8 @@ package xyz.emptydreams.mi.api.utils.data.io;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
+import xyz.emptydreams.mi.api.nbt.IDataReader;
+import xyz.emptydreams.mi.api.nbt.IDataWriter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -51,6 +53,16 @@ public final class DataTypeRegister {
 	
 	/**
 	 * 写入数据
+	 * @param writer writer对象
+	 * @param data 数据内容
+	 */
+	public static void write(IDataWriter writer, Object data) {
+		IDataIO io = searchNode(data.getClass());
+		io.writeToData(writer, data);
+	}
+	
+	/**
+	 * 写入数据
 	 * @param nbt NBT对象
 	 * @param name 数据名称
 	 * @param data 数据内容
@@ -68,6 +80,17 @@ public final class DataTypeRegister {
 	public static void write(ByteBuf buf, Object data) {
 		IDataIO io = searchNode(data.getClass());
 		io.writeToByteBuf(buf, data);
+	}
+	
+	/**
+	 * 读取数据
+	 * @param reader reader对象
+	 * @param type 数据类型
+	 * @param getter 获取默认值，如果读取的值不需要默认值则可以为null
+	 */
+	public static <T> T read(IDataReader reader, Class type, Supplier<T> getter) {
+		IDataIO io = searchNode(type);
+		return (T) io.readFromData(reader, getter);
 	}
 	
 	/**

@@ -9,6 +9,8 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.exception.IntransitException;
+import xyz.emptydreams.mi.api.nbt.IDataReader;
+import xyz.emptydreams.mi.api.nbt.IDataWriter;
 import xyz.emptydreams.mi.api.register.AutoLoader;
 import xyz.emptydreams.mi.api.utils.IOUtils;
 
@@ -56,6 +58,16 @@ public final class DataTypes {
 	public static final class IntData implements IDataIO<Integer> {
 		
 		@Override
+		public void writeToData(IDataWriter writer, Integer data) {
+			writer.writeVarint(data);
+		}
+		
+		@Override
+		public Integer readFromData(IDataReader reader, Supplier<Integer> getter) {
+			return reader.readVarint();
+		}
+		
+		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, Integer data) {
 			nbt.setInteger(name, data);
 		}
@@ -78,6 +90,16 @@ public final class DataTypes {
 	}
 	
 	public static final class ByteData implements IDataIO<Byte> {
+		
+		@Override
+		public void writeToData(IDataWriter writer, Byte data) {
+			writer.writeByte(data);
+		}
+		
+		@Override
+		public Byte readFromData(IDataReader reader, Supplier<Byte> getter) {
+			return reader.readByte();
+		}
 		
 		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, Byte data) {
@@ -104,6 +126,16 @@ public final class DataTypes {
 	public static final class BooleanData implements IDataIO<Boolean> {
 		
 		@Override
+		public void writeToData(IDataWriter writer, Boolean data) {
+			writer.writeBoolean(data);
+		}
+		
+		@Override
+		public Boolean readFromData(IDataReader reader, Supplier<Boolean> getter) {
+			return reader.readBoolean();
+		}
+		
+		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, Boolean data) {
 			nbt.setBoolean(name, data);
 		}
@@ -126,6 +158,16 @@ public final class DataTypes {
 	}
 	
 	public static final class LongData implements IDataIO<Long> {
+		
+		@Override
+		public void writeToData(IDataWriter writer, Long data) {
+			writer.writeLong(data);
+		}
+		
+		@Override
+		public Long readFromData(IDataReader reader, Supplier<Long> getter) {
+			return reader.readLong();
+		}
 		
 		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, Long data) {
@@ -152,6 +194,16 @@ public final class DataTypes {
 	public static final class DoubleData implements IDataIO<Double> {
 		
 		@Override
+		public void writeToData(IDataWriter writer, Double data) {
+			writer.writeDouble(data);
+		}
+		
+		@Override
+		public Double readFromData(IDataReader reader, Supplier<Double> getter) {
+			return reader.readDouble();
+		}
+		
+		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, Double data) {
 			nbt.setDouble(name, data);
 		}
@@ -174,6 +226,16 @@ public final class DataTypes {
 	}
 	
 	public static final class ShortData implements IDataIO<Short> {
+		
+		@Override
+		public void writeToData(IDataWriter writer, Short data) {
+			writer.writeShort(data);
+		}
+		
+		@Override
+		public Short readFromData(IDataReader reader, Supplier<Short> getter) {
+			return reader.readShort();
+		}
 		
 		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, Short data) {
@@ -200,6 +262,16 @@ public final class DataTypes {
 	public static final class FloatData implements IDataIO<Float> {
 		
 		@Override
+		public void writeToData(IDataWriter writer, Float data) {
+			writer.writeFloat(data);
+		}
+		
+		@Override
+		public Float readFromData(IDataReader reader, Supplier<Float> getter) {
+			return reader.readFloat();
+		}
+		
+		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, Float data) {
 			nbt.setFloat(name, data);
 		}
@@ -222,6 +294,16 @@ public final class DataTypes {
 	}
 	
 	public static final class IntArrayData implements IDataIO<int[]> {
+		
+		@Override
+		public void writeToData(IDataWriter writer, int[] data) {
+			writer.writeVarintArray(data);
+		}
+		
+		@Override
+		public int[] readFromData(IDataReader reader, Supplier<int[]> getter) {
+			return reader.readVarintArray();
+		}
 		
 		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, int[] data) {
@@ -256,6 +338,16 @@ public final class DataTypes {
 	public static final class ByteArrayData implements IDataIO<byte[]> {
 		
 		@Override
+		public void writeToData(IDataWriter writer, byte[] data) {
+			writer.writeByteArray(data);
+		}
+		
+		@Override
+		public byte[] readFromData(IDataReader reader, Supplier<byte[]> getter) {
+			return reader.readByteArray();
+		}
+		
+		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, byte[] data) {
 			nbt.setByteArray(name, data);
 		}
@@ -288,6 +380,16 @@ public final class DataTypes {
 	public static final class StringData implements IDataIO<String> {
 		
 		@Override
+		public void writeToData(IDataWriter writer, String data) {
+			writer.writeString(data);
+		}
+		
+		@Override
+		public String readFromData(IDataReader reader, Supplier<String> getter) {
+			return reader.readString();
+		}
+		
+		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, String data) {
 			nbt.setString(name, data);
 		}
@@ -310,6 +412,25 @@ public final class DataTypes {
 	}
 	
 	public static final class StringBuilderData implements IDataIO<StringBuilder> {
+		
+		@Override
+		public void writeToData(IDataWriter writer, StringBuilder data) {
+			int size = data.length();
+			writer.writeVarint(size);
+			for (int i = 0; i < size; ++i) {
+				writer.writeChar(data.charAt(i));
+			}
+		}
+		
+		@Override
+		public StringBuilder readFromData(IDataReader reader, Supplier<StringBuilder> getter) {
+			int size = reader.readVarint();
+			StringBuilder result = getter == null ? new StringBuilder(size) : getter.get();
+			for (int i = 0; i < size; ++i) {
+				result.append(reader.readChar());
+			}
+			return result;
+		}
 		
 		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, StringBuilder data) {
@@ -345,6 +466,25 @@ public final class DataTypes {
 	public static final class StringBufferData implements IDataIO<StringBuffer> {
 		
 		@Override
+		public void writeToData(IDataWriter writer, StringBuffer data) {
+			int size = data.length();
+			writer.writeVarint(size);
+			for (int i = 0; i < size; ++i) {
+				writer.writeChar(data.charAt(i));
+			}
+		}
+		
+		@Override
+		public StringBuffer readFromData(IDataReader reader, Supplier<StringBuffer> getter) {
+			int size = reader.readVarint();
+			StringBuffer result = getter == null ? new StringBuffer(size) : getter.get();
+			for (int i = 0; i < size; ++i) {
+				result.append(reader.readChar());
+			}
+			return result;
+		}
+		
+		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, StringBuffer data) {
 			nbt.setString(name, data.toString());
 		}
@@ -376,6 +516,25 @@ public final class DataTypes {
 	}
 	
 	public static final class BytePackageArrayData implements IDataIO<Byte[]> {
+		
+		@Override
+		public void writeToData(IDataWriter writer, Byte[] data) {
+			byte[] newData = new byte[data.length];
+			for (int i = 0; i < data.length; i++) {
+				newData[i] = data[i];
+			}
+			writer.writeByteArray(newData);
+		}
+		
+		@Override
+		public Byte[] readFromData(IDataReader reader, Supplier<Byte[]> getter) {
+			byte[] data = reader.readByteArray();
+			Byte[] result = getter == null ? new Byte[data.length] : getter.get();
+			for (int i = 0; i < result.length; i++) {
+				result[i] = data[i];
+			}
+			return result;
+		}
 		
 		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, Byte[] data) {
@@ -421,6 +580,18 @@ public final class DataTypes {
 	public static final class IntPackageArrayData implements IDataIO<Integer[]> {
 		
 		@Override
+		public void writeToData(IDataWriter writer, Integer[] data) {
+			int[] newData = Arrays.stream(data).mapToInt(Integer::valueOf).toArray();
+			writer.writeVarintArray(newData);
+		}
+		
+		@Override
+		public Integer[] readFromData(IDataReader reader, Supplier<Integer[]> getter) {
+			int[] data = reader.readVarintArray();
+			return Arrays.stream(data).boxed().toArray(Integer[]::new);
+		}
+		
+		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, Integer[] data) {
 			int[] newData = Arrays.stream(data).mapToInt(Integer::valueOf).toArray();
 			nbt.setIntArray(name, newData);
@@ -460,6 +631,16 @@ public final class DataTypes {
 	public static final class UuidData implements IDataIO<UUID> {
 		
 		@Override
+		public void writeToData(IDataWriter writer, UUID data) {
+			writer.writeUuid(data);
+		}
+		
+		@Override
+		public UUID readFromData(IDataReader reader, Supplier<UUID> getter) {
+			return reader.readUuid();
+		}
+		
+		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, UUID data) {
 			nbt.setUniqueId(name, data);
 		}
@@ -485,6 +666,16 @@ public final class DataTypes {
 	public static final class NbtData implements IDataIO<NBTTagCompound> {
 		
 		@Override
+		public void writeToData(IDataWriter writer, NBTTagCompound data) {
+			writer.writeTag(data);
+		}
+		
+		@Override
+		public NBTTagCompound readFromData(IDataReader reader, Supplier<NBTTagCompound> getter) {
+			return reader.readTagCompound();
+		}
+		
+		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, NBTTagCompound data) {
 			nbt.setTag(name, data);
 		}
@@ -507,6 +698,24 @@ public final class DataTypes {
 	}
 	
 	public static final class EnumData implements IDataIO<Enum<?>> {
+		
+		@Override
+		public void writeToData(IDataWriter writer, Enum<?> data) {
+			writer.writeString(data.name());
+			writer.writeString(data.getClass().getName());
+		}
+		
+		@Override
+		public Enum<?> readFromData(IDataReader reader, Supplier<Enum<?>> getter) {
+			String name = reader.readString();
+			String clazz = reader.readString();
+			try {
+				//noinspection unchecked,rawtypes
+				return Enum.valueOf((Class) Class.forName(clazz), name);
+			} catch (ClassNotFoundException e) {
+				throw new IntransitException(e);
+			}
+		}
 		
 		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, Enum<?> data) {
@@ -548,6 +757,21 @@ public final class DataTypes {
 	public static final class SerializableData implements IDataIO<INBTSerializable<NBTTagCompound>> {
 		
 		@Override
+		public void writeToData(IDataWriter writer, INBTSerializable<NBTTagCompound> data) {
+			NBTTagCompound tag = data.serializeNBT();
+			writer.writeTag(tag);
+		}
+		
+		@Override
+		public INBTSerializable<NBTTagCompound> readFromData(
+				IDataReader reader, Supplier<INBTSerializable<NBTTagCompound>> getter) {
+			NBTTagCompound tag = reader.readTagCompound();
+			INBTSerializable<NBTTagCompound> result = getter.get();
+			result.deserializeNBT(tag);
+			return result;
+		}
+		
+		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, INBTSerializable<NBTTagCompound> data) {
 			nbt.setTag(name, data.serializeNBT());
 		}
@@ -579,6 +803,16 @@ public final class DataTypes {
 	public static final class PosData implements IDataIO<BlockPos> {
 		
 		@Override
+		public void writeToData(IDataWriter writer, BlockPos data) {
+			writer.writeBlockPos(data);
+		}
+		
+		@Override
+		public BlockPos readFromData(IDataReader reader, Supplier<BlockPos> getter) {
+			return reader.readBlockPos();
+		}
+		
+		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, BlockPos data) {
 			IOUtils.writeBlockPos(nbt, data, name);
 		}
@@ -603,6 +837,16 @@ public final class DataTypes {
 	}
 	
 	public static final class VoltageData implements IDataIO<IVoltage> {
+		
+		@Override
+		public void writeToData(IDataWriter writer, IVoltage data) {
+			writer.writeVoltage(data);
+		}
+		
+		@Override
+		public IVoltage readFromData(IDataReader reader, Supplier<IVoltage> getter) {
+			return reader.readVoltage();
+		}
 		
 		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, IVoltage data) {
@@ -631,6 +875,20 @@ public final class DataTypes {
 	}
 	
 	public static final class ClassData implements IDataIO<Class<?>> {
+		
+		@Override
+		public void writeToData(IDataWriter writer, Class<?> data) {
+			writer.writeString(data.getName());
+		}
+		
+		@Override
+		public Class<?> readFromData(IDataReader reader, Supplier<Class<?>> getter) {
+			try {
+				return Class.forName(reader.readString());
+			} catch (ClassNotFoundException e) {
+				throw new IntransitException("需要读写的类不存在", e);
+			}
+		}
 		
 		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, Class<?> data) {
@@ -667,6 +925,16 @@ public final class DataTypes {
 	public static final class ElementData implements IDataIO<ItemElement> {
 		
 		@Override
+		public void writeToData(IDataWriter writer, ItemElement data) {
+			data.writeToData(writer);
+		}
+		
+		@Override
+		public ItemElement readFromData(IDataReader reader, Supplier<ItemElement> getter) {
+			return ItemElement.instance(reader);
+		}
+		
+		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, ItemElement data) {
 			nbt.setTag(name, data.serializeNBT());
 		}
@@ -689,6 +957,39 @@ public final class DataTypes {
 	}
 	
 	public static final class CollectionData implements IDataIO<Collection<?>> {
+		
+		@Override
+		public void writeToData(IDataWriter writer, Collection<?> data) {
+			DataTypeRegister.write(writer, data.getClass());
+			writer.writeVarint(data.size());
+			for (Object o : data) {
+				DataTypeRegister.write(writer, o);
+				DataTypeRegister.write(writer, o.getClass());
+			}
+		}
+		
+		@SuppressWarnings({"rawtypes", "unchecked"})
+		@Override
+		public Collection<?> readFromData(IDataReader reader, Supplier<Collection<?>> getter) {
+			int size = reader.readVarint();
+			Collection collection = getter == null ? null : getter.get();
+			if (collection == null) {
+				try {
+					Class clazz = DataTypeRegister.read(reader, Class.class, null);
+					collection = (Collection) clazz.newInstance();
+				} catch (Exception e) {
+					Throwables.throwIfUnchecked(e);
+					throw new IntransitException("数据自动读写出现了意料之外的错误", e);
+				}
+			} else {
+				DataTypeRegister.read(reader, Class.class, null);
+			}
+			for (int i = 0; i < size; ++i) {
+				Class clazz = DataTypeRegister.read(reader, Class.class, null);
+				collection.add(DataTypeRegister.read(reader, clazz, null));
+			}
+			return collection;
+		}
 		
 		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, Collection<?> data) {
@@ -761,6 +1062,45 @@ public final class DataTypes {
 	}
 	
 	public static final class MapData implements IDataIO<Map<?, ?>> {
+		
+		@Override
+		public void writeToData(IDataWriter writer, Map<?, ?> data) {
+			if (data == null) return;
+			writer.writeVarint(data.size());
+			DataTypeRegister.write(writer, data.getClass());
+			for (Map.Entry<?, ?> entry : data.entrySet()) {
+				DataTypeRegister.write(writer, entry.getKey().getClass());
+				DataTypeRegister.write(writer, entry.getValue().getClass());
+				DataTypeRegister.write(writer, entry.getKey());
+				DataTypeRegister.write(writer, entry.getValue());
+			}
+		}
+		
+		@SuppressWarnings({"rawtypes", "unchecked"})
+		@Override
+		public Map<?, ?> readFromData(IDataReader reader, Supplier<Map<?, ?>> getter) {
+			int size = reader.readVarint();
+			Map map = getter == null ? null : getter.get();
+			if (map == null) {
+				try {
+					Class<?> clazz = DataTypeRegister.read(reader, Class.class, null);
+					map = (Map) clazz.newInstance();
+				} catch (Exception e) {
+					Throwables.throwIfUnchecked(e);
+					throw new IntransitException("数据自动读写出现了意料之外的错误", e);
+				}
+			} else {
+				DataTypeRegister.read(reader, Class.class, null);
+			}
+			for (int i = 0; i < size; ++i) {
+				Class<?> keyClazz = DataTypeRegister.read(reader, Class.class, null);
+				Class<?> valueClazz = DataTypeRegister.read(reader, Class.class, null);
+				Object key = DataTypeRegister.read(reader, keyClazz, null);
+				Object value = DataTypeRegister.read(reader, valueClazz, null);
+				map.put(key, value);
+			}
+			return map;
+		}
 		
 		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, Map<?, ?> data) {
