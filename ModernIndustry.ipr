@@ -36,7 +36,6 @@
       <item index="9" class="java.lang.String" itemvalue="xyz.emptydreams.mi.register.block.OreCreate" />
     </list>
   </component>
-  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="GradleMigrationSettings" migrationVersion="1" />
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
