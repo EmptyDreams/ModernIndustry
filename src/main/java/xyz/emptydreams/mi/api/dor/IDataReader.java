@@ -13,11 +13,14 @@ import java.util.UUID;
  */
 public interface IDataReader {
 	
-	/** 从NBT读取数据 */
-	void readFromNBT(NBTTagCompound nbt);
-	
 	/** 获取下一个读取位点 */
 	int nextReadIndex();
+	/** 当前的读取位点 */
+	int nowReadIndex();
+	/** 含有的数据总大小（单位：Bit） */
+	int size();
+	/** 从NBT读取数据 */
+	void readFromNBT(NBTTagCompound nbt);
 	
 	/** 将reader中的数据读取到writer中 */
 	void readToWriter(int index, IDataWriter writer);

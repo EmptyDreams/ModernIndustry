@@ -10,7 +10,13 @@ import it.unimi.dsi.fastutil.bytes.ByteListIterator;
 public class SignBytes implements Iterable<Byte> {
 	
 	public static SignBytes read(IDataReader reader) {
-		return new SignBytes(reader.readByteArray());
+		SignBytes result = new SignBytes();
+		while (true) {
+			byte data = reader.readByte();
+			result.list.add(data);
+			if ((data & 0b10000000) == 0) break;
+		}
+		return result;
 	}
 	
 	private final ByteList list;
@@ -22,6 +28,7 @@ public class SignBytes implements Iterable<Byte> {
 	
 	public SignBytes(int size) {
 		list = new ByteArrayList(size);
+		list.add((byte) 0);
 	}
 	
 	public SignBytes(byte[] bytes) {
@@ -56,11 +63,21 @@ public class SignBytes implements Iterable<Byte> {
 	}
 	
 	public void writeTo(IDataWriter writer) {
-		writer.writeByteArray(list.toByteArray());
+		ByteListIterator it = iterator();
+		//noinspection WhileLoopReplaceableByForEach
+		while (it.hasNext()) {
+			byte data = it.next();
+			writer.writeByte(data);
+		}
 	}
 	
 	public void writeTo(int index, IDataWriter writer) {
-		writer.writeByteArray(index, list.toByteArray());
+		ByteListIterator it = iterator();
+		//noinspection WhileLoopReplaceableByForEach
+		while (it.hasNext()) {
+			byte data = it.next();
+			writer.writeByte(index++, data);
+		}
 	}
 	
 	@Override

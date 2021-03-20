@@ -10,6 +10,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -18,6 +20,14 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author EmptyDreams
  */
 public interface TEHelper extends IClassData {
+	
+	@Override
+	default boolean needOperate(Field field) {
+		int mod = field.getModifiers();
+		//不对静态及终态的field进行读写
+		return field.isAnnotationPresent(Storage.class)
+				&& (!(Modifier.isStatic(mod) || Modifier.isFinal(mod)));
+	}
 	
 	/**
 	 * 向指定NBT写入需要自动写入的数据

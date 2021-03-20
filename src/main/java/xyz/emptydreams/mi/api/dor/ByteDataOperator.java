@@ -54,13 +54,31 @@ public class ByteDataOperator implements IDataOperator {
 	}
 	
 	@Override
+	public int nowReadIndex() {
+		return readIndex + 1;
+	}
+	
+	@Override
+	public int size() {
+		return memory.size();
+	}
+	
+	@Override
 	public int nextWriteIndex() {
-		return ++writeIndex;
+		return nowReadIndex();
+	}
+	
+	@Override
+	public int nowWriteIndex() {
+		return writeIndex + 1;
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
-		writeByteArray(nbt.getByteArray("."));
+		byte[] data = nbt.getByteArray(".");
+		for (int i = data.length - 1; i >= 0; i--) {
+			writeByte(nextWriteIndex(), data[i]);
+		}
 	}
 	
 	@Override
@@ -225,6 +243,7 @@ public class ByteDataOperator implements IDataOperator {
 	@Override
 	public void writeByte(int index, byte data) {
 		memory.add(index, data);
+		++writeIndex;
 	}
 	
 	@Override

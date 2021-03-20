@@ -69,6 +69,7 @@ public interface IClassData {
 	default void writeAll(IDataWriter writer) {
 		Class<?> clazz = getClass();
 		while (clazz != null) {
+			int start = writer.nowWriteIndex();
 			Field[] fields = clazz.getDeclaredFields();
 			SignBytes indexTag = new SignBytes(fields.length);
 			for (Field field : fields) {
@@ -87,7 +88,7 @@ public interface IClassData {
 								+ "\t\t处理：跳过该项", e);
 				}
 			}
-			indexTag.writeTo(0, writer);
+			indexTag.writeTo(start, writer);
 			clazz = clazz.getSuperclass();
 		}
 	}
@@ -100,7 +101,7 @@ public interface IClassData {
 	 * @throws IllegalAccessException 如果反射过程出现异常
 	 */
 	default boolean write(Field field, IDataWriter writer) throws IllegalAccessException {
-		if (Modifier.isPrivate(field.getModifiers())) {
+		if (Modifier.isPrivate(field.getModifiers()) || Modifier.isProtected(field.getModifiers())) {
 			field.setAccessible(true);
 		}
 		Object data = field.get(this);
@@ -117,7 +118,7 @@ public interface IClassData {
 	 * @throws IllegalAccessException 如果反射过程出现异常
 	 */
 	default void read(Field field, IDataReader reader) throws IllegalAccessException {
-		if (Modifier.isPrivate(field.getModifiers())) {
+		if (Modifier.isPrivate(field.getModifiers()) || Modifier.isProtected(field.getModifiers())) {
 			field.setAccessible(true);
 		}
 		Object data = DataTypeRegister.read(reader, field.getType(), () -> {

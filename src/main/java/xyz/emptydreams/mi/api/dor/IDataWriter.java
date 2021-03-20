@@ -13,11 +13,14 @@ import java.util.UUID;
  */
 public interface IDataWriter {
 	
-	/** 将数据写入到NBT */
-	void writeToNBT(NBTTagCompound nbt);
-	
 	/** 下一个写入位点 */
 	int nextWriteIndex();
+	/** 当前写入位点 */
+	int nowWriteIndex();
+	/** 写入的数据总大小（单位：Bit） */
+	int size();
+	/** 将数据写入到NBT */
+	void writeToNBT(NBTTagCompound nbt);
 	
 	void writeBoolean(int index, boolean data);
 	void writeByte(int index, byte data);
