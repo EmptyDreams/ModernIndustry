@@ -11,12 +11,12 @@ public class ClassDataOperator extends ByteDataOperator {
 		this.object = object;
 	}
 
-	public void writeAll() {
-		object.writeAll();
+	public void writeAll(IDataWriter writer) {
+		object.writeAll(writer);
 	}
 	
-	public void readAll() {
-		object.readAll();
+	public void readAll(IDataReader reader) {
+		object.readAll(reader);
 	}
 	
 }

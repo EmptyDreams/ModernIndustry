@@ -31,7 +31,9 @@ public class ByteDataOperator implements IDataWriter, IDataReader {
 	
 	private final ByteList memory;
 	/** 读取时的下标 */
-	private int index = 0;
+	private int readIndex = -1;
+	/** 写入时的下标 */
+	private int writeIndex = -1;
 	
 	public ByteDataOperator() {
 		this(32);
@@ -47,60 +49,70 @@ public class ByteDataOperator implements IDataWriter, IDataReader {
 	}
 	
 	@Override
-	public void readToWriter(IDataWriter writer) {
-		writer.writeByteArray(memory.toByteArray());
+	public int nextReadIndex() {
+		return ++readIndex;
 	}
 	
 	@Override
-	public boolean readBoolean() {
-		return readByte() == 0;
+	public int nextWriteIndex() {
+		return ++writeIndex;
 	}
 	
 	@Override
-	public byte readByte() {
-		return memory.get(index++);
+	public void readToWriter(int index, IDataWriter writer) {
+		writer.writeByteArray(index, memory.toByteArray());
 	}
 	
 	@Override
-	public int readInt() {
-		int a = readByte(), b = readByte(), c = readByte(), d = readByte();
+	public boolean readBoolean(int index) {
+		return readByte(index) == 0;
+	}
+	
+	@Override
+	public byte readByte(int index) {
+		return memory.get(index);
+	}
+	
+	@Override
+	public int readInt(int index) {
+		int a = readByte(index), b = readByte(++index), c = readByte(++index), d = readByte(++index);
 		return a | (b << 8) | (c << 16) | (d << 24);
 	}
 	
 	@Override
-	public char readChar() {
-		return (char) (readByte() | (((int) readByte()) << 8));
+	public char readChar(int index) {
+		return (char) (readByte(index) | (((int) readByte(++index)) << 8));
 	}
 	
 	@Override
-	public short readShort() {
-		int a = readByte(), b = readByte();
+	public short readShort(int index) {
+		int a = readByte(index), b = readByte(++index);
 		return (short) (a | (b << 8));
 	}
 	
 	@Override
-	public long readLong() {
-		long a = readByte(), b = readByte(), c = readByte(), d = readByte();
-		long e = readByte(), f = readByte(), g = readByte(), h = readByte();
+	public long readLong(int index) {
+		long a = readByte(index),   b = readByte(++index), c = readByte(++index), d = readByte(++index);
+		long e = readByte(++index), f = readByte(++index), g = readByte(++index), h = readByte(++index);
 		return a | (b << 8) | (c << 16) | (d << 24)
 				| (e << 32) | (f << 40) | (g << 48) | (g << 56);
 	}
 	
 	@Override
-	public float readFloat() {
-		return Float.intBitsToFloat(readInt());
+	public float readFloat(int index) {
+		return Float.intBitsToFloat(readInt(index));
 	}
 	
 	@Override
-	public double readDouble() {
-		return Double.longBitsToDouble(readLong());
+	public double readDouble(int index) {
+		return Double.longBitsToDouble(readLong(index));
 	}
 	
 	@Override
-	public int readVarint() {
+	public int readVarint(int index) {
 		int result = 0;
 		for (int i = 0; i < 5; ++i) {
-			byte data = readByte();
+			byte data = readByte(index++);
 			result |= (data & 0b01111111);
 			if ((data & 0b10000000) == 0) break;
 		}
@@ -108,81 +120,81 @@ public class ByteDataOperator implements IDataWriter, IDataReader {
 	}
 	
 	@Override
-	public UUID readUuid() {
-		return new UUID(readLong(), readLong());
+	public UUID readUuid(int index) {
+		return new UUID(readLong(index), readLong(++index));
 	}
 	
 	@Override
-	public String readString() {
-		return new String(readByteArray());
+	public String readString(int index) {
+		return new String(readByteArray(index));
 	}
 	
 	@Override
-	public int[] readIntArray() {
-		int size = readVarint();
+	public int[] readIntArray(int index) {
+		int size = readVarint(index);
 		int[] result = new int[size];
 		for (int i = 0; i < size; ++i) {
-			result[i] = readInt();
+			result[i] = readInt(++index);
 		}
 		return result;
 	}
 	
 	@Override
-	public int[] readVarintArray() {
-		int size = readVarint();
+	public int[] readVarintArray(int index) {
+		int size = readVarint(index);
 		int[] result = new int[size];
 		for (int i = 0; i < size; ++i) {
-			result[i] = readVarint();
+			result[i] = readVarint(++index);
 		}
 		return result;
 	}
 	
 	@Override
-	public byte[] readByteArray() {
-		int size = readVarint();
+	public byte[] readByteArray(int index) {
+		int size = readVarint(index);
 		byte[] result = new byte[size];
 		for (int i = 0; i < size; ++i) {
-			result[i] = readByte();
+			result[i] = readByte(++index);
 		}
 		return result;
 	}
 	
 	@Override
-	public BlockPos readBlockPos() {
-		return new BlockPos(readInt(), readInt(), readInt());
+	public BlockPos readBlockPos(int index) {
+		return new BlockPos(readInt(index), readInt(++index), readInt(++index));
 	}
 	
 	@Override
-	public IDataReader readData() {
-		return new ByteDataOperator(readByteArray());
+	public IDataReader readData(int index) {
+		return new ByteDataOperator(readByteArray(index));
 	}
 	
 	@Override
-	public IVoltage readVoltage() {
-		int voltage = readVarint();
-		double index = readDouble();
-		return IVoltage.getInstance(voltage, index);
+	public IVoltage readVoltage(int index) {
+		int voltage = readVarint(index);
+		double loss = readDouble(++index);
+		return IVoltage.getInstance(voltage, loss);
 	}
 	
 	@Override
-	public NBTBase readTag() {
-		int id = readByte();
+	public NBTBase readTag(int index) {
+		int id = readByte(index);
 		switch (id) {
-			case 1: return new NBTTagByte(readByte());
-			case 2: return new NBTTagShort(readShort());
-			case 3: return new NBTTagInt(readVarint());
-			case 4: return new NBTTagLong(readLong());
-			case 5: return new NBTTagFloat(readFloat());
-			case 6: return new NBTTagDouble(readDouble());
-			case 7: return new NBTTagByteArray(readByteArray());
-			case 8: return new NBTTagString(readString());
-			case 10: return readNBTTagCompound();
-			case 11: return new NBTTagIntArray(readIntArray());
+			case 1: return new NBTTagByte(readByte(++index));
+			case 2: return new NBTTagShort(readShort(++index));
+			case 3: return new NBTTagInt(readVarint(++index));
+			case 4: return new NBTTagLong(readLong(++index));
+			case 5: return new NBTTagFloat(readFloat(++index));
+			case 6: return new NBTTagDouble(readDouble(++index));
+			case 7: return new NBTTagByteArray(readByteArray(++index));
+			case 8: return new NBTTagString(readString(++index));
+			case 10: return readNBTTagCompound(++index);
+			case 11: return new NBTTagIntArray(readIntArray(++index));
 			case 9:
-				int size = readVarint();
+				int size = readVarint(++index);
 				NBTTagList list = new NBTTagList();
 				for (int i = 0; i < size; ++i) {
-					list.appendTag(readTag());
+					list.appendTag(readTag(++index));
 				}
 				return list;
 			default: throw
@@ -191,180 +203,180 @@ public class ByteDataOperator implements IDataWriter, IDataReader {
 	}
 	
 	@Override
-	public NBTTagCompound readTagCompound() {
-		return (NBTTagCompound) readTag();
+	public NBTTagCompound readTagCompound(int index) {
+		return (NBTTagCompound) readTag(index);
 	}
 	
 	@Override
-	public void writeBoolean(boolean data) {
-		writeByte(data ? (byte) 0 : (byte) 1);
+	public void writeBoolean(int index, boolean data) {
+		writeByte(index, data ? (byte) 0 : (byte) 1);
 	}
 	
 	@Override
-	public void writeByte(byte data) {
-		memory.add(data);
+	public void writeByte(int index, byte data) {
+		memory.add(index, data);
 	}
 	
 	@Override
-	public void writeInt(int data) {
-		memory.add((byte) (data));
-		memory.add((byte) (data >>> 8));
-		memory.add((byte) (data >>> 16));
-		memory.add((byte) (data >>> 24));
+	public void writeInt(int index, int data) {
+		memory.add(index, (byte) (data >>> 24));
+		memory.add(index, (byte) (data >>> 16));
+		memory.add(index, (byte) (data >>> 8));
+		memory.add(index, (byte) (data));
 	}
 	
 	@Override
-	public void writeChar(char data) {
-		writeByte((byte) data);
-		writeByte((byte) (data >>> 8));
+	public void writeChar(int index, char data) {
+		writeByte(index, (byte) (data >>> 8));
+		writeByte(index, (byte) data);
 	}
 	
 	@Override
-	public void writeShort(short data) {
-		memory.add((byte) data);
-		memory.add((byte) (data >>> 8));
+	public void writeShort(int index, short data) {
+		memory.add(index, (byte) (data >>> 8));
+		memory.add(index, (byte) data);
 	}
 	
 	@Override
-	public void writeLong(long data) {
-		memory.add((byte) data);
-		memory.add((byte) (data >>> 8));
-		memory.add((byte) (data >>> 16));
-		memory.add((byte) (data >>> 24));
-		memory.add((byte) (data >>> 32));
-		memory.add((byte) (data >>> 40));
-		memory.add((byte) (data >>> 48));
-		memory.add((byte) (data >>> 56));
+	public void writeLong(int index, long data) {
+		memory.add(index, (byte) (data >>> 56));
+		memory.add(index, (byte) (data >>> 48));
+		memory.add(index, (byte) (data >>> 40));
+		memory.add(index, (byte) (data >>> 32));
+		memory.add(index, (byte) (data >>> 24));
+		memory.add(index, (byte) (data >>> 16));
+		memory.add(index, (byte) (data >>> 8));
+		memory.add(index, (byte) data);
 	}
 	
 	@Override
-	public void writeFloat(float data) {
-		writeInt(Float.floatToIntBits(data));
+	public void writeFloat(int index, float data) {
+		writeInt(index, Float.floatToIntBits(data));
 	}
 	
 	@Override
-	public void writeDouble(double data) {
-		writeLong(Double.doubleToLongBits(data));
+	public void writeDouble(int index, double data) {
+		writeLong(index, Double.doubleToLongBits(data));
 	}
 	
 	@Override
-	public void writeVarint(int data) {
+	public void writeVarint(int index, int data) {
 		if ((data & 0b11111111_11111111_11111111_10000000) == 0) {
-			memory.add((byte) (data & 0b01111111));
+			memory.add(index, (byte) (data & 0b01111111));
 		} else if ((data & 0b11111111_11111111_11000000_00000000) == 0) {
-			memory.add((byte) ((data & 0b01111111) | 0b10000000));
-			memory.add((byte) ((data >>> 7) & 0b01111111));
+			memory.add(index, (byte) ((data >>> 7) & 0b01111111));
+			memory.add(index, (byte) ((data & 0b01111111) | 0b10000000));
 		} else if ((data & 0b11111111_11100000_00000000_00000000) == 0) {
-			memory.add((byte) ((data & 0b01111111) | 0b10000000));
-			memory.add((byte) (((data >>> 7) & 0b01111111) | 0b10000000));
-			memory.add((byte) ((data >>> 14) & 0b01111111));
+			memory.add(index, (byte) ((data >>> 14) & 0b01111111));
+			memory.add(index, (byte) (((data >>> 7) & 0b01111111) | 0b10000000));
+			memory.add(index, (byte) ((data & 0b01111111) | 0b10000000));
 		} else if ((data & 0b11110000_00000000_00000000_00000000) == 0) {
-			memory.add((byte) ((data & 0b01111111) | 0b10000000));
-			memory.add((byte) (((data >>> 7) & 0b01111111) | 0b10000000));
-			memory.add((byte) (((data >>> 14) & 0b01111111) | 0b10000000));
-			memory.add((byte) (((data) >>> 21) & 0b01111111));
+			memory.add(index, (byte) (((data) >>> 21) & 0b01111111));
+			memory.add(index, (byte) (((data >>> 14) & 0b01111111) | 0b10000000));
+			memory.add(index, (byte) (((data >>> 7) & 0b01111111) | 0b10000000));
+			memory.add(index, (byte) ((data & 0b01111111) | 0b10000000));
 		} else {
-			memory.add((byte) ((data & 0b01111111) | 0b10000000));
-			memory.add((byte) (((data >>> 7) & 0b01111111) | 0b10000000));
-			memory.add((byte) (((data >>> 14) & 0b01111111) | 0b10000000));
-			memory.add((byte) ((((data) >>> 21) & 0b01111111) | 0b10000000));
-			memory.add((byte) ((data >>> 28) & 0b00001111));
+			memory.add(index, (byte) ((data >>> 28) & 0b00001111));
+			memory.add(index, (byte) ((((data) >>> 21) & 0b01111111) | 0b10000000));
+			memory.add(index, (byte) (((data >>> 14) & 0b01111111) | 0b10000000));
+			memory.add(index, (byte) (((data >>> 7) & 0b01111111) | 0b10000000));
+			memory.add(index, (byte) ((data & 0b01111111) | 0b10000000));
 		}
 	}
 	
 	@Override
-	public void writeUuid(UUID data) {
-		writeLong(data.getMostSignificantBits());
-		writeLong(data.getLeastSignificantBits());
+	public void writeUuid(int index, UUID data) {
+		writeLong(index, data.getLeastSignificantBits());
+		writeLong(index, data.getMostSignificantBits());
 	}
 	
 	@Override
-	public void writeString(String data) {
-		writeByteArray(data.getBytes(StandardCharsets.UTF_8));
+	public void writeString(int index, String data) {
+		writeByteArray(index, data.getBytes(StandardCharsets.UTF_8));
 	}
 	
 	@Override
-	public void writeIntArray(int[] data) {
-		writeVarint(data.length);
-		for (int i : data) {
-			writeInt(i);
+	public void writeIntArray(int index, int[] data) {
+		for (int i = data.length - 1; i >= 0; i--) {
+			writeInt(index, data[i]);
 		}
+		writeVarint(index, data.length);
 	}
 	
 	@Override
-	public void writeVarintArray(int[] data) {
-		writeVarint(data.length);
-		for (int i : data) {
-			writeVarint(i);
+	public void writeVarintArray(int index, int[] data) {
+		for (int i = data.length - 1; i >= 0; i--) {
+			writeVarint(index, data[i]);
 		}
+		writeVarint(index, data.length);
 	}
 	
 	@Override
-	public void writeByteArray(byte[] data) {
-		writeVarint(data.length);
-		for (byte b : data) {
-			writeByte(b);
+	public void writeByteArray(int index, byte[] data) {
+		for (int i = data.length - 1; i >= 0; i--) {
+			writeByte(index, data[i]);
 		}
+		writeVarint(index, data.length);
 	}
 	
 	@Override
-	public void writeBlockPos(BlockPos pos) {
-		writeInt(pos.getX());
-		writeInt(pos.getY());
-		writeInt(pos.getZ());
+	public void writeBlockPos(int index, BlockPos data) {
+		writeInt(index, data.getZ());
+		writeInt(index, data.getY());
+		writeInt(index, data.getX());
 	}
 	
 	@Override
-	public void writeVoltage(IVoltage data) {
-		writeVarint(data.getVoltage());
-		writeDouble(data.getLossIndex());
+	public void writeVoltage(int index, IVoltage data) {
+		writeDouble(index, data.getLossIndex());
+		writeVarint(index, data.getVoltage());
 	}
 	
 	@Override
-	public void writeTag(NBTBase data) {
-		writeByte(data.getId());
+	public void writeTag(int index, NBTBase data) {
+		writeByte(index, data.getId());
 		switch (data.getId()) {
-			case 1: writeByte(((NBTPrimitive) data).getByte());                break;
-			case 2: writeShort(((NBTPrimitive) data).getShort());              break;
-			case 3: writeVarint(((NBTPrimitive) data).getInt());               break;
-			case 4: writeLong(((NBTPrimitive) data).getLong());                break;
-			case 5: writeFloat(((NBTPrimitive) data).getFloat());              break;
-			case 6: writeDouble(((NBTPrimitive) data).getDouble());            break;
-			case 7: writeByteArray(((NBTTagByteArray) data).getByteArray());   break;
-			case 8: writeString(data.toString());                              break;
-			case 10: writeNBTTagCompound((NBTTagCompound) data);               break;
-			case 11: writeIntArray(((NBTTagIntArray) data).getIntArray());     break;
+			case 1: writeByte(index, ((NBTPrimitive) data).getByte());                break;
+			case 2: writeShort(index, ((NBTPrimitive) data).getShort());              break;
+			case 3: writeVarint(index, ((NBTPrimitive) data).getInt());               break;
+			case 4: writeLong(index, ((NBTPrimitive) data).getLong());                break;
+			case 5: writeFloat(index, ((NBTPrimitive) data).getFloat());              break;
+			case 6: writeDouble(index, ((NBTPrimitive) data).getDouble());            break;
+			case 7: writeByteArray(index, ((NBTTagByteArray) data).getByteArray());   break;
+			case 8: writeString(index, data.toString());                              break;
+			case 10: writeNBTTagCompound(index, (NBTTagCompound) data);               break;
+			case 11: writeIntArray(index, ((NBTTagIntArray) data).getIntArray());     break;
 			case 9:
 				NBTTagList list = (NBTTagList) data;
-				writeVarint(list.tagCount());
-				list.forEach(this::writeTag);
+				writeVarint(index, list.tagCount());
+				list.forEach(it -> writeTag(index, it));
 				break;
 			default: throw
 					new UnsupportedOperationException("不支持读写该类型：" + data.getClass().getSimpleName());
 		}
 	}
 	
-	private void writeNBTTagCompound(NBTTagCompound data) {
+	private void writeNBTTagCompound(int index, NBTTagCompound data) {
 		try {
-			writeVarint(data.getSize());
 			@SuppressWarnings("unchecked")
 			Map<String, NBTBase> map =
 					(Map<String, NBTBase>) data.getClass().getDeclaredField("tagMap").get(data);
 			map.forEach((key, value) -> {
-				writeString(key);
-				writeTag(value);
+				writeTag(index, value);
+				writeString(index, key);
 			});
+			writeVarint(index, data.getSize());
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			Throwables.throwIfUnchecked(e);
 			throw new IntransitException(e);
 		}
 	}
 	
-	private NBTTagCompound readNBTTagCompound() {
-		int size = readVarint();
+	private NBTTagCompound readNBTTagCompound(int index) {
+		int size = readVarint(index);
 		NBTTagCompound result = new NBTTagCompound();
 		for (int i = 0; i < size; ++i) {
-			result.setTag(readString(), readTag());
+			result.setTag(readString(++index), readTag(++index));
 		}
 		return result;
 	}
