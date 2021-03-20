@@ -27,7 +27,7 @@ import java.util.UUID;
 /**
  * @author EmptyDreams
  */
-public class ByteDataOperator implements IDataWriter, IDataReader {
+public class ByteDataOperator implements IDataOperator {
 	
 	private final ByteList memory;
 	/** 读取时的下标 */

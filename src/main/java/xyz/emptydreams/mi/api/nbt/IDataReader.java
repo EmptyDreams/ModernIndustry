@@ -8,7 +8,7 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import java.util.UUID;
 
 /**
- * 数据读取
+ * 支持数据读取的Operator
  * @author EmptyDreams
  */
 public interface IDataReader {

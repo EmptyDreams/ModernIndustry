@@ -7,7 +7,7 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import java.util.UUID;
 
 /**
- * 数据写入
+ * 支持数据写入的Operator
  * @author EmptyDreams
  */
 public interface IDataWriter {
