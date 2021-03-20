@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.nbt;
+package xyz.emptydreams.mi.api.dor;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,6 +12,9 @@ import java.util.UUID;
  * @author EmptyDreams
  */
 public interface IDataReader {
+	
+	/** 从NBT读取数据 */
+	void readFromNBT(NBTTagCompound nbt);
 	
 	/** 获取下一个读取位点 */
 	int nextReadIndex();

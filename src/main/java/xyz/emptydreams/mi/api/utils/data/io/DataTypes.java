@@ -9,8 +9,8 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.exception.IntransitException;
-import xyz.emptydreams.mi.api.nbt.IDataReader;
-import xyz.emptydreams.mi.api.nbt.IDataWriter;
+import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.IDataWriter;
 import xyz.emptydreams.mi.api.register.AutoLoader;
 import xyz.emptydreams.mi.api.utils.IOUtils;
 

@@ -28,8 +28,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static xyz.emptydreams.mi.api.utils.data.auto.DataType.*;
-
 /**
  * 电子工作台
  * @author EmptyDreams
@@ -37,17 +35,17 @@ import static xyz.emptydreams.mi.api.utils.data.auto.DataType.*;
 @AutoTileEntity("electron_synthesizer")
 public class EUElectronSynthesizer extends FrontTileEntity implements ITickable {
 	
-	@Storage(SERIALIZABLE) private final ItemStackHandler HANDLER = new ItemStackHandler(5 * 5 + 4);
+	@Storage private final ItemStackHandler HANDLER = new ItemStackHandler(5 * 5 + 4);
 	private final SlotGroup SLOTS = new SlotGroup(5, 5, 18, 0);
 	private final SlotGroup OUTS = new SlotGroup(2, 2, 18, 0);
 	/** 进度条 */
 	private final CommonProgress PROGRESS = new CommonProgress(
 										CommonProgress.Style.ARROW, CommonProgress.Front.RIGHT);
 	/** 工作时间 */
-	@Storage(INT) private int workingTime = -10;
-	@Storage(INT) private int maxTime = 0;
-	@Storage(COLLECTION) private final List<ItemElement> OUTPUT = new ArrayList<>(4);
-	@Storage(COLLECTION) private List<ItemStack> MERGE;
+	@Storage private int workingTime = -10;
+	@Storage private int maxTime = 0;
+	@Storage private final List<ItemElement> OUTPUT = new ArrayList<>(4);
+	@Storage private List<ItemStack> MERGE;
 	/** 是否需要重新计算，当输入栏变动时需要将此项设置为true */
 	private volatile boolean refresh = false;
 	

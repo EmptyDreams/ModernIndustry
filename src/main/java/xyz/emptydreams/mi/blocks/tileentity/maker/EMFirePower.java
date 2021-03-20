@@ -22,9 +22,6 @@ import xyz.emptydreams.mi.blocks.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.capabilities.nonburn.NonBurnCapability;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
 
-import static xyz.emptydreams.mi.api.utils.data.auto.DataType.INT;
-import static xyz.emptydreams.mi.api.utils.data.auto.DataType.SERIALIZABLE;
-
 /**
  * 火力发电机的TE
  * @author EmptyDreams
@@ -37,7 +34,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	/** 能量进度条 */
 	private final CommonProgress energyPro = new CommonProgress();
 	/** 输入/输出框 */
-	@Storage(SERIALIZABLE) private final ItemStackHandler item = new ItemStackHandler(2);
+	@Storage private final ItemStackHandler item = new ItemStackHandler(2);
 	/** 输入框 */
 	private final SlotItemHandler in = CommonUtil.createInputSlot(item, 0, 52, 29,
 											stack -> TileEntityFurnace.getItemBurnTime(stack) > 0 &&
@@ -45,9 +42,9 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	/** 输出框 */
 	private final SlotItemHandler out = CommonUtil.createOutputSlot(item, 1, 106, 29);
 	/** 已经燃烧的时长 */
-	@Storage(INT) private int burningTime = 0;
+	@Storage private int burningTime = 0;
 	/** 最大燃烧时长 */
-	@Storage(INT) private int maxTime = 0;
+	@Storage private int maxTime = 0;
 	/** 正在燃烧的物品 */
 	@Storage private ItemElement burnItem;
 

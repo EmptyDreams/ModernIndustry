@@ -1,6 +1,7 @@
-package xyz.emptydreams.mi.api.nbt;
+package xyz.emptydreams.mi.api.dor;
 
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 
@@ -11,6 +12,9 @@ import java.util.UUID;
  * @author EmptyDreams
  */
 public interface IDataWriter {
+	
+	/** 将数据写入到NBT */
+	void writeToNBT(NBTTagCompound nbt);
 	
 	/** 下一个写入位点 */
 	int nextWriteIndex();

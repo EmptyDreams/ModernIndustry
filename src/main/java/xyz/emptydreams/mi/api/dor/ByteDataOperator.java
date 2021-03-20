@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.nbt;
+package xyz.emptydreams.mi.api.dor;
 
 import com.google.common.base.Throwables;
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
@@ -56,6 +56,16 @@ public class ByteDataOperator implements IDataOperator {
 	@Override
 	public int nextWriteIndex() {
 		return ++writeIndex;
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		writeByteArray(nbt.getByteArray("."));
+	}
+	
+	@Override
+	public void writeToNBT(NBTTagCompound nbt) {
+		nbt.setByteArray(".", memory.toByteArray());
 	}
 	
 	@Override

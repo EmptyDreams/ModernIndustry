@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.nbt;
+package xyz.emptydreams.mi.api.dor;
 
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteList;
@@ -37,6 +37,15 @@ public final class ReadOnlyDataOperator implements IDataReader {
 		return new ReadOnlyDataOperator(size, fill);
 	}
 	
+	/**
+	 * 构建一个从指定NBT中读取数据的只读器
+	 * @param nbt NBT
+	 */
+	@Nonnull
+	public static ReadOnlyDataOperator instance(NBTTagCompound nbt) {
+		return new ReadOnlyDataOperator(nbt.getByteArray("."));
+	}
+	
 	private final ByteList memory;
 	/** 读取时的下标 */
 	private int readIndex = -1;
@@ -60,6 +69,11 @@ public final class ReadOnlyDataOperator implements IDataReader {
 	@Override
 	public int nextReadIndex() {
 		return ++readIndex;
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		throw new UnsupportedOperationException("不支持修改内部数据！");
 	}
 	
 	@Override

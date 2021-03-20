@@ -19,9 +19,6 @@ import xyz.emptydreams.mi.data.info.EnumVoltage;
 
 import javax.annotation.Nullable;
 
-import static xyz.emptydreams.mi.api.utils.data.auto.DataType.INT;
-import static xyz.emptydreams.mi.api.utils.data.auto.DataType.SERIALIZABLE;
-
 /**
  * 红石能转换器
  * @author EmptyDreams
@@ -29,7 +26,7 @@ import static xyz.emptydreams.mi.api.utils.data.auto.DataType.SERIALIZABLE;
 @AutoTileEntity("red_stone_converter")
 public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 
-	@Storage(SERIALIZABLE) private final ItemStackHandler item = new ItemStackHandler(1);
+	@Storage private final ItemStackHandler item = new ItemStackHandler(1);
 	private final SlotItemHandler INPUT = CommonUtil.createInputSlot(item, 0, 79, 20,
 			stack -> stack.getItem() == Items.REDSTONE ||
 					stack.getItem() == Item.getItemFromBlock(Blocks.REDSTONE_BLOCK));
@@ -37,8 +34,8 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 									CommonProgress.Style.STRIPE, CommonProgress.Front.RIGHT);
 	private final CommonProgress burnPro = new CommonProgress(
 									CommonProgress.Style.ARROW_DOWN, CommonProgress.Front.DOWN);
-	@Storage(INT) private int burnTime = 0;
-	@Storage(INT) private int maxTime = 0;
+	@Storage private int burnTime = 0;
+	@Storage private int maxTime = 0;
 
 	public static int getBurnTime(ItemStack stack) {
 		if (stack.getItem() == Items.REDSTONE) return 500;

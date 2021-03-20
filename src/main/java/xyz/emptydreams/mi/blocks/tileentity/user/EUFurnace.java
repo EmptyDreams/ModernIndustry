@@ -11,7 +11,6 @@ import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
-import xyz.emptydreams.mi.api.utils.data.auto.DataType;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
@@ -20,7 +19,6 @@ import xyz.emptydreams.mi.data.info.EnumVoltage;
 
 import javax.annotation.Nullable;
 
-import static xyz.emptydreams.mi.api.utils.data.auto.DataType.INT;
 import static xyz.emptydreams.mi.blocks.tileentity.user.MuffleFurnace.getResult;
 
 /**
@@ -33,7 +31,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 	/** 工作进度条 */
 	private final CommonProgress progressBar = new CommonProgress();
 	/** 输入/输出框 */
-	@Storage(value = DataType.SERIALIZABLE)
+	@Storage
 	private final ItemStackHandler item = new ItemStackHandler(2);
 	/** 输入框 */
 	private final SlotItemHandler in = new SlotItemHandler(item, 0, 52, 32) {
@@ -49,7 +47,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 			return false;
 		}
 	};
-	@Storage(INT) private int workingTime = 0;
+	@Storage private int workingTime = 0;
 
 	public EUFurnace() {
 		setReceiveRange(5, 10, EnumVoltage.C, EnumVoltage.D);

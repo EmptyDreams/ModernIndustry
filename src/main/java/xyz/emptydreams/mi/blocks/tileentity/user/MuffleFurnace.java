@@ -16,7 +16,6 @@ import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
-import static xyz.emptydreams.mi.api.utils.data.auto.DataType.INT;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.HORIZONTAL;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 
@@ -54,10 +53,10 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 		}
 	};
 	
-	@Storage(INT) private int maxWorkingTime = 0;
-	@Storage(INT) private int workingTime = 0;
-	@Storage(INT) private int maxBurningTime = 0;
-	@Storage(INT) private int burningTime = 0;
+	@Storage private int maxWorkingTime = 0;
+	@Storage private int workingTime = 0;
+	@Storage private int maxBurningTime = 0;
+	@Storage private int burningTime = 0;
 	
 	private final CommonProgress workProgress = new CommonProgress();
 	private final CommonProgress burnProgress = new CommonProgress(Style.FIRE, Front.UP);

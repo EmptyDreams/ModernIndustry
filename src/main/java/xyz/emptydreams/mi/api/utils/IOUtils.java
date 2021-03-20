@@ -3,7 +3,6 @@ package xyz.emptydreams.mi.api.utils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
-import xyz.emptydreams.mi.api.utils.data.auto.ClassMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -13,13 +12,6 @@ import java.nio.charset.StandardCharsets;
  * @author EmptyDreams
  */
 public final class IOUtils {
-	
-	/**
-	 * 获得指定类的id
-	 */
-	public static int getClassId(Class<?> clazz) {
-		return ClassMap.loadWorld().loadClass(clazz);
-	}
 	
 	/**
 	 * 将字符串写入buf

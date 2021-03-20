@@ -38,8 +38,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static xyz.emptydreams.mi.api.utils.data.auto.DataType.POS;
-
 /**
  * 默认电线
  * @author EmptyDreams
@@ -73,9 +71,9 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 		}
 	};
 	/** 上一根电线 */
-	@Storage(POS) private BlockPos prev = null;
+	@Storage private BlockPos prev = null;
 	/** 下一根电线 */
-	@Storage(POS) private BlockPos next = null;
+	@Storage private BlockPos next = null;
 	/** 最大电流量 */
 	protected int meMax;
 	/** 当前电流量 */

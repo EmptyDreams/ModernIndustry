@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.nbt;
+package xyz.emptydreams.mi.api.dor;
 
 import it.unimi.dsi.fastutil.bytes.ByteListIterator;
 import xyz.emptydreams.mi.api.exception.IntransitException;
@@ -8,8 +8,8 @@ import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import static xyz.emptydreams.mi.api.nbt.SignBytes.State.ONE;
-import static xyz.emptydreams.mi.api.nbt.SignBytes.State.ZERO;
+import static xyz.emptydreams.mi.api.dor.SignBytes.State.ONE;
+import static xyz.emptydreams.mi.api.dor.SignBytes.State.ZERO;
 
 /**
  * @author EmptyDreams
@@ -47,7 +47,7 @@ public interface IClassData {
 				try {
 					read(fields[i], reader);
 					++i;
-				} catch (IllegalAccessException e) {
+				} catch (Exception e) {
 					MISysInfo.err("读取信息时出现错误，跳过该项读写!\n"
 							+ "\t详细信息：\n"
 							+ "\t\t下标：" + indexTag.size()
@@ -77,9 +77,9 @@ public interface IClassData {
 					continue;
 				}
 				try {
-					write(field, writer);
-					indexTag.add(ONE);
-				} catch (IllegalAccessException e) {
+					if (write(field, writer)) indexTag.add(ONE);
+					else indexTag.add(ZERO);
+				} catch (Exception e) {
 					MISysInfo.err("写入信息时出现错误，跳过该项读写!\n"
 								+ "\t详细信息：\n"
 								+ "\t\t下标：" + indexTag.size()
@@ -99,9 +99,14 @@ public interface IClassData {
 	 * @param writer 写入器
 	 * @throws IllegalAccessException 如果反射过程出现异常
 	 */
-	default void write(Field field, IDataWriter writer) throws IllegalAccessException {
+	default boolean write(Field field, IDataWriter writer) throws IllegalAccessException {
+		if (Modifier.isPrivate(field.getModifiers())) {
+			field.setAccessible(true);
+		}
 		Object data = field.get(this);
+		if (data == null) return false;
 		DataTypeRegister.write(writer, data);
+		return true;
 	}
 	
 	/**
@@ -112,6 +117,9 @@ public interface IClassData {
 	 * @throws IllegalAccessException 如果反射过程出现异常
 	 */
 	default void read(Field field, IDataReader reader) throws IllegalAccessException {
+		if (Modifier.isPrivate(field.getModifiers())) {
+			field.setAccessible(true);
+		}
 		Object data = DataTypeRegister.read(reader, field.getType(), () -> {
 			try {
 				return field.get(this);
