@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.dor;
 
-import it.unimi.dsi.fastutil.bytes.ByteListIterator;
 import xyz.emptydreams.mi.api.exception.IntransitException;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
@@ -37,13 +36,10 @@ public interface IClassData {
 		Class<?> clazz = getClass();
 		while (clazz != null) {
 			Field[] fields = clazz.getDeclaredFields();
-			SignBytes indexTag = SignBytes.read(reader);
+			SignBytes indexTag = SignBytes.read(reader, fields.length);
 			int i = 0;
-			ByteListIterator iterator = indexTag.iterator();
-			//noinspection WhileLoopReplaceableByForEach
-			while (iterator.hasNext()) {
-				byte tag = iterator.next();
-				if (tag == 0) continue;
+			for (SignBytes.State state : indexTag) {
+				if (state.isZero()) continue;
 				try {
 					read(fields[i], reader);
 					++i;
@@ -69,7 +65,7 @@ public interface IClassData {
 	default void writeAll(IDataWriter writer) {
 		Class<?> clazz = getClass();
 		while (clazz != null) {
-			int start = writer.nowWriteIndex();
+			int start = writer.nextWriteIndex();
 			Field[] fields = clazz.getDeclaredFields();
 			SignBytes indexTag = new SignBytes(fields.length);
 			for (Field field : fields) {
@@ -129,6 +125,16 @@ public interface IClassData {
 			}
 		});
 		field.set(this, data);
+	}
+	
+	/**
+	 * 在读取时将读取到的值转化为指定类型以及在写入时将要写入的值转化为指定类型
+	 * @param field 辅助判断的field
+	 * @param input 要转化的对象
+	 * @return 转化后的对象
+	 */
+	default Object cast(Field field, Object input) {
+		return input;
 	}
 	
 }

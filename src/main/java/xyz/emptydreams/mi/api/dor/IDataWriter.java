@@ -15,8 +15,6 @@ public interface IDataWriter {
 	
 	/** 下一个写入位点 */
 	int nextWriteIndex();
-	/** 当前写入位点 */
-	int nowWriteIndex();
 	/** 写入的数据总大小（单位：Bit） */
 	int size();
 	/** 将数据写入到NBT */

@@ -4,18 +4,22 @@ import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteList;
 import it.unimi.dsi.fastutil.bytes.ByteListIterator;
 
+import java.util.Iterator;
+
 /**
  * @author EmptyDreams
  */
-public class SignBytes implements Iterable<Byte> {
+public class SignBytes implements Iterable<SignBytes.State> {
 	
-	public static SignBytes read(IDataReader reader) {
-		SignBytes result = new SignBytes();
+	public static SignBytes read(IDataReader reader, int size) {
+		SignBytes result = new SignBytes((size /7) + 1);
+		result.list.clear();
 		while (true) {
 			byte data = reader.readByte();
 			result.list.add(data);
 			if ((data & 0b10000000) == 0) break;
 		}
+		result.size = size;
 		return result;
 	}
 	
@@ -45,7 +49,7 @@ public class SignBytes implements Iterable<Byte> {
 			++listIndex;
 			list.add((byte) 0);
 		}
-		byte input = state == State.ZERO ? (byte) (0b0000001 << innerIndex) : (byte) 0;
+		byte input = state.isOne() ? (byte) (0b0000001 << innerIndex) : (byte) 0;
 		list.set(listIndex, (byte) (list.get(listIndex) | input));
 		++size;
 	}
@@ -63,7 +67,7 @@ public class SignBytes implements Iterable<Byte> {
 	}
 	
 	public void writeTo(IDataWriter writer) {
-		ByteListIterator it = iterator();
+		ByteListIterator it = list.iterator();
 		//noinspection WhileLoopReplaceableByForEach
 		while (it.hasNext()) {
 			byte data = it.next();
@@ -72,7 +76,7 @@ public class SignBytes implements Iterable<Byte> {
 	}
 	
 	public void writeTo(int index, IDataWriter writer) {
-		ByteListIterator it = iterator();
+		ByteListIterator it = list.iterator();
 		//noinspection WhileLoopReplaceableByForEach
 		while (it.hasNext()) {
 			byte data = it.next();
@@ -81,15 +85,57 @@ public class SignBytes implements Iterable<Byte> {
 	}
 	
 	@Override
-	public ByteListIterator iterator() {
-		return list.iterator();
+	public Iterator<State> iterator() {
+		return new SignIterator();
 	}
 	
-	/** @see ByteList#listIterator(int)  */
-	public ByteListIterator listIterator(int index) {
-		return list.listIterator(index);
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder(size());
+		for (State state : this) {
+			builder.append(state.getChar());
+		}
+		return builder.toString();
 	}
 	
-	public enum State {ZERO, ONE }
+	public enum State {
+		ZERO('0'),
+		ONE('1');
+		
+		private final char SIGN;
+		
+		State(char sign) {
+			this.SIGN = sign;
+		}
+		
+		public boolean isOne() {
+			return this == ONE;
+		}
+		
+		public boolean isZero() {
+			return this == ZERO;
+		}
+		
+		public char getChar() {
+			return SIGN;
+		}
+		
+	}
+	
+	private final class SignIterator implements Iterator<State> {
+		
+		private int index = 0;
+		
+		@Override
+		public boolean hasNext() {
+			return index < size();
+		}
+		
+		@Override
+		public State next() {
+			return get(index++);
+		}
+		
+	}
 	
 }

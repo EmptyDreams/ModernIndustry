@@ -29,10 +29,10 @@ import static xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister.registry;
 public final class DataTypes {
 	
 	static {
-		registry(new IntData(), clazz -> clazz == Integer.class);
-		registry(new ByteData(), clazz -> clazz == Byte.class);
-		registry(new BooleanData(), clazz -> clazz == Boolean.class);
-		registry(new LongData(), clazz ->clazz == Long.class);
+		registry(new IntData(), clazz -> clazz == int.class || clazz == Integer.class);
+		registry(new ByteData(), clazz -> clazz == byte.class || clazz == Byte.class);
+		registry(new BooleanData(), clazz -> clazz == boolean.class || clazz == Boolean.class);
+		registry(new LongData(), clazz -> clazz == long.class || clazz == Long.class);
 		registry(new ByteArrayData(), clazz -> clazz == byte[].class);
 		registry(new IntArrayData(), clazz -> clazz == int[].class);
 		registry(new ClassData(), clazz -> clazz == Class.class);
@@ -42,11 +42,11 @@ public final class DataTypes {
 		registry(new SerializableData(), INBTSerializable.class::isAssignableFrom);
 		registry(new ElementData(), clazz -> clazz == ItemElement.class);
 		registry(new MapData(), Map.class::isAssignableFrom);
-		registry(new DoubleData(), clazz -> clazz == Double.class);
+		registry(new DoubleData(), clazz -> clazz == double.class || clazz == Double.class);
 		registry(new EnumData(), Enum.class::isAssignableFrom);
-		registry(new FloatData(), clazz -> clazz == Float.class);
+		registry(new FloatData(), clazz -> clazz == float.class || clazz == Float.class);
 		registry(new NbtData(), clazz -> clazz == NBTTagCompound.class);
-		registry(new ShortData(), clazz -> clazz == Short.class);
+		registry(new ShortData(), clazz -> clazz == short.class || clazz == Short.class);
 		registry(new StringBuilderData(), StringBuilder.class::isAssignableFrom);
 		registry(new StringBufferData(), StringBuffer.class::isAssignableFrom);
 		registry(new UuidData(), clazz -> clazz == UUID.class);

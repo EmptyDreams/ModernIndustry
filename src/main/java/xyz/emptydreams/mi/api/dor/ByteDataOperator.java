@@ -32,8 +32,6 @@ public class ByteDataOperator implements IDataOperator {
 	private final ByteList memory;
 	/** 读取时的下标 */
 	private int readIndex = -1;
-	/** 写入时的下标 */
-	private int writeIndex = -1;
 	
 	public ByteDataOperator() {
 		this(32);
@@ -54,30 +52,20 @@ public class ByteDataOperator implements IDataOperator {
 	}
 	
 	@Override
-	public int nowReadIndex() {
-		return readIndex + 1;
-	}
-	
-	@Override
 	public int size() {
 		return memory.size();
 	}
 	
 	@Override
 	public int nextWriteIndex() {
-		return nowReadIndex();
-	}
-	
-	@Override
-	public int nowWriteIndex() {
-		return writeIndex + 1;
+		return memory.size();
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		byte[] data = nbt.getByteArray(".");
-		for (int i = data.length - 1; i >= 0; i--) {
-			writeByte(nextWriteIndex(), data[i]);
+		for (byte b : data) {
+			writeByte(b);
 		}
 	}
 	
@@ -243,7 +231,6 @@ public class ByteDataOperator implements IDataOperator {
 	@Override
 	public void writeByte(int index, byte data) {
 		memory.add(index, data);
-		++writeIndex;
 	}
 	
 	@Override

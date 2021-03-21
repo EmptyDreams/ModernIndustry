@@ -15,8 +15,6 @@ public interface IDataReader {
 	
 	/** 获取下一个读取位点 */
 	int nextReadIndex();
-	/** 当前的读取位点 */
-	int nowReadIndex();
 	/** 含有的数据总大小（单位：Bit） */
 	int size();
 	/** 从NBT读取数据 */
