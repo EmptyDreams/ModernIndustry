@@ -95,7 +95,7 @@ public interface IDataWriter {
 	}
 	/** 将指定reader写入到当前writer */
 	default void writeData(IDataReader data) {
-		data.readToWriter(this);
+		data.readToWriter(nextWriteIndex(), this);
 	}
 	
 }

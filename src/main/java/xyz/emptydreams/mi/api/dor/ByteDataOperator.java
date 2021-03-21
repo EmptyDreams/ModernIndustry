@@ -52,6 +52,11 @@ public class ByteDataOperator implements IDataOperator {
 	}
 	
 	@Override
+	public void setReadIndex(int readIndex) {
+		this.readIndex = readIndex;
+	}
+	
+	@Override
 	public int size() {
 		return memory.size();
 	}
@@ -80,55 +85,55 @@ public class ByteDataOperator implements IDataOperator {
 	}
 	
 	@Override
-	public boolean readBoolean(int index) {
-		return readByte(index) == 0;
+	public boolean readBoolean() {
+		return readByte() == 0;
 	}
 	
 	@Override
-	public byte readByte(int index) {
-		return memory.get(index);
+	public byte readByte() {
+		return memory.get(nextReadIndex());
 	}
 	
 	@Override
-	public int readInt(int index) {
-		int a = readByte(index), b = readByte(++index), c = readByte(++index), d = readByte(++index);
+	public int readInt() {
+		int a = readByte(), b = readByte(), c = readByte(), d = readByte();
 		return a | (b << 8) | (c << 16) | (d << 24);
 	}
 	
 	@Override
-	public char readChar(int index) {
-		return (char) (readByte(index) | (((int) readByte(++index)) << 8));
+	public char readChar() {
+		return (char) (readByte() | (((int) readByte()) << 8));
 	}
 	
 	@Override
-	public short readShort(int index) {
-		int a = readByte(index), b = readByte(++index);
+	public short readShort() {
+		int a = readByte(), b = readByte();
 		return (short) (a | (b << 8));
 	}
 	
 	@Override
-	public long readLong(int index) {
-		long a = readByte(index),   b = readByte(++index), c = readByte(++index), d = readByte(++index);
-		long e = readByte(++index), f = readByte(++index), g = readByte(++index), h = readByte(++index);
+	public long readLong() {
+		long a = readByte(), b = readByte(), c = readByte(), d = readByte();
+		long e = readByte(), f = readByte(), g = readByte(), h = readByte();
 		return a | (b << 8) | (c << 16) | (d << 24)
-				| (e << 32) | (f << 40) | (g << 48) | (g << 56);
+				| (e << 32) | (f << 40) | (g << 48) | (h << 56);
 	}
 	
 	@Override
-	public float readFloat(int index) {
-		return Float.intBitsToFloat(readInt(index));
+	public float readFloat() {
+		return Float.intBitsToFloat(readInt());
 	}
 	
 	@Override
-	public double readDouble(int index) {
-		return Double.longBitsToDouble(readLong(index));
+	public double readDouble() {
+		return Double.longBitsToDouble(readLong());
 	}
 	
 	@Override
-	public int readVarint(int index) {
+	public int readVarint() {
 		int result = 0;
 		for (int i = 0; i < 5; ++i) {
-			byte data = readByte(index++);
+			byte data = readByte();
 			result |= (data & 0b01111111);
 			if ((data & 0b10000000) == 0) break;
 		}
@@ -136,81 +141,81 @@ public class ByteDataOperator implements IDataOperator {
 	}
 	
 	@Override
-	public UUID readUuid(int index) {
-		return new UUID(readLong(index), readLong(++index));
+	public UUID readUuid() {
+		return new UUID(readLong(), readLong());
 	}
 	
 	@Override
-	public String readString(int index) {
-		return new String(readByteArray(index));
+	public String readString() {
+		return new String(readByteArray());
 	}
 	
 	@Override
-	public int[] readIntArray(int index) {
-		int size = readVarint(index);
+	public int[] readIntArray() {
+		int size = readVarint();
 		int[] result = new int[size];
 		for (int i = 0; i < size; ++i) {
-			result[i] = readInt(++index);
+			result[i] = readInt();
 		}
 		return result;
 	}
 	
 	@Override
-	public int[] readVarintArray(int index) {
-		int size = readVarint(index);
+	public int[] readVarintArray() {
+		int size = readVarint();
 		int[] result = new int[size];
 		for (int i = 0; i < size; ++i) {
-			result[i] = readVarint(++index);
+			result[i] = readVarint();
 		}
 		return result;
 	}
 	
 	@Override
-	public byte[] readByteArray(int index) {
-		int size = readVarint(index);
+	public byte[] readByteArray() {
+		int size = readVarint();
 		byte[] result = new byte[size];
 		for (int i = 0; i < size; ++i) {
-			result[i] = readByte(++index);
+			result[i] = readByte();
 		}
 		return result;
 	}
 	
 	@Override
-	public BlockPos readBlockPos(int index) {
-		return new BlockPos(readInt(index), readInt(++index), readInt(++index));
+	public BlockPos readBlockPos() {
+		return new BlockPos(readInt(), readInt(), readInt());
 	}
 	
 	@Override
-	public IDataReader readData(int index) {
-		return new ByteDataOperator(readByteArray(index));
+	public IDataReader readData() {
+		return new ByteDataOperator(readByteArray());
 	}
 	
 	@Override
-	public IVoltage readVoltage(int index) {
-		int voltage = readVarint(index);
-		double loss = readDouble(++index);
+	public IVoltage readVoltage() {
+		int voltage = readVarint();
+		double loss = readDouble();
 		return IVoltage.getInstance(voltage, loss);
 	}
 	
 	@Override
-	public NBTBase readTag(int index) {
-		int id = readByte(index);
+	public NBTBase readTag() {
+		int id = readByte();
 		switch (id) {
-			case 1: return new NBTTagByte(readByte(++index));
-			case 2: return new NBTTagShort(readShort(++index));
-			case 3: return new NBTTagInt(readVarint(++index));
-			case 4: return new NBTTagLong(readLong(++index));
-			case 5: return new NBTTagFloat(readFloat(++index));
-			case 6: return new NBTTagDouble(readDouble(++index));
-			case 7: return new NBTTagByteArray(readByteArray(++index));
-			case 8: return new NBTTagString(readString(++index));
-			case 10: return readNBTTagCompound(++index);
-			case 11: return new NBTTagIntArray(readIntArray(++index));
+			case 1: return new NBTTagByte(readByte());
+			case 2: return new NBTTagShort(readShort());
+			case 3: return new NBTTagInt(readVarint());
+			case 4: return new NBTTagLong(readLong());
+			case 5: return new NBTTagFloat(readFloat());
+			case 6: return new NBTTagDouble(readDouble());
+			case 7: return new NBTTagByteArray(readByteArray());
+			case 8: return new NBTTagString(readString());
+			case 10: return readNBTTagCompound();
+			case 11: return new NBTTagIntArray(readIntArray());
 			case 9:
-				int size = readVarint(++index);
+				int size = readVarint();
 				NBTTagList list = new NBTTagList();
 				for (int i = 0; i < size; ++i) {
-					list.appendTag(readTag(++index));
+					list.appendTag(readTag());
 				}
 				return list;
 			default: throw
@@ -219,8 +224,8 @@ public class ByteDataOperator implements IDataOperator {
 	}
 	
 	@Override
-	public NBTTagCompound readTagCompound(int index) {
-		return (NBTTagCompound) readTag(index);
+	public NBTTagCompound readTagCompound() {
+		return (NBTTagCompound) readTag();
 	}
 	
 	@Override
@@ -388,11 +393,11 @@ public class ByteDataOperator implements IDataOperator {
 		}
 	}
 	
-	private NBTTagCompound readNBTTagCompound(int index) {
-		int size = readVarint(index);
+	private NBTTagCompound readNBTTagCompound() {
+		int size = readVarint();
 		NBTTagCompound result = new NBTTagCompound();
 		for (int i = 0; i < size; ++i) {
-			result.setTag(readString(++index), readTag(++index));
+			result.setTag(readString(), readTag());
 		}
 		return result;
 	}

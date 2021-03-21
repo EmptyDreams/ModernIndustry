@@ -37,17 +37,17 @@ public interface IClassData {
 		while (clazz != null) {
 			Field[] fields = clazz.getDeclaredFields();
 			SignBytes indexTag = SignBytes.read(reader, fields.length);
-			int i = 0;
+			int i = -1;
 			for (SignBytes.State state : indexTag) {
+				++i;
 				if (state.isZero()) continue;
 				try {
 					read(fields[i], reader);
-					++i;
 				} catch (Exception e) {
 					MISysInfo.err("读取信息时出现错误，跳过该项读写!\n"
 							+ "\t详细信息：\n"
 							+ "\t\t下标：" + indexTag.size()
-							+ "\t\t名称：" + fields[i].getName()
+							+ "\t\t名称：" + clazz.getSimpleName() + "." + fields[i].getName()
 							+ "\t\t处理：跳过该项", e);
 				}
 			}
