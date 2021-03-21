@@ -1,6 +1,7 @@
 package xyz.emptydreams.mi.api.utils.data.auto;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import xyz.emptydreams.mi.api.dor.ClassDataOperator;
 import xyz.emptydreams.mi.api.dor.IClassData;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
@@ -20,6 +21,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author EmptyDreams
  */
 public interface TEHelper extends IClassData {
+	
+	@Override
+	default boolean suspend(Class<?> clazz) {
+		return clazz == TileEntity.class || clazz == null;
+	}
 	
 	@Override
 	default boolean needOperate(Field field) {
@@ -47,6 +53,23 @@ public interface TEHelper extends IClassData {
 		dor.readAll();
 	}
 	
+	@Override
+	default Object cast(Field field, Object input) {
+		Storage storage = field.getAnnotation(Storage.class);
+		if (storage.value() == Object.class) return input;
+		return cast(input, storage.value());
+	}
+	
+	/**
+	 * 将输入的数据转换为指定类型
+	 * @param data 数据
+	 * @param target 目标类型
+	 * @return 转换后的数据
+	 */
+	static Object cast(Object data, Class<?> target) {
+		return data;
+	}
+	
 	/**
 	 * <p>用于标志需要被离线的数据，不能被static修饰.
 	 * <p>支持且仅支持在{@link DataTypeRegister}中注册的数据类型
@@ -54,6 +77,14 @@ public interface TEHelper extends IClassData {
 	@Documented
 	@Retention(RUNTIME)
 	@Target(ElementType.FIELD)
-	@interface Storage { }
+	@interface Storage {
+		
+		/**
+		 * 目的读写类型，<code>Object.class</code>表示不进行数据转换
+		 * @return 目的类型
+		 */
+		Class<?> value() default Object.class;
+		
+	}
 	
 }

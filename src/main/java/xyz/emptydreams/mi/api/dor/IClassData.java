@@ -11,9 +11,18 @@ import static xyz.emptydreams.mi.api.dor.SignBytes.State.ONE;
 import static xyz.emptydreams.mi.api.dor.SignBytes.State.ZERO;
 
 /**
+ * 类读写
  * @author EmptyDreams
  */
 public interface IClassData {
+	
+	/**
+	 * 判断是否停止读写
+	 * @param clazz 当前准备进行读写的class
+	 */
+	default boolean suspend(Class<?> clazz) {
+		return clazz == Object.class || clazz == null;
+	}
 	
 	/**
 	 * 判断是否需要进行读写操作
@@ -34,7 +43,7 @@ public interface IClassData {
 	 */
 	default void readAll(IDataReader reader) {
 		Class<?> clazz = getClass();
-		while (clazz != null) {
+		while (!suspend(clazz)) {
 			Field[] fields = clazz.getDeclaredFields();
 			SignBytes indexTag = SignBytes.read(reader, fields.length);
 			int i = -1;
@@ -64,7 +73,7 @@ public interface IClassData {
 	 */
 	default void writeAll(IDataWriter writer) {
 		Class<?> clazz = getClass();
-		while (clazz != null) {
+		while (!suspend(clazz)) {
 			int start = writer.nextWriteIndex();
 			Field[] fields = clazz.getDeclaredFields();
 			SignBytes indexTag = new SignBytes(fields.length);

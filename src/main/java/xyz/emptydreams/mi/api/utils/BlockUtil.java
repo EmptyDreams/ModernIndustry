@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.api.utils;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -11,8 +10,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.blocks.base.TransferBlock;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
 
 /**
@@ -71,7 +68,7 @@ public final class BlockUtil {
 		for (EnumFacing facing : EnumFacing.values()) {
 			if (now.offset(facing).equals(other)) return facing;
 		}
-		throw new IllegalArgumentException("now和other不相邻！");
+		throw new IllegalArgumentException("now[" + now + "]和other" + other + "不相邻！");
 	}
 	
 }
