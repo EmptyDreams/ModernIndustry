@@ -87,6 +87,23 @@ public final class DataTypes {
 			return buf.readInt();
 		}
 		
+		@SuppressWarnings("unchecked")
+		@Override
+		public <R> R cast(Integer data, Class<R> target) {
+			if (target == byte.class || target == Byte.class) {
+				return (R) Byte.valueOf(data.byteValue());
+			} else if (target == short.class || target == Short.class) {
+				return (R) Short.valueOf(data.shortValue());
+			} else if (target == long.class || target == Long.class) {
+				return (R) Long.valueOf(data.longValue());
+			} else if (target == float.class || target == Float.class) {
+				return (R) Float.valueOf(data.floatValue());
+			} else if (target == double.class || target == Double.class) {
+				return (R) Double.valueOf(data.doubleValue());
+			} else {
+				throw new ClassCastException("int不能转换为：" + target.getName());
+			}
+		}
 	}
 	
 	public static final class ByteData implements IDataIO<Byte> {
@@ -121,6 +138,23 @@ public final class DataTypes {
 			return buf.readByte();
 		}
 		
+		@SuppressWarnings("unchecked")
+		@Override
+		public <R> R cast(Byte data, Class<R> target) {
+			if (target == int.class || target == Integer.class) {
+				return (R) Integer.valueOf(data.intValue());
+			} else if (target == short.class || target == Short.class) {
+				return (R) Short.valueOf(data.shortValue());
+			} else if (target == long.class || target == Long.class) {
+				return (R) Long.valueOf(data.longValue());
+			} else if (target == float.class || target == Float.class) {
+				return (R) Float.valueOf(data.floatValue());
+			} else if (target == double.class || target == Double.class) {
+				return (R) Double.valueOf(data.doubleValue());
+			} else {
+				throw new ClassCastException("byte不能转换为：" + target.getName());
+			}
+		}
 	}
 	
 	public static final class BooleanData implements IDataIO<Boolean> {
@@ -189,6 +223,23 @@ public final class DataTypes {
 			return buf.readLong();
 		}
 		
+		@SuppressWarnings("unchecked")
+		@Override
+		public <R> R cast(Long data, Class<R> target) {
+			if (target == byte.class || target == Byte.class) {
+				return (R) Byte.valueOf(data.byteValue());
+			} else if (target == short.class || target == Short.class) {
+				return (R) Short.valueOf(data.shortValue());
+			} else if (target == int.class || target == Integer.class) {
+				return (R) Integer.valueOf(data.intValue());
+			} else if (target == float.class || target == Float.class) {
+				return (R) Float.valueOf(data.floatValue());
+			} else if (target == double.class || target == Double.class) {
+				return (R) Double.valueOf(data.doubleValue());
+			} else {
+				throw new ClassCastException("long不能转换为：" + target.getName());
+			}
+		}
 	}
 	
 	public static final class DoubleData implements IDataIO<Double> {
@@ -223,6 +274,23 @@ public final class DataTypes {
 			return buf.readDouble();
 		}
 		
+		@SuppressWarnings("unchecked")
+		@Override
+		public <R> R cast(Double data, Class<R> target) {
+			if (target == byte.class || target == Byte.class) {
+				return (R) Byte.valueOf(data.byteValue());
+			} else if (target == short.class || target == Short.class) {
+				return (R) Short.valueOf(data.shortValue());
+			} else if (target == long.class || target == Long.class) {
+				return (R) Long.valueOf(data.longValue());
+			} else if (target == float.class || target == Float.class) {
+				return (R) Float.valueOf(data.floatValue());
+			} else if (target == int.class || target == Integer.class) {
+				return (R) Integer.valueOf(data.intValue());
+			} else {
+				throw new ClassCastException("double不能转换为：" + target.getName());
+			}
+		}
 	}
 	
 	public static final class ShortData implements IDataIO<Short> {
@@ -257,6 +325,23 @@ public final class DataTypes {
 			return buf.readShort();
 		}
 		
+		@SuppressWarnings("unchecked")
+		@Override
+		public <R> R cast(Short data, Class<R> target) {
+			if (target == byte.class || target == Byte.class) {
+				return (R) Byte.valueOf(data.byteValue());
+			} else if (target == int.class || target == Integer.class) {
+				return (R) Integer.valueOf(data.intValue());
+			} else if (target == long.class || target == Long.class) {
+				return (R) Long.valueOf(data.longValue());
+			} else if (target == float.class || target == Float.class) {
+				return (R) Float.valueOf(data.floatValue());
+			} else if (target == double.class || target == Double.class) {
+				return (R) Double.valueOf(data.doubleValue());
+			} else {
+				throw new ClassCastException("short不能转换为：" + target.getName());
+			}
+		}
 	}
 	
 	public static final class FloatData implements IDataIO<Float> {
@@ -291,6 +376,23 @@ public final class DataTypes {
 			return buf.readFloat();
 		}
 		
+		@SuppressWarnings("unchecked")
+		@Override
+		public <R> R cast(Float data, Class<R> target) {
+			if (target == byte.class || target == Byte.class) {
+				return (R) Byte.valueOf(data.byteValue());
+			} else if (target == short.class || target == Short.class) {
+				return (R) Short.valueOf(data.shortValue());
+			} else if (target == long.class || target == Long.class) {
+				return (R) Long.valueOf(data.longValue());
+			} else if (target == int.class || target == Integer.class) {
+				return (R) Integer.valueOf(data.intValue());
+			} else if (target == double.class || target == Double.class) {
+				return (R) Double.valueOf(data.doubleValue());
+			} else {
+				throw new ClassCastException("float不能转换为：" + target.getName());
+			}
+		}
 	}
 	
 	public static final class IntArrayData implements IDataIO<int[]> {
@@ -461,6 +563,17 @@ public final class DataTypes {
 			return result;
 		}
 		
+		@SuppressWarnings("unchecked")
+		@Override
+		public <R> R cast(StringBuilder data, Class<R> target) {
+			if (target == String.class) {
+				return (R) data.toString();
+			} else if (target == int.class || target == Integer.class) {
+				return (R) Integer.valueOf(data.toString());
+			} else {
+				throw new ClassCastException("StringBuilder不能转换为：" + target.getName());
+			}
+		}
 	}
 	
 	public static final class StringBufferData implements IDataIO<StringBuffer> {
@@ -513,6 +626,17 @@ public final class DataTypes {
 			return result;
 		}
 		
+		@SuppressWarnings("unchecked")
+		@Override
+		public <R> R cast(StringBuffer data, Class<R> target) {
+			if (target == String.class) {
+				return (R) data.toString();
+			} else if (target == int.class || target == Integer.class) {
+				return (R) Integer.valueOf(data.toString());
+			} else {
+				throw new ClassCastException("StringBuffer不能转换为：" + target.getName());
+			}
+		}
 	}
 	
 	public static final class BytePackageArrayData implements IDataIO<Byte[]> {
@@ -798,6 +922,12 @@ public final class DataTypes {
 			result.deserializeNBT(tag);
 			return result;
 		}
+		
+		@Override
+		public <R> R cast(INBTSerializable<NBTTagCompound> data, Class<R> target) {
+			return target.cast(data);
+		}
+		
 	}
 	
 	public static final class PosData implements IDataIO<BlockPos> {

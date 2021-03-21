@@ -111,7 +111,7 @@ public interface IClassData {
 		}
 		Object data = field.get(this);
 		if (data == null) return false;
-		DataTypeRegister.write(writer, data);
+		DataTypeRegister.write(writer, cast(field, data));
 		return true;
 	}
 	
@@ -133,7 +133,7 @@ public interface IClassData {
 				throw new IntransitException(e);
 			}
 		});
-		field.set(this, data);
+		field.set(this, cast(field, data));
 	}
 	
 	/**

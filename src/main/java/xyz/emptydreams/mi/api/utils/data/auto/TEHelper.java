@@ -57,17 +57,7 @@ public interface TEHelper extends IClassData {
 	default Object cast(Field field, Object input) {
 		Storage storage = field.getAnnotation(Storage.class);
 		if (storage.value() == Object.class) return input;
-		return cast(input, storage.value());
-	}
-	
-	/**
-	 * 将输入的数据转换为指定类型
-	 * @param data 数据
-	 * @param target 目标类型
-	 * @return 转换后的数据
-	 */
-	static Object cast(Object data, Class<?> target) {
-		return data;
+		return DataTypeRegister.cast(input, storage.value());
 	}
 	
 	/**

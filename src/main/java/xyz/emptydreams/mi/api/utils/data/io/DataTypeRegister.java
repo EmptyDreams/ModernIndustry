@@ -117,6 +117,18 @@ public final class DataTypeRegister {
 	}
 	
 	/**
+	 * 将输入的类型转化为指定类型
+	 * @param data 数据
+	 * @param target 目标类型
+	 * @return 转化后的数据
+	 * @see IDataIO#cast(Object, Class)
+	 */
+	public static <T, R> R cast(T data, Class<R> target) {
+		IDataIO io = searchNode(data.getClass());
+		return (R) io.cast(data, target);
+	}
+	
+	/**
 	 * 为指定类型寻找一个合适的处理器
 	 * @param type 指定类型
 	 * @throws NullPointerException 如果没有合适的处理器

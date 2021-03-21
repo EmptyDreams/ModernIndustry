@@ -60,7 +60,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	 * 存储六个方向的连接信息<br>
 	 * 从左到右依次为：上、下、东、南、西、北
 	 */
-	private int linkInfo = 0b000000;
+	@Storage(byte.class) private int linkInfo = 0b000000;
 	/** 电线连接的方块，不包括电线方块 */
 	@Storage
 	private final List<BlockPos> linkedBlocks = new ArrayList<BlockPos>(5) {
@@ -458,6 +458,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	 * 		方块暂时“删除”后此列表将重置以保证所有玩家可以正常渲染电线方块
 	 */
 	private final List<String> players = new ArrayList<>(1);
+	/** 存储网络数据传输的更新范围，只有在范围内的玩家需要进行更新 */
 	private Range3D net_range;
 	
 	@Override
@@ -501,14 +502,12 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
-		compound.setByte("linkInfo", (byte) linkInfo);
 		return TEHelper.super.writeToNBT(compound);
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		linkInfo = compound.getByte("linkInfo");
 		TEHelper.super.readFromNBT(compound);
 	}
 	

@@ -56,4 +56,15 @@ public interface IDataIO<T> {
 	 */
 	T readFromByteBuf(ByteBuf buf, Supplier<T> getter);
 	
+	/**
+	 * 将输入的数据转换为指定类型
+	 * @param data 数据
+	 * @param target 目的类型的Class
+	 * @throws ClassCastException 如果转换失败
+	 * @throws UnsupportedOperationException 如果该类型不支持转换
+	 */
+	default <R> R cast(T data, Class<R> target) {
+		throw new UnsupportedOperationException(data.getClass().getSimpleName() + "不支持进行类型转换！");
+	}
+	
 }
