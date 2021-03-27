@@ -19,6 +19,7 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.math.BlockPos;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.exception.IntransitException;
+import xyz.emptydreams.mi.api.utils.container.IntWrapper;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -240,34 +241,34 @@ public class ByteDataOperator implements IDataOperator {
 	
 	@Override
 	public void writeInt(int index, int data) {
-		memory.add(index, (byte) (data >>> 24));
-		memory.add(index, (byte) (data >>> 16));
-		memory.add(index, (byte) (data >>> 8));
 		memory.add(index, (byte) (data));
+		memory.add(++index, (byte) (data >>> 8));
+		memory.add(++index, (byte) (data >>> 16));
+		memory.add(++index, (byte) (data >>> 24));
 	}
 	
 	@Override
 	public void writeChar(int index, char data) {
-		writeByte(index, (byte) (data >>> 8));
 		writeByte(index, (byte) data);
+		writeByte(++index, (byte) (data >>> 8));
 	}
 	
 	@Override
 	public void writeShort(int index, short data) {
-		memory.add(index, (byte) (data >>> 8));
 		memory.add(index, (byte) data);
+		memory.add(++index, (byte) (data >>> 8));
 	}
 	
 	@Override
 	public void writeLong(int index, long data) {
-		memory.add(index, (byte) (data >>> 56));
-		memory.add(index, (byte) (data >>> 48));
-		memory.add(index, (byte) (data >>> 40));
-		memory.add(index, (byte) (data >>> 32));
-		memory.add(index, (byte) (data >>> 24));
-		memory.add(index, (byte) (data >>> 16));
-		memory.add(index, (byte) (data >>> 8));
 		memory.add(index, (byte) data);
+		memory.add(++index, (byte) (data >>> 8));
+		memory.add(++index, (byte) (data >>> 16));
+		memory.add(++index, (byte) (data >>> 24));
+		memory.add(++index, (byte) (data >>> 32));
+		memory.add(++index, (byte) (data >>> 40));
+		memory.add(++index, (byte) (data >>> 48));
+		memory.add(++index, (byte) (data >>> 56));
 	}
 	
 	@Override
@@ -285,30 +286,30 @@ public class ByteDataOperator implements IDataOperator {
 		if ((data & 0b11111111_11111111_11111111_10000000) == 0) {
 			memory.add(index, (byte) (data & 0b01111111));
 		} else if ((data & 0b11111111_11111111_11000000_00000000) == 0) {
-			memory.add(index, (byte) ((data >>> 7) & 0b01111111));
 			memory.add(index, (byte) ((data & 0b01111111) | 0b10000000));
+			memory.add(++index, (byte) ((data >>> 7) & 0b01111111));
 		} else if ((data & 0b11111111_11100000_00000000_00000000) == 0) {
-			memory.add(index, (byte) ((data >>> 14) & 0b01111111));
-			memory.add(index, (byte) (((data >>> 7) & 0b01111111) | 0b10000000));
 			memory.add(index, (byte) ((data & 0b01111111) | 0b10000000));
+			memory.add(++index, (byte) (((data >>> 7) & 0b01111111) | 0b10000000));
+			memory.add(++index, (byte) ((data >>> 14) & 0b01111111));
 		} else if ((data & 0b11110000_00000000_00000000_00000000) == 0) {
-			memory.add(index, (byte) (((data) >>> 21) & 0b01111111));
-			memory.add(index, (byte) (((data >>> 14) & 0b01111111) | 0b10000000));
-			memory.add(index, (byte) (((data >>> 7) & 0b01111111) | 0b10000000));
 			memory.add(index, (byte) ((data & 0b01111111) | 0b10000000));
+			memory.add(++index, (byte) (((data >>> 7) & 0b01111111) | 0b10000000));
+			memory.add(++index, (byte) (((data >>> 14) & 0b01111111) | 0b10000000));
+			memory.add(++index, (byte) (((data) >>> 21) & 0b01111111));
 		} else {
-			memory.add(index, (byte) ((data >>> 28) & 0b00001111));
-			memory.add(index, (byte) ((((data) >>> 21) & 0b01111111) | 0b10000000));
-			memory.add(index, (byte) (((data >>> 14) & 0b01111111) | 0b10000000));
-			memory.add(index, (byte) (((data >>> 7) & 0b01111111) | 0b10000000));
 			memory.add(index, (byte) ((data & 0b01111111) | 0b10000000));
+			memory.add(++index, (byte) (((data >>> 7) & 0b01111111) | 0b10000000));
+			memory.add(++index, (byte) (((data >>> 14) & 0b01111111) | 0b10000000));
+			memory.add(++index, (byte) ((((data) >>> 21) & 0b01111111) | 0b10000000));
+			memory.add(++index, (byte) ((data >>> 28) & 0b00001111));
 		}
 	}
 	
 	@Override
 	public void writeUuid(int index, UUID data) {
-		writeLong(index, data.getLeastSignificantBits());
 		writeLong(index, data.getMostSignificantBits());
+		writeLong(++index, data.getLeastSignificantBits());
 	}
 	
 	@Override
@@ -318,44 +319,44 @@ public class ByteDataOperator implements IDataOperator {
 	
 	@Override
 	public void writeIntArray(int index, int[] data) {
-		for (int i = data.length - 1; i >= 0; i--) {
-			writeInt(index, data[i]);
-		}
 		writeVarint(index, data.length);
+		for (int i : data) {
+			writeInt(++index, i);
+		}
 	}
 	
 	@Override
 	public void writeVarintArray(int index, int[] data) {
-		for (int i = data.length - 1; i >= 0; i--) {
-			writeVarint(index, data[i]);
-		}
 		writeVarint(index, data.length);
+		for (int i : data) {
+			writeVarint(++index, i);
+		}
 	}
 	
 	@Override
 	public void writeByteArray(int index, byte[] data) {
-		for (int i = data.length - 1; i >= 0; i--) {
-			writeByte(index, data[i]);
-		}
 		writeVarint(index, data.length);
+		for (byte b : data) {
+			writeByte(++index, b);
+		}
 	}
 	
 	@Override
 	public void writeBlockPos(int index, BlockPos data) {
-		writeInt(index, data.getZ());
-		writeInt(index, data.getY());
 		writeInt(index, data.getX());
+		writeInt(++index, data.getY());
+		writeInt(++index, data.getZ());
 	}
 	
 	@Override
 	public void writeVoltage(int index, IVoltage data) {
-		writeDouble(index, data.getLossIndex());
 		writeVarint(index, data.getVoltage());
+		writeDouble(++index, data.getLossIndex());
 	}
 	
 	@Override
 	public void writeTag(int index, NBTBase data) {
-		writeByte(index, data.getId());
+		writeByte(index++, data.getId());
 		switch (data.getId()) {
 			case 1: writeByte(index, ((NBTPrimitive) data).getByte());                break;
 			case 2: writeShort(index, ((NBTPrimitive) data).getShort());              break;
@@ -370,10 +371,12 @@ public class ByteDataOperator implements IDataOperator {
 			case 9:
 				NBTTagList list = (NBTTagList) data;
 				writeVarint(index, list.tagCount());
-				list.forEach(it -> writeTag(index, it));
+				IntWrapper i = new IntWrapper(index);
+				list.forEach(it -> writeTag(i.incrementAndGet(), it));
 				break;
-			default: throw
-					new UnsupportedOperationException("不支持读写该类型：" + data.getClass().getSimpleName());
+			default:
+				throw new UnsupportedOperationException(
+						"不支持读写该类型：" + data.getClass().getSimpleName());
 		}
 	}
 	
@@ -382,11 +385,12 @@ public class ByteDataOperator implements IDataOperator {
 			@SuppressWarnings("unchecked")
 			Map<String, NBTBase> map =
 					(Map<String, NBTBase>) data.getClass().getDeclaredField("tagMap").get(data);
-			map.forEach((key, value) -> {
-				writeTag(index, value);
-				writeString(index, key);
-			});
 			writeVarint(index, data.getSize());
+			IntWrapper i = new IntWrapper(index);
+			map.forEach((key, value) -> {
+				writeString(i.incrementAndGet(), key);
+				writeTag(i.incrementAndGet(), value);
+			});
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			Throwables.throwIfUnchecked(e);
 			throw new IntransitException(e);

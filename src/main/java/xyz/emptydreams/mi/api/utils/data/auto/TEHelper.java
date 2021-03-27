@@ -24,7 +24,7 @@ public interface TEHelper extends IClassData {
 	
 	@Override
 	default boolean suspend(Class<?> clazz) {
-		return clazz == TileEntity.class || clazz == null;
+		return clazz == TileEntity.class;
 	}
 	
 	@Override

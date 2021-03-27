@@ -20,8 +20,9 @@ public interface IClassData {
 	 * 判断是否停止读写
 	 * @param clazz 当前准备进行读写的class
 	 */
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	default boolean suspend(Class<?> clazz) {
-		return clazz == Object.class || clazz == null;
+		return clazz == Object.class;
 	}
 	
 	/**
