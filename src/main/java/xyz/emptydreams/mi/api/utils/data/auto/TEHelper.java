@@ -42,7 +42,7 @@ public interface TEHelper extends IClassData {
 		if (WorldUtil.isClient()) return data;
 		ClassDataOperator dor = new ClassDataOperator(this);
 		dor.writeAll();
-		dor.writeToNBT(data);
+		dor.readToNBT(data, ".");
 		return data;
 	}
 	

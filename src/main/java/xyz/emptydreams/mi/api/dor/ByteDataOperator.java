@@ -67,16 +67,16 @@ public class ByteDataOperator implements IDataOperator {
 	}
 	
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-		byte[] data = nbt.getByteArray(".");
+	public void writeFromNBT(NBTTagCompound nbt, String key) {
+		byte[] data = nbt.getByteArray(key);
 		for (byte b : data) {
 			writeByte(b);
 		}
 	}
 	
 	@Override
-	public void writeToNBT(NBTTagCompound nbt) {
-		nbt.setByteArray(".", memory.toByteArray());
+	public void readToNBT(NBTTagCompound nbt, String key) {
+		nbt.setByteArray(key, memory.toByteArray());
 	}
 	
 	@Override

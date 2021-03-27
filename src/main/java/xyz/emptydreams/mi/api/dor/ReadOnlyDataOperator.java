@@ -82,8 +82,8 @@ public final class ReadOnlyDataOperator implements IDataReader {
 	}
 	
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-		throw new UnsupportedOperationException("不支持修改内部数据！");
+	public void readToNBT(NBTTagCompound nbt, String key) {
+		nbt.setByteArray(key, memory.toByteArray());
 	}
 	
 	@Override

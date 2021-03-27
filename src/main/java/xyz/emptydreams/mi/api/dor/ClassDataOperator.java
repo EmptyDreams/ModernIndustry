@@ -15,7 +15,7 @@ public class ClassDataOperator extends ByteDataOperator {
 
 	public ClassDataOperator(IClassData object, NBTTagCompound nbt) {
 		this(object);
-		readFromNBT(nbt);
+		writeFromNBT(nbt, ".");
 	}
 	
 	public void writeAll() {

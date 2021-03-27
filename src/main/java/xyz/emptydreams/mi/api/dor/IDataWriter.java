@@ -17,8 +17,8 @@ public interface IDataWriter {
 	int nextWriteIndex();
 	/** 写入的数据总大小（单位：Bit） */
 	int size();
-	/** 将数据写入到NBT */
-	void writeToNBT(NBTTagCompound nbt);
+	/** 从NBT读取数据 */
+	void writeFromNBT(NBTTagCompound nbt, String key);
 	
 	void writeBoolean(int index, boolean data);
 	void writeByte(int index, byte data);

@@ -19,9 +19,8 @@ public interface IDataReader {
 	void setReadIndex(int index);
 	/** 含有的数据总大小（单位：Bit） */
 	int size();
-	/** 从NBT读取数据 */
-	void readFromNBT(NBTTagCompound nbt);
-	
+	/** 将数据写入到NBT */
+	void readToNBT(NBTTagCompound nbt, String key);
 	
 	/** 将reader中的数据读取到writer中 */
 	void readToWriter(int index, IDataWriter writer);
