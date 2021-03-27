@@ -12,7 +12,7 @@ import xyz.emptydreams.mi.api.craftguide.only.UnorderlyShapeOnly;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
 import xyz.emptydreams.mi.api.register.AutoLoader;
-import xyz.emptydreams.mi.api.utils.data.Size2D;
+import xyz.emptydreams.mi.api.utils.data.math.Size2D;
 import xyz.emptydreams.mi.blocks.common.OreBlock;
 import xyz.emptydreams.mi.blocks.machine.maker.FirePowerBlock;
 import xyz.emptydreams.mi.blocks.machine.user.CompressorBlock;

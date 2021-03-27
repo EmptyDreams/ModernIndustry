@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.container.IntWrapper;
-import xyz.emptydreams.mi.api.utils.data.Point2D;
+import xyz.emptydreams.mi.api.utils.data.math.Point2D;
 
 import java.util.HashSet;
 import java.util.Iterator;

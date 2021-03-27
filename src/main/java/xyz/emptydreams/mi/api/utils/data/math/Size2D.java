@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.utils.data;
+package xyz.emptydreams.mi.api.utils.data.math;
 
 /**
  * 存储2D坐标系中的尺寸

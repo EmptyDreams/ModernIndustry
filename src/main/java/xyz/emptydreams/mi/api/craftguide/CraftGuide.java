@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSol;
 import xyz.emptydreams.mi.api.utils.StringUtil;
-import xyz.emptydreams.mi.api.utils.data.Size2D;
+import xyz.emptydreams.mi.api.utils.data.math.Size2D;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

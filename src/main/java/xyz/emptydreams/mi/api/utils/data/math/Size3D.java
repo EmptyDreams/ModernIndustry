@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.utils.data;
+package xyz.emptydreams.mi.api.utils.data.math;
 
 /**
  * 三维坐标系中的尺寸.<br>

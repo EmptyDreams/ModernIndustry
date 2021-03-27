@@ -1,6 +1,6 @@
-package xyz.emptydreams.mi.api.utils.data;
+package xyz.emptydreams.mi.api.utils.data.math;
 
-import static xyz.emptydreams.mi.api.utils.data.Range3D.sq;
+import static xyz.emptydreams.mi.api.utils.data.math.Range3D.sq;
 
 /**
  * 二维坐标系中的范围

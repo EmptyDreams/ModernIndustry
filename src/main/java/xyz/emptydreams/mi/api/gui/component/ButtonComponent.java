@@ -10,7 +10,7 @@ import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.interfaces.ThConsumer;
 import xyz.emptydreams.mi.api.utils.StringUtil;
-import xyz.emptydreams.mi.api.utils.data.Size2D;
+import xyz.emptydreams.mi.api.utils.data.math.Size2D;
 
 import javax.annotation.Nonnull;
 import java.awt.*;

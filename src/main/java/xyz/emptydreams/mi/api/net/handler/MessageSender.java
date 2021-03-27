@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.net.NetworkLoader;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
-import xyz.emptydreams.mi.api.utils.data.Range3D;
+import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 
 import java.util.function.Predicate;
 

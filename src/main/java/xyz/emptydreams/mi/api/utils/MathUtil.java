@@ -1,7 +1,7 @@
 package xyz.emptydreams.mi.api.utils;
 
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
-import xyz.emptydreams.mi.api.utils.data.Point2D;
+import xyz.emptydreams.mi.api.utils.data.math.Point2D;
 
 /**
  * 有关数学的计算

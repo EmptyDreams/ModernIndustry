@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.utils.data;
+package xyz.emptydreams.mi.api.utils.data.math;
 
 import net.minecraft.entity.Entity;
 

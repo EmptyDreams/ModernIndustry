@@ -13,8 +13,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.emptydreams.mi.api.utils.data.Point3D;
-import xyz.emptydreams.mi.api.utils.data.Range3D;
+import xyz.emptydreams.mi.api.utils.data.math.Point3D;
+import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
