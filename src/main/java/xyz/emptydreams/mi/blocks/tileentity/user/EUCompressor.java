@@ -18,6 +18,7 @@ import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
+import xyz.emptydreams.mi.api.utils.data.te.Storage;
 import xyz.emptydreams.mi.blocks.CraftList;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.machine.user.CompressorBlock;
@@ -39,8 +40,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	 * 三个物品框<br>
 	 * 	0-上端，1-下端，2-输出
 	 */
-	@Storage
-	private final ItemStackHandler item = new ItemStackHandler(3);
+	@Storage private final ItemStackHandler item = new ItemStackHandler(3);
 	private final SlotMI up = new SlotMI(item, 0, 56, 17);
 	private final SlotMI down = new SlotMI(item, 1, 56, 53);
 	private final SlotItemHandler out = new SlotItemHandler(item, 2, 125, 40) {
@@ -51,8 +51,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	};
 	private final SlotGroup slotGroup = new AbstractSlotGroup(up, down);
 	/** 已工作时间 */
-	@Storage
-	private int workingTime = 0;
+	@Storage private int workingTime = 0;
 	/** 进度条 */
 	private final CommonProgress progressBar = new CommonProgress();
 	/** 每次工作消耗的电能 */

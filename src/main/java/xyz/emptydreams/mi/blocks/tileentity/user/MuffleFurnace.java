@@ -14,6 +14,7 @@ import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
+import xyz.emptydreams.mi.api.utils.data.te.Storage;
 
 import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
 import static xyz.emptydreams.mi.blocks.base.MIProperty.HORIZONTAL;

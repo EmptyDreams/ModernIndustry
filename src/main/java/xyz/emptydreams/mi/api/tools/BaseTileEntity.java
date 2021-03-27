@@ -5,13 +5,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.utils.data.auto.TEHelper;
+import xyz.emptydreams.mi.api.utils.data.te.TEData;
 
 /**
  * 基础TE，提供了一些默认的功能
  * @author EmptyDreams
  */
-public class BaseTileEntity extends TileEntity implements TEHelper {
+public class BaseTileEntity extends TileEntity {
 	
 	/**
 	 * 方块更新时若是同种方块则不更新TE
@@ -28,14 +28,14 @@ public class BaseTileEntity extends TileEntity implements TEHelper {
 	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		TEHelper.super.writeToNBT(compound);
+		TEData.write(this, compound, ".");
 		return super.writeToNBT(compound);
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		TEHelper.super.readFromNBT(compound);
+		TEData.read(this, compound, ".");
 	}
 	
 	@Override

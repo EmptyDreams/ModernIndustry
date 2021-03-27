@@ -27,7 +27,8 @@ import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.Point3D;
 import xyz.emptydreams.mi.api.utils.data.Range3D;
-import xyz.emptydreams.mi.api.utils.data.auto.TEHelper;
+import xyz.emptydreams.mi.api.utils.data.te.Storage;
+import xyz.emptydreams.mi.api.utils.data.te.TEData;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
 import xyz.emptydreams.mi.data.info.CableCache;
 import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
@@ -43,7 +44,7 @@ import java.util.List;
  * @author EmptyDreams
  */
 @AutoTileEntity("IN_FATHER_ELECTRICITY_TRANSFER")
-public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, TEHelper {
+public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	
 	//MC反射调用
 	@SuppressWarnings("unused")
@@ -502,13 +503,13 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable, 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
-		return TEHelper.super.writeToNBT(compound);
+		return TEData.write(this, compound, ".");
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		TEHelper.super.readFromNBT(compound);
+		TEData.read(this, compound, ".");
 	}
 	
 	@Override

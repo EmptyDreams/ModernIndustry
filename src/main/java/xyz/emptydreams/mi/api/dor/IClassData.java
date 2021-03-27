@@ -42,8 +42,8 @@ public interface IClassData {
 	 * <p><b>重写该方法时必须重写{@link #read(Field, IDataReader)}</b>
 	 * @param reader 读取器
 	 */
-	default void readAll(IDataReader reader) {
-		Class<?> clazz = getClass();
+	default void readAll(IDataReader reader, Object object) {
+		Class<?> clazz = object.getClass();
 		while (!suspend(clazz)) {
 			Field[] fields = clazz.getDeclaredFields();
 			SignBytes indexTag = SignBytes.read(reader, fields.length);
@@ -69,11 +69,11 @@ public interface IClassData {
 	 * <p>写入所有需要写入的数据.
 	 * <p>方法内部调用{@link #needOperate(Field)}判断是否进行写入，
 	 *      调用{@link #write(Field, IDataWriter)}进行数据写入.
-	 * <p><b>重写该方法时务必重写{@link #readAll(IDataReader)}</b>
+	 * <p><b>重写该方法时务必重写{@link #readAll(IDataReader, Object)}</b>
 	 * @param writer 写入器
 	 */
-	default void writeAll(IDataWriter writer) {
-		Class<?> clazz = getClass();
+	default void writeAll(IDataWriter writer, Object object) {
+		Class<?> clazz = object.getClass();
 		while (!suspend(clazz)) {
 			int start = writer.nextWriteIndex();
 			Field[] fields = clazz.getDeclaredFields();
