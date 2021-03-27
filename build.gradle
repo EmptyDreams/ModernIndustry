@@ -104,13 +104,6 @@ jar {
             "TweakClass": "xyz.emptydreams.mi.coremod.MIMixinTweaker",
             "FMLCorePluginContainsFMLMod": true
     ])
-
-   // manifest.attributes([
-    //        "FMLCorePlugin": "xyz.emptydreams.mi.coremod.MIMixinFMLPlugin",
-   //         "FMLCorePluginContainsFMLMod": true
-   // ])
-
-    manifest.attributes('FMLAT': 'mi_at.cfg')
 }
 
 //UTF-8
