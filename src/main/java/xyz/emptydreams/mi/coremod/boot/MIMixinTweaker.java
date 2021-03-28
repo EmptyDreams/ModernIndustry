@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.coremod;
+package xyz.emptydreams.mi.coremod.boot;
 
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.LaunchClassLoader;
@@ -34,9 +34,10 @@ public class MIMixinTweaker implements ITweaker {
 					CoreModManager.getIgnoredMods().remove(file.getName());
 				}
 				Logger logger = LogManager.getLogger();
-				logger.warn("ModernIndustry Mixin Loaded");
+				logger.info("ModernIndustry Mixin Loaded");
 			} catch (URISyntaxException e) {
-				e.printStackTrace();
+				Logger logger = LogManager.getLogger();
+				logger.error("ModernIndustry Mixin Load Failed", e);
 			}
 		} else {
 			Logger logger = LogManager.getLogger();

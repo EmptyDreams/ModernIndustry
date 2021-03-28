@@ -101,7 +101,7 @@ jar {
     }
 
     manifest.attributes([
-            "TweakClass": "xyz.emptydreams.mi.coremod.MIMixinTweaker",
+            "TweakClass": "xyz.emptydreams.mi.coremod.boot.MIMixinTweaker",
             "FMLCorePluginContainsFMLMod": true
     ])
 }

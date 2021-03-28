@@ -93,8 +93,8 @@
     <configuration default="false" name="Minecraft Client" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="GradleStart" />
       <module name="ModernIndustry.main" />
-      <option name="PROGRAM_PARAMETERS" value="-username=HEI_MAO" />
-      <option name="VM_PARAMETERS" value="-Dfml.coreMods.load=xyz.emptydreams.mi.coremod.MIMixinTweaker -XX:+UseG1GC" />
+      <option name="PROGRAM_PARAMETERS" value="-username=HEI_MAO --tweakClass xyz.emptydreams.mi.coremod.boot.MIMixinTweaker" />
+      <option name="VM_PARAMETERS" value=" -XX:+UseG1GC" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
       <extension enabled="false" name="coverage" runner="idea" sample_coverage="true" />
       <RunnerSettings RunnerId="Run" />
@@ -106,8 +106,8 @@
     <configuration default="false" name="Minecraft Server" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="GradleStartServer" />
       <module name="ModernIndustry.main" />
-      <option name="PROGRAM_PARAMETERS" value="nogui" />
-      <option name="VM_PARAMETERS" value="-Dfml.coreMods.load=xyz.emptydreams.mi.coremod.MIMixinTweaker -XX:+UseG1GC" />
+      <option name="PROGRAM_PARAMETERS" value="--tweakClass xyz.emptydreams.mi.coremod.boot.MIMixinTweaker nogui" />
+      <option name="VM_PARAMETERS" value="-XX:+UseG1GC" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
       <extension enabled="false" name="coverage" runner="idea" sample_coverage="true" />
       <RunnerSettings RunnerId="Run" />

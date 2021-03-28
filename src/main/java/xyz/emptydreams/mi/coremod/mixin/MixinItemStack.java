@@ -37,22 +37,17 @@ public abstract class MixinItemStack {
 		} else {
 			MinecraftForge.EVENT_BUS.post(new ItemDamageEvent(stack, amount, entityIn));
 		}
-		if (!(entityIn instanceof EntityPlayer) || !((EntityPlayer)entityIn).capabilities.isCreativeMode)
-		{
-			if (stack.isItemStackDamageable())
-			{
+		if (!(entityIn instanceof EntityPlayer) || !((EntityPlayer)entityIn).capabilities.isCreativeMode) {
+			if (stack.isItemStackDamageable()) {
 				if (stack.attemptDamageItem(amount, entityIn.getRNG(),
-						entityIn instanceof EntityPlayerMP ? (EntityPlayerMP)entityIn : null))
-				{
+						entityIn instanceof EntityPlayerMP ? (EntityPlayerMP)entityIn : null)) {
 					entityIn.renderBrokenItemStack(stack);
 					stack.shrink(1);
-					
-					if (entityIn instanceof EntityPlayer)
-					{
+					if (entityIn instanceof EntityPlayer) {
 						EntityPlayer entityplayer = (EntityPlayer)entityIn;
+						//noinspection ConstantConditions
 						entityplayer.addStat(StatList.getObjectBreakStats(item));
 					}
-					
 					itemDamage = 0;
 				}
 			}
