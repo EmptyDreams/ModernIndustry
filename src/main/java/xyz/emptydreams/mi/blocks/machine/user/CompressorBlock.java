@@ -61,7 +61,7 @@ public class CompressorBlock extends MachineBlock {
 	@SuppressWarnings("ConstantConditions")
 	@Nullable
 	@Override
-	public List<ItemStack> getItemDrops(World world, BlockPos pos) {
+	public List<ItemStack> dropItems(World world, BlockPos pos) {
 		EUCompressor nbt = (EUCompressor) world.getTileEntity(pos);
 		ItemStack is = nbt.getSlot(0).getStack();
 		ItemStack is2 = nbt.getSlot(1).getStack();

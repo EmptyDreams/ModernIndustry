@@ -30,14 +30,14 @@ abstract public class TEBlockBase extends BlockContainer implements BlockItemHel
 
 	/**
 	 * 当方块被破坏时掉落额外物品.
-	 * 用户覆盖该方法时应该调用该方法，否则会导致{@link #getItemDrops(World, BlockPos)}方法失效
+	 * 用户覆盖该方法时应该调用该方法，否则会导致{@link #dropItems(World, BlockPos)}方法失效
 	 * @param worldIn 所在世界
 	 * @param pos 当前坐标
 	 * @param state 当前State
 	 */
 	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-		List<ItemStack> drops = getItemDrops(worldIn, pos);
+		List<ItemStack> drops = dropItems(worldIn, pos);
 		if (drops != null)
 			drops.forEach(it -> Block.spawnAsEntity(worldIn, pos, it));
 		super.breakBlock(worldIn, pos, state);
@@ -50,7 +50,7 @@ abstract public class TEBlockBase extends BlockContainer implements BlockItemHel
 	 * @return 若无需要掉落的物品则返回null
 	 */
 	@Nullable
-	public List<ItemStack> getItemDrops(World world, BlockPos pos) {
+	public List<ItemStack> dropItems(World world, BlockPos pos) {
 		return null;
 	}
 

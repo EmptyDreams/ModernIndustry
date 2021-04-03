@@ -60,7 +60,7 @@ public class FirePowerBlock extends MachineBlock {
 	
 	@Nullable
 	@Override
-	public List<ItemStack> getItemDrops(World world, BlockPos pos) {
+	public List<ItemStack> dropItems(World world, BlockPos pos) {
 		EMFirePower power = (EMFirePower) world.getTileEntity(pos);
 		//noinspection ConstantConditions
 		return Lists.newArrayList(power.getInSlot().getStack(), power.getOutSlot().getStack());

@@ -51,7 +51,7 @@ public class RedStoneConverterBlock extends MachineBlock {
 
 	@Nullable
 	@Override
-	public List<ItemStack> getItemDrops(World world, BlockPos pos) {
+	public List<ItemStack> dropItems(World world, BlockPos pos) {
 		EMRedStoneConverter converter = (EMRedStoneConverter) world.getTileEntity(pos);
 		//noinspection ConstantConditions
 		return Lists.newArrayList(converter.getInput().getStack());

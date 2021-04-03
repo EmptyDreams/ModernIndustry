@@ -6,11 +6,13 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.register.block.AutoBlockRegister;
 import xyz.emptydreams.mi.blocks.CommonUtil;
 import xyz.emptydreams.mi.blocks.base.MachineBlock;
@@ -19,6 +21,9 @@ import xyz.emptydreams.mi.gui.ElectronSynthesizerFrame;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import static xyz.emptydreams.mi.blocks.base.MIProperty.WORKING;
 
@@ -43,6 +48,21 @@ public class ElectronSynthesizerBlock extends MachineBlock {
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
 		return CommonUtil.openGui(playerIn, ElectronSynthesizerFrame.NAME, worldIn, pos);
+	}
+	
+	@Nullable
+	@Override
+	public List<ItemStack> dropItems(World world, BlockPos pos) {
+		List<ItemStack> result = new LinkedList<>();
+		EUElectronSynthesizer te = (EUElectronSynthesizer) world.getTileEntity(pos);
+		assert te != null;
+		for (SlotGroup.Node node : te.getInput()) {
+			result.add(node.get().getStack());
+		}
+		for (SlotGroup.Node node : te.getOutput()) {
+			result.add(node.get().getStack());
+		}
+		return result;
 	}
 	
 	@Nonnull

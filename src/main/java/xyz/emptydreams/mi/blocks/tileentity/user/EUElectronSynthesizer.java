@@ -25,6 +25,7 @@ import xyz.emptydreams.mi.data.info.BiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -171,16 +172,17 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 	}
 	
 	/** 获取原料入口 */
+	@Nonnull
 	public SlotGroup getInput() {
 		return SLOTS;
 	}
-	
 	/** 获取产品 */
+	@Nonnull
 	public SlotGroup getOutput() {
 		return OUTS;
 	}
-	
 	/** 获取进度条 */
+	@Nonnull
 	public IProgressBar getProgress() {
 		return PROGRESS;
 	}

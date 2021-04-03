@@ -56,7 +56,7 @@ public class PulverizerBlock extends MachineBlock {
 
 	@Nullable
 	@Override
-	public List<ItemStack> getItemDrops(World world, BlockPos pos) {
+	public List<ItemStack> dropItems(World world, BlockPos pos) {
 		EUPulverizer pulverizer = (EUPulverizer) world.getTileEntity(pos);
 		//noinspection ConstantConditions
 		return Lists.newArrayList(pulverizer.getInSlot().getStack(), pulverizer.getOutSlot().getStack());
