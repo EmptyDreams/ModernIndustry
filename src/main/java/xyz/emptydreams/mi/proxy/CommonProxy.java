@@ -5,10 +5,9 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import xyz.emptydreams.mi.api.gui.common.GuiLoader;
-import xyz.emptydreams.mi.api.net.NetworkLoader;
 import xyz.emptydreams.mi.api.register.AutoRegister;
-import xyz.emptydreams.mi.data.json.item.ItemJsonBuilder;
 import xyz.emptydreams.mi.data.json.block.BlockJsonBuilder;
+import xyz.emptydreams.mi.data.json.item.ItemJsonBuilder;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -30,7 +29,6 @@ public class CommonProxy {
 			BlockJsonBuilder.build();
 			ItemJsonBuilder.build();
 		}
-		new NetworkLoader();
 		new GuiLoader();
     }
     public void init(FMLInitializationEvent event){

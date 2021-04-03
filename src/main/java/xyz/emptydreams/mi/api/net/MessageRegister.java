@@ -3,6 +3,8 @@ package xyz.emptydreams.mi.api.net;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.event.NetWorkRegistryEvent;
 import xyz.emptydreams.mi.api.net.message.IMessageHandle;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
@@ -58,6 +60,7 @@ public final class MessageRegister {
 	 * @param message 要解析的信息
 	 * @return 是否解析成功
 	 */
+	@SideOnly(Side.CLIENT)
 	public static boolean parseClient(NBTTagCompound message) {
 		for (IMessageHandle<?> it : INSTANCES) {
 			if (it.match(message)) {
