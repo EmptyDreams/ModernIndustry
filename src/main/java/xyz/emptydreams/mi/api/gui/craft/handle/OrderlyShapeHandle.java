@@ -9,8 +9,8 @@ import xyz.emptydreams.mi.api.gui.craft.HandleRegister;
 import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.register.AutoLoader;
 import xyz.emptydreams.mi.api.utils.MathUtil;
-import xyz.emptydreams.mi.api.utils.data.Point2D;
-import xyz.emptydreams.mi.api.utils.data.Size2D;
+import xyz.emptydreams.mi.api.utils.data.math.Point2D;
+import xyz.emptydreams.mi.api.utils.data.math.Size2D;
 
 import javax.annotation.Nonnull;
 

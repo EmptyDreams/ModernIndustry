@@ -125,20 +125,11 @@ public class CraftFrame extends MIFrame {
 		ItemSol input = getShape().getInput();
 		ItemList list = new ItemList(craft.getShapeWidth(), craft.getShapeHeight());
 		if (!input.fill(list)) return FAIL;
-		//清理输入框内已有的物品
-		slots.clear();
 		//尝试用玩家背包中的物品填充合成表
-		OperateResult result = removeItemStack(inventory, list);
+		OperateResult result = removeItemStack(inventory, list, null);
 		if (result == FAIL) return FAIL;
-		LocalChildFrame.closeGUI();
-		for (SlotGroup.Node node : slots) {
-			node.get().putStack(list.get(node.getX(), node.getY()).getStack());
-		}
-		//将更改同步到玩家
-		for (int i = 0; i < inventory.size(); i++) {
-			player.inventory.mainInventory.set(i, inventory.get(i));
-		}
 		sendToServer();
+		LocalChildFrame.closeGUI();
 		return result;
 	}
 	

@@ -18,6 +18,7 @@ import xyz.emptydreams.mi.api.utils.ItemUtil;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.data.enums.OperateResult;
+import xyz.emptydreams.mi.api.utils.data.math.Mar2D;
 
 import static xyz.emptydreams.mi.api.utils.data.enums.OperateResult.SUCCESS;
 
@@ -31,18 +32,21 @@ public class RecordMessage implements IPlayerHandle {
 	public void apply(EntityPlayer player, NBTTagCompound data) {
 		FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
 			TileEntity te = ChildFrame.getGuiTileEntity(player);
-			String craftName = data.getString("craft");
-			int index = data.getInteger("index");
+			if (te == null) {
+				printErrorForTENull(player);
+				return;
+			}
+			String craftName = data.getString("craft");         //管理器的名称
+			int index = data.getInteger("index");               //合成表在管理器中的下标
 			CraftGuide<?, ?> craft = CraftGuide.getInstance(new ResourceLocation(craftName));
 			//noinspection ConstantConditions
-			IShape<?, ?> shape = craft.getShape(index);
-			ItemSol input = shape.getInput();
-			int length = MathUtil.amount2Rec(input.size());
+			IShape<?, ?> shape = craft.getShape(index);             //合成表对象
+			ItemSol input = shape.getInput();                       //合成表的输入框
+			int length = MathUtil.amount2Rec(input.size());         //无序集合转化为矩阵
 			ItemList list = new ItemList(length, length);
-			boolean fill = input.fill(list);
-			SlotGroup slots = CraftShower.getSlotGroup(craft, te);
-			if (!slots.isEmpty()) {
-				//若输入框内已有物品则尝试合并到玩家背包
+			boolean fill = input.fill(list);                        //将输入栏转化为二维矩阵
+			SlotGroup slots = CraftShower.getSlotGroup(craft, te);  //获取当前TE中输入框中的物品
+			if (!slots.isEmpty()) {                                 //若输入框内已有物品则尝试合并到玩家背包
 				for (SlotGroup.Node node : slots) {
 					ItemStack stack = node.get().getStack();
 					if (stack.isEmpty()) continue;
@@ -52,24 +56,53 @@ public class RecordMessage implements IPlayerHandle {
 					if (result != SUCCESS) fill = false;
 				}
 			}
-			if (!fill || te == null) {
-				MISysInfo.err("---------- RecordMessage Error Log ----------\n"
-						+ "\t原因：客户端计算结果异常！可能是由于代码编写错误或玩家修改了客户端代码！\n"
-						+ "\t玩家：" + player.getName() + '\n'
-						+ "\t合成表：" + craftName + "\t 下标：" + index + '\n'
-						+ "\t矩阵：" + length + '\n'
-						+ "\tTE：" + te + '\n'
-						+ "\t坐标：" + (te == null ? "未知" : te.getPos()) + '\n'
-						+ "\t世界：" + (te == null ? "未知" : te.getWorld().getProviderName()) + '\n'
-						+ "处理方法：跳过本次合成表运算，服务端不修改玩家数据，客户端由MC内置的网络通信恢复数据。");
+			if (!fill) {
+				//正常情况下无法填充的话客户端不会发送请求到服务端
+				//如果出现了无法填充时服务端依然收到的请求说明客户端计算异常
+				printError(player, craftName, index, length, te);
 				return;
 			}
-			CraftFrameUtil.removeItemStack(player.inventory.mainInventory, list);
-			for (SlotGroup.Node node : slots) {
-				node.get().putStack(list.get(node.getX(), node.getY()).getStack());
+			CraftFrameUtil.Record record = new CraftFrameUtil.Record(length, length);
+			CraftFrameUtil.removeItemStack(player.inventory.mainInventory, list, record);
+			for (Mar2D.Node node : record) {
+				ItemStack put = list.get(node.getX(), node.getY()).getStack();
+				put.setCount(node.getValue());
+				slots.getSlot(node.getX(), node.getY()).putStack(put);
 			}
 			te.markDirty();
 		});
+	}
+	
+	/**
+	 * 打印TE为空的错误信息
+	 * @param player 进行操作的玩家
+	 */
+	private static void printErrorForTENull(EntityPlayer player) {
+		MISysInfo.err("---------- RecordMessage Error Log ----------\n"
+				+ "\t原因：服务端抓取到的TileEntity为空\n"
+				+ "\t玩家：" + player.getName() + '\n'
+				+ "\t处理方法：跳过本次合成表运算，服务端不修改玩家数据，客户端由MC内置的网络通信恢复数据");
+	}
+	
+	/**
+	 * 输出错误信息
+	 * @param player 进行操作的玩家
+	 * @param craftName 合成表管理器的名称
+	 * @param index 合成表在管理器中的下标
+	 * @param length 合成表真实尺寸
+	 * @param te TE对象
+	 */
+	private static void printError(EntityPlayer player,
+	                               String craftName, int index, int length, TileEntity te) {
+		MISysInfo.err("---------- RecordMessage Error Log ----------\n"
+				+ "\t原因：客户端计算结果异常，可能是由于代码编写错误或玩家修改了客户端代码\n"
+				+ "\t玩家：" + player.getName() + '\n'
+				+ "\t合成表：" + craftName + "\t 下标：" + index + '\n'
+				+ "\t矩阵：" + length + '\n'
+				+ "\tTE：" + te + '\n'
+				+ "\t坐标：" + (te == null ? "未知" : te.getPos()) + '\n'
+				+ "\t世界：" + (te == null ? "未知" : te.getWorld().getProviderName()) + '\n'
+				+ "处理方法：跳过本次合成表运算，服务端不修改玩家数据，客户端由MC内置的网络通信恢复数据");
 	}
 	
 }
