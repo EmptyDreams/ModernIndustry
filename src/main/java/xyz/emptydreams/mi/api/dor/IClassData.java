@@ -38,8 +38,8 @@ public interface IClassData {
 	/**
 	 * <p>读取所有需要读取的数据.
 	 * <p>方法内部调用{@link #needOperate(Field)}判断是否进行读写，
-	 *      调用{@link #write(Field, IDataWriter)}进行数据读写。
-	 * <p><b>重写该方法时必须重写{@link #read(Field, IDataReader)}</b>
+	 *      调用{@link #write(Field, IDataWriter, Object)}进行数据读写。
+	 * <p><b>重写该方法时必须重写{@link #read(Field, IDataReader, Object)}</b>
 	 * @param reader 读取器
 	 */
 	default void readAll(IDataReader reader, Object object) {
@@ -52,7 +52,7 @@ public interface IClassData {
 				++i;
 				if (state.isZero()) continue;
 				try {
-					read(fields[i], reader);
+					read(fields[i], reader, object);
 				} catch (Exception e) {
 					MISysInfo.err("读取信息时出现错误，跳过该项读写!\n"
 							+ "\t详细信息：\n"
@@ -68,7 +68,7 @@ public interface IClassData {
 	/**
 	 * <p>写入所有需要写入的数据.
 	 * <p>方法内部调用{@link #needOperate(Field)}判断是否进行写入，
-	 *      调用{@link #write(Field, IDataWriter)}进行数据写入.
+	 *      调用{@link #write(Field, IDataWriter, Object)}进行数据写入.
 	 * <p><b>重写该方法时务必重写{@link #readAll(IDataReader, Object)}</b>
 	 * @param writer 写入器
 	 */
@@ -84,7 +84,7 @@ public interface IClassData {
 					continue;
 				}
 				try {
-					if (write(field, writer)) indexTag.add(ONE);
+					if (write(field, writer, object)) indexTag.add(ONE);
 					else indexTag.add(ZERO);
 				} catch (Exception e) {
 					MISysInfo.err("写入信息时出现错误，跳过该项读写!\n"
@@ -101,16 +101,16 @@ public interface IClassData {
 	
 	/**
 	 * <p>写入指定数据.
-	 * <p><b>重写该方法时务必重写{@link #read(Field, IDataReader)}</b>
+	 * <p><b>重写该方法时务必重写{@link #read(Field, IDataReader, Object)}</b>
 	 * @param field 需要进行写入的数据
 	 * @param writer 写入器
 	 * @throws IllegalAccessException 如果反射过程出现异常
 	 */
-	default boolean write(Field field, IDataWriter writer) throws IllegalAccessException {
+	default boolean write(Field field, IDataWriter writer, Object object) throws IllegalAccessException {
 		if (Modifier.isPrivate(field.getModifiers()) || Modifier.isProtected(field.getModifiers())) {
 			field.setAccessible(true);
 		}
-		Object data = field.get(this);
+		Object data = field.get(object);
 		if (data == null) return false;
 		DataTypeRegister.write(writer, cast(field, data));
 		return true;
@@ -118,23 +118,23 @@ public interface IClassData {
 	
 	/**
 	 * <p>读取指定数据.
-	 * <p><b>重写该方法时务必重写{@link #write(Field, IDataWriter)}</b>
+	 * <p><b>重写该方法时务必重写{@link #write(Field, IDataWriter, Object)}</b>
 	 * @param field 需要进行读取的数据
 	 * @param reader 读取器
 	 * @throws IllegalAccessException 如果反射过程出现异常
 	 */
-	default void read(Field field, IDataReader reader) throws IllegalAccessException {
+	default void read(Field field, IDataReader reader, Object object) throws IllegalAccessException {
 		if (Modifier.isPrivate(field.getModifiers()) || Modifier.isProtected(field.getModifiers())) {
 			field.setAccessible(true);
 		}
 		Object data = DataTypeRegister.read(reader, field.getType(), () -> {
 			try {
-				return field.get(this);
+				return field.get(object);
 			} catch (IllegalAccessException e) {
 				throw new IntransitException(e);
 			}
 		});
-		field.set(this, cast(field, data));
+		field.set(object, cast(field, data));
 	}
 	
 	/**
