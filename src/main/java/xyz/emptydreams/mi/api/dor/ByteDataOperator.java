@@ -179,8 +179,8 @@ public class ByteDataOperator implements IDataOperator {
 	public int readVarint() {
 		int result = 0;
 		for (int i = 0; i < 5; ++i) {
-			byte data = readByte();
-			result |= (data & 0b01111111);
+			int data = readByte();
+			result |= (data & 0b01111111) << (i * 7);
 			if ((data & 0b10000000) == 0) break;
 		}
 		return result;
@@ -334,26 +334,15 @@ public class ByteDataOperator implements IDataOperator {
 	
 	@Override
 	public void writeVarint(int data) {
-		if ((data & 0b11111111_11111111_11111111_10000000) == 0) {
-			writeByte((byte) (data & 0b01111111));
-		} else if ((data & 0b11111111_11111111_11000000_00000000) == 0) {
-			writeByte((byte) ((data & 0b01111111) | 0b10000000));
-			writeByte((byte) ((data >>> 7) & 0b01111111));
-		} else if ((data & 0b11111111_11100000_00000000_00000000) == 0) {
-			writeByte((byte) ((data & 0b01111111) | 0b10000000));
-			writeByte((byte) (((data >>> 7) & 0b01111111) | 0b10000000));
-			writeByte((byte) ((data >>> 14) & 0b01111111));
-		} else if ((data & 0b11110000_00000000_00000000_00000000) == 0) {
-			writeByte((byte) ((data & 0b01111111) | 0b10000000));
-			writeByte((byte) (((data >>> 7) & 0b01111111) | 0b10000000));
-			writeByte((byte) (((data >>> 14) & 0b01111111) | 0b10000000));
-			writeByte((byte) (((data) >>> 21) & 0b01111111));
-		} else {
-			writeByte((byte) ((data & 0b01111111) | 0b10000000));
-			writeByte((byte) (((data >>> 7) & 0b01111111) | 0b10000000));
-			writeByte((byte) (((data >>> 14) & 0b01111111) | 0b10000000));
-			writeByte((byte) ((((data) >>> 21) & 0b01111111) | 0b10000000));
-			writeByte((byte) ((data >>> 28) & 0b00001111));
+		for (int i = 0; i < 5; ++i) {
+			int write = data & 0b01111111;
+			data >>>= 7;
+			if (data == 0) {
+				writeByte((byte) write);
+				break;
+			} else {
+				writeByte((byte) (write | 0b10000000));
+			}
 		}
 	}
 	
