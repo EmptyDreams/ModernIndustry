@@ -3,13 +3,19 @@ package xyz.emptydreams.mi.api.net.message.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.inventory.Container;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
+import xyz.emptydreams.mi.api.dor.ByteDataOperator;
+import xyz.emptydreams.mi.api.dor.IDataReader;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
+import xyz.emptydreams.mi.api.net.ParseResultEnum;
 import xyz.emptydreams.mi.api.net.message.IMessageHandle;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import static xyz.emptydreams.mi.api.net.ParseResultEnum.SUCCESS;
+import static xyz.emptydreams.mi.api.net.ParseResultEnum.THROW;
 
 /**
  * GUI网络通信<br>
@@ -28,39 +34,34 @@ public class GuiMessage implements IMessageHandle<GuiAddition> {
 	private GuiMessage() {}
 	
 	@Override
-	public boolean parseOnClient(@Nonnull NBTTagCompound message) {
+	public ParseResultEnum parseOnClient(@Nonnull IDataReader message) {
 		EntityPlayerSP player = Minecraft.getMinecraft().player;
 		Container container = player.openContainer;
 		if (!(container instanceof MIFrame)) {
-			message.setBoolean("cast", false);
-			return false;
+			MISysInfo.err("玩家(" + player.getName() + ")打开的GUI不继承自MIFrame");
+			return THROW;
 		}
 		GuiAddition addition = new GuiAddition();
 		addition.readFrom(message);
 		MIFrame frame = (MIFrame) container;
-		if (!frame.getID().equals(addition.getGuiID())) return true;
-		frame.receive(message.getCompoundTag("data"), addition.getId());
-		return true;
+		if (!frame.getID().equals(addition.getGuiID())) return SUCCESS;
+		frame.receive(message.readData(), addition.getId());
+		return SUCCESS;
 	}
 	
 	@Override
-	public boolean parseOnServer(@Nonnull NBTTagCompound message) {
+	public ParseResultEnum parseOnServer(@Nonnull IDataReader message) {
 		GuiAddition addition = new GuiAddition();
 		addition.readFrom(message);
 		Container container = addition.getPlayer().openContainer;
 		if (!(container instanceof MIFrame)) {
-			message.setBoolean("cast", false);
-			return false;
+			MISysInfo.err("玩家(" + addition.getPlayer().getName() + ")打开的GUI不继承自MIFrame");
+			return THROW;
 		}
 		MIFrame frame = (MIFrame) container;
-		if (!frame.getID().equals(addition.getGuiID())) return true;
-		frame.receive(message.getCompoundTag("data"), addition.getId());
-		return true;
-	}
-	
-	@Override
-	public boolean match(@Nonnull NBTTagCompound message) {
-		return message.hasKey("type_gui");
+		if (!frame.getID().equals(addition.getGuiID())) return SUCCESS;
+		frame.receive(message.readData(), addition.getId());
+		return SUCCESS;
 	}
 	
 	@Override
@@ -71,19 +72,11 @@ public class GuiMessage implements IMessageHandle<GuiAddition> {
 	@SuppressWarnings("ConstantConditions")
 	@Nonnull
 	@Override
-	public NBTTagCompound packaging(@Nonnull NBTTagCompound data, @Nullable GuiAddition addition) {
-		NBTTagCompound result = new NBTTagCompound();
-		result.setBoolean("type_gui", false);
-		result.setTag("data", data);
+	public IDataReader packaging(@Nonnull IDataReader data, @Nullable GuiAddition addition) {
+		ByteDataOperator result = new ByteDataOperator(data.size() + 10);
 		addition.writeTo(result);
+		result.writeData(data);
 		return result;
-	}
-	
-	@Nonnull
-	@Override
-	public String getInfo(NBTTagCompound message) {
-		if (message.hasKey("cast")) return "玩家(" + message.getString("player") + ")打开的GUI不继承自MIFrame";
-		return "GuiMessage解析发生错误！(" + message.getString("player") + ")";
 	}
 	
 }

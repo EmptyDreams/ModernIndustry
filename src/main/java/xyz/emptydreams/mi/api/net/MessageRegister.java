@@ -1,10 +1,10 @@
 package xyz.emptydreams.mi.api.net;
 
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.dor.IDataReader;
 import xyz.emptydreams.mi.api.event.NetWorkRegistryEvent;
 import xyz.emptydreams.mi.api.net.message.IMessageHandle;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
@@ -15,6 +15,8 @@ import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import static xyz.emptydreams.mi.api.net.ParseResultEnum.EXCEPTION;
 
 /**
  * 信息注册类.
@@ -35,7 +37,17 @@ public final class MessageRegister {
 	@Deprecated
 	public static void registry(IMessageHandle<?> handle) {
 		StringUtil.checkNull(handle, "handle");
-		if (!INSTANCES.contains(handle)) INSTANCES.add(handle);
+		String key = handle.getKey();
+		for (IMessageHandle<?> instance : INSTANCES) {
+			String name = instance.getKey();
+			if (name.hashCode() == key.hashCode() && name.equals(key)) {
+				throw new IllegalArgumentException(
+						"注册的Handle[" + handle.getClass().getName()
+							+ "]和已有Handle[" + instance.getClass().getName() + "]的Key["
+								+ name + "]值重复");
+			}
+		}
+		INSTANCES.add(handle);
 	}
 	
 	/**
@@ -43,16 +55,17 @@ public final class MessageRegister {
 	 * @param message 要解析的信息
 	 * @return 是否解析成功
 	 */
-	public static boolean parseServer(NBTTagCompound message) {
+	public static ParseResultEnum parseServer(IDataReader message, String key) {
 		for (IMessageHandle<?> it : INSTANCES) {
-			if (it.match(message)) {
-				if (it.parseOnServer(message)) return true;
-				MISysInfo.err("[MessageRegister]有一个信息解析失败：" + it.getInfo(message));
-				return false;
+			if (key.hashCode() == it.getKey().hashCode() &&
+					key.equals(it.getKey())) {
+				ParseResultEnum result = it.parseOnServer(message);
+				if (result.isThrow()) MISysInfo.err("[MessageRegister]一个信息未被成功处理，该信息被丢弃");
+				return result;
 			}
 		}
-		MISysInfo.err("[MessageRegister]信息未找到处理器：" + message);
-		return false;
+		MISysInfo.err("[MessageRegister]信息未找到处理器：" + message.getClass().getName());
+		return EXCEPTION;
 	}
 	
 	/**
@@ -61,16 +74,17 @@ public final class MessageRegister {
 	 * @return 是否解析成功
 	 */
 	@SideOnly(Side.CLIENT)
-	public static boolean parseClient(NBTTagCompound message) {
+	public static ParseResultEnum parseClient(IDataReader message, String key) {
 		for (IMessageHandle<?> it : INSTANCES) {
-			if (it.match(message)) {
-				if (it.parseOnClient(message)) return true;
-				MISysInfo.err("[MessageRegister]有一个信息解析失败：" + it.getInfo(message));
-				return false;
+			if (key.hashCode() == it.getKey().hashCode() &&
+					key.equals(it.getKey())) {
+				ParseResultEnum result = it.parseOnClient(message);
+				if (result.isThrow()) MISysInfo.err("[MessageRegister]一个信息未被成功处理，该信息被丢弃");
+				return result;
 			}
 		}
 		MISysInfo.err("[MessageRegister]信息未找到处理器：" + message);
-		return false;
+		return EXCEPTION;
 	}
 	
 	@SubscribeEvent

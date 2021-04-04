@@ -1,6 +1,7 @@
 package xyz.emptydreams.mi.api.net.message;
 
-import net.minecraft.nbt.NBTTagCompound;
+import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.IDataWriter;
 
 /**
  * 用于存储发送消息前的附加信息，
@@ -13,12 +14,12 @@ public interface IMessageAddition {
 	 * 将附加信息写入到指定的NBTTagCompound中
 	 * @throws NullPointerException 如果tag == null
 	 */
-	void writeTo(NBTTagCompound tag);
+	void writeTo(IDataWriter writer);
 	
 	/**
 	 * 从NBTTagCompound中读取信息到附加信息中
 	 * @throws NullPointerException 如果tag == null
 	 */
-	void readFrom(NBTTagCompound tag);
+	void readFrom(IDataReader reader);
 	
 }

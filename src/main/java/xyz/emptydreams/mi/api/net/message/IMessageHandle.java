@@ -1,9 +1,10 @@
 package xyz.emptydreams.mi.api.net.message;
 
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.net.ParseResultEnum;
 import xyz.emptydreams.mi.api.net.handler.CommonMessage;
 
 import javax.annotation.Nonnull;
@@ -29,7 +30,8 @@ public interface IMessageHandle<T extends IMessageAddition> {
 	 * @throws NullPointerException 如果message==null或处理时遇到意外错误
 	 */
 	@SideOnly(Side.CLIENT)
-	boolean parseOnClient(@Nonnull NBTTagCompound message);
+	@Nonnull
+	ParseResultEnum parseOnClient(@Nonnull IDataReader message);
 	
 	/**
 	 * 服务端处理指定消息.<br>
@@ -40,13 +42,14 @@ public interface IMessageHandle<T extends IMessageAddition> {
 	 * @throws UnsupportedOperationException 如果该信息只能由客户端处理
 	 * @throws NullPointerException 如果message==null或处理时遇到意外错误
 	 */
-	boolean parseOnServer(@Nonnull NBTTagCompound message);
+	@Nonnull
+	ParseResultEnum parseOnServer(@Nonnull IDataReader message);
 	
-	/**
-	 * 判断能否处理指定的消息
-	 * @param message 指定的消息
-	 */
-	boolean match(@Nonnull NBTTagCompound message);
+	/** 获取消息对应的KEY */
+	@Nonnull
+	default String getKey() {
+		return getClass().getSimpleName();
+	}
 	
 	/**
 	 * 判断消息能否在指定的位置处理
@@ -62,17 +65,7 @@ public interface IMessageHandle<T extends IMessageAddition> {
 	 * @throws NullPointerException 如果data==null||addition==null
 	 */
 	@Nonnull
-	NBTTagCompound packaging(@Nonnull NBTTagCompound data, T addition);
-	
-	/**
-	 * 获取消息的字符串简略信息，用于在消息丢失时向后台输出错误信息，
-	 * 信息越精准越容易检查错误，简略信息不宜过长，避免后台日志过于杂乱。
-	 * @param message 丢失的信息
-	 * @return 简略信息
-	 * @throws NullPointerException 如果message==null
-	 */
-	@Nonnull
-	String getInfo(NBTTagCompound message);
+	IDataReader packaging(@Nonnull IDataReader data, T addition);
 	
 	/** 抛出一个异常 */
 	static UnsupportedOperationException throwException(Side side) {
@@ -88,8 +81,8 @@ public interface IMessageHandle<T extends IMessageAddition> {
 	 * @param addition 附加信息
 	 * @throws NullPointerException 如果data==null||addition==null
 	 */
-	default IMessage create(NBTTagCompound data, T addition) {
-		return new CommonMessage(packaging(data, addition));
+	default IMessage create(IDataReader data, T addition) {
+		return new CommonMessage(packaging(data, addition), getKey());
 	}
 	
 }

@@ -1,6 +1,6 @@
 package xyz.emptydreams.mi.api.net;
 
-import net.minecraft.nbt.NBTTagCompound;
+import xyz.emptydreams.mi.api.dor.IDataReader;
 
 import javax.annotation.Nonnull;
 
@@ -13,6 +13,6 @@ public interface IAutoNetwork {
 	/**
 	 * 处理接收的信息
 	 */
-	void receive(@Nonnull NBTTagCompound compound);
+	void receive(@Nonnull IDataReader compound);
 	
 }

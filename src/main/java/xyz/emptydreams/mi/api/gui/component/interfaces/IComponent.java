@@ -5,10 +5,11 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.dor.ByteDataOperator;
+import xyz.emptydreams.mi.api.dor.IDataReader;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.listener.IListener;
@@ -116,19 +117,20 @@ public interface IComponent {
 	 * 接收由{@link GuiMessage}发送的信息
 	 * @param data 数据内容
 	 */
-	default void receive(NBTTagCompound data) { }
+	default void receive(IDataReader data) { }
 	
 	/**
 	 * 发送信息到服务端
 	 * @param data 数据内容
 	 */
 	@SideOnly(Side.CLIENT)
-	default void sendToServer(MIFrame frame, NBTTagCompound data) {
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setTag("data", data);
-		tag.setInteger("id", getCode());
+	default void sendToServer(MIFrame frame, IDataReader data) {
+		ByteDataOperator operator = new ByteDataOperator(data.size() + 1);
+		operator.writeVarint(getCode());
+		operator.writeData(data);
 		EntityPlayer player = Minecraft.getMinecraft().player;
-		IMessage message = GuiMessage.instance().create(tag, new GuiAddition(player, frame.getID(), getCode()));
+		IMessage message = GuiMessage.instance().create(
+				operator, new GuiAddition(player, frame.getID(), getCode()));
 		MessageSender.sendToServer(message);
 	}
 	

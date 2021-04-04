@@ -2,11 +2,12 @@ package xyz.emptydreams.mi.api.gui.component;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
+import xyz.emptydreams.mi.api.dor.ByteDataOperator;
+import xyz.emptydreams.mi.api.dor.IDataReader;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
@@ -71,31 +72,41 @@ public abstract class MComponent implements IComponent {
 	@Override
 	public <T extends IListener> void activateListener(MIFrame frame, Class<T> name, Consumer<T> consumer) {
 		int index = 0;
-		NBTTagCompound data = new NBTTagCompound();
+		boolean send = false;
+		ByteDataOperator data = new ByteDataOperator();
+		ByteDataOperator operator = new ByteDataOperator();
 		for (IListener listener : listeners) {
 			if (name.isAssignableFrom(listener.getClass())) {
 				//noinspection unchecked
 				consumer.accept((T) listener);
 				if (WorldUtil.isClient()) {
-					NBTTagCompound info = listener.writeTo();
-					if (info != null)
-						data.setTag(String.valueOf(index), info);
+					if (listener.writeTo(operator)) {
+						send = true;
+						data.writeVarint(index);
+					}
 				}
 			}
 			++index;
 		}
 		//如果事件在客户端触发并且需要进行网络传输则发送消息给服务端
 		//如果事件在服务端触发不需要发送给客户端，因为在服务端触发的事件大部分在客户端也可以触发
-		if (data.getSize() > 0) sendToServer(frame, data);
+		if (send) {
+			data.setWriteIndex(0);
+			data.writeVarint(operator.size());
+			data.setWriteIndex(data.size() - 1);
+			data.writeData(operator);
+			sendToServer(frame, data);
+		}
 	}
 	
 	@Override
-	public void receive(NBTTagCompound data) {
+	public void receive(IDataReader reader) {
 		try {
-			for (String key : data.getKeySet()) {
-				int index = Integer.parseInt(key);
-				IListener listener = listeners.get(index);
-				listener.readFrom(data.getCompoundTag(key));
+			int[] indexs = reader.readVarintArray();
+			IDataReader data = reader.readData();
+			for (int i : indexs) {
+				IListener listener = listeners.get(i);
+				listener.readFrom(data);
 			}
 		} catch (IndexOutOfBoundsException e) {
 			MISysInfo.err("[MComponent]事件网络通讯异常，key值超出范围：" + e.getMessage());

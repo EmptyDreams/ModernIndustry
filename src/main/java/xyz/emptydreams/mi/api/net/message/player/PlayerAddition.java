@@ -1,8 +1,9 @@
 package xyz.emptydreams.mi.api.net.message.player;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.IDataWriter;
 import xyz.emptydreams.mi.api.net.message.IMessageAddition;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
@@ -18,7 +19,7 @@ public class PlayerAddition implements IMessageAddition {
 	
 	/** 获取一个PlayerAddition对象 */
 	@Nonnull
-	public static PlayerAddition instance(NBTTagCompound message) {
+	public static PlayerAddition instance(IDataReader message) {
 		PlayerAddition result = new PlayerAddition();
 		result.readFrom(message);
 		return result;
@@ -44,17 +45,17 @@ public class PlayerAddition implements IMessageAddition {
 	}
 	
 	@Override
-	public void writeTo(NBTTagCompound tag) {
-		tag.setUniqueId("player", PLAYER.getUniqueID());
-		tag.setString("modid", KEY.getResourceDomain());
-		tag.setString("name", KEY.getResourcePath());
+	public void writeTo(IDataWriter writer) {
+		writer.writeUuid(PLAYER.getUniqueID());
+		writer.writeString(KEY.getResourceDomain());
+		writer.writeString(KEY.getResourcePath());
 	}
 	
 	@Override
-	public void readFrom(NBTTagCompound tag) {
-		UUID uuid = tag.getUniqueId("player");
-		String modid = tag.getString("modid");
-		String name = tag.getString("name");
+	public void readFrom(IDataReader reader) {
+		UUID uuid = reader.readUuid();
+		String modid = reader.readString();
+		String name = reader.readString();
 		PLAYER = WorldUtil.getPlayer(uuid);
 		KEY = new ResourceLocation(modid, name);
 	}

@@ -1,7 +1,9 @@
 package xyz.emptydreams.mi.api.net.message.gui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.IDataWriter;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.net.message.IMessageAddition;
 import xyz.emptydreams.mi.api.utils.StringUtil;
@@ -51,17 +53,18 @@ public class GuiAddition implements IMessageAddition {
 	}
 	
 	@Override
-	public void writeTo(NBTTagCompound tag) {
-		if (WorldUtil.isClient()) tag.setUniqueId("player", player);
-		tag.setInteger("id", id);
-		tag.setString("guiId", getGuiID());
+	public void writeTo(IDataWriter writer) {
+		writer.writeVarint(id);
+		writer.writeString(getGuiID());
+		if (WorldUtil.isClient()) writer.writeUuid(player);
 	}
 	
 	@Override
-	public void readFrom(NBTTagCompound tag) {
-		player = tag.getUniqueId("player");
-		id = tag.getInteger("id");
-		guiID = tag.getString("guiId");
+	public void readFrom(IDataReader reader) {
+		id = reader.readVarint();
+		guiID = reader.readString();
+		if (WorldUtil.isServer()) player = reader.readUuid();
+		else player = Minecraft.getMinecraft().player.getUniqueID();
 	}
 	
 }

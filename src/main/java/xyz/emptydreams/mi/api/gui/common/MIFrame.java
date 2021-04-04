@@ -5,8 +5,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import xyz.emptydreams.mi.api.dor.IDataReader;
 import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
@@ -189,7 +189,7 @@ public class MIFrame extends Container implements IFrame {
 	}
 	
 	/** 接收网络信息 */
-	public void receive(NBTTagCompound data, int id) {
+	public void receive(IDataReader reader, int id) {
 		IComponent target = null;
 		for (IComponent component : components) {
 			component = component.containCode(id);
@@ -202,7 +202,7 @@ public class MIFrame extends Container implements IFrame {
 			MISysInfo.err("[MIFrame]网络信息丢失：ID = " + id);
 			return;
 		}
-		target.receive(data.getCompoundTag("data"));
+		target.receive(reader);
 	}
 	
 	//--------------------关于组件的操作--------------------//

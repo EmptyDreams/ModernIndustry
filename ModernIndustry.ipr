@@ -62,6 +62,8 @@
   <component name="InspectionProjectProfileManager">
     <profile version="1.0">
       <option name="myName" value="Project Default" />
+      <inspection_tool class="CollectionsFieldAccessReplaceableByMethodCall" enabled="true" level="WARNING" enabled_by_default="true" />
+      <inspection_tool class="MissingDeprecatedAnnotation" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="NullableProblems" enabled="false" level="WARNING" enabled_by_default="false">
         <option name="REPORT_NULLABLE_METHOD_OVERRIDES_NOTNULL" value="true" />
         <option name="REPORT_NOT_ANNOTATED_METHOD_OVERRIDES_NOTNULL" value="true" />
@@ -72,11 +74,18 @@
         <option name="REPORT_ANNOTATION_NOT_PROPAGATED_TO_OVERRIDERS" value="true" />
         <option name="REPORT_NULLS_PASSED_TO_NON_ANNOTATED_METHOD" value="true" />
       </inspection_tool>
+      <inspection_tool class="RedundantFieldInitialization" enabled="true" level="INFORMATION" enabled_by_default="true" />
+      <inspection_tool class="UnnecessaryConstructor" enabled="true" level="INFORMATION" enabled_by_default="true" />
+      <inspection_tool class="UnnecessarySuperQualifier" enabled="true" level="INFORMATION" enabled_by_default="true" />
+      <inspection_tool class="UnnecessaryToStringCall" enabled="true" level="INFORMATION" enabled_by_default="true" />
     </profile>
     <version value="1.0" />
   </component>
   <component name="JavadocGenerationManager">
     <option name="OTHER_OPTIONS" value="" />
+  </component>
+  <component name="ProjectCodeStyleConfiguration">
+    <option name="PREFERRED_PROJECT_CODE_STYLE" value="Default" />
   </component>
   <component name="ProjectModuleManager">
     <modules>

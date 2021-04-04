@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.api.gui.craft;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import xyz.emptydreams.mi.ModernIndustry;
@@ -10,6 +9,7 @@ import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemList;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSol;
+import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.gui.client.LocalChildFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.ButtonComponent;
@@ -136,10 +136,10 @@ public class CraftFrame extends MIFrame {
 	private void sendToServer() {
 		PlayerAddition addition = new PlayerAddition(player,
 				new ResourceLocation(ModernIndustry.MODID, "CraftFrame.record"));
-		NBTTagCompound data = new NBTTagCompound();
-		data.setString("craft", craft.getName());
-		data.setInteger("index", index);
-		IMessage message = PlayerMessage.instance().create(data, addition);
+		ByteDataOperator operator = new ByteDataOperator(50);
+		operator.writeString(craft.getName());
+		operator.writeVarint(index);
+		IMessage message = PlayerMessage.instance().create(operator, addition);
 		MessageSender.sendToServer(message);
 	}
 	

@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.dor;
 
+import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteList;
 import it.unimi.dsi.fastutil.bytes.ByteLists;
@@ -46,16 +47,37 @@ public final class ReadOnlyDataOperator implements IDataReader {
 		return new ReadOnlyDataOperator(nbt.getByteArray("."));
 	}
 	
+	@Nonnull
+	public static ReadOnlyDataOperator instance(byte[] datas) {
+		return new ReadOnlyDataOperator(datas);
+	}
+	
+	@Nonnull
+	public static ReadOnlyDataOperator instance(ByteList bytes) {
+		return new ReadOnlyDataOperator(bytes);
+	}
+	
+	@Nonnull
+	public static ReadOnlyDataOperator instance(IDataReader reader) {
+		return new ReadOnlyDataOperator(reader);
+	}
+	
 	private final ByteList memory;
 	/** 读取时的下标 */
 	private int readIndex = -1;
 	
-	public ReadOnlyDataOperator(byte[] datas) {
+	private ReadOnlyDataOperator(byte[] datas) {
 		memory = ByteLists.unmodifiable(new ByteArrayList(datas));
 	}
 	
-	public ReadOnlyDataOperator(ByteList bytes) {
+	private ReadOnlyDataOperator(ByteList bytes) {
 		this.memory = ByteLists.unmodifiable(new ByteArrayList(bytes));
+	}
+	
+	private ReadOnlyDataOperator(IDataReader reader) {
+		ByteList cache = new ByteArrayList(reader.size());
+		reader.readToList(cache);
+		memory = ByteLists.unmodifiable(cache);
 	}
 	
 	private ReadOnlyDataOperator(int size, byte fill) {
@@ -69,6 +91,11 @@ public final class ReadOnlyDataOperator implements IDataReader {
 	@Override
 	public int nextReadIndex() {
 		return ++readIndex;
+	}
+	
+	@Override
+	public int nowReadIndex() {
+		return readIndex;
 	}
 	
 	@Override
@@ -87,8 +114,22 @@ public final class ReadOnlyDataOperator implements IDataReader {
 	}
 	
 	@Override
-	public void readToWriter(int index, IDataWriter writer) {
-		writer.writeByteArray(index, memory.toByteArray());
+	public void readToWriter(IDataWriter writer) {
+		writer.writeByteArray(memory.toByteArray());
+	}
+	
+	@Override
+	public void readToList(ByteList list) {
+		list.addAll(memory);
+	}
+	
+	@Override
+	public void readToByteBuf(ByteBuf buf) {
+		buf.writeInt(size());
+		//noinspection ForLoopReplaceableByForEach
+		for (int i = 0; i < memory.size(); i++) {
+			buf.writeByte(memory.get(i));
+		}
 	}
 	
 	@Override
@@ -233,6 +274,12 @@ public final class ReadOnlyDataOperator implements IDataReader {
 	@Override
 	public NBTTagCompound readTagCompound() {
 		return (NBTTagCompound) readTag();
+	}
+	
+	@Nonnull
+	@Override
+	public ReadOnlyDataOperator copy() {
+		return new ReadOnlyDataOperator(this);
 	}
 	
 	private NBTTagCompound readNBTTagCompound() {

@@ -1,6 +1,7 @@
 package xyz.emptydreams.mi.api.net.message;
 
-import net.minecraft.nbt.NBTTagCompound;
+import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.IDataWriter;
 
 /**
  * 空信息
@@ -9,9 +10,9 @@ import net.minecraft.nbt.NBTTagCompound;
 public final class NonAddition implements IMessageAddition {
 	
 	@Override
-	public void writeTo(NBTTagCompound tag) { }
+	public void writeTo(IDataWriter writer) { }
 	
 	@Override
-	public void readFrom(NBTTagCompound tag) { }
+	public void readFrom(IDataReader reader) { }
 	
 }

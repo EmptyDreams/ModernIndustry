@@ -1,12 +1,16 @@
 package xyz.emptydreams.mi.api.net.handler;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.dor.ByteDataOperator;
+import xyz.emptydreams.mi.api.dor.IDataOperator;
+import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.ReadOnlyDataOperator;
 import xyz.emptydreams.mi.api.net.MessageRegister;
+import xyz.emptydreams.mi.api.net.ParseResultEnum;
+import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
 
 /**
  * 通用信息传输
@@ -14,38 +18,40 @@ import xyz.emptydreams.mi.api.net.MessageRegister;
  */
 public class CommonMessage implements IMessage {
 	
-	private NBTTagCompound data;
+	private IDataReader reader;
+	private String key;
 	
-	public CommonMessage(NBTTagCompound data) {
-		this.data = data.copy();
+	public CommonMessage(IDataReader reader, String key) {
+		this.reader = ReadOnlyDataOperator.instance(reader);
+		this.key = key;
 	}
 	
 	public CommonMessage() { }
 	
-	public void setData(NBTTagCompound data) {
-		this.data = data.copy();
-	}
-	
 	/** 服务端解析数据 */
-	public boolean parseServer() {
-		return MessageRegister.parseServer(data);
+	public ParseResultEnum parseServer() {
+		return MessageRegister.parseServer(reader, key);
 	}
 	
 	/** 客户端解析数据 */
 	@SideOnly(Side.CLIENT)
 	public void parseClient() {
-		RawQueue.add(data);
+		RawQueue.add(reader, key);
 	}
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		data = ByteBufUtils.readTag(buf);
+		this.key = DataTypeRegister.read(buf, String.class, null);
+		IDataOperator reader = new ByteDataOperator(50);
+		reader.writeFromByteBuf(buf);
+		this.reader = reader;
 	}
 	
 	@Override
 	public void toBytes(ByteBuf buf) {
-		if (data == null) throw new IllegalArgumentException("没有给定需要传输的信息");
-		ByteBufUtils.writeTag(buf, data);
+		if (reader == null) throw new IllegalArgumentException("没有给定需要传输的信息");
+		DataTypeRegister.write(buf, key);
+		reader.readToByteBuf(buf);
 	}
 	
 }

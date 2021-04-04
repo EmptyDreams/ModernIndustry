@@ -7,6 +7,7 @@ import xyz.emptydreams.mi.api.dor.IClassData;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -17,6 +18,11 @@ import java.lang.reflect.Modifier;
 public class TEData implements IClassData {
 	
 	private static final TEData instance = new TEData();
+	
+	@Nonnull
+	public static TEData instance() {
+		return instance;
+	}
 	
 	/** 将TE写入到NBT */
 	public static NBTTagCompound write(TileEntity te, NBTTagCompound tag, String key) {

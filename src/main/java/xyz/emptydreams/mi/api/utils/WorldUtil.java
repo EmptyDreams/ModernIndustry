@@ -108,12 +108,20 @@ public final class WorldUtil {
 	
 	/**
 	 * 根据dimension获取世界对象
-	 * @return 若客户端当前世界的dimension不为输入值则返回null
+	 * @return 若客户端当前世界的dimension不为输入值则抛出异常
 	 * @see #getClientWorld()
 	 */
 	@Nonnull
 	public static World getWorld(int dimension) {
-		return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dimension);
+		if (WorldUtil.isServer()) {
+			return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dimension);
+		} else {
+			int dim = Minecraft.getMinecraft().world.provider.getDimension();
+			if (dim != dimension) {
+				throw new IllegalArgumentException("世界对象[" + dim +"]与目标世界对象[" + dimension + "]不同");
+			}
+			return Minecraft.getMinecraft().world;
+		}
 	}
 	
 	/**

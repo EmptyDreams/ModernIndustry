@@ -75,7 +75,7 @@ public interface IClassData {
 	default void writeAll(IDataWriter writer, Object object) {
 		Class<?> clazz = object.getClass();
 		while (!suspend(clazz)) {
-			int start = writer.nextWriteIndex();
+			int start = writer.nowWriteIndex();
 			Field[] fields = clazz.getDeclaredFields();
 			SignBytes indexTag = new SignBytes(fields.length);
 			for (Field field : fields) {
@@ -94,7 +94,8 @@ public interface IClassData {
 								+ "\t\t处理：跳过该项", e);
 				}
 			}
-			indexTag.writeTo(start, writer);
+			writer.setWriteIndex(start);
+			indexTag.writeTo(writer);
 			clazz = clazz.getSuperclass();
 		}
 	}

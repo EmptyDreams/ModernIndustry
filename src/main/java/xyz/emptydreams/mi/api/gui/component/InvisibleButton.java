@@ -4,9 +4,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.IDataWriter;
 import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
@@ -17,6 +18,7 @@ import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 
 /**
@@ -65,13 +67,14 @@ public class InvisibleButton extends MComponent {
 				}
 			}
 			
+			@Nullable
 			@Override
-			public NBTTagCompound writeTo() {
-				return new NBTTagCompound();
+			public boolean writeTo(IDataWriter writer) {
+				return true;
 			}
 			
 			@Override
-			public void readFrom(NBTTagCompound data) {
+			public void readFrom(IDataReader data) {
 				mouseAction(-1, -1);
 			}
 		});

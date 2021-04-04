@@ -2,8 +2,8 @@ package xyz.emptydreams.mi.api.net.message.player;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import xyz.emptydreams.mi.api.dor.IDataReader;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import java.util.Map;
@@ -31,15 +31,15 @@ public final class PlayerHandleRegistry {
 	 * 处理一个数据
 	 * @param key 钥匙
 	 * @param player 玩家
-	 * @param data 数据
+	 * @param reader 数据
 	 * @return 是否处理成功
 	 */
-	public static boolean apply(ResourceLocation key, EntityPlayer player, NBTTagCompound data) {
+	public static boolean apply(ResourceLocation key, EntityPlayer player, IDataReader reader) {
 		IPlayerHandle handle = INSTANCES.getOrDefault(key, null);
 		if (handle == null) {
 			return false;
 		}
-		handle.apply(player, data);
+		handle.apply(player, reader);
 		return true;
 	}
 	

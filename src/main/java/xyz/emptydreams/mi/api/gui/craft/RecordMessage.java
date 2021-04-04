@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.api.gui.craft;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -10,6 +9,7 @@ import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemList;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSol;
+import xyz.emptydreams.mi.api.dor.IDataReader;
 import xyz.emptydreams.mi.api.gui.common.ChildFrame;
 import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.net.message.player.IPlayerHandle;
@@ -29,15 +29,15 @@ import static xyz.emptydreams.mi.api.utils.data.enums.OperateResult.SUCCESS;
 public class RecordMessage implements IPlayerHandle {
 	
 	@Override
-	public void apply(EntityPlayer player, NBTTagCompound data) {
+	public void apply(EntityPlayer player, IDataReader reader) {
 		FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
 			TileEntity te = ChildFrame.getGuiTileEntity(player);
 			if (te == null) {
 				printErrorForTENull(player);
 				return;
 			}
-			String craftName = data.getString("craft");         //管理器的名称
-			int index = data.getInteger("index");               //合成表在管理器中的下标
+			String craftName = reader.readString();                 //管理器的名称
+			int index = reader.readVarint();                        //合成表在管理器中的下标
 			CraftGuide<?, ?> craft = CraftGuide.getInstance(new ResourceLocation(craftName));
 			//noinspection ConstantConditions
 			IShape<?, ?> shape = craft.getShape(index);             //合成表对象

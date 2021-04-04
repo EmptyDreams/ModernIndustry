@@ -10,6 +10,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import xyz.emptydreams.mi.api.dor.ByteDataOperator;
+import xyz.emptydreams.mi.api.dor.IDataReader;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
 import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
@@ -24,7 +26,6 @@ import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
-import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 import xyz.emptydreams.mi.api.utils.data.te.Storage;
@@ -83,8 +84,6 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	protected double loss;
 	/** 所属电路缓存 */
 	CableCache cache = null;
-	/** 在客户端存储电线连接数量 */
-	private int _amount = 0;
 	/** 过载最长时间 */
 	protected int biggerMaxTime = 50;
 	
@@ -122,16 +121,12 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	
 	/** 获取已经连接的电线的数量 */
 	public int getLinkAmount() {
-		if (world.isRemote) {
-			return _amount;
-		} else {
-			if (prev == null) {
-				if (next == null) return 0;
-				return 1;
-			}
-			if (next == null) return 1;
-			return 2;
+		if (prev == null) {
+			if (next == null) return 0;
+			return 1;
 		}
+		if (next == null) return 1;
+		return 2;
 	}
 	
 	/**
@@ -193,12 +188,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	}
 	
 	public void updateLinkShow() {
-		setEast(false);
-		setWest(false);
-		setNorth(false);
-		setSouth(false);
-		setUp(false);
-		setDown(false);
+		linkInfo = 0;
 		if (next != null) {
 			switch (BlockUtil.whatFacing(pos, next)) {
 				case EAST: setEast(true); break;
@@ -311,7 +301,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		if (cache == null) {
 			if (world.isRemote) {
 				cache = CLIENT_CACHE;
-				WorldUtil.removeTickable(this);
+				//WorldUtil.removeTickable(this);
 			} else {
 				CableCache.calculate(this);
 			}
@@ -469,9 +459,8 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	}
 	
 	@Override
-	public void receive(@Nonnull NBTTagCompound message) {
-		linkInfo = message.getByte("linkInfo");
-		_amount = message.getInteger("amount");
+	public void receive(@Nonnull IDataReader message) {
+		linkInfo = message.readByte();
 		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
@@ -481,9 +470,9 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	public void send() {
 		if (world.isRemote) return;
 		if (players.size() == world.playerEntities.size()) return;
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setByte("linkInfo", (byte) linkInfo);
-		IMessage message = BlockMessage.instance().create(compound, new BlockAddition(this));
+		ByteDataOperator operator = new ByteDataOperator(1);
+		operator.writeByte((byte) linkInfo);
+		IMessage message = BlockMessage.instance().create(operator, new BlockAddition(this));
 		MessageSender.sendToClientIf(message, world, player -> {
 			if (players.contains(player.getName()) || !net_range.isIn(new Point3D(player))) return false;
 			players.add(player.getName());

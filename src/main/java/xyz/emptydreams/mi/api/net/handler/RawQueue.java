@@ -1,19 +1,18 @@
 package xyz.emptydreams.mi.api.net.handler;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.dor.IDataReader;
 import xyz.emptydreams.mi.api.net.MessageRegister;
-import xyz.emptydreams.mi.api.utils.MISysInfo;
-import xyz.emptydreams.mi.api.utils.StringUtil;
+import xyz.emptydreams.mi.api.net.ParseResultEnum;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author EmptyDreams
@@ -22,21 +21,26 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public final class RawQueue {
 	
-	private static final List<NBTTagCompound> queue = new LinkedList<>();
+	private static final Map<IDataReader, String> queue = new Object2ObjectOpenHashMap<>();
 	
-	public static void add(NBTTagCompound data) {
-		queue.add(StringUtil.checkNull(data, "data"));
+	/** 将一个任务添加到队列中，方法内部自动解析Key值 */
+	public static void add(IDataReader data, String key) {
+		queue.put(data, key);
 	}
 	
 	@SubscribeEvent
 	public static void tryToCleanQueue(TickEvent.ClientTickEvent event) {
 		World world = Minecraft.getMinecraft().world;
 		if (world == null || queue.isEmpty()) return;
-		for (NBTTagCompound data : queue) {
-			boolean sup = MessageRegister.parseClient(data);
-			if (!sup) MISysInfo.err("[RawQueue]有一个信息没有成功被处理：" + data);
+		Map<IDataReader, String> cache = new Object2ObjectOpenHashMap<>();
+		for (Map.Entry<IDataReader, String> entry : queue.entrySet()) {
+			ParseResultEnum result = MessageRegister.parseClient(entry.getKey(), entry.getValue());
+			if (result.isRetry()) {
+				cache.put(entry.getKey(), entry.getValue());
+			}
 		}
 		queue.clear();
+		queue.putAll(cache);
 	}
 	
 }

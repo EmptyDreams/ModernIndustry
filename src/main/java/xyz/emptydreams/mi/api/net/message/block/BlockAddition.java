@@ -1,11 +1,11 @@
 package xyz.emptydreams.mi.api.net.message.block;
 
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.IDataWriter;
 import xyz.emptydreams.mi.api.net.message.IMessageAddition;
-import xyz.emptydreams.mi.api.utils.IOUtils;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 
@@ -33,15 +33,15 @@ public class BlockAddition implements IMessageAddition {
 	public BlockPos getPos() { return pos; }
 	
 	@Override
-	public void writeTo(NBTTagCompound tag) {
-		tag.setInteger("world", world.provider.getDimension());
-		IOUtils.writeBlockPos(tag, pos, "pos");
+	public void writeTo(IDataWriter writer) {
+		writer.writeVarint(world.provider.getDimension());
+		writer.writeBlockPos(pos);
 	}
 	
 	@Override
-	public void readFrom(NBTTagCompound tag) {
-		world = WorldUtil.getWorld(tag.getInteger("world"));
-		pos = IOUtils.readBlockPos(tag, "pos");
+	public void readFrom(IDataReader reader) {
+		world = WorldUtil.getWorld(reader.readVarint());
+		pos = reader.readBlockPos();
 	}
 	
 	@Override

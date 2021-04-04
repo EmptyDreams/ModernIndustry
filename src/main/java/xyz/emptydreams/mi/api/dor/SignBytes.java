@@ -12,12 +12,11 @@ import java.util.Iterator;
 public class SignBytes implements Iterable<SignBytes.State> {
 	
 	public static SignBytes read(IDataReader reader, int size) {
-		SignBytes result = new SignBytes((size /7) + 1);
+		SignBytes result = new SignBytes((size /8) + 1);
 		result.list.clear();
-		while (true) {
+		for (int k = 0; k < size; k = 8) {
 			byte data = reader.readByte();
 			result.list.add(data);
-			if ((data & 0b10000000) == 0) break;
 		}
 		result.size = size;
 		return result;
@@ -41,11 +40,10 @@ public class SignBytes implements Iterable<SignBytes.State> {
 	}
 	
 	public void add(State state) {
-		int listIndex = size / 7;
-		int innerIndex = size % 7;
-		if (innerIndex == 6) {
+		int listIndex = size / 8;
+		int innerIndex = size % 8;
+		if (innerIndex == 7) {
 			innerIndex = 0;
-			list.set(listIndex, (byte) (list.getByte(listIndex) | 0b10000000));
 			++listIndex;
 			list.add((byte) 0);
 		}
@@ -55,8 +53,8 @@ public class SignBytes implements Iterable<SignBytes.State> {
 	}
 	
 	public State get(int index) {
-		int listIndex = index / 7;
-		int innerIndex = index % 7;
+		int listIndex = index / 8;
+		int innerIndex = index % 8;
 		int b = list.getByte(listIndex);
 		int test = 0b00000001 << innerIndex;
 		return (test & b) == 0 ? State.ZERO : State.ONE;
@@ -72,15 +70,6 @@ public class SignBytes implements Iterable<SignBytes.State> {
 		while (it.hasNext()) {
 			byte data = it.next();
 			writer.writeByte(data);
-		}
-	}
-	
-	public void writeTo(int index, IDataWriter writer) {
-		ByteListIterator it = list.iterator();
-		//noinspection WhileLoopReplaceableByForEach
-		while (it.hasNext()) {
-			byte data = it.next();
-			writer.writeByte(index++, data);
 		}
 	}
 	
