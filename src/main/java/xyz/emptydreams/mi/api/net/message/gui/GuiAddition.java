@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.net.message.gui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.dor.IDataReader;
 import xyz.emptydreams.mi.api.dor.IDataWriter;
@@ -56,15 +55,14 @@ public class GuiAddition implements IMessageAddition {
 	public void writeTo(IDataWriter writer) {
 		writer.writeVarint(id);
 		writer.writeString(getGuiID());
-		if (WorldUtil.isClient()) writer.writeUuid(player);
+		writer.writeUuid(player);
 	}
 	
 	@Override
 	public void readFrom(IDataReader reader) {
 		id = reader.readVarint();
 		guiID = reader.readString();
-		if (WorldUtil.isServer()) player = reader.readUuid();
-		else player = Minecraft.getMinecraft().player.getUniqueID();
+		player = reader.readUuid();
 	}
 	
 }

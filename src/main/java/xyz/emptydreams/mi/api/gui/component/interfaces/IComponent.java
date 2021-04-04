@@ -8,7 +8,6 @@ import net.minecraft.inventory.IContainerListener;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.IDataReader;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
@@ -125,12 +124,9 @@ public interface IComponent {
 	 */
 	@SideOnly(Side.CLIENT)
 	default void sendToServer(MIFrame frame, IDataReader data) {
-		ByteDataOperator operator = new ByteDataOperator(data.size() + 1);
-		operator.writeVarint(getCode());
-		operator.writeData(data);
 		EntityPlayer player = Minecraft.getMinecraft().player;
 		IMessage message = GuiMessage.instance().create(
-				operator, new GuiAddition(player, frame.getID(), getCode()));
+				data, new GuiAddition(player, frame.getID(), getCode()));
 		MessageSender.sendToServer(message);
 	}
 	

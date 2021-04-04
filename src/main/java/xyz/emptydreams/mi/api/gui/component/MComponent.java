@@ -1,5 +1,7 @@
 package xyz.emptydreams.mi.api.gui.component;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
@@ -61,7 +63,6 @@ public abstract class MComponent implements IComponent {
 		if (height < 0) throw new IllegalArgumentException("height[" + height + "] < 0");
 		this.width = width;
 		this.height = height;
-		
 	}
 	
 	@Override
@@ -73,7 +74,7 @@ public abstract class MComponent implements IComponent {
 	public <T extends IListener> void activateListener(MIFrame frame, Class<T> name, Consumer<T> consumer) {
 		int index = 0;
 		boolean send = false;
-		ByteDataOperator data = new ByteDataOperator();
+		IntList indexs = new IntArrayList(listeners.size() / 2);
 		ByteDataOperator operator = new ByteDataOperator();
 		for (IListener listener : listeners) {
 			if (name.isAssignableFrom(listener.getClass())) {
@@ -82,7 +83,7 @@ public abstract class MComponent implements IComponent {
 				if (WorldUtil.isClient()) {
 					if (listener.writeTo(operator)) {
 						send = true;
-						data.writeVarint(index);
+						indexs.add(index);
 					}
 				}
 			}
@@ -91,9 +92,8 @@ public abstract class MComponent implements IComponent {
 		//如果事件在客户端触发并且需要进行网络传输则发送消息给服务端
 		//如果事件在服务端触发不需要发送给客户端，因为在服务端触发的事件大部分在客户端也可以触发
 		if (send) {
-			data.setWriteIndex(0);
-			data.writeVarint(operator.size());
-			data.setWriteIndex(data.size() - 1);
+			ByteDataOperator data = new ByteDataOperator(operator.size() + indexs.size() * 2);
+			data.writeVarintArray(indexs.toIntArray());
 			data.writeData(operator);
 			sendToServer(frame, data);
 		}
