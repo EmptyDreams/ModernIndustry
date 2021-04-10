@@ -44,6 +44,7 @@ import static xyz.emptydreams.mi.api.utils.data.enums.OperateResult.SUCCESS;
  * @author EmptyDreams
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
+@SideOnly(Side.CLIENT)
 public class CraftFrame extends MIFrame {
 
 	/** 目标合成表 */
@@ -190,7 +191,6 @@ public class CraftFrame extends MIFrame {
 		handle.update(node, getShape());
 	}
 	
-	@SideOnly(Side.CLIENT)
 	private void updateShow(CraftHandle handle, IShape shape) {
 		handle.update(node, shape);
 		String text = shape.getMainlyName();

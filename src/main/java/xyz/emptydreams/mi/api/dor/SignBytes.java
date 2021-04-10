@@ -14,7 +14,7 @@ public class SignBytes implements Iterable<SignBytes.State> {
 	public static SignBytes read(IDataReader reader, int size) {
 		SignBytes result = new SignBytes((size /8) + 1);
 		result.list.clear();
-		for (int k = 0; k < size; k = 8) {
+		for (int k = 0; k < size; k += 8) {
 			byte data = reader.readByte();
 			result.list.add(data);
 		}

@@ -31,7 +31,7 @@ public class TEData implements IClassData {
 	
 	/** 从NBT中读取数据到TE */
 	public static void read(TileEntity te, NBTTagCompound tag, String key) {
-		instance.writeToNBT(tag, te, key);
+		instance.readFromNBT(tag, te, key);
 	}
 	
 	private TEData() { }
