@@ -1,9 +1,12 @@
 package xyz.emptydreams.mi.api.gui.craft;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
@@ -14,6 +17,7 @@ import xyz.emptydreams.mi.api.gui.client.LocalChildFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.ButtonComponent;
 import xyz.emptydreams.mi.api.gui.component.CommonProgress;
+import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.gui.component.group.Group;
 import xyz.emptydreams.mi.api.gui.component.group.Panels;
 import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
@@ -28,6 +32,7 @@ import xyz.emptydreams.mi.api.utils.data.enums.OperateResult;
 
 import java.util.List;
 
+import static xyz.emptydreams.mi.api.gui.component.ButtonComponent.Style.REC;
 import static xyz.emptydreams.mi.api.gui.component.ButtonComponent.Style.TRIANGLE_LEFT;
 import static xyz.emptydreams.mi.api.gui.component.ButtonComponent.Style.TRIANGLE_RIGHT;
 import static xyz.emptydreams.mi.api.gui.craft.CraftFrameUtil.removeItemStack;
@@ -51,6 +56,8 @@ public class CraftFrame extends MIFrame {
 	private final EntityPlayer player;
 	/** 盛放原料的SlotGroup */
 	private final SlotGroup slots;
+	/** 显示产物名称 */
+	private final StringComponent name = new StringComponent();
 	
 	/**
 	 * 创建一个显示合成表的GUI
@@ -83,23 +90,27 @@ public class CraftFrame extends MIFrame {
 		node = handle.createGroup();
 		CommonProgress progress = new CommonProgress();
 		
+		//输入框+进度条+输出框
 		Group group = new Group(0, 20, getWidth(), 0, Panels::horizontalCenter);
-		group.adds(node.raw, progress, node.pro);
+		group.adds(node.input, progress, node.output);
 		add(group, null);
+		name.setLocation(-1000, node.output.getY() - 15);
+		add(name, null);
 		
 		//下方按钮
 		Group buttonGroup = new Group(0, group.getHeight() + group.getY() + 7,
 								getWidth(), 0, Panels::horizontalCenter);
 		ButtonComponent prevButton = new ButtonComponent(10, 10, TRIANGLE_LEFT);
 		ButtonComponent nextButton = new ButtonComponent(10, 10, TRIANGLE_RIGHT);
-		ButtonComponent fillButton = new ButtonComponent(10, 10, ButtonComponent.Style.REC);
+		ButtonComponent fillButton = new ButtonComponent(11, 10, REC);
 		prevButton.setAction((frame, isClient) -> preShape());
 		nextButton.setAction((frame, isClient) -> nextShape());
 		fillButton.setAction((frame, isClient) -> fill());
+		fillButton.setText("R");
 		buttonGroup.adds(prevButton, fillButton, nextButton);
 		add(buttonGroup, null);
 		
-		handle.update(node, craft.getShape(++index));
+		nextShape();
 	}
 	
 	/**
@@ -155,7 +166,7 @@ public class CraftFrame extends MIFrame {
 		if (now >= craft.size()) now = index = 0;
 		CraftHandle handle = HandleRegister.get(craft);
 		//noinspection ConstantConditions
-		handle.update(node, craft.getShape(now));
+		updateShow(handle, craft.getShape(now));
 	}
 	
 	/** 切换到上一个合成表并刷新显示 */
@@ -164,7 +175,7 @@ public class CraftFrame extends MIFrame {
 		if (now < 0) now = index = craft.size() - 1;
 		CraftHandle handle = HandleRegister.get(craft);
 		//noinspection ConstantConditions
-		handle.update(node, craft.getShape(now));
+		updateShow(handle, craft.getShape(now));
 	}
 	
 	/** 获取当前显示的合成表 */
@@ -177,6 +188,16 @@ public class CraftFrame extends MIFrame {
 		CraftHandle handle = HandleRegister.get(craft);
 		//noinspection ConstantConditions
 		handle.update(node, getShape());
+	}
+	
+	@SideOnly(Side.CLIENT)
+	private void updateShow(CraftHandle handle, IShape shape) {
+		handle.update(node, shape);
+		String text = shape.getMainlyName();
+		name.setString(text);
+		int width = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
+		int centerX = node.output.getX() + (node.output.getWidth() / 2);
+		name.setLocation(centerX - (width / 2), name.getY());
 	}
 	
 }

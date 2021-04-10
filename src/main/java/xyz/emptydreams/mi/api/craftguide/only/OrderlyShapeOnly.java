@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.craftguide.only;
 
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
@@ -62,6 +63,11 @@ public class OrderlyShapeOnly implements IShape<ItemList, ItemElement> {
 	@Override
 	public Class<ItemElement> getOutputClass() {
 		return ItemElement.class;
+	}
+	
+	@Override
+	public String getMainlyName() {
+		return I18n.format(list.get(0, 0).getItem().getUnlocalizedName() + ".name");
 	}
 	
 	/**

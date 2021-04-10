@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.api.craftguide.multi;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import net.minecraft.block.Block;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -64,6 +65,11 @@ public class OrderlyShape implements IShape<ItemList, ItemSet> {
 	@Override
 	public Class<ItemSet> getOutputClass() {
 		return ItemSet.class;
+	}
+	
+	@Override
+	public String getMainlyName() {
+		return I18n.format(production.iterator().next().getItem().getUnlocalizedName() + ".name");
 	}
 	
 	/**

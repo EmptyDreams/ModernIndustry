@@ -106,15 +106,15 @@ public final class ImageData {
 	/** 矩形按钮 */
 	public static final String BUTTON_REC = "button";
 	/** 矩形按钮（点击） */
-	public static final String BUTTON_REC_CLICK = "buttonClicked";
+	public static final String BUTTON_REC_CLICK = "buttonClick";
 	/** 三角形向右按钮 */
 	public static final String BUTTON_TRIANGLE_RIGHT = "rightButton";
 	/** 三角形向右按钮（点击） */
-	public static final String BUTTON_TRIANGLE_RIGHT_CLICK = "rightButtonClicked";
+	public static final String BUTTON_TRIANGLE_RIGHT_CLICK = "rightButtonClick";
 	/** 三角形向左按钮 */
 	public static final String BUTTON_TRIANGLE_LEFT = "leftButton";
 	/** 三角形向左按钮（点击） */
-	public static final String BUTTON_TRIANGLE_LEFT_CLICK = "leftButtonClicked";
+	public static final String BUTTON_TRIANGLE_LEFT_CLICK = "leftButtonClick";
 	
 	/** 存储资源 */
 	private final static Map<String, Node> resourceInfo = new Object2ObjectArrayMap<String, Node>(10) {

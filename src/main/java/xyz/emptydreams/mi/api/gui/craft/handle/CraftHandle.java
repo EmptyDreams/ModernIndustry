@@ -69,13 +69,13 @@ public abstract class CraftHandle<T extends ItemSol, R> {
 	public static final class Node {
 		
 		/** 原料列表 */
-		public final SlotGroup raw;
+		public final SlotGroup input;
 		/** 产物列表 */
-		public final SlotGroup pro;
+		public final SlotGroup output;
 		
-		private Node(SlotGroup raw, SlotGroup pro) {
-			this.raw = raw;
-			this.pro = pro;
+		private Node(SlotGroup input, SlotGroup output) {
+			this.input = input;
+			this.output = output;
 		}
 		
 	}

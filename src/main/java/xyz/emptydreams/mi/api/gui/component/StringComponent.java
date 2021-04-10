@@ -45,6 +45,7 @@ public class StringComponent extends MComponent {
 	/** 设置要显示的字符串 */
 	public void setString(String str) {
 		this.value = StringUtil.checkNull(str, "str");
+		text = null;
 	}
 
 	@Override

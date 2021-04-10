@@ -50,8 +50,8 @@ public final class OrderlyShapeHandle extends CraftHandle<ItemList, ItemSet> {
 	
 	@Override
 	public void update(Node group, IShape<ItemList, ItemSet> shape) {
-		SlotGroup raw = group.raw;
-		SlotGroup pro = group.pro;
+		SlotGroup raw = group.input;
+		SlotGroup pro = group.output;
 		shape.getInput().forEach(node -> raw.setItem(node.getX(), node.getY(), node.getElement()));
 		shape.getOutput().forEachIndex((element, index) -> {
 			Point2D point = MathUtil.indexToMatrix(index, pro.getXSize());

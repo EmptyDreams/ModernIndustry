@@ -173,9 +173,9 @@ public class Group extends MComponent implements Iterable<IComponent> {
 	
 	@Override
 	public String toString() {
-		return "Group{控件数量：" + size() +
+		return "控件数量：" + size() +
 				"；坐标：(" + getX() + "," + getY() + ")；" +
-				"大小：(" + getWidth() + "," + getHeight() + ")}";
+				"大小：(" + getWidth() + "," + getHeight() + ")";
 	}
 
 }

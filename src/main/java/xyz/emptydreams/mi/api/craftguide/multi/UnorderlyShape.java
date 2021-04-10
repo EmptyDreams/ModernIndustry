@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.craftguide.multi;
 
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
@@ -61,6 +62,11 @@ public class UnorderlyShape implements IShape<ItemSet, ItemSet> {
 	@Override
 	public Class<ItemSet> getOutputClass() {
 		return ItemSet.class;
+	}
+	
+	@Override
+	public String getMainlyName() {
+		return I18n.format(production.iterator().next().getItem().getUnlocalizedName() + ".name");
 	}
 	
 	/**

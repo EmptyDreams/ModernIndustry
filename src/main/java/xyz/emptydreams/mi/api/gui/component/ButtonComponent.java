@@ -112,7 +112,9 @@ public class ButtonComponent extends InvisibleButton {
 	
 		/** 矩形按钮 */
 		REC(Style::recPaint, Style::recDrawMouseIn, Style::stringPainter),
+		/** 向右三角形按钮 */
 		TRIANGLE_RIGHT(Style::triangleRightPaint, Style::triangleRightDrawMouseIn, Style::stringPainter),
+		/** 向左三角形按钮 */
 		TRIANGLE_LEFT(Style::triangleLeftPaint, Style::triangleLeftDrawMouseIn, Style::stringPainter);
 		
 		private final BiConsumer<Graphics, Size2D> printer;
@@ -163,6 +165,7 @@ public class ButtonComponent extends InvisibleButton {
 					size.getWidth(), size.getHeight()), 0, 0, null);
 		}
 		
+		@SideOnly(CLIENT)
 		private static void triangleLeftPaint(Graphics g, Size2D size) {
 			g.drawImage(ImageData.getImage(BUTTON_TRIANGLE_LEFT,
 					size.getWidth(), size.getHeight()), 0, 0, null);
@@ -178,6 +181,7 @@ public class ButtonComponent extends InvisibleButton {
 			imageDrawMouseIn(gui, component, name, BUTTON_TRIANGLE_RIGHT_CLICK);
 		}
 		
+		@SideOnly(CLIENT)
 		private static void triangleLeftDrawMouseIn(GuiContainer gui, IComponent component, String name) {
 			imageDrawMouseIn(gui, component, name, BUTTON_TRIANGLE_LEFT_CLICK);
 		}
@@ -189,22 +193,11 @@ public class ButtonComponent extends InvisibleButton {
 			int x = button.getX(), y = button.getY();
 			int textWidth = font.getStringWidth(button.getText());
 			
-			int textX;  //文本X轴坐标
-			if (textWidth < width) {
-				textX = x + (textWidth / 2) + gui.getGuiLeft();
-			} else if (textWidth == width) {
-				textX = x;
-			} else {
-				textX = x - (textWidth - width) / 2 + gui.getGuiLeft();
-			}
-			int textY;  //文本Y轴坐标
-			if (10 < height) {
-				textY = y + 5 + gui.getGuiTop();
-			} else if (10 == height) {
-				textY = y + gui.getGuiTop();
-			} else {
-				textY = y - (10 - height) / 2 + gui.getGuiTop();
-			}
+			int centerX = x + (width / 2) + gui.getGuiLeft() + 1;
+			int centerY = y + (height / 2) + gui.getGuiTop();
+			
+			int textX = centerX - (textWidth / 2);
+			int textY = centerY - 5;
 			
 			font.drawString(button.getText(), textX, textY, button.getTextColor());
 		}
@@ -216,6 +209,7 @@ public class ButtonComponent extends InvisibleButton {
 		 * @param name 资源名称
 		 * @param click 点击图像名称
 		 */
+		@SideOnly(CLIENT)
 		private static void imageDrawMouseIn(GuiContainer gui, IComponent component, String name, String click) {
 			GlStateManager.color(1, 1, 1);
 			RuntimeTexture texture = RuntimeTexture.getInstance(name);

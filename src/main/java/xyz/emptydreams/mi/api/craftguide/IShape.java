@@ -1,6 +1,8 @@
 package xyz.emptydreams.mi.api.craftguide;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSol;
 
 import javax.annotation.Nonnull;
@@ -49,5 +51,9 @@ public interface IShape<T extends ItemSol, R> {
 	@SuppressWarnings("unused")
 	@Nonnull
 	Class<R> getOutputClass();
+	
+	/** 获取合成表产物的主要名称 */
+	@SideOnly(Side.CLIENT)
+	String getMainlyName();
 	
 }
