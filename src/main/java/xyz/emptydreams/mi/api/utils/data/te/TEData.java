@@ -9,7 +9,6 @@ import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 /**
  * TE数据读写
@@ -43,10 +42,7 @@ public class TEData implements IClassData {
 	
 	@Override
 	public boolean needOperate(Field field) {
-		int mod = field.getModifiers();
-		//不对静态及终态的field进行读写
-		return field.isAnnotationPresent(Storage.class)
-				&& (!(Modifier.isStatic(mod) || Modifier.isFinal(mod)));
+		return field.isAnnotationPresent(Storage.class);
 	}
 	
 	/**

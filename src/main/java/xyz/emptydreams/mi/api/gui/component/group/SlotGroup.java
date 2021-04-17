@@ -16,6 +16,7 @@ import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.Iterator;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
@@ -54,7 +55,23 @@ public class SlotGroup extends MComponent implements Iterable<SlotGroup.Node> {
 	}
 	
 	/**
-	 * 自动创建所有Slot
+	 * 自动创建指定数量的Slot
+	 * @param handler 指定ItemStackHandler
+	 * @param start 下标起点
+	 * @param size 创建数量
+	 * @param builder 构建一个新的SlotItemHandler
+	 */
+	public void writeFromBuilder(int start, int size, Function<Integer, SlotItemHandler> builder) {
+		int nowSize = 0;
+		for (int y = 0; y < getYSize(); ++y) {
+			for (int x = 0; x < getXSize() && nowSize <= size; ++x, ++nowSize) {
+				setSlot(x, y, builder.apply(start++));
+			}
+		}
+	}
+	
+	/**
+	 * 自动创建指定数量的Slot
 	 * @param handler 指定ItemStackHandler
 	 * @param start 下标起点
 	 * @param size 创建数量

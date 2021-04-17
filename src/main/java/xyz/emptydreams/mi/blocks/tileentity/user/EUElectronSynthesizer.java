@@ -58,7 +58,7 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 		setCounter(counter);
 		setReceive(true);
 		setMaxEnergy(20);
-		SLOTS.writeFrom(HANDLER, this, 0, 25, it -> true);
+		SLOTS.writeFromBuilder(0, 25, this::createHandler);
 		OUTS.writeFrom(HANDLER, this, 25, it -> false);
 		PROGRESS.setCraftButton(CraftList.SYNTHESIZER, te -> ((EUElectronSynthesizer) te).SLOTS);
 	}

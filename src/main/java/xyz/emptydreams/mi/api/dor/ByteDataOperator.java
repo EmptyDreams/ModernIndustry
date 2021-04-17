@@ -22,6 +22,7 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.exception.IntransitException;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
@@ -421,9 +422,10 @@ public class ByteDataOperator implements IDataOperator {
 	
 	private void writeNBTTagCompound(NBTTagCompound data) {
 		try {
+			Field field = data.getClass().getDeclaredField("tagMap");
+			field.setAccessible(true);
 			@SuppressWarnings("unchecked")
-			Map<String, NBTBase> map =
-					(Map<String, NBTBase>) data.getClass().getDeclaredField("tagMap").get(data);
+			Map<String, NBTBase> map = (Map<String, NBTBase>) field.get(data);
 			writeVarint(data.getSize());
 			map.forEach((key, value) -> {
 				writeString(key);

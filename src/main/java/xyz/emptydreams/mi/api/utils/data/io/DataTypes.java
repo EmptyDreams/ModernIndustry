@@ -1,16 +1,15 @@
 package xyz.emptydreams.mi.api.utils.data.io;
 
-import com.google.common.base.Throwables;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
-import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.exception.IntransitException;
 import xyz.emptydreams.mi.api.dor.IDataReader;
 import xyz.emptydreams.mi.api.dor.IDataWriter;
+import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
+import xyz.emptydreams.mi.api.exception.IntransitException;
 import xyz.emptydreams.mi.api.register.AutoLoader;
 import xyz.emptydreams.mi.api.utils.IOUtils;
 
@@ -59,12 +58,12 @@ public final class DataTypes {
 		
 		@Override
 		public void writeToData(IDataWriter writer, Integer data) {
-			writer.writeVarint(data);
+			writer.writeInt(data);
 		}
 		
 		@Override
 		public Integer readFromData(IDataReader reader, Supplier<Integer> getter) {
-			return reader.readVarint();
+			return reader.readInt();
 		}
 		
 		@Override
@@ -399,12 +398,12 @@ public final class DataTypes {
 		
 		@Override
 		public void writeToData(IDataWriter writer, int[] data) {
-			writer.writeVarintArray(data);
+			writer.writeIntArray(data);
 		}
 		
 		@Override
 		public int[] readFromData(IDataReader reader, Supplier<int[]> getter) {
-			return reader.readVarintArray();
+			return reader.readIntArray();
 		}
 		
 		@Override
@@ -1090,11 +1089,10 @@ public final class DataTypes {
 		
 		@Override
 		public void writeToData(IDataWriter writer, Collection<?> data) {
-			DataTypeRegister.write(writer, data.getClass());
 			writer.writeVarint(data.size());
 			for (Object o : data) {
-				DataTypeRegister.write(writer, o);
 				DataTypeRegister.write(writer, o.getClass());
+				DataTypeRegister.write(writer, o);
 			}
 		}
 		
@@ -1104,15 +1102,7 @@ public final class DataTypes {
 			int size = reader.readVarint();
 			Collection collection = getter == null ? null : getter.get();
 			if (collection == null) {
-				try {
-					Class clazz = DataTypeRegister.read(reader, Class.class, null);
-					collection = (Collection) clazz.newInstance();
-				} catch (Exception e) {
-					Throwables.throwIfUnchecked(e);
-					throw new IntransitException("数据自动读写出现了意料之外的错误", e);
-				}
-			} else {
-				DataTypeRegister.read(reader, Class.class, null);
+				throw new NullPointerException("读写Collection时该值应该具有默认值");
 			}
 			for (int i = 0; i < size; ++i) {
 				Class clazz = DataTypeRegister.read(reader, Class.class, null);
@@ -1123,13 +1113,12 @@ public final class DataTypes {
 		
 		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, Collection<?> data) {
-			nbt.setString(name + ":name", data.getClass().getName());
 			nbt.setInteger(name, data.size());
 			int index = 0;
 			for (Object o : data) {
 				String str = name + index;
-				DataTypeRegister.write(nbt, str, o);
 				DataTypeRegister.write(nbt, str + "name", o.getClass());
+				DataTypeRegister.write(nbt, str, o);
 				++index;
 			}
 		}
@@ -1140,13 +1129,7 @@ public final class DataTypes {
 			int size = nbt.getInteger(name);
 			Collection collection = getter == null ? null : getter.get();
 			if (collection == null) {
-				try {
-					Class clazz = DataTypeRegister.read(nbt, name + ":name", Class.class, null);
-					collection = (Collection) clazz.newInstance();
-				} catch (Exception e) {
-					Throwables.throwIfUnchecked(e);
-					throw new IntransitException("数据自动读写出现了意料之外的错误", e);
-				}
+				throw new NullPointerException("读写Collection时该值应该具有默认值");
 			}
 			for (int i = 0; i < size; ++i) {
 				String str = name + i;
@@ -1158,11 +1141,10 @@ public final class DataTypes {
 		
 		@Override
 		public void writeToByteBuf(ByteBuf buf, Collection<?> data) {
-			DataTypeRegister.write(buf, data.getClass());
 			buf.writeInt(data.size());
 			for (Object o : data) {
-				DataTypeRegister.write(buf, o);
 				DataTypeRegister.write(buf, o.getClass());
+				DataTypeRegister.write(buf, o);
 			}
 		}
 		
@@ -1172,15 +1154,7 @@ public final class DataTypes {
 			int size = buf.readInt();
 			Collection collection = getter == null ? null : getter.get();
 			if (collection == null) {
-				try {
-					Class clazz = DataTypeRegister.read(buf, Class.class, null);
-					collection = (Collection) clazz.newInstance();
-				} catch (Exception e) {
-					Throwables.throwIfUnchecked(e);
-					throw new IntransitException("数据自动读写出现了意料之外的错误", e);
-				}
-			} else {
-				DataTypeRegister.read(buf, Class.class, null);
+				throw new NullPointerException("读写Collection时该值应该具有默认值");
 			}
 			for (int i = 0; i < size; ++i) {
 				Class clazz = DataTypeRegister.read(buf, Class.class, null);
@@ -1197,7 +1171,6 @@ public final class DataTypes {
 		public void writeToData(IDataWriter writer, Map<?, ?> data) {
 			if (data == null) return;
 			writer.writeVarint(data.size());
-			DataTypeRegister.write(writer, data.getClass());
 			for (Map.Entry<?, ?> entry : data.entrySet()) {
 				DataTypeRegister.write(writer, entry.getKey().getClass());
 				DataTypeRegister.write(writer, entry.getValue().getClass());
@@ -1212,15 +1185,7 @@ public final class DataTypes {
 			int size = reader.readVarint();
 			Map map = getter == null ? null : getter.get();
 			if (map == null) {
-				try {
-					Class<?> clazz = DataTypeRegister.read(reader, Class.class, null);
-					map = (Map) clazz.newInstance();
-				} catch (Exception e) {
-					Throwables.throwIfUnchecked(e);
-					throw new IntransitException("数据自动读写出现了意料之外的错误", e);
-				}
-			} else {
-				DataTypeRegister.read(reader, Class.class, null);
+				throw new NullPointerException("读写Collection时该值应该具有默认值");
 			}
 			for (int i = 0; i < size; ++i) {
 				Class<?> keyClazz = DataTypeRegister.read(reader, Class.class, null);
@@ -1236,7 +1201,6 @@ public final class DataTypes {
 		public void writeToNBT(NBTTagCompound nbt, String name, Map<?, ?> data) {
 			if (data == null) return;
 			nbt.setInteger(name, data.size());
-			DataTypeRegister.write(nbt, name + "name", data.getClass());
 			int k = 0;
 			for (Map.Entry<?, ?> entry : data.entrySet()) {
 				String str = name + k++;
@@ -1253,13 +1217,7 @@ public final class DataTypes {
 			int size = nbt.getInteger(name);
 			Map map = getter == null ? null : getter.get();
 			if (map == null) {
-				try {
-					Class<?> clazz = DataTypeRegister.read(nbt, name + "name", Class.class, null);
-					map = (Map) clazz.newInstance();
-				} catch (Exception e) {
-					Throwables.throwIfUnchecked(e);
-					throw new IntransitException("数据自动读写出现了意料之外的错误", e);
-				}
+				throw new NullPointerException("读写Collection时该值应该具有默认值");
 			}
 			for (int i = 0; i < size; ++i) {
 				String str = name + i;
@@ -1276,7 +1234,6 @@ public final class DataTypes {
 		public void writeToByteBuf(ByteBuf buf, Map<?, ?> data) {
 			if (data == null) return;
 			buf.writeInt(data.size());
-			DataTypeRegister.write(buf, data.getClass());
 			for (Map.Entry<?, ?> entry : data.entrySet()) {
 				DataTypeRegister.write(buf, entry.getKey().getClass());
 				DataTypeRegister.write(buf, entry.getValue().getClass());
@@ -1291,15 +1248,7 @@ public final class DataTypes {
 			int size = buf.readInt();
 			Map map = getter == null ? null : getter.get();
 			if (map == null) {
-				try {
-					Class<?> clazz = DataTypeRegister.read(buf, Class.class, null);
-					map = (Map) clazz.newInstance();
-				} catch (Exception e) {
-					Throwables.throwIfUnchecked(e);
-					throw new IntransitException("数据自动读写出现了意料之外的错误", e);
-				}
-			} else {
-				DataTypeRegister.read(buf, Class.class, null);
+				throw new NullPointerException("读写Collection时该值应该具有默认值");
 			}
 			for (int i = 0; i < size; ++i) {
 				Class<?> keyClazz = DataTypeRegister.read(buf, Class.class, null);

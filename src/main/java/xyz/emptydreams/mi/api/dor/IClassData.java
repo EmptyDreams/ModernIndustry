@@ -30,9 +30,7 @@ public interface IClassData {
 	 * @param field 目标field
 	 */
 	default boolean needOperate(Field field) {
-		int mod = field.getModifiers();
-		//不对静态及终态的field进行读写
-		return !(Modifier.isStatic(mod) || Modifier.isFinal(mod));
+		return true;
 	}
 	
 	/**
@@ -46,18 +44,24 @@ public interface IClassData {
 		Class<?> clazz = object.getClass();
 		while (!suspend(clazz)) {
 			Field[] fields = clazz.getDeclaredFields();
+			if (fields.length == 0) {
+				clazz = clazz.getSuperclass();
+				continue;
+			}
 			SignBytes indexTag = SignBytes.read(reader, fields.length);
+			IDataReader data = reader.readData();
 			int i = -1;
 			for (SignBytes.State state : indexTag) {
 				++i;
 				if (state.isZero()) continue;
 				try {
-					read(fields[i], reader, object);
+					read(fields[i], data, object);
 				} catch (Exception e) {
 					MISysInfo.err("读取信息时出现错误，跳过该项读写!\n"
 							+ "\t详细信息：\n"
-							+ "\t\t下标：" + indexTag.size()
-							+ "\t\t名称：" + clazz.getSimpleName() + "." + fields[i].getName()
+							+ "\t\tfield：" + fields[i]
+							+ "\n\t\tclass：" + clazz.getName()
+							+ "\n\t\t下标：" + indexTag.size()
 							+ "\t\t处理：跳过该项", e);
 				}
 			}
@@ -75,8 +79,12 @@ public interface IClassData {
 	default void writeAll(IDataWriter writer, Object object) {
 		Class<?> clazz = object.getClass();
 		while (!suspend(clazz)) {
-			int start = writer.nowWriteIndex();
 			Field[] fields = clazz.getDeclaredFields();
+			if (fields.length == 0) {
+				clazz = clazz.getSuperclass();
+				continue;
+			}
+			IDataOperator data = new ByteDataOperator();
 			SignBytes indexTag = new SignBytes(fields.length);
 			for (Field field : fields) {
 				if (!needOperate(field)) {
@@ -84,18 +92,19 @@ public interface IClassData {
 					continue;
 				}
 				try {
-					if (write(field, writer, object)) indexTag.add(ONE);
+					if (write(field, data, object)) indexTag.add(ONE);
 					else indexTag.add(ZERO);
 				} catch (Exception e) {
-					MISysInfo.err("写入信息时出现错误，跳过该项读写!\n"
-								+ "\t详细信息：\n"
-								+ "\t\t下标：" + indexTag.size()
-								+ "\t\t名称：" + field.getName()
-								+ "\t\t处理：跳过该项", e);
+					MISysInfo.err("读取信息时出现错误，跳过该项读写!\n"
+							+ "\t详细信息：\n"
+							+ "\t\tfield：" + field
+							+ "\n\t\tclass：" + clazz.getName()
+							+ "\n\t\t下标：" + indexTag.size()
+							+ "\t\t处理：跳过该项", e);
 				}
 			}
-			writer.setWriteIndex(start);
 			indexTag.writeTo(writer);
+			writer.writeData(data);
 			clazz = clazz.getSuperclass();
 		}
 	}
@@ -125,7 +134,7 @@ public interface IClassData {
 	 * @throws IllegalAccessException 如果反射过程出现异常
 	 */
 	default void read(Field field, IDataReader reader, Object object) throws IllegalAccessException {
-		if (Modifier.isPrivate(field.getModifiers()) || Modifier.isProtected(field.getModifiers())) {
+		if (!Modifier.isPublic(field.getModifiers())) {
 			field.setAccessible(true);
 		}
 		Object data = DataTypeRegister.read(reader, field.getType(), () -> {

@@ -12,9 +12,11 @@ import java.util.Iterator;
 public class SignBytes implements Iterable<SignBytes.State> {
 	
 	public static SignBytes read(IDataReader reader, int size) {
-		SignBytes result = new SignBytes((size /8) + 1);
+		int number = size / 8;
+		if (size % 8 != 0) ++number;
+		SignBytes result = new SignBytes(number);
 		result.list.clear();
-		for (int k = 0; k < size; k += 8) {
+		for (int k = 0; k < number; ++k) {
 			byte data = reader.readByte();
 			result.list.add(data);
 		}
