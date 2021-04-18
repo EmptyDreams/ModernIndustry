@@ -20,7 +20,7 @@ import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.event.EnergyEvent;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
-import xyz.emptydreams.mi.api.utils.data.te.Storage;
+import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
 
 import javax.annotation.Nonnull;

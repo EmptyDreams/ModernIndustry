@@ -11,7 +11,7 @@ import xyz.emptydreams.mi.api.gui.component.CommonProgress;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
-import xyz.emptydreams.mi.api.utils.data.te.Storage;
+import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.blocks.base.MIProperty;
 import xyz.emptydreams.mi.blocks.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;

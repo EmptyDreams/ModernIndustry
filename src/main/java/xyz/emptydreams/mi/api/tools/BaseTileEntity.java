@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.utils.data.te.TEData;
+import xyz.emptydreams.mi.api.utils.data.io.TEData;
 
 /**
  * 基础TE，提供了一些默认的功能

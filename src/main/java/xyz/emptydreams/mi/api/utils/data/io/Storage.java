@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.utils.data.te;
+package xyz.emptydreams.mi.api.utils.data.io;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

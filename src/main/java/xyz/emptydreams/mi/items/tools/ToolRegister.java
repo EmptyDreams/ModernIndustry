@@ -1,22 +1,8 @@
 package xyz.emptydreams.mi.items.tools;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.register.AutoManager;
 import xyz.emptydreams.mi.api.register.item.RecipeRegister;
-import xyz.emptydreams.mi.api.tools.capabilities.PropertyCapability;
-import xyz.emptydreams.mi.api.tools.capabilities.PropertyProvider;
 import xyz.emptydreams.mi.api.tools.item.IToolMaterial;
 import xyz.emptydreams.mi.api.tools.item.MIArmor;
 import xyz.emptydreams.mi.api.tools.item.MIAxe;
@@ -24,14 +10,11 @@ import xyz.emptydreams.mi.api.tools.item.MIHoe;
 import xyz.emptydreams.mi.api.tools.item.MIPickaxe;
 import xyz.emptydreams.mi.api.tools.item.MISpade;
 import xyz.emptydreams.mi.api.tools.item.MISword;
-import xyz.emptydreams.mi.api.tools.property.IProperty;
-import xyz.emptydreams.mi.api.tools.property.PoorQuality;
-import xyz.emptydreams.mi.api.tools.property.PropertyManager;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import static net.minecraft.inventory.EntityEquipmentSlot.*;
+import static net.minecraft.inventory.EntityEquipmentSlot.CHEST;
+import static net.minecraft.inventory.EntityEquipmentSlot.FEET;
+import static net.minecraft.inventory.EntityEquipmentSlot.HEAD;
+import static net.minecraft.inventory.EntityEquipmentSlot.LEGS;
 import static net.minecraft.item.Item.ToolMaterial.IRON;
 import static net.minecraft.item.ItemArmor.ArmorMaterial;
 import static xyz.emptydreams.mi.ModernIndustry.MODID;
@@ -43,7 +26,6 @@ import static xyz.emptydreams.mi.items.tools.MITool.COPPER_ARMOR;
  * @author EmptyDremas
  */
 @SuppressWarnings("unused")
-@Mod.EventBusSubscriber
 @AutoManager(item = true, itemCustom = true)
 public class ToolRegister {
 	
@@ -126,42 +108,6 @@ public class ToolRegister {
 	public static void itemCustom(Item item) {
 		if (item instanceof IToolMaterial)
 			RecipeRegister.registry(item, ((IToolMaterial) item).getMaterial());
-	}
-	
-	@SuppressWarnings("ConstantConditions")
-	@SubscribeEvent
-	public static void onPlayerCrafted(PlayerEvent.ItemCraftedEvent event) {
-		if (event.crafting.hasCapability(PropertyCapability.PROPERTY, null)) {
-			if (event.player.world.isRemote) {
-				event.crafting.getCapability(PropertyCapability.PROPERTY, null)
-						.addProperty(new PoorQuality().setLevel(-1));
-			} else {
-				event.crafting.getCapability(PropertyCapability.PROPERTY, null)
-						.addProperty(PoorQuality.randProperty(1, 10));
-			}
-		}
-	}
-	
-	@SubscribeEvent
-	public static void addToolCap(AttachCapabilitiesEvent<ItemStack> event) {
-		if (!event.getObject().hasCapability(PropertyCapability.PROPERTY, null) &&
-				    (event.getObject().getItem() instanceof ItemTool ||
-				     event.getObject().getItem() instanceof ItemArmor)){
-			event.addCapability(new ResourceLocation(MODID, PropertyCapability.PROPERTY.getName()),
-					new PropertyProvider(PropertyCapability.PROPERTY.getDefaultInstance()));
-		}
-	}
-	
-	@SubscribeEvent
-	@SideOnly(Side.CLIENT)
-	public static void addTooltip(ItemTooltipEvent event) {
-		PropertyManager manager = event.getItemStack().getCapability(PropertyCapability.PROPERTY, null);
-		if (manager == null) return;
-		List<String> list = new LinkedList<>();
-		for (IProperty property : manager) {
-			list.add(I18n.format(property.getName()) + ": " + property.getValue());
-		}
-		event.getToolTip().addAll(1, list);
 	}
 	
 }

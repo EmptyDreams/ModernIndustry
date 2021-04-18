@@ -3,11 +3,20 @@ package xyz.emptydreams.mi.api.utils;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.utils.data.math.Point2D;
 
+import java.util.Random;
+
 /**
  * 有关数学的计算
  * @author EmptyDreams
  */
 public final class MathUtil {
+	
+	private static final Random RANDOM = new Random();
+	
+	/** 获取随机数 */
+	public static Random random() {
+		return RANDOM;
+	}
 	
 	/**
 	 * 根据字符串计算出一个int数据
