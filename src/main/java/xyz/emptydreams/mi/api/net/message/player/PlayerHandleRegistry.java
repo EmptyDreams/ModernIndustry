@@ -3,7 +3,7 @@ package xyz.emptydreams.mi.api.net.message.player;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import java.util.Map;

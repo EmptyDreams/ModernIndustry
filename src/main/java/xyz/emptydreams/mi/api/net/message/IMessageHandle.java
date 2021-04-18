@@ -3,7 +3,7 @@ package xyz.emptydreams.mi.api.net.message;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.net.ParseResultEnum;
 import xyz.emptydreams.mi.api.net.handler.CommonMessage;
 

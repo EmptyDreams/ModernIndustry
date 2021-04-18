@@ -3,7 +3,7 @@ package xyz.emptydreams.mi.api.utils.data.io;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import xyz.emptydreams.mi.api.dor.ClassDataOperator;
-import xyz.emptydreams.mi.api.dor.IClassData;
+import xyz.emptydreams.mi.api.dor.interfaces.IClassData;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nonnull;

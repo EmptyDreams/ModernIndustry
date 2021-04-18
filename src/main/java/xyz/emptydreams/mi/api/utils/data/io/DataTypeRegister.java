@@ -2,8 +2,8 @@ package xyz.emptydreams.mi.api.utils.data.io;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
-import xyz.emptydreams.mi.api.dor.IDataReader;
-import xyz.emptydreams.mi.api.dor.IDataWriter;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 
 import java.util.LinkedList;
 import java.util.List;

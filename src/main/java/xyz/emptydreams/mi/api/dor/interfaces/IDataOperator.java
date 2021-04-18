@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.dor;
+package xyz.emptydreams.mi.api.dor.interfaces;
 
 /**
  * 同时支持数据读写的Operator

@@ -1,5 +1,7 @@
-package xyz.emptydreams.mi.api.dor;
+package xyz.emptydreams.mi.api.dor.interfaces;
 
+import xyz.emptydreams.mi.api.dor.ByteDataOperator;
+import xyz.emptydreams.mi.api.dor.SignBytes;
 import xyz.emptydreams.mi.api.exception.IntransitException;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;

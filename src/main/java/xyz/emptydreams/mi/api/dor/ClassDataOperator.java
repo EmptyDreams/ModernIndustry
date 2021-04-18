@@ -1,6 +1,7 @@
 package xyz.emptydreams.mi.api.dor;
 
 import net.minecraft.nbt.NBTTagCompound;
+import xyz.emptydreams.mi.api.dor.interfaces.IClassData;
 
 /**
  * @author EmptyDreams

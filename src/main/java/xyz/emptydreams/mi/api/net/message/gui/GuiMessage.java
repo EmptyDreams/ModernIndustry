@@ -5,7 +5,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.relauncher.Side;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
-import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.net.ParseResultEnum;
 import xyz.emptydreams.mi.api.net.message.IMessageHandle;

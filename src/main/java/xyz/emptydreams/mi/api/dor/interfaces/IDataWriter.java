@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.dor;
+package xyz.emptydreams.mi.api.dor.interfaces;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTBase;
@@ -27,22 +27,39 @@ public interface IDataWriter {
 	/** 从ByteBuf中读取数据 */
 	void writeFromByteBuf(ByteBuf buf);
 	
+	/** 写入一个boolean */
 	void writeBoolean(boolean data);
+	/** 写入一个byte */
 	void writeByte(byte data);
+	/** 写入一个int */
 	void writeInt(int data);
+	/** 写入一个char */
 	void writeChar(char data);
+	/** 写入一个short */
 	void writeShort(short data);
+	/** 写入一个long */
 	void writeLong(long data);
+	/** 写入一个float */
 	void writeFloat(float data);
+	/** 写入一个double */
 	void writeDouble(double data);
+	/** 写入一个varint */
 	void writeVarint(int data);
+	/** 写入一个UUID */
 	void writeUuid(UUID data);
+	/** 写入一个字符串 */
 	void writeString(String data);
+	/** 写入一个int数组 */
 	void writeIntArray(int[] data);
+	/** 写入一个varint数组 */
 	void writeVarintArray(int[] data);
+	/** 写入一个byte数组 */
 	void writeByteArray(byte[] data);
+	/** 写入一个BlockPos */
 	void writeBlockPos(BlockPos data);
+	/** 写入一个电压值 */
 	void writeVoltage(IVoltage data);
+	/** 写入一个NBTBase */
 	void writeTag(NBTBase data);
 	/** 将指定reader写入到当前writer */
 	default void writeData(IDataReader data) {

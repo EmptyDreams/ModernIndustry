@@ -3,8 +3,8 @@ package xyz.emptydreams.mi.api.net.message.block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.dor.IDataReader;
-import xyz.emptydreams.mi.api.dor.IDataWriter;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.net.message.IMessageAddition;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 

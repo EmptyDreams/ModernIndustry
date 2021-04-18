@@ -2,8 +2,8 @@ package xyz.emptydreams.mi.api.net.message.player;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import xyz.emptydreams.mi.api.dor.IDataReader;
-import xyz.emptydreams.mi.api.dor.IDataWriter;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.net.message.IMessageAddition;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;

@@ -2,7 +2,7 @@ package xyz.emptydreams.mi.api.net.message.player;
 
 import net.minecraftforge.fml.relauncher.Side;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
-import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.net.ParseResultEnum;
 import xyz.emptydreams.mi.api.net.message.IMessageHandle;
 import xyz.emptydreams.mi.api.utils.MISysInfo;

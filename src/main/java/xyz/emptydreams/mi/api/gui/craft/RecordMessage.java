@@ -9,7 +9,7 @@ import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemList;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSol;
-import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.gui.common.ChildFrame;
 import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.net.message.player.IPlayerHandle;

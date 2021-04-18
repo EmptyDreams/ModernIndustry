@@ -1,7 +1,7 @@
 package xyz.emptydreams.mi.api.gui.listener;
 
-import xyz.emptydreams.mi.api.dor.IDataReader;
-import xyz.emptydreams.mi.api.dor.IDataWriter;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 
 import javax.annotation.Nullable;
 

@@ -17,6 +17,8 @@ import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.math.BlockPos;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 
 import javax.annotation.Nonnull;
@@ -269,11 +271,6 @@ public final class ReadOnlyDataOperator implements IDataReader {
 			default: throw
 					new UnsupportedOperationException("不支持读写该类型：NBTBase.id = " + id);
 		}
-	}
-	
-	@Override
-	public NBTTagCompound readTagCompound() {
-		return (NBTTagCompound) readTag();
 	}
 	
 	@Nonnull

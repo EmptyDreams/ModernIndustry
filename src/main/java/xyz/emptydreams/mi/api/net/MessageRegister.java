@@ -4,7 +4,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.event.NetWorkRegistryEvent;
 import xyz.emptydreams.mi.api.net.message.IMessageHandle;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;

@@ -1,7 +1,7 @@
 package xyz.emptydreams.mi.api.net.message;
 
-import xyz.emptydreams.mi.api.dor.IDataReader;
-import xyz.emptydreams.mi.api.dor.IDataWriter;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 
 /**
  * 用于存储发送消息前的附加信息，

@@ -1,7 +1,7 @@
 package xyz.emptydreams.mi.api.net.message.player;
 
 import net.minecraft.entity.player.EntityPlayer;
-import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 
 /**
  * 用于在服务端/客户端接收到玩家信息时处理相关内容

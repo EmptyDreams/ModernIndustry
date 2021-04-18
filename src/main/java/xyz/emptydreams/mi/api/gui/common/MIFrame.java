@@ -6,7 +6,7 @@ import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.utils.MISysInfo;

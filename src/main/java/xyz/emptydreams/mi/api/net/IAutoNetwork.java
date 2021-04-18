@@ -1,6 +1,6 @@
 package xyz.emptydreams.mi.api.net;
 
-import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 
 import javax.annotation.Nonnull;
 

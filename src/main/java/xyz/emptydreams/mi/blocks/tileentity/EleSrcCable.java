@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
-import xyz.emptydreams.mi.api.dor.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
 import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
