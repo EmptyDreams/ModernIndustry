@@ -406,7 +406,7 @@ public class ByteDataOperator implements IDataOperator {
 			case 5: writeFloat(((NBTPrimitive) data).getFloat());              break;
 			case 6: writeDouble(((NBTPrimitive) data).getDouble());            break;
 			case 7: writeByteArray(((NBTTagByteArray) data).getByteArray());   break;
-			case 8: writeString(data.toString());                              break;
+			case 8: writeString(((NBTTagString) data).getString());                              break;
 			case 10: writeNBTTagCompound((NBTTagCompound) data);               break;
 			case 11: writeIntArray(((NBTTagIntArray) data).getIntArray());     break;
 			case 9:
