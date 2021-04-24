@@ -7,7 +7,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
-import xyz.emptydreams.mi.api.dor.ReadOnlyDataOperator;
+import xyz.emptydreams.mi.api.dor.DataReader;
 import xyz.emptydreams.mi.api.net.MessageRegister;
 import xyz.emptydreams.mi.api.net.ParseResultEnum;
 import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
@@ -22,7 +22,7 @@ public class CommonMessage implements IMessage {
 	private String key;
 	
 	public CommonMessage(IDataReader reader, String key) {
-		this.reader = ReadOnlyDataOperator.instance(reader);
+		this.reader = DataReader.instance(reader);
 		this.key = key;
 	}
 	

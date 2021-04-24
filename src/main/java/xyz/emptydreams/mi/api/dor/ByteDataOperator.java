@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
+ * 通用数据操作类
  * @author EmptyDreams
  */
 public class ByteDataOperator implements IDataOperator {
@@ -237,7 +238,10 @@ public class ByteDataOperator implements IDataOperator {
 	
 	@Override
 	public IDataReader readData() {
-		return new ByteDataOperator(readByteArray());
+		int size = readVarint();
+		IDataReader reader =  new VarDataReader(memory, nowReadIndex(), size);
+		setReadIndex(nowReadIndex() + size);
+		return reader;
 	}
 	
 	@Override

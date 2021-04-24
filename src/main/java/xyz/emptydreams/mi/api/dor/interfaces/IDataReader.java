@@ -77,7 +77,6 @@ public interface IDataReader {
 	}
 	
 	/** 拷贝自身 */
-	@Nonnull
-	IDataReader copy();
+	@Nonnull IDataReader copy();
 	
 }

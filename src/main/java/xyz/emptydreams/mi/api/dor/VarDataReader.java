@@ -1,7 +1,6 @@
 package xyz.emptydreams.mi.api.dor;
 
 import io.netty.buffer.ByteBuf;
-import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteList;
 import it.unimi.dsi.fastutil.bytes.ByteLists;
 import net.minecraft.nbt.NBTBase;
@@ -25,74 +24,37 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 /**
- * 只支持读取的Operator
  * @author EmptyDreams
  */
-public final class ReadOnlyDataOperator implements IDataReader {
+public class VarDataReader implements IDataReader {
 	
-	/**
-	 * 构建一个指定长度的虚拟读取器
-	 * @param size 大小
-	 * @param fill 数据填充
-	 */
-	@Nonnull
-	public static ReadOnlyDataOperator virtual(int size, byte fill) {
-		return new ReadOnlyDataOperator(size, fill);
-	}
-	
-	/**
-	 * 构建一个从指定NBT中读取数据的只读器
-	 * @param nbt NBT
-	 */
-	@Nonnull
-	public static ReadOnlyDataOperator instance(NBTTagCompound nbt) {
-		return new ReadOnlyDataOperator(nbt.getByteArray("."));
-	}
-	
-	@Nonnull
-	public static ReadOnlyDataOperator instance(byte[] datas) {
-		return new ReadOnlyDataOperator(datas);
-	}
-	
-	@Nonnull
-	public static ReadOnlyDataOperator instance(ByteList bytes) {
-		return new ReadOnlyDataOperator(bytes);
-	}
-	
-	@Nonnull
-	public static ReadOnlyDataOperator instance(IDataReader reader) {
-		return new ReadOnlyDataOperator(reader);
-	}
-	
+	/** 存储数据 */
 	private final ByteList memory;
-	/** 读取时的下标 */
-	private int readIndex = -1;
+	/** 当前读取下标 */
+	private int readIndex;
+	/** 起始下标 */
+	private final int startIndex;
+	/** 结束下标 */
+	private final int endIndex;
 	
-	private ReadOnlyDataOperator(byte[] datas) {
-		memory = ByteLists.unmodifiable(new ByteArrayList(datas));
-	}
-	
-	private ReadOnlyDataOperator(ByteList bytes) {
-		this.memory = ByteLists.unmodifiable(new ByteArrayList(bytes));
-	}
-	
-	private ReadOnlyDataOperator(IDataReader reader) {
-		ByteList cache = new ByteArrayList(reader.size());
-		reader.readToList(cache);
-		memory = ByteLists.unmodifiable(cache);
-	}
-	
-	private ReadOnlyDataOperator(int size, byte fill) {
-		ByteList list = new ByteArrayList(size);
-		for (int i = 0; i < size; ++i) {
-			list.add(fill);
-		}
+	public VarDataReader(ByteList list, int start, int size) {
 		memory = ByteLists.unmodifiable(list);
+		readIndex = start;
+		startIndex = start;
+		endIndex = start + size + 1;
+	}
+	
+	private VarDataReader(VarDataReader reader) {
+		this.memory = reader.memory;
+		readIndex = reader.readIndex;
+		endIndex = reader.endIndex;
+		startIndex = reader.startIndex;
 	}
 	
 	@Override
 	public int nextReadIndex() {
-		return ++readIndex;
+		checkIndex(++readIndex);
+		return readIndex;
 	}
 	
 	@Override
@@ -102,22 +64,23 @@ public final class ReadOnlyDataOperator implements IDataReader {
 	
 	@Override
 	public void setReadIndex(int readIndex) {
+		checkIndex(readIndex);
 		this.readIndex = readIndex;
 	}
 	
 	@Override
 	public int size() {
-		return memory.size();
+		return endIndex - startIndex;
 	}
 	
 	@Override
 	public void readToNBT(NBTTagCompound nbt, String key) {
-		nbt.setByteArray(key, memory.toByteArray());
+		nbt.setByteArray(key, toByteArray());
 	}
 	
 	@Override
 	public void readToWriter(IDataWriter writer) {
-		writer.writeByteArray(memory.toByteArray());
+		writer.writeByteArray(toByteArray());
 	}
 	
 	@Override
@@ -128,10 +91,17 @@ public final class ReadOnlyDataOperator implements IDataReader {
 	@Override
 	public void readToByteBuf(ByteBuf buf) {
 		buf.writeInt(size());
-		//noinspection ForLoopReplaceableByForEach
 		for (int i = 0; i < memory.size(); i++) {
-			buf.writeByte(memory.get(i));
+			buf.writeByte(memory.get(i + startIndex));
 		}
+	}
+	
+	private byte[] toByteArray() {
+		byte[] data = new byte[size()];
+		for (int i = 0; i < data.length; ++i) {
+			data[i] = memory.get(startIndex + i);
+		}
+		return data;
 	}
 	
 	@Override
@@ -275,8 +245,8 @@ public final class ReadOnlyDataOperator implements IDataReader {
 	
 	@Nonnull
 	@Override
-	public ReadOnlyDataOperator copy() {
-		return new ReadOnlyDataOperator(this);
+	public VarDataReader copy() {
+		return new VarDataReader(this);
 	}
 	
 	private NBTTagCompound readNBTTagCompound() {
@@ -286,6 +256,15 @@ public final class ReadOnlyDataOperator implements IDataReader {
 			result.setTag(readString(), readTag());
 		}
 		return result;
+	}
+	
+	/** 检查下标 */
+	private void checkIndex(int index) {
+		if (index >= endIndex || index < startIndex) {
+			throw new IndexOutOfBoundsException(
+					"index[" + index
+							+ "]应当属于[" + startIndex + "," + endIndex + ")");
+		}
 	}
 	
 }

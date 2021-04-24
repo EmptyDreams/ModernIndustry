@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 /**
@@ -65,5 +66,8 @@ public interface IDataWriter {
 	default void writeData(IDataReader data) {
 		data.readToWriter(this);
 	}
+	
+	/** 复制自身 */
+	@Nonnull IDataWriter copy();
 	
 }
