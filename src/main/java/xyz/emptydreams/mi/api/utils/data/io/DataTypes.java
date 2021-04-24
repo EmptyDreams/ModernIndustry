@@ -9,7 +9,7 @@ import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.exception.IntransitException;
+import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.register.AutoLoader;
 import xyz.emptydreams.mi.api.utils.IOUtils;
 
@@ -836,7 +836,7 @@ public final class DataTypes {
 				//noinspection unchecked,rawtypes
 				return Enum.valueOf((Class) Class.forName(clazz), name);
 			} catch (ClassNotFoundException e) {
-				throw new IntransitException(e);
+				throw new TransferException(e);
 			}
 		}
 		
@@ -853,7 +853,7 @@ public final class DataTypes {
 				return Enum.valueOf(
 						(Class) Class.forName(nbt.getString(name + "k")), nbt.getString(name));
 			} catch (ClassNotFoundException e) {
-				throw new IntransitException(e);
+				throw new TransferException(e);
 			}
 		}
 		
@@ -871,7 +871,7 @@ public final class DataTypes {
 				//noinspection unchecked,rawtypes
 				return Enum.valueOf((Class) Class.forName(clazz), name);
 			} catch (ClassNotFoundException e) {
-				throw new IntransitException(e);
+				throw new TransferException(e);
 			}
 		}
 		
@@ -1015,7 +1015,7 @@ public final class DataTypes {
 			try {
 				return Class.forName(reader.readString());
 			} catch (ClassNotFoundException e) {
-				throw new IntransitException("需要读写的类不存在", e);
+				throw new TransferException("需要读写的类不存在", e);
 			}
 		}
 		
@@ -1030,7 +1030,7 @@ public final class DataTypes {
 			try {
 				return Class.forName(nbt.getString(name));
 			} catch (ClassNotFoundException e) {
-				throw new IntransitException("需要读写的类不存在", e);
+				throw new TransferException("需要读写的类不存在", e);
 			}
 		}
 		
@@ -1045,7 +1045,7 @@ public final class DataTypes {
 			try {
 				return Class.forName(IOUtils.readStringFromBuf(buf));
 			} catch (ClassNotFoundException e) {
-				throw new IntransitException("需要读写的类不存在", e);
+				throw new TransferException("需要读写的类不存在", e);
 			}
 		}
 		

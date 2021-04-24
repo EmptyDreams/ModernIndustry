@@ -2,7 +2,7 @@ package xyz.emptydreams.mi.api.dor.interfaces;
 
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.SignBytes;
-import xyz.emptydreams.mi.api.exception.IntransitException;
+import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
 
@@ -143,7 +143,7 @@ public interface IClassData {
 			try {
 				return field.get(object);
 			} catch (IllegalAccessException e) {
-				throw new IntransitException(e);
+				throw new TransferException(e);
 			}
 		});
 		field.set(object, cast(field, data));

@@ -14,7 +14,7 @@ import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
-import xyz.emptydreams.mi.api.exception.IntransitException;
+import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.net.message.player.IPlayerHandle;
 import xyz.emptydreams.mi.api.net.message.player.PlayerHandleRegistry;
 import xyz.emptydreams.mi.api.register.agent.AutoAgentRegister;
@@ -114,12 +114,12 @@ public final class AutoRegister {
 		} catch (IllegalAccessException e) {
 			MISysInfo.err("需要的函数不可见，原因可能是："
 							+ "用户提供的需初始化的类没有提供可视的构造函数");
-			throw new IntransitException(e);
+			throw new TransferException(e);
 		} catch (NoSuchMethodException e) {
 			MISysInfo.err("没有找到对应的方法，原因可能可能是：\n"
 					            +  "1).用户的类使用了RegisterManager注解却未在类中定义static registry()\n"
 							    +  "2).使用@AutoTrusteeshipRegister注解的托管没有提供默认构造函数\n");
-			throw new IntransitException(e);
+			throw new TransferException(e);
 		} catch (NullPointerException e) {
 			MISysInfo.err("反射过程中发生了空指针错误，原因可能是：\n"
 							+ "\t1).本程序内部错误\n"
@@ -129,9 +129,9 @@ public final class AutoRegister {
 			MISysInfo.err("反射过程中寻找类时出现错误，原因可能是：\n"
 							+ "\t1).用户或程序内部的类因为某些原因被卸载\n"
 							+ "\t2).用户提供的类路径错误");
-			throw new IntransitException(e);
+			throw new TransferException(e);
 		} catch (Exception e) {
-			throw new IntransitException("发生了未知错误！", e);
+			throw new TransferException("发生了未知错误！", e);
 		}
 	}
 	

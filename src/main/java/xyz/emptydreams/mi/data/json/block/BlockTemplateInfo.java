@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
-import xyz.emptydreams.mi.api.exception.IntransitException;
+import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import java.io.BufferedReader;
@@ -56,7 +56,7 @@ public class BlockTemplateInfo {
 				checkMethod = StringUtil.getMethod(json.get("class").getAsString());
 			else checkMethod = null;
 		} catch (Exception e) {
-			throw new IntransitException("方法获取失败", e);
+			throw new TransferException("方法获取失败", e);
 		}
 		
 		try(BufferedReader reader = new BufferedReader(new FileReader(path))) {
@@ -64,7 +64,7 @@ public class BlockTemplateInfo {
 					(stringBuilder, str) -> stringBuilder.append(str).append('\n'),
 					(arg0, arg1) -> null).toString();
 		} catch (IOException e) {
-			throw new IntransitException("模板文件读取失败：" + path, e);
+			throw new TransferException("模板文件读取失败：" + path, e);
 		}
 	}
 	
@@ -99,7 +99,7 @@ public class BlockTemplateInfo {
 			if (checkMethod == null) return true;
 			return (boolean) checkMethod.invoke(null, state);
 		} catch (Exception e) {
-			throw new IntransitException("方法调用异常", e);
+			throw new TransferException("方法调用异常", e);
 		}
 	}
 	

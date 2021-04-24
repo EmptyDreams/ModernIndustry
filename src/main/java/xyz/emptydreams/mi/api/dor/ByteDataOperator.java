@@ -22,7 +22,7 @@ import xyz.emptydreams.mi.api.dor.interfaces.IDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.exception.IntransitException;
+import xyz.emptydreams.mi.api.exception.TransferException;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
@@ -435,7 +435,7 @@ public class ByteDataOperator implements IDataOperator {
 			});
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			Throwables.throwIfUnchecked(e);
-			throw new IntransitException(e);
+			throw new TransferException(e);
 		}
 	}
 	

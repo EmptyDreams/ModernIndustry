@@ -5,7 +5,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
-import xyz.emptydreams.mi.api.exception.IntransitException;
+import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.register.AutoRegister;
 import xyz.emptydreams.mi.api.tools.item.IToolMaterial;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
@@ -42,7 +42,7 @@ public final class ItemJsonBuilder {
 		try {
 			TEMPLATE_DATA = getTemplates();
 		} catch (IOException e) {
-			throw new IntransitException("读取模板文件时发生异常", e);
+			throw new TransferException("读取模板文件时发生异常", e);
 		}
 	}
 

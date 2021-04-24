@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
-import xyz.emptydreams.mi.api.exception.IntransitException;
+import xyz.emptydreams.mi.api.exception.TransferException;
 
 import static xyz.emptydreams.mi.api.register.AutoRegister.Blocks;
 
@@ -36,7 +36,7 @@ public class BlockRegister {
 				c.getDeclaredMethod("registry", IForgeRegistry.class, Block.class)
 						.invoke(null, register, Blocks.selfRegister.get(c));
 			} catch (Exception e) {
-				throw new IntransitException("方块注册异常", e);
+				throw new TransferException("方块注册异常", e);
 			}
 		}
 	}
