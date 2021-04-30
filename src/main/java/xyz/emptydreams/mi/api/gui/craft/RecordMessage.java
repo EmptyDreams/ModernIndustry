@@ -1,8 +1,10 @@
 package xyz.emptydreams.mi.api.gui.craft;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
@@ -19,6 +21,8 @@ import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.data.enums.OperateResult;
 import xyz.emptydreams.mi.api.utils.data.math.Mar2D;
+
+import java.util.ArrayList;
 
 import static xyz.emptydreams.mi.api.utils.data.enums.OperateResult.SUCCESS;
 
@@ -47,13 +51,19 @@ public class RecordMessage implements IPlayerHandle {
 			boolean fill = input.fill(list);                        //将输入栏转化为二维矩阵
 			SlotGroup slots = CraftShower.getSlotGroup(craft, te);  //获取当前TE中输入框中的物品
 			if (!slots.isEmpty()) {                                 //若输入框内已有物品则尝试合并到玩家背包
+				ArrayList<ItemStack> old = new ArrayList<>(player.inventory.mainInventory);
 				for (SlotGroup.Node node : slots) {
 					ItemStack stack = node.get().getStack();
 					if (stack.isEmpty()) continue;
 					OperateResult result = ItemUtil.mergeItemStack(stack,
-							player.inventory.mainInventory, 0, 35, true);
+							old, 0, 35, true);
 					//若玩家背包不能放下输入框内的物品则停止填充
 					if (result != SUCCESS) fill = false;
+				}
+				if (fill) {
+					for (int i = 0; i < old.size(); i++) {
+						player.inventory.mainInventory.set(i, old.get(i));
+					}
 				}
 			}
 			if (!fill) {
@@ -70,6 +80,11 @@ public class RecordMessage implements IPlayerHandle {
 				slots.getSlot(node.getX(), node.getY()).putStack(put);
 			}
 			te.markDirty();
+			NonNullList<ItemStack> copy = NonNullList.create();
+			for (int i = 0; i < player.openContainer.inventorySlots.size(); ++i) {
+				copy.add((player.openContainer.inventorySlots.get(i)).getStack());
+			}
+			((EntityPlayerMP) player).sendAllContents(player.openContainer, copy);
 		});
 	}
 	
