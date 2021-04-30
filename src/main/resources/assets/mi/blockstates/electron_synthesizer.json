@@ -16,7 +16,13 @@
     "inventory": [{ }],
     "working": {
       "true": {
-        "textures": { "up": "mi:blocks/machine/electron_synthesizer/working" }
+        "textures": {
+            "up": "mi:blocks/machine/electron_synthesizer/working",
+            "north": "mi:blocks/machine/electron_synthesizer/side_working",
+            "east": "mi:blocks/machine/electron_synthesizer/side_working",
+            "south": "mi:blocks/machine/electron_synthesizer/side_working",
+            "west": "mi:blocks/machine/electron_synthesizer/side_working"
+        }
       },
       "false": { }
     }

@@ -16,7 +16,13 @@
     "inventory": [{ }],
     "working": {
       "true": {
-        "textures": { "up": "mi:blocks/machine/template::name/working" }
+        "textures": {
+            "up": "mi:blocks/machine/template::name/working",
+            "north": "mi:blocks/machine/template::name/side_working",
+            "east": "mi:blocks/machine/template::name/side_working",
+            "south": "mi:blocks/machine/template::name/side_working",
+            "west": "mi:blocks/machine/template::name/side_working"
+        }
       },
       "false": { }
     }

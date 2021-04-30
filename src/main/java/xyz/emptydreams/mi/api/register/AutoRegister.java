@@ -158,7 +158,9 @@ public final class AutoRegister {
 	}
 
 	/** 注册PlayerHandle处理器 */
-	private static void reAutoPlayerHandle(ASMDataTable ASM) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+	private static void reAutoPlayerHandle(ASMDataTable ASM)
+					throws ClassNotFoundException, NoSuchMethodException,
+							IllegalAccessException, InvocationTargetException, InstantiationException {
 		Set<ASMData> classSet = ASM.getAll(AutoPlayerHandle.class.getName());
 		for (ASMData data : classSet) {
 			Class<?> clazz = Class.forName(data.getClassName());
@@ -215,7 +217,8 @@ public final class AutoRegister {
 	
 	/** 自动注册托管 */
 	private static void reAutoTR(ASMDataTable ASM)
-			throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
+					throws IllegalAccessException, InstantiationException,
+							ClassNotFoundException, NoSuchFieldException {
 		Set<ASMData> classSet = ASM.getAll(AutoAgentRegister.class.getName());
 		for (ASMData data : classSet) {
 			Class<?> nowClass = Class.forName(data.getClassName());
