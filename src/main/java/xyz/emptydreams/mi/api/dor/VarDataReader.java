@@ -116,7 +116,7 @@ public class VarDataReader implements IDataReader {
 	
 	@Override
 	public int readInt() {
-		int a = readByte(), b = readByte(), c = readByte(), d = readByte();
+		int a = readByte() & 0xff, b = readByte() & 0xff, c = readByte() & 0xff, d = readByte() & 0xff;
 		return a | (b << 8) | (c << 16) | (d << 24);
 	}
 	
@@ -127,14 +127,14 @@ public class VarDataReader implements IDataReader {
 	
 	@Override
 	public short readShort() {
-		int a = readByte(), b = readByte();
+		int a = readByte() & 0xff, b = readByte() & 0xff;
 		return (short) (a | (b << 8));
 	}
 	
 	@Override
 	public long readLong() {
-		long a = readByte(), b = readByte(), c = readByte(), d = readByte();
-		long e = readByte(), f = readByte(), g = readByte(), h = readByte();
+		long a = readByte() & 0xff, b = readByte() & 0xff, c = readByte() & 0xff, d = readByte() & 0xff;
+		long e = readByte() & 0xff, f = readByte() & 0xff, g = readByte() & 0xff, h = readByte() & 0xff;
 		return a | (b << 8) | (c << 16) | (d << 24)
 				| (e << 32) | (f << 40) | (g << 48) | (h << 56);
 	}
