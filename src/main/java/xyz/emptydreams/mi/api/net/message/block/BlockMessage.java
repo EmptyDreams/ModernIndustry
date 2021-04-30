@@ -13,6 +13,7 @@ import xyz.emptydreams.mi.api.utils.MISysInfo;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static xyz.emptydreams.mi.api.net.ParseResultEnum.RETRY;
 import static xyz.emptydreams.mi.api.net.ParseResultEnum.SUCCESS;
 import static xyz.emptydreams.mi.api.net.ParseResultEnum.THROW;
 
@@ -39,6 +40,7 @@ public final class BlockMessage implements IMessageHandle<BlockAddition> {
 		BlockAddition addition = new BlockAddition();
 		addition.readFrom(message);
 		TileEntity te = addition.getWorld().getTileEntity(addition.getPos());
+		if (te == null && addition.getWorld().loadedEntityList.isEmpty()) return RETRY;
 		if (!(te instanceof IAutoNetwork)) {
 			MISysInfo.err("目标方块" + addition.getPos() + "的TE没有实现IAutoNetwork接口");
 			return THROW;
@@ -52,6 +54,7 @@ public final class BlockMessage implements IMessageHandle<BlockAddition> {
 		BlockAddition addition = new BlockAddition();
 		addition.readFrom(message);
 		TileEntity te = addition.getWorld().getTileEntity(addition.getPos());
+		if (te == null && addition.getWorld().loadedEntityList.isEmpty()) return RETRY;
 		if (!(te instanceof IAutoNetwork)) {
 			MISysInfo.err("目标方块" + addition.getPos() + "的TE没有实现IAutoNetwork接口");
 			return THROW;

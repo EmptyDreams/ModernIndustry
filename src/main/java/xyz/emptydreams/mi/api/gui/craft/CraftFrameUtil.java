@@ -1,6 +1,8 @@
 package xyz.emptydreams.mi.api.gui.craft;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemList;
 import xyz.emptydreams.mi.api.utils.data.enums.OperateResult;
 import xyz.emptydreams.mi.api.utils.data.math.Mar2D;
@@ -15,6 +17,7 @@ import static xyz.emptydreams.mi.api.utils.data.enums.OperateResult.*;
  * 用于放置{@link CraftFrame}的工具方法
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 final class CraftFrameUtil {
 	
 	/**
