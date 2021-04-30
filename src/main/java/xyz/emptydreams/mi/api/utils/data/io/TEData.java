@@ -7,6 +7,7 @@ import xyz.emptydreams.mi.api.dor.interfaces.IClassData;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 
 /**
@@ -62,11 +63,12 @@ public class TEData implements IClassData {
 		dor.readAll(object);
 	}
 	
+	@Nullable
 	@Override
-	public Object cast(Field field, Object input) {
+	public Class<?> cast(Field field) {
 		Storage storage = field.getAnnotation(Storage.class);
-		if (storage.value() == Object.class) return input;
-		return DataTypeRegister.cast(input, storage.value());
+		if (storage.value() == Object.class) return null;
+		return storage.value();
 	}
 
 }

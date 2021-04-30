@@ -64,7 +64,8 @@ public interface IDataIO<T> {
 	 * @throws UnsupportedOperationException 如果该类型不支持转换
 	 */
 	default <R> R cast(T data, Class<R> target) {
-		throw new UnsupportedOperationException(data.getClass().getSimpleName() + "不支持进行类型转换！");
+		throw new UnsupportedOperationException("不支持进行类型转换：["
+				+ data.getClass().getName() + "] to [" + target.getName() + "]");
 	}
 	
 }

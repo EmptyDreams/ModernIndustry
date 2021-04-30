@@ -6,6 +6,7 @@ import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -124,7 +125,11 @@ public interface IClassData {
 		}
 		Object data = field.get(object);
 		if (data == null) return false;
-		DataTypeRegister.write(writer, cast(field, data));
+		Class<?> cast = cast(field);
+		if (cast != null) {
+			data = DataTypeRegister.cast(data, cast);
+		}
+		DataTypeRegister.write(writer, data);
 		return true;
 	}
 	
@@ -139,24 +144,28 @@ public interface IClassData {
 		if (!Modifier.isPublic(field.getModifiers())) {
 			field.setAccessible(true);
 		}
-		Object data = DataTypeRegister.read(reader, field.getType(), () -> {
+		Class<?> cast = cast(field);
+		Object data = DataTypeRegister.read(reader, cast == null ? field.getType() : cast, () -> {
 			try {
 				return field.get(object);
 			} catch (IllegalAccessException e) {
 				throw new TransferException(e);
 			}
 		});
-		field.set(object, cast(field, data));
+		if (cast != null) data = DataTypeRegister.cast(data, field.getType());
+		field.set(object, data);
 	}
 	
 	/**
 	 * 在读取时将读取到的值转化为指定类型以及在写入时将要写入的值转化为指定类型
 	 * @param field 辅助判断的field
-	 * @param input 要转化的对象
-	 * @return 转化后的对象
+	 * @return 要转化的目标类型，返回null表示不需要转换
 	 */
-	default Object cast(Field field, Object input) {
-		return input;
+	@Nullable
+	default Class<?> cast(Field field) {
+		return null;
 	}
+	
+	
 	
 }
