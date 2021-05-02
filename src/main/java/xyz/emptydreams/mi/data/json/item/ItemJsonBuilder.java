@@ -2,9 +2,11 @@ package xyz.emptydreams.mi.data.json.item;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
+import net.minecraftforge.fluids.BlockFluidClassic;
 import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.register.AutoRegister;
 import xyz.emptydreams.mi.api.tools.item.IToolMaterial;
@@ -57,7 +59,7 @@ public final class ItemJsonBuilder {
 	
 				Type type = getType(item);
 				String template = TEMPLATE_DATA.get(type).replaceAll(
-								"template:name", item.getRegistryName().getResourcePath());
+								"template::name", item.getRegistryName().getResourcePath());
 				writeJson(template, item);
 				++build;
 			}
@@ -86,6 +88,9 @@ public final class ItemJsonBuilder {
 	}
 
 	private static boolean isNeedSkip(Item item) throws IOException {
+		if (item instanceof ItemBlock) {
+			if (((ItemBlock) item).getBlock() instanceof BlockFluidClassic) return true;
+		}
 		File file = getFile(OUTPUTS[0], item);
 		return !file.createNewFile();
 	}

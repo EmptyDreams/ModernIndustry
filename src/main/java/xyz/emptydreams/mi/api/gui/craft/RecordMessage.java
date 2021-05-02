@@ -15,7 +15,7 @@ import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.gui.common.ChildFrame;
 import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.net.message.player.IPlayerHandle;
-import xyz.emptydreams.mi.api.register.AutoPlayerHandle;
+import xyz.emptydreams.mi.api.register.others.AutoPlayerHandle;
 import xyz.emptydreams.mi.api.utils.ItemUtil;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.MathUtil;

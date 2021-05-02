@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import xyz.emptydreams.mi.api.gui.common.GuiLoader;
 import xyz.emptydreams.mi.api.register.AutoRegister;
 import xyz.emptydreams.mi.data.json.block.BlockJsonBuilder;
+import xyz.emptydreams.mi.data.json.fluid.FluidJsonBuilder;
 import xyz.emptydreams.mi.data.json.item.ItemJsonBuilder;
 
 import javax.annotation.Nonnull;
@@ -28,6 +29,7 @@ public class CommonProxy {
 		if (!new File(".").getAbsolutePath().endsWith(".jar")) {
 			BlockJsonBuilder.build();
 			ItemJsonBuilder.build();
+			FluidJsonBuilder.build();
 		}
 		new GuiLoader();
     }

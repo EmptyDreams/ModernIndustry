@@ -8,7 +8,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.blocks.base.TransferBlock;
+import xyz.emptydreams.mi.content.blocks.base.TransferBlock;
 
 import java.util.function.BiConsumer;
 

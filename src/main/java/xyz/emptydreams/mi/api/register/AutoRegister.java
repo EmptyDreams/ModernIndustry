@@ -2,9 +2,19 @@ package xyz.emptydreams.mi.api.register;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fluids.BlockFluidClassic;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -22,9 +32,14 @@ import xyz.emptydreams.mi.api.register.block.AutoBlockRegister;
 import xyz.emptydreams.mi.api.register.block.OreCreate;
 import xyz.emptydreams.mi.api.register.block.WorldCreater;
 import xyz.emptydreams.mi.api.register.item.AutoItemRegister;
+import xyz.emptydreams.mi.api.register.others.AutoFluid;
+import xyz.emptydreams.mi.api.register.others.AutoLoader;
+import xyz.emptydreams.mi.api.register.others.AutoManager;
+import xyz.emptydreams.mi.api.register.others.AutoPlayerHandle;
+import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
+import xyz.emptydreams.mi.api.register.others.RegisterManager;
 import xyz.emptydreams.mi.api.register.sorter.BlockSorter;
 import xyz.emptydreams.mi.api.register.sorter.ItemSorter;
-import xyz.emptydreams.mi.api.register.tileentity.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.proxy.ClientProxy;
@@ -36,13 +51,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
-import static xyz.emptydreams.mi.data.config.SystemConfig.*;
 
 /**
  * 自动注册的总类，自动注册的功能由init()函数完成，该类的注册顺序如下：
@@ -51,6 +64,7 @@ import static xyz.emptydreams.mi.data.config.SystemConfig.*;
  * <li>被{@link RegisterManager}注解的类
  * <li>被{@link AutoTileEntity}注解的TileEntity
  * <li>被{@link AutoItemRegister}注解的物品
+ * <li>被{@link AutoFluid}注解的流体
  * <li>被{@link AutoManager}注解的类
  * <li>被{@link OreCreate}注解的矿石生成器
  * <li>被{@link AutoAgentRegister}注解的托管
@@ -63,9 +77,9 @@ public final class AutoRegister {
 	
 	public static final class Blocks {
 		/** 所有方块 */
-		public static final List<Block> blocks = new ArrayList<>(blockSize);
+		public static final List<Block> blocks = new LinkedList<>();
 		/** 需要自动注册的方块 */
-		public static final List<Block> autoRegister = new ArrayList<>(autoBlockSize);
+		public static final List<Block> autoRegister = new LinkedList<>();
 		/** 不需要自动注册的方块的注册地址 */
 		public static final Map<Class<?>, Block> selfRegister = new Object2ObjectArrayMap<>();
 		/** 地图生成方块 */
@@ -76,9 +90,14 @@ public final class AutoRegister {
 	
 	public static final class Items {
 		/** 所有物品 */
-		public static final List<Item> items = new ArrayList<>(itemSize);
+		public static final List<Item> items = new LinkedList<>();
 		/** 需要注册的物品 */
-		public static final List<Item> autoItems = new ArrayList<>(autoItemSize);
+		public static final List<Item> autoItems = new LinkedList<>();
+	}
+	
+	public static final class Fluids {
+		/** 所有流体 */
+		public static final List<Fluid> fluids = new LinkedList<>();
 	}
 	
 	public static boolean isInit = false;
@@ -102,6 +121,7 @@ public final class AutoRegister {
 			reAutoBlock(ASM);
 			reAutoTE(ASM);
 			reAutoItem(ASM);
+			reFluid(ASM);
 			reManager(ASM);
 			reRegisterManager(ASM);
 			reOreCreate(ASM);
@@ -172,8 +192,51 @@ public final class AutoRegister {
 			String modid = info.getOrDefault("modid", ModernIndustry.MODID).toString();
 			String name = info.get("value").toString();
 			ResourceLocation key = new ResourceLocation(modid, name);
-			
 			PlayerHandleRegistry.registry(key, (IPlayerHandle) instance);
+		}
+	}
+	
+	private static void reFluid(ASMDataTable ASM)
+			throws ClassNotFoundException, NoSuchMethodException,
+			InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+		Set<ASMData> classSet = ASM.getAll(AutoFluid.class.getName());
+		for (ASMData data : classSet) {
+			Class<?> clazz = Class.forName(data.getClassName());
+			Constructor<?> constructor = clazz.getConstructor();
+			if (!Modifier.isPublic(constructor.getModifiers())) constructor.setAccessible(true);
+			Fluid fluid = (Fluid) constructor.newInstance();
+			FluidRegistry.registerFluid(fluid);
+			Fluids.fluids.add(fluid);
+			//注册对应方块
+			AutoFluid annotation = clazz.getAnnotation(AutoFluid.class);
+			String modid = fluid.getFlowing().getResourceDomain();
+			String unlocalizedName = annotation.unlocalizedName().equals("") ?
+									modid + "." + fluid.getName() : annotation.unlocalizedName();
+			Material material =
+					(Material) clazz.getMethod(annotation.material()).invoke(null, (Object[]) null);
+			CreativeTabs tab =
+					(CreativeTabs) clazz.getMethod(annotation.creativeTab()) .invoke(null, (Object[]) null);
+			BlockFluidClassic block = new BlockFluidClassic(fluid, material);
+			block.setUnlocalizedName(unlocalizedName);
+			block.setCreativeTab(tab);
+			Field field = clazz.getDeclaredField(annotation.value());
+			if (!Modifier.isPublic(field.getModifiers())) field.setAccessible(true);
+			field.set(fluid, block);
+			//注册物品
+			Item itemFluid = new ItemBlock(block);
+			itemFluid.setRegistryName(modid, fluid.getName());
+			ModelLoader.setCustomMeshDefinition(
+					itemFluid, stack -> new ModelResourceLocation(unlocalizedName, "fluid"));
+			ModelLoader.setCustomStateMapper(block, new StateMapperBase() {
+				@Override
+				protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+					return new ModelResourceLocation(unlocalizedName, "fluid");
+				}
+			});
+			addAutoItem(itemFluid);
+			//触发end
+			if (annotation.end().equals("")) continue;
+			clazz.getMethod(annotation.end()).invoke(null, (Object[]) null);
 		}
 	}
 	

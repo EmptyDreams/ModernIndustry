@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.event.GuiRegistryEvent;
-import xyz.emptydreams.mi.api.register.AutoLoader;
+import xyz.emptydreams.mi.api.register.others.AutoLoader;
 
 import java.util.ArrayList;
 import java.util.List;

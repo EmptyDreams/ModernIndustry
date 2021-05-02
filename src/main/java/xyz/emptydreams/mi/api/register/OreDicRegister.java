@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
 import xyz.emptydreams.mi.api.utils.StringUtil;
-import xyz.emptydreams.mi.blocks.common.OreBlock;
+import xyz.emptydreams.mi.content.blocks.common.OreBlock;
 
 import java.util.HashMap;
 import java.util.Map;

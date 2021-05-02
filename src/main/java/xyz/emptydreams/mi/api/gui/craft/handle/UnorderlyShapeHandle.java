@@ -7,7 +7,7 @@ import xyz.emptydreams.mi.api.craftguide.multi.UnorderlyShape;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.gui.craft.HandleRegister;
 import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
-import xyz.emptydreams.mi.api.register.AutoLoader;
+import xyz.emptydreams.mi.api.register.others.AutoLoader;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.container.Wrapper;
 import xyz.emptydreams.mi.api.utils.data.math.Point2D;

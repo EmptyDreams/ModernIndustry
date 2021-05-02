@@ -9,7 +9,7 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.net.handler.ClientHandler;
 import xyz.emptydreams.mi.api.net.handler.CommonMessage;
 import xyz.emptydreams.mi.api.net.handler.ServerHandler;
-import xyz.emptydreams.mi.api.register.AutoLoader;
+import xyz.emptydreams.mi.api.register.others.AutoLoader;
 
 import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 import static net.minecraftforge.fml.relauncher.Side.SERVER;

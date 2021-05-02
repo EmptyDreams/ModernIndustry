@@ -10,12 +10,12 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
-import xyz.emptydreams.mi.api.register.AutoManager;
+import xyz.emptydreams.mi.api.register.others.AutoManager;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
-import xyz.emptydreams.mi.blocks.common.CommonBlocks;
-import xyz.emptydreams.mi.blocks.machine.WireManager;
-import xyz.emptydreams.mi.items.common.CommonItems;
-import xyz.emptydreams.mi.items.tools.ToolRegister;
+import xyz.emptydreams.mi.content.blocks.common.CommonBlocks;
+import xyz.emptydreams.mi.content.blocks.machine.WireManager;
+import xyz.emptydreams.mi.content.items.common.CommonItems;
+import xyz.emptydreams.mi.content.items.tools.ToolRegister;
 import xyz.emptydreams.mi.proxy.CommonProxy;
 
 import javax.annotation.Nonnull;

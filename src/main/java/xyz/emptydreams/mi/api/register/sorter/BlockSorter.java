@@ -1,8 +1,8 @@
 package xyz.emptydreams.mi.api.register.sorter;
 
 import net.minecraft.block.Block;
-import xyz.emptydreams.mi.blocks.base.MachineBlock;
-import xyz.emptydreams.mi.blocks.common.OreBlock;
+import xyz.emptydreams.mi.content.blocks.base.MachineBlock;
+import xyz.emptydreams.mi.content.blocks.common.OreBlock;
 
 import java.util.LinkedList;
 import java.util.List;

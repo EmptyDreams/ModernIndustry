@@ -10,7 +10,7 @@ import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.exception.TransferException;
-import xyz.emptydreams.mi.api.register.AutoLoader;
+import xyz.emptydreams.mi.api.register.others.AutoLoader;
 import xyz.emptydreams.mi.api.utils.IOUtils;
 
 import java.util.Arrays;
