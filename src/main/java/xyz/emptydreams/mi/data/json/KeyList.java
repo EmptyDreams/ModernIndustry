@@ -1,7 +1,7 @@
 package xyz.emptydreams.mi.data.json;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import net.minecraft.block.Block;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.Map;
@@ -16,26 +16,32 @@ public final class KeyList {
 	
 	private KeyList() { throw new AssertionError("不应该调用的构造函数"); };
 	
-	private static final Map<String, Function<Block, String>> KEYS =
-			new Object2ObjectArrayMap<String, Function<Block, String>>() {
+	private static final Map<String, Function<Object, String>> KEYS =
+			new Object2ObjectArrayMap<String, Function<Object, String>>() {
 		{
 			put("template::name", KeyList::getName);
-			put("template::src", block -> "mi:blocks/machine/" + getName(block) + "/src");
-			put("template::working", block -> "mi:blocks/machine/" + getName(block) + "/working");
-			put("template::empty", block -> "mi:blocks/machine/" + getName(block) + "/empty");
+			put("template::src", element -> "mi:blocks/machine/" + getName(element) + "/src");
+			put("template::working", element -> "mi:blocks/machine/" + getName(element) + "/working");
+			put("template::empty", element -> "mi:blocks/machine/" + getName(element) + "/empty");
 		}
 	};
 	
-	public static String get(Block block, String key) {
-		return KEYS.get(key).apply(block);
+	public static String get(Object element, String key) {
+		return KEYS.get(key).apply(element);
 	}
 	
-	public static Set<Map.Entry<String, Function<Block, String>>> entrySet() {
+	public static Set<Map.Entry<String, Function<Object, String>>> entrySet() {
 		return KEYS.entrySet();
 	}
 	
-	private static String getName(IForgeRegistryEntry.Impl<?> impl) {
-		return impl.getRegistryName().getResourcePath();
+	private static String getName(Object element) {
+		if (element instanceof IForgeRegistryEntry.Impl) {
+			return ((IForgeRegistryEntry.Impl<?>) element).getRegistryName().getResourcePath();
+		}
+		if (element instanceof Fluid) {
+			return ((Fluid) element).getName();
+		}
+		throw new NullPointerException("只支持继承自IForgeRegistryEntry.Impl及Fluid的类！");
 	}
 	
 }

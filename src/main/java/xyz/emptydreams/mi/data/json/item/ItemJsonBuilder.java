@@ -11,6 +11,7 @@ import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.register.AutoRegister;
 import xyz.emptydreams.mi.api.tools.item.IToolMaterial;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
+import xyz.emptydreams.mi.data.json.KeyList;
 import xyz.emptydreams.mi.data.json.block.BlockJsonBuilder;
 
 import java.io.BufferedReader;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * 物品Json生成器
@@ -58,8 +60,7 @@ public final class ItemJsonBuilder {
 				}
 	
 				Type type = getType(item);
-				String template = TEMPLATE_DATA.get(type).replaceAll(
-								"template::name", item.getRegistryName().getResourcePath());
+				String template = formatText(TEMPLATE_DATA.get(type), item);
 				writeJson(template, item);
 				++build;
 			}
@@ -78,7 +79,16 @@ public final class ItemJsonBuilder {
 			}
 		}
 	}
-
+	
+	/** 格式化文本 */
+	private static String formatText(String text, Item item) {
+		String result = text;
+		for (Map.Entry<String, Function<Object, String>> entry : KeyList.entrySet()) {
+			result = result.replaceAll(entry.getKey(), entry.getValue().apply(item));
+		}
+		return result;
+	}
+	
 	private static Type getType(Item item) {
 		if (item instanceof ItemTool || item instanceof ItemSword ||
 				item instanceof ItemHoe || item instanceof IToolMaterial ||

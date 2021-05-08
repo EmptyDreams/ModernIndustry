@@ -90,7 +90,7 @@ public final class BlockJsonBuilder {
 	/** 格式化文本 */
 	private static String formatText(String text, Block block) {
 		String result = text;
-		for (Map.Entry<String, Function<Block, String>> entry : KeyList.entrySet()) {
+		for (Map.Entry<String, Function<Object, String>> entry : KeyList.entrySet()) {
 			result = result.replaceAll(entry.getKey(), entry.getValue().apply(block));
 		}
 		return result;

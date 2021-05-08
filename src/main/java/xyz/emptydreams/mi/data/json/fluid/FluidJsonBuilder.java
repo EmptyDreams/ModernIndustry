@@ -4,6 +4,7 @@ import net.minecraftforge.fluids.Fluid;
 import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.register.AutoRegister;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
+import xyz.emptydreams.mi.data.json.KeyList;
 import xyz.emptydreams.mi.data.json.block.BlockJsonBuilder;
 
 import java.io.BufferedReader;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author EmptyDreams
@@ -72,6 +74,15 @@ public class FluidJsonBuilder {
 	
 	private static Type getType(Fluid fluid) {
 		return Type.SRC;
+	}
+	
+	/** 格式化文本 */
+	private static String formatText(String text, Fluid fluid) {
+		String result = text;
+		for (Map.Entry<String, Function<Object, String>> entry : KeyList.entrySet()) {
+			result = result.replaceAll(entry.getKey(), entry.getValue().apply(fluid));
+		}
+		return result;
 	}
 	
 	private static boolean isNeedSkip(Fluid fluid) throws IOException {
