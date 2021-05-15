@@ -2,8 +2,8 @@ buildscript {
     repositories {
         maven { url = "http://files.minecraftforge.net/maven" }
         maven { url = "https://repo.spongepowered.org/maven" }
+        mavenCentral()
         google()
-        jcenter()
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -66,6 +66,10 @@ dependencies {
         exclude module: 'commons-io'
         exclude module: 'gson'
     }
+
+    //lombok
+    implementation 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
 }
 
 processResources {

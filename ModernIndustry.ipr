@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Eclipse" />
+    <option name="BUILD_PROCESS_ADDITIONAL_VM_OPTIONS" value="-javaagent:C:\Users\EmptyDreams\.gradle\caches\modules-2\files-2.1\org.projectlombok\lombok\1.18.20\18bcea7d5df4d49227b4a0743a536208ce4825bb\lombok-1.18.20.jar" />
     <resourceExtensions>
       <entry name=".+\.(properties|xml|html|dtd|tld)" />
       <entry name=".+\.(gif|png|jpeg|jpg)" />
@@ -12,6 +13,16 @@
       <entry name="!?*.groovy" />
       <entry name="!?*.java" />
     </wildcardResourcePatterns>
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.20/18bcea7d5df4d49227b4a0743a536208ce4825bb/lombok-1.18.20.jar" />
+        </processorPath>
+        <module name="ModernIndustry.main" />
+      </profile>
+    </annotationProcessing>
     <bytecodeTargetLevel target="1.8" />
   </component>
   <component name="CopyrightManager" default="" />
@@ -174,6 +185,11 @@
       <option name="id" value="deobfDeps" />
       <option name="name" value="deobfDeps" />
       <option name="url" value="file:/$USER_HOME$/.gradle/caches/minecraft/deobfedDeps" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="forge" />
+      <option name="name" value="forge" />
+      <option name="url" value="https://maven.minecraftforge.net" />
     </remote-repository>
   </component>
   <component name="SvnBranchConfigurationManager">
@@ -667,6 +683,17 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-debug-all/5.2/ed60d4287d18996bc940f26656c570532b20d863/asm-debug-all-5.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.projectlombok:lombok:1.18.20">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.20/18bcea7d5df4d49227b4a0743a536208ce4825bb/lombok-1.18.20.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.20/f4ee9e20d00b5179a5be86ea5e5b961fa2d68b00/lombok-1.18.20-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.20/92f5eddfbd25532de61571429e932dd0186043d0/lombok-1.18.20-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: org.scala-lang.modules:scala-parser-combinators_2.11:1.0.1">
