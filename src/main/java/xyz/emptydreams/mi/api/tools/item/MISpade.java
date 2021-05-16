@@ -2,7 +2,7 @@ package xyz.emptydreams.mi.api.tools.item;
 
 import net.minecraft.item.ItemSpade;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.register.AutoRegister;
+import xyz.emptydreams.mi.api.utils.StringUtil;
 
 /**
  * 铲子
@@ -16,7 +16,7 @@ public class MISpade extends ItemSpade implements IToolMaterial {
 	}
 
 	public MISpade setRegistry(String modid, String name) {
-		setRegistryName(modid, name).setUnlocalizedName(AutoRegister.getUnlocalizedName(modid, name));
+		setRegistryName(modid, name).setUnlocalizedName(StringUtil.getUnlocalizedName(modid, name));
 		return this;
 	}
 	

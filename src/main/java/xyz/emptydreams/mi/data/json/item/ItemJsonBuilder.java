@@ -8,7 +8,7 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import xyz.emptydreams.mi.api.exception.TransferException;
-import xyz.emptydreams.mi.api.register.AutoRegister;
+import xyz.emptydreams.mi.api.register.machines.ItemRegistryMachine;
 import xyz.emptydreams.mi.api.tools.item.IToolMaterial;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.data.json.KeyList;
@@ -53,7 +53,7 @@ public final class ItemJsonBuilder {
 	public static void build() {
 		int step = 0, build = 0;
 		try {
-			for (Item item : AutoRegister.Items.items) {
+			for (Item item : ItemRegistryMachine.Items.items) {
 				if (isNeedSkip(item)) {
 					++step;
 					continue;

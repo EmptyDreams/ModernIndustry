@@ -16,7 +16,8 @@ import java.util.Set;
  * @param <T> 存储数据的类型
  * @author EmptyDreams
  */
-public abstract class AutoRegisterMachine<V, T> implements Comparable<AutoRegisterMachine<?, ?>> {
+public abstract class AutoRegisterMachine<V extends Annotation, T>
+						implements Comparable<AutoRegisterMachine<?, ?>> {
 	
 	/**
 	 * 进行注册前提前解析ASM
@@ -32,7 +33,7 @@ public abstract class AutoRegisterMachine<V, T> implements Comparable<AutoRegist
 	 * @return 返回的类型必须为注解类
 	 */
 	@Nonnull
-	public abstract Class<?> getTargetClass();
+	public abstract Class<V> getTargetClass();
 	
 	@SuppressWarnings("unchecked")
 	public void registryAll(ASMDataTable asm) {
@@ -74,7 +75,7 @@ public abstract class AutoRegisterMachine<V, T> implements Comparable<AutoRegist
 	/** 判断当前注册机是否依赖指定注册机 */
 	public final boolean isDependency(AutoRegisterMachine<?, ?> register) {
 		for (String key : getDependency()) {
-			AutoRegisterMachine<?, ?> dependency = AutoManager.getInstance(key);
+			AutoRegisterMachine<?, ?> dependency = AutoRegister.getInstance(key);
 			if (dependency.equals(register)) return true;
 			boolean test = dependency.isDependency(register);
 			if (test) return true;

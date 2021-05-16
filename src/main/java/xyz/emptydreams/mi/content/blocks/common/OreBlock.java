@@ -5,7 +5,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.register.AutoRegister;
+import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.content.blocks.base.BlockBase;
 
 import javax.annotation.Nonnull;
@@ -38,7 +38,7 @@ public class OreBlock extends BlockBase {
 	public OreBlock(String name, Item out) {
 		super(Material.ROCK);
 		setRegistryName(ModernIndustry.MODID, name);
-		setUnlocalizedName(AutoRegister.getUnlocalizedName(name));
+		setUnlocalizedName(StringUtil.getUnlocalizedName(name));
 		setCreativeTab(ModernIndustry.TAB_BLOCK);
 		setSoundType(SoundType.STONE);
 		setHardness(2.5F);

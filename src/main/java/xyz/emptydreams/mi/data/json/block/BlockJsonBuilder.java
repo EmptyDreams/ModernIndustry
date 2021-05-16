@@ -7,7 +7,7 @@ import com.google.gson.JsonParser;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.util.EnumFacing;
-import xyz.emptydreams.mi.api.register.AutoRegister;
+import xyz.emptydreams.mi.api.register.machines.BlockRegistryMachine;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.data.json.KeyList;
 
@@ -59,7 +59,7 @@ public final class BlockJsonBuilder {
 	
 	private static void writeFile() throws IOException {
 		int step = 0, build = 0;
-		for (Block block : AutoRegister.Blocks.blocks) {
+		for (Block block : BlockRegistryMachine.Blocks.blocks) {
 			if (isNeedSkip(block)) {
 				++step;
 				continue;

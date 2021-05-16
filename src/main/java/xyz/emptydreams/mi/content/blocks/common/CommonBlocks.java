@@ -8,7 +8,7 @@ import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.api.register.block.OreCreate;
 import xyz.emptydreams.mi.content.items.common.CommonItems;
 
-import static xyz.emptydreams.mi.api.register.AutoRegister.getUnlocalizedName;
+import static xyz.emptydreams.mi.api.utils.StringUtil.getUnlocalizedName;
 
 /**
  * 普通方块

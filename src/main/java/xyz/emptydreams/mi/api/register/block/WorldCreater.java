@@ -6,12 +6,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.terraingen.OreGenEvent;
-import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import xyz.emptydreams.mi.api.register.AutoRegister;
+import xyz.emptydreams.mi.api.register.machines.BlockRegistryMachine;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 import java.util.Random;
 
 /**
@@ -40,14 +38,13 @@ public class WorldCreater {
 	private final WorldGenMinable creater;
 	private final Infos INFO = new Infos();
 	
-	public WorldCreater(ASMData asm, Block block) {
-		Map<String, Object> map = asm.getAnnotationInfo();
-		INFO.count = (int) map.getOrDefault("count", OreCreate.COUNT);
-		INFO.time = (int) map.getOrDefault("time", OreCreate.TIME);
-		INFO.yMin = (int) map.getOrDefault("yMin", OreCreate.Y_MIN);
-		INFO.yRange = (int) map.getOrDefault("yRange", OreCreate.Y_RANGE);
-		INFO.probability = (float) map.getOrDefault("probability", OreCreate.PROBABILITY);
-		creater = new WorldGenMinable(block.getDefaultState(), INFO.count);
+	public WorldCreater(OreCreate annotation, Block block) {
+		INFO.count = annotation.count();
+		INFO.time = annotation.time();
+		INFO.yMin = annotation.yMin();
+		INFO.yRange = annotation.yRange();
+		INFO.probability = annotation.probability();
+		creater = new WorldGenMinable(block.getDefaultState(), annotation.count());
 	}
 	
 	@SuppressWarnings("UnusedReturnValue")
@@ -67,7 +64,7 @@ public class WorldCreater {
 	@SubscribeEvent
 	public static void onOreGenPost(OreGenEvent.Post event) {
 		if (!event.getWorld().isRemote) {
-			for (WorldCreater generator : AutoRegister.Blocks.worldCreate.values()) {
+			for (WorldCreater generator : BlockRegistryMachine.Blocks.worldCreate.values()) {
 				generator.generate(event.getWorld(), event.getRand(), event.getPos());
 			}
 		}

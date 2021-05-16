@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IRegistryDelegate;
 import xyz.emptydreams.mi.api.exception.TransferException;
-import xyz.emptydreams.mi.api.register.AutoRegister;
+import xyz.emptydreams.mi.api.register.machines.ItemRegistryMachine;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 import javax.annotation.Nonnull;
@@ -42,12 +42,12 @@ public class ItemRegister {
 	public static void registryItems(@Nonnull RegistryEvent.Register<Item> event) {
 		MISysInfo.print("注册MOD物品......");
 		IForgeRegistry<Item> register = event.getRegistry();
-		for (Item i : AutoRegister.Items.autoItems) register.register(i);
+		for (Item i : ItemRegistryMachine.Items.autoItems) register.register(i);
 	}
 
 	@SubscribeEvent
 	public static void registryModel(ModelRegistryEvent event) {
-		for (Item item : AutoRegister.Items.autoItems) {
+		for (Item item : ItemRegistryMachine.Items.autoItems) {
 			if (customMeshDefinitions.containsKey(item.delegate)) continue;
 			ModelLoader.setCustomModelResourceLocation(
 					item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));

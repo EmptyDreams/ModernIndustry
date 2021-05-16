@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
 import xyz.emptydreams.mi.api.exception.TransferException;
 
-import static xyz.emptydreams.mi.api.register.AutoRegister.Blocks;
+import static xyz.emptydreams.mi.api.register.machines.BlockRegistryMachine.Blocks;
 
 /**
  * 方块注册类

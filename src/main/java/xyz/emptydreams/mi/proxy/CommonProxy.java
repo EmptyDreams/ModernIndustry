@@ -4,8 +4,8 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.gui.common.GuiLoader;
-import xyz.emptydreams.mi.api.register.AutoRegister;
 import xyz.emptydreams.mi.data.json.block.BlockJsonBuilder;
 import xyz.emptydreams.mi.data.json.fluid.FluidJsonBuilder;
 import xyz.emptydreams.mi.data.json.item.ItemJsonBuilder;
@@ -25,7 +25,11 @@ public class CommonProxy {
 	public void preInit(@Nonnull FMLPreInitializationEvent event){
 		ASM = event.getAsmData();
 		
-		AutoRegister.init();
+		try {
+			getClass().getClassLoader().loadClass("xyz.emptydreams.mi.api.register.AutoRegister");
+		} catch (ClassNotFoundException e) {
+			throw new TransferException("自动注册相关类丢失" ,e);
+		}
 		if (!new File(".").getAbsolutePath().endsWith(".jar")) {
 			BlockJsonBuilder.build();
 			ItemJsonBuilder.build();

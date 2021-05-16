@@ -6,8 +6,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.Mod;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.register.others.AutoManager;
-import xyz.emptydreams.mi.api.register.AutoRegister;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
+import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.capabilities.nonburn.NonBurnProvider;
 
 import java.util.function.Supplier;
@@ -142,7 +142,7 @@ public final class CommonItems {
 
 		public MItem(String registryName) {
 			setRegistryName(ModernIndustry.MODID, registryName);
-			setUnlocalizedName(AutoRegister.getUnlocalizedName(registryName));
+			setUnlocalizedName(StringUtil.getUnlocalizedName(registryName));
 			setNoRepair();
 			setMaxDamage(0);
 			setCreativeTab(ModernIndustry.TAB_ITEM);

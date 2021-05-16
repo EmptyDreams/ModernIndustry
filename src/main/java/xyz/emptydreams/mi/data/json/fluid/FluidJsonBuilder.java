@@ -2,7 +2,7 @@ package xyz.emptydreams.mi.data.json.fluid;
 
 import net.minecraftforge.fluids.Fluid;
 import xyz.emptydreams.mi.api.exception.TransferException;
-import xyz.emptydreams.mi.api.register.AutoRegister;
+import xyz.emptydreams.mi.api.register.machines.FluidRegistryMachine;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.data.json.KeyList;
 import xyz.emptydreams.mi.data.json.block.BlockJsonBuilder;
@@ -45,7 +45,7 @@ public class FluidJsonBuilder {
 	public static void build() {
 		int step = 0, build = 0;
 		try {
-			for (Fluid fluid : AutoRegister.Fluids.fluids) {
+			for (Fluid fluid : FluidRegistryMachine.Fluids.fluids) {
 				if (isNeedSkip(fluid)) {
 					++step;
 					continue;

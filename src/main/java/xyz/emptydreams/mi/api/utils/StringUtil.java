@@ -1,6 +1,7 @@
 package xyz.emptydreams.mi.api.utils;
 
 import net.minecraft.util.ResourceLocation;
+import xyz.emptydreams.mi.ModernIndustry;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
@@ -11,6 +12,8 @@ import java.util.Objects;
  * @author EmptyDreams
  */
 public class StringUtil {
+	
+	
 	
 	/**
 	 * 将字符串数组转化为Class数组
@@ -95,5 +98,13 @@ public class StringUtil {
 		System.arraycopy(arg1, 0, result, arg0.length, arg1.length);
 		return result;
 	}
-
+	
+	public static String getUnlocalizedName(String modid, String name) {
+		return modid + ":" + name;
+	}
+	
+	public static String getUnlocalizedName(String name) {
+		return getUnlocalizedName(ModernIndustry.MODID, name);
+	}
+	
 }
