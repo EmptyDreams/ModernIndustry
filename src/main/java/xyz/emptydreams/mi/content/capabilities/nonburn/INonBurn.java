@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.capabilities.nonburn;
+package xyz.emptydreams.mi.content.capabilities.nonburn;
 
 /**
  * 表明物品是燃烧后生成的可燃物

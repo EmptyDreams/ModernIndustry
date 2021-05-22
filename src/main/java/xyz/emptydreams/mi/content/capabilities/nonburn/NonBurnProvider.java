@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.capabilities.nonburn;
+package xyz.emptydreams.mi.content.capabilities.nonburn;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;

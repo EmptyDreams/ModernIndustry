@@ -8,7 +8,7 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.register.others.AutoManager;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.api.utils.StringUtil;
-import xyz.emptydreams.mi.capabilities.nonburn.NonBurnProvider;
+import xyz.emptydreams.mi.content.capabilities.nonburn.NonBurnProvider;
 
 import java.util.function.Supplier;
 

@@ -20,7 +20,7 @@ import xyz.emptydreams.mi.content.blocks.CommonUtil;
 import xyz.emptydreams.mi.content.blocks.CraftList;
 import xyz.emptydreams.mi.content.blocks.base.MIProperty;
 import xyz.emptydreams.mi.content.blocks.tileentity.FrontTileEntity;
-import xyz.emptydreams.mi.capabilities.nonburn.NonBurnCapability;
+import xyz.emptydreams.mi.content.capabilities.nonburn.NonBurnCapability;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
 
 /**
