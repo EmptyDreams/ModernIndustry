@@ -1,7 +1,6 @@
 package xyz.emptydreams.mi.api.register;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.Data;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -92,10 +91,19 @@ public final class AutoRegister {
 		
 	}
 	
-	@Data
 	private static final class Node {
+		
 		final String key;
 		final AutoRegisterMachine register;
+		
+		Node(String key, AutoRegisterMachine register) {
+			this.key = key;
+			this.register = register;
+		}
+		
+		public AutoRegisterMachine getRegister() {
+			return register;
+		}
 	}
 	
 }

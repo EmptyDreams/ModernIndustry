@@ -13,8 +13,6 @@ import java.util.Objects;
  */
 public class StringUtil {
 	
-	
-	
 	/**
 	 * 将字符串数组转化为Class数组
 	 * @param names 类名数组

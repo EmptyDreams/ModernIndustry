@@ -67,9 +67,6 @@ dependencies {
         exclude module: 'gson'
     }
 
-    //lombok
-    implementation 'org.projectlombok:lombok:1.18.20'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
 }
 
 processResources {
