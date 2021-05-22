@@ -21,7 +21,7 @@ public abstract class MixinGuiContainer {
 	/**
 	 * @reason 玩家退出GUI时只关闭子GUI不关闭其他GUI
 	 */
-	@Inject(method = "keyTyped", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "keyTyped", at = @At("HEAD"), cancellable = true, remap = false)
 	private void keyTyped(char typedChar, int keyCode, CallbackInfo ci) {
 		GuiScreen child = LocalChildFrame.getContainer();
 		if ((keyCode == 1

@@ -21,7 +21,7 @@ public class MixinGuiTextField {
 	 * @reason 若子GUI存在，则将方法转发至子GUI
 	 */
 	@Redirect(method = "setFocused",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;setFocused(Z)V"))
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;setFocused(Z)V"), remap = false)
 	private void setFocused(GuiScreen guiScreen, boolean hasFocusedControlIn) {
 		GuiScreen child = LocalChildFrame.getContainer();
 		GuiScreen container = child == null ? guiScreen : child;

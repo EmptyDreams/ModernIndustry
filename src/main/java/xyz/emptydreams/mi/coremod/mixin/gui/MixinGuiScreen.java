@@ -23,7 +23,7 @@ public abstract class MixinGuiScreen {
 	/**
 	 * @reason 玩家关闭GUI时只关闭子GUI，不关闭其他GUI
 	 */
-	@Inject(method = "keyTyped", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "keyTyped", at = @At("HEAD"), cancellable = true, remap = false)
 	private void keyTyped(char typedChar, int keyCode, CallbackInfo ci) {
 		if ((keyCode == 1 || mc.gameSettings.keyBindInventory.isActiveAndMatches(keyCode))
 				&& LocalChildFrame.hasContainer()) {

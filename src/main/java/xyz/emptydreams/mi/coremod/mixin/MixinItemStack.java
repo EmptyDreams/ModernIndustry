@@ -28,7 +28,7 @@ public abstract class MixinItemStack {
 	 * @author EmptyDreams
 	 * @reason 为了触发ItemDamageEvent事件
 	 */
-	@Overwrite
+	@Overwrite(remap = false)
 	public void damageItem(int amount, EntityLivingBase entityIn) {
 		if (amount == 0) return;
 		ItemStack stack = (ItemStack) (Object) this;

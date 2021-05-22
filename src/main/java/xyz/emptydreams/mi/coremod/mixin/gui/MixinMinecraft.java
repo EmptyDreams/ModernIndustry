@@ -46,7 +46,7 @@ public class MixinMinecraft {
 	 * @reason 为了触发子GUI的硬件输入
 	 */
 	@Redirect(method = "runTick",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleInput()V"))
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleInput()V"), remap = false)
 	private void runTick_handleInput(GuiScreen guiScreen) throws IOException {
 		GuiScreen child = LocalChildFrame.getContainer();
 		GuiScreen container = child == null ? guiScreen : child;
@@ -58,7 +58,7 @@ public class MixinMinecraft {
 	 * @reason 为了触发子GUI的方法
 	 */
 	@Redirect(method = "runTick",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;updateScreen()V"))
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;updateScreen()V"), remap = false)
 	private void runTick_updateScreen(GuiScreen guiScreen) {
 		GuiScreen child = LocalChildFrame.getContainer();
 		GuiScreen container = child == null ? guiScreen : child;
@@ -70,7 +70,7 @@ public class MixinMinecraft {
 	 * @reason 为了触发子GUI的方法
 	 */
 	@Redirect(method = "runTickKeyboard",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleKeyboardInput()V"))
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleKeyboardInput()V"), remap = false)
 	private void runTickKeyboard_handleKeyboardInput(GuiScreen guiScreen) throws IOException {
 		GuiScreen child = LocalChildFrame.getContainer();
 		GuiScreen container = child == null ? guiScreen : child;
@@ -82,7 +82,7 @@ public class MixinMinecraft {
 	 * @reason 为了触发子GUI的方法
 	 */
 	@Redirect(method = "runTickMouse",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleMouseInput()V"))
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleMouseInput()V"), remap = false)
 	private void runTickMouse_handleMouseInput(GuiScreen guiScreen) throws IOException {
 		GuiScreen child = LocalChildFrame.getContainer();
 		GuiScreen container = child == null ? guiScreen : child;
@@ -93,7 +93,7 @@ public class MixinMinecraft {
 	 * 监控关闭GUI的方法
 	 * @reason 为了实现当GUI被关闭时子GUI同时关闭的功能
 	 */
-	@Inject(method = "displayGuiScreen", at = @At("HEAD"))
+	@Inject(method = "displayGuiScreen", at = @At("HEAD"), remap = false)
 	private void displayGuiScreen(GuiScreen guiScreenIn, CallbackInfo ci) {
 		if (guiScreenIn == null) {
 			LocalChildFrame.closeGUI();
@@ -105,7 +105,7 @@ public class MixinMinecraft {
 	 * @reason 防止BUG
 	 * @author EmptyDreams
 	 */
-	@Overwrite
+	@Overwrite(remap = false)
 	public void dispatchKeypresses() {
 		int i = Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey();
 		if (Keyboard.isRepeatEvent()) return;

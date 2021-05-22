@@ -47,7 +47,7 @@ public class MixinEntityRenderer {
 	 * @reason 如果是子GUI发出了异常则打印子GUI的信息
 	 */
 	@Redirect(method = "updateCameraAndRender", at = @At(value = "INVOKE",
-			target = "Ljava/lang/Object;getClass()Ljava/lang/Class;"))
+			target = "Ljava/lang/Object;getClass()Ljava/lang/Class;"), remap = false)
 	private Class<?> updateCameraAndRender_getClass(Object o) {
 		GuiScreen child = LocalChildFrame.getContainer();
 		Object container = child == null ? o : child;
