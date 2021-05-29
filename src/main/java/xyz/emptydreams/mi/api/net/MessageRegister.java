@@ -60,11 +60,15 @@ public final class MessageRegister {
 			if (key.hashCode() == it.getKey().hashCode() &&
 					key.equals(it.getKey())) {
 				ParseResultEnum result = it.parseOnServer(message);
-				if (result.isThrow()) MISysInfo.err("[MessageRegister]一个信息未被成功处理，该信息被丢弃");
+				if (result.isThrow()) {
+					MISysInfo.err("[MessageRegister]一个信息未被成功处理，该信息被丢弃："
+									+ "\n\tkey =\t" + key
+									+ "\n\thandle =\t" + it.getClass().getName());
+				}
 				return result;
 			}
 		}
-		MISysInfo.err("[MessageRegister]信息未找到处理器：" + message.getClass().getName());
+		MISysInfo.err("[MessageRegister]信息未找到处理器：" + key);
 		return EXCEPTION;
 	}
 	
@@ -83,7 +87,7 @@ public final class MessageRegister {
 				return result;
 			}
 		}
-		MISysInfo.err("[MessageRegister]信息未找到处理器：" + message);
+		MISysInfo.err("[MessageRegister]信息未找到处理器：" + key);
 		return EXCEPTION;
 	}
 	
