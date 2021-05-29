@@ -53,7 +53,7 @@ public class AutoManagerRegistryMachine extends AutoRegisterMachine<AutoManager,
 					if (item == null) continue;
 					ItemRegistryMachine.addAutoItem(item);
 					if (annotation.itemCustom()) {
-						invokeStaticMethod(clazz, "blockCustom", item);
+						invokeStaticMethod(clazz, "itemCustom", item);
 					}
 				}
 			}

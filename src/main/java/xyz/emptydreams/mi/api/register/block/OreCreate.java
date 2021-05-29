@@ -12,17 +12,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * 矿石注册类
  * @author EmptyDremas
  */
-@SuppressWarnings("unused")     //实际上都是使用过的
 @Documented
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD })
 public @interface OreCreate {
-
-	int COUNT = 8;
-	int TIME = 4;
-	int Y_MIN = 16;
-	int Y_RANGE = 64;
-	float PROBABILITY = 0.8F;
 	
 	/** 生成规模 */
 	int count() default 8;

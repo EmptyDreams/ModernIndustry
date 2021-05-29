@@ -53,6 +53,31 @@ public final class RegisterHelp {
 	}
 	
 	/**
+	 * 判断input中的所有类型能否转换为src中对应的类型
+	 * @param src 源
+	 * @param input 输入
+	 */
+	public static boolean matchClass(Class<?>[] src, Class<?>[] input) {
+		if (src.length != input.length) return false;
+		for (int i = 0; i < src.length; i++) {
+			if (!src[i].isAssignableFrom(input[i])) return false;
+		}
+		return true;
+	}
+	
+	@Nonnull
+	public static Method getDeclaredMethod(Class<?> clazz, String methodName, Class<?>[] args)
+			throws NoSuchMethodException {
+		Method[] allMethods = clazz.getDeclaredMethods();
+		for (Method it : allMethods) {
+			if (it.getName().equals(methodName) && matchClass(it.getParameterTypes(), args)) {
+				return it;
+			}
+		}
+		throw new NoSuchMethodException();
+	}
+	
+	/**
 	 * 调用指定的静态方法（可私有）
 	 * @param clazz 方法所在类
 	 * @param methodName 方法名称
@@ -65,11 +90,11 @@ public final class RegisterHelp {
 			argsClass[i] = args[i].getClass();
 		}
 		try {
-			Method method = clazz.getDeclaredMethod(methodName, argsClass);
+			Method method = getDeclaredMethod(clazz, methodName, argsClass);
 			if (!Modifier.isPublic(method.getModifiers())) method.setAccessible(true);
 			return method.invoke(null, args);
 		} catch (NoSuchMethodException e) {
-			errClass(clazz, "不含有输入的构造函数[" + Arrays.toString(argsClass), e);
+			errClass(clazz, "不含有输入的方法{" + Arrays.toString(argsClass) + "}", e);
 		} catch (InvocationTargetException e) {
 			errClass(clazz, "调用的方法发生异常", e);
 		} catch (IllegalAccessException e) {

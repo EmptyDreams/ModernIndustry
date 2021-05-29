@@ -26,7 +26,7 @@
     <option name="GENERATE_NO_WARNINGS" value="true" />
   </component>
   <component name="EntryPointsManager">
-    <list size="11">
+    <list size="12">
       <item index="0" class="java.lang.String" itemvalue="net.minecraftforge.eventbus.api.SubscribeEvent" />
       <item index="1" class="java.lang.String" itemvalue="net.minecraftforge.fml.common.Mod" />
       <item index="2" class="java.lang.String" itemvalue="net.minecraftforge.fml.common.Mod.EventHandler" />
@@ -37,7 +37,8 @@
       <item index="7" class="java.lang.String" itemvalue="xyz.emptydreams.mi.api.register.block.AutoBlockRegister" />
       <item index="8" class="java.lang.String" itemvalue="xyz.emptydreams.mi.api.register.block.OreCreate" />
       <item index="9" class="java.lang.String" itemvalue="xyz.emptydreams.mi.api.register.others.AutoFluid" />
-      <item index="10" class="java.lang.String" itemvalue="xyz.emptydreams.mi.register.block.OreCreate" />
+      <item index="10" class="java.lang.String" itemvalue="xyz.emptydreams.mi.api.register.others.AutoPlayerHandle" />
+      <item index="11" class="java.lang.String" itemvalue="xyz.emptydreams.mi.register.block.OreCreate" />
     </list>
   </component>
   <component name="GradleMigrationSettings" migrationVersion="1" />

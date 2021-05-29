@@ -34,7 +34,12 @@ import static xyz.emptydreams.mi.ModernIndustry.MODID;
 @Mod.EventBusSubscriber
 public final class AutoRegister {
 	
-	static {
+	private static boolean isInit = false;
+	
+	/** 初始化注册机 */
+	public static void init() {
+		if (isInit) return;
+		isInit = true;
 		MinecraftForge.EVENT_BUS.post(new AutoRegisterRegistryEvent());
 		registryAll();
 	}
