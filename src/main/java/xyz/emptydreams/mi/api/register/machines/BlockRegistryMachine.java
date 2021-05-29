@@ -67,6 +67,11 @@ public class BlockRegistryMachine extends AutoRegisterMachine<AutoBlockRegister,
 			Blocks.selfRegister.put(register, block);
 	}
 	
+	@Override
+	public void atEnd() {
+		Blocks.autoRegister.sort(BlockSorter::compare);
+	}
+	
 	public static final class Blocks {
 		/** 所有方块 */
 		public static final List<Block> blocks = new LinkedList<>();

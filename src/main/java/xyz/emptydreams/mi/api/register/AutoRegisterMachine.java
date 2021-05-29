@@ -52,6 +52,7 @@ public abstract class AutoRegisterMachine<V extends Annotation, T>
 				MISysInfo.err("注册[" + asmData.getClassName() + "]时遇到意料之外的错误", e);
 			}
 		}
+		atEnd();
 	}
 	
 	/**
@@ -61,6 +62,9 @@ public abstract class AutoRegisterMachine<V extends Annotation, T>
 	 * @param data 附加数据
 	 */
 	public abstract void registry(Class<?> clazz, V annotation, T data);
+	
+	/** 所有项目注册完毕后调用 */
+	public void atEnd() { }
 	
 	/**
 	 * <p>获取该注册机的依赖项.
@@ -87,4 +91,5 @@ public abstract class AutoRegisterMachine<V extends Annotation, T>
 	public final int compareTo(AutoRegisterMachine<?, ?> register) {
 		return isDependency(register) ? 1 : register == this ? 0 : -1;
 	}
+	
 }

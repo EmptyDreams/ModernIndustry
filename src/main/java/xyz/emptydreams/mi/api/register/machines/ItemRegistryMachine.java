@@ -4,6 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.oredict.OreDictionary;
 import xyz.emptydreams.mi.api.register.AutoRegisterMachine;
 import xyz.emptydreams.mi.api.register.item.AutoItemRegister;
+import xyz.emptydreams.mi.api.register.sorter.ItemSorter;
 
 import javax.annotation.Nonnull;
 import java.util.LinkedList;
@@ -52,6 +53,11 @@ public class ItemRegistryMachine extends AutoRegisterMachine<AutoItemRegister, O
 				OreDictionary.registerOre(ore, item);
 		addAutoItem(item);
 		assignField(item, field, item);
+	}
+	
+	@Override
+	public void atEnd() {
+		Items.autoItems.sort(ItemSorter::compare);
 	}
 	
 	@Nonnull
