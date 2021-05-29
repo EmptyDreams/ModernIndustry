@@ -65,6 +65,14 @@ public final class RegisterHelp {
 		return true;
 	}
 	
+	/**
+	 * 获取指定类中指定名称和参数的方法，与{@link Class#getDeclaredMethod(String, Class[])}不同，
+	 * 该方法获取指定方法时只需要args中的参数可以转换为方法中的参数即可
+	 * @param clazz 方法所在类
+	 * @param methodName 方法名称
+	 * @param args 方法参数类型
+	 * @throws NoSuchMethodException 如果方法不存在
+	 */
 	@Nonnull
 	public static Method getDeclaredMethod(Class<?> clazz, String methodName, Class<?>[] args)
 			throws NoSuchMethodException {
