@@ -1,6 +1,7 @@
 package xyz.emptydreams.mi.api.register.machines;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraftforge.oredict.OreDictionary;
 import xyz.emptydreams.mi.api.register.AutoRegisterMachine;
@@ -35,6 +36,14 @@ public class BlockRegistryMachine extends AutoRegisterMachine<AutoBlockRegister,
 		Blocks.autoRegister.add(block);
 	}
 	
+	/**
+	 * 设置注册customModel的方法名称
+	 * @param methodName 方法名称
+	 */
+	public static void setCustomModelRegister(Block block, String methodName) {
+		Blocks.customModelBlocks.put(block, methodName);
+	}
+	
 	@Nonnull
 	@Override
 	public Class<AutoBlockRegister> getTargetClass() {
@@ -61,10 +70,9 @@ public class BlockRegistryMachine extends AutoRegisterMachine<AutoBlockRegister,
 			
 		if (!assignField(block, field, block)) return;
 		Class<?> register = annotation.register();
-		if (AutoBlockRegister.REGISTER.equals(register))
-			Blocks.autoRegister.add(block);
-		else
-			Blocks.selfRegister.put(register, block);
+		if (AutoBlockRegister.REGISTER.equals(register)) Blocks.autoRegister.add(block);
+		else Blocks.selfRegister.put(register, block);
+		if (!annotation.model().equals("")) setCustomModelRegister(block, annotation.model());
 	}
 	
 	@Override
@@ -73,6 +81,7 @@ public class BlockRegistryMachine extends AutoRegisterMachine<AutoBlockRegister,
 	}
 	
 	public static final class Blocks {
+		
 		/** 所有方块 */
 		public static final List<Block> blocks = new LinkedList<>();
 		/** 需要自动注册的方块 */
@@ -83,6 +92,9 @@ public class BlockRegistryMachine extends AutoRegisterMachine<AutoBlockRegister,
 		public static final Map<Block, WorldCreater> worldCreate = new Object2ObjectArrayMap<>();
 		/** 不注册物品的方块 */
 		public static final Set<Block> noItem = new TreeSet<>(BlockSorter::compare);
+		/** 手动注册模型的方块 */
+		public static final Map<Block, String> customModelBlocks = new Object2ObjectOpenHashMap<>();
+		
 	}
 	
 	@Nonnull

@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.register.item;
 
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import xyz.emptydreams.mi.ModernIndustry;
 
 import java.lang.annotation.Documented;
@@ -33,5 +34,13 @@ public @interface AutoItemRegister {
 	
 	/** 将注册的物品对象存储到该类中的某个对象上 */
 	String field() default "";
+	
+	/**
+	 * <p>填写自定义CustomModel的方法名称，该方法必须在物品类中
+	 * <p>填写"null"表明不调用任何方法
+	 * <p>例如：{@code public static void customModel(Item item)}
+	 * <p>默认注册：{@link ItemRegister#registryModel(ModelRegistryEvent)}
+	 */
+	String model() default "";
 	
 }

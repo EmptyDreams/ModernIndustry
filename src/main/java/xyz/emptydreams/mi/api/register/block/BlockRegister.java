@@ -14,6 +14,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
 import xyz.emptydreams.mi.api.exception.TransferException;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
+
+import java.lang.reflect.Method;
 
 import static xyz.emptydreams.mi.api.register.machines.BlockRegistryMachine.Blocks;
 
@@ -44,20 +47,27 @@ public class BlockRegister {
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public static void registryModel(ModelRegistryEvent event) {
-		for (Block b : Blocks.selfRegister.values()) {
-			if (Blocks.noItem.contains(b)) continue;
-			Item item = getItem(b);
-			ModelResourceLocation model = new ModelResourceLocation(b.getRegistryName(), "inventory");
-			ModelLoader.setCustomModelResourceLocation(item, 0, model);
-		}
-		for(Block b : Blocks.autoRegister) {
-			if (Blocks.noItem.contains(b)) continue;
-			Item item = getItem(b);
-			ModelResourceLocation model = new ModelResourceLocation(b.getRegistryName(), "inventory");
-			ModelLoader.setCustomModelResourceLocation(item, 0, model);
-		}
+		Blocks.selfRegister.values().forEach(BlockRegister::registryModelHelp);
+		Blocks.autoRegister.forEach(BlockRegister::registryModelHelp);
 	}
 
+	private static void registryModelHelp(Block block) {
+		if (Blocks.noItem.contains(block)) return;
+		String methodName = Blocks.customModelBlocks.getOrDefault(block, null);
+		if (methodName == null) {
+			Item item = getItem(block);
+			ModelResourceLocation model = new ModelResourceLocation(block.getRegistryName(), "inventory");
+			ModelLoader.setCustomModelResourceLocation(item, 0, model);
+		} else if (!methodName.equals("null")) {
+			try {
+				Method method = block.getClass().getMethod(methodName, Block.class, Item.class);
+				method.invoke(null, block, getItem(block));
+			} catch (Exception e) {
+				MISysInfo.err("注册[" + block.getRegistryName() + "]的模型时出现意外的错误", e);
+			}
+		}
+	}
+	
 	@SubscribeEvent
 	public static void registryItem(RegistryEvent.Register<Item> event) {
 		IForgeRegistry<Item> registry = event.getRegistry();

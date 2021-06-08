@@ -58,7 +58,6 @@ public class FluidRegistryMachine extends AutoRegisterMachine<AutoFluid, Object>
 		}
 		BlockFluidClassic block = new BlockFluidClassic(fluid, material);
 		block.setUnlocalizedName(unlocalizedName);
-		block.setCreativeTab(tab);
 		if (!assignField(fluid, annotation.value(), block)) return;
 		//注册物品
 		Item itemFluid = new ItemBlock(block);
@@ -72,13 +71,16 @@ public class FluidRegistryMachine extends AutoRegisterMachine<AutoFluid, Object>
 			}
 		});
 		ItemRegistryMachine.addAutoItem(itemFluid);
+		ItemRegistryMachine.setCustomModelRegister(itemFluid, "null");
 		//触发end
 		if (annotation.end().equals("")) return;
 		invokeStaticMethod(clazz, annotation.end(), (Object[]) null);
 	}
 	
 	public static final class Fluids {
+		
 		/** 所有流体 */
 		public static final List<Fluid> fluids = new LinkedList<>();
+		
 	}
 }
