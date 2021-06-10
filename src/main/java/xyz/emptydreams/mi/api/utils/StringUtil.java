@@ -98,7 +98,7 @@ public class StringUtil {
 	}
 	
 	public static String getUnlocalizedName(String modid, String name) {
-		return modid + ":" + name;
+		return modid + "." + name;
 	}
 	
 	public static String getUnlocalizedName(String name) {
