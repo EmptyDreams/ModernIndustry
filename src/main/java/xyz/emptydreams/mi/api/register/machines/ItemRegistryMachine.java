@@ -73,7 +73,7 @@ public class ItemRegistryMachine extends AutoRegisterMachine<AutoItemRegister, O
 	
 	@Nonnull
 	private static String getUnlocalizedName(AutoItemRegister annotation) {
-		if (annotation.unlocalizedName().length() > 0)
+		if (annotation.unlocalizedName().length() == 0)
 			return annotation.modid() + "." + annotation.value();
 		return annotation.unlocalizedName();
 	}

@@ -99,7 +99,7 @@ public class BlockRegistryMachine extends AutoRegisterMachine<AutoBlockRegister,
 	
 	@Nonnull
 	private static String getUnlocalizedName(AutoBlockRegister annotation) {
-		if (annotation.unlocalizedName().length() > 0)
+		if (annotation.unlocalizedName().length() == 0)
 			return annotation.modid() + "." + annotation.registryName();
 		return annotation.unlocalizedName();
 	}

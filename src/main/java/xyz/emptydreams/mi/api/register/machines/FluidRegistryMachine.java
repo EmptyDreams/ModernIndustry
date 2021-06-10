@@ -57,7 +57,7 @@ public class FluidRegistryMachine extends AutoRegisterMachine<AutoFluid, Object>
 		FluidRegistryMachine.Fluids.fluids.add(fluid);
 		//注册对应方块
 		String modid = fluid.getFlowing().getResourceDomain();
-		String unlocalizedName = annotation.unlocalizedName().equals("") ?
+		String unlocalizedName = annotation.unlocalizedName().length() == 0 ?
 				modid + "." + fluid.getName() : annotation.unlocalizedName();
 		CreativeTabs tab =
 				(CreativeTabs) invokeStaticMethod(clazz, annotation.creativeTab(), (Object[]) null);
