@@ -1,18 +1,31 @@
 package xyz.emptydreams.mi.api.register.machines;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemBucket;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xyz.emptydreams.mi.api.register.AutoRegisterMachine;
 import xyz.emptydreams.mi.api.register.others.AutoFluid;
+import xyz.emptydreams.mi.api.utils.StringUtil;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nonnull;
 import java.util.LinkedList;
@@ -26,6 +39,7 @@ import static xyz.emptydreams.mi.api.register.machines.RegisterHelp.newInstance;
 /**
  * @author EmptyDreams
  */
+@Mod.EventBusSubscriber
 public class FluidRegistryMachine extends AutoRegisterMachine<AutoFluid, Object> {
 	
 	@Nonnull
@@ -44,37 +58,66 @@ public class FluidRegistryMachine extends AutoRegisterMachine<AutoFluid, Object>
 		String modid = fluid.getFlowing().getResourceDomain();
 		String unlocalizedName = annotation.unlocalizedName().equals("") ?
 				modid + "." + fluid.getName() : annotation.unlocalizedName();
-		Material material =
-				(Material) invokeStaticMethod(clazz, annotation.material(), (Object[]) null);
 		CreativeTabs tab =
 				(CreativeTabs) invokeStaticMethod(clazz, annotation.creativeTab(), (Object[]) null);
-		if (material == null) {
-			errField(clazz, annotation.material(), "值为空", null);
-			return;
-		}
 		if (tab == null) {
 			errField(clazz, annotation.creativeTab(), "值为空", null);
 			return;
 		}
-		BlockFluidClassic block = new BlockFluidClassic(fluid, material);
+		//注册流体方块
+		BlockFluidClassic block = new BlockFluidClassic(fluid, Material.WATER);
+		block.setRegistryName(fluid.getName());
 		block.setUnlocalizedName(unlocalizedName);
+		BlockRegistryMachine.setCustomModelRegister(block, "null");
+		BlockRegistryMachine.addAutoBlock(block);
+		//添加流体桶
+		ItemBucket item = new ItemBucket(block);
+		item.setRegistryName(StringUtil.revampAddToRL(block.getRegistryName(), "_item"));
+		item.setUnlocalizedName(unlocalizedName);
+		item.setCreativeTab(tab);
+		item.setContainerItem(Items.BUCKET);
+		ItemRegistryMachine.setCustomModelRegister(item, "null");
+		ItemRegistryMachine.addAutoItem(item);
+		FluidRegistry.addBucketForFluid(fluid);
+		registryFluidRender(block, item);
+		//为指定字段赋值
 		if (!assignField(fluid, annotation.value(), block)) return;
-		//注册物品
-		Item itemFluid = new ItemBlock(block);
-		itemFluid.setRegistryName(modid, fluid.getName());
-		ModelLoader.setCustomMeshDefinition(
-				itemFluid, stack -> new ModelResourceLocation(unlocalizedName, "fluid"));
-		ModelLoader.setCustomStateMapper(block, new StateMapperBase() {
-			@Override
-			protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-				return new ModelResourceLocation(unlocalizedName, "fluid");
-			}
-		});
-		ItemRegistryMachine.addAutoItem(itemFluid);
-		ItemRegistryMachine.setCustomModelRegister(itemFluid, "null");
 		//触发end
 		if (annotation.end().equals("")) return;
 		invokeStaticMethod(clazz, annotation.end(), (Object[]) null);
+	}
+	
+	/** 注册桶和方块的渲染 */
+	private static void registryFluidRender(Block block, Item item) {
+		if (WorldUtil.isServer()) return;
+		String location = block.getRegistryName().toString();
+		ModelLoader.setCustomMeshDefinition(item, stack -> new ModelResourceLocation(location, "fluid"));
+		ModelLoader.setCustomStateMapper(block, new StateMapperBase() {
+			@Override
+			protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+				return new ModelResourceLocation(location, "fluid");
+			}
+		});
+	}
+	
+	@SubscribeEvent
+	public static void onFillBucket(FillBucketEvent event) {
+		if (event.getTarget() == null) return;
+		IBlockState state = event.getWorld().getBlockState(event.getTarget().getBlockPos());
+		if (!(state.getBlock() instanceof IFluidBlock)) return;
+		
+		Fluid fluid = ((IFluidBlock) state.getBlock()).getFluid();
+		FluidStack fs = new FluidStack(fluid, Fluid.BUCKET_VOLUME);
+		ItemStack bucket = event.getEmptyBucket();
+		IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler(bucket);
+		if (fluidHandler != null) {
+			int fillAmount = fluidHandler.fill(fs, true);
+			if (fillAmount > 0) {
+				ItemStack filledBucket = fluidHandler.getContainer();
+				event.setFilledBucket(filledBucket);
+				event.setResult(Event.Result.ALLOW);
+			}
+		}
 	}
 	
 	public static final class Fluids {

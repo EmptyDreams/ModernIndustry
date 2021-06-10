@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.register.others;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 
 import java.lang.annotation.Documented;
@@ -25,17 +24,12 @@ public @interface AutoFluid {
 	String value() default "block";
 	
 	/**
-	 * 流体方块使用的材质，该名称应该为一个在该类中用于获取{@link Material}对象的静态共有方法
-	 */
-	String material() default "getBlockMaterial" ;
-	
-	/**
-	 * 流体方块所在的tab，该名称应该为一个在该类中用于获取{@link CreativeTabs}对象的静态共有方法
+	 * 流体桶所在的tab，该名称应该为一个在该类中用于获取{@link CreativeTabs}对象的静态共有方法
 	 */
 	String creativeTab() default "getBlockCreativeTab";
 	
 	/**
-	 * 流体方块的本地名称，默认为modid.[fluidName]
+	 * 流体的本地名称，默认为modid.[fluidName]
 	 */
 	String unlocalizedName() default "";
 	

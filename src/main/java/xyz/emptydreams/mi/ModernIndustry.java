@@ -3,6 +3,7 @@ package xyz.emptydreams.mi;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -39,7 +40,11 @@ public final class ModernIndustry {
 	public static CommonProxy proxy;
 	
 	public static Logger logger;
-	    
+	
+	static {
+		FluidRegistry.enableUniversalBucket();
+	}
+	
 	/** 物品栏-物品 */
 	public static final CreativeTabs TAB_ITEM = new CreativeTabs(MODID + "_item") {
 		@Override

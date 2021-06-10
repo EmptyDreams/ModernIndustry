@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.content.blocks.fluids;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.BlockFluidClassic;
@@ -39,12 +38,8 @@ public class FluidIron extends Fluid {
 		setTemperature(1535 + 273);
 	}
 	
-	public static Material getBlockMaterial() {
-		return Material.IRON;
-	}
-	
 	public static CreativeTabs getBlockCreativeTab() {
-		return ModernIndustry.TAB_BLOCK;
+		return ModernIndustry.TAB_TOOL;
 	}
 	
 }
