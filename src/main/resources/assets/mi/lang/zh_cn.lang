@@ -46,6 +46,13 @@ item.mi.bronze_helmet.name=青铜头盔
 item.mi.bronze_chestplate.name=青铜盔甲
 item.mi.bronze_leggings.name=青铜护腿
 item.mi.bronze_boots.name=青铜靴子
+#棒
+item.mi.bronze_stick.name=青铜棒
+item.mi.copper_stick.name=铜棒
+item.mi.iron_stick.name=铁棒
+#流体
+item.mi.iron_melt.name=铁水
+tile.mi.iron_melt.name=铁水
 #调试物品
 item.mi.wireinfo_viewer.name=线缆信息查看器
 #矿物方块

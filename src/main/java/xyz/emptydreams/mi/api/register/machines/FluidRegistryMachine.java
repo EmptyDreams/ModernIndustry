@@ -37,6 +37,7 @@ import static xyz.emptydreams.mi.api.register.machines.RegisterHelp.invokeStatic
 import static xyz.emptydreams.mi.api.register.machines.RegisterHelp.newInstance;
 
 /**
+ * 流体的注册机
  * @author EmptyDreams
  */
 @Mod.EventBusSubscriber
