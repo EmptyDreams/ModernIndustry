@@ -29,7 +29,7 @@ public @interface AutoFluid {
 	String creativeTab() default "getBlockCreativeTab";
 	
 	/**
-	 * 流体的本地名称，默认为modid.[fluidName]
+	 * 流体的本地名称，默认为modid.[fluid]
 	 */
 	String unlocalizedName() default "";
 	

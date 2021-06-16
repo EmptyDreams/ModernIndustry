@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.utils.data.io.TEData;
+import xyz.emptydreams.mi.api.utils.data.io.ObjectData;
 
 /**
  * 基础TE，提供了一些默认的功能
@@ -28,14 +28,14 @@ public class BaseTileEntity extends TileEntity {
 	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		TEData.write(this, compound, ".");
+		ObjectData.write(this, compound, ".");
 		return super.writeToNBT(compound);
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		TEData.read(this, compound, ".");
+		ObjectData.read(this, compound, ".");
 	}
 	
 	@Override

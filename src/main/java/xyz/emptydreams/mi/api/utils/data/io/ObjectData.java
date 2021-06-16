@@ -14,26 +14,26 @@ import java.lang.reflect.Field;
  * TE数据读写
  * @author EmptyDreams
  */
-public class TEData implements IClassData {
+public class ObjectData implements IClassData {
 	
-	private static final TEData instance = new TEData();
+	private static final ObjectData instance = new ObjectData();
 	
 	@Nonnull
-	public static TEData instance() {
+	public static ObjectData instance() {
 		return instance;
 	}
 	
-	/** 将TE写入到NBT */
-	public static NBTTagCompound write(TileEntity te, NBTTagCompound tag, String key) {
-		return instance.writeToNBT(tag, te, key);
+	/** 将数据写入到NBT */
+	public static NBTTagCompound write(Object obj, NBTTagCompound tag, String key) {
+		return instance.writeToNBT(tag, obj, key);
 	}
 	
-	/** 从NBT中读取数据到TE */
-	public static void read(TileEntity te, NBTTagCompound tag, String key) {
-		instance.readFromNBT(tag, te, key);
+	/** 从NBT中读取数据到类 */
+	public static void read(Object obj, NBTTagCompound tag, String key) {
+		instance.readFromNBT(tag, obj, key);
 	}
 	
-	private TEData() { }
+	private ObjectData() { }
 	
 	@Override
 	public boolean suspend(Class<?> clazz) {

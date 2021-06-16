@@ -4,6 +4,9 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
@@ -52,6 +55,7 @@ public final class DataTypes {
 		registry(new VoltageData(), IVoltage.class::isAssignableFrom);
 		registry(new BytePackageArrayData(), clazz -> clazz == Byte[].class);
 		registry(new IntPackageArrayData(), clazz -> clazz == Integer[].class);
+		registry(new FluidStackData(), FluidStack.class::isAssignableFrom);
 	}
 	
 	public static final class IntData implements IDataIO<Integer> {
@@ -1258,6 +1262,52 @@ public final class DataTypes {
 				map.put(key, value);
 			}
 			return map;
+		}
+		
+	}
+	
+	public static final class FluidStackData implements IDataIO<FluidStack> {
+		
+		@Override
+		public void writeToData(IDataWriter writer, FluidStack data) {
+			writer.writeVarint(data.amount);
+			writer.writeString(data.getFluid().getName());
+		}
+		
+		@Override
+		public FluidStack readFromData(IDataReader reader, Supplier<FluidStack> getter) {
+			int amount = reader.readVarint();
+			String name = reader.readString();
+			Fluid fluid = FluidRegistry.getFluid(name);
+			return new FluidStack(fluid, amount);
+		}
+		
+		@Override
+		public void writeToNBT(NBTTagCompound nbt, String name, FluidStack data) {
+			nbt.setInteger(name + "a", data.amount);
+			nbt.setString(name + "n", data.getFluid().getName());
+		}
+		
+		@Override
+		public FluidStack readFromNBT(NBTTagCompound nbt, String name, Supplier<FluidStack> getter) {
+			int amount = nbt.getInteger(name + "a");
+			String fluidName = nbt.getString(name + "n");
+			Fluid fluid = FluidRegistry.getFluid(fluidName);
+			return new FluidStack(fluid, amount);
+		}
+		
+		@Override
+		public void writeToByteBuf(ByteBuf buf, FluidStack data) {
+			buf.writeInt(data.amount);
+			DataTypeRegister.write(buf, data.getFluid().getName());
+		}
+		
+		@Override
+		public FluidStack readFromByteBuf(ByteBuf buf, Supplier<FluidStack> getter) {
+			int amount = buf.readInt();
+			String name = DataTypeRegister.read(buf, String.class, null);
+			Fluid fluid = FluidRegistry.getFluid(name);
+			return new FluidStack(fluid, amount);
 		}
 		
 	}
