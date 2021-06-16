@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
  * 铁水
  * @author EmptyDreams
  */
+@SuppressWarnings("unused")
 @AutoFluid
 public class FluidIron extends Fluid {
 	
@@ -21,14 +22,8 @@ public class FluidIron extends Fluid {
 	public static final ResourceLocation FLOWING =
 			new ResourceLocation(ModernIndustry.MODID, "fluid/iron_flowing");
 	
+	/** 由注册机分配 */
 	private static BlockFluidClassic block;
-	
-	/** 获取方块对象 */
-	@Nonnull
-	public static BlockFluidClassic blockInstance() {
-		if (block == null) throw new NullPointerException("block对象还未赋值");
-		return block;
-	}
 	
 	public FluidIron() {
 		super("iron_melt", STILL, FLOWING);
@@ -36,6 +31,13 @@ public class FluidIron extends Fluid {
 		setViscosity(6000);
 		setLuminosity(5);
 		setTemperature(1535 + 273);
+	}
+	
+	/** 获取方块对象 */
+	@Nonnull
+	public static BlockFluidClassic blockInstance() {
+		if (block == null) throw new NullPointerException("block对象还未赋值");
+		return block;
 	}
 	
 	public static CreativeTabs getBlockCreativeTab() {
