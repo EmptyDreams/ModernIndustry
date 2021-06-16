@@ -28,45 +28,34 @@ public class FluidTransferCapability {
 					public int fluidAmount() {
 						return -1;
 					}
-					
 					@Override
 					public Fluid fluid() {
 						return null;
 					}
-					
 					@Override
-					public void setFluid(FluidStack stack) {
-						throwException();
-					}
-					
+					public void setFluid(FluidStack stack) { }
 					@Override
 					public int extract(int amount, boolean simulate) {
-						throwException();
 						return 0;
 					}
-					
 					@Override
 					public int insert(int amount, boolean simulate) {
-						throwException();
 						return 0;
 					}
-					
+					@Override
+					public int getMaxAmount() {
+						return 0;
+					}
 					@Override
 					public IFluidTransfer getLinkedTransfer(EnumFacing facing) {
-						throwException();
 						return null;
 					}
-					
 					@Override
 					public boolean link(EnumFacing facing) {
-						throwException();
 						return false;
 					}
-					
 					@Override
-					public void unlink(EnumFacing facing) {
-						throwException();
-					}
+					public void unlink(EnumFacing facing) { }
 					
 				});
 	}

@@ -40,6 +40,9 @@ public interface IFluidTransfer {
 	 */
 	int insert(int amount, boolean simulate);
 	
+	/** 获取流体管道最大流量 */
+	int getMaxAmount();
+	
 	/**
 	 * 获取指定方向上连接的流体管道
 	 * @param facing 方向
