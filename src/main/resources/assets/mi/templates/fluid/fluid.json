@@ -4,6 +4,8 @@
     "fluid": {
       "model": "forge:fluid",
       "custom": { "fluid": "[template::name]" }
-    }
+    },
+    "inventory": [{ }],
+    "normal": [{ }]
   }
 }
