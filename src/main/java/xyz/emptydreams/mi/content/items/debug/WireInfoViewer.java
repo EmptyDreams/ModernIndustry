@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.register.item.AutoItemRegister;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
-import xyz.emptydreams.mi.content.blocks.base.TransferBlock;
+import xyz.emptydreams.mi.content.blocks.base.EleTransferBlock;
 import xyz.emptydreams.mi.content.blocks.tileentity.EleSrcCable;
 
 import javax.annotation.Nonnull;
@@ -32,7 +32,7 @@ public class WireInfoViewer extends Item {
 	public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos,
 	                                  EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		IBlockState state = worldIn.getBlockState(pos);
-		if (state.getBlock() instanceof TransferBlock) {
+		if (state.getBlock() instanceof EleTransferBlock) {
 			EleSrcCable et = (EleSrcCable) worldIn.getTileEntity(pos);
 			StringBuilder sb = new StringBuilder();
 			assert et != null;

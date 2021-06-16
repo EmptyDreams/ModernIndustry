@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.content.blocks.base;
+package xyz.emptydreams.mi.content.items.base;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
@@ -20,6 +20,7 @@ import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.container.BooleanWrapper;
+import xyz.emptydreams.mi.content.blocks.base.EleTransferBlock;
 import xyz.emptydreams.mi.content.blocks.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.data.agent.EleSrcTransfer;
 import xyz.emptydreams.mi.data.info.CableCache;
@@ -28,9 +29,9 @@ import xyz.emptydreams.mi.data.info.CableCache;
  * 普通电线物品
  * @author EmptyDremas
  */
-public final class TransferItem extends ItemBlock {
+public final class EleTransferItem extends ItemBlock {
 	
-	public TransferItem(TransferBlock block, String name) {
+	public EleTransferItem(EleTransferBlock block, String name) {
 		super(block);
 		setRegistryName(ModernIndustry.MODID, name);
 		setUnlocalizedName(name);
@@ -66,7 +67,7 @@ public final class TransferItem extends ItemBlock {
 		                        worldIn, blockPos, this.block.getDefaultState());
            if (iblockstate1 == null) return EnumActionResult.FAIL;
 	        //更新TileEntity
-	        EleSrcCable cable = (EleSrcCable) ((TransferBlock) this.block).createNewTileEntity(worldIn, 0);
+	        EleSrcCable cable = (EleSrcCable) ((EleTransferBlock) this.block).createNewTileEntity(worldIn, 0);
 	        //noinspection ConstantConditions
 	        cable.setWorld(worldIn);
 	        cable.setPos(blockPos);

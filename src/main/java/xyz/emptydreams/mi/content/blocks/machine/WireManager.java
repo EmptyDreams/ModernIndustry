@@ -2,7 +2,7 @@ package xyz.emptydreams.mi.content.blocks.machine;
 
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.register.others.AutoManager;
-import xyz.emptydreams.mi.content.blocks.base.TransferBlock;
+import xyz.emptydreams.mi.content.blocks.base.EleTransferBlock;
 import xyz.emptydreams.mi.content.blocks.tileentity.EleSrcCable;
 
 /**
@@ -13,7 +13,7 @@ import xyz.emptydreams.mi.content.blocks.tileentity.EleSrcCable;
 public final class WireManager {
 	
 	/** 铜质导线 */
-	public final static TransferBlock COPPER = new TransferBlock(
+	public final static EleTransferBlock COPPER = new EleTransferBlock(
 						"wire_copper", "itemCopperCable", "mi_cable") {
 		@Override
 		public EleSrcCable createNewTileEntity(World worldIn, int meta) {

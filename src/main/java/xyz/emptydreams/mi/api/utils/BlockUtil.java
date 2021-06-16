@@ -8,7 +8,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.content.blocks.base.TransferBlock;
+import xyz.emptydreams.mi.content.blocks.base.EleTransferBlock;
 
 import java.util.function.BiConsumer;
 
@@ -41,7 +41,7 @@ public final class BlockUtil {
 	public static void setFire(World world, BlockPos pos) {
 		IBlockState state = world.getBlockState(pos);
 		if (state.getBlock().isReplaceable(world, pos) ||
-				    state.getBlock() instanceof TransferBlock ||
+				    state.getBlock() instanceof EleTransferBlock ||
 				    state.getBlock() == Blocks.AIR) {
 			world.setBlockState(pos, Blocks.FIRE.getDefaultState());
 		}

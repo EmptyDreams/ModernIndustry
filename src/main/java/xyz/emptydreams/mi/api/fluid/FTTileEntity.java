@@ -34,15 +34,20 @@ public class FTTileEntity extends BaseTileEntity {
 	@Nullable
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-		if (capability == FluidTransferCapability.TRANSFER && getLinked().contains(facing)) {
+		if (capability == FluidTransferCapability.TRANSFER
+				&& (facing == null || getLinked().contains(facing))) {
 			//noinspection unchecked
 			return (T) cap;
 		}
 		return super.getCapability(capability, facing);
 	}
 	
+	public FluidCapability getFTCapability() {
+		return cap;
+	}
+	
 	private List<EnumFacing> getLinked() {
-		return cap.linked;
+		return new ArrayList<>(cap.linked);
 	}
 	
 	public class FluidCapability implements IFluidTransfer {
@@ -152,39 +157,27 @@ public class FTTileEntity extends BaseTileEntity {
 			}
 		}
 		
-		/** 是否连接指定方向 */
-		public boolean isLinked(EnumFacing facing) {
-			switch (facing) {
-				case DOWN: return isLinkedDown();
-				case UP: return isLinkedUp();
-				case NORTH: return isLinkedNorth();
-				case SOUTH: return isLinkedSouth();
-				case WEST: return isLinkedWest();
-				case EAST: return isLinkedEast();
-				default: throw new IllegalArgumentException("输入了未知的方向：" + facing.getName());
-			}
-		}
-		/** 是否连接上方 */
+		@Override
 		public boolean isLinkedUp() {
 			return (data & 0b100000) == 0b100000;
 		}
-		/** 是否连接下方 */
+		@Override
 		public boolean isLinkedDown() {
 			return (data & 0b010000) == 0b010000;
 		}
-		/** 是否连接东方 */
+		@Override
 		public boolean isLinkedEast() {
 			return (data & 0b001000) == 0b001000;
 		}
-		/** 是否连接西方 */
+		@Override
 		public boolean isLinkedWest() {
 			return (data & 0b000100) == 0b000100;
 		}
-		/** 是否连接南方 */
+		@Override
 		public boolean isLinkedSouth() {
 			return (data & 0b000010) == 0b000010;
 		}
-		/** 是否连接北方 */
+		@Override
 		public boolean isLinkedNorth() {
 			return (data & 0b000001) == 0b000001;
 		}

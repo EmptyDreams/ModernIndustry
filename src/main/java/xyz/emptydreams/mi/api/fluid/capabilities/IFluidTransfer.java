@@ -64,6 +64,31 @@ public interface IFluidTransfer {
 	 */
 	void unlink(EnumFacing facing);
 	
+	/** 是否连接指定方向 */
+	default boolean isLinked(EnumFacing facing) {
+		switch (facing) {
+			case DOWN: return isLinkedDown();
+			case UP: return isLinkedUp();
+			case NORTH: return isLinkedNorth();
+			case SOUTH: return isLinkedSouth();
+			case WEST: return isLinkedWest();
+			case EAST: return isLinkedEast();
+			default: throw new IllegalArgumentException("输入了未知的方向：" + facing.getName());
+		}
+	}
+	/** 是否连接上方 */
+	boolean isLinkedUp();
+	/** 是否连接下方 */
+	boolean isLinkedDown();
+	/** 是否连接东方 */
+	boolean isLinkedEast();
+	/** 是否连接西方 */
+	boolean isLinkedWest();
+	/** 是否连接南方 */
+	boolean isLinkedSouth();
+	/** 是否连接北方 */
+	boolean isLinkedNorth();
+	
 	/** 向下运输一格 */
 	default int transportDown(int amount, boolean simulate) {
 		return transport(DOWN, amount, simulate);

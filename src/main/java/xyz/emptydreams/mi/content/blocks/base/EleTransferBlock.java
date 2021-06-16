@@ -23,6 +23,7 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.content.blocks.tileentity.EleSrcCable;
+import xyz.emptydreams.mi.content.items.base.EleTransferItem;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -33,7 +34,7 @@ import java.util.Random;
  * @author EmptyDreams
  */
 @SuppressWarnings("deprecation")
-abstract public class TransferBlock extends TEBlockBase {
+abstract public class EleTransferBlock extends TEBlockBase {
 	
 	public static final AxisAlignedBB B_POINT =
 			new AxisAlignedBB(0.375F, 0.375F, 0.375F, 0.625F, 0.625F, 0.625F);
@@ -61,7 +62,7 @@ abstract public class TransferBlock extends TEBlockBase {
 	 *
 	 * @param name 电线名称，协定规定线缆名称以"wire_"开头但是该构造函数不会自动添加"wire_"
 	 */
-	public TransferBlock(String name, String... ores) {
+	public EleTransferBlock(String name, String... ores) {
 		super(Material.CIRCUITS);
 		setSoundType(SoundType.SNOW);
 		setHardness(0.35F);
@@ -72,7 +73,7 @@ abstract public class TransferBlock extends TEBlockBase {
 				.withProperty(NORTH, false).withProperty(WEST, false).withProperty(EAST, false)
 				.withProperty(DOWN, false).withProperty(UP, false));
 		OreDicRegister.registry(this, ores);
-		ITEM = new TransferItem(this, name);
+		ITEM = new EleTransferItem(this, name);
 	}
 	
 	@Nonnull
@@ -109,12 +110,6 @@ abstract public class TransferBlock extends TEBlockBase {
 		if (state.getValue(NORTH)) addCollisionBoxToList(pos, entityBox, list, B_NORTH);
 		if (state.getValue(WEST)) addCollisionBoxToList(pos, entityBox, list, B_WEST);
 		if (state.getValue(EAST)) addCollisionBoxToList(pos, entityBox, list, B_EAST);
-	}
-	
-	@Nonnull
-	@Override
-	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
-		return new ItemStack(getBlockItem());
 	}
 	
 	@Override
@@ -155,7 +150,13 @@ abstract public class TransferBlock extends TEBlockBase {
 	public boolean isFullCube(IBlockState state) {
 		return false;
 	}
-
+	
+	@Nonnull
+	@Override
+	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
+		return new ItemStack(ITEM);
+	}
+	
 	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
