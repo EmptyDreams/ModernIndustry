@@ -113,12 +113,43 @@ public class FTTileEntity extends BaseTileEntity {
 		@Override
 		public boolean link(EnumFacing facing) {
 			if (linked.contains(facing)) return false;
+			setData(facing, true);
 			return linked.add(facing);
 		}
 		
 		@Override
 		public void unlink(EnumFacing facing) {
+			setData(facing, false);
 			linked.remove(facing);
+		}
+		
+		private void setData(EnumFacing facing, boolean isLinked) {
+			switch (facing) {
+				case DOWN:
+					if (isLinked) data |= 0b010000;
+					else data &= 0b101111;
+					break;
+				case UP:
+					if (isLinked) data |= 0b100000;
+					else data &= 0b0111111;
+					break;
+				case NORTH:
+					if (isLinked) data |= 0b000001;
+					else data &= 0b111110;
+					break;
+				case SOUTH:
+					if (isLinked) data |= 0b000010;
+					else data &= 0b111101;
+					break;
+				case WEST:
+					if (isLinked) data |= 0b000100;
+					else data &= 0b111011;
+					break;
+				case EAST:
+					if (isLinked) data |= 0b001000;
+					else data &= 0b110111;
+					break;
+			}
 		}
 		
 		/** 是否连接指定方向 */
