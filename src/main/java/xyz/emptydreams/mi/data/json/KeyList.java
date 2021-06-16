@@ -19,10 +19,10 @@ public final class KeyList {
 	private static final Map<String, Function<Object, String>> KEYS =
 			new Object2ObjectArrayMap<String, Function<Object, String>>() {
 		{
-			put("[template::name]", KeyList::getName);
-			put("[template::src]", element -> "mi:blocks/machine/" + getName(element) + "/src");
-			put("[template::working]", element -> "mi:blocks/machine/" + getName(element) + "/working");
-			put("[template::empty]", element -> "mi:blocks/machine/" + getName(element) + "/empty");
+			put("\\[template::name\\]", KeyList::getName);
+			put("\\[template::src\\]", element -> "mi:blocks/machine/" + getName(element) + "/src");
+			put("\\[template::working\\]", element -> "mi:blocks/machine/" + getName(element) + "/working");
+			put("\\[template::empty\\]", element -> "mi:blocks/machine/" + getName(element) + "/empty");
 		}
 	};
 	
