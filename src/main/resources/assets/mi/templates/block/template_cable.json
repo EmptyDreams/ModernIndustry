@@ -1,46 +1,46 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mi:template::name/point"
+    "model": "mi:[template::name]/point"
   },
   "variants": {
     "inventory": [{ }],
     "up": {
       "false": { },
       "true": {
-        "submodel": "mi:template::name/north",
+        "submodel": "mi:[template::name]/north",
         "x": 270
       }
     },
     "down": {
       "false": { },
       "true": {
-        "submodel": "mi:template::name/north",
+        "submodel": "mi:[template::name]/north",
         "x": 90
       }
     },
     "south": {
       "false": { },
       "true": {
-        "submodel": "mi:template::name/north",
+        "submodel": "mi:[template::name]/north",
         "y": 180
       }
     },
     "north": {
       "false": { },
-      "true": { "submodel": "mi:template::name/north" }
+      "true": { "submodel": "mi:[template::name]/north" }
     },
     "west": {
       "false": { },
       "true": {
-        "submodel": "mi:template::name/north",
+        "submodel": "mi:[template::name]/north",
         "y": 270
       }
     },
     "east": {
       "false": { },
       "true": {
-        "submodel": "mi:template::name/north",
+        "submodel": "mi:[template::name]/north",
         "y": 90
       }
     }

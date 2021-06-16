@@ -3,7 +3,7 @@
   "variants": {
     "fluid": {
       "model": "forge:fluid",
-      "custom": { "fluid": "template::name" }
+      "custom": { "fluid": "[template::name]" }
     }
   }
 }

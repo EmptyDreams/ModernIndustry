@@ -1,6 +1,6 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "mi:items/tools/template:name"
+    "layer0": "mi:items/tools/[template:name]"
   }
 }
