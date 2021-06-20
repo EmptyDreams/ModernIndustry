@@ -18,13 +18,19 @@ import java.awt.*;
  */
 public class RollComponent extends MComponent {
 	
-	/** 滚动按钮最大位置 */
-	public static final int MAX = 10000;
+	
+	public static final int FULL = 10000;
 	
 	/** 存储是否为垂直显示 */
 	private final boolean vertical;
 	/** 存储按钮当前位置 */
 	private int index = 0;
+	/** 滚动按钮最大位置 */
+	private int max;
+	/** 滚动按钮最小位置 */
+	private int min;
+	/** 滚动条竖直时按钮的宽度（或水平时按钮的高度） */
+	private int buttonSize;
 	
 	/**
 	 * 创建一格滚动轴
@@ -46,7 +52,15 @@ public class RollComponent extends MComponent {
 	
 	/** 获取当前按钮的位置 */
 	public double getIndex() {
-		return ((double) index) / MAX;
+		return ((double) index) / FULL;
+	}
+	
+	@Override
+	public void setSize(int width, int height) {
+		super.setSize(width, height);
+		max = (int) (FULL - (isVertical() ? (15.0 / (height - 2) * FULL) : (15.0 / (width - 2) * FULL)));
+		min = (int) (isVertical() ? (1.5 / (height - 2) * FULL) : (1.5 / (width - 2) * FULL));
+		buttonSize = width - 2;
 	}
 	
 	private boolean isMouse = false;
@@ -62,18 +76,18 @@ public class RollComponent extends MComponent {
 			float rY = mouseY - getY();
 			isMouse = isMouseInButton(rX, rY);
 			if (clicked) {
-				index = getReLocation(mouseX, mouseY);
+				index = Math.max(min, Math.min(max, getReLocation(mouseX, mouseY) - reLocation));
 			}
 		});
 		registryListener((MouseActionListener) (mouseX, mouseY) -> {
 			clicked = isMouse;
-			reLocation = getReLocation(mouseX, mouseY);
+			reLocation = getReLocation(mouseX, mouseY) - index;
 		});
 		registryListener((MouseReleasedListener) (mouseX, mouseY, mouseButton) -> clicked = false);
 	}
 	
 	private int getReLocation(float mouseX, float mouseY) {
-		return isVertical() ? (int) (mouseY - getY()) : (int) (mouseX - getX());
+		return (int) ((isVertical() ? (mouseY - getY()) / getHeight() : (mouseX - getX()) / getWidth()) * FULL);
 	}
 	
 	/**
@@ -82,11 +96,13 @@ public class RollComponent extends MComponent {
 	 * @param mouseY 鼠标纵坐标（相对于控件）
 	 */
 	private boolean isMouseInButton(float mouseX, float mouseY) {
-		double min = getIndex();
-		double max = min + 15;
 		if (isVertical()) {
+			int min = (int) (getIndex() * getHeight());
+			int max = min + 15;
 			return mouseY >= min && mouseY <= max;
 		} else {
+			int min = (int) (getIndex() * getWidth());
+			int max = min + 15;
 			return mouseX >= min && mouseX <= max;
 		}
 	}
@@ -97,38 +113,32 @@ public class RollComponent extends MComponent {
 		RuntimeTexture texture = bindTexture();
 		if (isVertical()) {
 			int offset = (int) (getHeight() * index);
-			texture.drawToFrame(gui.getGuiLeft() + getX(), gui.getGuiTop() + getY() + offset,
-								0, 0, getWidth(), 15);
+			texture.drawToFrame(gui.getGuiLeft() + getX() + 1, gui.getGuiTop() + getY() + offset,
+								0, 0, buttonSize, 15);
 		} else {
 			int offset = (int) (getWidth() * index);
-			texture.drawToFrame(gui.getGuiLeft() + getX() + offset, gui.getGuiTop() + getY(),
-								0, 0, 15, getHeight());
+			texture.drawToFrame(gui.getGuiLeft() + getX() + offset, gui.getGuiTop() + getY() + 1,
+								0, 0, 15, buttonSize);
 		}
 	}
 	
 	@SuppressWarnings("ConstantConditions")
 	private RuntimeTexture bindTexture() {
-		return isMouse ? RuntimeTexture.getInstance(getClickTextureName()).bindTexture()
-							: RuntimeTexture.getInstance(getSrcTextureName()).bindTexture();
+		return RuntimeTexture.getInstance(getButtonTextureName()).bindTexture();
 	}
 	
-	private String getSrcTextureName() {
-		return "MI:Roll" + getWidth() + getHeight() + isVertical();
-	}
-	
-	private String getClickTextureName() {
-		return "MI:RollC" + getWidth() + getHeight() + isVertical();
+	/** 获取按钮材质的名称 */
+	private String getButtonTextureName() {
+		return "MI:Roll" + buttonSize + getHeight() + isVertical();
 	}
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {
 		g.drawImage(ImageData.getImage(ImageData.ROLL_BACKGROUND, getWidth(), getHeight()), 0, 0, null);
 		if (isVertical()) {
-			ImageData.createTexture(getSrcTextureName(), getWidth(), 15, ImageData.ROLL_BUTTON);
-			ImageData.createTexture(getClickTextureName(), getWidth(), 15, ImageData.ROLL_BUTTON_CLICK);
+			ImageData.createTexture(ImageData.ROLL_BUTTON , buttonSize, 15, getButtonTextureName());
 		} else {
-			ImageData.createTexture(getSrcTextureName(), 15, getHeight(), ImageData.ROLL_BUTTON);
-			ImageData.createTexture(getClickTextureName(), 15, getHeight(), ImageData.ROLL_BUTTON_CLICK);
+			ImageData.createTexture(ImageData.ROLL_BUTTON, 15, buttonSize, getButtonTextureName());
 		}
 	}
 	
