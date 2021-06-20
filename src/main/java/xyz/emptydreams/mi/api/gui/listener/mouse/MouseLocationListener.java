@@ -1,15 +1,15 @@
 package xyz.emptydreams.mi.api.gui.listener.mouse;
 
 /**
- * 在鼠标进入控件时触发的事件
+ * 鼠标在控件内时的事件
  * @author EmptyDreams
  */
-public interface MouseEnteredListener extends MouseListener {
+public interface MouseLocationListener extends MouseListener {
 	
 	/**
 	 * @param mouseX 鼠标X轴坐标（相对于Gui）
 	 * @param mouseY 鼠标Y轴坐标（相对于Gui）
 	 */
-	void mouseEntered(float mouseX, float mouseY);
-
+	void mouseMLocation(float mouseX, float mouseY);
+	
 }

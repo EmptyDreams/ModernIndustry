@@ -7,8 +7,8 @@ package xyz.emptydreams.mi.api.gui.listener.mouse;
 public interface MouseActionListener extends MouseListener {
 	
 	/**
-	 * @param mouseX 鼠标X轴坐标（相对于窗体）
-	 * @param mouseY 鼠标Y轴坐标（相对于窗体）
+	 * @param mouseX 鼠标X轴坐标（相对于Gui）
+	 * @param mouseY 鼠标Y轴坐标（相对于Gui）
 	 */
 	void mouseAction(float mouseX, float mouseY);
 	

@@ -214,6 +214,9 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 				if (onComponent != null) activateEntered(inventorySlots, onComponent, mouseX, mouseY);
 			}
 			preComponent = onComponent;
+			if (onComponent != null) {
+				activateLocation(inventorySlots, onComponent, mouseX, mouseY);
+			}
 		} else if (preComponent != null) {
 			activateExited(inventorySlots, preComponent, mouseX, mouseY);
 			preComponent = null;
