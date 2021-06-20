@@ -39,7 +39,16 @@ public class Group extends MComponent implements Iterable<IComponent> {
 	public Group() {
 		this(0, 0, 0, 0, null);
 	}
-
+	
+	/**
+	 * 创建一格group
+	 * @param x 横坐标
+	 * @param y 纵坐标
+	 * @param width 宽度
+	 * @param height 高度
+	 * @param panel 对其模式
+	 * @see Panels
+	 */
 	public Group(int x, int y, int width, int height, Consumer<Group> panel) {
 		this.x = x;
 		this.y = y;

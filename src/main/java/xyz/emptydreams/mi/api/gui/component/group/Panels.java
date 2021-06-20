@@ -10,6 +10,9 @@ public final class Panels {
 
 	private Panels() { throw new AssertionError("不应该被调用的构造函数"); }
 
+	/** 什么都不做 */
+	public static void non(Group group) { }
+	
 	/**
 	 * 水平居中对齐
 	 * <h3>该方法会修改的参数列表：
