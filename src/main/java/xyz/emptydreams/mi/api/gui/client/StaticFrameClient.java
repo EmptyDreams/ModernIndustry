@@ -214,24 +214,26 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 				if (onComponent != null) activateEntered(inventorySlots, onComponent, mouseX, mouseY);
 			}
 			preComponent = onComponent;
-			if (onComponent != null) {
-				activateLocation(inventorySlots, onComponent, mouseX, mouseY);
-			}
 		} else if (preComponent != null) {
 			activateExited(inventorySlots, preComponent, mouseX, mouseY);
 			preComponent = null;
 		}
 		
 		for (IComponent component : components) {
+			activateLocation(inventorySlots, component, mouseX, mouseY);
 			component.realTimePaint(this);
 		}
 	}
+	
+	/** 存储被点击的控件 */
+	private IComponent clickedComponents = null;
 	
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		mouseX -= getGuiLeft();     mouseY -= getGuiTop();
 		IComponent component = getComponentFromMouse(mouseX, mouseY);
+		clickedComponents = component;
 		if (component != null) {
 			if (mouseButton == 0) activateAction(inventorySlots, component, mouseX, mouseY);
 			activateClick(inventorySlots, component, mouseX, mouseY, mouseButton);
@@ -242,10 +244,8 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
 		super.mouseReleased(mouseX, mouseY, state);
 		mouseX -= getGuiLeft();     mouseY -= getGuiTop();
-		IComponent component = getComponentFromMouse(mouseX, mouseY);
-		if (component != null) {
-			activateReleased(inventorySlots, component, mouseX, mouseY, state);
-		}
+		if (clickedComponents != null)
+			activateReleased(inventorySlots, clickedComponents, mouseX, mouseY, state);
 	}
 	
 	/**

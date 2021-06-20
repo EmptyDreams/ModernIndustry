@@ -119,8 +119,6 @@ public final class ImageData {
 	public static final String ROLL_BACKGROUND = "rollBackground";
 	/** 滚动轴按钮（水平） */
 	public static final String ROLL_BUTTON = "rollButton";
-	/** 滚动轴按钮（点击）（水平） */
-	public static final String ROLL_BUTTON_CLICK = "rollButtonClick";
 	
 	/** 存储资源 */
 	private final static Map<String, Node> resourceInfo = new Object2ObjectArrayMap<String, Node>(10) {
@@ -135,9 +133,8 @@ public final class ImageData {
 			put(BUTTON_TRIANGLE_RIGHT_CLICK,            new Node(177, 278, 14, 22));
 			put(BUTTON_TRIANGLE_LEFT,                   new Node(191, 256, 14, 22));
 			put(BUTTON_TRIANGLE_LEFT_CLICK,             new Node(191, 278, 14, 22));
-			put(ROLL_BACKGROUND,                      new Node(205, 256, 14, 22));
-			put(ROLL_BUTTON,                          new Node(205, 278, 12, 15));
-			put(ROLL_BUTTON_CLICK,                    new Node(205, 293, 12, 15));
+			put(ROLL_BACKGROUND,                      new Node(205, 256, 14, 44));
+			put(ROLL_BUTTON,                          new Node(219, 256, 12, 15));
 		}
 	};
 	
