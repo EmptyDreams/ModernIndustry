@@ -1,0 +1,48 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mi:iron_ft/point"
+  },
+  "variants": {
+    "inventory": [{ }],
+    "up": {
+      "false": { },
+      "true": {
+        "submodel": "mi:iron_ft/north",
+        "x": 270
+      }
+    },
+    "down": {
+      "false": { },
+      "true": {
+        "submodel": "mi:iron_ft/north",
+        "x": 90
+      }
+    },
+    "south": {
+      "false": { },
+      "true": {
+        "submodel": "mi:iron_ft/north",
+        "y": 180
+      }
+    },
+    "north": {
+      "false": { },
+      "true": { "submodel": "mi:iron_ft/north" }
+    },
+    "west": {
+      "false": { },
+      "true": {
+        "submodel": "mi:iron_ft/north",
+        "y": 270
+      }
+    },
+    "east": {
+      "false": { },
+      "true": {
+        "submodel": "mi:iron_ft/north",
+        "y": 90
+      }
+    }
+  }
+}
