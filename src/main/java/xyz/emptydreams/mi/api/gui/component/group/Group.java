@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
@@ -9,6 +8,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
+import xyz.emptydreams.mi.api.gui.component.interfaces.GuiPainter;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
@@ -164,8 +164,8 @@ public class Group extends MComponent implements Iterable<IComponent> {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void realTimePaint(GuiContainer gui) {
-		components.forEach(it -> it.realTimePaint(gui));
+	public void realTimePaint(GuiPainter painter) {
+		components.forEach(it -> it.realTimePaint(painter));
 	}
 	
 	@Nullable
@@ -177,7 +177,7 @@ public class Group extends MComponent implements Iterable<IComponent> {
 				if (result != null) return result;
 			}
 		}
-		return null;
+		return this;
 	}
 	
 	@Override

@@ -1,7 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component.interfaces;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
@@ -95,7 +94,7 @@ public interface IComponent {
 	
 	/** 实时渲染 */
 	@SideOnly(Side.CLIENT)
-	default void realTimePaint(GuiContainer gui) { }
+	default void realTimePaint(GuiPainter painter) { }
 	
 	/**
 	 * 发送数据到客户端，发送所需的varToUpdate参数范围是[{@link #getCode()}, {@link #getCode()} + 100)

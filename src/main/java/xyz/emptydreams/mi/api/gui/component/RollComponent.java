@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
+import xyz.emptydreams.mi.api.gui.component.interfaces.GuiPainter;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseLocationListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseReleasedListener;
@@ -53,6 +54,11 @@ public class RollComponent extends MComponent {
 	/** 获取当前按钮的位置 */
 	public double getIndex() {
 		return ((double) index) / FULL;
+	}
+	
+	/** 获取进度 */
+	public double getTempo() {
+		return ((double) index) / max;
 	}
 	
 	@Override
@@ -108,17 +114,16 @@ public class RollComponent extends MComponent {
 	}
 	
 	@Override
-	public void realTimePaint(GuiContainer gui) {
+	public void realTimePaint(GuiPainter painter) {
+		GuiContainer gui = painter.getGuiContainer();
 		double index = getIndex();
 		RuntimeTexture texture = bindTexture();
 		if (isVertical()) {
 			int offset = (int) (getHeight() * index);
-			texture.drawToFrame(gui.getGuiLeft() + getX() + 1, gui.getGuiTop() + getY() + offset,
-								0, 0, buttonSize, 15);
+			painter.drawTexture(getX() + 1, getY() + offset, 0, 0, buttonSize, 15, texture);
 		} else {
 			int offset = (int) (getWidth() * index);
-			texture.drawToFrame(gui.getGuiLeft() + getX() + offset, gui.getGuiTop() + getY() + 1,
-								0, 0, 15, buttonSize);
+			painter.drawTexture(getX() + offset, getY() + 1, 0, 0, 15, buttonSize, texture);
 		}
 	}
 	

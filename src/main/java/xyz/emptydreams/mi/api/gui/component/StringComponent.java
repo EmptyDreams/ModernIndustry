@@ -4,6 +4,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.gui.component.interfaces.GuiPainter;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
@@ -30,8 +31,9 @@ public class StringComponent extends MComponent {
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void realTimePaint(GuiContainer gui) {
+	public void realTimePaint(GuiPainter painter) {
 		if (text == null) text = I18n.format(getString());
+		GuiContainer gui = painter.getGuiContainer();
 		gui.mc.fontRenderer.drawString(text,
 				getX() + gui.getGuiLeft(), getY() + gui.getGuiTop(), getColor());
 	}

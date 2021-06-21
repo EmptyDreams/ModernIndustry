@@ -1,10 +1,10 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
+import xyz.emptydreams.mi.api.gui.component.interfaces.GuiPainter;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -26,7 +26,7 @@ public class AbstractSlotGroup extends SlotGroup {
 	public void paint(@Nonnull Graphics g) { }
 	
 	@Override
-	public void realTimePaint(GuiContainer gui) { }
+	public void realTimePaint(GuiPainter painter) { }
 	
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {

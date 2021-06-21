@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
+import xyz.emptydreams.mi.api.gui.component.interfaces.GuiPainter;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 
 import javax.annotation.Nonnull;
@@ -52,10 +53,10 @@ public class CommonProgress extends MComponent implements IProgressBar {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void realTimePaint(GuiContainer gui) {
+	public void realTimePaint(GuiPainter painter) {
 		GlStateManager.color(1, 1, 1);
-		front.accept(new Node(gui));
-		if (getStringShower() != null) getStringShower().draw(this, gui);
+		front.accept(new Node(painter.getGuiContainer()));
+		if (getStringShower() != null) getStringShower().draw(this, painter.getGuiContainer());
 	}
 	
 	@Override
@@ -133,18 +134,18 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		CENTER((bar, con) -> drawHelper(bar, con, (bar.getHeight() - 9) / 2 + bar.getY()),
 				bar -> new int[] { bar.getStyle().getWidth(), Math.max(bar.getStyle().getHeight(), 9) });
 
-		private final BiConsumer<CommonProgress, Object> task;
+		private final BiConsumer<CommonProgress, GuiContainer> task;
 		private final Function<CommonProgress, int[]> getter;
 
-		ProgressStyle(BiConsumer<CommonProgress, Object> task, Function<CommonProgress, int[]> getter) {
+		ProgressStyle(BiConsumer<CommonProgress, GuiContainer> task, Function<CommonProgress, int[]> getter) {
 			this.task = task;
 			this.getter = getter;
 		}
 
 		/** 绘制 */
 		@SideOnly(Side.CLIENT)
-		public void draw(CommonProgress bar, GuiContainer con) {
-			task.accept(bar, con);
+		public void draw(CommonProgress bar, GuiContainer gui) {
+			task.accept(bar, gui);
 		}
 
 		/** 格式化字符串 */
@@ -152,12 +153,11 @@ public class CommonProgress extends MComponent implements IProgressBar {
 			return bar.getNow() + "/" + bar.getMax();
 		}
 
-		private static void drawHelper(CommonProgress bar, Object con_object, int y) {
-			GuiContainer con = (GuiContainer) con_object;
+		private static void drawHelper(CommonProgress bar, GuiContainer gui, int y) {
 			String show = format(bar);
 			Minecraft mc = Minecraft.getMinecraft();
 			int x = (bar.getWidth() - mc.fontRenderer.getStringWidth(show)) / 2;
-			mc.fontRenderer.drawString(show, x + con.getGuiLeft() + bar.getX(), y + con.getGuiTop(), 0);
+			mc.fontRenderer.drawString(show, x + gui.getGuiLeft() + bar.getX(), y + gui.getGuiTop(), 0);
 		}
 
 	}
