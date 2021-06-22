@@ -178,7 +178,7 @@ public class Group extends MComponent implements Iterable<IComponent> {
 					return result;
 			}
 		}
-		return this;
+		return null;
 	}
 	
 	@Override
