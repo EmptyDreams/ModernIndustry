@@ -3,8 +3,6 @@ package xyz.emptydreams.mi.api.gui.component.group;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.RollComponent;
@@ -41,10 +39,10 @@ public class RollGroup extends Group {
 	private RollComponent verRoll;
 	private RollComponent horRoll;
 	
-	private final InnerGroup components;
+	private final InnerGroup innerGroup;
 	
 	public RollGroup(HorizontalEnum horizontal, VerticalEnum vertical) {
-		components = new InnerGroup();
+		innerGroup = new InnerGroup();
 		this.horizontal = StringUtil.checkNull(horizontal, "horizontal");
 		this.vertical = StringUtil.checkNull(vertical, "vertical");
 		super.setControlPanel(RollGroup::putInOrder);
@@ -105,130 +103,130 @@ public class RollGroup extends Group {
 	
 	@Override
 	public boolean remove(IComponent component) {
-		return components.remove(component);
+		return innerGroup.remove(component);
 	}
 	
 	@Override
 	public void add(IComponent component) {
-		components.add(component);
+		innerGroup.add(component);
 	}
 	
 	@Override
 	public void adds(IComponent... components) {
-		this.components.adds(components);
+		this.innerGroup.adds(components);
 	}
 	
 	@Override
 	public IComponent containCode(int code) {
 		IComponent result = super.containCode(code);
-		if (result == null) return components.containCode(code);
+		if (result == null) return innerGroup.containCode(code);
 		return result;
 	}
 	
 	@Override
 	public int getMinDistance() {
-		return components.getMinDistance();
+		return innerGroup.getMinDistance();
 	}
 	
 	@Override
 	public void setMinDistance(int minDistance) {
-		components.setMinDistance(minDistance);
+		innerGroup.setMinDistance(minDistance);
 	}
 	
 	@Override
 	public int getMaxDistance() {
-		return components.getMaxDistance();
+		return innerGroup.getMaxDistance();
 	}
 	
 	@Override
 	public void setMaxDistance(int maxDistance) {
-		components.setMaxDistance(maxDistance);
+		innerGroup.setMaxDistance(maxDistance);
 	}
 	
 	@Override
 	public Consumer<Group> getArrangeMode() {
-		return components.getArrangeMode();
+		return innerGroup.getArrangeMode();
 	}
 	
 	@Override
 	public void setControlPanel(Consumer<Group> mode) {
-		components.setControlPanel(mode);
+		innerGroup.setControlPanel(mode);
 	}
 	
 	@Override
 	public int size() {
-		return components.size();
+		return innerGroup.size();
 	}
 	
 	@Override
 	public Iterator<IComponent> iterator() {
-		return components.iterator();
+		return innerGroup.iterator();
 	}
 	
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
-		components.onAddToGUI(con, player);
 		super.onAddToGUI(con, player);
+		innerGroup.onAddToGUI(con, player);
 	}
 	
 	@Override
 	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
-		components.onAddToGUI(con, player);
 		super.onAddToGUI(con, player);
+		innerGroup.onAddToGUI(con, player);
 	}
 	
 	@Override
 	public void onRemoveFromGUI(Container con) {
-		components.onRemoveFromGUI(con);
+		innerGroup.onRemoveFromGUI(con);
 		super.onRemoveFromGUI(con);
 	}
 	
 	@Override
 	public void send(Container con, IContainerListener listener) {
 		super.send(con, listener);
-		components.send(con, listener);
+		innerGroup.send(con, listener);
 	}
 	
 	@Override
 	public boolean update(int codeID, int data) {
-		return components.update(codeID, data);
+		boolean result = super.update(codeID, data);
+		if (result) return true;
+		return innerGroup.update(codeID, data);
 	}
-	
-	@SideOnly(Side.CLIENT)
-	private BufferedImage image;
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {
 		super.paint(g);
-		image = new BufferedImage(components.getWidth(), components.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+		BufferedImage image = new BufferedImage(innerGroup.getWidth(), innerGroup.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics innerG = image.createGraphics();
-		components.paint(innerG);
+		innerGroup.paint(innerG);
 		innerG.dispose();
 	}
 	
 	@Override
 	public void realTimePaint(GuiPainter painter) {
 		GuiPainter innerPainter = new GuiPainter(painter.getGuiContainer(),
-				getXOffset(), getYOffset(), components.getWidth(), components.getHeight());
-		components.realTimePaint(painter);
+				getXOffset(), getYOffset(), innerGroup.getWidth(), innerGroup.getHeight());
+		innerGroup.realTimePaint(innerPainter);
 		super.realTimePaint(painter);
 	}
 	
 	private int getXOffset() {
 		if (horizontal == HorizontalEnum.NON) return 0;
-		return (int) (horRoll.getTempo() * components.getWidth());
+		return (int) (horRoll.getTempo() * innerGroup.getWidth());
 	}
 	
 	private int getYOffset() {
 		if (vertical == VerticalEnum.NON) return 0;
-		return (int) (verRoll.getTempo() * components.getHeight());
+		return (int) (verRoll.getTempo() * innerGroup.getHeight());
 	}
 	
 	@Nullable
 	@Override
 	public IComponent getMouseTarget(float mouseX, float mouseY) {
 		IComponent target = super.getMouseTarget(mouseX, mouseY);
-		if (target == this) return components.getMouseTarget(mouseX, mouseY);
+		if (target == this)
+			return innerGroup.getMouseTarget(mouseX, mouseY);
 		return target;
 	}
 	
@@ -252,9 +250,9 @@ public class RollGroup extends Group {
 		RollGroup that = (RollGroup) group;
 		int width = that.getWidth() - 10;       //内部Group的宽度
 		int height = that.getHeight() - 10;     //内部Group的高度
-		int x = 5;      int y = 5;              //内部Group的坐标
+		int x = 5 + that.getX();      int y = 5 + that.getY();              //内部Group的坐标
 		RollComponent verRoll = null, horRoll = null;
-		
+		//计算内部Group的大小
 		if (that.vertical != VerticalEnum.NON) {
 			verRoll = new RollComponent(true);
 			verRoll.setSize(that.getVerRollWidth(), that.getVerRollHeight());
@@ -265,40 +263,40 @@ public class RollGroup extends Group {
 			horRoll.setSize(that.getHorRollWidth(),that.getHorRollHeight());
 			height -= horRoll.getHeight();
 		}
-		that.components.setSize(width, height);
-		
+		that.innerGroup.setSize(width, height);
+		//计算内部Group的坐标
 		if (that.vertical == VerticalEnum.LEFT) {
 			x += (5 + verRoll.getWidth());
 		}
 		if (that.horizontal == HorizontalEnum.UP) {
 			y += (5 + horRoll.getHeight());
 		}
-		that.components.setLocation(x, y);
-		that.components.canEdit = false;
+		that.innerGroup.setLocation(x, y);
+		that.innerGroup.canEdit = false;
 		
 		switch (that.vertical) {
 			case RIGHT:
-				verRoll.setLocation(that.components.getWidth() + 5 + x,
-						(that.components.getHeight() - verRoll.getHeight()) / 2 + y);
+				verRoll.setLocation(that.innerGroup.getWidth() + 5 + x,
+						(that.innerGroup.getHeight() - verRoll.getHeight()) / 2 + y);
 				break;
 			case LEFT:
-				verRoll.setLocation(5, (that.components.getHeight() - verRoll.getHeight()) / 2 + y);
+				verRoll.setLocation(5, (that.innerGroup.getHeight() - verRoll.getHeight()) / 2 + y);
 				break;
 			default: break;
 		}
 		switch (that.horizontal) {
 			case UP:
-				horRoll.setLocation((that.components.getWidth() - horRoll.getWidth()) / 2 + x, 5);
+				horRoll.setLocation((that.innerGroup.getWidth() - horRoll.getWidth()) / 2 + x, 5);
 				break;
 			case DOWN:
-				horRoll.setLocation((that.components.getWidth() - horRoll.getWidth()) / 2 + x,
-						that.components.getHeight() + y + 5);
+				horRoll.setLocation((that.innerGroup.getWidth() - horRoll.getWidth()) / 2 + x,
+						that.innerGroup.getHeight() + y + 5);
 				break;
 			default: break;
 		}
 		that.verRoll = verRoll;
 		that.horRoll = horRoll;
-		that.superAddComponent(verRoll, horRoll, that.components);
+		that.superAddComponent(verRoll, horRoll, that.innerGroup);
 	}
 	
 	private static final class InnerGroup extends Group {

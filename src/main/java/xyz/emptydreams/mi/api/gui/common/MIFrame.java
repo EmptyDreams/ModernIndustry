@@ -216,7 +216,7 @@ public class MIFrame extends Container implements IFrame {
 	}
 	
 	/** 获取复制的组件列表 */
-	public List<IComponent> cloneComponent() {
+	public ArrayList<IComponent> cloneComponent() {
 		return new ArrayList<>(components);
 	}
 	

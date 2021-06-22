@@ -19,7 +19,8 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 import static xyz.emptydreams.mi.api.gui.listener.mouse.MouseListenerTrigger.*;
@@ -43,7 +44,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	/** 标题颜色 */
 	private int titleColor = 0x000000;
 	/** 保存组件 */
-	private final List<IComponent> components;
+	private final ArrayList<IComponent> components;
 	/** 资源名称 */
 	private String name;
 	private final MIFrame inventorySlots;
@@ -270,7 +271,9 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	 */
 	@Nullable
 	public IComponent getComponentFromMouse(float mouseX, float mouseY) {
-		for (IComponent component : components) {
+		ListIterator<IComponent> it = components.listIterator(components.size());
+		while (it.hasPrevious()) {
+			IComponent component = it.previous();
 			if (component.getX() <= mouseX && component.getY() <= mouseY
 					&& component.getX() + component.getWidth() >= mouseX
 					&& component.getY() + component.getHeight() >= mouseY) {
