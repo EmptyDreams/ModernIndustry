@@ -208,7 +208,8 @@ public class RollGroup extends Group {
 		GuiPainter innerPainter = new GuiPainter(painter.getGuiContainer(),
 				getXOffset(), getYOffset(), innerGroup.getWidth(), innerGroup.getHeight());
 		innerGroup.realTimePaint(innerPainter);
-		super.realTimePaint(painter);
+		if (verRoll != null) verRoll.realTimePaint(painter);
+		if (horRoll != null) horRoll.realTimePaint(painter);
 	}
 	
 	private int getXOffset() {
@@ -272,7 +273,14 @@ public class RollGroup extends Group {
 			y += (5 + horRoll.getHeight());
 		}
 		that.innerGroup.setLocation(x, y);
-		that.innerGroup.canEdit = false;
+		that.innerGroup.close();
+		
+		if (horRoll != null && that.innerGroup.getRealWidth() <= that.innerGroup.getWidth()) {
+			horRoll.setDisable(true);
+		}
+		if (verRoll != null && that.innerGroup.getRealHeight() <= that.innerGroup.getHeight()) {
+			verRoll.setDisable(true);
+		}
 		
 		switch (that.vertical) {
 			case RIGHT:
@@ -302,10 +310,30 @@ public class RollGroup extends Group {
 	private static final class InnerGroup extends Group {
 		
 		private boolean canEdit = true;
+		private int realHeight = 0;
+		private int realWidth = 0;
 		
 		@Override
 		public void setSize(int width, int height) {
 			if (canEdit) super.setSize(width, height);
+		}
+		
+		public void close() {
+			canEdit = false;
+			for (IComponent it : this) {
+				int x = it.getX() - getX();
+				int y = it.getY() - getY();
+				realWidth = Math.max(realWidth, x + it.getWidth());
+				realHeight = Math.max(realHeight, y + it.getHeight());
+			}
+		}
+		
+		public int getRealHeight() {
+			return realHeight;
+		}
+		
+		public int getRealWidth() {
+			return realWidth;
 		}
 		
 	}

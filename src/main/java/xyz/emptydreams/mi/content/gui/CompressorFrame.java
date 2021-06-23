@@ -12,6 +12,7 @@ import xyz.emptydreams.mi.api.gui.common.IContainerCreater;
 import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
+import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.gui.component.group.Group;
 import xyz.emptydreams.mi.api.gui.component.group.Panels;
 import xyz.emptydreams.mi.api.gui.component.group.RollGroup;
@@ -65,7 +66,9 @@ public final class CompressorFrame {
 				frame.add(group, player);
 				
 				RollGroup roll = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
+				StringComponent shower = new StringComponent("...sdfas2df54648e........16546sdf31sdf4564asg21asd3f1sa5dg4f64a5sdf46as");
 				roll.setSize(100, 100);
+				roll.add(shower);
 				frame.add(roll, player);
 			}
 			

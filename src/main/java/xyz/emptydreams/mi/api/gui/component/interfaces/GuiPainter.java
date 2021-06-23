@@ -1,9 +1,11 @@
 package xyz.emptydreams.mi.api.gui.component.interfaces;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 
 import javax.annotation.Nonnull;
@@ -25,8 +27,8 @@ public final class GuiPainter {
 	
 	public GuiPainter(GuiContainer gui, int xOffset, int yOffset, int maxWidth, int maxHeight) {
 		this.gui = gui;
-		this.xOffset = xOffset;
-		this.yOffset = yOffset;
+		this.xOffset = xOffset + gui.getGuiLeft();
+		this.yOffset = yOffset + gui.getGuiTop();
 		this.maxWidth = maxWidth;
 		this.maxHeight = maxHeight;
 	}
@@ -43,10 +45,8 @@ public final class GuiPainter {
 	 * @param texture 要绘制的材质
 	 */
 	public void drawTexture(int x, int y, int u, int v, int width, int height, RuntimeTexture texture) {
-		int realX = x + gui.getGuiLeft() + xOffset;
-		int realY = y + gui.getGuiTop() + yOffset;
-		if (realX + width > maxWidth) width = maxWidth - realX;
-		if (realY + height > maxHeight) height = maxHeight - realY;
+		int realX = x + xOffset;
+		int realY = y + yOffset;
 		texture.drawToFrame(realX, realY, u, v, width, height);
 	}
 	
@@ -63,10 +63,8 @@ public final class GuiPainter {
 	 * @param textureHeight 材质高度
 	 */
 	public void drawTexture(int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight) {
-		int realX = x + gui.getGuiLeft() + xOffset;
-		int realY = y + gui.getGuiTop() + yOffset;
-		if (realX + width > maxWidth) width = maxWidth - realX;
-		if (realY + height > maxHeight) height = maxHeight - realY;
+		int realX = x + xOffset;
+		int realY = y + yOffset;
 		Gui.drawModalRectWithCustomSizedTexture(realX, realY, u, v, width, height, textureWidth, textureHeight);
 	}
 	
@@ -83,9 +81,14 @@ public final class GuiPainter {
 	public void drawTexture(int x, int y, int u, int v, int width, int height) {
 		int realX = x + xOffset;
 		int realY = y + yOffset;
-		if (realX + width > maxWidth) width = maxWidth - realX;
-		if (realY + height > maxHeight) height = maxHeight - realY;
 		gui.drawTexturedModalRect(realX, realY, u, v, width, height);
+	}
+	
+	public void drawString(int x, int y, String text, int color) {
+		int realX = x + xOffset;
+		int realY = y + yOffset;
+		GL11.glScissor(realX, realY, maxWidth, maxHeight);
+		Minecraft.getMinecraft().fontRenderer.drawString(text, realX, realY, color);
 	}
 	
 	/** 获取横坐标起点偏移量 */

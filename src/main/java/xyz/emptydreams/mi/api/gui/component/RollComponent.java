@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
@@ -31,6 +32,8 @@ public class RollComponent extends MComponent {
 	private int min;
 	/** 滚动条竖直时按钮的宽度（或水平时按钮的高度） */
 	private int buttonSize;
+	/** 滚动轴是否不可用 */
+	private boolean isDisable = false;
 	
 	/**
 	 * 创建一格滚动轴
@@ -43,6 +46,11 @@ public class RollComponent extends MComponent {
 	/** 滚动轴是否为竖直 */
 	public boolean isVertical() {
 		return vertical;
+	}
+	
+	/** 滚动轴是否不可用 */
+	public boolean isDisable() {
+		return isDisable;
 	}
 	
 	/** 滚动轴是否为水平 */
@@ -58,6 +66,11 @@ public class RollComponent extends MComponent {
 	/** 获取进度 */
 	public double getTempo() {
 		return ((double) index) / max;
+	}
+	
+	/** 设置是否可用 */
+	public void setDisable(boolean disable) {
+		isDisable = disable;
 	}
 	
 	@Override
@@ -77,6 +90,7 @@ public class RollComponent extends MComponent {
 	protected void init(MIFrame frame, EntityPlayer player) {
 		super.init(frame, player);
 		registryListener((MouseLocationListener) (mouseX, mouseY) -> {
+			if (isDisable()) return;
 			float rX = mouseX - getX();
 			float rY = mouseY - getY();
 			isMouse = isMouseInButton(rX, rY);
@@ -85,6 +99,7 @@ public class RollComponent extends MComponent {
 			}
 		});
 		registryListener((MouseActionListener) (mouseX, mouseY) -> {
+			if (isDisable()) return;
 			clicked = isMouse;
 			reLocation = getReLocation(mouseX, mouseY) - index;
 		});
@@ -114,6 +129,7 @@ public class RollComponent extends MComponent {
 	
 	@Override
 	public void realTimePaint(GuiPainter painter) {
+		GlStateManager.color(1, 1, 1);
 		double index = getIndex();
 		RuntimeTexture texture = bindTexture();
 		if (isVertical()) {
@@ -139,10 +155,16 @@ public class RollComponent extends MComponent {
 	public void paint(@Nonnull Graphics g) {
 		if (isVertical()) {
 			g.drawImage(ImageData.getImage(ImageData.ROLL_BACKGROUND_VER, getWidth(), getHeight()), 0, 0, null);
-			ImageData.createTexture(ImageData.ROLL_BUTTON_VER, buttonSize, 15, getButtonTextureName());
+			if (isDisable())
+				ImageData.createTexture(ImageData.ROLL_BUTTON_DISABLE_VER, buttonSize, 15, getButtonTextureName());
+			else
+				ImageData.createTexture(ImageData.ROLL_BUTTON_VER, buttonSize, 15, getButtonTextureName());
 		} else {
 			g.drawImage(ImageData.getImage(ImageData.ROLL_BACKGROUND_HOR, getWidth(), getHeight()), 0, 0, null);
-			ImageData.createTexture(ImageData.ROLL_BUTTON_HOR, 15, buttonSize, getButtonTextureName());
+			if (isDisable())
+				ImageData.createTexture(ImageData.ROLL_BUTTON_DISABLE_HOR, buttonSize, 15, getButtonTextureName());
+			else
+				ImageData.createTexture(ImageData.ROLL_BUTTON_HOR, 15, buttonSize, getButtonTextureName());
 		}
 	}
 	

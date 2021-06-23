@@ -119,10 +119,14 @@ public final class ImageData {
 	public static final String ROLL_BACKGROUND_VER = "rollBackgroundV";
 	/** 滚动轴按钮（垂直） */
 	public static final String ROLL_BUTTON_VER = "rollButtonV";
+	/** 滚动轴不可用按钮（垂直） */
+	public static final String ROLL_BUTTON_DISABLE_VER = "rollButtonDV";
 	/** 滚动轴背景（水平） */
 	public static final String ROLL_BACKGROUND_HOR = "rollBackgroundH";
 	/** 滚动轴按钮（水平） */
 	public static final String ROLL_BUTTON_HOR = "rollButtonH";
+	/** 滚动轴不可用按钮（水平） */
+	public static final String ROLL_BUTTON_DISABLE_HOR = "rollButtonDH";
 	
 	/** 存储资源 */
 	private final static Map<String, Node> resourceInfo = new Object2ObjectArrayMap<String, Node>(10) {
@@ -139,8 +143,10 @@ public final class ImageData {
 			put(BUTTON_TRIANGLE_LEFT_CLICK,             new Node(191, 278, 14, 22));
 			put(ROLL_BACKGROUND_VER,                    new Node(205, 256, 14, 44));
 			put(ROLL_BUTTON_VER,                        new Node(219, 256, 12, 15));
+			put(ROLL_BUTTON_DISABLE_VER,                new Node(219, 271, 12, 15));
 			put(ROLL_BACKGROUND_HOR,                    new Node(246, 256, 44, 14));
 			put(ROLL_BUTTON_HOR,                        new Node(231, 256, 15, 12));
+			put(ROLL_BUTTON_DISABLE_HOR,                new Node(231, 268, 15, 12));
 		}
 	};
 	

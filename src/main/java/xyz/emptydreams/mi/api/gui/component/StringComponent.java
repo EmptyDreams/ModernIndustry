@@ -1,11 +1,12 @@
 package xyz.emptydreams.mi.api.gui.component;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.component.interfaces.GuiPainter;
 import xyz.emptydreams.mi.api.utils.StringUtil;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -25,6 +26,9 @@ public class StringComponent extends MComponent {
 	/** 创建一个包含指定字符串的组件 */
 	public StringComponent(String str) {
 		value = StringUtil.checkNull(str, "str");
+		height = 9;
+		if (WorldUtil.isClient())
+			width = Minecraft.getMinecraft().fontRenderer.getStringWidth(str);
 	}
 
 	@SideOnly(Side.CLIENT) private String text;
@@ -33,9 +37,7 @@ public class StringComponent extends MComponent {
 	@Override
 	public void realTimePaint(GuiPainter painter) {
 		if (text == null) text = I18n.format(getString());
-		GuiContainer gui = painter.getGuiContainer();
-		gui.mc.fontRenderer.drawString(text,
-				getX() + gui.getGuiLeft(), getY() + gui.getGuiTop(), getColor());
+		painter.drawString(getX(), getY(), text, getColor());
 	}
 
 	/** 设置字符串颜色 */
@@ -48,6 +50,8 @@ public class StringComponent extends MComponent {
 	public void setString(String str) {
 		this.value = StringUtil.checkNull(str, "str");
 		text = null;
+		if (WorldUtil.isClient())
+			width = Minecraft.getMinecraft().fontRenderer.getStringWidth(str);
 	}
 
 	@Override
