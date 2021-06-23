@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.gui.component;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
@@ -66,7 +65,7 @@ public class RollComponent extends MComponent {
 		super.setSize(width, height);
 		max = (int) (FULL - (isVertical() ? (15.0 / (height - 2) * FULL) : (15.0 / (width - 2) * FULL)));
 		min = (int) (isVertical() ? (1.5 / (height - 2) * FULL) : (1.5 / (width - 2) * FULL));
-		buttonSize = width - 2;
+		buttonSize = isVertical() ? width - 2 : height - 2;
 	}
 	
 	private boolean isMouse = false;
@@ -115,7 +114,6 @@ public class RollComponent extends MComponent {
 	
 	@Override
 	public void realTimePaint(GuiPainter painter) {
-		GuiContainer gui = painter.getGuiContainer();
 		double index = getIndex();
 		RuntimeTexture texture = bindTexture();
 		if (isVertical()) {
@@ -139,10 +137,11 @@ public class RollComponent extends MComponent {
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {
-		g.drawImage(ImageData.getImage(ImageData.ROLL_BACKGROUND_HOR, getWidth(), getHeight()), 0, 0, null);
 		if (isVertical()) {
-			ImageData.createTexture(ImageData.ROLL_BUTTON_HOR, buttonSize, 15, getButtonTextureName());
+			g.drawImage(ImageData.getImage(ImageData.ROLL_BACKGROUND_VER, getWidth(), getHeight()), 0, 0, null);
+			ImageData.createTexture(ImageData.ROLL_BUTTON_VER, buttonSize, 15, getButtonTextureName());
 		} else {
+			g.drawImage(ImageData.getImage(ImageData.ROLL_BACKGROUND_HOR, getWidth(), getHeight()), 0, 0, null);
 			ImageData.createTexture(ImageData.ROLL_BUTTON_HOR, 15, buttonSize, getButtonTextureName());
 		}
 	}

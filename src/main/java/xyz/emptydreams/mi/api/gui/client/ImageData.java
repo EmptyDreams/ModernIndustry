@@ -115,10 +115,14 @@ public final class ImageData {
 	public static final String BUTTON_TRIANGLE_LEFT = "leftButton";
 	/** 三角形向左按钮（点击） */
 	public static final String BUTTON_TRIANGLE_LEFT_CLICK = "leftButtonClick";
+	/** 滚动轴背景（垂直） */
+	public static final String ROLL_BACKGROUND_VER = "rollBackgroundV";
+	/** 滚动轴按钮（垂直） */
+	public static final String ROLL_BUTTON_VER = "rollButtonV";
 	/** 滚动轴背景（水平） */
-	public static final String ROLL_BACKGROUND = "rollBackground";
+	public static final String ROLL_BACKGROUND_HOR = "rollBackgroundH";
 	/** 滚动轴按钮（水平） */
-	public static final String ROLL_BUTTON = "rollButton";
+	public static final String ROLL_BUTTON_HOR = "rollButtonH";
 	
 	/** 存储资源 */
 	private final static Map<String, Node> resourceInfo = new Object2ObjectArrayMap<String, Node>(10) {
@@ -133,8 +137,10 @@ public final class ImageData {
 			put(BUTTON_TRIANGLE_RIGHT_CLICK,            new Node(177, 278, 14, 22));
 			put(BUTTON_TRIANGLE_LEFT,                   new Node(191, 256, 14, 22));
 			put(BUTTON_TRIANGLE_LEFT_CLICK,             new Node(191, 278, 14, 22));
-			put(ROLL_BACKGROUND,                      new Node(205, 256, 14, 44));
-			put(ROLL_BUTTON,                          new Node(219, 256, 12, 15));
+			put(ROLL_BACKGROUND_VER,                    new Node(205, 256, 14, 44));
+			put(ROLL_BUTTON_VER,                        new Node(219, 256, 12, 15));
+			put(ROLL_BACKGROUND_HOR,                    new Node(246, 256, 44, 14));
+			put(ROLL_BUTTON_HOR,                        new Node(231, 256, 15, 12));
 		}
 	};
 	
