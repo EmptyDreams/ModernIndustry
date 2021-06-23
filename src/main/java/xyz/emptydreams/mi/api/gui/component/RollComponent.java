@@ -139,11 +139,11 @@ public class RollComponent extends MComponent {
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {
-		g.drawImage(ImageData.getImage(ImageData.ROLL_BACKGROUND, getWidth(), getHeight()), 0, 0, null);
+		g.drawImage(ImageData.getImage(ImageData.ROLL_BACKGROUND_HOR, getWidth(), getHeight()), 0, 0, null);
 		if (isVertical()) {
-			ImageData.createTexture(ImageData.ROLL_BUTTON , buttonSize, 15, getButtonTextureName());
+			ImageData.createTexture(ImageData.ROLL_BUTTON_HOR, buttonSize, 15, getButtonTextureName());
 		} else {
-			ImageData.createTexture(ImageData.ROLL_BUTTON, 15, buttonSize, getButtonTextureName());
+			ImageData.createTexture(ImageData.ROLL_BUTTON_HOR, 15, buttonSize, getButtonTextureName());
 		}
 	}
 	

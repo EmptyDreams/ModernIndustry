@@ -227,7 +227,7 @@ public class RollGroup extends Group {
 		IComponent target = super.getMouseTarget(mouseX, mouseY);
 		if (target == null)
 			return innerGroup.getMouseTarget(mouseX, mouseY);
-		return null;
+		return target;
 	}
 	
 	private void superAddComponent(IComponent... components) {

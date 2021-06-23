@@ -10,6 +10,7 @@ import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.GuiPainter;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
+import xyz.emptydreams.mi.api.gui.listener.mouse.MouseLocationListener;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
@@ -112,7 +113,16 @@ public class Group extends MComponent implements Iterable<IComponent> {
 	/** 遍历控件 */
 	@Override
 	public Iterator<IComponent> iterator() { return components.iterator(); }
-
+	
+	@Override
+	protected void init(MIFrame frame, EntityPlayer player) {
+		super.init(frame, player);
+		registryListener((MouseLocationListener) (mouseX, mouseY) ->
+				components.forEach(it -> it.activateListener(frame,
+															 MouseLocationListener.class,
+															 event -> event.mouseMLocation(mouseX, mouseY))));
+	}
+	
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
 		super.onAddToGUI(con, player);
