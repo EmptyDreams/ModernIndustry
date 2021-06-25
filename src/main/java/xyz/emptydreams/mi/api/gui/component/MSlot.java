@@ -1,7 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -56,18 +55,10 @@ public class MSlot extends MComponent {
 		g.drawImage(ImageData.getImage(SLOT, getWidth(), getHeight()), 0, 0, null);
 	}
 	
-	private int index = -1;
-	
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
 		StringUtil.checkNull(getSlot(), "slot");
-		index = con.inventorySlots.size();
 		con.addSlotToContainer(slot);
-	}
-
-	@Override
-	public void onRemoveFromGUI(Container con) {
-		con.inventorySlots.remove(index);
 	}
 	
 	/**

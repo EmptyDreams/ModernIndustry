@@ -37,7 +37,7 @@ public final class PulverizerFrame {
 			@Override
 			public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
 				MIFrame frame = new MIFrame(LOCATION_NAME, 176, 156, player);
-				init(frame, world, pos, player);
+				init(frame, world, pos);
 				return frame;
 			}
 			
@@ -45,11 +45,11 @@ public final class PulverizerFrame {
 			@Override
 			public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
 				MIFrame frame = new MIFrame(LOCATION_NAME, 176, 156, player);
-				init(frame, world, pos, player);
+				init(frame, world, pos);
 				return new StaticFrameClient(frame, LOCATION_NAME);
 			}
 			
-			private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
+			private void init(IFrame frame, World world, BlockPos pos) {
 				EUPulverizer pulverizer = (EUPulverizer) world.getTileEntity(pos);
 				frame.init(world);
 				
@@ -57,7 +57,7 @@ public final class PulverizerFrame {
 				//noinspection ConstantConditions
 				group.adds(new MSlot(pulverizer.getInSlot()),
 						pulverizer.getProgress(), new MSlot(pulverizer.getOutSlot()));
-				frame.add(group, player);
+				frame.add(group);
 			}
 			
 		});

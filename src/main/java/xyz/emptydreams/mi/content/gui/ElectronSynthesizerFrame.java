@@ -36,7 +36,7 @@ public class ElectronSynthesizerFrame {
 			@Override
 			public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
 				MIFrame frame = new MIFrame(LOCATION_NAME, 230, 210, player);
-				init(frame, world, pos, player);
+				init(frame, world, pos);
 				return frame;
 			}
 			
@@ -44,11 +44,11 @@ public class ElectronSynthesizerFrame {
 			@Override
 			public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
 				MIFrame frame = new MIFrame(LOCATION_NAME, 230, 210, player);
-				init(frame, world, pos, player);
+				init(frame, world, pos);
 				return new StaticFrameClient(frame, LOCATION_NAME);
 			}
 			
-			private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
+			private void init(IFrame frame, World world, BlockPos pos) {
 				EUElectronSynthesizer synthesizer = (EUElectronSynthesizer) world.getTileEntity(pos);
 				frame.init(world);
 				
@@ -57,8 +57,8 @@ public class ElectronSynthesizerFrame {
 				//noinspection ConstantConditions
 				group.adds(synthesizer.getInput(), synthesizer.getProgress(), synthesizer.getOutput());
 				
-				frame.add(backpack, player);
-				frame.add(group, player);
+				frame.add(backpack);
+				frame.add(group);
 			}
 			
 		});

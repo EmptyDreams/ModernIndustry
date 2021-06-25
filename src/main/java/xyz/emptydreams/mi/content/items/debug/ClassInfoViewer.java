@@ -34,8 +34,8 @@ public class ClassInfoViewer extends Item {
 	
 	private static final class InfoShower extends MIFrame {
 		
-		protected InfoShower() {
-			super("info_shower");
+		protected InfoShower(EntityPlayer player) {
+			super("info_shower", player);
 			
 		}
 		

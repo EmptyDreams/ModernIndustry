@@ -41,7 +41,7 @@ public final class EleMFurnaceFrame {
 			@Override
 			public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
 				MIFrame frame = new MIFrame(LOCATION_NAME, WIDTH, HEIGHT, player);
-				init(frame, world, pos, player);
+				init(frame, world, pos);
 				return frame;
 			}
 			
@@ -50,11 +50,11 @@ public final class EleMFurnaceFrame {
 			@SideOnly(Side.CLIENT)
 			public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
 				MIFrame frame = new MIFrame(LOCATION_NAME, WIDTH, HEIGHT, player);
-				init(frame, world, pos, player);
+				init(frame, world, pos);
 				return new StaticFrameClient(frame, LOCATION_NAME);
 			}
 			
-			private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
+			private void init(IFrame frame, World world, BlockPos pos) {
 				EUMFurnace firepower = (EUMFurnace) world.getTileEntity(pos);
 				frame.init(world);
 				
@@ -63,7 +63,7 @@ public final class EleMFurnaceFrame {
 				//noinspection ConstantConditions
 				group.adds(new MSlot(firepower.getInSlot()),
 						firepower.getProgressBar(), new MSlot(firepower.getOutSlot()));
-				frame.add(group, player);
+				frame.add(group);
 			}
 			
 		});

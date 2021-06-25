@@ -3,7 +3,6 @@ package xyz.emptydreams.mi.api.gui.component;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -20,6 +19,7 @@ import xyz.emptydreams.mi.api.gui.listener.mouse.MouseListenerTrigger;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
+import xyz.emptydreams.mi.api.utils.container.WeakList;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -28,7 +28,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * 一般组件的父类
@@ -49,7 +48,7 @@ public abstract class MComponent implements IComponent {
 	/** 合成表按钮 */
 	private CraftButton craftButton = null;
 	/** 存储加载过的窗体 */
-	private final List<MIFrame> LOADED = new LinkedList<>();
+	private final WeakList<MIFrame> LOADED = new WeakList<>();
 	
 	@Override
 	public void setLocation(int x, int y) {
@@ -119,16 +118,6 @@ public abstract class MComponent implements IComponent {
 	}
 	
 	@Override
-	public boolean removeListenerIf(Predicate<IListener> test) {
-		return listeners.removeIf(test);
-	}
-	
-	@Override
-	public boolean removeListener(IListener listener) {
-		return listeners.remove(listener);
-	}
-	
-	@Override
 	public int getY() { return y; }
 	@Override
 	public int getX() { return x; }
@@ -174,12 +163,9 @@ public abstract class MComponent implements IComponent {
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
 		if (craftGuide != null) {
 			craftButton = new CraftButton(craftGuide, this, player, slotGroupGetter);
-			con.add(craftButton, player);
+			con.add(craftButton);
 		}
-		for (MIFrame frame : LOADED) {
-			if (frame.getID().hashCode() == con.getID().hashCode()
-				&& frame.getID().equals(con.getID())) return;
-		}
+		if (LOADED.contains(con)) return;
 		LOADED.add(con);
 		init(con, player);
 	}
@@ -199,9 +185,6 @@ public abstract class MComponent implements IComponent {
 		}
 		LOADED.add(client);
 	}
-	
-	@Override
-	public void onRemoveFromGUI(Container con) { }
 	
 	@Override
 	public int getCode() {

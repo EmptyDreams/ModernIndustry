@@ -3,7 +3,6 @@ package xyz.emptydreams.mi.api.gui.client;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -150,16 +149,10 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	/** 获取标题颜色 */
 	public int getTitleColor() { return titleColor; }
 	
-	/**
-	 * 添加一个组件
-	 *
-	 * @param component 要添加的组件
-	 * @throws NullPointerException 如果component == null
-	 */
 	@Override
-	public void add(IComponent component, EntityPlayer player) {
+	public void add(IComponent component) {
 		components.add(checkNull(component, "component"));
-		component.onAddToGUI(this, player);
+		component.onAddToGUI(this, inventorySlots.getPlayer());
 	}
 	
 	@Override

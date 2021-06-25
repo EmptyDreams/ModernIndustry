@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
@@ -21,39 +22,30 @@ import java.util.function.Consumer;
  * MI版本窗体，通过该类可以便捷的创建和控制UI界面
  * @author EmptyDreams
  */
-public class MIFrame extends Container implements IFrame {
+public class MIFrame extends Container implements IFrame, IComponentManager {
 	
 	/** 存储窗体的尺寸，可以更改 */
-	private int width, height;
+	protected int width, height;
 	/** 所在世界 */
-	private World world;
+	protected World world;
 	/** 是否包含玩家背包 */
-	private final boolean hasBackpack;
+	protected final boolean hasBackpack;
 	/** 玩家背包的位置 */
-	private final int backpackX, backpackY;
+	protected final int backpackX, backpackY;
 	/** GUI ID */
-	private final String id;
+	protected final String id;
+	/** 打开GUI的玩家 */
+	protected final EntityPlayer player;
 	
 	/**
 	 * 创建一个大小未知，不包含玩家背包的GUI
 	 * @param id GUI的资源名称
 	 */
-	protected MIFrame(String id) {
+	protected MIFrame(String id, EntityPlayer player) {
 		hasBackpack = false;
 		backpackX = backpackY = Integer.MIN_VALUE;
 		this.id = id;
-	}
-	
-	/**
-	 * 通过该构造函数创建一个指定尺寸的UI，不包含玩家背包
-	 * @param id GUI的资源名称
-	 * @param width GUI宽度
-	 * @param height GUI高度
-	 */
-	public MIFrame(String id, int width, int height) {
-		this(id);
-		this.width = width;
-		this.height = height;
+		this.player = player;
 	}
 	
 	/**
@@ -81,6 +73,7 @@ public class MIFrame extends Container implements IFrame {
 		this.backpackX = backpackX;
 		this.backpackY = backpackY;
 		this.id = id;
+		this.player = player;
 		hasBackpack = true;
 		for (int i = 0; i < 3; ++i) {
 			for (int k = 0; k < 9; ++k) {
@@ -96,7 +89,7 @@ public class MIFrame extends Container implements IFrame {
 		}
 		StringComponent shower = new StringComponent("container.inventory");
 		shower.setLocation(backpackX, backpackY - 10);
-		add(shower, player);
+		add(shower);
 	}
 	
 	/**
@@ -141,6 +134,8 @@ public class MIFrame extends Container implements IFrame {
 	public int getBackpackX() { return backpackX; }
 	/** 获取背包坐标 */
 	public int getBackpackY() { return backpackY; }
+	/** 获取打开GUI的玩家 */
+	public EntityPlayer getPlayer() { return player; }
 	
 	/**
 	 * 判断玩家是否可以打开UI，默认返回true
@@ -208,49 +203,44 @@ public class MIFrame extends Container implements IFrame {
 	//--------------------关于组件的操作--------------------//
 	
 	/** 保存组件 */
-	private final List<IComponent> components = new LinkedList<>();
+	protected final List<IComponent> components = new LinkedList<>();
+	
+	@Override
+	public void add(IComponent component) {
+		components.add(StringUtil.checkNull(component, "component"));
+		component.onAddToGUI(this, player);
+		allocID(component);
+	}
 	
 	/** 遍历所有组件 */
+	@Override
 	public void forEachComponent(Consumer<? super IComponent> consumer) {
 		components.forEach(consumer);
 	}
 	
 	/** 获取复制的组件列表 */
+	@Override
 	public ArrayList<IComponent> cloneComponent() {
 		return new ArrayList<>(components);
 	}
 	
 	/** 获取组件数量 */
+	@Override
 	public int componentSize() {
 		return components.size();
 	}
 	
-	/** 移除所有组件 */
-	public void removeAllComponent() {
-		components.clear();
+	@Override
+	public int getX() {
+		return 0;
 	}
 	
-	/**
-	 * 移除一个组件
-	 * @param component 要移除的组件
-	 */
-	public void remove(IComponent component) {
-		components.remove(component);
-		component.onRemoveFromGUI(this);
+	@Override
+	public int getY() {
+		return 0;
 	}
 	
-	private int codeStart = 0;
-	/**
-	 * 添加一个组件
-	 *
-	 * @param component 要添加的组件
-	 * @throws NullPointerException 如果component == null
-	 */
-	public void add(IComponent component, EntityPlayer player) {
-		components.add(StringUtil.checkNull(component, "component"));
-		component.onAddToGUI(this, player);
-		allocID(component);
-	}
+	protected int codeStart = 0;
 	
 	/** 为指定组件分配网络ID */
 	public void allocID(IComponent component) {

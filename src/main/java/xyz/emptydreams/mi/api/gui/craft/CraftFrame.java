@@ -67,7 +67,7 @@ public class CraftFrame extends MIFrame {
 	 * @param slots 玩家当前打开的GUI中用于盛放原料的SlotGroup，为空表示不支持填充
 	 */
 	public CraftFrame(CraftGuide craft, EntityPlayer player, SlotGroup slots) {
-		super(craft.getName() + ".gui");
+		super(craft.getName() + ".gui", player);
 		this.craft = StringUtil.checkNull(craft, "craft");
 		this.player = StringUtil.checkNull(player, "player");
 		this.slots = slots;
@@ -81,7 +81,7 @@ public class CraftFrame extends MIFrame {
 	/** 解析合成表 */
 	private void init() {
 		if (index != -1) return;
-		removeAllComponent();
+		components.clear();
 		index = -1;
 		CraftHandle handle = HandleRegister.get(craft);
 		if (handle == null) {
@@ -94,9 +94,9 @@ public class CraftFrame extends MIFrame {
 		//输入框+进度条+输出框
 		Group group = new Group(0, 20, getWidth(), 0, Panels::horizontalCenter);
 		group.adds(node.input, progress, node.output);
-		add(group, null);
+		add(group);
 		name.setLocation(-1000, node.output.getY() - 15);
-		add(name, null);
+		add(name);
 		
 		//下方按钮
 		Group buttonGroup = new Group(0, group.getHeight() + group.getY() + 7,
@@ -109,7 +109,7 @@ public class CraftFrame extends MIFrame {
 		fillButton.setAction((frame, isClient) -> fill());
 		fillButton.setText("R");
 		buttonGroup.adds(prevButton, fillButton, nextButton);
-		add(buttonGroup, null);
+		add(buttonGroup);
 		
 		nextShape();
 	}

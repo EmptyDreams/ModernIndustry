@@ -46,8 +46,8 @@ public final class Panels {
 
 		int past = (width - (allWidth + interval * (size + 1))) / 2;
 		for (IComponent component : group) {
-			component.setLocation(past + interval + group.getX(),
-					(group.getHeight() - component.getHeight()) / 2 + group.getY());
+			component.setLocation(past + interval,
+					(group.getHeight() - component.getHeight()) / 2);
 			past += interval + component.getWidth();
 		}
 	}
@@ -85,8 +85,8 @@ public final class Panels {
 
 		int past = (height - (allHeight + interval * (size + 1))) / 2;
 		for (IComponent component : group) {
-			component.setLocation((group.getWidth() - component.getWidth()) / 2 + group.getX(),
-					past + interval + group.getY());
+			component.setLocation((group.getWidth() - component.getWidth()) / 2,
+					past + interval);
 			past += interval + component.getHeight();
 		}
 	}

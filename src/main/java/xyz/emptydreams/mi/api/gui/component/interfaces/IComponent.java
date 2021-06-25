@@ -19,7 +19,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * 所有控件的接口.<br>
@@ -28,7 +27,8 @@ import java.util.function.Predicate;
 public interface IComponent {
 	
 	/**
-	 * 设置组件在GUI中的坐标
+	 * <p>设置组件在控件组中的坐标
+	 * <p>控件组负责将该坐标转化为在GUI中的坐标
 	 * @param x X轴
 	 * @param y Y轴
 	 */
@@ -39,9 +39,9 @@ public interface IComponent {
 	 * @param height 高度
 	 */
 	void setSize(int width, int height);
-	/** 获取Y轴坐标 */
+	/** 获取控件在GUI中的Y轴坐标 */
 	int getY();
-	/** 获取X轴坐标 */
+	/** 获取控件在GUI中的X轴坐标 */
 	int getX();
 	/** 获取高度 */
 	int getHeight();
@@ -69,8 +69,6 @@ public interface IComponent {
 	 */
 	@SideOnly(Side.CLIENT)
 	void onAddToGUI(StaticFrameClient con, EntityPlayer player);
-	/** 在组件被移除GUI时 */
-	void onRemoveFromGUI(Container con);
 	
 	/**
 	 * 判断鼠标是否在组件内
@@ -180,19 +178,5 @@ public interface IComponent {
 	 */
 	@SuppressWarnings("UnusedReturnValue")
 	boolean registryListener(IListener listener);
-	
-	/**
-	 * 删除满足指定条件的事件
-	 * @param test 指定条件
-	 * @return 是否移除成功
-	 */
-	@SuppressWarnings("unused")
-	boolean removeListenerIf(Predicate<IListener> test);
-	
-	/**
-	 * 移除指定事件
-	 * @return 是否移除成功
-	 */
-	boolean removeListener(IListener listener);
 	
 }

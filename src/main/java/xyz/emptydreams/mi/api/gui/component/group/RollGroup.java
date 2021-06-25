@@ -102,11 +102,6 @@ public class RollGroup extends Group {
 	}
 	
 	@Override
-	public boolean remove(IComponent component) {
-		return innerGroup.remove(component);
-	}
-	
-	@Override
 	public void add(IComponent component) {
 		innerGroup.add(component);
 	}
@@ -173,12 +168,6 @@ public class RollGroup extends Group {
 	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
 		super.onAddToGUI(con, player);
 		innerGroup.onAddToGUI(con, player);
-	}
-	
-	@Override
-	public void onRemoveFromGUI(Container con) {
-		innerGroup.onRemoveFromGUI(con);
-		super.onRemoveFromGUI(con);
 	}
 	
 	@Override

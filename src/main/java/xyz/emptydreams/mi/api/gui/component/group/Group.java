@@ -10,6 +10,7 @@ import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.GuiPainter;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseLocationListener;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
@@ -17,6 +18,7 @@ import xyz.emptydreams.mi.api.utils.StringUtil;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +28,7 @@ import java.util.function.Consumer;
  * 控件包，支持自动排版
  * @author EmptyDreams
  */
-public class Group extends MComponent implements Iterable<IComponent> {
+public class Group extends MComponent implements Iterable<IComponent>, IComponentManager {
 
 	/** 包含的控件 */
 	private final List<IComponent> components = new LinkedList<>();
@@ -59,15 +61,6 @@ public class Group extends MComponent implements Iterable<IComponent> {
 	}
 
 	/**
-	 * 移除一个组件
-	 * @return 是否移除成功
-	 */
-	public boolean remove(IComponent component) {
-		if (component == null) return false;
-		return components.remove(component);
-	}
-
-	/**
 	 * 添加一个组件
 	 * @throws NullPointerException 如果component == null
 	 */
@@ -83,6 +76,24 @@ public class Group extends MComponent implements Iterable<IComponent> {
 		for (IComponent iComponent : components) {
 			add(iComponent);
 		}
+	}
+	
+	/** 遍历所有组件 */
+	@Override
+	public void forEachComponent(Consumer<? super IComponent> consumer) {
+		components.forEach(consumer);
+	}
+	
+	/** 获取复制的组件列表 */
+	@Override
+	public ArrayList<IComponent> cloneComponent() {
+		return new ArrayList<>(components);
+	}
+	
+	/** 获取组件数量 */
+	@Override
+	public int componentSize() {
+		return components.size();
 	}
 	
 	@Override
@@ -128,6 +139,7 @@ public class Group extends MComponent implements Iterable<IComponent> {
 		super.onAddToGUI(con, player);
 		if (mode != null) mode.accept(this);
 		components.forEach(it -> {
+			it.setLocation(it.getX() + getX(), it.getY() + getY());
 			con.allocID(it);
 			it.onAddToGUI(con, player);
 		});
@@ -138,11 +150,6 @@ public class Group extends MComponent implements Iterable<IComponent> {
 		super.onAddToGUI(con, player);
 		if (mode != null) mode.accept(this);
 		components.forEach(it -> it.onAddToGUI(con, player));
-	}
-
-	@Override
-	public void onRemoveFromGUI(Container con) {
-		components.forEach(it -> it.onRemoveFromGUI(con));
 	}
 
 	@Override

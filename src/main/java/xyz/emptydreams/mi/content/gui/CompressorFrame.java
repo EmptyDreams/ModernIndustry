@@ -40,7 +40,7 @@ public final class CompressorFrame {
 			@Override
 			public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
 				MIFrame frame = new MIFrame(LOCATION_NAME, 176, 166, player);
-				init(frame, world, pos, player);
+				init(frame, world, pos);
 				return frame;
 			}
 			
@@ -48,11 +48,11 @@ public final class CompressorFrame {
 			@Override
 			public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
 				MIFrame frame = new MIFrame(LOCATION_NAME, 176, 166, player);
-				init(frame, world, pos, player);
+				init(frame, world, pos);
 				return new StaticFrameClient(frame, LOCATION_NAME);
 			}
 			
-			private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
+			private void init(IFrame frame, World world, BlockPos pos) {
 				EUCompressor compressor = (EUCompressor) world.getTileEntity(pos);
 				frame.init(world);
 				
@@ -63,13 +63,13 @@ public final class CompressorFrame {
 				//noinspection ConstantConditions
 				fir.adds(new MSlot(compressor.getSlot(0)), new MSlot(compressor.getSlot(1)));
 				group.adds(fir, compressor.getProgressBar(), new MSlot(compressor.getSlot(2)));
-				frame.add(group, player);
+				frame.add(group);
 				
 				RollGroup roll = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
 				StringComponent shower = new StringComponent("...sdfas2df54648e........16546sdf31sdf4564asg21asd3f1sa5dg4f64a5sdf46as");
 				roll.setSize(100, 100);
 				roll.add(shower);
-				frame.add(roll, player);
+				frame.add(roll);
 			}
 			
 		});

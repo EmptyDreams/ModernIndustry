@@ -37,7 +37,7 @@ public final class FirePowerFrame {
 			@Override
 			public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
 				MIFrame frame = new MIFrame(LOCATION_NAME, 176, 156, player);
-				init(frame, world, pos, player);
+				init(frame, world, pos);
 				return frame;
 			}
 			
@@ -45,11 +45,11 @@ public final class FirePowerFrame {
 			@Override
 			public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
 				MIFrame frame = new MIFrame(LOCATION_NAME, 176, 156, player);
-				init(frame, world, pos, player);
+				init(frame, world, pos);
 				return new StaticFrameClient(frame, LOCATION_NAME);
 			}
 			
-			private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
+			private void init(IFrame frame, World world, BlockPos pos) {
 				EMFirePower firepower = (EMFirePower) world.getTileEntity(pos);
 				frame.init(world);
 				
@@ -61,7 +61,7 @@ public final class FirePowerFrame {
 				//noinspection ConstantConditions
 				up.adds(new MSlot(firepower.getInSlot()), firepower.getProgressBar(), new MSlot(firepower.getOutSlot()));
 				group.adds(up, firepower.getEnergyProBar());
-				frame.add(group, player);
+				frame.add(group);
 			}
 			
 		});

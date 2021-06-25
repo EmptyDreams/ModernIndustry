@@ -37,7 +37,7 @@ public class MuffleFurnaceFrame {
 			@Override
 			public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
 				MIFrame frame = new MIFrame(LOCATION_NAME, 176, 166, player);
-				init(frame, world, pos, player);
+				init(frame, world, pos);
 				return frame;
 			}
 			
@@ -45,11 +45,11 @@ public class MuffleFurnaceFrame {
 			@Override
 			public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
 				MIFrame frame = new MIFrame(LOCATION_NAME, 176, 166, player);
-				init(frame, world, pos, player);
+				init(frame, world, pos);
 				return new StaticFrameClient(frame, LOCATION_NAME);
 			}
 			
-			private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
+			private void init(IFrame frame, World world, BlockPos pos) {
 				MuffleFurnace furnace = (MuffleFurnace) world.getTileEntity(pos);
 				frame.init(world);
 				
@@ -59,7 +59,7 @@ public class MuffleFurnaceFrame {
 				//noinspection ConstantConditions
 				left.adds(new MSlot(furnace.getUp()), furnace.getBurnProgress(), new MSlot(furnace.getDown()));
 				group.adds(left, furnace.getWorkProgress(), new MSlot(furnace.getOut()));
-				frame.add(group, player);
+				frame.add(group);
 			}
 			
 		});

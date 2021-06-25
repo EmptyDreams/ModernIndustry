@@ -37,7 +37,7 @@ public class RedStoneConverterFrame {
 			@Override
 			public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
 				MIFrame frame = new MIFrame(LOCATION_NAME, 176, 161, player);
-				init(frame, world, pos, player);
+				init(frame, world, pos);
 				return frame;
 			}
 			
@@ -45,11 +45,11 @@ public class RedStoneConverterFrame {
 			@Override
 			public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
 				MIFrame frame = new MIFrame(LOCATION_NAME, 176, 161, player);
-				init(frame, world, pos, player);
+				init(frame, world, pos);
 				return new StaticFrameClient(frame, LOCATION_NAME);
 			}
 			
-			private void init(IFrame frame, World world, BlockPos pos, EntityPlayer player) {
+			private void init(IFrame frame, World world, BlockPos pos) {
 				EMRedStoneConverter converter = (EMRedStoneConverter) world.getTileEntity(pos);
 				frame.init(world);
 				
@@ -57,7 +57,7 @@ public class RedStoneConverterFrame {
 				//noinspection ConstantConditions
 				group.adds(new MSlot(converter.getInput()), converter.getBurnPro(), converter.getEnergyPro());
 				group.setMaxDistance(2);
-				frame.add(group, player);
+				frame.add(group);
 			}
 			
 		});
