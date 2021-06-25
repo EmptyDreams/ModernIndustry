@@ -10,7 +10,6 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.event.GuiRegistryEvent;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.IContainerCreater;
-import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.group.Group;
 import xyz.emptydreams.mi.api.gui.component.group.Panels;
@@ -48,7 +47,7 @@ public class ElectronSynthesizerFrame {
 				return new StaticFrameClient(frame, LOCATION_NAME);
 			}
 			
-			private void init(IFrame frame, World world, BlockPos pos) {
+			private void init(MIFrame frame, World world, BlockPos pos) {
 				EUElectronSynthesizer synthesizer = (EUElectronSynthesizer) world.getTileEntity(pos);
 				frame.init(world);
 				

@@ -11,7 +11,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.event.GuiRegistryEvent;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.IContainerCreater;
-import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
 import xyz.emptydreams.mi.api.gui.component.group.Group;
@@ -54,7 +53,7 @@ public final class EleMFurnaceFrame {
 				return new StaticFrameClient(frame, LOCATION_NAME);
 			}
 			
-			private void init(IFrame frame, World world, BlockPos pos) {
+			private void init(MIFrame frame, World world, BlockPos pos) {
 				EUMFurnace firepower = (EUMFurnace) world.getTileEntity(pos);
 				frame.init(world);
 				

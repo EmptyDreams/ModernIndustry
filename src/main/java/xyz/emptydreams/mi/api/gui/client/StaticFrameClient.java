@@ -150,12 +150,6 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	public int getTitleColor() { return titleColor; }
 	
 	@Override
-	public void add(IComponent component) {
-		components.add(checkNull(component, "component"));
-		component.onAddToGUI(this, inventorySlots.getPlayer());
-	}
-	
-	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		this.drawDefaultBackground();
 		super.drawScreen(mouseX, mouseY, partialTicks);
