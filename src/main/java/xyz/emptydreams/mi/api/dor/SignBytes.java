@@ -17,7 +17,6 @@ public class SignBytes implements Iterable<SignBytes.State> {
 		int number = size / 8;
 		if (size % 8 != 0) ++number;
 		SignBytes result = new SignBytes(number);
-		result.list.clear();
 		for (int k = 0; k < number; ++k) {
 			byte data = reader.readByte();
 			result.list.add(data);
@@ -35,7 +34,6 @@ public class SignBytes implements Iterable<SignBytes.State> {
 	
 	public SignBytes(int size) {
 		list = new ByteArrayList(size);
-		list.add((byte) 0);
 	}
 	
 	public SignBytes(byte[] bytes) {
@@ -46,9 +44,7 @@ public class SignBytes implements Iterable<SignBytes.State> {
 	public void add(State state) {
 		int listIndex = size / 8;
 		int innerIndex = size % 8;
-		if (innerIndex == 7) {
-			innerIndex = 0;
-			++listIndex;
+		if (innerIndex == 0) {
 			list.add((byte) 0);
 		}
 		byte input = state.isOne() ? (byte) (0b0000001 << innerIndex) : (byte) 0;

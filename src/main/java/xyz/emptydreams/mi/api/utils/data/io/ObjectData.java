@@ -9,6 +9,7 @@ import xyz.emptydreams.mi.api.utils.WorldUtil;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 /**
  * TE数据读写
@@ -42,7 +43,7 @@ public class ObjectData implements IClassData {
 	
 	@Override
 	public boolean needOperate(Field field) {
-		return field.isAnnotationPresent(Storage.class);
+		return (!Modifier.isStatic(field.getModifiers())) && field.isAnnotationPresent(Storage.class);
 	}
 	
 	/**

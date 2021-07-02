@@ -33,7 +33,7 @@ public interface IClassData {
 	 * @param field 目标field
 	 */
 	default boolean needOperate(Field field) {
-		return true;
+		return !Modifier.isStatic(field.getModifiers());
 	}
 	
 	/**
