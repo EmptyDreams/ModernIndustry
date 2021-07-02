@@ -1,10 +1,5 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
-import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
-import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.RollComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.GuiPainter;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
@@ -159,31 +154,6 @@ public class RollGroup extends Group {
 	}
 	
 	@Override
-	public void onAddToGUI(MIFrame con, EntityPlayer player) {
-		super.onAddToGUI(con, player);
-		innerGroup.onAddToGUI(con, player);
-	}
-	
-	@Override
-	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
-		super.onAddToGUI(con, player);
-		innerGroup.onAddToGUI(con, player);
-	}
-	
-	@Override
-	public void send(Container con, IContainerListener listener) {
-		super.send(con, listener);
-		innerGroup.send(con, listener);
-	}
-	
-	@Override
-	public boolean update(int codeID, int data) {
-		boolean result = super.update(codeID, data);
-		if (result) return true;
-		return innerGroup.update(codeID, data);
-	}
-	
-	@Override
 	public void paint(@Nonnull Graphics g) {
 		super.paint(g);
 		BufferedImage image = new BufferedImage(innerGroup.getWidth(), innerGroup.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
@@ -194,7 +164,7 @@ public class RollGroup extends Group {
 	
 	@Override
 	public void realTimePaint(GuiPainter painter) {
-		GuiPainter innerPainter = new GuiPainter(painter.getGuiContainer(),
+		GuiPainter innerPainter = new GuiPainter(painter.getGuiContainer(), innerGroup.getX(), innerGroup.getY(),
 				getXOffset(), getYOffset(), innerGroup.getWidth(), innerGroup.getHeight());
 		innerGroup.realTimePaint(innerPainter);
 		if (verRoll != null) verRoll.realTimePaint(painter);
@@ -240,7 +210,7 @@ public class RollGroup extends Group {
 		RollGroup that = (RollGroup) group;
 		int width = that.getWidth() - 10;       //内部Group的宽度
 		int height = that.getHeight() - 10;     //内部Group的高度
-		int x = 5 + that.getX();      int y = 5 + that.getY();              //内部Group的坐标
+		int x = 5;      int y = 5;              //内部Group的坐标
 		RollComponent verRoll = null, horRoll = null;
 		//计算内部Group的大小
 		if (that.vertical != VerticalEnum.NON) {

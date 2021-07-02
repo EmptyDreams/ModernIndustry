@@ -20,17 +20,46 @@ public final class GuiPainter {
 	private final GuiContainer gui;
 	private final int xOffset, yOffset;
 	private final int maxWidth, maxHeight;
+	private final int x, y;
 	
-	public GuiPainter(GuiContainer gui) {
-		this(gui, 0, 0, gui.width, gui.height);
+	/** 绘制区域在裁剪时的X坐标 */
+	private final int realX;
+	/** 绘制区域在裁剪时的Y坐标 */
+	private final int realY;
+	/** 绘制区域在裁剪时的宽度 */
+	private final int realMaxWidth;
+	/** 绘制区域在裁剪时的高度 */
+	private final int realMaxHeight;
+	
+	
+	public GuiPainter(GuiContainer gui, int x, int y) {
+		this(gui, x, y, 0, 0, gui.width, gui.height);
 	}
 	
-	public GuiPainter(GuiContainer gui, int xOffset, int yOffset, int maxWidth, int maxHeight) {
+	/**
+	 * 在特定位置创建一个有限画板
+	 * @param gui 当前被打开的GUI
+	 * @param x 区域X轴坐标
+	 * @param y 区域Y轴坐标
+	 * @param xOffset 绘制起点X轴偏移量（右正左负）
+	 * @param yOffset 绘制起点Y轴偏移量（下正上负）
+	 * @param maxWidth 绘制区域宽度
+	 * @param maxHeight 绘制区域高度
+	 */
+	public GuiPainter(GuiContainer gui, int x, int y, int xOffset, int yOffset, int maxWidth, int maxHeight) {
 		this.gui = gui;
+		this.x = x;
+		this.y = y;
 		this.xOffset = xOffset + gui.getGuiLeft();
 		this.yOffset = yOffset + gui.getGuiTop();
 		this.maxWidth = maxWidth;
 		this.maxHeight = maxHeight;
+		float scaleViewX = Minecraft.getMinecraft().displayWidth / (float) gui.width;
+		float scaleViewY = Minecraft.getMinecraft().displayHeight / (float) gui.height;
+		realX = (int) ((getX() + getGuiContainer().getGuiLeft()) * scaleViewX);
+		realY = (int) ((getY() + getGuiContainer().getGuiTop()) * scaleViewY);
+		realMaxWidth = (int) (this.maxWidth * scaleViewX);
+		realMaxHeight = (int) (this.maxHeight * scaleViewY);
 	}
 	
 	/**
@@ -47,7 +76,9 @@ public final class GuiPainter {
 	public void drawTexture(int x, int y, int u, int v, int width, int height, RuntimeTexture texture) {
 		int realX = x + xOffset;
 		int realY = y + yOffset;
+		scissor();
 		texture.drawToFrame(realX, realY, u, v, width, height);
+		unscissor();
 	}
 	
 	/**
@@ -62,10 +93,13 @@ public final class GuiPainter {
 	 * @param textureWidth 材质宽度
 	 * @param textureHeight 材质高度
 	 */
-	public void drawTexture(int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight) {
+	public void drawTexture(int x, int y, int u, int v,
+	                        int width, int height, int textureWidth, int textureHeight) {
 		int realX = x + xOffset;
 		int realY = y + yOffset;
+		scissor();
 		Gui.drawModalRectWithCustomSizedTexture(realX, realY, u, v, width, height, textureWidth, textureHeight);
+		unscissor();
 	}
 	
 	/**
@@ -81,14 +115,26 @@ public final class GuiPainter {
 	public void drawTexture(int x, int y, int u, int v, int width, int height) {
 		int realX = x + xOffset;
 		int realY = y + yOffset;
+		scissor();
 		gui.drawTexturedModalRect(realX, realY, u, v, width, height);
+		unscissor();
 	}
 	
 	public void drawString(int x, int y, String text, int color) {
-		int realX = x + xOffset;
-		int realY = y + yOffset;
-		GL11.glScissor(realX, realY, maxWidth, maxHeight);
-		Minecraft.getMinecraft().fontRenderer.drawString(text, realX, realY, color);
+		int guiX = x + xOffset;
+		int guiY = y + yOffset;
+		scissor();
+		Minecraft.getMinecraft().fontRenderer.drawString(text, guiX, guiY, color);
+		unscissor();
+	}
+	
+	private void scissor() {
+		GL11.glScissor(realX, Minecraft.getMinecraft().displayHeight - maxHeight - realY, realMaxWidth, realMaxHeight);
+		GL11.glEnable(GL11.GL_SCISSOR_TEST);
+	}
+	
+	private void unscissor() {
+		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 	}
 	
 	/** 获取横坐标起点偏移量 */
@@ -109,6 +155,16 @@ public final class GuiPainter {
 	/** 获取可绘制区域高度 */
 	public int getMaxHeight() {
 		return maxHeight;
+	}
+	
+	/** 获取绘制区域的X轴坐标 */
+	public int getX() {
+		return x;
+	}
+	
+	/** 获取绘制区域的Y轴坐标 */
+	public int getY() {
+		return y;
 	}
 	
 	/**
