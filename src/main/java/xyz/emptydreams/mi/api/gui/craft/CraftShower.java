@@ -31,6 +31,7 @@ public final class CraftShower {
 	public static void show(CraftGuide<?, ?> craft, TileEntity te,
 	                        Function<TileEntity, SlotGroup> slotGroupGetter) {
 		if (craft.size() == 0) return;
+		//该代码在if前是为了在打开合成表时在服务端记录下数据
 		Frame frame = FRAMES.computeIfAbsent(craft, c -> new Frame(c, slotGroupGetter));
 		if (WorldUtil.isServer()) return;
 		LocalChildFrame.openGUI(frame, te.getPos());
@@ -56,7 +57,6 @@ public final class CraftShower {
 			this.slotGroupGetter = slotGroupGetter;
 		}
 		
-		@Override
 		public SlotGroup getSlots(TileEntity te) {
 			return slotGroupGetter.apply(te);
 		}
