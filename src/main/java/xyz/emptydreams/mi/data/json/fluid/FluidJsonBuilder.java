@@ -38,7 +38,7 @@ public class FluidJsonBuilder {
 		try {
 			TEMPLATE_DATA = getTemplates();
 		} catch (IOException e) {
-			throw new TransferException("读取模板文件时发生异常", e);
+			throw TransferException.instance("读取模板文件时发生异常", e);
 		}
 	}
 	
@@ -57,7 +57,7 @@ public class FluidJsonBuilder {
 				++build;
 			}
 		} catch (IOException e) {
-			throw new TransferException("FluidJson生成失败", e);
+			throw TransferException.instance("FluidJson生成失败", e);
 		}
 		MISysInfo.print("Fluid Json：跳过：" + step + "，生成：" + build + "，总计：" + Integer.sum(step, build));
 	}

@@ -840,7 +840,7 @@ public final class DataTypes {
 				//noinspection unchecked,rawtypes
 				return Enum.valueOf((Class) Class.forName(clazz), name);
 			} catch (ClassNotFoundException e) {
-				throw new TransferException(e);
+				throw TransferException.instance(e);
 			}
 		}
 		
@@ -857,7 +857,7 @@ public final class DataTypes {
 				return Enum.valueOf(
 						(Class) Class.forName(nbt.getString(name + "k")), nbt.getString(name));
 			} catch (ClassNotFoundException e) {
-				throw new TransferException(e);
+				throw TransferException.instance(e);
 			}
 		}
 		
@@ -875,7 +875,7 @@ public final class DataTypes {
 				//noinspection unchecked,rawtypes
 				return Enum.valueOf((Class) Class.forName(clazz), name);
 			} catch (ClassNotFoundException e) {
-				throw new TransferException(e);
+				throw TransferException.instance(e);
 			}
 		}
 		
@@ -1019,7 +1019,7 @@ public final class DataTypes {
 			try {
 				return Class.forName(reader.readString());
 			} catch (ClassNotFoundException e) {
-				throw new TransferException("需要读写的类不存在", e);
+				throw TransferException.instance("需要读写的类不存在", e);
 			}
 		}
 		
@@ -1034,7 +1034,7 @@ public final class DataTypes {
 			try {
 				return Class.forName(nbt.getString(name));
 			} catch (ClassNotFoundException e) {
-				throw new TransferException("需要读写的类不存在", e);
+				throw TransferException.instance("需要读写的类不存在", e);
 			}
 		}
 		
@@ -1049,7 +1049,7 @@ public final class DataTypes {
 			try {
 				return Class.forName(IOUtils.readStringFromBuf(buf));
 			} catch (ClassNotFoundException e) {
-				throw new TransferException("需要读写的类不存在", e);
+				throw TransferException.instance("需要读写的类不存在", e);
 			}
 		}
 		

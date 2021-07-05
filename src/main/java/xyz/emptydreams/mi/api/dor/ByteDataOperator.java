@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.dor;
 
-import com.google.common.base.Throwables;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteList;
@@ -434,8 +433,7 @@ public class ByteDataOperator implements IDataOperator {
 				writeTag(value);
 			});
 		} catch (IllegalAccessException | NoSuchFieldException e) {
-			Throwables.throwIfUnchecked(e);
-			throw new TransferException(e);
+			throw TransferException.instance(e);
 		}
 	}
 	

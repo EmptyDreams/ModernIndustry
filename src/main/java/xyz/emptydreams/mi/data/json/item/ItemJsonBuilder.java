@@ -46,7 +46,7 @@ public final class ItemJsonBuilder {
 		try {
 			TEMPLATE_DATA = getTemplates();
 		} catch (IOException e) {
-			throw new TransferException("读取模板文件时发生异常", e);
+			throw TransferException.instance("读取模板文件时发生异常", e);
 		}
 	}
 

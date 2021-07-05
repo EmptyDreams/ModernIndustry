@@ -77,7 +77,7 @@ public class ClassInfoViewerFrame extends MIFrame {
 			rollGroup.setSize(width, height);
 			add(rollGroup);
 		} catch (Exception e) {
-			throw new TransferException("创建类信息查看GUI时出现异常", e);
+			throw TransferException.instance("创建类信息查看GUI时出现异常", e);
 		}
 	}
 	

@@ -149,7 +149,7 @@ public interface IClassData {
 			try {
 				return field.get(object);
 			} catch (IllegalAccessException e) {
-				throw new TransferException(e);
+				throw TransferException.instance(e);
 			}
 		});
 		if (cast != null) data = DataTypeRegister.cast(data, field.getType());

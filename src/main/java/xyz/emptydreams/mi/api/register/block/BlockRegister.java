@@ -39,7 +39,7 @@ public class BlockRegister {
 				c.getDeclaredMethod("registry", IForgeRegistry.class, Block.class)
 						.invoke(null, register, Blocks.selfRegister.get(c));
 			} catch (Exception e) {
-				throw new TransferException("方块注册异常", e);
+				throw TransferException.instance("方块注册异常", e);
 			}
 		}
 	}

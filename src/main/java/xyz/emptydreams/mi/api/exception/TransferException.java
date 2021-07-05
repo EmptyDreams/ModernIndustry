@@ -12,7 +12,16 @@ public class TransferException extends RuntimeException {
 	private final Throwable src;
 	private final String message;
 	
-	public TransferException(String text, Throwable throwable) {
+	public static RuntimeException instance(Throwable throwable) {
+		if (throwable instanceof RuntimeException) return (RuntimeException) throwable;
+		else return new TransferException(throwable);
+	}
+	
+	public static RuntimeException instance(String text, Throwable throwable) {
+		return new TransferException(text, throwable);
+	}
+	
+	private TransferException(String text, Throwable throwable) {
 		if (throwable instanceof TransferException) {
 			TransferException that = (TransferException) throwable;
 			message = text + " -> " + that.message;
@@ -23,7 +32,7 @@ public class TransferException extends RuntimeException {
 		}
 	}
 	
-	public TransferException(Throwable throwable) {
+	private TransferException(Throwable throwable) {
 		this(null, throwable);
 	}
 	
