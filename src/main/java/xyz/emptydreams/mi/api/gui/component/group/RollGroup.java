@@ -155,11 +155,13 @@ public class RollGroup extends Group {
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {
-		super.paint(g);
-		BufferedImage image = new BufferedImage(innerGroup.getWidth(), innerGroup.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+		BufferedImage image = new BufferedImage(
+				innerGroup.getWidth(), innerGroup.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics innerG = image.createGraphics();
 		innerGroup.paint(innerG);
 		innerG.dispose();
+		g.drawImage(image, innerGroup.getX() - getX(), innerGroup.getY() - getY(), null);
+		super.paint(g);
 	}
 	
 	@Override

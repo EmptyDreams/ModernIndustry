@@ -3,7 +3,6 @@ package xyz.emptydreams.mi.api.gui.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -20,8 +19,6 @@ public final class LocalChildFrame {
 	
 	/** 存储当前打开的子GUI */
 	private static GuiScreen container;
-	/** 存储打开子GUI前玩家打开的GUI */
-	private static Container playerOpen;
 	
 	/**
 	 * 打开一个子GUI，若已经有子GUI被打开，则先打开的将被关闭
@@ -30,8 +27,8 @@ public final class LocalChildFrame {
 	 */
 	public static void openGUI(ICraftFrameHandle handle, BlockPos pos) {
 		Minecraft mc = Minecraft.getMinecraft();
-		playerOpen = mc.player.openContainer;
 		StaticFrameClient localGUI = handle.createFrame(mc.world, mc.player, pos);
+		if (localGUI == null) return;
 		if (container != null) container.onGuiClosed();
 		container = localGUI;
 		ScaledResolution scaledresolution = new ScaledResolution(mc);
@@ -45,8 +42,6 @@ public final class LocalChildFrame {
 	public static void closeGUI() {
 		if (container == null) return;
 		container.onGuiClosed();
-		Minecraft.getMinecraft().player.openContainer = playerOpen;
-		playerOpen = null;
 		container = null;
 	}
 	

@@ -141,9 +141,12 @@ public class RollComponent extends MComponent {
 		}
 	}
 	
-	@SuppressWarnings("ConstantConditions")
 	private RuntimeTexture bindTexture() {
-		return RuntimeTexture.getInstance(getButtonTextureName()).bindTexture();
+		RuntimeTexture texture = RuntimeTexture.getInstance(getButtonTextureName());
+		if (texture == null) {
+			texture = createTexture();
+		}
+		return texture.bindTexture();
 	}
 	
 	/** 获取按钮材质的名称 */
@@ -151,20 +154,26 @@ public class RollComponent extends MComponent {
 		return "MI:Roll" + buttonSize + getHeight() + isVertical();
 	}
 	
+	private RuntimeTexture createTexture() {
+		if (isVertical()) {
+			if (isDisable()) return ImageData.createTexture(
+						ImageData.ROLL_BUTTON_DISABLE_VER, buttonSize, 15, getButtonTextureName());
+			else return ImageData.createTexture(
+						ImageData.ROLL_BUTTON_VER, buttonSize, 15, getButtonTextureName());
+		} else {
+			if (isDisable()) return ImageData.createTexture(
+						ImageData.ROLL_BUTTON_DISABLE_HOR, buttonSize, 15, getButtonTextureName());
+			else return ImageData.createTexture(
+						ImageData.ROLL_BUTTON_HOR, 15, buttonSize, getButtonTextureName());
+		}
+	}
+	
 	@Override
 	public void paint(@Nonnull Graphics g) {
 		if (isVertical()) {
 			g.drawImage(ImageData.getImage(ImageData.ROLL_BACKGROUND_VER, getWidth(), getHeight()), 0, 0, null);
-			if (isDisable())
-				ImageData.createTexture(ImageData.ROLL_BUTTON_DISABLE_VER, buttonSize, 15, getButtonTextureName());
-			else
-				ImageData.createTexture(ImageData.ROLL_BUTTON_VER, buttonSize, 15, getButtonTextureName());
 		} else {
 			g.drawImage(ImageData.getImage(ImageData.ROLL_BACKGROUND_HOR, getWidth(), getHeight()), 0, 0, null);
-			if (isDisable())
-				ImageData.createTexture(ImageData.ROLL_BUTTON_DISABLE_HOR, buttonSize, 15, getButtonTextureName());
-			else
-				ImageData.createTexture(ImageData.ROLL_BUTTON_HOR, 15, buttonSize, getButtonTextureName());
 		}
 	}
 	
