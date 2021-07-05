@@ -29,7 +29,7 @@ public class TransferException extends RuntimeException {
 	
 	@Override
 	public String getMessage() {
-		return message + " -> " + src.getMessage();
+		return "[" + src.getClass().getName() + "]" + message + "\n\t\t\t-> " + src.getMessage();
 	}
 	
 	@Override
