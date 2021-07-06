@@ -85,15 +85,20 @@ public class RollGroup extends Group {
 	
 	@Override
 	public void setSize(int width, int height) {
-		if (width < 20) width = 20;
-		if (height < 20) height = 20;
+		if (width <= 20) width = 21;
+		if (height <= 20) height = 21;
 		super.setSize(width, height);
-		if (vertical != VerticalEnum.NON && getVerRollHeight() == 0) {
-			setVerRollHeight(height - 20);
+		int iWidth = width - 4;
+		int iHeight = height - 4;
+		if (vertical != VerticalEnum.NON) {
+			if (getVerRollHeight() == 0) setVerRollHeight(height - 20);
+			iWidth -= getVerRollWidth();
 		}
-		if (horizontal != HorizontalEnum.NON && getHorRollWidth() == 0) {
-			setHorRollWidth(width - 20);
+		if (horizontal != HorizontalEnum.NON) {
+			if (getHorRollWidth() == 0) setHorRollWidth(width - 20);
+			iHeight -= getHorRollHeight() ;
 		}
+		innerGroup.setSize(iWidth, iHeight);
 	}
 	
 	@Override
@@ -205,22 +210,17 @@ public class RollGroup extends Group {
 			return;
 		}
 		RollGroup that = (RollGroup) group;
-		int width = that.getWidth() - 10;       //内部Group的宽度
-		int height = that.getHeight() - 10;     //内部Group的高度
 		int x = 5;      int y = 5;              //内部Group的坐标
 		RollComponent verRoll = null, horRoll = null;
 		//计算内部Group的大小
 		if (that.vertical != VerticalEnum.NON) {
 			verRoll = new RollComponent(true);
 			verRoll.setSize(that.getVerRollWidth(), that.getVerRollHeight());
-			width -= verRoll.getWidth();
 		}
 		if (that.horizontal != HorizontalEnum.NON) {
 			horRoll = new RollComponent(false);
 			horRoll.setSize(that.getHorRollWidth(),that.getHorRollHeight());
-			height -= horRoll.getHeight();
 		}
-		that.innerGroup.setSize(width, height);
 		//计算内部Group的坐标
 		if (that.vertical == VerticalEnum.LEFT) {
 			x += (5 + verRoll.getWidth());

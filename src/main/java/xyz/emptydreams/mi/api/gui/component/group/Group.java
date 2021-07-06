@@ -43,6 +43,10 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 		this(0, 0, 0, 0, null);
 	}
 	
+	public Group(Consumer<Group> panel) {
+		this(0, 0, 0, 0, panel);
+	}
+	
 	/**
 	 * 创建一格group
 	 * @param x 横坐标

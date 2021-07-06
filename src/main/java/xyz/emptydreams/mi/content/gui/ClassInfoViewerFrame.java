@@ -18,7 +18,6 @@ import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.gui.component.group.Group;
 import xyz.emptydreams.mi.api.gui.component.group.Panels;
 import xyz.emptydreams.mi.api.gui.component.group.RollGroup;
-import xyz.emptydreams.mi.api.gui.component.group.TitleGroup;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 
 import javax.annotation.Nonnull;
@@ -60,56 +59,42 @@ public class ClassInfoViewerFrame extends MIFrame {
 		super(LOCATION_NAME, player);
 		setSize(176, 166);
 		try {
-			RollGroup rollGroup = new RollGroup(RollGroup.HorizontalEnum.NON, RollGroup.VerticalEnum.RIGHT);
-			rollGroup.setControlPanel(Panels::verticalCenter);
+			RollGroup rollGroup = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
+			rollGroup.setControlPanel(Panels::horizontalCenter);
+			rollGroup.setSize(140, 150);
+			rollGroup.setLocation(0, 12);
 			Class<?> clazz = entity.getClass();
-			int height = 10;
-			int width = 0;
+			Group nameGroup = new Group(Panels::verticalCenter);
+			Group valueGroup = new Group(Panels::verticalCenter);
 			while (isContinue(clazz)) {
-				Group inner = createGroupHeight(clazz, entity);
+				Field[] fields = clazz.getDeclaredFields();
 				clazz = clazz.getSuperclass();
-				if (inner == null) continue;
-				height += inner.getHeight();
-				width = Math.max(width, inner.getWidth());
-				rollGroup.add(inner);
+				if (fields.length == 0) continue;
+				task(nameGroup, valueGroup, fields, entity);
 			}
-			width += rollGroup.getVerRollWidth() + 5;
-			rollGroup.setSize(width, height);
+			rollGroup.adds(nameGroup, valueGroup);
 			add(rollGroup);
 		} catch (Exception e) {
 			throw TransferException.instance("创建类信息查看GUI时出现异常", e);
 		}
 	}
 	
-	private static boolean isContinue(Class<?> clazz) {
-		return clazz != TileEntity.class && clazz != BaseTileEntity.class;
+	private static void task(Group nameGroup, Group valueGroup, Field[] fields, Object obj)
+			throws IllegalAccessException {
+		for (Field field : fields) {
+			if (!Modifier.isPublic(field.getModifiers())) field.setAccessible(true);
+			int color = getStringColor(field);
+			StringComponent name = new StringComponent(field.getName());
+			StringComponent value = new StringComponent(String.valueOf(field.get(obj)));
+			name.setColor(color);
+			value.setColor(color);
+			nameGroup.add(name);
+			valueGroup.add(value);
+		}
 	}
 	
-	private static Group createGroupHeight(Class<?> clazz, Object obj) throws IllegalAccessException {
-		Group result = new TitleGroup(clazz.getSimpleName());
-		result.setControlPanel(Panels::horizontalCenter);
-		int height = 15;
-		int width = 0;
-		Group nameGroup = new Group(0, 0, 0, 0, Panels::verticalCenter);
-		Group valueGroup = new Group(0, 0, 0, 0, Panels::verticalCenter);
-		for (Field field : clazz.getDeclaredFields()) {
-			if (!Modifier.isPublic(field.getModifiers())) field.setAccessible(true);
-			height += 12;
-			String name = field.getName();
-			String value = String.valueOf(field.get(obj));
-			int color = getStringColor(field);
-			StringComponent nameShower = new StringComponent(name);
-			nameShower.setColor(color);
-			StringComponent valueShower = new StringComponent(value);
-			valueShower.setColor(color);
-			nameGroup.add(nameShower);
-			valueGroup.add(valueShower);
-			width = Math.max(nameShower.getWidth() + valueShower.getWidth() + 10, width);
-		}
-		if (width == 0) return null;
-		result.setSize(width, height);
-		result.adds(nameGroup, valueGroup);
-		return result;
+	private static boolean isContinue(Class<?> clazz) {
+		return clazz != TileEntity.class && clazz != BaseTileEntity.class;
 	}
 	
 	private static int getStringColor(Field field) {
