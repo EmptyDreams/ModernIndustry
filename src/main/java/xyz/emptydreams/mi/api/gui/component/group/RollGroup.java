@@ -260,7 +260,7 @@ public class RollGroup extends Group {
 		}
 		that.verRoll = verRoll;
 		that.horRoll = horRoll;
-		that.superAddComponent(verRoll, horRoll);
+		that.superAddComponent(verRoll, horRoll, that.innerGroup);
 	}
 	
 	private static final class InnerGroup extends Group {

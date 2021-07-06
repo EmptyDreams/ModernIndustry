@@ -18,6 +18,7 @@ import xyz.emptydreams.mi.api.net.message.gui.GuiMessage;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -163,7 +164,12 @@ public interface IComponent {
 	 * 获取GUI监听的事件列表
 	 * @return 返回值需经过保护性拷贝
 	 */
-	Object getListeners();
+	@Nonnull
+	List<IListener> getListeners();
+	
+	/** 获取指定下标的事件 */
+	@Nonnull
+	IListener getListener(int index);
 	
 	/**
 	 * 触发指定事件

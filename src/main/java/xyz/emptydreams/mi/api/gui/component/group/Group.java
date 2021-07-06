@@ -31,13 +31,13 @@ import java.util.function.Consumer;
 public class Group extends MComponent implements Iterable<IComponent>, IComponentManager {
 
 	/** 包含的控件 */
-	private final List<IComponent> components = new LinkedList<>();
+	protected final List<IComponent> components = new LinkedList<>();
 	/** 对齐模式 */
-	private Consumer<Group> mode;
+	protected Consumer<Group> mode;
 	/** 两个控件间的最短距离(像素) */
-	private int minDistance = 3;
+	protected int minDistance = 3;
 	/** 两个控件间的最远距离(像素) */
-	private int maxDistance = 10;
+	protected int maxDistance = 10;
 
 	public Group() {
 		this(0, 0, 0, 0, null);

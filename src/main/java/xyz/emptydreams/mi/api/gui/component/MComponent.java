@@ -38,17 +38,17 @@ public abstract class MComponent implements IComponent {
 	/** 基本信息 */
 	protected int x, y, width, height;
 	/** 网络传输ID */
-	private int code;
+	protected int code;
 	/** 存储事件列表 */
-	private final List<IListener> listeners = new LinkedList<>();
+	protected final List<IListener> listeners = new LinkedList<>();
 	/** 是否支持CraftShower */
-	private CraftGuide<?, ?> craftGuide = null;
+	protected CraftGuide<?, ?> craftGuide = null;
 	/** CraftShower用到的填充表 */
-	private Function<TileEntity, SlotGroup> slotGroupGetter = null;
+	protected Function<TileEntity, SlotGroup> slotGroupGetter = null;
 	/** 合成表按钮 */
-	private CraftButton craftButton = null;
+	protected CraftButton craftButton = null;
 	/** 存储加载过的窗体 */
-	private final WeakList<MIFrame> LOADED = new WeakList<>();
+	protected final WeakList<MIFrame> LOADED = new WeakList<>();
 	
 	@Override
 	public void setLocation(int x, int y) {
@@ -70,8 +70,17 @@ public abstract class MComponent implements IComponent {
 	}
 	
 	@Override
+	public IListener getListener(int index) {
+		return listeners.get(index);
+	}
+	
+	@Override
 	public <T extends IListener> void activateListener(MIFrame frame, Class<T> name, Consumer<T> consumer) {
-		int index = 0;
+		activateListener(frame, name, consumer, 0);
+	}
+	
+	public <T extends IListener> void activateListener(
+			MIFrame frame, Class<T> name, Consumer<T> consumer, int indexStart) {
 		boolean send = false;
 		IntList indexs = new IntArrayList(listeners.size() / 2);
 		ByteDataOperator operator = new ByteDataOperator();
@@ -82,11 +91,11 @@ public abstract class MComponent implements IComponent {
 				if (WorldUtil.isClient()) {
 					if (listener.writeTo(operator)) {
 						send = true;
-						indexs.add(index);
+						indexs.add(indexStart);
 					}
 				}
 			}
-			++index;
+			++indexStart;
 		}
 		//如果事件在客户端触发并且需要进行网络传输则发送消息给服务端
 		//如果事件在服务端触发不需要发送给客户端，因为在服务端触发的事件大部分在客户端也可以触发
@@ -104,7 +113,7 @@ public abstract class MComponent implements IComponent {
 			int[] indexs = reader.readVarintArray();
 			IDataReader data = reader.readData();
 			for (int i : indexs) {
-				IListener listener = listeners.get(i);
+				IListener listener = getListener(i);
 				listener.readFrom(data);
 			}
 		} catch (IndexOutOfBoundsException e) {

@@ -1,18 +1,27 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
+import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
+import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.GuiPainter;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
+import xyz.emptydreams.mi.api.gui.listener.IListener;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -105,7 +114,75 @@ public class TitleGroup extends Group {
 		return innerGroup.iterator();
 	}
 	
+	@Override
+	public int componentSize() {
+		return innerGroup.componentSize() + super.componentSize();
+	}
 	
+	@Override
+	public ArrayList<IComponent> cloneComponent() {
+		ArrayList<IComponent> result = new ArrayList<>(components.size() + 1);
+		result.addAll(components);
+		result.add(innerGroup);
+		return result;
+	}
+	
+	@Override
+	protected void init(MIFrame frame, EntityPlayer player) {
+		super.init(frame, player);
+		innerGroup.init(frame, player);
+	}
+	
+	@Override
+	public void onAddToGUI(MIFrame con, EntityPlayer player) {
+		super.onAddToGUI(con, player);
+		innerGroup.onAddToGUI(con, player);
+	}
+	
+	@Override
+	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
+		super.onAddToGUI(con, player);
+		innerGroup.onAddToGUI(con, player);
+	}
+	
+	@Override
+	public void send(Container con, IContainerListener listener) {
+		super.send(con, listener);
+		innerGroup.send(con, listener);
+	}
+	
+	@Override
+	public boolean update(int codeID, int data) {
+		boolean result = super.update(codeID, data);
+		if (result) return true;
+		return innerGroup.update(codeID, data);
+	}
+	
+	@Override
+	public List<IListener> getListeners() {
+		return innerGroup.getListeners();
+	}
+	
+	@Override
+	public IListener getListener(int index) {
+		return innerGroup.getListener(index);
+	}
+	
+	@Override
+	public <T extends IListener> void activateListener(
+			MIFrame frame, Class<T> name, Consumer<T> consumer, int indexStart) {
+		innerGroup.activateListener(frame, name, consumer, indexStart);
+	}
+	
+	@Override
+	public void receive(IDataReader reader) {
+		innerGroup.receive(reader);
+	}
+	
+	@Override
+	public boolean registryListener(IListener listener) {
+		return innerGroup.registryListener(listener);
+	}
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {
