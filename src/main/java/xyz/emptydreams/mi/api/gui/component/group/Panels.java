@@ -25,7 +25,7 @@ public final class Panels {
 	 * @param group 组
 	 */
 	public static void horizontalCenter(Group group) {
-		int size = group.size();
+		int size = group.componentSize();
 		int width = group.getWidth();
 		if (size <= 0) return;
 
@@ -64,7 +64,7 @@ public final class Panels {
 	 * @param group 组
 	 */
 	public static void verticalCenter(Group group) {
-		int size = group.size();
+		int size = group.componentSize();
 		int height = group.getHeight();
 		if (size <= 0) return;
 

@@ -94,11 +94,6 @@ public class TitleGroup extends Group {
 		innerGroup.setControlPanel(mode);
 	}
 	
-	@Override
-	public int size() {
-		return innerGroup.size();
-	}
-	
 	/** 获取演示的内容 */
 	@SideOnly(Side.CLIENT)
 	public String getText() {
@@ -109,6 +104,8 @@ public class TitleGroup extends Group {
 	public Iterator<IComponent> iterator() {
 		return innerGroup.iterator();
 	}
+	
+	
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {

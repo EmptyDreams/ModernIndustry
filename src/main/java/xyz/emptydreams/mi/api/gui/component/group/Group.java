@@ -119,8 +119,6 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	public Consumer<Group> getArrangeMode() { return mode; }
 	/** 设置排列模式，传入为空表示不自动进行排列 */
 	public void setControlPanel(Consumer<Group> mode) { this.mode = mode; }
-	/** 获取控件数量 */
-	public int size() { return components.size(); }
 	/** 遍历控件 */
 	@Override
 	public Iterator<IComponent> iterator() { return components.iterator(); }
@@ -200,7 +198,7 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	
 	@Override
 	public String toString() {
-		return "控件数量：" + size() +
+		return "控件数量：" + componentSize() +
 				"；坐标：(" + getX() + "," + getY() + ")；" +
 				"大小：(" + getWidth() + "," + getHeight() + ")";
 	}

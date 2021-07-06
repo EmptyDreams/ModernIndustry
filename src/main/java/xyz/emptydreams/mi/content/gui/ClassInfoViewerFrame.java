@@ -48,7 +48,7 @@ public class ClassInfoViewerFrame extends MIFrame {
 			@Override
 			public StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos) {
 				Block block = world.getBlockState(pos).getBlock();
-				String name = I18n.format("tile." + block.getLocalizedName() + ".name");
+				String name = I18n.format( block.getLocalizedName());
 				String gui = I18n.format("tile.mi.class_info_viewer.name");
 				String title = gui + "@" + name;
 				return new StaticFrameClient(createService(world, player, pos), title);

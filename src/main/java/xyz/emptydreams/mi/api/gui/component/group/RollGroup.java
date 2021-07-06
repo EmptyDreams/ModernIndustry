@@ -144,11 +144,6 @@ public class RollGroup extends Group {
 	}
 	
 	@Override
-	public int size() {
-		return innerGroup.size();
-	}
-	
-	@Override
 	public Iterator<IComponent> iterator() {
 		return innerGroup.iterator();
 	}
@@ -265,7 +260,7 @@ public class RollGroup extends Group {
 		}
 		that.verRoll = verRoll;
 		that.horRoll = horRoll;
-		that.superAddComponent(verRoll, horRoll, that.innerGroup);
+		that.superAddComponent(verRoll, horRoll);
 	}
 	
 	private static final class InnerGroup extends Group {
