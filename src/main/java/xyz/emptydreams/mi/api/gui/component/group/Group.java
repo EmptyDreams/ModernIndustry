@@ -136,9 +136,21 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 															 event -> event.mouseMLocation(mouseX, mouseY))));
 	}
 	
+	private boolean isSort = true;
+	
+	public void sort() {
+		if (isSort) {
+			isSort = false;
+			mode.accept(this);
+		}
+	}
+	
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
 		super.onAddToGUI(con, player);
+		for (IComponent component : components) {
+			if (component instanceof Group) ((Group) component).sort();
+		}
 		if (mode != null) mode.accept(this);
 		components.forEach(it -> {
 			it.setLocation(it.getX() + getX(), it.getY() + getY());
@@ -150,6 +162,9 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	@Override
 	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
 		super.onAddToGUI(con, player);
+		for (IComponent component : components) {
+			if (component instanceof Group) ((Group) component).sort();
+		}
 		if (mode != null) mode.accept(this);
 		components.forEach(it -> it.onAddToGUI(con, player));
 	}

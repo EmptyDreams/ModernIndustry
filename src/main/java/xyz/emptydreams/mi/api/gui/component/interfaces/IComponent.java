@@ -44,10 +44,19 @@ public interface IComponent {
 	int getY();
 	/** 获取控件在GUI中的X轴坐标 */
 	int getX();
-	/** 获取高度 */
+	/** 获取显示高度 */
 	int getHeight();
-	/** 获取宽度 */
+	/** 获取显示宽度 */
 	int getWidth();
+	
+	/** 获取真实高度（部分控件的尺寸与显示出来的尺寸不同） */
+	default int getRealHeight() {
+		return getHeight();
+	}
+	/** 获取真实宽度（部分控件的尺寸与显示出来的尺寸不同） */
+	default int getRealWidth() {
+		return getWidth();
+	}
 	
 	/**
 	 * 绘制图像，在组件被渲染时调用.

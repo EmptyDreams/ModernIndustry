@@ -1,5 +1,7 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
+import net.minecraft.entity.player.EntityPlayer;
+import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.RollComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.GuiPainter;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
@@ -183,6 +185,18 @@ public class RollGroup extends Group {
 		return (int) (verRoll.getTempo() * innerGroup.getHeight());
 	}
 	
+	@Override
+	public void onAddToGUI(MIFrame con, EntityPlayer player) {
+		super.onAddToGUI(con, player);
+		innerGroup.calculate();
+		if (horRoll != null && innerGroup.getRealWidth() <= innerGroup.getWidth()) {
+			horRoll.setDisable(true);
+		}
+		if (verRoll != null && innerGroup.getRealHeight() <= innerGroup.getHeight()) {
+			verRoll.setDisable(true);
+		}
+	}
+	
 	@Nullable
 	@Override
 	public IComponent getMouseTarget(float mouseX, float mouseY) {
@@ -231,13 +245,6 @@ public class RollGroup extends Group {
 		that.innerGroup.setLocation(x, y);
 		that.innerGroup.close();
 		
-		if (horRoll != null && that.innerGroup.getRealWidth() <= that.innerGroup.getWidth()) {
-			horRoll.setDisable(true);
-		}
-		if (verRoll != null && that.innerGroup.getRealHeight() <= that.innerGroup.getHeight()) {
-			verRoll.setDisable(true);
-		}
-		
 		switch (that.vertical) {
 			case RIGHT:
 				verRoll.setLocation(that.innerGroup.getWidth() + 5 + x,
@@ -276,6 +283,9 @@ public class RollGroup extends Group {
 		
 		public void close() {
 			canEdit = false;
+		}
+		
+		public void calculate() {
 			for (IComponent it : this) {
 				int x = it.getX() - getX();
 				int y = it.getY() - getY();
@@ -284,10 +294,11 @@ public class RollGroup extends Group {
 			}
 		}
 		
+		@Override
 		public int getRealHeight() {
 			return realHeight;
 		}
-		
+		@Override
 		public int getRealWidth() {
 			return realWidth;
 		}
