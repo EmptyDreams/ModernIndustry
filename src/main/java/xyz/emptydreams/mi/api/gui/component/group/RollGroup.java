@@ -177,12 +177,12 @@ public class RollGroup extends Group {
 	
 	private int getXOffset() {
 		if (horizontal == HorizontalEnum.NON) return 0;
-		return (int) (horRoll.getTempo() * innerGroup.getWidth());
+		return (int) (-horRoll.getTempo() * innerGroup.getWidth());
 	}
 	
 	private int getYOffset() {
 		if (vertical == VerticalEnum.NON) return 0;
-		return (int) (verRoll.getTempo() * innerGroup.getHeight());
+		return (int) (-verRoll.getTempo() * innerGroup.getHeight());
 	}
 	
 	@Override
