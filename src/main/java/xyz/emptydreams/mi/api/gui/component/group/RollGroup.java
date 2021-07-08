@@ -5,7 +5,6 @@ import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.RollComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.GuiPainter;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
-import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
@@ -42,8 +41,7 @@ public class RollGroup extends Group {
 		innerGroup = new InnerGroup();
 		this.horizontal = StringUtil.checkNull(horizontal, "horizontal");
 		this.vertical = StringUtil.checkNull(vertical, "vertical");
-		super.setControlPanel(RollGroup::putInOrder);
-		super.add(innerGroup);
+		super.setControlPanel(Panels::non);
 	}
 	
 	/** 设置水平方向上的滚动条的高度 */
@@ -169,7 +167,7 @@ public class RollGroup extends Group {
 	
 	@Override
 	public void realTimePaint(GuiPainter painter) {
-		GuiPainter innerPainter = new GuiPainter(painter.getGuiContainer(), 5, innerGroup.getY(),
+		GuiPainter innerPainter = new GuiPainter(painter.getGuiContainer(), innerGroup.getX(), innerGroup.getY(),
 				getXOffset(), getYOffset(), innerGroup.getWidth(), innerGroup.getHeight());
 		innerGroup.realTimePaint(innerPainter);
 		if (verRoll != null) verRoll.realTimePaint(painter);
@@ -188,7 +186,7 @@ public class RollGroup extends Group {
 	
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
-		innerGroup.close();
+		initGroupComponent();
 		super.onAddToGUI(con, player);
 		innerGroup.calculate();
 		if (horRoll != null && innerGroup.getRealWidth() <= innerGroup.getWidth()) {
@@ -197,6 +195,49 @@ public class RollGroup extends Group {
 		if (verRoll != null && innerGroup.getRealHeight() <= innerGroup.getHeight()) {
 			verRoll.setDisable(true);
 		}
+	}
+	
+	private void initGroupComponent() {
+		innerGroup.close();
+		int x = 5;      int y = 5;              //内部Group的坐标
+		//计算内部Group的大小
+		if (vertical != VerticalEnum.NON) {
+			verRoll = new RollComponent(true);
+			verRoll.setSize(getVerRollWidth(), getVerRollHeight());
+		}
+		if (horizontal != HorizontalEnum.NON) {
+			horRoll = new RollComponent(false);
+			horRoll.setSize(getHorRollWidth(),getHorRollHeight());
+		}
+		//计算内部Group的坐标
+		if (vertical == VerticalEnum.LEFT) {
+			x += (5 + verRoll.getWidth());
+		}
+		if (horizontal == HorizontalEnum.UP) {
+			y += (5 + horRoll.getHeight());
+		}
+		innerGroup.setLocation(x, y);
+		switch (vertical) {
+			case RIGHT:
+				verRoll.setLocation(innerGroup.getWidth() + 5 + x,
+						(innerGroup.getHeight() - verRoll.getHeight()) / 2 + y);
+				break;
+			case LEFT:
+				verRoll.setLocation(5, (innerGroup.getHeight() - verRoll.getHeight()) / 2 + y);
+				break;
+			default: break;
+		}
+		switch (horizontal) {
+			case UP:
+				horRoll.setLocation((innerGroup.getWidth() - horRoll.getWidth()) / 2 + x, 5);
+				break;
+			case DOWN:
+				horRoll.setLocation((innerGroup.getWidth() - horRoll.getWidth()) / 2 + x,
+						innerGroup.getHeight() + y + 5);
+				break;
+			default: break;
+		}
+		superAddComponent(verRoll, horRoll, innerGroup);
 	}
 	
 	@Nullable
@@ -219,57 +260,6 @@ public class RollGroup extends Group {
 	public enum HorizontalEnum { UP, DOWN, NON }
 	/** 垂直方向上的滚动条 */
 	public enum VerticalEnum { RIGHT, LEFT, NON }
-	
-	public static void putInOrder(Group group) {
-		if (!(group instanceof RollGroup)) {
-			MISysInfo.err("[RollGroup]整理方法中传入了不支持的参数：" + group.getClass().getName());
-			return;
-		}
-		RollGroup that = (RollGroup) group;
-		int x = 5;      int y = 5;              //内部Group的坐标
-		RollComponent verRoll = null, horRoll = null;
-		//计算内部Group的大小
-		if (that.vertical != VerticalEnum.NON) {
-			verRoll = new RollComponent(true);
-			verRoll.setSize(that.getVerRollWidth(), that.getVerRollHeight());
-		}
-		if (that.horizontal != HorizontalEnum.NON) {
-			horRoll = new RollComponent(false);
-			horRoll.setSize(that.getHorRollWidth(),that.getHorRollHeight());
-		}
-		//计算内部Group的坐标
-		if (that.vertical == VerticalEnum.LEFT) {
-			x += (5 + verRoll.getWidth());
-		}
-		if (that.horizontal == HorizontalEnum.UP) {
-			y += (5 + horRoll.getHeight());
-		}
-		that.innerGroup.setLocation(x, y);
-		
-		switch (that.vertical) {
-			case RIGHT:
-				verRoll.setLocation(that.innerGroup.getWidth() + 5 + x,
-						(that.innerGroup.getHeight() - verRoll.getHeight()) / 2 + y);
-				break;
-			case LEFT:
-				verRoll.setLocation(5, (that.innerGroup.getHeight() - verRoll.getHeight()) / 2 + y);
-				break;
-			default: break;
-		}
-		switch (that.horizontal) {
-			case UP:
-				horRoll.setLocation((that.innerGroup.getWidth() - horRoll.getWidth()) / 2 + x, 5);
-				break;
-			case DOWN:
-				horRoll.setLocation((that.innerGroup.getWidth() - horRoll.getWidth()) / 2 + x,
-						that.innerGroup.getHeight() + y + 5);
-				break;
-			default: break;
-		}
-		that.verRoll = verRoll;
-		that.horRoll = horRoll;
-		that.superAddComponent(verRoll, horRoll);
-	}
 	
 	private static final class InnerGroup extends Group {
 		

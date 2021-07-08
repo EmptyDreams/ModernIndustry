@@ -60,12 +60,13 @@ public class ClassInfoViewerFrame extends MIFrame {
 		setSize(200, 170);
 		try {
 			RollGroup rollGroup = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
-			rollGroup.setControlPanel(Panels::horizontalCenter);
+			rollGroup.setControlPanel(Panels::horizontalUp);
+			rollGroup.setMinDistance(6);
 			rollGroup.setSize(180, 150);
 			rollGroup.setLocation(0, 14);
 			Class<?> clazz = entity.getClass();
-			Group nameGroup = new Group(Panels::verticalCenter);
-			Group valueGroup = new Group(Panels::verticalCenter);
+			Group nameGroup = new Group(Panels::verticalRight);
+			Group valueGroup = new Group(Panels::verticalLeft);
 			while (isContinue(clazz)) {
 				Field[] fields = clazz.getDeclaredFields();
 				clazz = clazz.getSuperclass();
