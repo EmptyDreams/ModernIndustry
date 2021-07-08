@@ -43,6 +43,7 @@ public class RollGroup extends Group {
 		this.horizontal = StringUtil.checkNull(horizontal, "horizontal");
 		this.vertical = StringUtil.checkNull(vertical, "vertical");
 		super.setControlPanel(RollGroup::putInOrder);
+		super.add(innerGroup);
 	}
 	
 	/** 设置水平方向上的滚动条的高度 */
@@ -168,7 +169,7 @@ public class RollGroup extends Group {
 	
 	@Override
 	public void realTimePaint(GuiPainter painter) {
-		GuiPainter innerPainter = new GuiPainter(painter.getGuiContainer(), innerGroup.getX(), innerGroup.getY(),
+		GuiPainter innerPainter = new GuiPainter(painter.getGuiContainer(), 5, innerGroup.getY(),
 				getXOffset(), getYOffset(), innerGroup.getWidth(), innerGroup.getHeight());
 		innerGroup.realTimePaint(innerPainter);
 		if (verRoll != null) verRoll.realTimePaint(painter);
@@ -177,16 +178,17 @@ public class RollGroup extends Group {
 	
 	private int getXOffset() {
 		if (horizontal == HorizontalEnum.NON) return 0;
-		return (int) (-horRoll.getTempo() * innerGroup.getWidth());
+		return (int) (-horRoll.getTempo() * (innerGroup.getRealWidth() - innerGroup.getWidth()));
 	}
 	
 	private int getYOffset() {
 		if (vertical == VerticalEnum.NON) return 0;
-		return (int) (-verRoll.getTempo() * innerGroup.getHeight());
+		return (int) (-verRoll.getTempo() * (innerGroup.getRealHeight() - innerGroup.getHeight()));
 	}
 	
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
+		innerGroup.close();
 		super.onAddToGUI(con, player);
 		innerGroup.calculate();
 		if (horRoll != null && innerGroup.getRealWidth() <= innerGroup.getWidth()) {
@@ -243,7 +245,6 @@ public class RollGroup extends Group {
 			y += (5 + horRoll.getHeight());
 		}
 		that.innerGroup.setLocation(x, y);
-		that.innerGroup.close();
 		
 		switch (that.vertical) {
 			case RIGHT:
@@ -267,7 +268,7 @@ public class RollGroup extends Group {
 		}
 		that.verRoll = verRoll;
 		that.horRoll = horRoll;
-		that.superAddComponent(verRoll, horRoll, that.innerGroup);
+		that.superAddComponent(verRoll, horRoll);
 	}
 	
 	private static final class InnerGroup extends Group {

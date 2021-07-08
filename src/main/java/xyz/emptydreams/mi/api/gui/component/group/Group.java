@@ -141,17 +141,17 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	public void sort() {
 		if (isSort) {
 			isSort = false;
-			mode.accept(this);
+			for (IComponent component : components) {
+				if (component instanceof Group) ((Group) component).sort();
+			}
+			if (mode != null) mode.accept(this);
 		}
 	}
 	
 	@Override
 	public void onAddToGUI(MIFrame con, EntityPlayer player) {
 		super.onAddToGUI(con, player);
-		for (IComponent component : components) {
-			if (component instanceof Group) ((Group) component).sort();
-		}
-		if (mode != null) mode.accept(this);
+		sort();
 		components.forEach(it -> {
 			it.setLocation(it.getX() + getX(), it.getY() + getY());
 			con.allocID(it);

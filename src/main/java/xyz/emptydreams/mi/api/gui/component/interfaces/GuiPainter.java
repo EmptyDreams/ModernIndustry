@@ -54,8 +54,8 @@ public final class GuiPainter {
 		this.yOffset = yOffset + gui.getGuiTop();
 		this.maxWidth = maxWidth;
 		this.maxHeight = maxHeight;
-		float scaleViewX = Minecraft.getMinecraft().displayWidth / (float) gui.width;
-		float scaleViewY = Minecraft.getMinecraft().displayHeight / (float) gui.height;
+		double scaleViewX = Minecraft.getMinecraft().displayWidth / (double) gui.width;
+		double scaleViewY = Minecraft.getMinecraft().displayHeight / (double) gui.height;
 		realX = (int) ((getX() + getGuiContainer().getGuiLeft()) * scaleViewX);
 		realY = (int) ((getY() + getGuiContainer().getGuiTop()) * scaleViewY);
 		realMaxWidth = (int) (this.maxWidth * scaleViewX);
