@@ -15,13 +15,9 @@ public final class Panels {
 	
 	/**
 	 * 水平居中对齐
-	 * <h3>该方法会修改的参数列表：
+	 * <p>该方法会修改的参数列表：
 	 *      <ol><li>Group的大小
 	 *      <li>Group中各组件的坐标</ol>
-	 * <h3>使用的注意事项：
-	 *      <p><b>如果Group是嵌套在另一个Group中的，
-	 *      那么内层的Group必须手动设置大小，
-	 *      外层Group的高度最好手动设置</b>
 	 * @param group 组
 	 */
 	public static void horizontalCenter(Group group) {
@@ -55,13 +51,9 @@ public final class Panels {
 
 	/**
 	 * <p>竖直居中对齐
-	 * <h3>该方法会修改的参数列表：
+	 * <p>该方法会修改的参数列表：
 	 *      <ol><li>Group的大小
 	 *      <li>Group中各组件的坐标</ol>
-	 * <h3>使用的注意事项：
-	 *      <p><b>如果Group是嵌套在另一个Group中的，
-	 *      那么内层的Group必须手动设置大小，
-	 *      外层Group的高度最好手动设置</b>
 	 * @param group 组
 	 */
 	public static void verticalCenter(Group group) {
