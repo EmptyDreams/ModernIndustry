@@ -61,15 +61,19 @@ public final class Panels {
 			allWidth += component.getWidth();
 			allHeight = Math.max(allHeight, component.getHeight());
 		}
-		width = Math.max(width, allWidth);
-		int remain = width - allWidth;
-		if (remain < 0) remain = 0;
-		int interval = remain / (size + 1);
-		interval = Math.max(interval, group.getMinDistance());
-		interval = Math.min(interval, group.getMaxDistance());
-		int realWidth = (size + 1) * interval + width;
-		group.setSize(realWidth, Math.max(group.getHeight(), allHeight));
 		
+		int realWidth;      //真实宽度
+		int interval;       //两个控件间的间隔
+		if (width <= allWidth) {
+			interval = group.getMinDistance();
+			realWidth = (size + 1) * interval + allWidth;
+		} else {
+			int k = (width - allWidth) / (size + 1);
+			k = Math.max(k, group.getMinDistance());
+			interval = Math.min(k, group.getMaxDistance());
+			realWidth = width;
+		}
+		group.setSize(realWidth, Math.max(group.getHeight(), allHeight));
 		
 		int past = (realWidth - (allWidth + interval * (size + 1))) / 2;
 		for (IComponent component : group) {
@@ -125,13 +129,18 @@ public final class Panels {
 			allWidth = Math.max(allWidth, component.getWidth());
 			allHeight += component.getHeight();
 		}
-		height = Math.max(height, allHeight);
-		int remain = height - allHeight;
-		if (remain < 0) remain = 0;
-		int interval = remain / (size + 1);
-		interval = Math.max(interval, group.getMinDistance());
-		interval = Math.min(interval, group.getMaxDistance());
-		int realHeight = (size + 1) * interval + height;
+		
+		int realHeight;      //真实宽度
+		int interval;        //两个控件间的间隔
+		if (height <= allHeight) {
+			interval = group.getMinDistance();
+			realHeight = (size + 1) * interval + allHeight;
+		} else {
+			int k = (height - allHeight) / (size + 1);
+			k = Math.max(k, group.getMinDistance());
+			interval = Math.min(k, group.getMaxDistance());
+			realHeight = height;
+		}
 		group.setSize(Math.max(group.getWidth(), allWidth), realHeight);
 		
 		int past = (realHeight - (allHeight + interval * (size + 1))) / 2;

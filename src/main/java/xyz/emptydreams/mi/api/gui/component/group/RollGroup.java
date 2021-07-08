@@ -200,14 +200,13 @@ public class RollGroup extends Group {
 	private void initGroupComponent() {
 		innerGroup.close();
 		int x = 5;      int y = 5;              //内部Group的坐标
-		//计算内部Group的大小
 		if (vertical != VerticalEnum.NON) {
 			verRoll = new RollComponent(true);
 			verRoll.setSize(getVerRollWidth(), getVerRollHeight());
 		}
 		if (horizontal != HorizontalEnum.NON) {
 			horRoll = new RollComponent(false);
-			horRoll.setSize(getHorRollWidth(),getHorRollHeight());
+			horRoll.setSize(getHorRollWidth(), getHorRollHeight());
 		}
 		//计算内部Group的坐标
 		if (vertical == VerticalEnum.LEFT) {
