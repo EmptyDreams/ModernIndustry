@@ -53,8 +53,11 @@ item.mi.iron_stick.name=铁棒
 #流体
 item.mi.iron_melt.name=铁水
 tile.mi.iron_melt.name=铁水
+#管道
+tile.mi.iron_ft.name=铁质管道
 #调试物品
 item.mi.wireinfo_viewer.name=线缆信息查看器
+item.mi.class_info_viewer.name=TileEntity信息查看器
 #矿物方块
 tile.mi.copper_ore_block.name=铜矿
 tile.mi.tin_ore_block.name=锡矿
