@@ -36,15 +36,16 @@ public final class Panels {
 			allHeight = Math.max(allHeight, component.getHeight());
 		}
 		width = Math.max(width, allWidth);
-		group.setSize(width, Math.max(group.getHeight(), allHeight));
-
 		int remain = width - allWidth;
 		if (remain < 0) remain = 0;
 		int interval = remain / (size + 1);
 		interval = Math.max(interval, group.getMinDistance());
 		interval = Math.min(interval, group.getMaxDistance());
+		int realWidth = (size + 1) * interval + width;
+		group.setSize(realWidth, Math.max(group.getHeight(), allHeight));
 
-		int past = (width - (allWidth + interval * (size + 1))) / 2;
+
+		int past = (realWidth - (allWidth + interval * (size + 1))) / 2;
 		for (IComponent component : group) {
 			component.setLocation(past + interval,
 					(group.getHeight() - component.getHeight()) / 2);
@@ -75,15 +76,15 @@ public final class Panels {
 			allHeight += component.getHeight();
 		}
 		height = Math.max(height, allHeight);
-		group.setSize(Math.max(group.getWidth(), allWidth), height);
-
 		int remain = height - allHeight;
 		if (remain < 0) remain = 0;
 		int interval = remain / (size + 1);
 		interval = Math.max(interval, group.getMinDistance());
 		interval = Math.min(interval, group.getMaxDistance());
+		int realHeight = (size + 1) * interval + height;
+		group.setSize(Math.max(group.getWidth(), allWidth), realHeight);
 
-		int past = (height - (allHeight + interval * (size + 1))) / 2;
+		int past = (realHeight - (allHeight + interval * (size + 1))) / 2;
 		for (IComponent component : group) {
 			component.setLocation((group.getWidth() - component.getWidth()) / 2,
 					past + interval);
