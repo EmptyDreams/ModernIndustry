@@ -85,15 +85,23 @@ public class ClassInfoViewerFrame extends MIFrame {
 		for (Field field : fields) {
 			String nameText = field.getName();
 			if (nameText.contains("$")) continue;
-			if (!Modifier.isPublic(field.getModifiers())) field.setAccessible(true);
 			int color = getStringColor(field);
 			StringComponent name = new StringComponent(nameText);
-			StringComponent value = new StringComponent(String.valueOf(field.get(obj)));
+			StringComponent value = new StringComponent(getValue(field, obj));
 			name.setColor(color);
 			value.setColor(color);
 			nameGroup.add(name);
 			valueGroup.add(value);
 		}
+	}
+	
+	private static String getValue(Field field, Object obj) throws IllegalAccessException {
+		if (!Modifier.isPublic(field.getModifiers())) field.setAccessible(true);
+		Object value = field.get(obj);
+		String text = String.valueOf(value);
+		String hash = '@' + Integer.toHexString(System.identityHashCode(value));
+		if (text.endsWith(hash)) return "未重写toString()";
+		return text;
 	}
 	
 	private static boolean isContinue(Class<?> clazz) {
