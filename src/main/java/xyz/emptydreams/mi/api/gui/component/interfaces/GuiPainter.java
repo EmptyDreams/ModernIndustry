@@ -57,7 +57,7 @@ public final class GuiPainter {
 		double scaleViewX = Minecraft.getMinecraft().displayWidth / (double) gui.width;
 		double scaleViewY = Minecraft.getMinecraft().displayHeight / (double) gui.height;
 		realX = (int) ((getX() + getGuiContainer().getGuiLeft()) * scaleViewX);
-		realY = (int) (((getY() + getGuiContainer().getGuiTop())) * scaleViewY);
+		realY = Minecraft.getMinecraft().displayHeight - (int) (((getY() + getGuiContainer().getGuiTop()) + maxHeight) * scaleViewY);
 		realMaxWidth = (int) (this.maxWidth * scaleViewX);
 		realMaxHeight = (int) (this.maxHeight * scaleViewY);
 	}
@@ -129,7 +129,7 @@ public final class GuiPainter {
 	}
 	
 	private void scissor() {
-		GL11.glScissor(realX, Minecraft.getMinecraft().displayHeight - maxHeight - realY, realMaxWidth, realMaxHeight);
+		GL11.glScissor(realX, realY, realMaxWidth, realMaxHeight);
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 	}
 	

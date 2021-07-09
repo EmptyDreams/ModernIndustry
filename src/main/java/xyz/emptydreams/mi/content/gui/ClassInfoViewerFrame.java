@@ -57,12 +57,12 @@ public class ClassInfoViewerFrame extends MIFrame {
 	
 	public ClassInfoViewerFrame(TileEntity entity, EntityPlayer player) {
 		super(LOCATION_NAME, player);
-		setSize(200, 170);
+		setSize(210, 180);
 		try {
 			RollGroup rollGroup = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
 			rollGroup.setControlPanel(Panels::horizontalUp);
 			rollGroup.setMinDistance(6);
-			rollGroup.setSize(180, 150);
+			rollGroup.setSize(185, 150);
 			rollGroup.setLocation(0, 14);
 			Class<?> clazz = entity.getClass();
 			Group nameGroup = new Group(Panels::verticalRight);
