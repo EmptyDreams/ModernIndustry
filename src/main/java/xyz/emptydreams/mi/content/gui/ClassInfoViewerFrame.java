@@ -83,9 +83,11 @@ public class ClassInfoViewerFrame extends MIFrame {
 	private static void task(Group nameGroup, Group valueGroup, Field[] fields, Object obj)
 			throws IllegalAccessException {
 		for (Field field : fields) {
+			String nameText = field.getName();
+			if (nameText.contains("$")) continue;
 			if (!Modifier.isPublic(field.getModifiers())) field.setAccessible(true);
 			int color = getStringColor(field);
-			StringComponent name = new StringComponent(field.getName());
+			StringComponent name = new StringComponent(nameText);
 			StringComponent value = new StringComponent(String.valueOf(field.get(obj)));
 			name.setColor(color);
 			value.setColor(color);
