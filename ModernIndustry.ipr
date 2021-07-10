@@ -26,7 +26,7 @@
     <option name="GENERATE_NO_WARNINGS" value="true" />
   </component>
   <component name="EntryPointsManager">
-    <list size="13">
+    <list size="14">
       <item index="0" class="java.lang.String" itemvalue="net.minecraftforge.eventbus.api.SubscribeEvent" />
       <item index="1" class="java.lang.String" itemvalue="net.minecraftforge.fml.common.Mod" />
       <item index="2" class="java.lang.String" itemvalue="net.minecraftforge.fml.common.Mod.EventHandler" />
@@ -36,10 +36,11 @@
       <item index="6" class="java.lang.String" itemvalue="xyz.emptydreams.mi.api.register.annotations.AutoPlayerHandle" />
       <item index="7" class="java.lang.String" itemvalue="xyz.emptydreams.mi.api.register.block.AutoBlockRegister" />
       <item index="8" class="java.lang.String" itemvalue="xyz.emptydreams.mi.api.register.block.OreCreate" />
-      <item index="9" class="java.lang.String" itemvalue="xyz.emptydreams.mi.api.register.others.AutoFluid" />
-      <item index="10" class="java.lang.String" itemvalue="xyz.emptydreams.mi.api.register.others.AutoManager" />
-      <item index="11" class="java.lang.String" itemvalue="xyz.emptydreams.mi.api.register.others.AutoPlayerHandle" />
-      <item index="12" class="java.lang.String" itemvalue="xyz.emptydreams.mi.register.block.OreCreate" />
+      <item index="9" class="java.lang.String" itemvalue="xyz.emptydreams.mi.api.register.item.AutoItemRegister" />
+      <item index="10" class="java.lang.String" itemvalue="xyz.emptydreams.mi.api.register.others.AutoFluid" />
+      <item index="11" class="java.lang.String" itemvalue="xyz.emptydreams.mi.api.register.others.AutoManager" />
+      <item index="12" class="java.lang.String" itemvalue="xyz.emptydreams.mi.api.register.others.AutoPlayerHandle" />
+      <item index="13" class="java.lang.String" itemvalue="xyz.emptydreams.mi.register.block.OreCreate" />
     </list>
   </component>
   <component name="GradleMigrationSettings" migrationVersion="1" />
