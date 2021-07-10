@@ -10,13 +10,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
+import xyz.emptydreams.mi.api.register.item.AutoItemRegister;
 import xyz.emptydreams.mi.content.blocks.CommonUtil;
 import xyz.emptydreams.mi.content.gui.ClassInfoViewerFrame;
 
 /**
  * @author EmptyDreams
  */
-//@AutoItemRegister("class_info_viewer")
+@AutoItemRegister("class_info_viewer")
 public class ClassInfoViewer extends Item {
 	
 	public ClassInfoViewer() {
