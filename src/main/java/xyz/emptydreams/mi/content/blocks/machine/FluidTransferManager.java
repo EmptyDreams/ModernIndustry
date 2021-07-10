@@ -10,6 +10,7 @@ import xyz.emptydreams.mi.content.blocks.base.FluidTransferBlock;
  * 包含大部分流体管道
  * @author EmptyDreams
  */
+@SuppressWarnings("unused")
 @AutoManager(block = true)
 public final class FluidTransferManager {
 	

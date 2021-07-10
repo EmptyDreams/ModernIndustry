@@ -9,7 +9,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.register.item.AutoItemRegister;
 import xyz.emptydreams.mi.content.blocks.CommonUtil;
 import xyz.emptydreams.mi.content.gui.ClassInfoViewerFrame;
@@ -33,12 +32,6 @@ public class ClassInfoViewer extends Item {
 		boolean result = CommonUtil.openGui(player, ClassInfoViewerFrame.NAME, worldIn, pos);
 		if (result) return EnumActionResult.SUCCESS;
 		return EnumActionResult.FAIL;
-	}
-	
-	private static StaticFrameClient createFrame(World world, EntityPlayer player, BlockPos pos) {
-		TileEntity entity = world.getTileEntity(pos);
-		if (entity == null) return null;
-		return new StaticFrameClient(new ClassInfoViewerFrame(entity, player), "mi.debug.class_info_viewer");
 	}
 	
 }

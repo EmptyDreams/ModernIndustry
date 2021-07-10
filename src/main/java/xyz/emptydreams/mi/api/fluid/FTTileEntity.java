@@ -11,6 +11,7 @@ import xyz.emptydreams.mi.api.fluid.capabilities.IFluidTransfer;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
+import xyz.emptydreams.mi.content.items.debug.DebugDetails;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -50,8 +51,10 @@ public class FTTileEntity extends BaseTileEntity {
 		return new ArrayList<>(cap.linked);
 	}
 	
+	@DebugDetails
 	public class FluidCapability implements IFluidTransfer {
 		
+		/** 一格管道可以容纳的最大流体量 */
 		public static final int FLUID_TRANSFER_MAX_AMOUNT = 1000;
 		
 		/** 存储连接的设备的方向 */
