@@ -65,7 +65,7 @@ public class RollComponent extends MComponent {
 	
 	/** 获取进度 */
 	public double getTempo() {
-		return ((double) index) / max;
+		return ((double) (index - min)) / max;
 	}
 	
 	/** 设置是否可用 */
@@ -76,8 +76,8 @@ public class RollComponent extends MComponent {
 	@Override
 	public void setSize(int width, int height) {
 		super.setSize(width, height);
-		max = (int) (FULL - (isVertical() ? (15.0 / (height - 2) * FULL) : (15.0 / (width - 2) * FULL)));
-		min = (int) (isVertical() ? (1.5 / (height - 2) * FULL) : (1.5 / (width - 2) * FULL));
+		index = min = (int) ((isVertical() ? (1.0 / (height - 2)) : (1.0 / (width - 2))) * FULL);
+		max = (int) ((1 - (isVertical() ? (15.0 / (height - 2)) : (15.0 / (width - 2)))) * FULL);
 		buttonSize = isVertical() ? width - 2 : height - 2;
 	}
 	
@@ -95,7 +95,7 @@ public class RollComponent extends MComponent {
 			float rY = mouseY - getY();
 			isMouse = isMouseInButton(rX, rY);
 			if (clicked) {
-				index = Math.max(min, Math.min(max, getReLocation(mouseX, mouseY) - reLocation));
+				index = Math.max(min, Math.min(max + min, getReLocation(mouseX, mouseY) - reLocation));
 			}
 		});
 		registryListener((MouseActionListener) (mouseX, mouseY) -> {
@@ -107,7 +107,14 @@ public class RollComponent extends MComponent {
 	}
 	
 	private int getReLocation(float mouseX, float mouseY) {
-		return (int) ((isVertical() ? (mouseY - getY()) / getHeight() : (mouseX - getX()) / getWidth()) * FULL);
+		int result = (int)
+				((isVertical() ? (mouseY - getStart()) / getHeight()
+						: (mouseX - getStart()) / getWidth()) * FULL);
+		return Math.max(result, 0);
+	}
+	
+	private int getStart() {
+		return (isVertical() ? getY() : getX()) + 1;
 	}
 	
 	/**
