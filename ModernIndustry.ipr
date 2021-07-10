@@ -218,9 +218,14 @@
     <dictionary name="EmptyDreams">
       <words>
         <w>afdian</w>
+        <w>emptydreams</w>
+        <w>firstperson</w>
         <w>frametime</w>
         <w>mcversion</w>
         <w>modid</w>
+        <w>submodel</w>
+        <w>thirdperson</w>
+        <w>unlocalized</w>
         <w>unscissor</w>
       </words>
     </dictionary>

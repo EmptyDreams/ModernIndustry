@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fluids.BlockFluidClassic;
 import xyz.emptydreams.mi.api.register.machines.BlockRegistryMachine;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.data.json.KeyList;
@@ -110,6 +111,7 @@ public final class BlockJsonBuilder {
 	 * @throws IOException 如果发生I/O错误
 	 */
 	private static boolean isNeedSkip(Block block) throws IOException {
+		if (block instanceof BlockFluidClassic) return true;
 		File file = getFile(OUT_PATH.get(0), block);
 		return !file.createNewFile();
 	}

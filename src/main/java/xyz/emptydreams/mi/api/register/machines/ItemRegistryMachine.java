@@ -63,7 +63,8 @@ public class ItemRegistryMachine extends AutoRegisterMachine<AutoItemRegister, O
 				OreDictionary.registerOre(ore, item);
 		addAutoItem(item);
 		assignField(item, field, item);
-		if (!annotation.model().equals("")) setCustomModelRegister(item, annotation.model());
+		if (!annotation.model().equals(""))
+			setCustomModelRegister(item, annotation.model());
 	}
 	
 	@Override

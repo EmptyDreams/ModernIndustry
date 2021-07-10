@@ -36,6 +36,11 @@ public class BlockRegistryMachine extends AutoRegisterMachine<AutoBlockRegister,
 		Blocks.autoRegister.add(block);
 	}
 	
+	public static void addNoItemBlock(Block block) {
+		addAutoBlock(block);
+		Blocks.noItem.add(block);
+	}
+	
 	/**
 	 * 设置注册customModel的方法名称
 	 * @param methodName 方法名称
@@ -72,7 +77,8 @@ public class BlockRegistryMachine extends AutoRegisterMachine<AutoBlockRegister,
 		Class<?> register = annotation.register();
 		if (AutoBlockRegister.REGISTER.equals(register)) Blocks.autoRegister.add(block);
 		else Blocks.selfRegister.put(register, block);
-		if (!annotation.model().equals("")) setCustomModelRegister(block, annotation.model());
+		if (!annotation.model().equals(""))
+			setCustomModelRegister(block, annotation.model());
 	}
 	
 	@Override
