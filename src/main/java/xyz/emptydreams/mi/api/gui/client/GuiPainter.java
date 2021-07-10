@@ -1,12 +1,12 @@
-package xyz.emptydreams.mi.api.gui.component.interfaces;
+package xyz.emptydreams.mi.api.gui.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 
 import javax.annotation.Nonnull;
 
@@ -54,10 +54,12 @@ public final class GuiPainter {
 		this.yOffset = yOffset + gui.getGuiTop();
 		this.maxWidth = maxWidth;
 		this.maxHeight = maxHeight;
-		double scaleViewX = Minecraft.getMinecraft().displayWidth / (double) gui.width;
-		double scaleViewY = Minecraft.getMinecraft().displayHeight / (double) gui.height;
+		Minecraft mc = Minecraft.getMinecraft();
+		ScaledResolution res = new ScaledResolution(mc);
+		double scaleViewX = mc.displayWidth / res.getScaledWidth_double();
+		double scaleViewY = mc.displayHeight / res.getScaledHeight_double();
 		realX = (int) ((getX() + getGuiContainer().getGuiLeft()) * scaleViewX);
-		realY = Minecraft.getMinecraft().displayHeight - (int) (((getY() + getGuiContainer().getGuiTop()) + maxHeight) * scaleViewY);
+		realY = (int) (mc.displayHeight - ((getY() + getGuiContainer().getGuiTop()) + maxHeight) * scaleViewY);
 		realMaxWidth = (int) (this.maxWidth * scaleViewX);
 		realMaxHeight = (int) (this.maxHeight * scaleViewY);
 	}

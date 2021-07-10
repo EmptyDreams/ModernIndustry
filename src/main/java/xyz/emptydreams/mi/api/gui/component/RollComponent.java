@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
-import xyz.emptydreams.mi.api.gui.component.interfaces.GuiPainter;
+import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseLocationListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseReleasedListener;

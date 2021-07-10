@@ -3,7 +3,7 @@ package xyz.emptydreams.mi.api.gui.component.group;
 import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.RollComponent;
-import xyz.emptydreams.mi.api.gui.component.interfaces.GuiPainter;
+import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
