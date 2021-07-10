@@ -10,6 +10,6 @@ public interface MouseLocationListener extends MouseListener {
 	 * @param mouseX 鼠标X轴坐标（相对于Gui）
 	 * @param mouseY 鼠标Y轴坐标（相对于Gui）
 	 */
-	void mouseMLocation(float mouseX, float mouseY);
+	void mouseLocation(float mouseX, float mouseY);
 	
 }

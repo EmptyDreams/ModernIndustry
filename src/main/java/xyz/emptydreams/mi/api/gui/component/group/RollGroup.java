@@ -1,10 +1,12 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.RollComponent;
-import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
+import xyz.emptydreams.mi.api.gui.listener.mouse.MouseWheelListener;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
@@ -152,6 +154,22 @@ public class RollGroup extends Group {
 	@Override
 	public Iterator<IComponent> iterator() {
 		return innerGroup.iterator();
+	}
+	
+	@Override
+	protected void init(MIFrame frame, EntityPlayer player) {
+		super.init(frame, player);
+		registryListener(new MouseWheelListener() {
+			@Override
+			public void mouseWheel(int wheel) {
+				boolean shift = Minecraft.getMinecraft().player.isSneaking();
+				if (shift && horRoll != null) {
+					horRoll.plusIndex(wheel);
+				} else if (verRoll != null) {
+					verRoll.plusIndex(wheel);
+				}
+			}
+		});
 	}
 	
 	@Override

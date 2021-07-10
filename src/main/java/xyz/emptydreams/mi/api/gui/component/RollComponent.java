@@ -63,6 +63,10 @@ public class RollComponent extends MComponent {
 		return ((double) index) / FULL;
 	}
 	
+	public void plusIndex(int plus) {
+		index += plus;
+	}
+	
 	/** 获取进度 */
 	public double getTempo() {
 		return ((double) (index - min)) / max;

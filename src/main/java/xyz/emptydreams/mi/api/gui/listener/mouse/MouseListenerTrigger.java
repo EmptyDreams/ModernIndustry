@@ -41,7 +41,12 @@ public final class MouseListenerTrigger {
 	
 	/** 尝试触发鼠标坐标事件 */
 	public static void activateLocation(MIFrame frame, IComponent component, float mouseX, float mouseY) {
-		component.activateListener(frame, MouseLocationListener.class, it -> it.mouseMLocation(mouseX, mouseY));
+		component.activateListener(frame, MouseLocationListener.class, it -> it.mouseLocation(mouseX, mouseY));
+	}
+	
+	/** 尝试触发鼠标滚轮事件 */
+	public static void activateWheel(MIFrame frame, IComponent component, int wheel) {
+		component.activateListener(frame, MouseWheelListener.class, it -> it.mouseWheel(wheel));
 	}
 	
 }

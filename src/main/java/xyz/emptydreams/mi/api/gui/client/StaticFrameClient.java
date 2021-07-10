@@ -6,6 +6,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Mouse;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
@@ -200,6 +201,10 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 			if (preComponent != onComponent) {
 				if (preComponent != null) activateExited(inventorySlots, preComponent, mouseX, mouseY);
 				if (onComponent != null) activateEntered(inventorySlots, onComponent, mouseX, mouseY);
+			}
+			if (onComponent != null) {
+				int wheel = Mouse.getDWheel();
+				if (wheel != 0) activateWheel(inventorySlots, onComponent, wheel);
 			}
 			preComponent = onComponent;
 		} else if (preComponent != null) {

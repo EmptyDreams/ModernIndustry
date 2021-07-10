@@ -133,7 +133,7 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 		registryListener((MouseLocationListener) (mouseX, mouseY) ->
 				components.forEach(it -> it.activateListener(frame,
 															 MouseLocationListener.class,
-															 event -> event.mouseMLocation(mouseX, mouseY))));
+															 event -> event.mouseLocation(mouseX, mouseY))));
 	}
 	
 	private boolean isSort = true;
