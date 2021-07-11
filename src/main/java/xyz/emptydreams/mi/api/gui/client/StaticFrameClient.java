@@ -222,8 +222,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 			if (it.getX() <= mouseX && it.getY() <= mouseY
 					&& it.getX() + it.getWidth() >= mouseX
 					&& it.getY() + it.getHeight() >= mouseY) {
-				IComponent c = it.getMouseTarget(mouseX, mouseY);
-				if (c != null) activateWheel(inventorySlots, it, wheel);
+				activateWheel(inventorySlots, it, wheel);
 			}
 		}
 	}
