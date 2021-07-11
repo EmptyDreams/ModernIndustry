@@ -19,7 +19,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 import static xyz.emptydreams.mi.api.gui.listener.mouse.MouseListenerTrigger.*;
@@ -202,20 +201,30 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 				if (preComponent != null) activateExited(inventorySlots, preComponent, mouseX, mouseY);
 				if (onComponent != null) activateEntered(inventorySlots, onComponent, mouseX, mouseY);
 			}
-			if (onComponent != null) {
-				int wheel = Mouse.getDWheel();
-				if (wheel != 0) activateWheel(inventorySlots, onComponent, wheel);
-			}
+			
 			preComponent = onComponent;
 		} else if (preComponent != null) {
 			activateExited(inventorySlots, preComponent, mouseX, mouseY);
 			preComponent = null;
 		}
-		
 		for (IComponent component : components) {
 			GuiPainter painter = new GuiPainter(this, component.getX(), component.getY());
 			activateLocation(inventorySlots, component, mouseX, mouseY);
 			component.realTimePaint(painter);
+		}
+		activeMouseWheelListener(mouseX, mouseY);
+	}
+	
+	private void activeMouseWheelListener(int mouseX, int mouseY) {
+		int wheel = Mouse.getDWheel();
+		if (wheel == 0) return;
+		for (IComponent it : components) {
+			if (it.getX() <= mouseX && it.getY() <= mouseY
+					&& it.getX() + it.getWidth() >= mouseX
+					&& it.getY() + it.getHeight() >= mouseY) {
+				IComponent c = it.getMouseTarget(mouseX, mouseY);
+				if (c != null) activateWheel(inventorySlots, it, wheel);
+			}
 		}
 	}
 	
@@ -262,13 +271,11 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	 */
 	@Nullable
 	public IComponent getComponentFromMouse(float mouseX, float mouseY) {
-		ListIterator<IComponent> it = components.listIterator(components.size());
-		while (it.hasPrevious()) {
-			IComponent component = it.previous();
-			if (component.getX() <= mouseX && component.getY() <= mouseY
-					&& component.getX() + component.getWidth() >= mouseX
-					&& component.getY() + component.getHeight() >= mouseY) {
-				IComponent c = component.getMouseTarget(mouseX, mouseY);
+		for (IComponent it : components) {
+			if (it.getX() <= mouseX && it.getY() <= mouseY
+					&& it.getX() + it.getWidth() >= mouseX
+					&& it.getY() + it.getHeight() >= mouseY) {
+				IComponent c = it.getMouseTarget(mouseX, mouseY);
 				if (c != null) return c;
 			}
 		}
