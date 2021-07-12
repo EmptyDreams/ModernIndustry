@@ -15,7 +15,7 @@ import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.listener.IListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
-import xyz.emptydreams.mi.api.gui.listener.mouse.MouseListenerTrigger;
+import xyz.emptydreams.mi.api.gui.listener.ListenerTrigger;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
@@ -159,7 +159,7 @@ public abstract class MComponent implements IComponent {
 	protected void init(MIFrame frame, EntityPlayer player) {
 		if (craftGuide != null) {
 			registryListener((MouseActionListener) (mouseX, mouseY) ->
-					MouseListenerTrigger.activateAction(frame, craftButton, mouseX, mouseY));
+					ListenerTrigger.activateAction(frame, craftButton, mouseX, mouseY));
 		}
 	}
 	

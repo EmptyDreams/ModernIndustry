@@ -6,6 +6,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.gui.common.IFrame;
@@ -21,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
-import static xyz.emptydreams.mi.api.gui.listener.mouse.MouseListenerTrigger.*;
+import static xyz.emptydreams.mi.api.gui.listener.ListenerTrigger.*;
 import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
 
 /**
@@ -248,6 +249,21 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		mouseX -= getGuiLeft();     mouseY -= getGuiTop();
 		if (clickedComponents != null)
 			activateReleased(inventorySlots, clickedComponents, mouseX, mouseY, state);
+	}
+	
+	private int keyCode = -1;
+	
+	@Override
+	public void handleKeyboardInput() throws IOException {
+		super.handleKeyboardInput();
+		int key = Keyboard.getEventKey();
+		if (Keyboard.getEventKeyState()) {
+			keyCode = key;
+			if (clickedComponents != null) activateKeyPressed(inventorySlots, clickedComponents, key);
+		} else if (keyCode == key) {
+			keyCode = -1;
+			if (clickedComponents != null) activateKeyRelease(inventorySlots, clickedComponents, key);
+		}
 	}
 	
 	/**

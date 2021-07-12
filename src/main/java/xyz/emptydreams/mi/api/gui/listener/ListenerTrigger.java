@@ -1,16 +1,24 @@
-package xyz.emptydreams.mi.api.gui.listener.mouse;
+package xyz.emptydreams.mi.api.gui.listener;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
+import xyz.emptydreams.mi.api.gui.listener.key.KeyListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.MouseClickListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.MouseEnteredListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.MouseExitedListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.MouseLocationListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.MouseReleasedListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.MouseWheelListener;
 
 /**
  * 鼠标按键触发器
  * @author EmptyDreams
  */
 @SideOnly(Side.CLIENT)
-public final class MouseListenerTrigger {
+public final class ListenerTrigger {
 	
 	/** 尝试触发鼠标松开事件 */
 	public static void activateReleased(MIFrame frame, IComponent component,
@@ -47,6 +55,16 @@ public final class MouseListenerTrigger {
 	/** 尝试触发鼠标滚轮事件 */
 	public static void activateWheel(MIFrame frame, IComponent component, int wheel) {
 		component.activateListener(frame, MouseWheelListener.class, it -> it.mouseWheel(wheel));
+	}
+	
+	/** 尝试触发键盘按下事件 */
+	public static void activateKeyPressed(MIFrame frame, IComponent component, int keyCode) {
+		component.activateListener(frame, KeyListener.class, it -> it.pressed(keyCode));
+	}
+	
+	/** 尝试触发键盘释放事件 */
+	public static void activateKeyRelease(MIFrame frame, IComponent component, int keyCode) {
+		component.activateListener(frame, KeyListener.class, it -> it.release(keyCode));
 	}
 	
 }
