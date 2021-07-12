@@ -58,13 +58,13 @@ public final class ListenerTrigger {
 	}
 	
 	/** 尝试触发键盘按下事件 */
-	public static void activateKeyPressed(MIFrame frame, IComponent component, int keyCode) {
-		component.activateListener(frame, KeyListener.class, it -> it.pressed(keyCode));
+	public static void activateKeyPressed(MIFrame frame, IComponent component, int keyCode, boolean isFocus) {
+		component.activateListener(frame, KeyListener.class, it -> it.pressed(keyCode, isFocus));
 	}
 	
 	/** 尝试触发键盘释放事件 */
-	public static void activateKeyRelease(MIFrame frame, IComponent component, int keyCode) {
-		component.activateListener(frame, KeyListener.class, it -> it.release(keyCode));
+	public static void activateKeyRelease(MIFrame frame, IComponent component, int keyCode, boolean isFocus) {
+		component.activateListener(frame, KeyListener.class, it -> it.release(keyCode, isFocus));
 	}
 	
 }

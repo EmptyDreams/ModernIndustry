@@ -13,6 +13,7 @@ import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.common.TitleModelEnum;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -259,10 +260,24 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		int key = Keyboard.getEventKey();
 		if (Keyboard.getEventKeyState()) {
 			keyCode = key;
-			if (clickedComponents != null) activateKeyPressed(inventorySlots, clickedComponents, key);
+			for (IComponent it : components) {
+				activateKeyPressed(inventorySlots, it, key, it == clickedComponents);
+				if (it instanceof IComponentManager) {
+					IComponentManager manager = (IComponentManager) it;
+					manager.forEachComponent(component -> activateKeyPressed(inventorySlots,
+							component, key, component == clickedComponents));
+				}
+			}
 		} else if (keyCode == key) {
 			keyCode = -1;
-			if (clickedComponents != null) activateKeyRelease(inventorySlots, clickedComponents, key);
+			for (IComponent it : components) {
+				activateKeyRelease(inventorySlots, it, key, it == clickedComponents);
+				if (it instanceof IComponentManager) {
+					IComponentManager manager = (IComponentManager) it;
+					manager.forEachComponent(component -> activateKeyRelease(inventorySlots,
+							component, key, component == clickedComponents));
+				}
+			}
 		}
 	}
 	

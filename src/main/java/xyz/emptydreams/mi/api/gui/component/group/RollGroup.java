@@ -1,12 +1,10 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.RollComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
-import xyz.emptydreams.mi.api.gui.listener.key.KeyListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseWheelListener;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
@@ -162,7 +160,7 @@ public class RollGroup extends Group {
 	@Override
 	protected void init(MIFrame frame, EntityPlayer player) {
 		super.init(frame, player);
-		registryListener(new KeyListener() {
+		/*registryListener(new KeyListener() {
 			@Override
 			public void pressed(int keyCode) {
 				isShift = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode() == keyCode;
@@ -172,7 +170,7 @@ public class RollGroup extends Group {
 			public void release(int keyCode) {
 				isShift = false;
 			}
-		});
+		});*/
 		registryListener((MouseWheelListener) wheel -> {
 			if (isShift && horRoll != null) {
 				horRoll.plusIndex(wheel);
