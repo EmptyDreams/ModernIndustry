@@ -1,10 +1,12 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.RollComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
+import xyz.emptydreams.mi.api.gui.listener.key.KeyListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseWheelListener;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
@@ -160,22 +162,31 @@ public class RollGroup extends Group {
 	@Override
 	protected void init(MIFrame frame, EntityPlayer player) {
 		super.init(frame, player);
-		/*registryListener(new KeyListener() {
+		registryListener(new KeyListener() {
 			@Override
-			public void pressed(int keyCode) {
+			public void pressed(int keyCode, boolean isFocus) {
 				isShift = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode() == keyCode;
 			}
 			
 			@Override
-			public void release(int keyCode) {
+			public void release(int keyCode, boolean isFocus) {
 				isShift = false;
 			}
-		});*/
+		});
 		registryListener((MouseWheelListener) wheel -> {
-			if (isShift && horRoll != null) {
-				horRoll.plusIndex(wheel);
-			} else if (verRoll != null) {
-				verRoll.plusIndex(wheel);
+			int roll = - wheel * 3;
+			if (isShift) {
+				if (horRoll == null) {
+					if (verRoll != null) verRoll.plusIndex(roll);
+				} else if (!horRoll.plusIndex(roll)) {
+					if (verRoll != null) verRoll.plusIndex(roll);
+				}
+			} else {
+				if (verRoll == null) {
+					if (horRoll != null) horRoll.plusIndex(roll);
+				} else if (!verRoll.plusIndex(roll)) {
+					if (horRoll != null) horRoll.plusIndex(roll);
+				}
 			}
 		});
 	}

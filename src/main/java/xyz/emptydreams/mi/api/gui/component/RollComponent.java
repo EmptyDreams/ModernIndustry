@@ -63,8 +63,15 @@ public class RollComponent extends MComponent {
 		return ((double) index) / FULL;
 	}
 	
-	public void plusIndex(int plus) {
-		index += plus;
+	public boolean plusIndex(int plus) {
+		if (plus >= 0) {
+			if (index == max) return false;
+			index = Math.min(index + plus, max);
+		} else {
+			if (index == min) return false;
+			index = Math.max(index + plus, min);
+		}
+		return true;
 	}
 	
 	/** 获取进度 */
