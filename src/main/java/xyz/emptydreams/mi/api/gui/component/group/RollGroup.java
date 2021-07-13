@@ -13,7 +13,6 @@ import xyz.emptydreams.mi.api.utils.StringUtil;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.function.Consumer;
 
@@ -92,17 +91,6 @@ public class RollGroup extends Group {
 		if (width <= 20) width = 21;
 		if (height <= 20) height = 21;
 		super.setSize(width, height);
-		int iWidth = width - 4;
-		int iHeight = height - 4;
-		if (vertical != VerticalEnum.NON) {
-			if (getVerRollHeight() == 0) setVerRollHeight(height - 20);
-			iWidth -= getVerRollWidth();
-		}
-		if (horizontal != HorizontalEnum.NON) {
-			if (getHorRollWidth() == 0) setHorRollWidth(width - 20);
-			iHeight -= getHorRollHeight() ;
-		}
-		innerGroup.setSize(iWidth, iHeight);
 	}
 	
 	@Override
@@ -193,12 +181,12 @@ public class RollGroup extends Group {
 	
 	@Override
 	public void paint(@Nonnull Graphics g) {
-		BufferedImage image = new BufferedImage(
+		/*BufferedImage image = new BufferedImage(
 				innerGroup.getWidth(), innerGroup.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics innerG = image.createGraphics();
 		innerGroup.paint(innerG);
 		innerG.dispose();
-		g.drawImage(image, innerGroup.getX() - getX(), innerGroup.getY() - getY(), null);
+		g.drawImage(image, innerGroup.getX() - getX(), innerGroup.getY() - getY(), null);*/
 		super.paint(g);
 	}
 	
@@ -234,28 +222,72 @@ public class RollGroup extends Group {
 		}
 	}
 	
+	@Nullable
+	@Override
+	public IComponent getMouseTarget(float mouseX, float mouseY) {
+		IComponent target = super.getMouseTarget(mouseX, mouseY);
+		if (target == null)
+			return innerGroup.getMouseTarget(mouseX, mouseY);
+		return target;
+	}
+	
+	/** 初始化内部控件 */
 	private void initGroupComponent() {
+		initRollSize();
+		initRollObject();
+		initGroupLocation();
+		initRollLocation();
 		innerGroup.close();
-		int x = 5;      int y = 5;              //内部Group的坐标
+		superAddComponent(verRoll, horRoll, innerGroup);
+	}
+	
+	/** 初始化滚动条对象以及内部Group的尺寸 */
+	private void initRollObject() {
+		int width = getWidth() - 13;  int height = getHeight() - 13;    //内部Group的尺寸
 		if (vertical != VerticalEnum.NON) {
 			verRoll = new RollComponent(true);
 			verRoll.setSize(getVerRollWidth(), getVerRollHeight());
+			width -= getVerRollWidth();
 		}
 		if (horizontal != HorizontalEnum.NON) {
 			horRoll = new RollComponent(false);
 			horRoll.setSize(getHorRollWidth(), getHorRollHeight());
+			height -= getHorRollHeight();
 		}
-		//计算内部Group的坐标
+		innerGroup.setSize(width, height);
+	}
+	
+	/** 初始化滚动条的尺寸 */
+	private void initRollSize() {
+		if (getVerRollHeight() == 0) {
+			setVerRollHeight((horizontal == HorizontalEnum.NON)
+					? (getHeight() - 30 - getHorRollHeight()) : (getHeight() - 30));
+		}
+		if (getHorRollWidth() == 0) {
+			setHorRollWidth((vertical == VerticalEnum.NON)
+					? (getWidth() - 30 - getVerRollWidth()) : (getWidth() - 30));
+		}
+	}
+	
+	/** 初始化内部Group的坐标 */
+	private void initGroupLocation() {
+		int x = 5;               int y = 5;         //内部Group的坐标
 		if (vertical == VerticalEnum.LEFT) {
-			x += (5 + verRoll.getWidth());
+			x += (3 + verRoll.getWidth());
 		}
 		if (horizontal == HorizontalEnum.UP) {
-			y += (5 + horRoll.getHeight());
+			y += (3 + horRoll.getHeight());
 		}
 		innerGroup.setLocation(x, y);
+	}
+	
+	/** 初始化滚动条的坐标 */
+	private void initRollLocation() {
+		int x = innerGroup.getX();
+		int y = innerGroup.getY();
 		switch (vertical) {
 			case RIGHT:
-				verRoll.setLocation(innerGroup.getWidth() + 5 + x,
+				verRoll.setLocation(innerGroup.getWidth() + x + 3,
 						(innerGroup.getHeight() - verRoll.getHeight()) / 2 + y);
 				break;
 			case LEFT:
@@ -269,20 +301,10 @@ public class RollGroup extends Group {
 				break;
 			case DOWN:
 				horRoll.setLocation((innerGroup.getWidth() - horRoll.getWidth()) / 2 + x,
-						innerGroup.getHeight() + y + 5);
+						innerGroup.getHeight() + y + 3);
 				break;
 			default: break;
 		}
-		superAddComponent(verRoll, horRoll, innerGroup);
-	}
-	
-	@Nullable
-	@Override
-	public IComponent getMouseTarget(float mouseX, float mouseY) {
-		IComponent target = super.getMouseTarget(mouseX, mouseY);
-		if (target == null)
-			return innerGroup.getMouseTarget(mouseX, mouseY);
-		return target;
 	}
 	
 	private void superAddComponent(IComponent... components) {
@@ -299,17 +321,18 @@ public class RollGroup extends Group {
 	
 	private static final class InnerGroup extends Group {
 		
-		private boolean canEdit = true;
 		private int realHeight = 0;
 		private int realWidth = 0;
+		
+		private boolean canEdit = true;
+		
+		public void close() {
+			canEdit = false;
+		}
 		
 		@Override
 		public void setSize(int width, int height) {
 			if (canEdit) super.setSize(width, height);
-		}
-		
-		public void close() {
-			canEdit = false;
 		}
 		
 		public void calculate() {

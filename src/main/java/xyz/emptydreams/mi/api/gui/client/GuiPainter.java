@@ -131,8 +131,8 @@ public final class GuiPainter {
 	}
 	
 	private void scissor() {
-		GL11.glScissor(realX, realY, realMaxWidth, realMaxHeight);
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
+		GL11.glScissor(realX, realY, realMaxWidth, realMaxHeight);
 	}
 	
 	private void unscissor() {

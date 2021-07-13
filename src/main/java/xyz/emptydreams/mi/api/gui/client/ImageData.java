@@ -141,10 +141,10 @@ public final class ImageData {
 			put(BUTTON_TRIANGLE_RIGHT_CLICK,            new Node(177, 278, 14, 22));
 			put(BUTTON_TRIANGLE_LEFT,                   new Node(191, 256, 14, 22));
 			put(BUTTON_TRIANGLE_LEFT_CLICK,             new Node(191, 278, 14, 22));
-			put(ROLL_BACKGROUND_VER,                    new Node(205, 256, 14, 44));
+			put(ROLL_BACKGROUND_VER,                    new Node(205, 256, 14, 82));
 			put(ROLL_BUTTON_VER,                        new Node(219, 256, 12, 15));
 			put(ROLL_BUTTON_DISABLE_VER,                new Node(219, 271, 12, 15));
-			put(ROLL_BACKGROUND_HOR,                    new Node(246, 256, 44, 14));
+			put(ROLL_BACKGROUND_HOR,                    new Node(246, 256, 82, 14));
 			put(ROLL_BUTTON_HOR,                        new Node(231, 256, 15, 12));
 			put(ROLL_BUTTON_DISABLE_HOR,                new Node(231, 268, 15, 12));
 		}
