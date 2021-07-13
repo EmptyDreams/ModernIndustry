@@ -181,7 +181,7 @@ public class RollComponent extends MComponent {
 						ImageData.ROLL_BUTTON_VER, buttonSize, 15, getButtonTextureName());
 		} else {
 			if (isDisable()) return ImageData.createTexture(
-						ImageData.ROLL_BUTTON_DISABLE_HOR, buttonSize, 15, getButtonTextureName());
+						ImageData.ROLL_BUTTON_DISABLE_HOR, 15, buttonSize, getButtonTextureName());
 			else return ImageData.createTexture(
 						ImageData.ROLL_BUTTON_HOR, 15, buttonSize, getButtonTextureName());
 		}
