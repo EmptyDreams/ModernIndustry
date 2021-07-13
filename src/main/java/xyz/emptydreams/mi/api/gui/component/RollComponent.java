@@ -2,10 +2,10 @@ package xyz.emptydreams.mi.api.gui.component;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
-import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseLocationListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseReleasedListener;
@@ -64,6 +64,7 @@ public class RollComponent extends MComponent {
 	}
 	
 	public boolean plusIndex(int plus) {
+		if (isDisable) return false;
 		if (plus >= 0) {
 			if (index == max) return false;
 			index = Math.min(index + plus, max);
@@ -101,7 +102,7 @@ public class RollComponent extends MComponent {
 	protected void init(MIFrame frame, EntityPlayer player) {
 		super.init(frame, player);
 		registryListener((MouseLocationListener) (mouseX, mouseY) -> {
-			if (isDisable()) return;
+			if (isDisable) return;
 			float rX = mouseX - getX();
 			float rY = mouseY - getY();
 			isMouse = isMouseInButton(rX, rY);
@@ -110,7 +111,7 @@ public class RollComponent extends MComponent {
 			}
 		});
 		registryListener((MouseActionListener) (mouseX, mouseY) -> {
-			if (isDisable()) return;
+			if (isDisable) return;
 			clicked = isMouse;
 			reLocation = getReLocation(mouseX, mouseY) - index;
 		});
