@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.api.utils;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.utils.data.math.Point2D;
 
+import javax.annotation.Nonnull;
 import java.util.Random;
 
 /**
@@ -16,6 +17,34 @@ public final class MathUtil {
 	/** 获取随机数 */
 	public static Random random() {
 		return RANDOM;
+	}
+	
+	/**
+	 * 将int[]压缩成字符串
+	 * @param ints 要压缩的int[]
+	 * @return  <p>格式："[数据1]*[数量]"（如果数量为1则没有"*[数量]"）
+	 *          <p>例如：{0, 0, 0, 5, 1, 1} -> "0*3,5,1*2"
+	 *          <p>如果int[]为null或int[]长度为0，则返回"null"
+	 */
+	@Nonnull
+	public static String compressArray2String(int[] ints) {
+		if (ints == null || ints.length == 0) return "null";
+		StringBuilder sb = new StringBuilder();
+		int pre = ints[0];
+		int amount = 1;
+		sb.append(pre);
+		for (int i = 1; i < ints.length; i++) {
+			if (ints[i] == pre) {
+				++amount;
+				continue;
+			}
+			if (amount != 1) sb.append('*').append(amount);
+			sb.append(ints[i]);
+			amount = 1;
+			pre = ints[i];
+		}
+		if (amount != 1) sb.append('*').append(amount);
+		return sb.toString();
 	}
 	
 	/**

@@ -55,10 +55,11 @@ public class RuntimeTexture extends AbstractTexture {
 	 * @param name 名称
 	 * @param image 图像资源
 	 */
-	public static void setInstance(String name, BufferedImage image) {
+	public static RuntimeTexture setInstance(String name, BufferedImage image) {
 		RuntimeTexture texture = new RuntimeTexture(image);
 		texture.loadTexture(null);
 		instances.put(name, texture);
+		return texture;
 	}
 	
 	/**

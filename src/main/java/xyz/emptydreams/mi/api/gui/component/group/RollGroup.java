@@ -1,8 +1,8 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
-import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
@@ -10,15 +10,13 @@ import xyz.emptydreams.mi.api.gui.component.RollComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.listener.key.KeyListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseWheelListener;
+import xyz.emptydreams.mi.api.utils.ImageUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.function.Consumer;
 
@@ -190,45 +188,46 @@ public class RollGroup extends Group {
 	@Override
 	public void paint(@Nonnull Graphics g) {
 		if (vertical != VerticalEnum.NON) {
-			Graphics ig = g.create(verRoll.getX(), verRoll.getY(), verRoll.getWidth(), verRoll.getHeight());
+			Graphics ig = g.create(verRoll.getX() - getX(), verRoll.getY() - getY(),
+					verRoll.getWidth(), verRoll.getHeight());
 			verRoll.paint(ig);
 			ig.dispose();
 		}
 		if (horizontal != HorizontalEnum.NON) {
-			Graphics ig = g.create(horRoll.getX(), horRoll.getY(), horRoll.getWidth(), horRoll.getHeight());
+			Graphics ig = g.create(horRoll.getX() - getX(), horRoll.getY() - getY(),
+					horRoll.getWidth(), horRoll.getHeight());
 			horRoll.paint(ig);
 			ig.dispose();
 		}
-		
-		BufferedImage innerImage = new BufferedImage(
-				innerGroup.getWidth(), innerGroup.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-		Graphics innerG = innerImage.createGraphics();
-		innerGroup.paint(innerG);
-		innerG.dispose();
-		try {
-			Raster data = innerImage.getData();
-			Class<? extends Raster> clazz = data.getClass();
-			Field field = clazz.getDeclaredField("data");
-			field.setAccessible(true);
-			byte[] innerData = (byte[]) field.get(data);
-			innerName = Arrays.toString(innerData);
-		} catch (Exception e) {
-			throw TransferException.instance("绘制内部Group时出现异常", e);
-		}
-		RuntimeTexture.instance(innerName, innerImage);
 	}
 	
 	@Override
 	public void realTimePaint(GuiPainter painter) {
+		GlStateManager.color(1, 1, 1);
 		GuiPainter innerPainter = new GuiPainter(painter.getGuiContainer(), innerGroup.getX(), innerGroup.getY(),
 				getXOffset(), getYOffset(), innerGroup.getWidth(), innerGroup.getHeight());
-		RuntimeTexture texture = RuntimeTexture.getInstance(innerName);
-		assert texture != null;
-		innerPainter.drawTexture(0, 0, 0, 0,
+		RuntimeTexture texture = getBackgroundTexture();
+		innerPainter.drawTexture(innerGroup.getX(), innerGroup.getY(), 0, 0,
 				innerGroup.getRealWidth(), innerGroup.getRealHeight(), texture);
 		innerGroup.realTimePaint(innerPainter);
 		if (verRoll != null) verRoll.realTimePaint(painter);
 		if (horRoll != null) horRoll.realTimePaint(painter);
+	}
+	
+	private RuntimeTexture getBackgroundTexture() {
+		RuntimeTexture texture = RuntimeTexture.getInstance(innerName);
+		if (texture == null) texture = createBackgroundTexture();
+		return texture.bindTexture();
+	}
+	
+	private RuntimeTexture createBackgroundTexture() {
+		BufferedImage innerImage = new BufferedImage(
+				innerGroup.getRealWidth(), innerGroup.getRealHeight(), 6);
+		Graphics innerG = innerImage.createGraphics();
+		innerGroup.paint(innerG);
+		innerG.dispose();
+		innerName = ImageUtil.createString(innerImage);
+		return RuntimeTexture.setInstance(innerName, innerImage);
 	}
 	
 	private int getXOffset() {

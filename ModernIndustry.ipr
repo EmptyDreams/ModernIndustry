@@ -223,6 +223,7 @@
         <w>firstperson</w>
         <w>frametime</w>
         <w>indexs</w>
+        <w>ints</w>
         <w>mcversion</w>
         <w>modid</w>
         <w>submodel</w>
