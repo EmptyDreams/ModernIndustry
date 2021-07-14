@@ -53,14 +53,14 @@ public class GuiAddition implements IMessageAddition {
 	
 	@Override
 	public void writeTo(IDataWriter writer) {
-		writer.writeVarint(id);
+		writer.writeVarInt(id);
 		writer.writeString(getGuiID());
 		writer.writeUuid(player);
 	}
 	
 	@Override
 	public void readFrom(IDataReader reader) {
-		id = reader.readVarint();
+		id = reader.readVarInt();
 		guiID = reader.readString();
 		player = reader.readUuid();
 	}

@@ -101,7 +101,7 @@ public abstract class MComponent implements IComponent {
 		//如果事件在服务端触发不需要发送给客户端，因为在服务端触发的事件大部分在客户端也可以触发
 		if (send) {
 			ByteDataOperator data = new ByteDataOperator(operator.size() + indexs.size() * 2);
-			data.writeVarintArray(indexs.toIntArray());
+			data.writeVarIntArray(indexs.toIntArray());
 			data.writeData(operator);
 			sendToServer(frame, data);
 		}
@@ -110,7 +110,7 @@ public abstract class MComponent implements IComponent {
 	@Override
 	public void receive(IDataReader reader) {
 		try {
-			int[] indexs = reader.readVarintArray();
+			int[] indexs = reader.readVarIntArray();
 			IDataReader data = reader.readData();
 			for (int i : indexs) {
 				IListener listener = getListener(i);

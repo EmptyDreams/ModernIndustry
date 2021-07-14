@@ -521,7 +521,7 @@ public final class DataTypes {
 		@Override
 		public void writeToData(IDataWriter writer, StringBuilder data) {
 			int size = data.length();
-			writer.writeVarint(size);
+			writer.writeVarInt(size);
 			for (int i = 0; i < size; ++i) {
 				writer.writeChar(data.charAt(i));
 			}
@@ -529,7 +529,7 @@ public final class DataTypes {
 		
 		@Override
 		public StringBuilder readFromData(IDataReader reader, Supplier<StringBuilder> getter) {
-			int size = reader.readVarint();
+			int size = reader.readVarInt();
 			StringBuilder result = getter == null ? new StringBuilder(size) : getter.get();
 			for (int i = 0; i < size; ++i) {
 				result.append(reader.readChar());
@@ -584,7 +584,7 @@ public final class DataTypes {
 		@Override
 		public void writeToData(IDataWriter writer, StringBuffer data) {
 			int size = data.length();
-			writer.writeVarint(size);
+			writer.writeVarInt(size);
 			for (int i = 0; i < size; ++i) {
 				writer.writeChar(data.charAt(i));
 			}
@@ -592,7 +592,7 @@ public final class DataTypes {
 		
 		@Override
 		public StringBuffer readFromData(IDataReader reader, Supplier<StringBuffer> getter) {
-			int size = reader.readVarint();
+			int size = reader.readVarInt();
 			StringBuffer result = getter == null ? new StringBuffer(size) : getter.get();
 			for (int i = 0; i < size; ++i) {
 				result.append(reader.readChar());
@@ -709,12 +709,12 @@ public final class DataTypes {
 		@Override
 		public void writeToData(IDataWriter writer, Integer[] data) {
 			int[] newData = Arrays.stream(data).mapToInt(Integer::valueOf).toArray();
-			writer.writeVarintArray(newData);
+			writer.writeVarIntArray(newData);
 		}
 		
 		@Override
 		public Integer[] readFromData(IDataReader reader, Supplier<Integer[]> getter) {
-			int[] data = reader.readVarintArray();
+			int[] data = reader.readVarIntArray();
 			return Arrays.stream(data).boxed().toArray(Integer[]::new);
 		}
 		
@@ -1093,7 +1093,7 @@ public final class DataTypes {
 		
 		@Override
 		public void writeToData(IDataWriter writer, Collection<?> data) {
-			writer.writeVarint(data.size());
+			writer.writeVarInt(data.size());
 			for (Object o : data) {
 				DataTypeRegister.write(writer, o.getClass());
 				DataTypeRegister.write(writer, o);
@@ -1103,7 +1103,7 @@ public final class DataTypes {
 		@SuppressWarnings({"rawtypes", "unchecked"})
 		@Override
 		public Collection<?> readFromData(IDataReader reader, Supplier<Collection<?>> getter) {
-			int size = reader.readVarint();
+			int size = reader.readVarInt();
 			Collection collection = getter == null ? null : getter.get();
 			if (collection == null) {
 				throw new NullPointerException("读写Collection时该值应该具有默认值");
@@ -1174,7 +1174,7 @@ public final class DataTypes {
 		@Override
 		public void writeToData(IDataWriter writer, Map<?, ?> data) {
 			if (data == null) return;
-			writer.writeVarint(data.size());
+			writer.writeVarInt(data.size());
 			for (Map.Entry<?, ?> entry : data.entrySet()) {
 				DataTypeRegister.write(writer, entry.getKey().getClass());
 				DataTypeRegister.write(writer, entry.getValue().getClass());
@@ -1186,7 +1186,7 @@ public final class DataTypes {
 		@SuppressWarnings({"rawtypes", "unchecked"})
 		@Override
 		public Map<?, ?> readFromData(IDataReader reader, Supplier<Map<?, ?>> getter) {
-			int size = reader.readVarint();
+			int size = reader.readVarInt();
 			Map map = getter == null ? null : getter.get();
 			if (map == null) {
 				throw new NullPointerException("读写Collection时该值应该具有默认值");
@@ -1270,13 +1270,13 @@ public final class DataTypes {
 		
 		@Override
 		public void writeToData(IDataWriter writer, FluidStack data) {
-			writer.writeVarint(data.amount);
+			writer.writeVarInt(data.amount);
 			writer.writeString(data.getFluid().getName());
 		}
 		
 		@Override
 		public FluidStack readFromData(IDataReader reader, Supplier<FluidStack> getter) {
-			int amount = reader.readVarint();
+			int amount = reader.readVarInt();
 			String name = reader.readString();
 			Fluid fluid = FluidRegistry.getFluid(name);
 			return new FluidStack(fluid, amount);

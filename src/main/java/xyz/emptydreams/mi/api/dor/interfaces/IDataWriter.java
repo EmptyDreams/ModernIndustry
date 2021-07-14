@@ -44,16 +44,16 @@ public interface IDataWriter {
 	void writeFloat(float data);
 	/** 写入一个double */
 	void writeDouble(double data);
-	/** 写入一个varint */
-	void writeVarint(int data);
+	/** 写入一个VarInt */
+	void writeVarInt(int data);
 	/** 写入一个UUID */
 	void writeUuid(UUID data);
 	/** 写入一个字符串 */
 	void writeString(String data);
 	/** 写入一个int数组 */
 	void writeIntArray(int[] data);
-	/** 写入一个varint数组 */
-	void writeVarintArray(int[] data);
+	/** 写入一个VarInt数组 */
+	void writeVarIntArray(int[] data);
 	/** 写入一个byte数组 */
 	void writeByteArray(byte[] data);
 	/** 写入一个BlockPos */

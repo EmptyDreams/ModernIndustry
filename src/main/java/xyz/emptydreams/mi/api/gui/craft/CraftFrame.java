@@ -150,7 +150,7 @@ public class CraftFrame extends MIFrame {
 				new ResourceLocation(ModernIndustry.MODID, "CraftFrame.record"));
 		ByteDataOperator operator = new ByteDataOperator(50);
 		operator.writeString(craft.getName());
-		operator.writeVarint(index);
+		operator.writeVarInt(index);
 		IMessage message = PlayerMessage.instance().create(operator, addition);
 		MessageSender.sendToServer(message);
 	}

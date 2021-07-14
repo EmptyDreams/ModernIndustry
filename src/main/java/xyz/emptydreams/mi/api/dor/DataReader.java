@@ -163,7 +163,7 @@ public final class DataReader implements IDataReader {
 	}
 	
 	@Override
-	public int readVarint() {
+	public int readVarInt() {
 		int result = 0;
 		for (int i = 0; i < 5; ++i) {
 			byte data = readByte();
@@ -185,7 +185,7 @@ public final class DataReader implements IDataReader {
 	
 	@Override
 	public int[] readIntArray() {
-		int size = readVarint();
+		int size = readVarInt();
 		int[] result = new int[size];
 		for (int i = 0; i < size; ++i) {
 			result[i] = readInt();
@@ -194,18 +194,18 @@ public final class DataReader implements IDataReader {
 	}
 	
 	@Override
-	public int[] readVarintArray() {
-		int size = readVarint();
+	public int[] readVarIntArray() {
+		int size = readVarInt();
 		int[] result = new int[size];
 		for (int i = 0; i < size; ++i) {
-			result[i] = readVarint();
+			result[i] = readVarInt();
 		}
 		return result;
 	}
 	
 	@Override
 	public byte[] readByteArray() {
-		int size = readVarint();
+		int size = readVarInt();
 		byte[] result = new byte[size];
 		for (int i = 0; i < size; ++i) {
 			result[i] = readByte();
@@ -225,7 +225,7 @@ public final class DataReader implements IDataReader {
 	
 	@Override
 	public IVoltage readVoltage() {
-		int voltage = readVarint();
+		int voltage = readVarInt();
 		double loss = readDouble();
 		return IVoltage.getInstance(voltage, loss);
 	}
@@ -236,7 +236,7 @@ public final class DataReader implements IDataReader {
 		switch (id) {
 			case 1: return new NBTTagByte(readByte());
 			case 2: return new NBTTagShort(readShort());
-			case 3: return new NBTTagInt(readVarint());
+			case 3: return new NBTTagInt(readVarInt());
 			case 4: return new NBTTagLong(readLong());
 			case 5: return new NBTTagFloat(readFloat());
 			case 6: return new NBTTagDouble(readDouble());
@@ -245,7 +245,7 @@ public final class DataReader implements IDataReader {
 			case 10: return readNBTTagCompound();
 			case 11: return new NBTTagIntArray(readIntArray());
 			case 9:
-				int size = readVarint();
+				int size = readVarInt();
 				NBTTagList list = new NBTTagList();
 				for (int i = 0; i < size; ++i) {
 					list.appendTag(readTag());
@@ -263,7 +263,7 @@ public final class DataReader implements IDataReader {
 	}
 	
 	private NBTTagCompound readNBTTagCompound() {
-		int size = readVarint();
+		int size = readVarInt();
 		NBTTagCompound result = new NBTTagCompound();
 		for (int i = 0; i < size; ++i) {
 			result.setTag(readString(), readTag());

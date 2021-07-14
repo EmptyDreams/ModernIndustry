@@ -180,7 +180,7 @@ public class ByteDataOperator implements IDataOperator {
 	}
 	
 	@Override
-	public int readVarint() {
+	public int readVarInt() {
 		int result = 0;
 		for (int i = 0; i < 5; ++i) {
 			int data = readByte();
@@ -202,7 +202,7 @@ public class ByteDataOperator implements IDataOperator {
 	
 	@Override
 	public int[] readIntArray() {
-		int size = readVarint();
+		int size = readVarInt();
 		int[] result = new int[size];
 		for (int i = 0; i < size; ++i) {
 			result[i] = readInt();
@@ -211,18 +211,18 @@ public class ByteDataOperator implements IDataOperator {
 	}
 	
 	@Override
-	public int[] readVarintArray() {
-		int size = readVarint();
+	public int[] readVarIntArray() {
+		int size = readVarInt();
 		int[] result = new int[size];
 		for (int i = 0; i < size; ++i) {
-			result[i] = readVarint();
+			result[i] = readVarInt();
 		}
 		return result;
 	}
 	
 	@Override
 	public byte[] readByteArray() {
-		int size = readVarint();
+		int size = readVarInt();
 		byte[] result = new byte[size];
 		for (int i = 0; i < size; ++i) {
 			result[i] = readByte();
@@ -237,7 +237,7 @@ public class ByteDataOperator implements IDataOperator {
 	
 	@Override
 	public IDataReader readData() {
-		int size = readVarint();
+		int size = readVarInt();
 		IDataReader reader =  new VarDataReader(memory, nowReadIndex(), size);
 		setReadIndex(nowReadIndex() + size);
 		return reader;
@@ -245,7 +245,7 @@ public class ByteDataOperator implements IDataOperator {
 	
 	@Override
 	public IVoltage readVoltage() {
-		int voltage = readVarint();
+		int voltage = readVarInt();
 		double loss = readDouble();
 		return IVoltage.getInstance(voltage, loss);
 	}
@@ -256,7 +256,7 @@ public class ByteDataOperator implements IDataOperator {
 		switch (id) {
 			case 1: return new NBTTagByte(readByte());
 			case 2: return new NBTTagShort(readShort());
-			case 3: return new NBTTagInt(readVarint());
+			case 3: return new NBTTagInt(readVarInt());
 			case 4: return new NBTTagLong(readLong());
 			case 5: return new NBTTagFloat(readFloat());
 			case 6: return new NBTTagDouble(readDouble());
@@ -265,7 +265,7 @@ public class ByteDataOperator implements IDataOperator {
 			case 10: return readNBTTagCompound();
 			case 11: return new NBTTagIntArray(readIntArray());
 			case 9:
-				int size = readVarint();
+				int size = readVarInt();
 				NBTTagList list = new NBTTagList();
 				for (int i = 0; i < size; ++i) {
 					list.appendTag(readTag());
@@ -335,7 +335,7 @@ public class ByteDataOperator implements IDataOperator {
 	}
 	
 	@Override
-	public void writeVarint(int data) {
+	public void writeVarInt(int data) {
 		for (int i = 0; i < 5; ++i) {
 			int write = data & 0b01111111;
 			data >>>= 7;
@@ -361,23 +361,23 @@ public class ByteDataOperator implements IDataOperator {
 	
 	@Override
 	public void writeIntArray(int[] data) {
-		writeVarint(data.length);
+		writeVarInt(data.length);
 		for (int i : data) {
 			writeInt(i);
 		}
 	}
 	
 	@Override
-	public void writeVarintArray(int[] data) {
-		writeVarint(data.length);
+	public void writeVarIntArray(int[] data) {
+		writeVarInt(data.length);
 		for (int i : data) {
-			writeVarint(i);
+			writeVarInt(i);
 		}
 	}
 	
 	@Override
 	public void writeByteArray(byte[] data) {
-		writeVarint(data.length);
+		writeVarInt(data.length);
 		for (byte b : data) {
 			writeByte(b);
 		}
@@ -392,7 +392,7 @@ public class ByteDataOperator implements IDataOperator {
 	
 	@Override
 	public void writeVoltage(IVoltage data) {
-		writeVarint(data.getVoltage());
+		writeVarInt(data.getVoltage());
 		writeDouble(data.getLossIndex());
 	}
 	
@@ -402,7 +402,7 @@ public class ByteDataOperator implements IDataOperator {
 		switch (data.getId()) {
 			case 1: writeByte(((NBTPrimitive) data).getByte());                break;
 			case 2: writeShort(((NBTPrimitive) data).getShort());              break;
-			case 3: writeVarint(((NBTPrimitive) data).getInt());               break;
+			case 3: writeVarInt(((NBTPrimitive) data).getInt());               break;
 			case 4: writeLong(((NBTPrimitive) data).getLong());                break;
 			case 5: writeFloat(((NBTPrimitive) data).getFloat());              break;
 			case 6: writeDouble(((NBTPrimitive) data).getDouble());            break;
@@ -412,7 +412,7 @@ public class ByteDataOperator implements IDataOperator {
 			case 11: writeIntArray(((NBTTagIntArray) data).getIntArray());     break;
 			case 9:
 				NBTTagList list = (NBTTagList) data;
-				writeVarint(list.tagCount());
+				writeVarInt(list.tagCount());
 				list.forEach(this::writeTag);
 				break;
 			default:
@@ -427,7 +427,7 @@ public class ByteDataOperator implements IDataOperator {
 			field.setAccessible(true);
 			@SuppressWarnings("unchecked")
 			Map<String, NBTBase> map = (Map<String, NBTBase>) field.get(data);
-			writeVarint(data.getSize());
+			writeVarInt(data.getSize());
 			map.forEach((key, value) -> {
 				writeString(key);
 				writeTag(value);
@@ -438,7 +438,7 @@ public class ByteDataOperator implements IDataOperator {
 	}
 	
 	private NBTTagCompound readNBTTagCompound() {
-		int size = readVarint();
+		int size = readVarInt();
 		NBTTagCompound result = new NBTTagCompound();
 		for (int i = 0; i < size; ++i) {
 			result.setTag(readString(), readTag());

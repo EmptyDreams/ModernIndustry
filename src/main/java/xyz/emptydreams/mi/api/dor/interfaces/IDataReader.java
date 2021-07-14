@@ -50,8 +50,8 @@ public interface IDataReader {
 	float readFloat();
 	/** 读取一个double */
 	double readDouble();
-	/** 读取一个varint */
-	int readVarint();
+	/** 读取一个VarInt */
+	int readVarInt();
 	
 	/** 读取一个UUID */
 	@Nonnull UUID readUuid();
@@ -59,8 +59,8 @@ public interface IDataReader {
 	@Nonnull String readString();
 	/** 读取一个int数组 */
 	@Nonnull int[] readIntArray();
-	/** 读取一个varint数组 */
-	@Nonnull int[] readVarintArray();
+	/** 读取一个VarInt数组 */
+	@Nonnull int[] readVarIntArray();
 	/** 读取一个byte数组 */
 	@Nonnull byte[] readByteArray();
 	/** 读取一个BlockPos */

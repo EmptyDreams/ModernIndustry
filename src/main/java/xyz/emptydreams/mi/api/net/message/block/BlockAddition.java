@@ -34,13 +34,13 @@ public class BlockAddition implements IMessageAddition {
 	
 	@Override
 	public void writeTo(IDataWriter writer) {
-		writer.writeVarint(world.provider.getDimension());
+		writer.writeVarInt(world.provider.getDimension());
 		writer.writeBlockPos(pos);
 	}
 	
 	@Override
 	public void readFrom(IDataReader reader) {
-		world = WorldUtil.getWorld(reader.readVarint());
+		world = WorldUtil.getWorld(reader.readVarInt());
 		pos = reader.readBlockPos();
 	}
 	

@@ -90,8 +90,8 @@ public final class ItemElement {
 	}
 	
 	public static ItemElement instance(IDataReader reader) {
-		int amount = reader.readVarint();
-		int meta = reader.readVarint();
+		int amount = reader.readVarInt();
+		int meta = reader.readVarInt();
 		String itemName = reader.readString();
 		Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
 		ItemElement element = new ItemElement(item, amount, meta);
@@ -224,8 +224,8 @@ public final class ItemElement {
 	}
 	
 	public void writeToData(IDataWriter writer) {
-		writer.writeVarint(amount);
-		writer.writeVarint(meta);
+		writer.writeVarInt(amount);
+		writer.writeVarInt(meta);
 		writer.writeString(element.getRegistryName().toString());
 	}
 	
