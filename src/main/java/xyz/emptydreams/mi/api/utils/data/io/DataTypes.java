@@ -1,8 +1,11 @@
 package xyz.emptydreams.mi.api.utils.data.io;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -15,6 +18,9 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.register.others.AutoLoader;
 import xyz.emptydreams.mi.api.utils.IOUtils;
+import xyz.emptydreams.mi.api.utils.container.Wrapper;
+import xyz.emptydreams.mi.coremod.other.ICapManagerCheck;
+import xyz.emptydreams.mi.coremod.other.ICapStorageType;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -56,6 +62,7 @@ public final class DataTypes {
 		registry(new VoltageData(),                            50);
 		registry(new FluidStackData(),                         50);
 		registry(new SerializableData());
+		registry(new CapabilityData(),                       2000);
 	}
 	
 	public static final class IntData implements IDataIO<Integer> {
@@ -1433,6 +1440,93 @@ public final class DataTypes {
 			String name = DataTypeRegister.read(buf, String.class, null);
 			Fluid fluid = FluidRegistry.getFluid(name);
 			return new FluidStack(fluid, amount);
+		}
+		
+	}
+	
+	public static final class CapabilityData implements IDataIO<Object> {
+		
+		@Override
+		public boolean match(Class<?> type) {
+			return getCap(type) != null;
+		}
+		
+		@SuppressWarnings({"rawtypes", "unchecked"})
+		@Override
+		public void writeToData(IDataWriter writer, Object data) {
+			Capability cap = getCap(data.getClass());
+			NBTBase nbt = cap.writeNBT(data, null);
+			writer.writeBoolean(nbt == null);
+			if (nbt != null) writer.writeTag(nbt);
+		}
+		
+		@SuppressWarnings({"rawtypes", "unchecked"})
+		@Override
+		public Object readFromData(IDataReader reader, Supplier<Object> getter) {
+			Object obj = getter.get();
+			if (reader.readBoolean()) return obj;
+			Class<?> type = obj.getClass();
+			Capability cap = getCap(type);
+			cap.readNBT(obj, null, reader.readTag());
+			return obj;
+		}
+		
+		@SuppressWarnings({"rawtypes", "unchecked"})
+		@Override
+		public void writeToNBT(NBTTagCompound nbt, String name, Object data) {
+			Capability cap = getCap(data.getClass());
+			NBTBase base = cap.writeNBT(data, null);
+			if (base != null) nbt.setTag(name, base);
+		}
+		
+		@SuppressWarnings({"rawtypes", "unchecked"})
+		@Override
+		public Object readFromNBT(NBTTagCompound nbt, String name, Supplier<Object> getter) {
+			Object obj = getter.get();
+			if (nbt.hasKey(name)) return obj;
+			Class<?> type = obj.getClass();
+			Capability cap = getCap(type);
+			cap.readNBT(obj, null, nbt.getTag(name));
+			return obj;
+		}
+		
+		@SuppressWarnings({"rawtypes", "unchecked"})
+		@Override
+		public void writeToByteBuf(ByteBuf buf, Object data) {
+			Capability cap = getCap(data.getClass());
+			NBTBase nbt = cap.writeNBT(data, null);
+			buf.writeBoolean(nbt == null);
+			if (nbt != null) {
+				DataTypeRegister.write(buf, nbt.getClass());
+				DataTypeRegister.write(buf, nbt);
+			}
+		}
+		
+		@SuppressWarnings({"rawtypes", "unchecked"})
+		@Override
+		public Object readFromByteBuf(ByteBuf buf, Supplier<Object> getter) {
+			Object obj = getter.get();
+			if (buf.readBoolean()) return obj;
+			Class<?> type = obj.getClass();
+			Capability cap = getCap(type);
+			Class<?> clazz = DataTypeRegister.read(buf, Class.class, null);
+			cap.readNBT(obj, null, DataTypeRegister.read(buf, clazz, null));
+			return obj;
+		}
+		
+		@SuppressWarnings("ConstantConditions")
+		private Capability<?> getCap(Class<?> type) {
+			ICapManagerCheck check = (ICapManagerCheck) (Object) CapabilityManager.INSTANCE;
+			Wrapper<Capability<?>> result = new Wrapper<>();
+			check.forEachCaps(it -> {
+				ICapStorageType getter = (ICapStorageType) it;
+				if (getter.getStorageType().isAssignableFrom(type))  {
+					result.set(it);
+					return true;
+				}
+				return false;
+			});
+			return result.get();
 		}
 		
 	}

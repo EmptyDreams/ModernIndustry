@@ -11,7 +11,7 @@ import xyz.emptydreams.mi.coremod.other.ICapManagerCheck;
 import xyz.emptydreams.mi.coremod.other.ICapStorageType;
 
 import java.util.IdentityHashMap;
-import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * @author EmptyDreams
@@ -24,7 +24,8 @@ public class MixinCapabilityManager implements ICapManagerCheck {
 								"Ljava/util/concurrent/Callable;)V",
 			  at = @At(value = "INVOKE",
 					  target = "Ljava/util/IdentityHashMap;" +
-							   "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"))
+							   "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"),
+	          remap = false)
 	private <K, V> V register_put(IdentityHashMap<K, V> identityHashMap, K key, V value) {
 		try {
 			ICapStorageType cap = (ICapStorageType) value;
@@ -40,8 +41,10 @@ public class MixinCapabilityManager implements ICapManagerCheck {
 	private IdentityHashMap<String, Capability<?>> providers;
 	
 	@Override
-	public void forEachCaps(Consumer<Capability<?>> consumer) {
-		providers.values().forEach(consumer);
+	public void forEachCaps(Predicate<Capability<?>> test) {
+		for (Capability<?> cap : providers.values()) {
+			if (test.test(cap)) break;
+		}
 	}
 	
 }

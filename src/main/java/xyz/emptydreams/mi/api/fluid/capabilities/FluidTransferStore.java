@@ -17,8 +17,6 @@ public class FluidTransferStore implements Capability.IStorage<IFluidTransfer> {
 	@Nullable
 	@Override
 	public NBTBase writeNBT(Capability<IFluidTransfer> capability, IFluidTransfer instance, EnumFacing side) {
-		if (instance.fluidAmount() == 0) return null;
-		if (instance.fluid() == null) return null;
 		NBTTagCompound result = new NBTTagCompound();
 		ObjectData.write(instance, result, ".");
 		return result;

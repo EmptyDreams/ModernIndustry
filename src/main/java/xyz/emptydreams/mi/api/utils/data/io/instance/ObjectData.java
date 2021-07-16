@@ -60,7 +60,7 @@ public class ObjectData implements IClassData {
 	
 	@Override
 	public boolean suspend(Class<?> clazz) {
-		return clazz == TileEntity.class;
+		return clazz == null || clazz == TileEntity.class || clazz == Object.class;
 	}
 	
 	@Override
