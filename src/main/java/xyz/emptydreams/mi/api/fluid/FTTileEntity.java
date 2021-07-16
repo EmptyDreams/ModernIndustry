@@ -17,6 +17,7 @@ import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
+import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
@@ -47,7 +48,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
 		if (capability == FluidTransferCapability.TRANSFER
-				&& (facing == null || getLinked().contains(facing))) {
+				&& (facing == null || cap.isLinked(facing))) {
 			//noinspection unchecked
 			return (T) cap;
 		}
@@ -58,10 +59,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		return cap;
 	}
 	
-	private List<EnumFacing> getLinked() {
-		return new ArrayList<>(cap.linked);
-	}
-	
 	@Override
 	public void setPos(BlockPos posIn) {
 		super.setPos(posIn);
@@ -70,7 +67,11 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	
 	@Override
 	public void receive(@Nonnull IDataReader compound) {
-	
+		cap.data = compound.readByte();
+		if (!compound.readBoolean()) {
+			cap.stack = DataTypeRegister.read(compound, FluidStack.class, null);
+		}
+		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
 	/**
@@ -90,7 +91,11 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		if (world.isRemote) return;
 		if (players.size() == world.playerEntities.size()) return;
 		ByteDataOperator operator = new ByteDataOperator(1);
-		//NBTTagCompound nbt = cap.fluid();
+		operator.writeByte((byte) cap.data);
+		operator.writeBoolean(cap.stack == null);
+		if (cap.stack != null) {
+			DataTypeRegister.write(operator, cap.stack);
+		}
 		IMessage message = BlockMessage.instance().create(operator, new BlockAddition(this));
 		MessageSender.sendToClientIf(message, world, player -> {
 			if (players.contains(player.getName()) || !net_range.isIn(new Point3D(player))) return false;
@@ -99,14 +104,19 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		});
 	}
 	
+	@Override
+	public void markDirty() {
+		players.clear();
+		send();
+		super.markDirty();
+	}
+	
 	@DebugDetails
 	public class FluidCapability implements IFluidTransfer {
 		
 		/** 一格管道可以容纳的最大流体量 */
 		public static final int FLUID_TRANSFER_MAX_AMOUNT = 1000;
 		
-		/** 存储连接的设备的方向 */
-		@Storage protected List<EnumFacing> linked = new ArrayList<>(6);
 		/** 存储包含的流体类型 */
 		@Storage protected FluidStack stack = null;
 		/** 六个方向的渲染数据 */
@@ -129,6 +139,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		public void setFluid(@Nullable FluidStack stack) {
 			if (stack == null || stack.amount == 0) this.stack = null;
 			else this.stack = stack.copy();
+			markDirty();
 		}
 		
 		@Override
@@ -136,6 +147,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 			int real = Math.min(amount, stack.amount);
 			if (simulate) return real;
 			stack.amount -= real;
+			markDirty();
 			return real;
 		}
 		
@@ -148,6 +160,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 			}
 			int real = getMaxAmount() - stack.amount;
 			if (!simulate) stack.amount = getMaxAmount();
+			markDirty();
 			return real;
 		}
 		
@@ -168,15 +181,14 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		
 		@Override
 		public boolean link(EnumFacing facing) {
-			if (linked.contains(facing)) return false;
+			if (isLinked(facing)) return false;
 			setData(facing, true);
-			return linked.add(facing);
+			return true;
 		}
 		
 		@Override
 		public void unlink(EnumFacing facing) {
 			setData(facing, false);
-			linked.remove(facing);
 		}
 		
 		private void setData(EnumFacing facing, boolean isLinked) {
@@ -206,6 +218,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 					else data &= 0b110111;
 					break;
 			}
+			markDirty();
 		}
 		
 		@Override
