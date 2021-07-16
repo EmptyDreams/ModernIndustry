@@ -465,7 +465,8 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	}
 	
 	/**
-	 * 这其中写有更新内部数据的代码，重写时应该调用
+	 * <p>像客户端发送服务端存储的信息
+	 * <p><b>这其中写有更新内部数据的代码，重写时应该调用</b>
 	 */
 	public void send() {
 		if (world.isRemote) return;

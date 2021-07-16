@@ -13,7 +13,7 @@ import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.gui.common.GuiLoader;
 import xyz.emptydreams.mi.content.gui.ClassInfoViewerFrame;
 import xyz.emptydreams.mi.content.net.ClassInfoViewerMessage;
-import xyz.emptydreams.mi.coremod.MixinUtil;
+import xyz.emptydreams.mi.coremod.other.MixinUtil;
 
 import java.lang.reflect.Field;
 

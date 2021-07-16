@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.coremod;
+package xyz.emptydreams.mi.coremod.other;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

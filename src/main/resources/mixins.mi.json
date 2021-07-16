@@ -3,6 +3,8 @@
   "mixins": [
     "MixinCraftingHelper",
     "MixinItemStack",
+    "cap.MixinCapability",
+    "cap.MixinCapabilityManager",
     "gui.MixinFMLNetworkHandler"
   ],
   "client": [

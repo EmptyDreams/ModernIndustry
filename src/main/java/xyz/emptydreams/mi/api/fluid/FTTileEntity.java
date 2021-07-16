@@ -6,13 +6,23 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import xyz.emptydreams.mi.api.dor.ByteDataOperator;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.fluid.capabilities.FluidTransferCapability;
 import xyz.emptydreams.mi.api.fluid.capabilities.IFluidTransfer;
+import xyz.emptydreams.mi.api.net.IAutoNetwork;
+import xyz.emptydreams.mi.api.net.handler.MessageSender;
+import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
+import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
+import xyz.emptydreams.mi.api.utils.data.math.Point3D;
+import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 import xyz.emptydreams.mi.content.items.debug.DebugDetails;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +32,9 @@ import java.util.List;
  * @author EmptyDreams
  */
 @AutoTileEntity("FLUID_TRANSFER_TILE_ENTITY")
-public class FTTileEntity extends BaseTileEntity {
+public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	
+	@Storage
 	private final FluidCapability cap = new FluidCapability();
 	
 	@Override
@@ -49,6 +60,43 @@ public class FTTileEntity extends BaseTileEntity {
 	
 	private List<EnumFacing> getLinked() {
 		return new ArrayList<>(cap.linked);
+	}
+	
+	@Override
+	public void setPos(BlockPos posIn) {
+		super.setPos(posIn);
+		net_range = new Range3D(pos.getX(), pos.getY(), pos.getZ(), 128);
+	}
+	
+	@Override
+	public void receive(@Nonnull IDataReader compound) {
+	
+	}
+	
+	/**
+	 * 存储已经更新过的玩家列表，因为作者认为单机时长会更多，所以选择1作为默认值。<br>
+	 * 	不同方块不共用此列表且此列表不会离线存储，当玩家离开方块过远或退出游戏等操作导致
+	 * 		方块暂时“删除”后此列表将重置以保证所有玩家可以正常渲染电线方块
+	 */
+	private final List<String> players = new ArrayList<>(1);
+	/** 存储网络数据传输的更新范围，只有在范围内的玩家需要进行更新 */
+	private Range3D net_range;
+	
+	/**
+	 * <p>像客户端发送服务端存储的信息
+	 * <p><b>这其中写有更新内部数据的代码，重写时应该调用</b>
+	 */
+	public void send() {
+		if (world.isRemote) return;
+		if (players.size() == world.playerEntities.size()) return;
+		ByteDataOperator operator = new ByteDataOperator(1);
+		//NBTTagCompound nbt = cap.fluid();
+		IMessage message = BlockMessage.instance().create(operator, new BlockAddition(this));
+		MessageSender.sendToClientIf(message, world, player -> {
+			if (players.contains(player.getName()) || !net_range.isIn(new Point3D(player))) return false;
+			players.add(player.getName());
+			return true;
+		});
 	}
 	
 	@DebugDetails
