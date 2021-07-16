@@ -31,31 +31,31 @@ import static xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister.registry;
 public final class DataTypes {
 	
 	static {
-		registry(new IntData());
-		registry(new ByteData());
-		registry(new BooleanData());
-		registry(new LongData());
-		registry(new ByteArrayData());
-		registry(new IntArrayData());
-		registry(new ClassData());
-		registry(new StringData());
-		registry(new CollectionData());
-		registry(new PosData());
+		registry(new IntData(),                                 0);
+		registry(new ByteData(),                                0);
+		registry(new BooleanData(),                             0);
+		registry(new LongData(),                                0);
+		registry(new ByteArrayData(),                           0);
+		registry(new IntArrayData(),                            0);
+		registry(new DoubleData(),                              0);
+		registry(new FloatData(),                               0);
+		registry(new ShortData(),                               0);
+		registry(new UuidData(),                                0);
+		registry(new BytePackageArrayData(),                    0);
+		registry(new IntPackageArrayData(),                     0);
+		registry(new ClassData(),                              50);
+		registry(new StringData(),                             50);
+		registry(new CollectionData(),                         50);
+		registry(new PosData(),                                50);
+		registry(new ElementData(),                            50);
+		registry(new MapData(),                                50);
+		registry(new EnumData(),                               50);
+		registry(new NbtData(),                                50);
+		registry(new StringBuilderData(),                      50);
+		registry(new StringBufferData(),                       50);
+		registry(new VoltageData(),                            50);
+		registry(new FluidStackData(),                         50);
 		registry(new SerializableData());
-		registry(new ElementData());
-		registry(new MapData());
-		registry(new DoubleData());
-		registry(new EnumData());
-		registry(new FloatData());
-		registry(new NbtData());
-		registry(new ShortData());
-		registry(new StringBuilderData());
-		registry(new StringBufferData());
-		registry(new UuidData());
-		registry(new VoltageData());
-		registry(new BytePackageArrayData());
-		registry(new IntPackageArrayData());
-		registry(new FluidStackData());
 	}
 	
 	public static final class IntData implements IDataIO<Integer> {
