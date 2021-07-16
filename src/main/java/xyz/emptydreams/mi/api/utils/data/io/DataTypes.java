@@ -31,34 +31,39 @@ import static xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister.registry;
 public final class DataTypes {
 	
 	static {
-		registry(new IntData(), clazz -> clazz == int.class || clazz == Integer.class);
-		registry(new ByteData(), clazz -> clazz == byte.class || clazz == Byte.class);
-		registry(new BooleanData(), clazz -> clazz == boolean.class || clazz == Boolean.class);
-		registry(new LongData(), clazz -> clazz == long.class || clazz == Long.class);
-		registry(new ByteArrayData(), clazz -> clazz == byte[].class);
-		registry(new IntArrayData(), clazz -> clazz == int[].class);
-		registry(new ClassData(), clazz -> clazz == Class.class);
-		registry(new StringData(), clazz -> clazz == String.class);
-		registry(new CollectionData(), Collection.class::isAssignableFrom);
-		registry(new PosData(), BlockPos.class::isAssignableFrom);
-		registry(new SerializableData(), INBTSerializable.class::isAssignableFrom);
-		registry(new ElementData(), clazz -> clazz == ItemElement.class);
-		registry(new MapData(), Map.class::isAssignableFrom);
-		registry(new DoubleData(), clazz -> clazz == double.class || clazz == Double.class);
-		registry(new EnumData(), Enum.class::isAssignableFrom);
-		registry(new FloatData(), clazz -> clazz == float.class || clazz == Float.class);
-		registry(new NbtData(), clazz -> clazz == NBTTagCompound.class);
-		registry(new ShortData(), clazz -> clazz == short.class || clazz == Short.class);
-		registry(new StringBuilderData(), StringBuilder.class::isAssignableFrom);
-		registry(new StringBufferData(), StringBuffer.class::isAssignableFrom);
-		registry(new UuidData(), clazz -> clazz == UUID.class);
-		registry(new VoltageData(), IVoltage.class::isAssignableFrom);
-		registry(new BytePackageArrayData(), clazz -> clazz == Byte[].class);
-		registry(new IntPackageArrayData(), clazz -> clazz == Integer[].class);
-		registry(new FluidStackData(), FluidStack.class::isAssignableFrom);
+		registry(new IntData());
+		registry(new ByteData());
+		registry(new BooleanData());
+		registry(new LongData());
+		registry(new ByteArrayData());
+		registry(new IntArrayData());
+		registry(new ClassData());
+		registry(new StringData());
+		registry(new CollectionData());
+		registry(new PosData());
+		registry(new SerializableData());
+		registry(new ElementData());
+		registry(new MapData());
+		registry(new DoubleData());
+		registry(new EnumData());
+		registry(new FloatData());
+		registry(new NbtData());
+		registry(new ShortData());
+		registry(new StringBuilderData());
+		registry(new StringBufferData());
+		registry(new UuidData());
+		registry(new VoltageData());
+		registry(new BytePackageArrayData());
+		registry(new IntPackageArrayData());
+		registry(new FluidStackData());
 	}
 	
 	public static final class IntData implements IDataIO<Integer> {
+		
+		@Override
+		public boolean match(Class<?> type) {
+			return type == int.class || type == Integer.class;
+		}
 		
 		@Override
 		public void writeToData(IDataWriter writer, Integer data) {
@@ -112,6 +117,11 @@ public final class DataTypes {
 	public static final class ByteData implements IDataIO<Byte> {
 		
 		@Override
+		public boolean match(Class<?> type) {
+			return type == byte.class || type == Byte.class;
+		}
+		
+		@Override
 		public void writeToData(IDataWriter writer, Byte data) {
 			writer.writeByte(data);
 		}
@@ -163,6 +173,11 @@ public final class DataTypes {
 	public static final class BooleanData implements IDataIO<Boolean> {
 		
 		@Override
+		public boolean match(Class<?> type) {
+			return type == boolean.class || type == Boolean.class;
+		}
+		
+		@Override
 		public void writeToData(IDataWriter writer, Boolean data) {
 			writer.writeBoolean(data);
 		}
@@ -195,6 +210,11 @@ public final class DataTypes {
 	}
 	
 	public static final class LongData implements IDataIO<Long> {
+		
+		@Override
+		public boolean match(Class<?> type) {
+			return type == long.class || type == Long.class;
+		}
 		
 		@Override
 		public void writeToData(IDataWriter writer, Long data) {
@@ -248,6 +268,11 @@ public final class DataTypes {
 	public static final class DoubleData implements IDataIO<Double> {
 		
 		@Override
+		public boolean match(Class<?> type) {
+			return type == double.class || type == Double.class;
+		}
+		
+		@Override
 		public void writeToData(IDataWriter writer, Double data) {
 			writer.writeDouble(data);
 		}
@@ -297,6 +322,11 @@ public final class DataTypes {
 	}
 	
 	public static final class ShortData implements IDataIO<Short> {
+		
+		@Override
+		public boolean match(Class<?> type) {
+			return type == short.class || type == Short.class;
+		}
 		
 		@Override
 		public void writeToData(IDataWriter writer, Short data) {
@@ -350,6 +380,11 @@ public final class DataTypes {
 	public static final class FloatData implements IDataIO<Float> {
 		
 		@Override
+		public boolean match(Class<?> type) {
+			return type == float.class || type == Float.class;
+		}
+		
+		@Override
 		public void writeToData(IDataWriter writer, Float data) {
 			writer.writeFloat(data);
 		}
@@ -401,6 +436,11 @@ public final class DataTypes {
 	public static final class IntArrayData implements IDataIO<int[]> {
 		
 		@Override
+		public boolean match(Class<?> type) {
+			return type == int[].class;
+		}
+		
+		@Override
 		public void writeToData(IDataWriter writer, int[] data) {
 			writer.writeIntArray(data);
 		}
@@ -441,6 +481,11 @@ public final class DataTypes {
 	}
 	
 	public static final class ByteArrayData implements IDataIO<byte[]> {
+		
+		@Override
+		public boolean match(Class<?> type) {
+			return type == byte[].class;
+		}
 		
 		@Override
 		public void writeToData(IDataWriter writer, byte[] data) {
@@ -485,6 +530,11 @@ public final class DataTypes {
 	public static final class StringData implements IDataIO<String> {
 		
 		@Override
+		public boolean match(Class<?> type) {
+			return type == String.class;
+		}
+		
+		@Override
 		public void writeToData(IDataWriter writer, String data) {
 			writer.writeString(data);
 		}
@@ -517,6 +567,11 @@ public final class DataTypes {
 	}
 	
 	public static final class StringBuilderData implements IDataIO<StringBuilder> {
+		
+		@Override
+		public boolean match(Class<?> type) {
+			return StringBuilder.class.isAssignableFrom(type);
+		}
 		
 		@Override
 		public void writeToData(IDataWriter writer, StringBuilder data) {
@@ -582,6 +637,11 @@ public final class DataTypes {
 	public static final class StringBufferData implements IDataIO<StringBuffer> {
 		
 		@Override
+		public boolean match(Class<?> type) {
+			return StringBuffer.class.isAssignableFrom(type);
+		}
+		
+		@Override
 		public void writeToData(IDataWriter writer, StringBuffer data) {
 			int size = data.length();
 			writer.writeVarInt(size);
@@ -643,6 +703,11 @@ public final class DataTypes {
 	}
 	
 	public static final class BytePackageArrayData implements IDataIO<Byte[]> {
+		
+		@Override
+		public boolean match(Class<?> type) {
+			return type == Byte[].class;
+		}
 		
 		@Override
 		public void writeToData(IDataWriter writer, Byte[] data) {
@@ -707,6 +772,11 @@ public final class DataTypes {
 	public static final class IntPackageArrayData implements IDataIO<Integer[]> {
 		
 		@Override
+		public boolean match(Class<?> type) {
+			return type == Integer[].class;
+		}
+		
+		@Override
 		public void writeToData(IDataWriter writer, Integer[] data) {
 			int[] newData = Arrays.stream(data).mapToInt(Integer::valueOf).toArray();
 			writer.writeVarIntArray(newData);
@@ -758,6 +828,11 @@ public final class DataTypes {
 	public static final class UuidData implements IDataIO<UUID> {
 		
 		@Override
+		public boolean match(Class<?> type) {
+			return type == UUID.class;
+		}
+		
+		@Override
 		public void writeToData(IDataWriter writer, UUID data) {
 			writer.writeUuid(data);
 		}
@@ -793,6 +868,11 @@ public final class DataTypes {
 	public static final class NbtData implements IDataIO<NBTTagCompound> {
 		
 		@Override
+		public boolean match(Class<?> type) {
+			return type == NBTTagCompound.class;
+		}
+		
+		@Override
 		public void writeToData(IDataWriter writer, NBTTagCompound data) {
 			writer.writeTag(data);
 		}
@@ -825,6 +905,11 @@ public final class DataTypes {
 	}
 	
 	public static final class EnumData implements IDataIO<Enum<?>> {
+		
+		@Override
+		public boolean match(Class<?> type) {
+			return Enum.class.isAssignableFrom(type);
+		}
 		
 		@Override
 		public void writeToData(IDataWriter writer, Enum<?> data) {
@@ -884,6 +969,11 @@ public final class DataTypes {
 	public static final class SerializableData implements IDataIO<INBTSerializable<NBTTagCompound>> {
 		
 		@Override
+		public boolean match(Class<?> type) {
+			return INBTSerializable.class.isAssignableFrom(type);
+		}
+		
+		@Override
 		public void writeToData(IDataWriter writer, INBTSerializable<NBTTagCompound> data) {
 			NBTTagCompound tag = data.serializeNBT();
 			writer.writeTag(tag);
@@ -936,6 +1026,11 @@ public final class DataTypes {
 	public static final class PosData implements IDataIO<BlockPos> {
 		
 		@Override
+		public boolean match(Class<?> type) {
+			return BlockPos.class.isAssignableFrom(type);
+		}
+		
+		@Override
 		public void writeToData(IDataWriter writer, BlockPos data) {
 			writer.writeBlockPos(data);
 		}
@@ -970,6 +1065,11 @@ public final class DataTypes {
 	}
 	
 	public static final class VoltageData implements IDataIO<IVoltage> {
+		
+		@Override
+		public boolean match(Class<?> type) {
+			return IVoltage.class.isAssignableFrom(type);
+		}
 		
 		@Override
 		public void writeToData(IDataWriter writer, IVoltage data) {
@@ -1008,6 +1108,11 @@ public final class DataTypes {
 	}
 	
 	public static final class ClassData implements IDataIO<Class<?>> {
+		
+		@Override
+		public boolean match(Class<?> type) {
+			return type == Class.class;
+		}
 		
 		@Override
 		public void writeToData(IDataWriter writer, Class<?> data) {
@@ -1058,6 +1163,11 @@ public final class DataTypes {
 	public static final class ElementData implements IDataIO<ItemElement> {
 		
 		@Override
+		public boolean match(Class<?> type) {
+			return type == ItemElement.class;
+		}
+		
+		@Override
 		public void writeToData(IDataWriter writer, ItemElement data) {
 			data.writeToData(writer);
 		}
@@ -1090,6 +1200,11 @@ public final class DataTypes {
 	}
 	
 	public static final class CollectionData implements IDataIO<Collection<?>> {
+		
+		@Override
+		public boolean match(Class<?> type) {
+			return Collection.class.isAssignableFrom(type);
+		}
 		
 		@Override
 		public void writeToData(IDataWriter writer, Collection<?> data) {
@@ -1169,7 +1284,12 @@ public final class DataTypes {
 		
 	}
 	
-	public static final class MapData implements IDataIO<Map<?, ?>> {
+	public static final class  MapData implements IDataIO<Map<?, ?>> {
+		
+		@Override
+		public boolean match(Class<?> type) {
+			return Map.class.isAssignableFrom(type);
+		}
 		
 		@Override
 		public void writeToData(IDataWriter writer, Map<?, ?> data) {
@@ -1267,6 +1387,11 @@ public final class DataTypes {
 	}
 	
 	public static final class FluidStackData implements IDataIO<FluidStack> {
+		
+		@Override
+		public boolean match(Class<?> type) {
+			return FluidStack.class.isAssignableFrom(type);
+		}
 		
 		@Override
 		public void writeToData(IDataWriter writer, FluidStack data) {

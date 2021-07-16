@@ -13,6 +13,11 @@ import java.util.function.Supplier;
 public interface IDataIO<T> {
 	
 	/**
+	 * 判断指定的类是否符合该类
+	 */
+	boolean match(Class<?> type);
+	
+	/**
 	 * 写入数据到writer
 	 * @param writer writer对象
 	 * @param data 数据内容

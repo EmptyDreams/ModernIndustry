@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -22,33 +21,31 @@ public final class DataTypeRegister {
 	/** 存储下标 */
 	private static final Set<IndexNode> INDEXS = new TreeSet<>();
 	/** 存储注册列表 */
-	private static final List<List<Node>> NODES = new LinkedList<>();
+	private static final List<List<IDataIO<?>>> NODES = new LinkedList<>();
 	
 	/**
 	 * 注册一个可读写的数据类型. 优先级默认值：1000
 	 * @param io IO操作类
-	 * @param test 用于判断指定类型是否为当前读写器支持的类型
 	 */
-	public static void registry(IDataIO io, Predicate<Class<?>> test) {
-		registry(io, test, 1000);
+	public static void registry(IDataIO io) {
+		registry(io, 1000);
 	}
 	
 	/**
 	 * 注册一个可读写的数据类型
 	 * @param io IO操作类
-	 * @param test 用于判断指定类型是否为当前读写器支持的类型
 	 * @param priority 数据优先级，数值越小越先执行，子类型的优先级应当大于父类型
 	 */
-	public static void registry(IDataIO io, Predicate<Class<?>> test, int priority) {
+	public static void registry(IDataIO io, int priority) {
 		for (IndexNode index : INDEXS) {
 			if (index.priority == priority) {
-				index.getList().add(new Node(io, test));
+				index.getList().add(io);
 				return;
 			}
 		}
 		IndexNode index = new IndexNode(priority);
 		INDEXS.add(index);
-		index.getList().add(new Node(io, test));
+		index.getList().add(io);
 	}
 	
 	/**
@@ -135,9 +132,9 @@ public final class DataTypeRegister {
 	 */
 	private static IDataIO searchNode(Class type) {
 		for (IndexNode index : INDEXS) {
-			List<Node> list = index.getList();
-			for (Node node : list) {
-				if (node.test.test(type)) return node.io;
+			List<IDataIO<?>> list = index.getList();
+			for (IDataIO<?> io : list) {
+				if (io.match(type)) return io;
 			}
 		}
 		throw new NullPointerException("没有找到合适的处理器：" + type.getName());
@@ -156,26 +153,13 @@ public final class DataTypeRegister {
 			NODES.add(new LinkedList<>());
 		}
 		
-		public List<Node> getList() {
+		public List<IDataIO<?>> getList() {
 			return NODES.get(index);
 		}
 		
 		@Override
 		public int compareTo(IndexNode o) {
 			return Integer.compare(priority, o.priority);
-		}
-		
-	}
-	
-	private static final class Node {
-		
-		/** 测试指定的Class是否支持读写 */
-		final Predicate<Class<?>> test;
-		final IDataIO io;
-		
-		Node(IDataIO io, Predicate<Class<?>> test) {
-			this.test = test;
-			this.io = io;
 		}
 		
 	}
