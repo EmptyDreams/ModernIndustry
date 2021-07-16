@@ -3,12 +3,16 @@ package xyz.emptydreams.mi.content.gui;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.event.GuiRegistryEvent;
 import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
@@ -18,8 +22,12 @@ import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.gui.component.group.Group;
 import xyz.emptydreams.mi.api.gui.component.group.Panels;
 import xyz.emptydreams.mi.api.gui.component.group.RollGroup;
+import xyz.emptydreams.mi.api.net.handler.MessageSender;
+import xyz.emptydreams.mi.api.net.message.player.PlayerAddition;
+import xyz.emptydreams.mi.api.net.message.player.PlayerMessage;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.content.items.debug.DebugDetails;
+import xyz.emptydreams.mi.content.net.ClassInfoViewerMessage;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
@@ -41,6 +49,12 @@ public class ClassInfoViewerFrame extends MIFrame {
 			public MIFrame createService(World world, EntityPlayer player, BlockPos pos) {
 				TileEntity te = world.getTileEntity(pos);
 				if (te == null) throw new NullPointerException("指定位置" + pos + "不存在TileEntity");
+				sendToClient(player, te);
+				if (player.world.isRemote) {
+					MIFrame result = new ClassInfoViewerFrame(ClassInfoViewerMessage.getTileEntity(), player);
+					ClassInfoViewerMessage.unUpdate();
+					return result;
+				}
 				return new ClassInfoViewerFrame(te, player);
 			}
 			
@@ -54,6 +68,18 @@ public class ClassInfoViewerFrame extends MIFrame {
 				return new StaticFrameClient(createService(world, player, pos), title);
 			}
 		});
+	}
+	
+	private static void sendToClient(EntityPlayer player, TileEntity te) {
+		if (te.getWorld().isRemote) return;
+		PlayerAddition addition = new PlayerAddition(player,
+				new ResourceLocation(ModernIndustry.MODID, "ClassInfoViewerMessage"));
+		ByteDataOperator operator = new ByteDataOperator();
+		operator.writeBlockPos(te.getPos());
+		NBTTagCompound data = te.writeToNBT(new NBTTagCompound());
+		operator.writeTag(data);
+		IMessage message = PlayerMessage.instance().create(operator, addition);
+		MessageSender.sendToServer(message);
 	}
 	
 	public ClassInfoViewerFrame(TileEntity entity, EntityPlayer player) {

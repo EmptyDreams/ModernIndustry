@@ -26,10 +26,10 @@ import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
+import xyz.emptydreams.mi.api.utils.data.io.Storage;
+import xyz.emptydreams.mi.api.utils.data.io.instance.ObjectData;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
-import xyz.emptydreams.mi.api.utils.data.io.Storage;
-import xyz.emptydreams.mi.api.utils.data.io.ObjectData;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
 import xyz.emptydreams.mi.data.info.CableCache;
 import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
@@ -491,14 +491,14 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		super.writeToNBT(compound);
-		return ObjectData.write(this, compound, ".");
+		if (!world.isRemote) ObjectData.write(this, compound, ".");
+		return super.writeToNBT(compound);
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		ObjectData.read(this, compound, ".");
+		if (compound.hasKey(".")) ObjectData.read(this, compound, ".");
 	}
 	
 	@Override

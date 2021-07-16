@@ -13,7 +13,7 @@ public class ClassDataOperator extends ByteDataOperator {
 	public ClassDataOperator(IClassData object) {
 		this.object = object;
 	}
-
+	
 	public ClassDataOperator(IClassData object, NBTTagCompound nbt, String key) {
 		this(object);
 		writeFromNBT(nbt, key);

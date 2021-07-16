@@ -6,6 +6,7 @@
     "gui.MixinFMLNetworkHandler"
   ],
   "client": [
+    "debug.MixinOpenGuiHandler",
     "gui.MixinEntityRenderer",
     "gui.MixinFMLClientHandler",
     "gui.MixinGuiContainer",
