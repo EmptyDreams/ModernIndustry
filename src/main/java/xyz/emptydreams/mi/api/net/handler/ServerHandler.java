@@ -12,7 +12,7 @@ public class ServerHandler implements IMessageHandler<CommonMessage, IMessage> {
 	
 	@Override
 	public IMessage onMessage(CommonMessage message, MessageContext ctx) {
-		message.parseServer();
+		message.parseServer(ctx.getServerHandler().player);
 		return null;
 	}
 	

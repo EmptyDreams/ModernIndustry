@@ -63,7 +63,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	@Override
 	public void setPos(BlockPos posIn) {
 		super.setPos(posIn);
-		net_range = new Range3D(pos.getX(), pos.getY(), pos.getZ(), 128);
+		netRange = new Range3D(pos.getX(), pos.getY(), pos.getZ(), 128);
 	}
 	
 	@Override
@@ -82,7 +82,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	 */
 	private final List<String> players = new ArrayList<>(1);
 	/** 存储网络数据传输的更新范围，只有在范围内的玩家需要进行更新 */
-	private Range3D net_range;
+	private Range3D netRange;
 	
 	/**
 	 * <p>像客户端发送服务端存储的信息
@@ -99,7 +99,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		}
 		IMessage message = BlockMessage.instance().create(operator, new BlockAddition(this));
 		MessageSender.sendToClientIf(message, world, player -> {
-			if (players.contains(player.getName()) || !net_range.isIn(new Point3D(player))) return false;
+			if (players.contains(player.getName()) || !netRange.isIn(new Point3D(player))) return false;
 			players.add(player.getName());
 			return true;
 		});

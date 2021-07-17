@@ -1,6 +1,7 @@
 package xyz.emptydreams.mi.api.net.handler;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -27,8 +28,8 @@ public class CommonMessage implements IMessage {
 	public CommonMessage() { }
 	
 	/** 服务端解析数据 */
-	public void parseServer() {
-		ServiceRawQueue.add(reader, key);
+	public void parseServer(EntityPlayerMP player) {
+		ServiceRawQueue.add(reader, key, player);
 	}
 	
 	/** 客户端解析数据 */

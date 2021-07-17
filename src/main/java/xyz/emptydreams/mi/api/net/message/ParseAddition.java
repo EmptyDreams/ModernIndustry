@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.net.message;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import xyz.emptydreams.mi.api.net.ParseResultEnum;
 
 /**
@@ -13,6 +14,16 @@ public class ParseAddition {
 	private ParseResultEnum parseResult = ParseResultEnum.THROW;
 	/** 处理次数（包含本次） */
 	private int amount = 0;
+	/** 发包的玩家 */
+	private final EntityPlayerMP player;
+	
+	public ParseAddition(EntityPlayerMP player) {
+		this.player = player;
+	}
+	
+	public ParseAddition() {
+		this(null);
+	}
 	
 	/** 设置本次处理结果 */
 	public ParseAddition setParseResult(ParseResultEnum result) {
@@ -34,6 +45,10 @@ public class ParseAddition {
 	/** 获取当前处理次数（包含本次） */
 	public int getAmount() {
 		return amount;
+	}
+	
+	public EntityPlayerMP getServicePlayer() {
+		return player;
 	}
 	
 	/** @see ParseResultEnum#isRetry()  */

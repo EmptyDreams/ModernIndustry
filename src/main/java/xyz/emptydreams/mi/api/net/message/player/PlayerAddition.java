@@ -6,10 +6,8 @@ import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.net.message.IMessageAddition;
 import xyz.emptydreams.mi.api.utils.StringUtil;
-import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
 /**
  * Player的Addition
@@ -46,17 +44,14 @@ public class PlayerAddition implements IMessageAddition {
 	
 	@Override
 	public void writeTo(IDataWriter writer) {
-		writer.writeUuid(PLAYER.getUniqueID());
 		writer.writeString(KEY.getResourceDomain());
 		writer.writeString(KEY.getResourcePath());
 	}
 	
 	@Override
 	public void readFrom(IDataReader reader) {
-		UUID uuid = reader.readUuid();
 		String modid = reader.readString();
 		String name = reader.readString();
-		PLAYER = WorldUtil.getPlayer(uuid);
 		KEY = new ResourceLocation(modid, name);
 	}
 	

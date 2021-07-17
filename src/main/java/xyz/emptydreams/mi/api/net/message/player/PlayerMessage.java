@@ -29,19 +29,19 @@ public class PlayerMessage implements IMessageHandle<PlayerAddition, ParseAdditi
 	
 	@Override
 	public ParseAddition parseOnClient(@Nonnull IDataReader message, ParseAddition result) {
-		return parse(message, result);
+		PlayerAddition addition = PlayerAddition.instance(message);
+		boolean applyResult = PlayerHandleRegistry.apply(
+				addition.getKey(), null, message.readData());
+		if (applyResult) return result.setParseResult(SUCCESS);
+		MISysInfo.err("没有找到可以处理该信息的Handle");
+		return result.setParseResult(EXCEPTION);
 	}
 	
 	@Override
 	public ParseAddition parseOnServer(@Nonnull IDataReader message, ParseAddition result) {
-		return parse(message, result);
-	}
-	
-	/** 解析消息 */
-	private ParseAddition parse(IDataReader message, ParseAddition result) {
 		PlayerAddition addition = PlayerAddition.instance(message);
 		boolean applyResult = PlayerHandleRegistry.apply(
-							addition.getKey(), addition.getPlayer(), message.readData());
+				addition.getKey(), result.getServicePlayer(), message.readData());
 		if (applyResult) return result.setParseResult(SUCCESS);
 		MISysInfo.err("没有找到可以处理该信息的Handle");
 		return result.setParseResult(EXCEPTION);

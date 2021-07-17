@@ -26,12 +26,12 @@ public final class ClientRawQueue {
 	private static final List<ServiceRawQueue.Node> queue = new LinkedList<>();
 	
 	/** 将一个任务添加到队列中，方法内部自动解析Key值 */
-	public static void add(IDataReader data, String key) {
-		queue.add(new ServiceRawQueue.Node(data, key));
+	public synchronized static void add(IDataReader data, String key) {
+		queue.add(new ServiceRawQueue.Node(data, key, null));
 	}
 	
 	@SubscribeEvent
-	public static void tryToCleanQueue(TickEvent.ClientTickEvent event) {
+	public synchronized static void tryToCleanQueue(TickEvent.ClientTickEvent event) {
 		World world = Minecraft.getMinecraft().world;
 		if (world == null || queue.isEmpty()) return;
 		Iterator<ServiceRawQueue.Node> it = queue.iterator();
