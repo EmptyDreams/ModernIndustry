@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.fluid;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -109,6 +110,12 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		players.clear();
 		send();
 		super.markDirty();
+	}
+	
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		send();
+		return super.getUpdateTag();
 	}
 	
 	@DebugDetails
