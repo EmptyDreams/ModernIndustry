@@ -132,9 +132,9 @@ abstract public class EleTransferBlock extends TEBlockBase {
 		TileEntity fromEntity = worldIn.getTileEntity(fromPos);
 		Block block = fromEntity == null ? worldIn.getBlockState(fromPos).getBlock() : fromEntity.getBlockType();
 		EleSrcCable tew = (EleSrcCable) worldIn.getTileEntity(pos);
-		if (block == Blocks.AIR) {
+		if (block == Blocks.AIR || fromEntity == null) {
 			tew.deleteLink(fromPos);
-		} else if (fromEntity != null) {
+		} else {
 			if (!tew.link(fromPos)) tew.deleteLink(fromPos);
 		}
 	}
