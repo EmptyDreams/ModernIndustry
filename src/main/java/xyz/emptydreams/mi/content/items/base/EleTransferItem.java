@@ -62,9 +62,10 @@ public final class EleTransferItem extends ItemBlock {
         
         ItemStack itemstack = player.getHeldItem(hand);
         if (!itemstack.isEmpty() && player.canPlayerEdit(blockPos, facing, itemstack)) {
+        	IBlockState newState = getBlock().getStateForPlacement(
+        			                    worldIn, pos, facing, hitX, hitY, hitZ, 0, player, hand);
             @SuppressWarnings("SpellCheckingInspection")
-            IBlockState iblockstate1 = placeBlockAt(itemstack, player,
-		                        worldIn, blockPos, this.block.getDefaultState());
+            IBlockState iblockstate1 = placeBlockAt(itemstack, player, blockPos, newState);
            if (iblockstate1 == null) return EnumActionResult.FAIL;
 	        //更新TileEntity
 	        EleSrcCable cable = (EleSrcCable) ((EleTransferBlock) this.block).createNewTileEntity(worldIn, 0);
@@ -120,7 +121,8 @@ public final class EleTransferItem extends ItemBlock {
         }
 	}
 	
-	private IBlockState placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, IBlockState newState) {
+	private IBlockState placeBlockAt(ItemStack stack, EntityPlayer player, BlockPos pos, IBlockState newState) {
+		World world = player.world;
         if (!world.setBlockState(pos, newState, 11)) return null;
 
         IBlockState state = world.getBlockState(pos);
@@ -128,7 +130,7 @@ public final class EleTransferItem extends ItemBlock {
             ItemBlock.setTileEntityNBT(world, player, pos, stack);
             this.block.onBlockPlacedBy(world, pos, state, player, stack);
             if (player instanceof EntityPlayerMP)
-                CriteriaTriggers.PLACED_BLOCK.trigger((EntityPlayerMP)player, pos, stack);
+                CriteriaTriggers.PLACED_BLOCK.trigger((EntityPlayerMP) player, pos, stack);
         }
 
         return state;
