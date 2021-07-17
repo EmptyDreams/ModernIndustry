@@ -3,8 +3,8 @@ package xyz.emptydreams.mi.api.net.message.player;
 import net.minecraftforge.fml.relauncher.Side;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
-import xyz.emptydreams.mi.api.net.ParseResultEnum;
 import xyz.emptydreams.mi.api.net.message.IMessageHandle;
+import xyz.emptydreams.mi.api.net.message.ParseAddition;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 
 import javax.annotation.Nonnull;
@@ -17,7 +17,7 @@ import static xyz.emptydreams.mi.api.net.ParseResultEnum.SUCCESS;
  * <p>处理端：客户端、服务端
  * @author EmptyDreams
  */
-public class PlayerMessage implements IMessageHandle<PlayerAddition> {
+public class PlayerMessage implements IMessageHandle<PlayerAddition, ParseAddition> {
 	
 	public static PlayerMessage instance() {
 		return INSTANCE;
@@ -28,23 +28,23 @@ public class PlayerMessage implements IMessageHandle<PlayerAddition> {
 	private PlayerMessage() { }
 	
 	@Override
-	public ParseResultEnum parseOnClient(@Nonnull IDataReader message) {
-		return parse(message);
+	public ParseAddition parseOnClient(@Nonnull IDataReader message, ParseAddition result) {
+		return parse(message, result);
 	}
 	
 	@Override
-	public ParseResultEnum parseOnServer(@Nonnull IDataReader message) {
-		return parse(message);
+	public ParseAddition parseOnServer(@Nonnull IDataReader message, ParseAddition result) {
+		return parse(message, result);
 	}
 	
 	/** 解析消息 */
-	private ParseResultEnum parse(IDataReader message) {
+	private ParseAddition parse(IDataReader message, ParseAddition result) {
 		PlayerAddition addition = PlayerAddition.instance(message);
-		boolean result = PlayerHandleRegistry.apply(
+		boolean applyResult = PlayerHandleRegistry.apply(
 							addition.getKey(), addition.getPlayer(), message.readData());
-		if (result) return SUCCESS;
+		if (applyResult) return result.setParseResult(SUCCESS);
 		MISysInfo.err("没有找到可以处理该信息的Handle");
-		return EXCEPTION;
+		return result.setParseResult(EXCEPTION);
 	}
 	
 	@Override

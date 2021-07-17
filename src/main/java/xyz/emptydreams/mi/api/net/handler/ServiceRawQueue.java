@@ -5,7 +5,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.net.MessageRegister;
-import xyz.emptydreams.mi.api.net.ParseResultEnum;
+import xyz.emptydreams.mi.api.net.message.ParseAddition;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -31,8 +31,12 @@ public class ServiceRawQueue {
 		Node node;
 		while (it.hasNext()) {
 			node = it.next();
-			ParseResultEnum result = MessageRegister.parseServer(node.reader, node.key);
-			if (!result.isRetry()) {
+			int start = node.reader.nowReadIndex();
+			ParseAddition result = MessageRegister.parseServer(node.reader, node.key, node.addition);
+			if (result.isRetry()) {
+				node.reader.setReadIndex(start);
+				node.addition = result;
+			} else {
 				it.remove();
 			}
 		}
@@ -40,12 +44,14 @@ public class ServiceRawQueue {
 	
 	static final class Node {
 		
-		IDataReader reader;
-		String key;
+		final IDataReader reader;
+		final String key;
+		ParseAddition addition;
 		
 		Node(IDataReader reader, String key) {
 			this.reader = reader;
 			this.key = key;
+			addition = new ParseAddition();
 		}
 		
 	}

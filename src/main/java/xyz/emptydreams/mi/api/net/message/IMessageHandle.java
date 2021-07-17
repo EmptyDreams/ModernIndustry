@@ -4,7 +4,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
-import xyz.emptydreams.mi.api.net.ParseResultEnum;
 import xyz.emptydreams.mi.api.net.handler.CommonMessage;
 
 import javax.annotation.Nonnull;
@@ -18,32 +17,32 @@ import javax.annotation.Nonnull;
  * 4.有"@throws"注释的方法不得抛出规定外的异常
  * @author EmptyDreams
  */
-public interface IMessageHandle<T extends IMessageAddition> {
+public interface IMessageHandle<T extends IMessageAddition, V extends ParseAddition> {
 	
 	/**
-	 * 客户端处理指定消息.<br>
-	 * <b>若消息处理失败，系统默认会直接丢弃该信息，若允许信息重试处理，则需要手动在message写入信息：
-	 * {@code message.setByte("_retry", (byte) 0)}</b><br>
-	 * 补充：数据类型不一定为byte，只需要保证key是"_retry"即可
-	 * @return 消息处理是否成功
+	 * <p>客户端处理指定消息
+	 * <p>补充：数据类型不一定为byte，只需要保证key是"_retry"即可
+	 * @param message 需要进行解析的数据
+	 * @param result 额外数据，初次运行时该对象的数据类型必定为{@link ParseAddition}
+	 * @return 额外数据
 	 * @throws UnsupportedOperationException 如果该信息只能由服务端处理
-	 * @throws NullPointerException 如果message==null或处理时遇到意外错误
+	 * @throws NullPointerException 如果message == null || result == null或处理时遇到意外错误
 	 */
 	@SideOnly(Side.CLIENT)
 	@Nonnull
-	ParseResultEnum parseOnClient(@Nonnull IDataReader message);
+	V parseOnClient(@Nonnull IDataReader message, @Nonnull V result);
 	
 	/**
-	 * 服务端处理指定消息.<br>
-	 * <b>若消息处理失败，系统默认会直接丢弃该信息，若允许信息重试处理，则需要手动在message写入信息：
-	 * {@code message.setByte("_retry", (byte) 0)}</b><br>
-	 * 补充：数据类型不一定为byte，只需要保证key是"_retry"即可
-	 * @return 消息处理是否成功
+	 * <p>服务端处理指定消息
+	 * <p>补充：数据类型不一定为byte，只需要保证key是"_retry"即可
+	 * @param message 需要进行解析的数据
+	 * @param result 额外数据，初次运行时该对象的数据类型必定为{@link ParseAddition}
+	 * @return 额外数据
 	 * @throws UnsupportedOperationException 如果该信息只能由客户端处理
-	 * @throws NullPointerException 如果message==null或处理时遇到意外错误
+	 * @throws NullPointerException 如果message == null || result == null或处理时遇到意外错误
 	 */
 	@Nonnull
-	ParseResultEnum parseOnServer(@Nonnull IDataReader message);
+	V parseOnServer(@Nonnull IDataReader message, @Nonnull V result);
 	
 	/** 获取消息对应的KEY */
 	@Nonnull

@@ -12,8 +12,8 @@ public class NetWorkRegistryEvent extends Event {
 	
 	/** 注册信息类型 */
 	@SuppressWarnings("deprecation")
-	public void registry(IMessageHandle<?>... handles) {
-		for (IMessageHandle<?> handle : handles) {
+	public void registry(IMessageHandle<?, ?>... handles) {
+		for (IMessageHandle<?, ?> handle : handles) {
 			MessageRegister.registry(handle);
 		}
 	}

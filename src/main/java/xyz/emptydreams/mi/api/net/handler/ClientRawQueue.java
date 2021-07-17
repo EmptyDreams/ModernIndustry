@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.net.MessageRegister;
-import xyz.emptydreams.mi.api.net.ParseResultEnum;
+import xyz.emptydreams.mi.api.net.message.ParseAddition;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -38,8 +38,12 @@ public final class ClientRawQueue {
 		ServiceRawQueue.Node node;
 		while (it.hasNext()) {
 			node = it.next();
-			ParseResultEnum result = MessageRegister.parseClient(node.reader, node.key);
-			if (!result.isRetry()) {
+			int start = node.reader.nowReadIndex();
+			ParseAddition result = MessageRegister.parseClient(node.reader, node.key, node.addition);
+			if (result.isRetry()) {
+				node.reader.setReadIndex(start);
+				node.addition = result;
+			} else {
 				it.remove();
 			}
 		}

@@ -7,6 +7,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.event.NetWorkRegistryEvent;
 import xyz.emptydreams.mi.api.net.message.IMessageHandle;
+import xyz.emptydreams.mi.api.net.message.ParseAddition;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.net.message.gui.GuiMessage;
 import xyz.emptydreams.mi.api.net.message.player.PlayerMessage;
@@ -27,7 +28,7 @@ import static xyz.emptydreams.mi.api.net.ParseResultEnum.EXCEPTION;
 @Mod.EventBusSubscriber
 public final class MessageRegister {
 	
-	private static final List<IMessageHandle<?>> INSTANCES = new LinkedList<>();
+	private static final List<IMessageHandle<?, ?>> INSTANCES = new LinkedList<>();
 	
 	/**
 	 * 注册一个信息类型
@@ -35,10 +36,10 @@ public final class MessageRegister {
 	 * @see NetWorkRegistryEvent
 	 */
 	@Deprecated
-	public static void registry(IMessageHandle<?> handle) {
+	public static void registry(IMessageHandle<?, ?> handle) {
 		StringUtil.checkNull(handle, "handle");
 		String key = handle.getKey();
-		for (IMessageHandle<?> instance : INSTANCES) {
+		for (IMessageHandle<?, ?> instance : INSTANCES) {
 			String name = instance.getKey();
 			if (name.hashCode() == key.hashCode() && name.equals(key)) {
 				throw new IllegalArgumentException(
@@ -55,11 +56,12 @@ public final class MessageRegister {
 	 * @param message 要解析的信息
 	 * @return 是否解析成功
 	 */
-	public static ParseResultEnum parseServer(IDataReader message, String key) {
-		for (IMessageHandle<?> it : INSTANCES) {
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	public static ParseAddition parseServer(IDataReader message, String key, ParseAddition parseAddition) {
+		for (IMessageHandle it : INSTANCES) {
 			if (key.hashCode() == it.getKey().hashCode() &&
 					key.equals(it.getKey())) {
-				ParseResultEnum result = it.parseOnServer(message);
+				ParseAddition result = it.parseOnServer(message, parseAddition);
 				if (result.isThrow()) {
 					MISysInfo.err("[MessageRegister]一个信息未被成功处理，该信息被丢弃："
 									+ "\n\tkey =\t" + key
@@ -69,7 +71,7 @@ public final class MessageRegister {
 			}
 		}
 		MISysInfo.err("[MessageRegister]信息未找到处理器：" + key);
-		return EXCEPTION;
+		return parseAddition.setParseResult(EXCEPTION);
 	}
 	
 	/**
@@ -77,18 +79,20 @@ public final class MessageRegister {
 	 * @param message 要解析的信息
 	 * @return 是否解析成功
 	 */
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	@SideOnly(Side.CLIENT)
-	public static ParseResultEnum parseClient(IDataReader message, String key) {
-		for (IMessageHandle<?> it : INSTANCES) {
+	public static ParseAddition parseClient(IDataReader message, String key, ParseAddition parseAddition) {
+		for (IMessageHandle it : INSTANCES) {
 			if (key.hashCode() == it.getKey().hashCode() &&
 					key.equals(it.getKey())) {
-				ParseResultEnum result = it.parseOnClient(message);
-				if (result.isThrow()) MISysInfo.err("[MessageRegister]一个信息未被成功处理，该信息被丢弃");
+				ParseAddition result = it.parseOnClient(message, parseAddition);
+				if (result.isThrow())
+					MISysInfo.err("[MessageRegister]一个信息未被成功处理，该信息被丢弃");
 				return result;
 			}
 		}
 		MISysInfo.err("[MessageRegister]信息未找到处理器：" + key);
-		return EXCEPTION;
+		return parseAddition.setParseResult(EXCEPTION);
 	}
 	
 	@SubscribeEvent
