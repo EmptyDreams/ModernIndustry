@@ -20,12 +20,14 @@ import xyz.emptydreams.mi.api.fluid.capabilities.IFluidTransfer;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
+import xyz.emptydreams.mi.content.blocks.fluids.FTStateEnum;
 import xyz.emptydreams.mi.content.items.base.FluidTransferItem;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
 
 import static xyz.emptydreams.mi.content.blocks.base.EleTransferBlock.*;
+import static xyz.emptydreams.mi.content.blocks.base.MIProperty.FLUID;
 
 /**
  * 流体管道的方块
@@ -68,7 +70,8 @@ abstract public class FluidTransferBlock extends TEBlockBase {
 		@SuppressWarnings("ConstantConditions") IFluidTransfer transfer =
 				worldIn.getTileEntity(pos).getCapability(FluidTransferCapability.TRANSFER, null);
 		if (transfer == null) return getDefaultState();
-		state = state.withProperty(UP, transfer.isLinkedUp()).withProperty(DOWN, transfer.isLinkedDown())
+		state = state.withProperty(FLUID, FTStateEnum.STRAIGHT)
+					.withProperty(UP, transfer.isLinkedUp()).withProperty(DOWN, transfer.isLinkedDown())
 					.withProperty(EAST, transfer.isLinkedEast()).withProperty(WEST, transfer.isLinkedWest())
 					.withProperty(SOUTH, transfer.isLinkedSouth()).withProperty(NORTH, transfer.isLinkedNorth());
 		return state;
@@ -98,7 +101,7 @@ abstract public class FluidTransferBlock extends TEBlockBase {
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, UP, DOWN, SOUTH, NORTH, WEST, EAST);
+		return new BlockStateContainer(this, FLUID, UP, DOWN, SOUTH, NORTH, WEST, EAST);
 	}
 	
 	@Override

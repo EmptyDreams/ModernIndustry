@@ -220,15 +220,18 @@
     <dictionary name="EmptyDreams">
       <words>
         <w>afdian</w>
+        <w>blockstates</w>
         <w>coremod</w>
         <w>emptydreams</w>
         <w>firstperson</w>
         <w>frametime</w>
         <w>indexs</w>
         <w>ints</w>
+        <w>lefthand</w>
         <w>mcversion</w>
         <w>modid</w>
         <w>refmap</w>
+        <w>righthand</w>
         <w>submodel</w>
         <w>thirdperson</w>
         <w>unlocalized</w>

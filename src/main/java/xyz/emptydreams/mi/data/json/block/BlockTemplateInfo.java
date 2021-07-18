@@ -73,6 +73,7 @@ public class BlockTemplateInfo {
 	 * @param state 方块默认的状态
 	 */
 	public boolean match(IBlockState state) {
+		if (classCheck(state)) return true;
 		Set<IProperty<?>> properties = state.getProperties().keySet();
 		if (properties.size() != name.length) return false;
 		if (name.length == 0) return true;
@@ -91,12 +92,12 @@ public class BlockTemplateInfo {
 			}
 			return false;
 		}
-		return classCheck(state);
+		return true;
 	}
 	
 	private boolean classCheck(IBlockState state) {
 		try {
-			if (checkMethod == null) return true;
+			if (checkMethod == null) return false;
 			return (boolean) checkMethod.invoke(null, state);
 		} catch (Exception e) {
 			throw TransferException.instance("方法调用异常", e);

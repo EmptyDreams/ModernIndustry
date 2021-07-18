@@ -4,6 +4,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.util.EnumFacing;
+import xyz.emptydreams.mi.content.blocks.properties.PropertyFluidTransfer;
 
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -39,6 +40,7 @@ public enum BlockPropertyType {
 		}
 		return false;
 	}),
+	FLUID("fluid", it -> it instanceof PropertyFluidTransfer),
 	/** 所有类型 */
 	ALL("*", it -> true);
 	
