@@ -102,9 +102,7 @@ abstract public class EleTransferBlock extends TEBlockBase {
 	@Override
 	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox,
 			List<AxisAlignedBB> list, Entity entityIn, boolean isActualState) {
-		if (!isActualState)
-			state = getActualState(state, worldIn, pos);
-		
+		if (!isActualState) state = getActualState(state, worldIn, pos);
 		addCollisionBoxToList(pos, entityBox, list, B_POINT);
 		if (state.getValue(SOUTH)) addCollisionBoxToList(pos, entityBox, list, B_SOUTH);
 		if (state.getValue(NORTH)) addCollisionBoxToList(pos, entityBox, list, B_NORTH);

@@ -17,8 +17,8 @@ import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 
 import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
-import static xyz.emptydreams.mi.content.blocks.base.MIProperty.HORIZONTAL;
-import static xyz.emptydreams.mi.content.blocks.base.MIProperty.WORKING;
+import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.HORIZONTAL;
+import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.WORKING;
 
 /**
  * 高温火炉

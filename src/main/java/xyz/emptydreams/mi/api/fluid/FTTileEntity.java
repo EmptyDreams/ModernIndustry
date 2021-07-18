@@ -128,6 +128,8 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		@Storage protected FluidStack stack = null;
 		/** 六个方向的渲染数据 */
 		@Storage(byte.class) protected int data = 0b000000;
+		/** 存储管道方向 */
+		@Storage protected EnumFacing facing = EnumFacing.SOUTH;
 		
 		@Override
 		public int fluidAmount() {
@@ -174,6 +176,11 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		@Override
 		public int getMaxAmount() {
 			return FLUID_TRANSFER_MAX_AMOUNT;
+		}
+		
+		@Override
+		public EnumFacing getFacing() {
+			return facing;
 		}
 		
 		@Nullable

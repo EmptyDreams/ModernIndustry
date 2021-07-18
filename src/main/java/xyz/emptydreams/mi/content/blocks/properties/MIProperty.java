@@ -1,9 +1,8 @@
-package xyz.emptydreams.mi.content.blocks.base;
+package xyz.emptydreams.mi.content.blocks.properties;
 
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.util.EnumFacing;
-import xyz.emptydreams.mi.content.blocks.properties.PropertyFluidTransfer;
 
 /**
  * 放置常用的Property
@@ -25,5 +24,7 @@ public final class MIProperty {
 					PropertyDirection.create("vertical", EnumFacing.Plane.VERTICAL);
 	/** 状态：管道 */
 	public static final PropertyFluidTransfer FLUID = PropertyFluidTransfer.create("fluid");
+	/** */
+	
 	
 }

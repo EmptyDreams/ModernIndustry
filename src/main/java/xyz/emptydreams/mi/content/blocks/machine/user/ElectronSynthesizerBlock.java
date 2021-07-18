@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 
-import static xyz.emptydreams.mi.content.blocks.base.MIProperty.WORKING;
+import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.WORKING;
 
 /**
  * @author EmptyDreams

@@ -25,8 +25,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static xyz.emptydreams.mi.content.blocks.base.MIProperty.HORIZONTAL;
-import static xyz.emptydreams.mi.content.blocks.base.MIProperty.WORKING;
+import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.HORIZONTAL;
+import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.WORKING;
 
 /**
  * 火力发电机

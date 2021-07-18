@@ -25,7 +25,7 @@ import xyz.emptydreams.mi.content.blocks.common.CommonBlocks;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-import static xyz.emptydreams.mi.content.blocks.base.MIProperty.HORIZONTAL;
+import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.HORIZONTAL;
 
 /**
  * MI中所有耗电机器的父类

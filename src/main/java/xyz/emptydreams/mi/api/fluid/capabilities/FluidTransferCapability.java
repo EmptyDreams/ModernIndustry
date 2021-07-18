@@ -47,6 +47,10 @@ public class FluidTransferCapability {
 						return 0;
 					}
 					@Override
+					public EnumFacing getFacing() {
+						return null;
+					}
+					@Override
 					public IFluidTransfer getLinkedTransfer(EnumFacing facing) {
 						return null;
 					}

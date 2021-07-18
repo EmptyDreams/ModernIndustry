@@ -18,7 +18,7 @@ import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.content.blocks.CommonUtil;
 import xyz.emptydreams.mi.content.blocks.CraftList;
-import xyz.emptydreams.mi.content.blocks.base.MIProperty;
+import xyz.emptydreams.mi.content.blocks.properties.MIProperty;
 import xyz.emptydreams.mi.content.blocks.tileentity.FrontTileEntity;
 import xyz.emptydreams.mi.content.capabilities.nonburn.NonBurnCapability;
 import xyz.emptydreams.mi.data.info.EnumVoltage;

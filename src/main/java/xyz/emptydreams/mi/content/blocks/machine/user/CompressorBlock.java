@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-import static xyz.emptydreams.mi.content.blocks.base.MIProperty.*;
+import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.*;
 
 /**
  * 压缩机

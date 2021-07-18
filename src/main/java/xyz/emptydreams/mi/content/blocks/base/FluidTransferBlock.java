@@ -5,11 +5,13 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -24,29 +26,35 @@ import xyz.emptydreams.mi.content.blocks.fluids.FTStateEnum;
 import xyz.emptydreams.mi.content.items.base.FluidTransferItem;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Random;
 
 import static xyz.emptydreams.mi.content.blocks.base.EleTransferBlock.*;
-import static xyz.emptydreams.mi.content.blocks.base.MIProperty.FLUID;
+import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.ALL_FACING;
+import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.FLUID;
 
 /**
  * 流体管道的方块
  * @author EmptyDreams
  */
+@SuppressWarnings("deprecation")
 abstract public class FluidTransferBlock extends TEBlockBase {
 	
 	private final Item ITEM;
 	
 	public FluidTransferBlock(String name, String... ores) {
-		super(Material.CIRCUITS);
+		super(Material.IRON);
 		setSoundType(SoundType.SNOW);
 		setHardness(0.5F);
 		setCreativeTab(ModernIndustry.TAB_WIRE);
 		setRegistryName(ModernIndustry.MODID, name);
 		setUnlocalizedName(StringUtil.getUnlocalizedName(name));
-		setDefaultState(getDefaultState().withProperty(SOUTH, false)
+		setDefaultState(blockState.getBaseState().withProperty(SOUTH, false)
 				.withProperty(NORTH, false).withProperty(WEST, false).withProperty(EAST, false)
-				.withProperty(DOWN, false).withProperty(UP, false));
+				.withProperty(DOWN, false).withProperty(UP, false)
+				.withProperty(ALL_FACING, EnumFacing.NORTH)
+				.withProperty(FLUID, FTStateEnum.STRAIGHT));
 		OreDicRegister.registry(this, ores);
 		ITEM = new FluidTransferItem(this, name);
 	}
@@ -71,10 +79,25 @@ abstract public class FluidTransferBlock extends TEBlockBase {
 				worldIn.getTileEntity(pos).getCapability(FluidTransferCapability.TRANSFER, null);
 		if (transfer == null) return getDefaultState();
 		state = state.withProperty(FLUID, FTStateEnum.STRAIGHT)
+					.withProperty(ALL_FACING, transfer.getFacing())
 					.withProperty(UP, transfer.isLinkedUp()).withProperty(DOWN, transfer.isLinkedDown())
 					.withProperty(EAST, transfer.isLinkedEast()).withProperty(WEST, transfer.isLinkedWest())
 					.withProperty(SOUTH, transfer.isLinkedSouth()).withProperty(NORTH, transfer.isLinkedNorth());
 		return state;
+	}
+	
+	@Override
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+		return state.getValue(FLUID).getBoundingBox(state.getValue(ALL_FACING));
+	}
+	
+	@Override
+	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos,
+	                                  AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes,
+	                                  @Nullable Entity entityIn, boolean isActualState) {
+		if (!isActualState) state = getActualState(state, worldIn, pos);
+		state.getValue(FLUID).addCollisionBoxToList(state,
+				it -> addCollisionBoxToList(pos, entityBox, collidingBoxes, it));
 	}
 	
 	@Override
@@ -101,7 +124,7 @@ abstract public class FluidTransferBlock extends TEBlockBase {
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, FLUID, UP, DOWN, SOUTH, NORTH, WEST, EAST);
+		return new BlockStateContainer(this, FLUID, ALL_FACING, UP, DOWN, SOUTH, NORTH, WEST, EAST);
 	}
 	
 	@Override
