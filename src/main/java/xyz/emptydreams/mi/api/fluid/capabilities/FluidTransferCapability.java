@@ -43,6 +43,9 @@ public class FluidTransferCapability {
 						return 0;
 					}
 					@Override
+					public void setFacing(EnumFacing facing) {
+					}
+					@Override
 					public int getMaxAmount() {
 						return 0;
 					}

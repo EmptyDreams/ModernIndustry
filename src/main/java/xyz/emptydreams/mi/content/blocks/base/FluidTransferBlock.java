@@ -6,6 +6,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,7 +24,7 @@ import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.content.blocks.fluids.FTStateEnum;
-import xyz.emptydreams.mi.content.items.base.FluidTransferItem;
+import xyz.emptydreams.mi.content.items.base.ItemBlockExpand;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,7 +57,7 @@ abstract public class FluidTransferBlock extends TEBlockBase {
 				.withProperty(ALL_FACING, EnumFacing.NORTH)
 				.withProperty(FLUID, FTStateEnum.STRAIGHT));
 		OreDicRegister.registry(this, ores);
-		ITEM = new FluidTransferItem(this, name);
+		ITEM = new ItemBlockExpand(this).setRegistryName(getRegistryName());
 	}
 	
 	@Override
@@ -84,6 +85,27 @@ abstract public class FluidTransferBlock extends TEBlockBase {
 					.withProperty(EAST, transfer.isLinkedEast()).withProperty(WEST, transfer.isLinkedWest())
 					.withProperty(SOUTH, transfer.isLinkedSouth()).withProperty(NORTH, transfer.isLinkedNorth());
 		return state;
+	}
+	
+	@Override
+	public TileEntity createTileEntity(ItemStack stack, EntityPlayer player, World world, BlockPos pos,
+	                                   EnumFacing side, float hitX, float hitY, float hitZ) {
+		EnumFacing facing = side.getOpposite();
+		FTTileEntity te = (FTTileEntity) world.getTileEntity(pos);
+		if (te == null) te = new FTTileEntity();
+		FTTileEntity.FluidCapability cap = te.getFTCapability();
+		cap.setFacing(side);
+		if (cap.link(facing)) return te;
+		for (EnumFacing value : EnumFacing.values()) {
+			if (cap.link(value)) return te;
+		}
+		return te;
+	}
+	
+	@Nullable
+	@Override
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
+		return getBoundingBox(blockState, worldIn, pos);
 	}
 	
 	@Override

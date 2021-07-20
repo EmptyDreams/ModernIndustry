@@ -23,7 +23,7 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.content.blocks.tileentity.EleSrcCable;
-import xyz.emptydreams.mi.content.items.base.EleTransferItem;
+import xyz.emptydreams.mi.content.items.base.ItemBlockExpand;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -64,16 +64,17 @@ abstract public class EleTransferBlock extends TEBlockBase {
 	 */
 	public EleTransferBlock(String name, String... ores) {
 		super(Material.CIRCUITS);
+		String unlocalizedName = StringUtil.getUnlocalizedName(name);
 		setSoundType(SoundType.SNOW);
 		setHardness(0.35F);
 		setCreativeTab(ModernIndustry.TAB_WIRE);
 		setRegistryName(ModernIndustry.MODID, name);
-		setUnlocalizedName(StringUtil.getUnlocalizedName(name));
+		setUnlocalizedName(unlocalizedName);
 		setDefaultState(getDefaultState().withProperty(SOUTH, false)
 				.withProperty(NORTH, false).withProperty(WEST, false).withProperty(EAST, false)
 				.withProperty(DOWN, false).withProperty(UP, false));
 		OreDicRegister.registry(this, ores);
-		ITEM = new EleTransferItem(this, name);
+		ITEM = new ItemBlockExpand(this).setRegistryName(getRegistryName());
 	}
 	
 	@Nonnull

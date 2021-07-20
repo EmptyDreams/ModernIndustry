@@ -174,6 +174,11 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		}
 		
 		@Override
+		public void setFacing(EnumFacing facing) {
+			this.facing = facing;
+		}
+		
+		@Override
 		public int getMaxAmount() {
 			return FLUID_TRANSFER_MAX_AMOUNT;
 		}

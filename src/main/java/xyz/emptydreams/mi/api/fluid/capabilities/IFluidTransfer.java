@@ -40,11 +40,14 @@ public interface IFluidTransfer {
 	 */
 	int insert(int amount, boolean simulate);
 	
+	/** 设置管道朝向 */
+	void setFacing(EnumFacing facing);
+	
+	/** 获取管道朝向 */
+	EnumFacing getFacing();
+	
 	/** 获取流体管道最大流量 */
 	int getMaxAmount();
-	
-	/** 获取管道方向 */
-	EnumFacing getFacing();
 	
 	/**
 	 * 获取指定方向上连接的流体管道
