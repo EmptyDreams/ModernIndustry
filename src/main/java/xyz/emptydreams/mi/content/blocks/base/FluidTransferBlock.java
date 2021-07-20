@@ -102,12 +102,6 @@ abstract public class FluidTransferBlock extends TEBlockBase {
 		return te;
 	}
 	
-	@Nullable
-	@Override
-	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
-		return getBoundingBox(blockState, worldIn, pos);
-	}
-	
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		return state.getValue(FLUID).getBoundingBox(state.getValue(ALL_FACING));
