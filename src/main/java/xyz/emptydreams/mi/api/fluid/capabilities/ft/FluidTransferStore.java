@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.fluid.capabilities;
+package xyz.emptydreams.mi.api.fluid.capabilities.ft;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

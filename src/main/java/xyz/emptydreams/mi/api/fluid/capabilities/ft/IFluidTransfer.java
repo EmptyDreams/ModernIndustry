@@ -1,5 +1,6 @@
-package xyz.emptydreams.mi.api.fluid.capabilities;
+package xyz.emptydreams.mi.api.fluid.capabilities.ft;
 
+import net.minecraft.item.Item;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -79,7 +80,7 @@ public interface IFluidTransfer {
 			case SOUTH: return isLinkedSouth();
 			case WEST: return isLinkedWest();
 			case EAST: return isLinkedEast();
-			default: throw new IllegalArgumentException("输入了未知的方向：" + facing.getName());
+			default: throw new IllegalArgumentException("facing[" + facing + "]不属于任何一个方向");
 		}
 	}
 	/** 是否连接上方 */
@@ -94,6 +95,84 @@ public interface IFluidTransfer {
 	boolean isLinkedSouth();
 	/** 是否连接北方 */
 	boolean isLinkedNorth();
+	
+	/**
+	 * 在指定方向上设置管塞
+	 * @param plug 管塞物品对象
+	 * @param facing 方向
+	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
+	 */
+	default boolean setPlug(EnumFacing facing, Item plug) {
+		switch (facing) {
+			case DOWN: return setPlugDown(plug);
+			case UP: return setPlugUp(plug);
+			case NORTH: return setPlugNorth(plug);
+			case SOUTH: return setPlugSouth(plug);
+			case WEST: return setPlugWest(plug);
+			case EAST: return setPlugEast(plug);
+			default: throw new IllegalArgumentException("facing[" + facing + "]不属于任何一个方向");
+		}
+	}
+	/**
+	 * 在管道上方设置管塞
+	 * @param plug 管塞物品对象
+	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
+	 */
+	boolean setPlugUp(Item plug);
+	/**
+	 * 在管道下方设置管塞
+	 * @param plug 管塞物品对象
+	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
+	 */
+	boolean setPlugDown(Item plug);
+	/**
+	 * 在管道北方设置管塞
+	 * @param plug 管塞物品对象
+	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
+	 */
+	boolean setPlugNorth(Item plug);
+	/**
+	 *在管道南方设置管塞
+	 * @param plug 管塞物品对象
+	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
+	 */
+	boolean setPlugSouth(Item plug);
+	/**
+	 * 在管道西方设置管塞
+	 * @param plug 管塞物品对象
+	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
+	 */
+	boolean setPlugWest(Item plug);
+	/**
+	 * 在管道东方设置管塞
+	 * @param plug 管塞物品对象
+	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
+	 */
+	boolean setPlugEast(Item plug);
+	
+	default boolean hasPlug(EnumFacing facing) {
+		switch (facing) {
+			case DOWN: return hasPlugDown();
+			case UP: return hasPlugUp();
+			case NORTH: return hasPlugNorth();
+			case SOUTH: return hasPlugSouth();
+			case WEST: return hasPlugWest();
+			case EAST: return hasPlugEast();
+			default: throw new IllegalArgumentException("facing[" + facing + "]不属于任何一个方向");
+		}
+	}
+	/** 判断管道上方是否含有管塞 */
+	boolean hasPlugUp();
+	/** 判断管道下方是否含有管塞 */
+	boolean hasPlugDown();
+	/** 判断管道北方是否含有管塞 */
+	boolean hasPlugNorth();
+	/** 判断管道南方是否含有管塞 */
+	boolean hasPlugSouth();
+	/** 判断管道西方是否含有管塞 */
+	boolean hasPlugWest();
+	/** 判断管道东方是否含有管塞 */
+	boolean hasPlugEast();
 	
 	/** 向下运输一格 */
 	default int transportDown(int amount, boolean simulate) {

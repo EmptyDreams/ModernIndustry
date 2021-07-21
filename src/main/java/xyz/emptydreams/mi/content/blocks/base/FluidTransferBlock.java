@@ -18,12 +18,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
-import xyz.emptydreams.mi.api.fluid.capabilities.FluidTransferCapability;
-import xyz.emptydreams.mi.api.fluid.capabilities.IFluidTransfer;
+import xyz.emptydreams.mi.api.fluid.capabilities.ft.FluidTransferCapability;
+import xyz.emptydreams.mi.api.fluid.capabilities.ft.IFluidTransfer;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
-import xyz.emptydreams.mi.content.blocks.fluids.FTStateEnum;
+import xyz.emptydreams.mi.api.fluid.FTStateEnum;
 import xyz.emptydreams.mi.content.items.base.ItemBlockExpand;
 
 import javax.annotation.Nonnull;
@@ -90,16 +90,11 @@ abstract public class FluidTransferBlock extends TEBlockBase {
 	@Override
 	public TileEntity createTileEntity(ItemStack stack, EntityPlayer player, World world, BlockPos pos,
 	                                   EnumFacing side, float hitX, float hitY, float hitZ) {
-		EnumFacing facing = side.getOpposite();
 		FTTileEntity te = (FTTileEntity) world.getTileEntity(pos);
-		if (te == null) te = new FTTileEntity();
-		FTTileEntity.FluidCapability cap = te.getFTCapability();
-		cap.setFacing(side);
-		if (cap.link(facing)) return te;
-		for (EnumFacing value : EnumFacing.values()) {
-			if (cap.link(value)) return te;
-		}
-		return te;
+		world.getBlockState(pos).getValue(FLUID).createTileEntity(world, pos, te, side);
+		//noinspection ConstantConditions
+		te.markDirty();
+		return null;
 	}
 	
 	@Override

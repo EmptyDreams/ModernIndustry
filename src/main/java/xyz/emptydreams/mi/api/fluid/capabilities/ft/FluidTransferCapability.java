@@ -1,5 +1,6 @@
-package xyz.emptydreams.mi.api.fluid.capabilities;
+package xyz.emptydreams.mi.api.fluid.capabilities.ft;
 
+import net.minecraft.item.Item;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -22,8 +23,6 @@ public class FluidTransferCapability {
 		CapabilityManager.INSTANCE.register(IFluidTransfer.class, new FluidTransferStore(),
 				() -> new IFluidTransfer() {
 			
-					{ throwException(); }
-			
 					@Override
 					public int fluidAmount() {
 						return -1;
@@ -43,8 +42,7 @@ public class FluidTransferCapability {
 						return 0;
 					}
 					@Override
-					public void setFacing(EnumFacing facing) {
-					}
+					public void setFacing(EnumFacing facing) { }
 					@Override
 					public int getMaxAmount() {
 						return 0;
@@ -87,12 +85,55 @@ public class FluidTransferCapability {
 					public boolean isLinkedNorth() {
 						return false;
 					}
-					
+					@Override
+					public boolean setPlugUp(Item plug) {
+						return false;
+					}
+					@Override
+					public boolean setPlugDown(Item plug) {
+						return false;
+					}
+					@Override
+					public boolean setPlugNorth(Item plug) {
+						return false;
+					}
+					@Override
+					public boolean setPlugSouth(Item plug) {
+						return false;
+					}
+					@Override
+					public boolean setPlugWest(Item plug) {
+						return false;
+					}
+					@Override
+					public boolean setPlugEast(Item plug) {
+						return false;
+					}
+					@Override
+					public boolean hasPlugUp() {
+						return false;
+					}
+					@Override
+					public boolean hasPlugDown() {
+						return false;
+					}
+					@Override
+					public boolean hasPlugNorth() {
+						return false;
+					}
+					@Override
+					public boolean hasPlugSouth() {
+						return false;
+					}
+					@Override
+					public boolean hasPlugWest() {
+						return false;
+					}
+					@Override
+					public boolean hasPlugEast() {
+						return false;
+					}
 				});
-	}
-	
-	private static void throwException() {
-		throw new UnsupportedOperationException();
 	}
 	
 }

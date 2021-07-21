@@ -1,7 +1,7 @@
 package xyz.emptydreams.mi.content.blocks.properties;
 
 import net.minecraft.block.properties.PropertyEnum;
-import xyz.emptydreams.mi.content.blocks.fluids.FTStateEnum;
+import xyz.emptydreams.mi.api.fluid.FTStateEnum;
 
 import java.util.Arrays;
 import java.util.Collection;

@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.content.blocks.machine;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import xyz.emptydreams.mi.api.fluid.FTStateEnum;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.register.others.AutoManager;
 import xyz.emptydreams.mi.content.blocks.base.FluidTransferBlock;
@@ -17,7 +18,7 @@ public final class FluidTransferManager {
 	public static final FluidTransferBlock IRON = new FluidTransferBlock("iron_ft") {
 		@Override
 		public TileEntity createNewTileEntity(World worldIn, int meta) {
-			return new FTTileEntity();
+			return new FTTileEntity(FTStateEnum.STRAIGHT);
 		}
 	};
 	
