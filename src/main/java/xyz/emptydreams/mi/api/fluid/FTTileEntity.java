@@ -20,12 +20,10 @@ import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
-import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
-import xyz.emptydreams.mi.content.blocks.base.EleTransferBlock;
 import xyz.emptydreams.mi.content.blocks.properties.MIProperty;
 import xyz.emptydreams.mi.content.items.debug.DebugDetails;
 
@@ -45,12 +43,17 @@ import static net.minecraft.util.EnumFacing.*;
 @AutoTileEntity("FLUID_TRANSFER_TILE_ENTITY")
 public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	
-	@Storage private final FluidCapability cap = new FluidCapability();
-	/** 管道状态 */
-	@Storage private final FTStateEnum stateEnum;
+	@Storage protected final FluidCapability cap = new FluidCapability();
 	
-	public FTTileEntity(FTStateEnum state) {
-		stateEnum = state;
+	/** 存储当前管道的blockState，存储的原因是在管道放置之后就不会再替换state */
+	protected IBlockState state = null;
+	
+	/** 获取当前方块的blockState */
+	public IBlockState getBlockState() {
+		if (state == null) {
+			state = world.getBlockState(pos);
+		}
+		return state;
 	}
 	
 	@Override
@@ -117,24 +120,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 			players.add(player.getName());
 			return true;
 		});
-	}
-	
-	/** 创建一个blockState */
-	public IBlockState createBlockState() {
-		IBlockState state = world.getBlockState(getPos());
-		FluidCapability cap = getFTCapability();
-		return state.withProperty(MIProperty.ALL_FACING, cap.getFacing())
-					.withProperty(EleTransferBlock.UP, cap.hasPlugUp())
-					.withProperty(EleTransferBlock.DOWN, cap.hasPlugDown())
-					.withProperty(EleTransferBlock.WEST, cap.hasPlugWest())
-					.withProperty(EleTransferBlock.EAST, cap.hasPlugEast())
-					.withProperty(EleTransferBlock.NORTH, cap.hasPlugNorth())
-					.withProperty(EleTransferBlock.SOUTH, cap.hasPlugSouth());
-	}
-	
-	/** 更新state */
-	public void updateState() {
-		WorldUtil.setBlockState(world, pos, createBlockState());
 	}
 	
 	@Override
@@ -301,44 +286,54 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		
 		@Override
 		public boolean setPlugUp(Item plug) {
-			if ((hasPlugUp() && plug != null) || !stateEnum.canSetPlug(getFacing(), UP)) return false;
+			if ((hasPlugUp() && plug != null)
+					|| !getStateEnum().canSetPlug(getFacing(), UP)) return false;
 			setPlugData(UP, plug);
 			return true;
 		}
 		
 		@Override
 		public boolean setPlugDown(Item plug) {
-			if ((hasPlugDown() && plug != null) || !stateEnum.canSetPlug(getFacing(), DOWN)) return false;
+			if ((hasPlugDown() && plug != null)
+					|| !getStateEnum().canSetPlug(getFacing(), DOWN)) return false;
 			setPlugData(DOWN, plug);
 			return true;
 		}
 		
 		@Override
 		public boolean setPlugNorth(Item plug) {
-			if ((hasPlugNorth() && plug != null) || !stateEnum.canSetPlug(getFacing(), NORTH)) return false;
+			if ((hasPlugNorth() && plug != null)
+					|| !getStateEnum().canSetPlug(getFacing(), NORTH)) return false;
 			setPlugData(NORTH, plug);
 			return true;
 		}
 		
 		@Override
 		public boolean setPlugSouth(Item plug) {
-			if ((hasPlugSouth() && plug != null) || !stateEnum.canSetPlug(getFacing(), SOUTH)) return false;
+			if ((hasPlugSouth() && plug != null)
+					|| !getStateEnum().canSetPlug(getFacing(), SOUTH)) return false;
 			setPlugData(SOUTH, plug);
 			return true;
 		}
 		
 		@Override
 		public boolean setPlugWest(Item plug) {
-			if ((hasPlugWest() && plug != null) || !stateEnum.canSetPlug(getFacing(), WEST)) return false;
+			if ((hasPlugWest() && plug != null)
+					|| !getStateEnum().canSetPlug(getFacing(), WEST)) return false;
 			setPlugData(WEST, plug);
 			return true;
 		}
 		
 		@Override
 		public boolean setPlugEast(Item plug) {
-			if ((hasPlugEast() && plug != null) || !stateEnum.canSetPlug(getFacing(), EAST)) return false;
+			if ((hasPlugEast() && plug != null)
+					|| !getStateEnum().canSetPlug(getFacing(), EAST)) return false;
 			setPlugData(EAST, plug);
 			return true;
+		}
+		
+		private FTStateEnum getStateEnum() {
+			return getBlockState().getValue(MIProperty.FLUID);
 		}
 		
 		@Override

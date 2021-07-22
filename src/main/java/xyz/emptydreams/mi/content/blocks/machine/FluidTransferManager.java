@@ -18,7 +18,7 @@ public final class FluidTransferManager {
 	public static final FluidTransferBlock IRON = new FluidTransferBlock("iron_ft") {
 		@Override
 		public TileEntity createNewTileEntity(World worldIn, int meta) {
-			return new FTTileEntity(FTStateEnum.STRAIGHT);
+			return new FTTileEntity();
 		}
 	};
 	

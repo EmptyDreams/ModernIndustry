@@ -115,37 +115,37 @@ public interface IFluidTransfer {
 	}
 	/**
 	 * 在管道上方设置管塞
-	 * @param plug 管塞物品对象
+	 * @param plug 管塞物品对象，为null表示去除管塞
 	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
 	 */
 	boolean setPlugUp(Item plug);
 	/**
 	 * 在管道下方设置管塞
-	 * @param plug 管塞物品对象
+	 * @param plug 管塞物品对象，为null表示去除管塞
 	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
 	 */
 	boolean setPlugDown(Item plug);
 	/**
 	 * 在管道北方设置管塞
-	 * @param plug 管塞物品对象
+	 * @param plug 管塞物品对象，为null表示去除管塞
 	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
 	 */
 	boolean setPlugNorth(Item plug);
 	/**
 	 *在管道南方设置管塞
-	 * @param plug 管塞物品对象
+	 * @param plug 管塞物品对象，为null表示去除管塞
 	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
 	 */
 	boolean setPlugSouth(Item plug);
 	/**
 	 * 在管道西方设置管塞
-	 * @param plug 管塞物品对象
+	 * @param plug 管塞物品对象，为null表示去除管塞
 	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
 	 */
 	boolean setPlugWest(Item plug);
 	/**
 	 * 在管道东方设置管塞
-	 * @param plug 管塞物品对象
+	 * @param plug 管塞物品对象，为null表示去除管塞
 	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
 	 */
 	boolean setPlugEast(Item plug);

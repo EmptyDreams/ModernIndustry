@@ -140,13 +140,23 @@ abstract public class FluidTransferBlock extends TEBlockBase {
 	
 	@Override
 	public int getMetaFromState(@Nonnull IBlockState state) {
-		return 0;
+		FTStateEnum value = state.getValue(FLUID);
+		switch (value) {
+			case STRAIGHT: return 0;
+			case ANGLE: return 1;
+			case SHUNT: return 2;
+			default: throw new IllegalArgumentException("输入了未知的状态：" + value);
+		}
 	}
 	
 	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState();
+		switch (meta) {
+			case 1: return getDefaultState().withProperty(FLUID, FTStateEnum.ANGLE);
+			case 2: return getDefaultState().withProperty(FLUID, FTStateEnum.SHUNT);
+			default: return getDefaultState();
+		}
 	}
 	
 	@Nonnull
