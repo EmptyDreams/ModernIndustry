@@ -1,0 +1,25 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mi:iron_ft/straight"
+  },
+  "variants": {
+    "inventory": [{ }],
+    "all_facing": {
+      "north": { },
+      "east": { "y": 90 },
+      "west": { "y": 270 },
+      "south": { "y": 180 },
+      "up": { "x": 90 },
+      "down": { "x": 270 }
+    },
+    "before": {
+      "false": { },
+      "true": { }
+    },
+    "after": {
+      "false": { },
+      "true": { }
+    }
+  }
+}

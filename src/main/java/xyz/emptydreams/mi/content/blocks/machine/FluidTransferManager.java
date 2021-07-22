@@ -1,11 +1,7 @@
 package xyz.emptydreams.mi.content.blocks.machine;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.fluid.FTStateEnum;
-import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.register.others.AutoManager;
-import xyz.emptydreams.mi.content.blocks.base.FluidTransferBlock;
+import xyz.emptydreams.mi.content.blocks.base.PipeBlocks.*;
 
 /**
  * 包含大部分流体管道
@@ -15,11 +11,6 @@ import xyz.emptydreams.mi.content.blocks.base.FluidTransferBlock;
 @AutoManager(block = true)
 public final class FluidTransferManager {
 	
-	public static final FluidTransferBlock IRON = new FluidTransferBlock("iron_ft") {
-		@Override
-		public TileEntity createNewTileEntity(World worldIn, int meta) {
-			return new FTTileEntity();
-		}
-	};
+	public static final StraightPipe IRON_STRAIGHT = new StraightPipe("iron_straight_ft");
 	
 }

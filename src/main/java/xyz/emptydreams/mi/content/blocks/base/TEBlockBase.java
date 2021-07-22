@@ -8,9 +8,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.register.block.BlockItemHelper;
 
@@ -43,12 +41,6 @@ abstract public class TEBlockBase extends BlockContainer implements BlockItemHel
 		if (drops != null)
 			drops.forEach(it -> Block.spawnAsEntity(worldIn, pos, it));
 		super.breakBlock(worldIn, pos, state);
-	}
-	
-	@Nullable
-	@Override
-	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
-		return getBoundingBox(blockState, worldIn, pos);
 	}
 	
 	/**

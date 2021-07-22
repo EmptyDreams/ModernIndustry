@@ -22,9 +22,6 @@ public final class MIProperty {
 	/** 状态：竖直方向 */
 	public static final PropertyDirection VERTICAL =
 					PropertyDirection.create("vertical", EnumFacing.Plane.VERTICAL);
-	/** 状态：管道 */
-	public static final PropertyFluidTransfer FLUID = PropertyFluidTransfer.create("fluid");
-	/** */
 	
 	
 }

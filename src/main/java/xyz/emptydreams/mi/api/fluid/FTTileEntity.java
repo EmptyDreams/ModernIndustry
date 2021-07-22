@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.fluid;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -24,7 +23,6 @@ import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
-import xyz.emptydreams.mi.content.blocks.properties.MIProperty;
 import xyz.emptydreams.mi.content.items.debug.DebugDetails;
 
 import javax.annotation.Nonnull;
@@ -46,14 +44,15 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	@Storage protected final FluidCapability cap = new FluidCapability();
 	
 	/** 存储当前管道的blockState，存储的原因是在管道放置之后就不会再替换state */
-	protected IBlockState state = null;
+	protected final FTStateEnum stateEnum;
+	
+	public FTTileEntity(FTStateEnum stateEnum) {
+		this.stateEnum = stateEnum;
+	}
 	
 	/** 获取当前方块的blockState */
-	public IBlockState getBlockState() {
-		if (state == null) {
-			state = world.getBlockState(pos);
-		}
-		return state;
+	public FTStateEnum getStateEnum() {
+		return stateEnum;
 	}
 	
 	@Override
@@ -330,10 +329,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 					|| !getStateEnum().canSetPlug(getFacing(), EAST)) return false;
 			setPlugData(EAST, plug);
 			return true;
-		}
-		
-		private FTStateEnum getStateEnum() {
-			return getBlockState().getValue(MIProperty.FLUID);
 		}
 		
 		@Override
