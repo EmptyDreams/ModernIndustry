@@ -58,6 +58,10 @@ public interface IFluidTransfer {
 	@Nullable
 	IFluidTransfer getLinkedTransfer(EnumFacing facing);
 	
+	/** 判断指定方向是否含有开口 */
+	boolean hasAperture(EnumFacing facing);
+	
+	/** 判断是否可以连接指定方向 */
 	boolean canLink(EnumFacing facing);
 	
 	/**

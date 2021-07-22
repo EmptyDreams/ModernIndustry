@@ -22,23 +22,23 @@ public final class MathUtil {
 	 * @param player 玩家
 	 * @param pos 被放置的方块的坐标（也可以理解为被玩家点击的方块向被点击的方向的反方向移动一格的方块坐标）
 	 */
+	@SuppressWarnings("DuplicateExpressions")
 	@Nonnull
 	public static EnumFacing getPlayerFacing(EntityPlayer player, BlockPos pos) {
-		BlockPos playerPos = player.getPosition();
-		Point2D p2d = new Point2D(playerPos.getX(), playerPos.getZ());
-		Point2D b2d = new Point2D(pos.getX(), pos.getZ());
-		if (pos.getY() < playerPos.getY() || playerPos.getY() + player.height < pos.getY()) {
-			if (p2d.distance(b2d) <= 1.8) {
+		double x = player.posX - pos.getX();
+		double y = player.posY - pos.getY();
+		if (pos.getY() < player.posY || player.posY + player.height < pos.getY()) {
+			if (Math.sqrt(x * x + y * y) <= 1.8) {
 				//如果玩家和方块间的水平距离小于1.8
-				return pos.getY() < playerPos.getY() ? EnumFacing.DOWN : EnumFacing.UP;
+				return pos.getY() < player.posY ? EnumFacing.DOWN : EnumFacing.UP;
 			} else {
 				//如果玩家和方块间的水平距离大于1.8
 				return player.getHorizontalFacing();
 			}
-		} else if (pos.getY() == playerPos.getY()) {
+		} else if (pos.getY() == player.posY) {
 			//如果玩家和方块在同一水平面上
-			if (p2d.distance(b2d) < 1.45) {
-				return pos.getY() < playerPos.getY() ? EnumFacing.DOWN : EnumFacing.UP;
+			if (Math.sqrt(x * x + y * y) < 1.3) {
+				return pos.getY() < player.posY ? EnumFacing.DOWN : EnumFacing.UP;
 			}
 		}
 		//如果玩家和方块大致处于同一平面

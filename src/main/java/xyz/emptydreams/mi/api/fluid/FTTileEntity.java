@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.fluid;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -19,10 +20,12 @@ import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
+import xyz.emptydreams.mi.content.blocks.properties.MIProperty;
 import xyz.emptydreams.mi.content.items.debug.DebugDetails;
 
 import javax.annotation.Nonnull;
@@ -88,7 +91,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		if (!compound.readBoolean()) {
 			cap.stack = DataTypeRegister.read(compound, FluidStack.class, null);
 		}
-		world.markBlockRangeForRenderUpdate(pos, pos);
+		cap.setFacing(EnumFacing.values()[compound.readByte()]);
 	}
 	
 	/**
@@ -110,6 +113,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		ByteDataOperator operator = new ByteDataOperator(1);
 		operator.writeByte((byte) cap.linkData);
 		operator.writeBoolean(cap.stack == null);
+		operator.writeByte((byte) cap.getFacing().getIndex());
 		if (cap.stack != null) {
 			DataTypeRegister.write(operator, cap.stack);
 		}
@@ -147,7 +151,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		/** 六个方向的管塞数据 */
 		@Storage protected final Map<EnumFacing, Item> plugData = new EnumMap<>(EnumFacing.class);
 		/** 存储管道方向 */
-		@Storage protected EnumFacing facing = EnumFacing.SOUTH;
+		@Storage protected EnumFacing facing = NORTH;
 		
 		@Override
 		public int fluidAmount() {
@@ -193,7 +197,11 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		
 		@Override
 		public void setFacing(EnumFacing facing) {
+			if (facing == getFacing()) return;
 			this.facing = facing;
+			IBlockState state = world.getBlockState(pos);
+			IBlockState newState = state.withProperty(MIProperty.ALL_FACING, facing);
+			WorldUtil.setBlockState(world, pos, state, newState);
 			markDirty();
 		}
 		
@@ -218,16 +226,41 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		}
 		
 		@Override
+		public boolean hasAperture(EnumFacing facing) {
+			switch (stateEnum) {
+				case STRAIGHT:
+					return hasPlug(facing) && (facing == getFacing() || facing == getFacing().getOpposite());
+				case ANGLE: return true;
+				case SHUNT: return true;
+				default: throw new IllegalArgumentException("该状态不属于任何一种状态：" + stateEnum);
+			}
+		}
+		
+		@Override
 		public boolean canLink(EnumFacing facing) {
 			TileEntity te = world.getTileEntity(pos.offset(facing));
 			if (te == null) return false;
 			IFluidTransfer cap = te.getCapability(FluidTransferCapability.TRANSFER, null);
-			return cap != null;
+			if (cap == null) return false;
+			if (hasAperture(facing) && cap.hasAperture(facing.getOpposite())) {
+				return true;
+			} else return linkData == 0;
 		}
 		
 		@Override
 		public boolean link(EnumFacing facing) {
 			if (isLinked(facing) || !canLink(facing)) return false;
+			if (linkData == 0) {
+				switch (stateEnum) {
+					case STRAIGHT:
+						setFacing(facing);
+						break;
+					case ANGLE:
+						break;
+					case SHUNT:
+						break;
+				}
+			}
 			setLinkedData(facing, true);
 			return true;
 		}
