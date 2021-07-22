@@ -56,6 +56,10 @@ public class FluidTransferCapability {
 						return null;
 					}
 					@Override
+					public boolean canLink(EnumFacing facing) {
+						return false;
+					}
+					@Override
 					public boolean link(EnumFacing facing) {
 						return false;
 					}

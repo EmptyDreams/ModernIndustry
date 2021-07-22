@@ -1,6 +1,7 @@
 package xyz.emptydreams.mi.api.utils.data.math;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3i;
 
 /**
  * 三维坐标系中的点
@@ -19,7 +20,19 @@ public final class Point3D {
 	}
 	
 	public Point3D(Entity entity) {
-		this((int) entity.posX, (int) entity.posY, (int) entity.posZ);
+		this(entity.getPosition());
+	}
+	
+	public Point3D(Vec3i vec3d) {
+		this(vec3d.getX(), vec3d.getY(), vec3d.getZ());
+	}
+	
+	/** 计算该点与指定点间的距离 */
+	public double distance(Point3D point) {
+		int x = point.getX() - getX();
+		int y = point.getY() - getY();
+		int z = point.getZ() - getZ();
+		return Math.sqrt(x*x + y*y + z*z);
 	}
 	
 	/** 获取X轴坐标 */

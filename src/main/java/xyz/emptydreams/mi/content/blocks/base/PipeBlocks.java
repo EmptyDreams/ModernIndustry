@@ -23,6 +23,7 @@ import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.fluid.capabilities.ft.IFluidTransfer;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
+import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.content.items.base.ItemBlockExpand;
 
@@ -56,8 +57,7 @@ public final class PipeBlocks {
 		@Nullable
 		@Override
 		public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
-			
-			return super.getCollisionBoundingBox(blockState, worldIn, pos);
+			return new AxisAlignedBB(3/16d, 3/16d, 3/16d, 10/16d, 10/16d, 10/16d);
 		}
 		
 		@Override
@@ -80,15 +80,21 @@ public final class PipeBlocks {
 			@SuppressWarnings("ConstantConditions")
 			IFluidTransfer cap = te.getFTCapability();
 			if (cap.link(facing)) {
+				cap.setFacing(facing);
 				cap.link(side);
 			} else {
-				if (cap.link(side)) return null;
+				if (cap.link(side)) {
+					cap.setFacing(side);
+					return null;
+				}
 				for (EnumFacing value : EnumFacing.values()) {
 					if (cap.link(value)) {
+						cap.setFacing(value);
 						cap.link(value.getOpposite());
 						return null;
 					}
 				}
+				cap.setFacing(MathUtil.getPlayerFacing(player, pos));
 			}
 			return null;
 		}

@@ -194,6 +194,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		@Override
 		public void setFacing(EnumFacing facing) {
 			this.facing = facing;
+			markDirty();
 		}
 		
 		@Override
@@ -220,7 +221,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		public boolean canLink(EnumFacing facing) {
 			TileEntity te = world.getTileEntity(pos.offset(facing));
 			if (te == null) return false;
-			IFluidTransfer cap = te.getCapability(FluidTransferCapability.TRANSFER, facing.getOpposite());
+			IFluidTransfer cap = te.getCapability(FluidTransferCapability.TRANSFER, null);
 			return cap != null;
 		}
 		

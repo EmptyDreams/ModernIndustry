@@ -19,6 +19,13 @@ public final class Point2D {
 	/** 获取Y轴坐标 */
 	public int getY() { return y; }
 	
+	/** 计算该点与指定点间的距离 */
+	public double distance(Point2D point) {
+		int x = point.getX() - getX();
+		int y = point.getY() - getY();
+		return Math.sqrt(x*x + y*y);
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
