@@ -26,6 +26,7 @@ import xyz.emptydreams.mi.content.blocks.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.content.items.base.ItemBlockExpand;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
@@ -92,6 +93,12 @@ abstract public class EleTransferBlock extends TEBlockBase {
 							.withProperty(EAST, nbt.getEast()).withProperty(WEST, nbt.getWest())
 							.withProperty(NORTH, nbt.getNorth()).withProperty(SOUTH, nbt.getSouth());
 		return state;
+	}
+	
+	@Nullable
+	@Override
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
+		return Block.NULL_AABB;
 	}
 	
 	@Nonnull
