@@ -24,13 +24,14 @@ import xyz.emptydreams.mi.api.fluid.capabilities.ft.IFluidTransfer;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
-import xyz.emptydreams.mi.content.blocks.properties.MIProperty;
 import xyz.emptydreams.mi.content.items.base.ItemBlockExpand;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
+
+import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.ALL_FACING;
 
 /**
  * 流体管道的方块
@@ -48,8 +49,15 @@ public final class PipeBlocks {
 		
 		public StraightPipe(String name, String... ores) {
 			super(name, FTStateEnum.STRAIGHT, ores);
-			setDefaultState(blockState.getBaseState()
+			setDefaultState(blockState.getBaseState().withProperty(ALL_FACING, EnumFacing.NORTH)
 					.withProperty(BEFORE, false).withProperty(AFTER, false));
+		}
+		
+		@Nullable
+		@Override
+		public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
+			
+			return super.getCollisionBoundingBox(blockState, worldIn, pos);
 		}
 		
 		@Override
@@ -59,7 +67,8 @@ public final class PipeBlocks {
 			FTTileEntity.FluidCapability cap = te.getFTCapability();
 			EnumFacing facing = cap.getFacing();
 			return state.withProperty(BEFORE, cap.hasPlug(facing))
-						.withProperty(AFTER, cap.hasPlug(facing.getOpposite()));
+						.withProperty(AFTER, cap.hasPlug(facing.getOpposite()))
+						.withProperty(ALL_FACING, facing);
 		}
 		
 		@Override
@@ -104,7 +113,7 @@ public final class PipeBlocks {
 		public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos,
 		                                  AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes,
 		                                  @Nullable Entity entityIn, boolean isActualState) {
-			EnumFacing facing = state.getValue(MIProperty.ALL_FACING);
+			EnumFacing facing = state.getValue(ALL_FACING);
 			switch (facing) {
 				case DOWN: case UP:
 					addCollisionBoxToList(pos, entityBox, collidingBoxes,
@@ -125,7 +134,7 @@ public final class PipeBlocks {
 		@Nonnull
 		@Override
 		protected BlockStateContainer createBlockState() {
-			return new BlockStateContainer(this, MIProperty.ALL_FACING, BEFORE, AFTER);
+			return new BlockStateContainer(this, ALL_FACING, BEFORE, AFTER);
 		}
 		
 	}

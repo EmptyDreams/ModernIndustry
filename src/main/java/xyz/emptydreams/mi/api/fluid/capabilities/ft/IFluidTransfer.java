@@ -58,6 +58,8 @@ public interface IFluidTransfer {
 	@Nullable
 	IFluidTransfer getLinkedTransfer(EnumFacing facing);
 	
+	boolean canLink(EnumFacing facing);
+	
 	/**
 	 * 连接指定方向上的设备
 	 * @param facing 方向
