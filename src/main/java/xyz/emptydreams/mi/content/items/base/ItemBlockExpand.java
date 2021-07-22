@@ -24,6 +24,7 @@ public class ItemBlockExpand extends ItemBlock {
 	public ItemBlockExpand(Block block) {
 		super(block);
 		blockItemHelper = block instanceof BlockItemHelper ? (BlockItemHelper) block : null;
+		setRegistryName(block.getRegistryName());
 	}
 	
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos,

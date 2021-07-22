@@ -57,7 +57,7 @@ abstract public class FluidTransferBlock extends TEBlockBase {
 				.withProperty(ALL_FACING, EnumFacing.NORTH)
 				.withProperty(FLUID, FTStateEnum.STRAIGHT));
 		OreDicRegister.registry(this, ores);
-		ITEM = new ItemBlockExpand(this).setRegistryName(getRegistryName());
+		ITEM = new ItemBlockExpand(this);
 	}
 	
 	@Override

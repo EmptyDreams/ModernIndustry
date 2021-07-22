@@ -74,7 +74,7 @@ abstract public class EleTransferBlock extends TEBlockBase {
 				.withProperty(NORTH, false).withProperty(WEST, false).withProperty(EAST, false)
 				.withProperty(DOWN, false).withProperty(UP, false));
 		OreDicRegister.registry(this, ores);
-		ITEM = new ItemBlockExpand(this).setRegistryName(getRegistryName());
+		ITEM = new ItemBlockExpand(this);
 	}
 	
 	@Nonnull
