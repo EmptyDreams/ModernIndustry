@@ -64,6 +64,15 @@ public interface IFluidTransfer {
 	/** 判断是否可以连接指定方向 */
 	boolean canLink(EnumFacing facing);
 	
+	/** 获取管道已经连接的数量 */
+	default int getLinkAmount() {
+		int result = 0;
+		for (EnumFacing value : values()) {
+			if (isLinked(value)) ++result;
+		}
+		return result;
+	}
+	
 	/**
 	 * 连接指定方向上的设备
 	 * @param facing 方向

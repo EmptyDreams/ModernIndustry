@@ -25,6 +25,7 @@ import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
+import xyz.emptydreams.mi.content.blocks.base.PipeBlocks;
 import xyz.emptydreams.mi.content.blocks.properties.MIProperty;
 import xyz.emptydreams.mi.content.items.debug.DebugDetails;
 
@@ -92,6 +93,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 			cap.stack = DataTypeRegister.read(compound, FluidStack.class, null);
 		}
 		cap.setFacing(EnumFacing.values()[compound.readByte()]);
+		updateBlockState();
 	}
 	
 	/**
@@ -136,6 +138,22 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	public NBTTagCompound getUpdateTag() {
 		send();
 		return super.getUpdateTag();
+	}
+	
+	public void updateBlockState() {
+		IBlockState oldState = world.getBlockState(pos);
+		IBlockState newState;
+		switch (stateEnum) {
+			case STRAIGHT:
+				newState = oldState.withProperty(MIProperty.ALL_FACING, cap.getFacing())
+						.withProperty(PipeBlocks.StraightPipe.BEFORE, cap.hasPlug(cap.getFacing()))
+						.withProperty(PipeBlocks.StraightPipe.AFTER, cap.hasPlug(cap.getFacing().getOpposite()));
+				break;
+			case ANGLE:
+			case SHUNT:
+			default: throw new IllegalArgumentException("输入了未知的状态：" + stateEnum);
+		}
+		WorldUtil.setBlockState(world, pos, oldState, newState);
 	}
 	
 	@DebugDetails
@@ -199,9 +217,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		public void setFacing(EnumFacing facing) {
 			if (facing == getFacing()) return;
 			this.facing = facing;
-			IBlockState state = world.getBlockState(pos);
-			IBlockState newState = state.withProperty(MIProperty.ALL_FACING, facing);
-			WorldUtil.setBlockState(world, pos, state, newState);
 			markDirty();
 		}
 		
@@ -229,7 +244,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		public boolean hasAperture(EnumFacing facing) {
 			switch (stateEnum) {
 				case STRAIGHT:
-					return hasPlug(facing) && (facing == getFacing() || facing == getFacing().getOpposite());
+					return !hasPlug(facing) && (facing == getFacing() || facing == getFacing().getOpposite());
 				case ANGLE: return true;
 				case SHUNT: return true;
 				default: throw new IllegalArgumentException("该状态不属于任何一种状态：" + stateEnum);
@@ -242,9 +257,13 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 			if (te == null) return false;
 			IFluidTransfer cap = te.getCapability(FluidTransferCapability.TRANSFER, null);
 			if (cap == null) return false;
-			if (hasAperture(facing) && cap.hasAperture(facing.getOpposite())) {
-				return true;
-			} else return linkData == 0;
+			if (cap.hasAperture(facing.getOpposite())) {
+				return hasAperture(facing) || getLinkAmount() == 0;
+			} else if (cap.getLinkAmount() == 0) {
+				return hasAperture(facing) || getLinkAmount() == 0;
+			} else {
+				return false;
+			}
 		}
 		
 		@Override

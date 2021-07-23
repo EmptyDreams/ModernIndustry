@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.fluid.FTStateEnum;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
+import xyz.emptydreams.mi.api.fluid.capabilities.ft.FluidTransferCapability;
 import xyz.emptydreams.mi.api.fluid.capabilities.ft.IFluidTransfer;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
@@ -79,24 +80,35 @@ public final class PipeBlocks {
 			EnumFacing facing = side.getOpposite();
 			@SuppressWarnings("ConstantConditions")
 			IFluidTransfer cap = te.getFTCapability();
-			if (cap.link(facing)) {
-				cap.setFacing(facing);
-				cap.link(side);
-			} else {
-				if (cap.link(side)) {
-					cap.setFacing(side);
+			if (link(world, pos, cap, facing)) {
+				link(world, pos, cap, side);
+				return null;
+			}
+			if (link(world, pos, cap, side)) {
+				return null;
+			}
+			for (EnumFacing value : EnumFacing.values()) {
+				if (link(world, pos, cap, value)) {
+					link(world, pos, cap, value.getOpposite());
 					return null;
 				}
-				for (EnumFacing value : EnumFacing.values()) {
-					if (cap.link(value)) {
-						cap.setFacing(value);
-						cap.link(value.getOpposite());
-						return null;
-					}
-				}
-				cap.setFacing(MathUtil.getPlayerFacing(player, pos));
 			}
+			cap.setFacing(MathUtil.getPlayerFacing(player, pos));
 			return null;
+		}
+		
+		@SuppressWarnings("ConstantConditions")
+		private static boolean link(World world, BlockPos pos, IFluidTransfer cap, EnumFacing facing) {
+			if (!cap.link(facing)) return false;
+			IFluidTransfer that = world.getTileEntity(pos.offset(facing))
+					.getCapability(FluidTransferCapability.TRANSFER, null);
+			cap.setFacing(facing);
+			that.setFacing(facing.getOpposite());
+			if (!that.link(facing.getOpposite())) {
+				cap.unlink(facing);
+				return false;
+			}
+			return true;
 		}
 		
 		@Override
