@@ -188,7 +188,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		public void setFluid(@Nullable FluidStack stack) {
 			if (stack == null || stack.amount == 0) this.stack = null;
 			else this.stack = stack.copy();
-			markDirty();
 		}
 		
 		@Override
@@ -196,7 +195,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 			int real = Math.min(amount, stack.amount);
 			if (simulate) return real;
 			stack.amount -= real;
-			markDirty();
 			return real;
 		}
 		
@@ -209,7 +207,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 			}
 			int real = getMaxAmount() - stack.amount;
 			if (!simulate) stack.amount = getMaxAmount();
-			markDirty();
 			return real;
 		}
 		
@@ -217,7 +214,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		public void setFacing(EnumFacing facing) {
 			if (facing == getFacing()) return;
 			this.facing = facing;
-			markDirty();
 		}
 		
 		@Override
@@ -316,7 +312,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 					else linkData &= 0b110111;
 					break;
 			}
-			markDirty();
 		}
 		
 		@Override

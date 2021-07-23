@@ -82,30 +82,38 @@ public final class PipeBlocks {
 			IFluidTransfer cap = te.getFTCapability();
 			if (link(world, pos, cap, facing)) {
 				link(world, pos, cap, side);
+				te.markDirty();
 				return null;
 			}
 			if (link(world, pos, cap, side)) {
+				te.markDirty();
 				return null;
 			}
 			for (EnumFacing value : EnumFacing.values()) {
 				if (link(world, pos, cap, value)) {
 					link(world, pos, cap, value.getOpposite());
+					te.markDirty();
 					return null;
 				}
 			}
 			cap.setFacing(MathUtil.getPlayerFacing(player, pos));
+			te.markDirty();
 			return null;
 		}
 		
 		@SuppressWarnings("ConstantConditions")
 		private static boolean link(World world, BlockPos pos, IFluidTransfer cap, EnumFacing facing) {
 			if (!cap.link(facing)) return false;
-			IFluidTransfer that = world.getTileEntity(pos.offset(facing))
-					.getCapability(FluidTransferCapability.TRANSFER, null);
+			TileEntity thatTE = world.getTileEntity(pos.offset(facing));
+			IFluidTransfer that =thatTE.getCapability(FluidTransferCapability.TRANSFER, null);
 			cap.setFacing(facing);
-			that.setFacing(facing.getOpposite());
-			if (!that.link(facing.getOpposite())) {
+			EnumFacing side = facing.getOpposite();
+			EnumFacing old = that.getFacing();
+			that.setFacing(side);
+			if (!that.link(side)) {
 				cap.unlink(facing);
+				that.setFacing(old);
+				thatTE.markDirty();
 				return false;
 			}
 			return true;
