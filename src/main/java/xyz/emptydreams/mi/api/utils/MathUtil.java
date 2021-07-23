@@ -26,7 +26,7 @@ public final class MathUtil {
 	@Nonnull
 	public static EnumFacing getPlayerFacing(EntityPlayer player, BlockPos pos) {
 		double x = player.posX - pos.getX();
-		double y = player.posY - pos.getY();
+		double y = player.posZ - pos.getZ();
 		if (pos.getY() < player.posY || player.posY + player.height < pos.getY()) {
 			if (Math.sqrt(x * x + y * y) <= 1.8) {
 				//如果玩家和方块间的水平距离小于1.8
@@ -35,11 +35,13 @@ public final class MathUtil {
 				//如果玩家和方块间的水平距离大于1.8
 				return player.getHorizontalFacing();
 			}
-		} else if (pos.getY() == player.posY) {
+		} else if (pos.getY() == (int) player.posY || pos.getY() == (int) player.posY + 1) {
 			//如果玩家和方块在同一水平面上
-			if (Math.sqrt(x * x + y * y) < 1.3) {
-				return pos.getY() < player.posY ? EnumFacing.DOWN : EnumFacing.UP;
+			if (Math.sqrt(x * x + y * y) > 1.5 && Math.abs(player.rotationPitch) < 33) {
+				return player.getHorizontalFacing();
 			}
+			if (player.rotationPitch < -8.3) return EnumFacing.UP;
+			if (player.rotationPitch > 8.3) return EnumFacing.DOWN;
 		}
 		//如果玩家和方块大致处于同一平面
 		return player.getHorizontalFacing();
