@@ -48,11 +48,17 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	@Storage protected final FluidCapability cap = new FluidCapability();
 	
 	/** 存储当前管道的blockState，存储的原因是在管道放置之后就不会再替换state */
-	protected final FTStateEnum stateEnum;
+	protected FTStateEnum stateEnum;
 	
 	public FTTileEntity(FTStateEnum stateEnum) {
 		this.stateEnum = stateEnum;
 	}
+	
+	/**
+	 * @deprecated 仅供MC反射调用
+	 */
+	@Deprecated
+	public FTTileEntity() { }
 	
 	/** 获取当前方块的blockState */
 	public FTStateEnum getStateEnum() {
