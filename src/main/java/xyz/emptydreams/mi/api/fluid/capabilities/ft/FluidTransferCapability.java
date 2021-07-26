@@ -9,6 +9,9 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import xyz.emptydreams.mi.api.register.others.AutoLoader;
 
+import javax.annotation.Nonnull;
+import java.util.List;
+
 /**
  * 流体管道的Cap
  * @author EmptyDreams
@@ -34,11 +37,11 @@ public class FluidTransferCapability {
 					@Override
 					public void setFluid(FluidStack stack) { }
 					@Override
-					public int extract(int amount, boolean simulate) {
+					public int extract(FluidStack stack, boolean simulate) {
 						return 0;
 					}
 					@Override
-					public int insert(int amount, boolean simulate) {
+					public int insert(FluidStack stack, boolean simulate) {
 						return 0;
 					}
 					@Override
@@ -53,6 +56,11 @@ public class FluidTransferCapability {
 					}
 					@Override
 					public IFluidTransfer getLinkedTransfer(EnumFacing facing) {
+						return null;
+					}
+					@Nonnull
+					@Override
+					public List<EnumFacing> next(EnumFacing pre) {
 						return null;
 					}
 					@Override

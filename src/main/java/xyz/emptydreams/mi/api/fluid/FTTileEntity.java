@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
@@ -32,6 +33,7 @@ import xyz.emptydreams.mi.content.items.debug.DebugDetails;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -43,12 +45,12 @@ import static net.minecraft.util.EnumFacing.*;
  * @author EmptyDreams
  */
 @AutoTileEntity("FLUID_TRANSFER_TILE_ENTITY")
-public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
+public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITickable {
 	
 	@Storage protected final FluidCapability cap = new FluidCapability();
 	
 	/** 存储当前管道的blockState，存储的原因是在管道放置之后就不会再替换state */
-	protected FTStateEnum stateEnum;
+	@Storage protected FTStateEnum stateEnum;
 	
 	public FTTileEntity(FTStateEnum stateEnum) {
 		this.stateEnum = stateEnum;
@@ -75,7 +77,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
 		if (capability == FluidTransferCapability.TRANSFER
-				&& (facing == null || cap.isLinked(facing))) {
+				&& (facing == null || cap.hasAperture(facing))) {
 			//noinspection unchecked
 			return (T) cap;
 		}
@@ -95,10 +97,11 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	@Override
 	public void receive(@Nonnull IDataReader compound) {
 		cap.linkData = compound.readByte();
+		cap.setFacing(EnumFacing.values()[compound.readByte()]);
 		if (!compound.readBoolean()) {
 			cap.stack = DataTypeRegister.read(compound, FluidStack.class, null);
 		}
-		cap.setFacing(EnumFacing.values()[compound.readByte()]);
+		
 		updateBlockState();
 	}
 	
@@ -115,13 +118,13 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	 * <p>像客户端发送服务端存储的信息
 	 * <p><b>这其中写有更新内部数据的代码，重写时应该调用</b>
 	 */
-	public void send() {
+	protected void send() {
 		if (world.isRemote) return;
 		if (players.size() == world.playerEntities.size()) return;
 		ByteDataOperator operator = new ByteDataOperator(1);
 		operator.writeByte((byte) cap.linkData);
-		operator.writeBoolean(cap.stack == null);
 		operator.writeByte((byte) cap.getFacing().getIndex());
+		operator.writeBoolean(cap.stack == null);
 		if (cap.stack != null) {
 			DataTypeRegister.write(operator, cap.stack);
 		}
@@ -162,6 +165,16 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		WorldUtil.setBlockState(world, pos, oldState, newState);
 	}
 	
+	private int tick = 0;
+	
+	@Override
+	public void update() {
+		if (world.isRemote || tick++ != 100) return;
+		for (EnumFacing value : values()) {
+			FTWorker.applyFluid(world, pos.offset(value), value.getOpposite(), 1000);
+		}
+	}
+	
 	@DebugDetails
 	public class FluidCapability implements IFluidTransfer {
 		
@@ -197,22 +210,22 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		}
 		
 		@Override
-		public int extract(int amount, boolean simulate) {
-			int real = Math.min(amount, stack.amount);
+		public int extract(FluidStack stack, boolean simulate) {
+			int real = Math.min(stack.amount, this.stack.amount);
 			if (simulate) return real;
-			stack.amount -= real;
+			this.stack.amount -= real;
 			return real;
 		}
 		
 		@Override
-		public int insert(int amount, boolean simulate) {
-			int sum = amount + stack.amount;
+		public int insert(FluidStack stack, boolean simulate) {
+			int sum = this.stack.amount + stack.amount;
 			if (sum <= getMaxAmount()) {
-				if (!simulate) stack.amount = sum;
-				return amount;
+				if (!simulate) this.stack.amount = sum;
+				return stack.amount;
 			}
-			int real = getMaxAmount() - stack.amount;
-			if (!simulate) stack.amount = getMaxAmount();
+			int real = getMaxAmount() - this.stack.amount;
+			if (!simulate) this.stack.amount = getMaxAmount();
 			return real;
 		}
 		
@@ -240,6 +253,32 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 			TileEntity entity = world.getTileEntity(target);
 			if (entity == null) return null;
 			return entity.getCapability(FluidTransferCapability.TRANSFER, facing);
+		}
+		
+		@Nonnull
+		@Override
+		public List<EnumFacing> next(EnumFacing pre) {
+			if (!isLinked(pre)) throw new IllegalArgumentException("输入的方向[" + pre + "]没有连接方块");
+			List<EnumFacing> result;
+			switch (stateEnum) {
+				case STRAIGHT:
+					for (EnumFacing value : values()) {
+						if (isLinked(value)) {
+							if (value == pre) continue;
+							result = new ArrayList<>(1);
+							result.add(value);
+							return result;
+						}
+					}
+					result = Collections.emptyList();
+					return result;
+				case ANGLE:
+					break;
+				case SHUNT:
+					break;
+				default: throw new IllegalArgumentException("未知的状态：" + stateEnum);
+			}
+			return Collections.emptyList();
 		}
 		
 		@Override

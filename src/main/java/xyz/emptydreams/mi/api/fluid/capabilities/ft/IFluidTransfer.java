@@ -5,7 +5,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 import static net.minecraft.util.EnumFacing.*;
 
@@ -27,19 +29,19 @@ public interface IFluidTransfer {
 	
 	/**
 	 * 取出指定数额的流体
-	 * @param amount 流体量(mB)
+	 * @param stack 输出的流体
 	 * @param simulate 是否为模拟，为true时不修改内部数据
 	 * @return 真实取出的流体量
 	 */
-	int extract(int amount, boolean simulate);
+	int extract(FluidStack stack, boolean simulate);
 	
 	/**
 	 * 放入指定数额的流体
-	 * @param amount 流体量(mB)
+	 * @param stack 输入的流体
 	 * @param simulate 是否为模拟，为true时不修改内部数据
 	 * @return 真实取出的流体量
 	 */
-	int insert(int amount, boolean simulate);
+	int insert(FluidStack stack, boolean simulate);
 	
 	/** 设置管道朝向 */
 	void setFacing(EnumFacing facing);
@@ -51,12 +53,21 @@ public interface IFluidTransfer {
 	int getMaxAmount();
 	
 	/**
-	 * 获取指定方向上连接的流体管道
+	 * 获取指定方向上连接的方块
 	 * @param facing 方向
 	 * @return 如果没有连接则返回null，若输入为null则返回本身
 	 */
 	@Nullable
 	IFluidTransfer getLinkedTransfer(EnumFacing facing);
+	
+	/**
+	 * 获取下一个可用的流体去向
+	 * @param pre 上一个方块（即来源）
+	 * @throws IllegalArgumentException 如果来源没有与管道连接
+	 * @return 返回结果无序
+	 */
+	@Nonnull
+	List<EnumFacing> next(EnumFacing pre);
 	
 	/** 判断指定方向是否含有开口 */
 	boolean hasAperture(EnumFacing facing);
@@ -190,27 +201,27 @@ public interface IFluidTransfer {
 	boolean hasPlugEast();
 	
 	/** 向下运输一格 */
-	default int transportDown(int amount, boolean simulate) {
+	default FluidStack transportDown(int amount, boolean simulate) {
 		return transport(DOWN, amount, simulate);
 	}
 	/** 向上运输一格 */
-	default int transportUp(int amount, boolean simulate) {
+	default FluidStack transportUp(int amount, boolean simulate) {
 		return transport(UP, amount, simulate);
 	}
 	/** 向东运输一格 */
-	default int transportEast(int amount, boolean simulate) {
+	default FluidStack transportEast(int amount, boolean simulate) {
 		return transport(EAST, amount, simulate);
 	}
 	/** 向西运输一格 */
-	default int transportWest(int amount, boolean simulate) {
+	default FluidStack transportWest(int amount, boolean simulate) {
 		return transport(WEST, amount, simulate);
 	}
 	/** 向北运输一格 */
-	default int transportNorth(int amount, boolean simulate) {
+	default FluidStack transportNorth(int amount, boolean simulate) {
 		return transport(NORTH, amount, simulate);
 	}
 	/** 向南运输一格 */
-	default int transportSouth(int amount, boolean simulate) {
+	default FluidStack transportSouth(int amount, boolean simulate) {
 		return transport(SOUTH, amount, simulate);
 	}
 	/**
@@ -218,21 +229,24 @@ public interface IFluidTransfer {
 	 * @param facing 方向
 	 * @param amount 运输量(mB)
 	 * @param simulate 是否为模拟，为true时不修改内部数据
-	 * @return 真实运输量(mB)
+	 * @return 真实运输的流体
 	 */
-	default int transport(EnumFacing facing, int amount, boolean simulate) {
-		int realOut = extract(amount, true);
-		if (realOut == 0) return 0;
+	default FluidStack transport(EnumFacing facing, int amount, boolean simulate) {
+		Fluid fluid = fluid();
+		if (fluid == null) return null;
+		FluidStack out = new FluidStack(fluid, amount);
+		out.amount = extract(out, true);
+		if (out.amount == 0) return null;
 		IFluidTransfer that = getLinkedTransfer(facing);
-		if (that == null) return 0;
-		int realIn = that.insert(realOut, true);
-		int real = Math.min(realOut, realIn);
-		if (real == 0) return 0;
+		if (that == null) return null;
+		int realIn = that.insert(out, true);
+		out.amount = Math.min(out.amount, realIn);
+		if (out.amount == 0) return null;
 		if (!simulate) {
-			extract(real, false);
-			that.insert(real, false);
+			extract(out, false);
+			that.insert(out, false);
 		}
-		return real;
+		return out;
 	}
 	
 }

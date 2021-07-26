@@ -17,6 +17,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.fluid.FTStateEnum;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
@@ -80,6 +82,7 @@ public final class PipeBlocks {
 			EnumFacing facing = side.getOpposite();
 			@SuppressWarnings("ConstantConditions")
 			IFluidTransfer cap = te.getFTCapability();
+			cap.setFluid(new FluidStack(FluidRegistry.WATER, 1000));
 			if (link(world, pos, cap, facing)) {
 				link(world, pos, cap, side);
 				te.markDirty();
