@@ -26,6 +26,7 @@ import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.io.instance.ObjectData;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
@@ -37,7 +38,6 @@ import xyz.emptydreams.mi.data.info.IETForEach;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -219,6 +219,8 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 				default: setDown(true);
 			}
 		}
+		if (linkedBlocks.isEmpty()) remove();
+		else add();
 		markDirty();
 		players.clear();
 	}
@@ -295,32 +297,46 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	
 	//--------------------常规--------------------//
 	
+	private boolean isRemove = false;
+	
 	private static final CableCache CLIENT_CACHE = new CableCache();
 	@Override
 	public void update() {
 		if (cache == null) {
 			if (world.isRemote) {
 				cache = CLIENT_CACHE;
-				//WorldUtil.removeTickable(this);
+				remove();
 			} else {
 				CableCache.calculate(this);
 			}
 		}
 		
-		send();
-		Iterator<BlockPos> it = linkedBlocks.iterator();
-		while (it.hasNext()) {
-			BlockPos block = it.next();
+		for (BlockPos block : linkedBlocks) {
 			TileEntity entity = world.getTileEntity(block);
-			if (entity == null) {
-				it.remove();
-			} else {
-				IStorage storage = entity.getCapability(EleCapability.ENERGY, BlockUtil.whatFacing(block, pos));
-				if (storage != null && storage.canReceive()) {
-					EleWorker.useEleEnergy(entity);
-				}
+			@SuppressWarnings("ConstantConditions")
+			IStorage storage = entity.getCapability(EleCapability.ENERGY, BlockUtil.whatFacing(block, pos));
+			if (storage != null && storage.canReceive()) {
+				EleWorker.useEleEnergy(entity);
 			}
 		}
+	}
+	
+	@Override
+	public void markDirty() {
+		super.markDirty();
+		send();
+	}
+	
+	private void remove() {
+		if (isRemove) return;
+		isRemove = true;
+		WorldUtil.removeTickable(this);
+	}
+	
+	private void add() {
+		if (!isRemove) return;
+		isRemove = false;
+		WorldUtil.addTickable(this);
 	}
 	
 	/** 设置最大电流指数 */
@@ -440,6 +456,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	@Override
 	public NBTTagCompound getUpdateTag() {
 		players.clear();
+		send();
 		return super.getUpdateTag();
 	}
 

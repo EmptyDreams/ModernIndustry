@@ -5,7 +5,6 @@ import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
@@ -45,7 +44,7 @@ import static net.minecraft.util.EnumFacing.*;
  * @author EmptyDreams
  */
 @AutoTileEntity("FLUID_TRANSFER_TILE_ENTITY")
-public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITickable {
+public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	
 	@Storage protected final FluidCapability cap = new FluidCapability();
 	
@@ -163,16 +162,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 			default: throw new IllegalArgumentException("输入了未知的状态：" + stateEnum);
 		}
 		WorldUtil.setBlockState(world, pos, oldState, newState);
-	}
-	
-	private int tick = 0;
-	
-	@Override
-	public void update() {
-		if (world.isRemote || tick++ != 100) return;
-		for (EnumFacing value : values()) {
-			FTWorker.applyFluid(world, pos.offset(value), value.getOpposite(), 1000);
-		}
 	}
 	
 	@DebugDetails

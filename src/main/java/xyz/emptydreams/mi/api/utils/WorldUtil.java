@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.utils;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +19,6 @@ import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -145,6 +145,11 @@ public final class WorldUtil {
 			SERVER_REMOVES.computeIfAbsent(tickable.getWorld(), key -> new LinkedList<>()).add(tickable);
 	}
 
+	public static void addTickable(TileEntity tickable) {
+		StringUtil.checkNull(tickable, "tickable");
+		
+	}
+	
 	/**
 	 * 设置BlockState，当新旧state一致时不进行替换
 	 * @param world 所在世界
@@ -201,14 +206,21 @@ public final class WorldUtil {
 	//---------------------私有内容---------------------//
 	
 	/** 客户端移除列表 */
-	private static final Map<World, List<TileEntity>> CLIENT_REMOVES = new LinkedHashMap<>();
+	private static final Map<World, List<TileEntity>> CLIENT_REMOVES = new Object2ObjectArrayMap<>(3);
 	/** 服务端移除列表 */
-	private static final Map<World, List<TileEntity>> SERVER_REMOVES = new LinkedHashMap<>();
+	private static final Map<World, List<TileEntity>> SERVER_REMOVES = new Object2ObjectArrayMap<>(3);
 
+	/** 客户端添加列表 */
+	private static final Map<World, List<TileEntity>> CLIENT_ADDS = new Object2ObjectArrayMap<>(3);
+	/** 服务端添加列表 */
+	private static final Map<World, List<TileEntity>> SERVER_ADDS = new Object2ObjectArrayMap<>(3);
+	
 	@SubscribeEvent
 	public static void atServerTickEnd(TickEvent.ServerTickEvent event) {
 		SERVER_REMOVES.forEach((key, value) -> key.tickableTileEntities.removeAll(value));
 		SERVER_REMOVES.clear();
+		SERVER_ADDS.forEach((key, value) -> key.tickableTileEntities.addAll(value));
+		SERVER_ADDS.clear();
 	}
 
 	@SubscribeEvent
@@ -216,6 +228,8 @@ public final class WorldUtil {
 	public static void atClientTickEnd(TickEvent.ClientTickEvent event) {
 		CLIENT_REMOVES.forEach((key, value) -> key.tickableTileEntities.removeAll(value));
 		CLIENT_REMOVES.clear();
+		CLIENT_ADDS.forEach((key, value) -> key.tickableTileEntities.addAll(value));
+		CLIENT_ADDS.clear();
 	}
 	
 }
