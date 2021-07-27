@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.utils;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
@@ -8,6 +9,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
 import xyz.emptydreams.mi.content.blocks.base.EleTransferBlock;
 
 import java.util.function.BiConsumer;
@@ -32,7 +34,22 @@ public final class BlockUtil {
 		double length = box.maxZ - box.minZ;
 		return (width * height * length) >= 0.75;
 	}
-
+	
+	/**
+	 * 在指定位置放置流体
+	 * @param world 世界
+	 * @param pos 放置流体的坐标
+	 * @param fluid 流体
+	 * @param fromPos 与流体相邻的任意坐标
+	 */
+	public static void setFluid(World world, BlockPos pos, Fluid fluid, BlockPos fromPos) {
+		Block block = fluid.getBlock();
+		IBlockState state = block.getDefaultState();
+		WorldUtil.setBlockState(world, pos, state);
+		Block fromBlock = world.getBlockState(fromPos).getBlock();
+		block.neighborChanged(state, world, pos, fromBlock, fromPos);
+	}
+	
 	/**
 	 * 使指定位置着火
 	 * @param world 所在世界
