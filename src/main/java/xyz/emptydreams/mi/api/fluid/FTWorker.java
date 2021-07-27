@@ -8,8 +8,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import xyz.emptydreams.mi.api.fluid.capabilities.ft.FluidTransferCapability;
-import xyz.emptydreams.mi.api.fluid.capabilities.ft.IFluidTransfer;
+import xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability;
+import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nullable;
@@ -36,7 +36,7 @@ public final class FTWorker {
 		if (facing == null) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te == null) return applyFluidToBlockFromAllFacing(world, pos, amount);
-			IFluidTransfer ft = te.getCapability(FluidTransferCapability.TRANSFER, null);
+			IFluid ft = te.getCapability(FluidCapability.TRANSFER, null);
 			if (ft == null) return applyFluidToBlockFromAllFacing(world, pos, amount);
 			int now = amount;
 			FluidStack result = null;
@@ -54,7 +54,7 @@ public final class FTWorker {
 			BlockPos target = pos.offset(facing);
 			TileEntity targetTe = world.getTileEntity(target);
 			if (targetTe == null) return null;
-			IFluidTransfer ft = targetTe.getCapability(FluidTransferCapability.TRANSFER, facing.getOpposite());
+			IFluid ft = targetTe.getCapability(FluidCapability.TRANSFER, facing.getOpposite());
 			if (ft == null || ft.fluid() == null || ft.fluidAmount() == 0) return null;
 			FluidStack transport = ft.transport(facing.getOpposite(), amount, false);
 			if (transport != null) {
@@ -89,8 +89,8 @@ public final class FTWorker {
 			BlockPos target = pos.offset(value);
 			TileEntity targetTe = world.getTileEntity(target);
 			if (targetTe == null) continue;
-			IFluidTransfer ft = targetTe.getCapability(
-					FluidTransferCapability.TRANSFER, value.getOpposite());
+			IFluid ft = targetTe.getCapability(
+					FluidCapability.TRANSFER, value.getOpposite());
 			if (ft == null) continue;
 			FluidStack stack = applyFluidToBlock(world, pos, state, ft, amount);
 			if (stack == null || stack.amount == 0) continue;
@@ -118,7 +118,7 @@ public final class FTWorker {
 	 */
 	@Nullable
 	private static FluidStack applyFluidToBlock(World world, BlockPos pos,
-	                                            IBlockState state, IFluidTransfer ft, int amount) {
+	                                            IBlockState state, IFluid ft, int amount) {
 		Block block = state.getBlock();
 		if (!block.isReplaceable(world, pos)) return null;
 		Fluid fluid = ft.fluid();

@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.fluid.capabilities.ft;
+package xyz.emptydreams.mi.api.capabilities.fluid;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.EnumFacing;
@@ -15,7 +15,7 @@ import static net.minecraft.util.EnumFacing.*;
  * 流体管道信息
  * @author EmptyDreams
  */
-public interface IFluidTransfer {
+public interface IFluid {
 	
 	/** 获取流体容量（单位：mB） */
 	int fluidAmount();
@@ -58,7 +58,7 @@ public interface IFluidTransfer {
 	 * @return 如果没有连接则返回null，若输入为null则返回本身
 	 */
 	@Nullable
-	IFluidTransfer getLinkedTransfer(EnumFacing facing);
+	IFluid getLinkedTransfer(EnumFacing facing);
 	
 	/**
 	 * 获取下一个可用的流体去向
@@ -237,7 +237,7 @@ public interface IFluidTransfer {
 		FluidStack out = new FluidStack(fluid, amount);
 		out.amount = extract(out, true);
 		if (out.amount == 0) return null;
-		IFluidTransfer that = getLinkedTransfer(facing);
+		IFluid that = getLinkedTransfer(facing);
 		if (that == null) return null;
 		int realIn = that.insert(out, true);
 		out.amount = Math.min(out.amount, realIn);

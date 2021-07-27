@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.fluid.capabilities.plug;
+package xyz.emptydreams.mi.api.capabilities.plug;
 
 /**
  * @author EmptyDreams

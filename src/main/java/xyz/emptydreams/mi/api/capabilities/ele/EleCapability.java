@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.electricity.capabilities;
+package xyz.emptydreams.mi.api.capabilities.ele;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;

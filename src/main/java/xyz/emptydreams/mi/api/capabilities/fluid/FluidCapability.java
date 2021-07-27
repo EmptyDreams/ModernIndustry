@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.fluid.capabilities.ft;
+package xyz.emptydreams.mi.api.capabilities.fluid;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.EnumFacing;
@@ -17,14 +17,14 @@ import java.util.List;
  * @author EmptyDreams
  */
 @AutoLoader
-public class FluidTransferCapability {
+public class FluidCapability {
 	
-	@CapabilityInject(IFluidTransfer.class)
-	public static Capability<IFluidTransfer> TRANSFER;
+	@CapabilityInject(IFluid.class)
+	public static Capability<IFluid> TRANSFER;
 	
 	static {
-		CapabilityManager.INSTANCE.register(IFluidTransfer.class, new FluidTransferStore(),
-				() -> new IFluidTransfer() {
+		CapabilityManager.INSTANCE.register(IFluid.class, new FluidStore(),
+				() -> new IFluid() {
 			
 					@Override
 					public int fluidAmount() {
@@ -55,7 +55,7 @@ public class FluidTransferCapability {
 						return null;
 					}
 					@Override
-					public IFluidTransfer getLinkedTransfer(EnumFacing facing) {
+					public IFluid getLinkedTransfer(EnumFacing facing) {
 						return null;
 					}
 					@Nonnull

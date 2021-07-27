@@ -12,8 +12,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
-import xyz.emptydreams.mi.api.fluid.capabilities.ft.FluidTransferCapability;
-import xyz.emptydreams.mi.api.fluid.capabilities.ft.IFluidTransfer;
+import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.net.handler.MessageSender;
 import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
@@ -46,7 +45,7 @@ import static net.minecraft.util.EnumFacing.*;
 @AutoTileEntity("FLUID_TRANSFER_TILE_ENTITY")
 public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	
-	@Storage protected final FluidCapability cap = new FluidCapability();
+	@Storage protected final FluidSrcCap cap = new FluidSrcCap();
 	
 	/** 存储当前管道的blockState，存储的原因是在管道放置之后就不会再替换state */
 	@Storage protected FTStateEnum stateEnum;
@@ -69,13 +68,13 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
 		if (super.hasCapability(capability, facing)) return true;
-		return capability == FluidTransferCapability.TRANSFER;
+		return capability == xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability.TRANSFER;
 	}
 	
 	@Nullable
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-		if (capability == FluidTransferCapability.TRANSFER
+		if (capability == xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability.TRANSFER
 				&& (facing == null || cap.hasAperture(facing))) {
 			//noinspection unchecked
 			return (T) cap;
@@ -83,7 +82,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		return super.getCapability(capability, facing);
 	}
 	
-	public FluidCapability getFTCapability() {
+	public FluidSrcCap getFTCapability() {
 		return cap;
 	}
 	
@@ -164,7 +163,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	}
 	
 	@DebugDetails
-	public class FluidCapability implements IFluidTransfer {
+	public class FluidSrcCap implements IFluid {
 		
 		/** 一格管道可以容纳的最大流体量 */
 		public static final int FLUID_TRANSFER_MAX_AMOUNT = 1000;
@@ -235,12 +234,12 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		
 		@Nullable
 		@Override
-		public IFluidTransfer getLinkedTransfer(EnumFacing facing) {
+		public IFluid getLinkedTransfer(EnumFacing facing) {
 			if (facing == null) return this;
 			BlockPos target = pos.offset(facing);
 			TileEntity entity = world.getTileEntity(target);
 			if (entity == null) return null;
-			return entity.getCapability(FluidTransferCapability.TRANSFER, facing);
+			return entity.getCapability(xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability.TRANSFER, facing);
 		}
 		
 		@Nonnull
@@ -284,7 +283,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		public boolean canLink(EnumFacing facing) {
 			TileEntity te = world.getTileEntity(pos.offset(facing));
 			if (te == null) return false;
-			IFluidTransfer cap = te.getCapability(FluidTransferCapability.TRANSFER, null);
+			IFluid cap = te.getCapability(xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability.TRANSFER, null);
 			if (cap == null) return false;
 			if (cap.hasAperture(facing.getOpposite())) {
 				return hasAperture(facing) || getLinkAmount() == 0;

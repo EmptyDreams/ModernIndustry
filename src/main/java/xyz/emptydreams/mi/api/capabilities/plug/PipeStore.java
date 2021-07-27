@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.fluid.capabilities.plug;
+package xyz.emptydreams.mi.api.capabilities.plug;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
