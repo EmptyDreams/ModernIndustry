@@ -9,7 +9,7 @@ import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleOutputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
-import xyz.emptydreams.mi.api.utils.BlockUtil;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.container.DoubleWrapper;
 import xyz.emptydreams.mi.api.utils.container.Wrapper;
 import xyz.emptydreams.mi.content.blocks.tileentity.EleSrcCable;
@@ -35,7 +35,7 @@ public class CableCache {
 		CableCache cache = new CableCache();
 		cable.forEachAll((it, isEnd, next) -> {
 			BlockPos pos = it.getPos();
-			BlockUtil.forEachAroundTE(cable.getWorld(), it.getPos(), (te, facing) -> {
+			WorldUtil.forEachAroundTE(cable.getWorld(), it.getPos(), (te, facing) -> {
 				if (EleWorker.isOutputer(te)) {
 					cache.addOutputer(pos, te.getPos());
 				}

@@ -24,7 +24,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.register.item.AutoItemRegister;
-import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.content.blocks.base.MachineBlock;
 import xyz.emptydreams.mi.content.blocks.machine.user.MuffleFurnaceBlock;
@@ -97,7 +96,7 @@ public class SpannerItem extends Item {
 	 */
 	@Nullable
 	public static PropertyDirection getPropertyDirection(World world, BlockPos pos, IBlockState state) {
-		if (!BlockUtil.isFullBlock(world, pos)) return null;
+		if (!WorldUtil.isFullBlock(world, pos)) return null;
 		for (IProperty<?> property : state.getProperties().keySet()) {
 			if (property instanceof PropertyDirection) return (PropertyDirection) property;
 		}

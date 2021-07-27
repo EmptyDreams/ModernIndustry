@@ -10,8 +10,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.MathUtil;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import java.util.function.BiConsumer;
 
@@ -36,7 +36,7 @@ public enum EnumBiggerVoltage {
 	FIRE((te, bigger) -> {
 		BlockPos pos = te.getPos();
 		if (bigger.getFireRadius() == 1) {
-			BlockUtil.setFire(te.getWorld(), pos);
+			WorldUtil.setFire(te.getWorld(), pos);
 		} else {
 			int r = bigger.getFireRadius();
 			int x = pos.getX() - r;
@@ -46,7 +46,7 @@ public enum EnumBiggerVoltage {
 				for (int k = 1; k <= r; ++k) {
 					for (int j = 1; j <= r; ++j) {
 						if (bigger.getFirePer() > MathUtil.random().nextFloat()) {
-							BlockUtil.setFire(te.getWorld(), new BlockPos(x + i, y + k, z + j));
+							WorldUtil.setFire(te.getWorld(), new BlockPos(x + i, y + k, z + j));
 						}
 					}
 				}

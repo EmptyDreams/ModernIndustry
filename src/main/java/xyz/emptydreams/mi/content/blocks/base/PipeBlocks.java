@@ -25,9 +25,9 @@ import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.fluid.capabilities.ft.FluidTransferCapability;
 import xyz.emptydreams.mi.api.fluid.capabilities.ft.IFluidTransfer;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
-import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.content.items.base.ItemBlockExpand;
 
 import javax.annotation.Nonnull;
@@ -191,7 +191,7 @@ public final class PipeBlocks {
 			Block block = fromEntity == null ? worldIn.getBlockState(fromPos).getBlock() : fromEntity.getBlockType();
 			FTTileEntity nowEntity = (FTTileEntity) worldIn.getTileEntity(pos);
 			@SuppressWarnings("ConstantConditions") FTTileEntity.FluidCapability cap = nowEntity.getFTCapability();
-			EnumFacing facing = BlockUtil.whatFacing(pos, fromPos);
+			EnumFacing facing = WorldUtil.whatFacing(pos, fromPos);
 			if (block == Blocks.AIR || fromEntity == null) {
 				cap.unlink(facing);
 			} else {

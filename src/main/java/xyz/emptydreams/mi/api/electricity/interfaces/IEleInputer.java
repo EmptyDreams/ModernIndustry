@@ -4,7 +4,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
 import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
-import xyz.emptydreams.mi.api.utils.BlockUtil;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +67,7 @@ public interface IEleInputer extends IRegister {
 	 */
 	default Map<TileEntity, IEleTransfer> getTransferAround(TileEntity now) {
 		Map<TileEntity, IEleTransfer> list = new HashMap<>(4);
-		BlockUtil.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
+		WorldUtil.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
 			IEleTransfer et = EleWorker.getTransfer(te);
 			if (et != null && et.isLink(te, now)) list.put(te,et);
 		});

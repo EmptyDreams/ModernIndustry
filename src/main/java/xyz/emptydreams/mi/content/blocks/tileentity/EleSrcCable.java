@@ -27,7 +27,6 @@ import xyz.emptydreams.mi.api.net.handler.MessageSender;
 import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
-import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
@@ -177,7 +176,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	 * @return 是否连接成功
 	 */
 	public boolean linkMachine(TileEntity target) {
-		EnumFacing facing = BlockUtil.whatFacing(target.getPos(), pos);
+		EnumFacing facing = WorldUtil.whatFacing(target.getPos(), pos);
 		IStorage link = target.getCapability(EleCapability.ENERGY, facing);
 		if (link == null) return false;
 		if (link.canLink(facing)) {
@@ -194,7 +193,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	public void updateLinkShow() {
 		linkInfo = 0;
 		if (next != null) {
-			switch (BlockUtil.whatFacing(pos, next)) {
+			switch (WorldUtil.whatFacing(pos, next)) {
 				case EAST: setEast(true); break;
 				case WEST: setWest(true); break;
 				case SOUTH: setSouth(true); break;
@@ -204,7 +203,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 			}
 		}
 		if (prev != null) {
-			switch (BlockUtil.whatFacing(pos, prev)) {
+			switch (WorldUtil.whatFacing(pos, prev)) {
 				case EAST: setEast(true); break;
 				case WEST: setWest(true); break;
 				case SOUTH: setSouth(true); break;
@@ -214,7 +213,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 			}
 		}
 		for (BlockPos block : linkedBlocks) {
-			switch (BlockUtil.whatFacing(pos, block)) {
+			switch (WorldUtil.whatFacing(pos, block)) {
 				case EAST: setEast(true); break;
 				case WEST: setWest(true); break;
 				case SOUTH: setSouth(true); break;
@@ -318,7 +317,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		for (BlockPos block : linkedBlocks) {
 			TileEntity entity = world.getTileEntity(block);
 			@SuppressWarnings("ConstantConditions")
-			IStorage storage = entity.getCapability(EleCapability.ENERGY, BlockUtil.whatFacing(block, pos));
+			IStorage storage = entity.getCapability(EleCapability.ENERGY, WorldUtil.whatFacing(block, pos));
 			if (storage != null && storage.canReceive()) {
 				EleWorker.useEleEnergy(entity);
 			}

@@ -10,7 +10,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import xyz.emptydreams.mi.api.fluid.capabilities.ft.FluidTransferCapability;
 import xyz.emptydreams.mi.api.fluid.capabilities.ft.IFluidTransfer;
-import xyz.emptydreams.mi.api.utils.BlockUtil;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 
 import javax.annotation.Nullable;
 import java.util.LinkedList;
@@ -66,7 +66,7 @@ public final class FTWorker {
 			IBlockState state =  world.getBlockState(pos);
 			transport = applyFluidToBlock(world, pos, state, ft, amount);
 			if (transport == null || transport.amount < 1000) return null;
-			BlockUtil.setFluid(world, pos, transport.getFluid(), target);
+			WorldUtil.setFluid(world, pos, transport.getFluid(), target);
 			targetTe.markDirty();
 			return transport;
 		}
@@ -102,7 +102,7 @@ public final class FTWorker {
 			amount -= stack.amount;
 		}
 		if (result == null || result.amount != 1000 || teList.isEmpty()) return null;
-		BlockUtil.setFluid(world, pos, result.getFluid(), teList.get(0).getPos());
+		WorldUtil.setFluid(world, pos, result.getFluid(), teList.get(0).getPos());
 		teList.forEach(TileEntity::markDirty);
 		return result;
 	}

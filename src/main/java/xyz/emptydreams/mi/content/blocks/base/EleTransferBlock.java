@@ -23,8 +23,8 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
 import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
-import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.content.blocks.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.content.items.base.ItemBlockExpand;
 
@@ -154,7 +154,7 @@ abstract public class EleTransferBlock extends TEBlockBase {
 	@SuppressWarnings("ConstantConditions")
 	public static void neighborChangedHelper(IBlockState state,
 	                                         World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
-		EnumFacing facing = BlockUtil.whatFacing(pos, fromPos);
+		EnumFacing facing = WorldUtil.whatFacing(pos, fromPos);
 		TileEntity nowTe = worldIn.getTileEntity(pos);
 		IStorage nowStorage = nowTe.getCapability(EleCapability.ENERGY, facing);
 		if (nowStorage == null) return;
