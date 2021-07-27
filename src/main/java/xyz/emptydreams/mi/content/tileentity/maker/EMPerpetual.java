@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.content.blocks.tileentity.maker;
+package xyz.emptydreams.mi.content.tileentity.maker;
 
 import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.electricity.EleTileEntity;

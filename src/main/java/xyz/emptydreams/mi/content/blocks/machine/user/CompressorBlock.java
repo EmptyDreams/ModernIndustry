@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.register.block.AutoBlockRegister;
 import xyz.emptydreams.mi.content.blocks.CommonUtil;
 import xyz.emptydreams.mi.content.blocks.base.MachineBlock;
-import xyz.emptydreams.mi.content.blocks.tileentity.user.EUCompressor;
+import xyz.emptydreams.mi.content.tileentity.user.EUCompressor;
 import xyz.emptydreams.mi.content.gui.CompressorFrame;
 
 import javax.annotation.Nonnull;
@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.*;
+import static xyz.emptydreams.mi.api.utils.properties.MIProperty.*;
 
 /**
  * 压缩机

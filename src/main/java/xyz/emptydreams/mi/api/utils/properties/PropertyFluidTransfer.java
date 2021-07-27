@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.content.blocks.properties;
+package xyz.emptydreams.mi.api.utils.properties;
 
 import net.minecraft.block.properties.PropertyEnum;
 import xyz.emptydreams.mi.api.fluid.FTStateEnum;

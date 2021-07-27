@@ -20,8 +20,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
-import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.HORIZONTAL;
-import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.WORKING;
+import static xyz.emptydreams.mi.api.utils.properties.MIProperty.HORIZONTAL;
+import static xyz.emptydreams.mi.api.utils.properties.MIProperty.WORKING;
 
 /**
  * 封装了对于State的常用操作

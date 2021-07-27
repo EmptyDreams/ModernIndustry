@@ -35,7 +35,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.ALL_FACING;
+import static xyz.emptydreams.mi.api.utils.properties.MIProperty.ALL_FACING;
 
 /**
  * 流体管道的方块

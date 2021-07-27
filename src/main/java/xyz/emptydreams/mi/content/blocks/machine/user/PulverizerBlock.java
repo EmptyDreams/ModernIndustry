@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.register.block.AutoBlockRegister;
 import xyz.emptydreams.mi.content.blocks.CommonUtil;
 import xyz.emptydreams.mi.content.blocks.base.MachineBlock;
-import xyz.emptydreams.mi.content.blocks.tileentity.user.EUPulverizer;
+import xyz.emptydreams.mi.content.tileentity.user.EUPulverizer;
 import xyz.emptydreams.mi.content.gui.PulverizerFrame;
 
 import javax.annotation.Nonnull;
@@ -24,8 +24,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static net.minecraft.util.EnumFacing.NORTH;
-import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.HORIZONTAL;
-import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.WORKING;
+import static xyz.emptydreams.mi.api.utils.properties.MIProperty.HORIZONTAL;
+import static xyz.emptydreams.mi.api.utils.properties.MIProperty.WORKING;
 
 /**
  * 粉碎机的Block

@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.content.blocks.tileentity;
+package xyz.emptydreams.mi.api.tools;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;

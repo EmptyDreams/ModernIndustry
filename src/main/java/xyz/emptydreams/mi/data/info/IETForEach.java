@@ -1,7 +1,7 @@
 package xyz.emptydreams.mi.data.info;
 
 import net.minecraft.tileentity.TileEntity;
-import xyz.emptydreams.mi.content.blocks.tileentity.EleSrcCable;
+import xyz.emptydreams.mi.content.tileentity.EleSrcCable;
 
 import javax.annotation.Nonnull;
 

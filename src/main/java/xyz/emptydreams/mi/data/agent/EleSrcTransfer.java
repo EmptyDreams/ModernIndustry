@@ -9,7 +9,7 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.register.agent.AutoAgentRegister;
-import xyz.emptydreams.mi.content.blocks.tileentity.EleSrcCable;
+import xyz.emptydreams.mi.content.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.data.info.CableCache;
 
 /**

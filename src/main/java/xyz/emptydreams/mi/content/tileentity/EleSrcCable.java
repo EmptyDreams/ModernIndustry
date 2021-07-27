@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.content.blocks.tileentity;
+package xyz.emptydreams.mi.content.tileentity;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

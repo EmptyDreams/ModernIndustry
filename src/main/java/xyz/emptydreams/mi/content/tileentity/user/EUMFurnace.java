@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.content.blocks.tileentity.user;
+package xyz.emptydreams.mi.content.tileentity.user;
 
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.data.info.EnumVoltage;

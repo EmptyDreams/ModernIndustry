@@ -19,7 +19,7 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.register.block.AutoBlockRegister;
 import xyz.emptydreams.mi.content.blocks.CommonUtil;
 import xyz.emptydreams.mi.content.blocks.base.TEBlockBase;
-import xyz.emptydreams.mi.content.blocks.tileentity.user.MuffleFurnace;
+import xyz.emptydreams.mi.content.tileentity.user.MuffleFurnace;
 import xyz.emptydreams.mi.content.gui.MuffleFurnaceFrame;
 import xyz.emptydreams.mi.content.items.common.SpannerItem;
 
@@ -28,8 +28,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.HORIZONTAL;
-import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.WORKING;
+import static xyz.emptydreams.mi.api.utils.properties.MIProperty.HORIZONTAL;
+import static xyz.emptydreams.mi.api.utils.properties.MIProperty.WORKING;
 
 /**
  * 高温熔炉

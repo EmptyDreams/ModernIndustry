@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.content.blocks.properties;
+package xyz.emptydreams.mi.api.utils.properties;
 
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;

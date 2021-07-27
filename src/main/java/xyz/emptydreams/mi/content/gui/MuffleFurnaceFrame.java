@@ -13,7 +13,7 @@ import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
 import xyz.emptydreams.mi.api.gui.component.group.Group;
 import xyz.emptydreams.mi.api.gui.component.group.Panels;
-import xyz.emptydreams.mi.content.blocks.tileentity.user.MuffleFurnace;
+import xyz.emptydreams.mi.content.tileentity.user.MuffleFurnace;
 
 import javax.annotation.Nonnull;
 

@@ -13,7 +13,7 @@ import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
 import xyz.emptydreams.mi.api.gui.component.group.Group;
 import xyz.emptydreams.mi.api.gui.component.group.Panels;
-import xyz.emptydreams.mi.content.blocks.tileentity.maker.EMRedStoneConverter;
+import xyz.emptydreams.mi.content.tileentity.maker.EMRedStoneConverter;
 
 import javax.annotation.Nonnull;
 

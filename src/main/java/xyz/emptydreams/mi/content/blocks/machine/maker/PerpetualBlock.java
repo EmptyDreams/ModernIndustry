@@ -9,7 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.register.block.AutoBlockRegister;
 import xyz.emptydreams.mi.content.blocks.base.MachineBlock;
-import xyz.emptydreams.mi.content.blocks.tileentity.maker.EMPerpetual;
+import xyz.emptydreams.mi.content.tileentity.maker.EMPerpetual;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

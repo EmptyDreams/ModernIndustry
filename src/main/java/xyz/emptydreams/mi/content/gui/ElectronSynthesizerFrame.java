@@ -13,7 +13,7 @@ import xyz.emptydreams.mi.api.gui.common.IContainerCreater;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.group.Group;
 import xyz.emptydreams.mi.api.gui.component.group.Panels;
-import xyz.emptydreams.mi.content.blocks.tileentity.user.EUElectronSynthesizer;
+import xyz.emptydreams.mi.content.tileentity.user.EUElectronSynthesizer;
 
 import javax.annotation.Nonnull;
 

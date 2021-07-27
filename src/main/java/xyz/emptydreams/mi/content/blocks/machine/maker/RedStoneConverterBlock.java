@@ -16,15 +16,15 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.register.block.AutoBlockRegister;
 import xyz.emptydreams.mi.content.blocks.CommonUtil;
 import xyz.emptydreams.mi.content.blocks.base.MachineBlock;
-import xyz.emptydreams.mi.content.blocks.tileentity.maker.EMRedStoneConverter;
+import xyz.emptydreams.mi.content.tileentity.maker.EMRedStoneConverter;
 import xyz.emptydreams.mi.content.gui.RedStoneConverterFrame;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.HORIZONTAL;
-import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.WORKING;
+import static xyz.emptydreams.mi.api.utils.properties.MIProperty.HORIZONTAL;
+import static xyz.emptydreams.mi.api.utils.properties.MIProperty.WORKING;
 
 /**
  * 红石能转换器

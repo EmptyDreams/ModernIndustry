@@ -3,7 +3,7 @@ package xyz.emptydreams.mi.content.blocks.machine;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.register.others.AutoManager;
 import xyz.emptydreams.mi.content.blocks.base.EleTransferBlock;
-import xyz.emptydreams.mi.content.blocks.tileentity.EleSrcCable;
+import xyz.emptydreams.mi.content.tileentity.EleSrcCable;
 
 /**
  * 电线的管理类

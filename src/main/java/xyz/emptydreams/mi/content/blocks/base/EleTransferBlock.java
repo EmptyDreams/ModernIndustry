@@ -25,7 +25,7 @@ import xyz.emptydreams.mi.api.capabilities.ele.IStorage;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
-import xyz.emptydreams.mi.content.blocks.tileentity.EleSrcCable;
+import xyz.emptydreams.mi.content.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.content.items.base.ItemBlockExpand;
 
 import javax.annotation.Nonnull;

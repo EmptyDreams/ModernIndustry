@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.content.blocks.tileentity.user;
+package xyz.emptydreams.mi.content.tileentity.user;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -17,8 +17,8 @@ import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 
 import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
-import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.HORIZONTAL;
-import static xyz.emptydreams.mi.content.blocks.properties.MIProperty.WORKING;
+import static xyz.emptydreams.mi.api.utils.properties.MIProperty.HORIZONTAL;
+import static xyz.emptydreams.mi.api.utils.properties.MIProperty.WORKING;
 
 /**
  * 高温火炉

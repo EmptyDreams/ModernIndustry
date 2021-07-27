@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.content.blocks.tileentity.user;
+package xyz.emptydreams.mi.content.tileentity.user;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -20,9 +20,9 @@ import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.content.blocks.CraftList;
-import xyz.emptydreams.mi.content.blocks.properties.MIProperty;
+import xyz.emptydreams.mi.api.utils.properties.MIProperty;
 import xyz.emptydreams.mi.content.blocks.machine.user.CompressorBlock;
-import xyz.emptydreams.mi.content.blocks.tileentity.FrontTileEntity;
+import xyz.emptydreams.mi.api.tools.FrontTileEntity;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
 import xyz.emptydreams.mi.data.info.EnumVoltage;

@@ -23,8 +23,7 @@ import javax.annotation.Nonnull;
 
 import static xyz.emptydreams.mi.api.utils.ItemUtil.newStack;
 
-@Mod(modid = ModernIndustry.MODID, name = ModernIndustry.NAME,
-		version = ModernIndustry.VERSION, guiFactory = "xyz.emptydreams.mi.data.config.ConfigFactory")
+@Mod(modid = ModernIndustry.MODID, name = ModernIndustry.NAME, version = ModernIndustry.VERSION)
 @AutoManager(item = true)
 public final class ModernIndustry {
 	

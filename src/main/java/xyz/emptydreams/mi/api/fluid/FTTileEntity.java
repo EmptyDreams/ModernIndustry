@@ -25,7 +25,7 @@ import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 import xyz.emptydreams.mi.content.blocks.base.PipeBlocks;
-import xyz.emptydreams.mi.content.blocks.properties.MIProperty;
+import xyz.emptydreams.mi.api.utils.properties.MIProperty;
 import xyz.emptydreams.mi.content.items.debug.DebugDetails;
 
 import javax.annotation.Nonnull;

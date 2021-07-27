@@ -12,7 +12,7 @@ import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.container.DoubleWrapper;
 import xyz.emptydreams.mi.api.utils.container.Wrapper;
-import xyz.emptydreams.mi.content.blocks.tileentity.EleSrcCable;
+import xyz.emptydreams.mi.content.tileentity.EleSrcCable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
