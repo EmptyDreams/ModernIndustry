@@ -1,12 +1,16 @@
 package xyz.emptydreams.mi.api.electricity.info;
 
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
+import xyz.emptydreams.mi.data.info.EnumVoltage;
 
 /**
  * 电压范围
  * @author EmptyDreams
  */
 public final class VoltageRange {
+	
+	/** 全范围的电压 */
+	public static final VoltageRange ALL = new VoltageRange(EnumVoltage.NON, EnumVoltage.MAX);
 	
 	public static VoltageRange instance(IVoltage voltage) {
 		return new VoltageRange(voltage, voltage);

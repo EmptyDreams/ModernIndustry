@@ -18,7 +18,10 @@ import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
+import xyz.emptydreams.mi.api.electricity.info.EnumEleState;
+import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
+import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.net.handler.MessageSender;
 import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
@@ -34,10 +37,12 @@ import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
 import xyz.emptydreams.mi.data.info.CableCache;
 import xyz.emptydreams.mi.data.info.EnumBiggerVoltage;
+import xyz.emptydreams.mi.data.info.EnumVoltage;
 import xyz.emptydreams.mi.data.info.IETForEach;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -500,11 +505,14 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	
 	@Override
 	public final boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		return false;
+		if (capability == EleCapability.ENERGY) return true;
+		return super.hasCapability(capability, facing);
 	}
+	@SuppressWarnings("unchecked")
 	@Override
 	public final <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		return null;
+		if (capability == EleCapability.ENERGY) return (T) storage;
+		return super.getCapability(capability, facing);
 	}
 	
 	@Override
@@ -528,5 +536,84 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
 		return oldState.getBlock() != newSate.getBlock();
 	}
+	
+	private final IStorage storage = new IStorage() {
+		@Override
+		public boolean canReceive() {
+			return false;
+		}
+		
+		@Override
+		public boolean canExtract() {
+			return false;
+		}
+		
+		@Override
+		public int receiveEnergy(EleEnergy energy, boolean simulate) {
+			if (simulate) return energy.getEnergy();
+			me += energy.getEnergy();
+			return energy.getEnergy();
+		}
+		
+		@Nonnull
+		@Override
+		public IVoltage getVoltage(EnumEleState state, IVoltage voltage) {
+			return voltage;
+		}
+		
+		@Override
+		public VoltageRange getReceiveVoltageRange() {
+			return VoltageRange.ALL;
+		}
+		
+		@Nonnull
+		@Override
+		public EleEnergy extractEnergy(int energy, VoltageRange voltage, boolean simulate) {
+			return new EleEnergy(0, EnumVoltage.NON);
+		}
+		
+		@Override
+		public boolean isReAllowable(EnumFacing facing) {
+			return false;
+		}
+		
+		@Override
+		public boolean isExAllowable(EnumFacing facing) {
+			return false;
+		}
+		
+		@Override
+		public boolean canLink(EnumFacing facing) {
+			return EleSrcCable.this.canLink(world.getTileEntity(pos.offset(facing)));
+		}
+		
+		@Override
+		public boolean link(BlockPos pos) {
+			return EleSrcCable.this.link(pos);
+		}
+		
+		@Override
+		public boolean unLink(BlockPos pos) {
+			EleSrcCable.this.deleteLink(pos);
+			return true;
+		}
+		
+		@Override
+		public boolean isLink(BlockPos pos) {
+			if (pos.equals(prev) || pos.equals(next)) return true;
+			return linkedBlocks.contains(pos);
+		}
+		
+		@Nonnull
+		@Override
+		public Collection<BlockPos> getLinks() {
+			List<BlockPos> result = new ArrayList<>(6);
+			result.addAll(linkedBlocks);
+			if (next != null) result.add(next);
+			if (prev != null) result.add(prev);
+			return result;
+		}
+		
+	};
 	
 }

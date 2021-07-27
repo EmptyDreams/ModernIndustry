@@ -225,14 +225,18 @@
         <w>afdian</w>
         <w>blockstates</w>
         <w>coremod</w>
+        <w>datas</w>
         <w>emptydreams</w>
         <w>firstperson</w>
         <w>frametime</w>
         <w>indexs</w>
+        <w>inputer</w>
         <w>ints</w>
         <w>lefthand</w>
         <w>mcversion</w>
         <w>modid</w>
+        <w>outputer</w>
+        <w>outputers</w>
         <w>refmap</w>
         <w>righthand</w>
         <w>submodel</w>

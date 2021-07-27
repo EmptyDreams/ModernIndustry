@@ -20,7 +20,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
+import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
+import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
+import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.content.blocks.tileentity.EleSrcCable;
 import xyz.emptydreams.mi.content.items.base.ItemBlockExpand;
@@ -137,11 +140,18 @@ abstract public class EleTransferBlock extends TEBlockBase {
 	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
 		TileEntity fromEntity = worldIn.getTileEntity(fromPos);
 		Block block = fromEntity == null ? worldIn.getBlockState(fromPos).getBlock() : fromEntity.getBlockType();
-		EleSrcCable tew = (EleSrcCable) worldIn.getTileEntity(pos);
+		EnumFacing facing = BlockUtil.whatFacing(pos, fromPos);
+		TileEntity nowTe = worldIn.getTileEntity(pos);
+		IStorage nowStorage = nowTe.getCapability(EleCapability.ENERGY, facing);
 		if (block == Blocks.AIR || fromEntity == null) {
-			tew.deleteLink(fromPos);
+			nowStorage.unLink(fromPos);
+			return;
+		}
+		IStorage fromStorage = fromEntity.getCapability(EleCapability.ENERGY, facing.getOpposite());
+		if (nowStorage.link(fromPos)) {
+			if (!fromStorage.link(pos)) nowStorage.unLink(fromPos);
 		} else {
-			if (!tew.link(fromPos)) tew.deleteLink(fromPos);
+			nowStorage.unLink(fromPos);
 		}
 	}
 	

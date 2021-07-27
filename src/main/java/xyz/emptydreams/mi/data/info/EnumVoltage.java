@@ -17,8 +17,9 @@ public enum EnumVoltage implements IVoltage {
 	D(200, 0.006),
 	E(500, 0.005),
 	F(1000, 0.004),
-	G(2000, 0.003),
-	H(5000, 0.001);
+	G(10000, 0.003),
+	H(50000, 0.001),
+	MAX(Integer.MAX_VALUE, 0);
 	
 	private final int VOLTAGE;
 	private final double LOSS;
