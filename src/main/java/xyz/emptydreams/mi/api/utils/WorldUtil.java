@@ -147,7 +147,10 @@ public final class WorldUtil {
 
 	public static void addTickable(TileEntity tickable) {
 		StringUtil.checkNull(tickable, "tickable");
-		
+		if (tickable.getWorld().isRemote)
+			CLIENT_ADDS.computeIfAbsent(tickable.getWorld(), key -> new LinkedList<>()).add(tickable);
+		else
+			SERVER_ADDS.computeIfAbsent(tickable.getWorld(), key -> new LinkedList<>()).add(tickable);
 	}
 	
 	/**

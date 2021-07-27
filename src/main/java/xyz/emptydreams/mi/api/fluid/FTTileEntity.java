@@ -100,7 +100,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		if (!compound.readBoolean()) {
 			cap.stack = DataTypeRegister.read(compound, FluidStack.class, null);
 		}
-		
 		updateBlockState();
 	}
 	

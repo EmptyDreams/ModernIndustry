@@ -157,21 +157,18 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	public boolean linkWire(IEleTransfer transfer, TileEntity target) {
 		if (!transfer.canLink(target, this)) return false;
 		if (next == null) {
-			if (prev == null || !prev.equals(target.getPos())) {
+			if (!target.getPos().equals(prev)) {
 				next = target.getPos();
 				updateLinkShow();
-				return true;
 			}
-		} else if (next.equals(target.getPos())) {
 			return true;
 		} else if (prev == null) {
 			prev = target.getPos();
 			updateLinkShow();
 			return true;
 		} else {
-			return prev.equals(target.getPos());
+			return prev.equals(target.getPos()) || next.equals(target.getPos());
 		}
-		return false;
 	}
 	
 	/**
@@ -184,9 +181,11 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		IStorage link = target.getCapability(EleCapability.ENERGY, facing);
 		if (link == null) return false;
 		if (link.canLink(facing)) {
-			if (!linkedBlocks.contains(target.getPos())) linkedBlocks.add(target.getPos());
-			if (EleWorker.isOutputer(target)) getCache().addOutputer(getPos(), target.getPos());
-			updateLinkShow();
+			if (!linkedBlocks.contains(target.getPos())) {
+				linkedBlocks.add(target.getPos());
+				if (EleWorker.isOutputer(target)) getCache().addOutputer(getPos(), target.getPos());
+				updateLinkShow();
+			}
 			return true;
 		}
 		return false;

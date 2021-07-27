@@ -112,7 +112,10 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	/** 是否可以连接指定方向的方 */
 	public boolean canLink(EnumFacing facing) { return hasCapability(EleCapability.ENERGY, facing); }
 	/** 连接指定方块 */
-	public boolean link(BlockPos pos) { return linkedBlocks.add(pos); }
+	public boolean link(BlockPos pos) {
+		if (linkedBlocks.contains(pos)) return true;
+		return linkedBlocks.add(pos);
+	}
 	/** 取消链接指定方块 */
 	public boolean unLink(BlockPos pos) { return linkedBlocks.remove(pos); }
 	
@@ -204,9 +207,9 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	/** 能量接口 */
 	private IStorage storage = new IStorage() {
 		@Override
-		public boolean canReceive() { return isReceive; }
+		public boolean canReceive() { return isReceive(); }
 		@Override
-		public boolean canExtract() { return isExtract; }
+		public boolean canExtract() { return isExtract(); }
 		
 		@Override
 		public int receiveEnergy(EleEnergy energy, boolean simulate) {
