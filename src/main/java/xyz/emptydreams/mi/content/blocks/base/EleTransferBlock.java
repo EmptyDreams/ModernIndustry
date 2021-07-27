@@ -138,18 +138,24 @@ abstract public class EleTransferBlock extends TEBlockBase {
 	@SuppressWarnings("ConstantConditions")
 	@Override
 	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
-		TileEntity fromEntity = worldIn.getTileEntity(fromPos);
-		Block block = fromEntity == null ? worldIn.getBlockState(fromPos).getBlock() : fromEntity.getBlockType();
 		EnumFacing facing = BlockUtil.whatFacing(pos, fromPos);
 		TileEntity nowTe = worldIn.getTileEntity(pos);
 		IStorage nowStorage = nowTe.getCapability(EleCapability.ENERGY, facing);
+		if (nowStorage == null) return;
+		TileEntity fromEntity = worldIn.getTileEntity(fromPos);
+		Block block = fromEntity == null ? worldIn.getBlockState(fromPos).getBlock() : fromEntity.getBlockType();
 		if (block == Blocks.AIR || fromEntity == null) {
 			nowStorage.unLink(fromPos);
 			return;
 		}
 		IStorage fromStorage = fromEntity.getCapability(EleCapability.ENERGY, facing.getOpposite());
+		linkBoth(nowStorage, fromStorage, pos, fromPos);
+	}
+	
+	/** 使两者互相连接 */
+	public static void linkBoth(IStorage nowStorage, IStorage fromStorage, BlockPos nowPos, BlockPos fromPos) {
 		if (nowStorage.link(fromPos)) {
-			if (!fromStorage.link(pos)) nowStorage.unLink(fromPos);
+			if (!fromStorage.link(nowPos)) nowStorage.unLink(fromPos);
 		} else {
 			nowStorage.unLink(fromPos);
 		}

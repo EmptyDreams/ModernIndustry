@@ -43,21 +43,22 @@ public abstract class MachineBlock extends TEBlockBase {
 	}
 
 	/** 当临近的方块更新时更新连接状态 */
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("ConstantConditions")
 	@Override
 	public void neighborChanged(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
 	                            @Nonnull Block blockIn, @Nonnull BlockPos fromPos) {
-		TileEntity now = world.getTileEntity(pos);
-		@SuppressWarnings("ConstantConditions")
-		IStorage link = now.getCapability(EleCapability.ENERGY, BlockUtil.whatFacing(fromPos, pos));
-		blockIn = world.getBlockState(fromPos).getBlock();
-		if (link != null) {
-			if (blockIn == Blocks.AIR) {
-				link.unLink(fromPos);
-			} else {
-				link.link(fromPos);
-			}
+		EnumFacing facing = BlockUtil.whatFacing(pos, fromPos);
+		TileEntity nowTe = world.getTileEntity(pos);
+		IStorage nowStorage = nowTe.getCapability(EleCapability.ENERGY, facing);
+		if (nowStorage == null) return;
+		TileEntity fromEntity = world.getTileEntity(fromPos);
+		Block block = fromEntity == null ? world.getBlockState(fromPos).getBlock() : fromEntity.getBlockType();
+		if (block == Blocks.AIR || fromEntity == null) {
+			nowStorage.unLink(fromPos);
+			return;
 		}
+		IStorage fromStorage = fromEntity.getCapability(EleCapability.ENERGY, facing.getOpposite());
+		EleTransferBlock.linkBoth(nowStorage, fromStorage, pos, fromPos);
 	}
 
 	private BooleanWrapper hasFacing = null;
