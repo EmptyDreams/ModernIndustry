@@ -5,20 +5,15 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.electricity.capabilities.EleCapability;
-import xyz.emptydreams.mi.api.electricity.capabilities.IStorage;
-import xyz.emptydreams.mi.api.utils.BlockUtil;
 import xyz.emptydreams.mi.api.utils.container.BooleanWrapper;
 import xyz.emptydreams.mi.content.blocks.common.CommonBlocks;
 
@@ -43,22 +38,10 @@ public abstract class MachineBlock extends TEBlockBase {
 	}
 
 	/** 当临近的方块更新时更新连接状态 */
-	@SuppressWarnings("ConstantConditions")
 	@Override
 	public void neighborChanged(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
 	                            @Nonnull Block blockIn, @Nonnull BlockPos fromPos) {
-		EnumFacing facing = BlockUtil.whatFacing(pos, fromPos);
-		TileEntity nowTe = world.getTileEntity(pos);
-		IStorage nowStorage = nowTe.getCapability(EleCapability.ENERGY, facing);
-		if (nowStorage == null) return;
-		TileEntity fromEntity = world.getTileEntity(fromPos);
-		Block block = fromEntity == null ? world.getBlockState(fromPos).getBlock() : fromEntity.getBlockType();
-		if (block == Blocks.AIR || fromEntity == null) {
-			nowStorage.unLink(fromPos);
-			return;
-		}
-		IStorage fromStorage = fromEntity.getCapability(EleCapability.ENERGY, facing.getOpposite());
-		EleTransferBlock.linkBoth(nowStorage, fromStorage, pos, fromPos);
+		EleTransferBlock.neighborChangedHelper(state, world, pos, blockIn, fromPos);
 	}
 
 	private BooleanWrapper hasFacing = null;

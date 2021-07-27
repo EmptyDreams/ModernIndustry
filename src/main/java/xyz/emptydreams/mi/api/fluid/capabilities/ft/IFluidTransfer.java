@@ -87,7 +87,7 @@ public interface IFluidTransfer {
 	/**
 	 * 连接指定方向上的设备
 	 * @param facing 方向
-	 * @return 连接是否成功，若该方向原本已经有连接则返回false
+	 * @return 连接是否成功，若该方向原本已经有连接则返回true
 	 */
 	boolean link(EnumFacing facing);
 	

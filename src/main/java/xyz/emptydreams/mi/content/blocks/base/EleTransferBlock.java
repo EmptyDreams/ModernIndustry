@@ -135,9 +135,25 @@ abstract public class EleTransferBlock extends TEBlockBase {
 		return false;
 	}
 	
-	@SuppressWarnings("ConstantConditions")
+	
 	@Override
-	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
+	public void neighborChanged(IBlockState state,
+	                            World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
+		neighborChangedHelper(state, worldIn, pos, blockIn, fromPos);
+	}
+	
+	/** 使两者互相连接 */
+	public static void linkBoth(IStorage nowStorage, IStorage fromStorage, BlockPos nowPos, BlockPos fromPos) {
+		if (nowStorage.link(fromPos)) {
+			if (!fromStorage.link(nowPos)) nowStorage.unLink(fromPos);
+		} else {
+			nowStorage.unLink(fromPos);
+		}
+	}
+	
+	@SuppressWarnings("ConstantConditions")
+	public static void neighborChangedHelper(IBlockState state,
+	                                         World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
 		EnumFacing facing = BlockUtil.whatFacing(pos, fromPos);
 		TileEntity nowTe = worldIn.getTileEntity(pos);
 		IStorage nowStorage = nowTe.getCapability(EleCapability.ENERGY, facing);
@@ -150,15 +166,6 @@ abstract public class EleTransferBlock extends TEBlockBase {
 		}
 		IStorage fromStorage = fromEntity.getCapability(EleCapability.ENERGY, facing.getOpposite());
 		linkBoth(nowStorage, fromStorage, pos, fromPos);
-	}
-	
-	/** 使两者互相连接 */
-	public static void linkBoth(IStorage nowStorage, IStorage fromStorage, BlockPos nowPos, BlockPos fromPos) {
-		if (nowStorage.link(fromPos)) {
-			if (!fromStorage.link(nowPos)) nowStorage.unLink(fromPos);
-		} else {
-			nowStorage.unLink(fromPos);
-		}
 	}
 	
 	//==============================常规的覆盖MC代码==============================//

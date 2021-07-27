@@ -297,7 +297,8 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		
 		@Override
 		public boolean link(EnumFacing facing) {
-			if (isLinked(facing) || !canLink(facing)) return false;
+			if (isLinked(facing)) return true;
+			if (!canLink(facing)) return false;
 			if (linkData == 0) {
 				switch (stateEnum) {
 					case STRAIGHT:
