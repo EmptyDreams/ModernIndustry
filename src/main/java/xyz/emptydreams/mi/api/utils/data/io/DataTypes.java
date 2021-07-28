@@ -973,7 +973,11 @@ public final class DataTypes {
 		
 		@Override
 		public boolean match(@Nonnull Class<?> objType, @Nullable Class<?> fieldType) {
-			return objType == fieldType && Enum.class.isAssignableFrom(objType);
+			if (objType == fieldType) return Enum.class.isAssignableFrom(objType);
+			if (!Enum.class.isAssignableFrom(objType)) return false;
+			String name = objType.getName();
+			if (!name.contains("$")) return false;
+			return objType.getSuperclass() == fieldType;
 		}
 		
 		@Override
@@ -984,8 +988,9 @@ public final class DataTypes {
 		@Override
 		public Enum<?> readFromData(IDataReader reader, Class<?> fieldType, Supplier<Enum<?>> getter) {
 			try {
-				return ((Enum<?>[]) fieldType.getMethod("values").invoke(null ))[reader.readVarInt()];
-			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+				int index = reader.readVarInt();
+				return ((Enum<?>[]) fieldType.getMethod("values").invoke(null ))[index];
+			} catch (Exception e) {
 				throw TransferException.instance("读取Enum时出现错误", e);
 			}
 		}

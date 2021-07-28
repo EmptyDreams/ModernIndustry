@@ -121,7 +121,7 @@ public interface IClassData {
 	 * @throws IllegalAccessException 如果反射过程出现异常
 	 */
 	default boolean write(Field field, IDataWriter writer, Object object) throws IllegalAccessException {
-		if (Modifier.isPrivate(field.getModifiers()) || Modifier.isProtected(field.getModifiers())) {
+		if (!Modifier.isPublic(field.getModifiers())) {
 			field.setAccessible(true);
 		}
 		Object data = field.get(object);
