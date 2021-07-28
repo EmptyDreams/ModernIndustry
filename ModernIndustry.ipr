@@ -224,6 +224,7 @@
       <words>
         <w>afdian</w>
         <w>blockstates</w>
+        <w>chestplate</w>
         <w>coremod</w>
         <w>datas</w>
         <w>emptydreams</w>
@@ -234,9 +235,11 @@
         <w>ints</w>
         <w>lefthand</w>
         <w>mcversion</w>
+        <w>mfurnace</w>
         <w>modid</w>
         <w>outputer</w>
         <w>outputers</w>
+        <w>pulverizer</w>
         <w>refmap</w>
         <w>righthand</w>
         <w>submodel</w>

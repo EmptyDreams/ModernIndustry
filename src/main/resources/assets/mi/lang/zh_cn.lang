@@ -2,7 +2,7 @@
 #注：该模组开放翻译，翻译内容的版权归译者所有，责任由译者承担
 #译者可在.lang文件开头声明自己的名称
 #若译者同意模组作者将自己的翻译成果加入到模组中，请在文件中将下面一行的内容改为true
-#agree to use=false
+#agreeToUse=false
 
 #锭
 item.mi.copper_ingot.name=铜锭
@@ -54,9 +54,8 @@ item.mi.iron_stick.name=铁棒
 item.mi.iron_melt.name=铁水
 tile.mi.iron_melt.name=铁水
 #管道
-tile.mi.iron_ft.name=铁质管道
+tile.mi.iron_straight_ft.name=铁质管道（直线）
 #调试物品
-item.mi.wireinfo_viewer.name=线缆信息查看器
 item.mi.class_info_viewer.name=TileEntity信息查看器
 #矿物方块
 tile.mi.copper_ore_block.name=铜矿
@@ -96,12 +95,3 @@ item.mi.tin_plate.name=锡板
 item.mi.gold_plate.name=金板
 #属性
 mi.property.poor_quality.name=劣质
-#配置--system
-mi.config.system=系统配置
-mi.config.system.blockSize=方块数量
-mi.config.system.itemSize=物品数量
-mi.config.system.autoBlockSize=自动注册方块
-mi.config.system.autoItemSize=自动注册物品
-#配置--machine
-mi.config.machine=机器配置
-mi.config.machine.compressorEnergy=压缩机能量
