@@ -4,6 +4,7 @@ import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.SignBytes;
 import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
+import xyz.emptydreams.mi.api.utils.data.io.DataSerialize;
 import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
 
 import javax.annotation.Nullable;
@@ -129,7 +130,7 @@ public interface IClassData {
 		if (cast != null) {
 			data = DataTypeRegister.cast(data, cast);
 		}
-		DataTypeRegister.write(writer, data);
+		DataSerialize.write(writer, data, field.getType());
 		return true;
 	}
 	
@@ -145,7 +146,7 @@ public interface IClassData {
 			field.setAccessible(true);
 		}
 		Class<?> cast = cast(field);
-		Object data = DataTypeRegister.read(reader, cast == null ? field.getType() : cast, () -> {
+		Object data = DataSerialize.read(reader, cast == null ? field.getType() : cast, field.getType(), () -> {
 			try {
 				return field.get(object);
 			} catch (IllegalAccessException e) {

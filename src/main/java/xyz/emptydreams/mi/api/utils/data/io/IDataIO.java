@@ -5,6 +5,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 /**
@@ -14,8 +16,10 @@ public interface IDataIO<T> {
 	
 	/**
 	 * 判断指定的类是否符合该类
+	 * @param objType 进行读写的数据的真实Class对象
+	 * @param fieldType 类中声明的类型，为null表示未知
 	 */
-	boolean match(Class<?> type);
+	boolean match(@Nonnull Class<?> objType, @Nullable Class<?> fieldType);
 	
 	/**
 	 * 写入数据到writer
@@ -24,12 +28,16 @@ public interface IDataIO<T> {
 	 */
 	void writeToData(IDataWriter writer, T data);
 	
+	T readFromData(IDataReader reader, Class<?> fieldType, Supplier<T> getter);
+	
 	/**
 	 * 从reader读取数据
 	 * @param reader reader对象
 	 * @param getter 获取默认值，如果读取的值不需要默认值则可以为null
 	 */
-	T readFromData(IDataReader reader, Supplier<T> getter);
+	default T readFromData(IDataReader reader, Supplier<T> getter) {
+		return readFromData(reader, null, getter);
+	}
 	
 	/**
 	 * 写入数据到NBTTagCompound
@@ -39,13 +47,17 @@ public interface IDataIO<T> {
 	 */
 	void writeToNBT(NBTTagCompound nbt, String name, T data);
 	
+	T readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<T> getter);
+	
 	/**
 	 * 从NBTTagCompound读取一个数据
 	 * @param nbt NBT对象
 	 * @param name 数据名称
 	 * @param getter 获取默认值，如果读取的值不需要默认值则可以为null
 	 */
-	T readFromNBT(NBTTagCompound nbt, String name, Supplier<T> getter);
+	default T readFromNBT(NBTTagCompound nbt, String name, Supplier<T> getter) {
+		return readFromNBT(nbt, name, null, getter);
+	}
 	
 	/**
 	 * 写入数据到ByteBuf
@@ -54,12 +66,16 @@ public interface IDataIO<T> {
 	 */
 	void writeToByteBuf(ByteBuf buf, T data);
 	
+	T readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<T> getter);
+	
 	/**
 	 * 从ByteBuf读取数据
 	 * @param buf buf对象
 	 * @param getter 获取默认值，如果读取的值不需要默认值则可以为null
 	 */
-	T readFromByteBuf(ByteBuf buf, Supplier<T> getter);
+	default T readFromByteBuf(ByteBuf buf, Supplier<T> getter) {
+		return readFromByteBuf(buf, null, getter);
+	}
 	
 	/**
 	 * 将输入的数据转换为指定类型

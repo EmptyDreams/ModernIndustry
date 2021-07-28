@@ -21,7 +21,11 @@ import xyz.emptydreams.mi.api.utils.IOUtils;
 import xyz.emptydreams.mi.api.utils.container.Wrapper;
 import xyz.emptydreams.mi.coremod.other.ICapManagerCheck;
 import xyz.emptydreams.mi.coremod.other.ICapStorageType;
+import xyz.emptydreams.mi.data.info.EnumVoltage;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -58,9 +62,10 @@ public final class DataTypes {
 		registry(new VoltageData(),                            50);
 		registry(new NbtData(),                                50);
 		registry(new FluidStackData(),                         50);
+		registry(new EnumData(),                               50);
 		registry(new StringBuilderData(),                     100);
 		registry(new StringBufferData(),                      100);
-		registry(new EnumData(),                             1000);
+		registry(new AllEnumData(),                          1000);
 		registry(new SerializableData(),                     1000);
 		registry(new CapabilityData(),                       2000);
 	}
@@ -68,8 +73,8 @@ public final class DataTypes {
 	public static final class IntData implements IDataIO<Integer> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == int.class || type == Integer.class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == int.class || objType == Integer.class;
 		}
 		
 		@Override
@@ -78,7 +83,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Integer readFromData(IDataReader reader, Supplier<Integer> getter) {
+		public Integer readFromData(IDataReader reader, Class<?> fieldType, Supplier<Integer> getter) {
 			return reader.readInt();
 		}
 		
@@ -88,7 +93,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Integer readFromNBT(NBTTagCompound nbt, String name, Supplier<Integer> getter) {
+		public Integer readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<Integer> getter) {
 			return nbt.getInteger(name);
 		}
 		
@@ -98,7 +103,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Integer readFromByteBuf(ByteBuf buf, Supplier<Integer> getter) {
+		public Integer readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Integer> getter) {
 			return buf.readInt();
 		}
 		
@@ -122,8 +127,8 @@ public final class DataTypes {
 	public static final class ByteData implements IDataIO<Byte> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == byte.class || type == Byte.class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == byte.class || objType == Byte.class;
 		}
 		
 		@Override
@@ -132,7 +137,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Byte readFromData(IDataReader reader, Supplier<Byte> getter) {
+		public Byte readFromData(IDataReader reader, Class<?> fieldType, Supplier<Byte> getter) {
 			return reader.readByte();
 		}
 		
@@ -142,7 +147,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Byte readFromNBT(NBTTagCompound nbt, String name, Supplier<Byte> getter) {
+		public Byte readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<Byte> getter) {
 			return nbt.getByte(name);
 		}
 		
@@ -152,7 +157,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Byte readFromByteBuf(ByteBuf buf, Supplier<Byte> getter) {
+		public Byte readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Byte> getter) {
 			return buf.readByte();
 		}
 		
@@ -176,8 +181,8 @@ public final class DataTypes {
 	public static final class BooleanData implements IDataIO<Boolean> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == boolean.class || type == Boolean.class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == boolean.class || objType == Boolean.class;
 		}
 		
 		@Override
@@ -186,7 +191,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Boolean readFromData(IDataReader reader, Supplier<Boolean> getter) {
+		public Boolean readFromData(IDataReader reader, Class<?> fieldType, Supplier<Boolean> getter) {
 			return reader.readBoolean();
 		}
 		
@@ -196,7 +201,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Boolean readFromNBT(NBTTagCompound nbt, String name, Supplier<Boolean> getter) {
+		public Boolean readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<Boolean> getter) {
 			return nbt.getBoolean(name);
 		}
 		
@@ -206,7 +211,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Boolean readFromByteBuf(ByteBuf buf, Supplier<Boolean> getter) {
+		public Boolean readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Boolean> getter) {
 			return buf.readBoolean();
 		}
 		
@@ -234,8 +239,8 @@ public final class DataTypes {
 	public static final class LongData implements IDataIO<Long> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == long.class || type == Long.class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == long.class || objType == Long.class;
 		}
 		
 		@Override
@@ -244,7 +249,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Long readFromData(IDataReader reader, Supplier<Long> getter) {
+		public Long readFromData(IDataReader reader, Class<?> fieldType, Supplier<Long> getter) {
 			return reader.readLong();
 		}
 		
@@ -254,7 +259,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Long readFromNBT(NBTTagCompound nbt, String name, Supplier<Long> getter) {
+		public Long readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<Long> getter) {
 			return nbt.getLong(name);
 		}
 		
@@ -264,7 +269,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Long readFromByteBuf(ByteBuf buf, Supplier<Long> getter) {
+		public Long readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Long> getter) {
 			return buf.readLong();
 		}
 		
@@ -288,8 +293,8 @@ public final class DataTypes {
 	public static final class DoubleData implements IDataIO<Double> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == double.class || type == Double.class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == double.class || objType == Double.class;
 		}
 		
 		@Override
@@ -298,7 +303,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Double readFromData(IDataReader reader, Supplier<Double> getter) {
+		public Double readFromData(IDataReader reader, Class<?> fieldType, Supplier<Double> getter) {
 			return reader.readDouble();
 		}
 		
@@ -308,7 +313,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Double readFromNBT(NBTTagCompound nbt, String name, Supplier<Double> getter) {
+		public Double readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<Double> getter) {
 			return nbt.getDouble(name);
 		}
 		
@@ -318,7 +323,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Double readFromByteBuf(ByteBuf buf, Supplier<Double> getter) {
+		public Double readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Double> getter) {
 			return buf.readDouble();
 		}
 		
@@ -342,8 +347,8 @@ public final class DataTypes {
 	public static final class ShortData implements IDataIO<Short> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == short.class || type == Short.class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == short.class || objType == Short.class;
 		}
 		
 		@Override
@@ -352,7 +357,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Short readFromData(IDataReader reader, Supplier<Short> getter) {
+		public Short readFromData(IDataReader reader, Class<?> fieldType, Supplier<Short> getter) {
 			return reader.readShort();
 		}
 		
@@ -362,7 +367,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Short readFromNBT(NBTTagCompound nbt, String name, Supplier<Short> getter) {
+		public Short readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<Short> getter) {
 			return nbt.getShort(name);
 		}
 		
@@ -372,7 +377,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Short readFromByteBuf(ByteBuf buf, Supplier<Short> getter) {
+		public Short readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Short> getter) {
 			return buf.readShort();
 		}
 		
@@ -396,8 +401,8 @@ public final class DataTypes {
 	public static final class FloatData implements IDataIO<Float> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == float.class || type == Float.class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == float.class || objType == Float.class;
 		}
 		
 		@Override
@@ -406,7 +411,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Float readFromData(IDataReader reader, Supplier<Float> getter) {
+		public Float readFromData(IDataReader reader, Class<?> fieldType, Supplier<Float> getter) {
 			return reader.readFloat();
 		}
 		
@@ -416,7 +421,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Float readFromNBT(NBTTagCompound nbt, String name, Supplier<Float> getter) {
+		public Float readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<Float> getter) {
 			return nbt.getFloat(name);
 		}
 		
@@ -426,7 +431,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Float readFromByteBuf(ByteBuf buf, Supplier<Float> getter) {
+		public Float readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Float> getter) {
 			return buf.readFloat();
 		}
 		
@@ -450,8 +455,8 @@ public final class DataTypes {
 	public static final class IntArrayData implements IDataIO<int[]> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == int[].class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == int[].class;
 		}
 		
 		@Override
@@ -460,7 +465,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public int[] readFromData(IDataReader reader, Supplier<int[]> getter) {
+		public int[] readFromData(IDataReader reader, Class<?> fieldType, Supplier<int[]> getter) {
 			return reader.readIntArray();
 		}
 		
@@ -470,7 +475,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public int[] readFromNBT(NBTTagCompound nbt, String name, Supplier<int[]> getter) {
+		public int[] readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<int[]> getter) {
 			return nbt.getIntArray(name);
 		}
 		
@@ -483,7 +488,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public int[] readFromByteBuf(ByteBuf buf, Supplier<int[]> getter) {
+		public int[] readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<int[]> getter) {
 			int size = buf.readInt();
 			int[] result = getter == null ? new int[size] : getter.get();
 			for (int i = 0; i < size; ++i) {
@@ -497,8 +502,8 @@ public final class DataTypes {
 	public static final class ByteArrayData implements IDataIO<byte[]> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == byte[].class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == byte[].class;
 		}
 		
 		@Override
@@ -507,7 +512,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public byte[] readFromData(IDataReader reader, Supplier<byte[]> getter) {
+		public byte[] readFromData(IDataReader reader, Class<?> fieldType, Supplier<byte[]> getter) {
 			return reader.readByteArray();
 		}
 		
@@ -517,7 +522,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public byte[] readFromNBT(NBTTagCompound nbt, String name, Supplier<byte[]> getter) {
+		public byte[] readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<byte[]> getter) {
 			return nbt.getByteArray(name);
 		}
 		
@@ -530,7 +535,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public byte[] readFromByteBuf(ByteBuf buf, Supplier<byte[]> getter) {
+		public byte[] readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<byte[]> getter) {
 			int size = buf.readInt();
 			byte[] result = getter == null ? new byte[size] : getter.get();
 			for (int i = 0; i < size; ++i) {
@@ -544,8 +549,8 @@ public final class DataTypes {
 	public static final class StringData implements IDataIO<String> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == String.class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == String.class;
 		}
 		
 		@Override
@@ -554,7 +559,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public String readFromData(IDataReader reader, Supplier<String> getter) {
+		public String readFromData(IDataReader reader, Class<?> fieldType, Supplier<String> getter) {
 			return reader.readString();
 		}
 		
@@ -564,7 +569,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public String readFromNBT(NBTTagCompound nbt, String name, Supplier<String> getter) {
+		public String readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<String> getter) {
 			return nbt.getString(name);
 		}
 		
@@ -574,7 +579,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public String readFromByteBuf(ByteBuf buf, Supplier<String> getter) {
+		public String readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<String> getter) {
 			return IOUtils.readStringFromBuf(buf);
 		}
 		
@@ -603,8 +608,8 @@ public final class DataTypes {
 	public static final class StringBuilderData implements IDataIO<StringBuilder> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return StringBuilder.class.isAssignableFrom(type);
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return StringBuilder.class.isAssignableFrom(objType);
 		}
 		
 		@Override
@@ -617,7 +622,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public StringBuilder readFromData(IDataReader reader, Supplier<StringBuilder> getter) {
+		public StringBuilder readFromData(IDataReader reader, Class<?> fieldType, Supplier<StringBuilder> getter) {
 			int size = reader.readVarInt();
 			StringBuilder result = getter == null ? new StringBuilder(size) : getter.get();
 			for (int i = 0; i < size; ++i) {
@@ -632,7 +637,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public StringBuilder readFromNBT(NBTTagCompound nbt, String name, Supplier<StringBuilder> getter) {
+		public StringBuilder readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<StringBuilder> getter) {
 			return new StringBuilder(nbt.getString(name));
 		}
 		
@@ -646,7 +651,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public StringBuilder readFromByteBuf(ByteBuf buf, Supplier<StringBuilder> getter) {
+		public StringBuilder readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<StringBuilder> getter) {
 			int size = buf.readInt();
 			StringBuilder result = getter == null ? new StringBuilder(size) : getter.get();
 			for (int i = 0; i < size; ++i) {
@@ -672,8 +677,8 @@ public final class DataTypes {
 	public static final class StringBufferData implements IDataIO<StringBuffer> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return StringBuffer.class.isAssignableFrom(type);
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return StringBuffer.class.isAssignableFrom(objType);
 		}
 		
 		@Override
@@ -686,7 +691,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public StringBuffer readFromData(IDataReader reader, Supplier<StringBuffer> getter) {
+		public StringBuffer readFromData(IDataReader reader, Class<?> fieldType, Supplier<StringBuffer> getter) {
 			int size = reader.readVarInt();
 			StringBuffer result = getter == null ? new StringBuffer(size) : getter.get();
 			for (int i = 0; i < size; ++i) {
@@ -701,7 +706,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public StringBuffer readFromNBT(NBTTagCompound nbt, String name, Supplier<StringBuffer> getter) {
+		public StringBuffer readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<StringBuffer> getter) {
 			return new StringBuffer(nbt.getString(name));
 		}
 		
@@ -715,7 +720,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public StringBuffer readFromByteBuf(ByteBuf buf, Supplier<StringBuffer> getter) {
+		public StringBuffer readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<StringBuffer> getter) {
 			int size = buf.readInt();
 			StringBuffer result = getter == null ? new StringBuffer(size) : getter.get();
 			for (int i = 0; i < size; ++i) {
@@ -741,8 +746,8 @@ public final class DataTypes {
 	public static final class BytePackageArrayData implements IDataIO<Byte[]> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == Byte[].class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == Byte[].class;
 		}
 		
 		@Override
@@ -755,7 +760,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Byte[] readFromData(IDataReader reader, Supplier<Byte[]> getter) {
+		public Byte[] readFromData(IDataReader reader, Class<?> fieldType, Supplier<Byte[]> getter) {
 			byte[] data = reader.readByteArray();
 			Byte[] result = getter == null ? new Byte[data.length] : getter.get();
 			for (int i = 0; i < result.length; i++) {
@@ -774,7 +779,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Byte[] readFromNBT(NBTTagCompound nbt, String name, Supplier<Byte[]> getter) {
+		public Byte[] readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<Byte[]> getter) {
 			byte[] data = nbt.getByteArray(name);
 			Byte[] result = getter == null ? new Byte[data.length] : getter.get();
 			for (int i = 0; i < data.length; i++) {
@@ -796,7 +801,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Byte[] readFromByteBuf(ByteBuf buf, Supplier<Byte[]> getter) {
+		public Byte[] readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Byte[]> getter) {
 			Byte[] result = getter == null ? new Byte[buf.readInt()] : getter.get();
 			for (int i = 0; i < result.length; i++) {
 				result[i] = buf.readByte();
@@ -823,8 +828,8 @@ public final class DataTypes {
 	public static final class IntPackageArrayData implements IDataIO<Integer[]> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == Integer[].class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == Integer[].class;
 		}
 		
 		@Override
@@ -834,7 +839,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Integer[] readFromData(IDataReader reader, Supplier<Integer[]> getter) {
+		public Integer[] readFromData(IDataReader reader, Class<?> fieldType, Supplier<Integer[]> getter) {
 			int[] data = reader.readVarIntArray();
 			return Arrays.stream(data).boxed().toArray(Integer[]::new);
 		}
@@ -846,7 +851,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Integer[] readFromNBT(NBTTagCompound nbt, String name, Supplier<Integer[]> getter) {
+		public Integer[] readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<Integer[]> getter) {
 			int[] data = nbt.getIntArray(name);
 			if (getter != null) {
 				Integer[] result = getter.get();
@@ -861,11 +866,11 @@ public final class DataTypes {
 		@Override
 		public void writeToByteBuf(ByteBuf buf, Integer[] data) {
 			int[] newData = Arrays.stream(data).mapToInt(Integer::valueOf).toArray();
-			DataTypeRegister.write(buf, newData);
+			DataSerialize.write(buf, newData, int[].class);
 		}
 		
 		@Override
-		public Integer[] readFromByteBuf(ByteBuf buf, Supplier<Integer[]> getter) {
+		public Integer[] readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Integer[]> getter) {
 			int size = buf.readInt();
 			Integer[] result = getter == null ? new Integer[size] : getter.get();
 			for (int i = 0; i < size; ++i) {
@@ -888,8 +893,8 @@ public final class DataTypes {
 	public static final class UuidData implements IDataIO<UUID> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == UUID.class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == UUID.class;
 		}
 		
 		@Override
@@ -898,7 +903,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public UUID readFromData(IDataReader reader, Supplier<UUID> getter) {
+		public UUID readFromData(IDataReader reader, Class<?> fieldType, Supplier<UUID> getter) {
 			return reader.readUuid();
 		}
 		
@@ -908,7 +913,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public UUID readFromNBT(NBTTagCompound nbt, String name, Supplier<UUID> getter) {
+		public UUID readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<UUID> getter) {
 			return nbt.getUniqueId(name);
 		}
 		
@@ -919,7 +924,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public UUID readFromByteBuf(ByteBuf buf, Supplier<UUID> getter) {
+		public UUID readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<UUID> getter) {
 			return new UUID(buf.readLong(), buf.readLong());
 		}
 		
@@ -928,8 +933,8 @@ public final class DataTypes {
 	public static final class NbtData implements IDataIO<NBTTagCompound> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == NBTTagCompound.class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == NBTTagCompound.class;
 		}
 		
 		@Override
@@ -938,7 +943,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public NBTTagCompound readFromData(IDataReader reader, Supplier<NBTTagCompound> getter) {
+		public NBTTagCompound readFromData(IDataReader reader, Class<?> fieldType, Supplier<NBTTagCompound> getter) {
 			return reader.readTagCompound();
 		}
 		
@@ -948,7 +953,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public NBTTagCompound readFromNBT(NBTTagCompound nbt, String name, Supplier<NBTTagCompound> getter) {
+		public NBTTagCompound readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<NBTTagCompound> getter) {
 			return nbt.getCompoundTag(name);
 		}
 		
@@ -958,7 +963,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public NBTTagCompound readFromByteBuf(ByteBuf buf, Supplier<NBTTagCompound> getter) {
+		public NBTTagCompound readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<NBTTagCompound> getter) {
 			return ByteBufUtils.readTag(buf);
 		}
 		
@@ -967,8 +972,59 @@ public final class DataTypes {
 	public static final class EnumData implements IDataIO<Enum<?>> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return Enum.class.isAssignableFrom(type);
+		public boolean match(@Nonnull Class<?> objType, @Nullable Class<?> fieldType) {
+			return objType == fieldType && Enum.class.isAssignableFrom(objType);
+		}
+		
+		@Override
+		public void writeToData(IDataWriter writer, Enum<?> data) {
+			writer.writeVarInt(data.ordinal());
+		}
+		
+		@Override
+		public Enum<?> readFromData(IDataReader reader, Class<?> fieldType, Supplier<Enum<?>> getter) {
+			try {
+				return ((Enum<?>[]) fieldType.getMethod("values").invoke(null ))[reader.readVarInt()];
+			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+				throw TransferException.instance("读取Enum时出现错误", e);
+			}
+		}
+		
+		@Override
+		public void writeToNBT(NBTTagCompound nbt, String name, Enum<?> data) {
+			nbt.setInteger(name, data.ordinal());
+		}
+		
+		@Override
+		public Enum<?> readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<Enum<?>> getter) {
+			try {
+				return ((Enum<?>[]) fieldType.getMethod("values").invoke(null ))[nbt.getInteger(name)];
+			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+				throw TransferException.instance("读取Enum时出现错误", e);
+			}
+		}
+		
+		@Override
+		public void writeToByteBuf(ByteBuf buf, Enum<?> data) {
+			buf.writeInt(data.ordinal());
+		}
+		
+		@Override
+		public Enum<?> readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Enum<?>> getter) {
+			try {
+				return ((Enum<?>[]) fieldType.getMethod("values").invoke(null ))[buf.readInt()];
+			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+				throw TransferException.instance("读取Enum时出现错误", e);
+			}
+		}
+		
+	}
+	
+	public static final class AllEnumData implements IDataIO<Enum<?>> {
+		
+		@Override
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return fieldType != objType && Enum.class.isAssignableFrom(objType);
 		}
 		
 		@Override
@@ -978,7 +1034,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Enum<?> readFromData(IDataReader reader, Supplier<Enum<?>> getter) {
+		public Enum<?> readFromData(IDataReader reader, Class<?> fieldType, Supplier<Enum<?>> getter) {
 			String name = reader.readString();
 			String clazz = reader.readString();
 			try {
@@ -996,7 +1052,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Enum<?> readFromNBT(NBTTagCompound nbt, String name, Supplier<Enum<?>> getter) {
+		public Enum<?> readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<Enum<?>> getter) {
 			try {
 				//noinspection unchecked,rawtypes
 				return Enum.valueOf(
@@ -1013,7 +1069,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Enum<?> readFromByteBuf(ByteBuf buf, Supplier<Enum<?>> getter) {
+		public Enum<?> readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Enum<?>> getter) {
 			String name = IOUtils.readStringFromBuf(buf);
 			String clazz = IOUtils.readStringFromBuf(buf);
 			try {
@@ -1029,8 +1085,8 @@ public final class DataTypes {
 	public static final class SerializableData implements IDataIO<INBTSerializable<NBTTagCompound>> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return INBTSerializable.class.isAssignableFrom(type);
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return INBTSerializable.class.isAssignableFrom(objType);
 		}
 		
 		@Override
@@ -1040,8 +1096,8 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public INBTSerializable<NBTTagCompound> readFromData(
-				IDataReader reader, Supplier<INBTSerializable<NBTTagCompound>> getter) {
+		public INBTSerializable<NBTTagCompound> readFromData(IDataReader reader,
+		                                 Class<?> fieldType, Supplier<INBTSerializable<NBTTagCompound>> getter) {
 			NBTTagCompound tag = reader.readTagCompound();
 			INBTSerializable<NBTTagCompound> result = getter.get();
 			result.deserializeNBT(tag);
@@ -1054,12 +1110,13 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public INBTSerializable<NBTTagCompound> readFromNBT(
-				NBTTagCompound nbt, String name, Supplier<INBTSerializable<NBTTagCompound>> getter) {
+		public INBTSerializable<NBTTagCompound> readFromNBT(NBTTagCompound nbt, String name,
+		                                 Class<?> fieldType, Supplier<INBTSerializable<NBTTagCompound>> getter) {
 			INBTSerializable<NBTTagCompound> result = getter.get();
 			result.deserializeNBT(nbt.getCompoundTag(name));
 			return result;
 		}
+
 		
 		@Override
 		public void writeToByteBuf(ByteBuf buf, INBTSerializable<NBTTagCompound> data) {
@@ -1068,16 +1125,18 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public INBTSerializable<NBTTagCompound> readFromByteBuf(
-				ByteBuf buf, Supplier<INBTSerializable<NBTTagCompound>> getter) {
+		public INBTSerializable<NBTTagCompound> readFromByteBuf(ByteBuf buf, Class<?> fieldType,
+		                                                Supplier<INBTSerializable<NBTTagCompound>> getter) {
 			NBTTagCompound tag = ByteBufUtils.readTag(buf);
 			INBTSerializable<NBTTagCompound> result = getter.get();
 			result.deserializeNBT(tag);
 			return result;
 		}
 		
+		@SuppressWarnings("unchecked")
 		@Override
 		public <R> R cast(INBTSerializable<NBTTagCompound> data, Class<R> target) {
+			if (target == String.class) return (R) data.toString();
 			return target.cast(data);
 		}
 		
@@ -1086,8 +1145,8 @@ public final class DataTypes {
 	public static final class PosData implements IDataIO<BlockPos> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return BlockPos.class.isAssignableFrom(type);
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return BlockPos.class.isAssignableFrom(objType);
 		}
 		
 		@Override
@@ -1096,7 +1155,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public BlockPos readFromData(IDataReader reader, Supplier<BlockPos> getter) {
+		public BlockPos readFromData(IDataReader reader, Class<?> fieldType, Supplier<BlockPos> getter) {
 			return reader.readBlockPos();
 		}
 		
@@ -1106,7 +1165,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public BlockPos readFromNBT(NBTTagCompound nbt, String name, Supplier<BlockPos> getter) {
+		public BlockPos readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<BlockPos> getter) {
 			return IOUtils.readBlockPos(nbt, name);
 		}
 		
@@ -1118,7 +1177,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public BlockPos readFromByteBuf(ByteBuf buf, Supplier<BlockPos> getter) {
+		public BlockPos readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<BlockPos> getter) {
 			return new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
 		}
 		
@@ -1127,8 +1186,8 @@ public final class DataTypes {
 	public static final class VoltageData implements IDataIO<IVoltage> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return IVoltage.class.isAssignableFrom(type);
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType != EnumVoltage.class && IVoltage.class.isAssignableFrom(objType);
 		}
 		
 		@Override
@@ -1137,7 +1196,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public IVoltage readFromData(IDataReader reader, Supplier<IVoltage> getter) {
+		public IVoltage readFromData(IDataReader reader, Class<?> fieldType, Supplier<IVoltage> getter) {
 			return reader.readVoltage();
 		}
 		
@@ -1148,7 +1207,8 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public IVoltage readFromNBT(NBTTagCompound nbt, String name, Supplier<IVoltage> getter) {
+		public IVoltage readFromNBT(NBTTagCompound nbt, String name,
+		                            Class<?> fieldType, Supplier<IVoltage> getter) {
 			int voltage = nbt.getInteger(name + "v");
 			double loss = nbt.getDouble(name);
 			return IVoltage.getInstance(voltage, loss);
@@ -1161,7 +1221,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public IVoltage readFromByteBuf(ByteBuf buf, Supplier<IVoltage> getter) {
+		public IVoltage readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<IVoltage> getter) {
 			return IVoltage.getInstance(buf.readInt(), buf.readDouble());
 		}
 		
@@ -1170,8 +1230,8 @@ public final class DataTypes {
 	public static final class ClassData implements IDataIO<Class<?>> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == Class.class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == Class.class;
 		}
 		
 		@Override
@@ -1180,7 +1240,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Class<?> readFromData(IDataReader reader, Supplier<Class<?>> getter) {
+		public Class<?> readFromData(IDataReader reader, Class<?> fieldType, Supplier<Class<?>> getter) {
 			try {
 				return Class.forName(reader.readString());
 			} catch (ClassNotFoundException e) {
@@ -1194,7 +1254,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Class<?> readFromNBT(NBTTagCompound nbt, String name, Supplier<Class<?>> getter) {
+		public Class<?> readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<Class<?>> getter) {
 			if (getter != null) return getter.get();
 			try {
 				return Class.forName(nbt.getString(name));
@@ -1209,7 +1269,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public Class<?> readFromByteBuf(ByteBuf buf, Supplier<Class<?>> getter) {
+		public Class<?> readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Class<?>> getter) {
 			if (getter != null) return getter.get();
 			try {
 				return Class.forName(IOUtils.readStringFromBuf(buf));
@@ -1223,8 +1283,8 @@ public final class DataTypes {
 	public static final class ElementData implements IDataIO<ItemElement> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return type == ItemElement.class;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return objType == ItemElement.class;
 		}
 		
 		@Override
@@ -1233,7 +1293,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public ItemElement readFromData(IDataReader reader, Supplier<ItemElement> getter) {
+		public ItemElement readFromData(IDataReader reader, Class<?> fieldType, Supplier<ItemElement> getter) {
 			return ItemElement.instance(reader);
 		}
 		
@@ -1243,7 +1303,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public ItemElement readFromNBT(NBTTagCompound nbt, String name, Supplier<ItemElement> getter) {
+		public ItemElement readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<ItemElement> getter) {
 			return ItemElement.instance(nbt);
 		}
 		
@@ -1253,7 +1313,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public ItemElement readFromByteBuf(ByteBuf buf, Supplier<ItemElement> getter) {
+		public ItemElement readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<ItemElement> getter) {
 			return ItemElement.instance(buf);
 		}
 		
@@ -1262,30 +1322,30 @@ public final class DataTypes {
 	public static final class CollectionData implements IDataIO<Collection<?>> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return Collection.class.isAssignableFrom(type);
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return Collection.class.isAssignableFrom(objType);
 		}
 		
 		@Override
 		public void writeToData(IDataWriter writer, Collection<?> data) {
 			writer.writeVarInt(data.size());
 			for (Object o : data) {
-				DataTypeRegister.write(writer, o.getClass());
-				DataTypeRegister.write(writer, o);
+				DataSerialize.write(writer, o.getClass());
+				DataSerialize.write(writer, o);
 			}
 		}
 		
 		@SuppressWarnings({"rawtypes", "unchecked"})
 		@Override
-		public Collection<?> readFromData(IDataReader reader, Supplier<Collection<?>> getter) {
+		public Collection<?> readFromData(IDataReader reader, Class<?> fieldType, Supplier<Collection<?>> getter) {
 			int size = reader.readVarInt();
 			Collection collection = getter == null ? null : getter.get();
 			if (collection == null) {
 				throw new NullPointerException("读写Collection时该值应该具有默认值");
 			}
 			for (int i = 0; i < size; ++i) {
-				Class clazz = DataTypeRegister.read(reader, Class.class, null);
-				collection.add(DataTypeRegister.read(reader, clazz, null));
+				Class clazz = DataSerialize.read(reader, Class.class, null);
+				collection.add(DataSerialize.read(reader, clazz, null));
 			}
 			return collection;
 		}
@@ -1296,15 +1356,15 @@ public final class DataTypes {
 			int index = 0;
 			for (Object o : data) {
 				String str = name + index;
-				DataTypeRegister.write(nbt, str + "name", o.getClass());
-				DataTypeRegister.write(nbt, str, o);
+				DataSerialize.write(nbt, str + "name", o.getClass());
+				DataSerialize.write(nbt, str, o);
 				++index;
 			}
 		}
 		
 		@SuppressWarnings({"rawtypes", "unchecked"})
 		@Override
-		public Collection<?> readFromNBT(NBTTagCompound nbt, String name, Supplier<Collection<?>> getter) {
+		public Collection<?> readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<Collection<?>> getter) {
 			int size = nbt.getInteger(name);
 			Collection collection = getter == null ? null : getter.get();
 			if (collection == null) {
@@ -1312,8 +1372,8 @@ public final class DataTypes {
 			}
 			for (int i = 0; i < size; ++i) {
 				String str = name + i;
-				Class clazz = DataTypeRegister.read(nbt, str + "name", Class.class, null);
-				collection.add(DataTypeRegister.read(nbt, str, clazz, null));
+				Class clazz = DataSerialize.read(nbt, str + "name", Class.class, null);
+				collection.add(DataSerialize.read(nbt, str, clazz, null));
 			}
 			return collection;
 		}
@@ -1322,33 +1382,33 @@ public final class DataTypes {
 		public void writeToByteBuf(ByteBuf buf, Collection<?> data) {
 			buf.writeInt(data.size());
 			for (Object o : data) {
-				DataTypeRegister.write(buf, o.getClass());
-				DataTypeRegister.write(buf, o);
+				DataSerialize.write(buf, o.getClass());
+				DataSerialize.write(buf, o);
 			}
 		}
 		
 		@SuppressWarnings({"rawtypes", "unchecked"})
 		@Override
-		public Collection<?> readFromByteBuf(ByteBuf buf, Supplier<Collection<?>> getter) {
+		public Collection<?> readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Collection<?>> getter) {
 			int size = buf.readInt();
 			Collection collection = getter == null ? null : getter.get();
 			if (collection == null) {
 				throw new NullPointerException("读写Collection时该值应该具有默认值");
 			}
 			for (int i = 0; i < size; ++i) {
-				Class clazz = DataTypeRegister.read(buf, Class.class, null);
-				collection.add(DataTypeRegister.read(buf, clazz, null));
+				Class clazz = DataSerialize.read(buf, Class.class, null);
+				collection.add(DataSerialize.read(buf, clazz, null));
 			}
 			return collection;
 		}
 		
 	}
 	
-	public static final class  MapData implements IDataIO<Map<?, ?>> {
+	public static final class MapData implements IDataIO<Map<?, ?>> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return Map.class.isAssignableFrom(type);
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return Map.class.isAssignableFrom(objType);
 		}
 		
 		@Override
@@ -1356,26 +1416,26 @@ public final class DataTypes {
 			if (data == null) return;
 			writer.writeVarInt(data.size());
 			for (Map.Entry<?, ?> entry : data.entrySet()) {
-				DataTypeRegister.write(writer, entry.getKey().getClass());
-				DataTypeRegister.write(writer, entry.getValue().getClass());
-				DataTypeRegister.write(writer, entry.getKey());
-				DataTypeRegister.write(writer, entry.getValue());
+				DataSerialize.write(writer, entry.getKey().getClass());
+				DataSerialize.write(writer, entry.getValue().getClass());
+				DataSerialize.write(writer, entry.getKey());
+				DataSerialize.write(writer, entry.getValue());
 			}
 		}
 		
 		@SuppressWarnings({"rawtypes", "unchecked"})
 		@Override
-		public Map<?, ?> readFromData(IDataReader reader, Supplier<Map<?, ?>> getter) {
+		public Map<?, ?> readFromData(IDataReader reader, Class<?> fieldType, Supplier<Map<?, ?>> getter) {
 			int size = reader.readVarInt();
 			Map map = getter == null ? null : getter.get();
 			if (map == null) {
 				throw new NullPointerException("读写Collection时该值应该具有默认值");
 			}
 			for (int i = 0; i < size; ++i) {
-				Class<?> keyClazz = DataTypeRegister.read(reader, Class.class, null);
-				Class<?> valueClazz = DataTypeRegister.read(reader, Class.class, null);
-				Object key = DataTypeRegister.read(reader, keyClazz, null);
-				Object value = DataTypeRegister.read(reader, valueClazz, null);
+				Class<?> keyClazz = DataSerialize.read(reader, Class.class, null);
+				Class<?> valueClazz = DataSerialize.read(reader, Class.class, null);
+				Object key = DataSerialize.read(reader, keyClazz, null);
+				Object value = DataSerialize.read(reader, valueClazz, null);
 				map.put(key, value);
 			}
 			return map;
@@ -1388,16 +1448,16 @@ public final class DataTypes {
 			int k = 0;
 			for (Map.Entry<?, ?> entry : data.entrySet()) {
 				String str = name + k++;
-				DataTypeRegister.write(nbt, str + "key", entry.getKey());
-				DataTypeRegister.write(nbt, str + "value", entry.getValue());
-				DataTypeRegister.write(nbt, str + "kn", entry.getKey().getClass());
-				DataTypeRegister.write(nbt, str + "vn", entry.getValue().getClass());
+				DataSerialize.write(nbt, str + "key", entry.getKey());
+				DataSerialize.write(nbt, str + "value", entry.getValue());
+				DataSerialize.write(nbt, str + "kn", entry.getKey().getClass());
+				DataSerialize.write(nbt, str + "vn", entry.getValue().getClass());
 			}
 		}
 		
 		@SuppressWarnings({"rawtypes", "unchecked"})
 		@Override
-		public Map<?, ?> readFromNBT(NBTTagCompound nbt, String name, Supplier<Map<?, ?>> getter) {
+		public Map<?, ?> readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<Map<?, ?>> getter) {
 			int size = nbt.getInteger(name);
 			Map map = getter == null ? null : getter.get();
 			if (map == null) {
@@ -1405,10 +1465,10 @@ public final class DataTypes {
 			}
 			for (int i = 0; i < size; ++i) {
 				String str = name + i;
-				Class<?> keyClazz = DataTypeRegister.read(nbt, str + "kn", Class.class, null);
-				Class<?> valueClazz = DataTypeRegister.read(nbt, str + "vn", Class.class, null);
-				Object key = DataTypeRegister.read(nbt, str + "key", keyClazz, null);
-				Object value = DataTypeRegister.read(nbt, str + "key", valueClazz, null);
+				Class<?> keyClazz = DataSerialize.read(nbt, str + "kn", Class.class, null);
+				Class<?> valueClazz = DataSerialize.read(nbt, str + "vn", Class.class, null);
+				Object key = DataSerialize.read(nbt, str + "key", keyClazz, null);
+				Object value = DataSerialize.read(nbt, str + "key", valueClazz, null);
 				map.put(key, value);
 			}
 			return map;
@@ -1419,26 +1479,26 @@ public final class DataTypes {
 			if (data == null) return;
 			buf.writeInt(data.size());
 			for (Map.Entry<?, ?> entry : data.entrySet()) {
-				DataTypeRegister.write(buf, entry.getKey().getClass());
-				DataTypeRegister.write(buf, entry.getValue().getClass());
-				DataTypeRegister.write(buf, entry.getKey());
-				DataTypeRegister.write(buf, entry.getValue());
+				DataSerialize.write(buf, entry.getKey().getClass());
+				DataSerialize.write(buf, entry.getValue().getClass());
+				DataSerialize.write(buf, entry.getKey());
+				DataSerialize.write(buf, entry.getValue());
 			}
 		}
 		
 		@SuppressWarnings({"rawtypes", "unchecked"})
 		@Override
-		public Map<?, ?> readFromByteBuf(ByteBuf buf, Supplier<Map<?, ?>> getter) {
+		public Map<?, ?> readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Map<?, ?>> getter) {
 			int size = buf.readInt();
 			Map map = getter == null ? null : getter.get();
 			if (map == null) {
 				throw new NullPointerException("读写Collection时该值应该具有默认值");
 			}
 			for (int i = 0; i < size; ++i) {
-				Class<?> keyClazz = DataTypeRegister.read(buf, Class.class, null);
-				Class<?> valueClazz = DataTypeRegister.read(buf, Class.class, null);
-				Object key = DataTypeRegister.read(buf, keyClazz, null);
-				Object value = DataTypeRegister.read(buf, valueClazz, null);
+				Class<?> keyClazz = DataSerialize.read(buf, Class.class, null);
+				Class<?> valueClazz = DataSerialize.read(buf, Class.class, null);
+				Object key = DataSerialize.read(buf, keyClazz, null);
+				Object value = DataSerialize.read(buf, valueClazz, null);
 				map.put(key, value);
 			}
 			return map;
@@ -1449,8 +1509,8 @@ public final class DataTypes {
 	public static final class FluidStackData implements IDataIO<FluidStack> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return FluidStack.class.isAssignableFrom(type);
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return FluidStack.class.isAssignableFrom(objType);
 		}
 		
 		@Override
@@ -1460,7 +1520,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public FluidStack readFromData(IDataReader reader, Supplier<FluidStack> getter) {
+		public FluidStack readFromData(IDataReader reader, Class<?> fieldType, Supplier<FluidStack> getter) {
 			int amount = reader.readVarInt();
 			String name = reader.readString();
 			Fluid fluid = FluidRegistry.getFluid(name);
@@ -1474,7 +1534,7 @@ public final class DataTypes {
 		}
 		
 		@Override
-		public FluidStack readFromNBT(NBTTagCompound nbt, String name, Supplier<FluidStack> getter) {
+		public FluidStack readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<FluidStack> getter) {
 			int amount = nbt.getInteger(name + "a");
 			String fluidName = nbt.getString(name + "n");
 			Fluid fluid = FluidRegistry.getFluid(fluidName);
@@ -1484,13 +1544,13 @@ public final class DataTypes {
 		@Override
 		public void writeToByteBuf(ByteBuf buf, FluidStack data) {
 			buf.writeInt(data.amount);
-			DataTypeRegister.write(buf, data.getFluid().getName());
+			DataSerialize.write(buf, data.getFluid().getName(), String.class);
 		}
 		
 		@Override
-		public FluidStack readFromByteBuf(ByteBuf buf, Supplier<FluidStack> getter) {
+		public FluidStack readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<FluidStack> getter) {
 			int amount = buf.readInt();
-			String name = DataTypeRegister.read(buf, String.class, null);
+			String name = DataSerialize.read(buf, String.class, String.class, null);
 			Fluid fluid = FluidRegistry.getFluid(name);
 			return new FluidStack(fluid, amount);
 		}
@@ -1500,8 +1560,8 @@ public final class DataTypes {
 	public static final class CapabilityData implements IDataIO<Object> {
 		
 		@Override
-		public boolean match(Class<?> type) {
-			return getCap(type) != null;
+		public boolean match(Class<?> objType, Class<?> fieldType) {
+			return getCap(objType) != null;
 		}
 		
 		@SuppressWarnings({"rawtypes", "unchecked"})
@@ -1515,7 +1575,7 @@ public final class DataTypes {
 		
 		@SuppressWarnings({"rawtypes", "unchecked"})
 		@Override
-		public Object readFromData(IDataReader reader, Supplier<Object> getter) {
+		public Object readFromData(IDataReader reader, Class<?> fieldType, Supplier<Object> getter) {
 			Object obj = getter.get();
 			if (reader.readBoolean()) return obj;
 			Class<?> type = obj.getClass();
@@ -1534,7 +1594,7 @@ public final class DataTypes {
 		
 		@SuppressWarnings({"rawtypes", "unchecked"})
 		@Override
-		public Object readFromNBT(NBTTagCompound nbt, String name, Supplier<Object> getter) {
+		public Object readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<Object> getter) {
 			Object obj = getter.get();
 			if (nbt.hasKey(name)) return obj;
 			Class<?> type = obj.getClass();
@@ -1550,20 +1610,20 @@ public final class DataTypes {
 			NBTBase nbt = cap.writeNBT(data, null);
 			buf.writeBoolean(nbt == null);
 			if (nbt != null) {
-				DataTypeRegister.write(buf, nbt.getClass());
-				DataTypeRegister.write(buf, nbt);
+				DataSerialize.write(buf, nbt.getClass(), Class.class);
+				DataSerialize.write(buf, nbt);
 			}
 		}
 		
 		@SuppressWarnings({"rawtypes", "unchecked"})
 		@Override
-		public Object readFromByteBuf(ByteBuf buf, Supplier<Object> getter) {
+		public Object readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Object> getter) {
 			Object obj = getter.get();
 			if (buf.readBoolean()) return obj;
 			Class<?> type = obj.getClass();
 			Capability cap = getCap(type);
-			Class<?> clazz = DataTypeRegister.read(buf, Class.class, null);
-			cap.readNBT(obj, null, DataTypeRegister.read(buf, clazz, null));
+			Class<?> clazz = DataSerialize.read(buf, Class.class, Class.class, null);
+			cap.readNBT(obj, null, DataSerialize.read(buf, clazz, Class.class, null));
 			return obj;
 		}
 		

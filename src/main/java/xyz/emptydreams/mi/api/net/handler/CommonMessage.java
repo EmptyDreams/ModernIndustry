@@ -9,7 +9,7 @@ import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.DataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
-import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
+import xyz.emptydreams.mi.api.utils.data.io.DataSerialize;
 
 /**
  * 通用信息传输
@@ -40,7 +40,7 @@ public class CommonMessage implements IMessage {
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		this.key = DataTypeRegister.read(buf, String.class, null);
+		this.key = DataSerialize.read(buf, String.class, String.class, null);
 		IDataOperator reader = new ByteDataOperator(50);
 		reader.writeFromByteBuf(buf);
 		this.reader = reader;
@@ -49,7 +49,7 @@ public class CommonMessage implements IMessage {
 	@Override
 	public void toBytes(ByteBuf buf) {
 		if (reader == null) throw new IllegalArgumentException("没有给定需要传输的信息");
-		DataTypeRegister.write(buf, key);
+		DataSerialize.write(buf, key, String.class);
 		reader.readToByteBuf(buf);
 	}
 	

@@ -1,15 +1,9 @@
 package xyz.emptydreams.mi.api.utils.data.io;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.nbt.NBTTagCompound;
-import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
-import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.function.Supplier;
 
 /**
  * 注册数据类型
@@ -49,71 +43,6 @@ public final class DataTypeRegister {
 	}
 	
 	/**
-	 * 写入数据
-	 * @param writer writer对象
-	 * @param data 数据内容
-	 */
-	public static void write(IDataWriter writer, Object data) {
-		IDataIO io = searchNode(data.getClass());
-		io.writeToData(writer, data);
-	}
-	
-	/**
-	 * 写入数据
-	 * @param nbt NBT对象
-	 * @param name 数据名称
-	 * @param data 数据内容
-	 */
-	public static void write(NBTTagCompound nbt, String name, Object data) {
-		IDataIO io = searchNode(data.getClass());
-		io.writeToNBT(nbt, name, data);
-	}
-	
-	/**
-	 * 写入数据
-	 * @param buf buf对象
-	 * @param data 数据内容
-	 */
-	public static void write(ByteBuf buf, Object data) {
-		IDataIO io = searchNode(data.getClass());
-		io.writeToByteBuf(buf, data);
-	}
-	
-	/**
-	 * 读取数据
-	 * @param reader reader对象
-	 * @param type 数据类型
-	 * @param getter 获取默认值，如果读取的值不需要默认值则可以为null
-	 */
-	public static <T> T read(IDataReader reader, Class type, Supplier<T> getter) {
-		IDataIO io = searchNode(type);
-		return (T) io.readFromData(reader, getter);
-	}
-	
-	/**
-	 * 读取数据
-	 * @param nbt NBT对象
-	 * @param name 数据名称
-	 * @param type 数据类型
-	 * @param getter 获取默认值，如果读取的值不需要默认值则可以为null
-	 */
-	public static <T> T read(NBTTagCompound nbt, String name, Class type, Supplier<T> getter) {
-		IDataIO io = searchNode(type);
-		return (T) io.readFromNBT(nbt, name, getter);
-	}
-	
-	/**
-	 * 读取数据
-	 * @param buf buf对象
-	 * @param type 数据类型
-	 * @param getter 获取默认值，如果读取的值不需要默认值则可以为null
-	 */
-	public static <T> T read(ByteBuf buf, Class type, Supplier<T> getter) {
-		IDataIO io = searchNode(type);
-		return (T) io.readFromByteBuf(buf, getter);
-	}
-	
-	/**
 	 * 将输入的类型转化为指定类型
 	 * @param data 数据
 	 * @param target 目标类型
@@ -127,17 +56,27 @@ public final class DataTypeRegister {
 	
 	/**
 	 * 为指定类型寻找一个合适的处理器
-	 * @param type 指定类型
+	 * @param objType 指定类型
 	 * @throws NullPointerException 如果没有合适的处理器
 	 */
-	private static IDataIO searchNode(Class type) {
+	public static IDataIO searchNode(Class objType) {
+		return searchNode(objType, null);
+	}
+	
+	/**
+	 * 为指定类型寻找一个合适的处理器
+	 * @param objType 指定类型
+	 * @param fieldType 类中声明的类型
+	 * @throws NullPointerException 如果没有合适的处理器
+	 */
+	public static IDataIO searchNode(Class objType, Class fieldType) {
 		for (IndexNode index : INDEXS) {
 			List<IDataIO<?>> list = index.getList();
 			for (IDataIO<?> io : list) {
-				if (io.match(type)) return io;
+				if (io.match(objType, fieldType)) return io;
 			}
 		}
-		throw new NullPointerException("没有找到合适的处理器：" + type.getName());
+		throw new NullPointerException("没有找到合适的处理器：" + objType.getName());
 	}
 	
 	private static final class IndexNode implements Comparable<IndexNode> {

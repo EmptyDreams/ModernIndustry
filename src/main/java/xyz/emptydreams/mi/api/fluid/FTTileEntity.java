@@ -20,7 +20,7 @@ import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
-import xyz.emptydreams.mi.api.utils.data.io.DataTypeRegister;
+import xyz.emptydreams.mi.api.utils.data.io.DataSerialize;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
@@ -97,7 +97,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		cap.linkData = compound.readByte();
 		cap.setFacing(EnumFacing.values()[compound.readByte()]);
 		if (!compound.readBoolean()) {
-			cap.stack = DataTypeRegister.read(compound, FluidStack.class, null);
+			cap.stack = DataSerialize.read(compound, FluidStack.class, FluidStack.class, null);
 		}
 		updateBlockState();
 	}
@@ -123,7 +123,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		operator.writeByte((byte) cap.getFacing().getIndex());
 		operator.writeBoolean(cap.stack == null);
 		if (cap.stack != null) {
-			DataTypeRegister.write(operator, cap.stack);
+			DataSerialize.write(operator, cap.stack, FluidStack.class);
 		}
 		IMessage message = BlockMessage.instance().create(operator, new BlockAddition(this));
 		MessageSender.sendToClientIf(message, world, player -> {
