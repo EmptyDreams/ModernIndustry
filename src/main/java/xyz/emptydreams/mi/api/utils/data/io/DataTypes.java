@@ -973,11 +973,9 @@ public final class DataTypes {
 		
 		@Override
 		public boolean match(@Nonnull Class<?> objType, @Nullable Class<?> fieldType) {
-			if (objType == fieldType) return Enum.class.isAssignableFrom(objType);
-			if (!Enum.class.isAssignableFrom(objType)) return false;
-			String name = objType.getName();
-			if (!name.contains("$")) return false;
-			return objType.getSuperclass() == fieldType;
+			if (fieldType == null) return false;
+			return (objType == fieldType || Enum.class.isAssignableFrom(fieldType))
+					&& Enum.class.isAssignableFrom(objType);
 		}
 		
 		@Override
@@ -1029,7 +1027,7 @@ public final class DataTypes {
 		
 		@Override
 		public boolean match(Class<?> objType, Class<?> fieldType) {
-			return fieldType != objType && Enum.class.isAssignableFrom(objType);
+			return !Enum.class.isAssignableFrom(fieldType) && Enum.class.isAssignableFrom(objType);
 		}
 		
 		@Override
