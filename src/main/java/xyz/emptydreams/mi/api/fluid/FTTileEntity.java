@@ -10,9 +10,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability;
+import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
-import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.net.handler.MessageSender;
 import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
@@ -24,7 +25,6 @@ import xyz.emptydreams.mi.api.utils.data.io.DataSerialize;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
-import xyz.emptydreams.mi.content.blocks.base.PipeBlocks;
 import xyz.emptydreams.mi.api.utils.properties.MIProperty;
 import xyz.emptydreams.mi.content.items.debug.DebugDetails;
 
@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import static net.minecraft.util.EnumFacing.*;
+import static xyz.emptydreams.mi.content.blocks.base.PipeBlocks.StraightPipe;
 
 /**
  * 流体管道的TileEntity的父类
@@ -68,13 +69,13 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
 		if (super.hasCapability(capability, facing)) return true;
-		return capability == xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability.TRANSFER;
+		return capability == FluidCapability.TRANSFER;
 	}
 	
 	@Nullable
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-		if (capability == xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability.TRANSFER
+		if (capability == FluidCapability.TRANSFER
 				&& (facing == null || cap.hasAperture(facing))) {
 			//noinspection unchecked
 			return (T) cap;
@@ -152,8 +153,8 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		switch (stateEnum) {
 			case STRAIGHT:
 				newState = oldState.withProperty(MIProperty.ALL_FACING, cap.getFacing())
-						.withProperty(PipeBlocks.StraightPipe.BEFORE, cap.hasPlug(cap.getFacing()))
-						.withProperty(PipeBlocks.StraightPipe.AFTER, cap.hasPlug(cap.getFacing().getOpposite()));
+						.withProperty(StraightPipe.BEFORE, cap.hasPlug(cap.getFacing()))
+						.withProperty(StraightPipe.AFTER, cap.hasPlug(cap.getFacing().getOpposite()));
 				break;
 			case ANGLE:
 			case SHUNT:
@@ -239,7 +240,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 			BlockPos target = pos.offset(facing);
 			TileEntity entity = world.getTileEntity(target);
 			if (entity == null) return null;
-			return entity.getCapability(xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability.TRANSFER, facing);
+			return entity.getCapability(FluidCapability.TRANSFER, facing);
 		}
 		
 		@Nonnull
@@ -283,7 +284,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		public boolean canLink(EnumFacing facing) {
 			TileEntity te = world.getTileEntity(pos.offset(facing));
 			if (te == null) return false;
-			IFluid cap = te.getCapability(xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability.TRANSFER, null);
+			IFluid cap = te.getCapability(FluidCapability.TRANSFER, null);
 			if (cap == null) return false;
 			if (cap.hasAperture(facing.getOpposite())) {
 				return hasAperture(facing) || getLinkAmount() == 0;
