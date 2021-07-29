@@ -41,7 +41,7 @@ public class FluidCapability {
 						return 0;
 					}
 					@Override
-					public int insert(FluidStack stack, boolean simulate) {
+					public int insert(FluidStack stack, EnumFacing facing, boolean simulate) {
 						return 0;
 					}
 					@Override

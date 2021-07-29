@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
@@ -20,6 +21,7 @@ import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
+import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.DataSerialize;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
@@ -44,7 +46,7 @@ import static xyz.emptydreams.mi.content.blocks.base.PipeBlocks.StraightPipe;
  * @author EmptyDreams
  */
 @AutoTileEntity("FLUID_TRANSFER_TILE_ENTITY")
-public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
+public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITickable {
 	
 	@Storage protected final FluidSrcCap cap = new FluidSrcCap();
 	
@@ -55,9 +57,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		this.stateEnum = stateEnum;
 	}
 	
-	/**
-	 * @deprecated 仅供MC反射调用
-	 */
+	/** @deprecated 仅供MC反射调用 */
 	@Deprecated
 	public FTTileEntity() { }
 	
@@ -83,7 +83,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		return super.getCapability(capability, facing);
 	}
 	
-	public FluidSrcCap getFTCapability() {
+	public IFluid getFTCapability() {
 		return cap;
 	}
 	
@@ -153,14 +153,54 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		switch (stateEnum) {
 			case STRAIGHT:
 				newState = oldState.withProperty(MIProperty.ALL_FACING, cap.getFacing())
-						.withProperty(StraightPipe.BEFORE, cap.hasPlug(cap.getFacing()))
-						.withProperty(StraightPipe.AFTER, cap.hasPlug(cap.getFacing().getOpposite()));
+						           .withProperty(StraightPipe.BEFORE, cap.hasPlug(cap.getFacing()))
+						           .withProperty(StraightPipe.AFTER, cap.hasPlug(cap.getFacing().getOpposite()));
 				break;
 			case ANGLE:
 			case SHUNT:
 			default: throw new IllegalArgumentException("输入了未知的状态：" + stateEnum);
 		}
 		WorldUtil.setBlockState(world, pos, oldState, newState);
+	}
+	
+	protected int sleepTime = 20;
+	protected int nowTime = 0;
+	
+	@Override
+	public void update() {
+		//检查运行条件
+		if (updateTickableState()) {
+			nowTime = 0;
+			return;
+		}
+		if (++nowTime != sleepTime) return;
+		
+		
+	}
+	
+	private boolean isRemove = false;
+	
+	/**
+	 * 更新管道tickable的状态
+	 * @return 如果移除成功则返回true
+	 */
+	public boolean updateTickableState() {
+		if (world.isRemote) {
+			if (!isRemove) {
+				isRemove = true;
+				WorldUtil.removeTickable(this);
+			}
+			return true;
+		}
+		if (!isRemove && cap.fluid() == null) {
+			isRemove = true;
+			WorldUtil.removeTickable(this);
+			return true;
+		} else if (isRemove) {
+			isRemove = false;
+			WorldUtil.addTickable(this);
+		}
+		return false;
 	}
 	
 	@DebugDetails
@@ -177,6 +217,8 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		@Storage protected final Map<EnumFacing, Item> plugData = new EnumMap<>(EnumFacing.class);
 		/** 存储管道方向 */
 		@Storage protected EnumFacing facing = NORTH;
+		/** 存储管道内流体来源 */
+		@Storage protected EnumFacing source = null;
 		
 		@Override
 		public int fluidAmount() {
@@ -202,18 +244,25 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 			int real = Math.min(stack.amount, this.stack.amount);
 			if (simulate) return real;
 			this.stack.amount -= real;
+			updateTickableState();
 			return real;
 		}
 		
 		@Override
-		public int insert(FluidStack stack, boolean simulate) {
+		public int insert(FluidStack stack, EnumFacing facing, boolean simulate) {
 			int sum = this.stack.amount + stack.amount;
 			if (sum <= getMaxAmount()) {
-				if (!simulate) this.stack.amount = sum;
+				if (simulate) return stack.amount;
+				this.stack.amount = sum;
+				source = StringUtil.checkNull(facing, "facing");
+				updateTickableState();
 				return stack.amount;
 			}
 			int real = getMaxAmount() - this.stack.amount;
-			if (!simulate) this.stack.amount = getMaxAmount();
+			if (simulate) return real;
+			this.stack.amount = getMaxAmount();
+			source = StringUtil.checkNull(facing, "facing");
+			updateTickableState();
 			return real;
 		}
 		
@@ -375,48 +424,42 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork {
 		
 		@Override
 		public boolean setPlugUp(Item plug) {
-			if ((hasPlugUp() && plug != null)
-					|| !getStateEnum().canSetPlug(getFacing(), UP)) return false;
+			if ((hasPlugUp() && plug != null) || !canSetPlug(UP)) return false;
 			setPlugData(UP, plug);
 			return true;
 		}
 		
 		@Override
 		public boolean setPlugDown(Item plug) {
-			if ((hasPlugDown() && plug != null)
-					|| !getStateEnum().canSetPlug(getFacing(), DOWN)) return false;
+			if ((hasPlugDown() && plug != null) || !canSetPlug(DOWN)) return false;
 			setPlugData(DOWN, plug);
 			return true;
 		}
 		
 		@Override
 		public boolean setPlugNorth(Item plug) {
-			if ((hasPlugNorth() && plug != null)
-					|| !getStateEnum().canSetPlug(getFacing(), NORTH)) return false;
+			if ((hasPlugNorth() && plug != null) || !canSetPlug(NORTH)) return false;
 			setPlugData(NORTH, plug);
 			return true;
 		}
 		
 		@Override
 		public boolean setPlugSouth(Item plug) {
-			if ((hasPlugSouth() && plug != null)
-					|| !getStateEnum().canSetPlug(getFacing(), SOUTH)) return false;
+			if ((hasPlugSouth() && plug != null) || !canSetPlug(SOUTH)) return false;
 			setPlugData(SOUTH, plug);
 			return true;
 		}
 		
 		@Override
 		public boolean setPlugWest(Item plug) {
-			if ((hasPlugWest() && plug != null)
-					|| !getStateEnum().canSetPlug(getFacing(), WEST)) return false;
+			if ((hasPlugWest() && plug != null) || !canSetPlug(WEST)) return false;
 			setPlugData(WEST, plug);
 			return true;
 		}
 		
 		@Override
 		public boolean setPlugEast(Item plug) {
-			if ((hasPlugEast() && plug != null)
-					|| !getStateEnum().canSetPlug(getFacing(), EAST)) return false;
+			if ((hasPlugEast() && plug != null) || !canSetPlug(EAST)) return false;
 			setPlugData(EAST, plug);
 			return true;
 		}

@@ -38,10 +38,11 @@ public interface IFluid {
 	/**
 	 * 放入指定数额的流体
 	 * @param stack 输入的流体
+	 * @param facing 流体输入的方向在方块的方向（如果simulate为true则该项可为null）
 	 * @param simulate 是否为模拟，为true时不修改内部数据
 	 * @return 真实取出的流体量
 	 */
-	int insert(FluidStack stack, boolean simulate);
+	int insert(FluidStack stack, EnumFacing facing, boolean simulate);
 	
 	/** 设置管道朝向 */
 	void setFacing(EnumFacing facing);
@@ -74,6 +75,11 @@ public interface IFluid {
 	
 	/** 判断是否可以连接指定方向 */
 	boolean canLink(EnumFacing facing);
+	
+	/** 判断指定方向上是否可以设置管塞 */
+	default boolean canSetPlug(EnumFacing facing) {
+		return hasPlug(facing) && !isLinked(facing);
+	}
 	
 	/** 获取管道已经连接的数量 */
 	default int getLinkAmount() {
@@ -239,12 +245,12 @@ public interface IFluid {
 		if (out.amount == 0) return null;
 		IFluid that = getLinkedTransfer(facing);
 		if (that == null) return null;
-		int realIn = that.insert(out, true);
+		int realIn = that.insert(out, null, true);
 		out.amount = Math.min(out.amount, realIn);
 		if (out.amount == 0) return null;
 		if (!simulate) {
 			extract(out, false);
-			that.insert(out, false);
+			that.insert(out, facing.getOpposite(), false);
 		}
 		return out;
 	}

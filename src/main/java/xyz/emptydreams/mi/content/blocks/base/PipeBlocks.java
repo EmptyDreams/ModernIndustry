@@ -67,7 +67,7 @@ public final class PipeBlocks {
 		public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 			FTTileEntity te = (FTTileEntity) worldIn.getTileEntity(pos);
 			@SuppressWarnings("ConstantConditions")
-			FTTileEntity.FluidSrcCap cap = te.getFTCapability();
+			IFluid cap = te.getFTCapability();
 			EnumFacing facing = cap.getFacing();
 			return state.withProperty(BEFORE, cap.hasPlug(facing))
 						.withProperty(AFTER, cap.hasPlug(facing.getOpposite()))
@@ -190,7 +190,7 @@ public final class PipeBlocks {
 			TileEntity fromEntity = worldIn.getTileEntity(fromPos);
 			Block block = fromEntity == null ? worldIn.getBlockState(fromPos).getBlock() : fromEntity.getBlockType();
 			FTTileEntity nowEntity = (FTTileEntity) worldIn.getTileEntity(pos);
-			@SuppressWarnings("ConstantConditions") FTTileEntity.FluidSrcCap cap = nowEntity.getFTCapability();
+			@SuppressWarnings("ConstantConditions") IFluid cap = nowEntity.getFTCapability();
 			EnumFacing facing = WorldUtil.whatFacing(pos, fromPos);
 			if (block == Blocks.AIR || fromEntity == null) {
 				cap.unlink(facing);
