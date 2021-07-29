@@ -100,7 +100,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		if (!compound.readBoolean()) {
 			cap.stack = DataSerialize.read(compound, FluidStack.class, FluidStack.class, null);
 		}
-		updateBlockState();
 	}
 	
 	/**
@@ -119,6 +118,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 	protected void send() {
 		if (world.isRemote) return;
 		if (players.size() == world.playerEntities.size()) return;
+		updateBlockState();
 		ByteDataOperator operator = new ByteDataOperator(1);
 		operator.writeByte((byte) cap.linkData);
 		operator.writeByte((byte) cap.getFacing().getIndex());
