@@ -37,7 +37,7 @@ public final class MathUtil {
 			}
 		} else if (pos.getY() == (int) player.posY || pos.getY() == (int) player.posY + 1) {
 			//如果玩家和方块在同一水平面上
-			if (Math.sqrt(x * x + y * y) > 1.5 && Math.abs(player.rotationPitch) < 33) {
+			if (Math.sqrt(x * x + y * y) > 1.8 || Math.abs(player.rotationPitch) < 40) {
 				return player.getHorizontalFacing();
 			}
 			if (player.rotationPitch < -8.3) return EnumFacing.UP;
