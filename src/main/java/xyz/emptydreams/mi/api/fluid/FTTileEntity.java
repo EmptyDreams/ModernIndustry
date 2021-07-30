@@ -30,7 +30,6 @@ import xyz.emptydreams.mi.api.utils.data.io.DataSerialize;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
-import xyz.emptydreams.mi.api.utils.properties.MIProperty;
 import xyz.emptydreams.mi.content.items.debug.DebugDetails;
 
 import javax.annotation.Nonnull;
@@ -43,7 +42,6 @@ import java.util.Map;
 
 import static net.minecraft.util.EnumFacing.*;
 import static xyz.emptydreams.mi.api.capabilities.fluid.IFluid.FLUID_TRANSFER_MAX_AMOUNT;
-import static xyz.emptydreams.mi.content.blocks.base.PipeBlocks.StraightPipe;
 
 /**
  * 流体管道的TileEntity的父类
@@ -108,6 +106,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		if (!compound.readBoolean()) {
 			cap.stack = DataSerialize.read(compound, FluidStack.class, FluidStack.class, null);
 		}
+		updateBlockState();
 	}
 	
 	/**
@@ -126,7 +125,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 	protected void send() {
 		if (world.isRemote) return;
 		if (players.size() == world.playerEntities.size()) return;
-		updateBlockState();
 		ByteDataOperator operator = new ByteDataOperator(1);
 		operator.writeByte((byte) cap.linkData);
 		operator.writeByte((byte) cap.getFacing().getIndex());
@@ -140,6 +138,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 			players.add(player.getName());
 			return true;
 		});
+		updateBlockState();
 	}
 	
 	@Override
@@ -160,17 +159,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 	
 	public void updateBlockState() {
 		IBlockState oldState = world.getBlockState(pos);
-		IBlockState newState;
-		switch (stateEnum) {
-			case STRAIGHT:
-				newState = oldState.withProperty(MIProperty.ALL_FACING, cap.getFacing())
-						           .withProperty(StraightPipe.BEFORE, cap.hasPlug(cap.getFacing()))
-						           .withProperty(StraightPipe.AFTER, cap.hasPlug(cap.getFacing().getOpposite()));
-				break;
-			case ANGLE:
-			case SHUNT:
-			default: throw new IllegalArgumentException("输入了未知的状态：" + stateEnum);
-		}
+		IBlockState newState = oldState.getActualState(world, pos);
 		WorldUtil.setBlockState(world, pos, oldState, newState);
 	}
 	

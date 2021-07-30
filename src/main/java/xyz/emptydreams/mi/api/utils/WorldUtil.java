@@ -180,7 +180,7 @@ public final class WorldUtil {
 	 */
 	public static void setBlockState(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
 		if (oldState.equals(newState)) return;
-		world.setBlockState(pos, newState, 11);
+		world.setBlockState(pos, newState);
 		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	

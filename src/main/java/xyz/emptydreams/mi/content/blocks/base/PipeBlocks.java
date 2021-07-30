@@ -106,7 +106,7 @@ public final class PipeBlocks {
 		private static boolean link(World world, BlockPos pos, IFluid cap, EnumFacing facing) {
 			if (!cap.link(facing)) return false;
 			TileEntity thatTE = world.getTileEntity(pos.offset(facing));
-			IFluid that =thatTE.getCapability(FluidCapability.TRANSFER, null);
+			IFluid that = thatTE.getCapability(FluidCapability.TRANSFER, null);
 			cap.setFacing(facing);
 			EnumFacing side = facing.getOpposite();
 			EnumFacing old = that.getFacing();
@@ -114,9 +114,9 @@ public final class PipeBlocks {
 			if (!that.link(side)) {
 				cap.unlink(facing);
 				that.setFacing(old);
-				thatTE.markDirty();
 				return false;
 			}
+			thatTE.markDirty();
 			return true;
 		}
 		
