@@ -13,17 +13,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.fluid.FTStateEnum;
-import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability;
 import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
+import xyz.emptydreams.mi.api.fluid.FTStateEnum;
+import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
@@ -63,11 +63,10 @@ public final class PipeBlocks {
 			return new AxisAlignedBB(3/16d, 3/16d, 3/16d, 10/16d, 10/16d, 10/16d);
 		}
 		
+		@SuppressWarnings("ConstantConditions")
 		@Override
 		public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-			FTTileEntity te = (FTTileEntity) worldIn.getTileEntity(pos);
-			@SuppressWarnings("ConstantConditions")
-			IFluid cap = te.getFTCapability();
+			IFluid cap = worldIn.getTileEntity(pos).getCapability(FluidCapability.TRANSFER, null);
 			EnumFacing facing = cap.getFacing();
 			return state.withProperty(BEFORE, cap.hasPlug(facing))
 						.withProperty(AFTER, cap.hasPlug(facing.getOpposite()))
@@ -82,7 +81,6 @@ public final class PipeBlocks {
 			EnumFacing facing = side.getOpposite();
 			@SuppressWarnings("ConstantConditions")
 			IFluid cap = te.getFTCapability();
-			cap.setFluid(new FluidStack(FluidRegistry.WATER, 1000));
 			if (link(world, pos, cap, facing)) {
 				link(world, pos, cap, side);
 				te.markDirty();
@@ -197,6 +195,20 @@ public final class PipeBlocks {
 			} else {
 				cap.link(facing);
 			}
+		}
+		
+		@SuppressWarnings("ConstantConditions")
+		@Override
+		public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
+		                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
+		                                float hitX, float hitY, float hitZ) {
+			if (FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, facing.getOpposite())) {
+				TileEntity te = worldIn.getTileEntity(pos);
+				IFluid cap = te.getCapability(FluidCapability.TRANSFER, facing);
+				cap.setSource(facing);
+				return true;
+			}
+			return false;
 		}
 		
 		@Override

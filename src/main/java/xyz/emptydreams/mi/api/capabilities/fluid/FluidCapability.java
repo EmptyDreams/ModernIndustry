@@ -48,6 +48,10 @@ public class FluidCapability {
 					@Override
 					public void setFacing(EnumFacing facing) { }
 					@Override
+					public void setSource(EnumFacing facing) {
+					
+					}
+					@Override
 					public int getMaxAmount() {
 						return 0;
 					}

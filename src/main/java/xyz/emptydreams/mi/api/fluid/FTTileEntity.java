@@ -10,6 +10,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability;
 import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
@@ -21,7 +25,6 @@ import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
-import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.DataSerialize;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
@@ -39,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import static net.minecraft.util.EnumFacing.*;
+import static xyz.emptydreams.mi.api.capabilities.fluid.IFluid.FLUID_TRANSFER_MAX_AMOUNT;
 import static xyz.emptydreams.mi.content.blocks.base.PipeBlocks.StraightPipe;
 
 /**
@@ -69,7 +73,10 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
 		if (super.hasCapability(capability, facing)) return true;
-		return capability == FluidCapability.TRANSFER;
+		boolean aperture = facing == null || cap.hasAperture(facing);
+		if (!aperture) return false;
+		return capability == FluidCapability.TRANSFER
+				|| capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 	}
 	
 	@Nullable
@@ -77,9 +84,10 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
 		if (capability == FluidCapability.TRANSFER
 				&& (facing == null || cap.hasAperture(facing))) {
-			//noinspection unchecked
-			return (T) cap;
+			return  FluidCapability.TRANSFER.cast(cap);
 		}
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(handler);
 		return super.getCapability(capability, facing);
 	}
 	
@@ -174,8 +182,9 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 			return;
 		}
 		if (++nowTime != sleepTime) return;
+		nowTime = 0;
 		List<EnumFacing> nexts = cap.next();
-		int amount = Math.min(cap.fluidAmount(), IFluid.FLUID_TRANSFER_MAX_AMOUNT);
+		int amount = Math.min(cap.fluidAmount(), FLUID_TRANSFER_MAX_AMOUNT);
 		if (nexts.isEmpty()) return;
 		if (nexts.remove(DOWN)) {
 			FluidStack stack = FTWorker.applyFluid(world, pos.offset(DOWN), UP, amount);
@@ -256,6 +265,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		
 		@Override
 		public int extract(FluidStack stack, boolean simulate) {
+			if (this.stack == null) return 0;
 			int real = Math.min(stack.amount, this.stack.amount);
 			if (simulate) return real;
 			this.stack.amount -= real;
@@ -265,18 +275,19 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		
 		@Override
 		public int insert(FluidStack stack, EnumFacing facing, boolean simulate) {
+			if (this.stack == null) this.stack = new FluidStack(stack.getFluid(), 0);
 			int sum = this.stack.amount + stack.amount;
 			if (sum <= getMaxAmount()) {
 				if (simulate) return stack.amount;
 				this.stack.amount = sum;
-				source = StringUtil.checkNull(facing, "facing");
+				source = facing;
 				updateTickableState();
 				return stack.amount;
 			}
 			int real = getMaxAmount() - this.stack.amount;
 			if (simulate) return real;
 			this.stack.amount = getMaxAmount();
-			source = StringUtil.checkNull(facing, "facing");
+			source = facing;
 			updateTickableState();
 			return real;
 		}
@@ -285,6 +296,11 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		public void setFacing(EnumFacing facing) {
 			if (facing == getFacing()) return;
 			this.facing = facing;
+		}
+		
+		@Override
+		public void setSource(EnumFacing facing) {
+			source = facing;
 		}
 		
 		@Override
@@ -310,8 +326,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		@Nonnull
 		@Override
 		public List<EnumFacing> next() {
-			if (source != null && !isLinked(source))
-				throw new IllegalArgumentException("输入的方向[" + source + "]没有连接方块");
 			List<EnumFacing> result;
 			switch (stateEnum) {
 				case STRAIGHT:
@@ -516,5 +530,39 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		}
 		
 	}
+	
+	private final IFluidHandler handler = new IFluidHandler() {
+		@Nullable
+		@Override
+		public FluidStack drain(FluidStack resource, boolean doDrain) {
+			if (resource == null) return null;
+			int result = cap.extract(resource, !doDrain);
+			if (result == 0) return null;
+			if (result == resource.amount) return resource;
+			return new FluidStack(resource.getFluid(), result);
+		}
+		
+		@Nullable
+		@Override
+		public FluidStack drain(int maxDrain, boolean doDrain) {
+			Fluid fluid = cap.fluid();
+			if (fluid == null) return null;
+			return drain(new FluidStack(fluid, maxDrain), doDrain);
+		}
+		
+		@Override
+		public int fill(FluidStack resource, boolean doFill) {
+			return cap.insert(resource, null, !doFill);
+		}
+		
+		@Override
+		public IFluidTankProperties[] getTankProperties() {
+			Fluid fluid = cap.fluid();
+			FluidStack stack = (fluid == null || cap.fluidAmount() == 0)
+					? null : new FluidStack(fluid, cap.fluidAmount());
+			return new IFluidTankProperties[] {
+					new FluidTankProperties(stack, FLUID_TRANSFER_MAX_AMOUNT, true, true) };
+		}
+	};
 	
 }

@@ -41,7 +41,7 @@ public interface IFluid {
 	/**
 	 * 放入指定数额的流体
 	 * @param stack 输入的流体
-	 * @param facing 流体输入的方向在方块的方向（如果simulate为true则该项可为null）
+	 * @param facing 流体输入的方向在方块的方向(如果方向不确定或simulate为true则可以为null)
 	 * @param simulate 是否为模拟，为true时不修改内部数据
 	 * @return 真实取出的流体量
 	 */
@@ -49,6 +49,9 @@ public interface IFluid {
 	
 	/** 设置管道朝向 */
 	void setFacing(EnumFacing facing);
+	
+	/** 设置流体来源方向 */
+	void setSource(EnumFacing facing);
 	
 	/** 获取管道朝向 */
 	EnumFacing getFacing();
