@@ -174,8 +174,25 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 			return;
 		}
 		if (++nowTime != sleepTime) return;
-		
-		
+		List<EnumFacing> nexts = cap.next();
+		int amount = Math.min(cap.fluidAmount(), IFluid.FLUID_TRANSFER_MAX_AMOUNT);
+		if (nexts.isEmpty()) return;
+		if (nexts.remove(DOWN)) {
+			FluidStack stack = FTWorker.applyFluid(world, pos.offset(DOWN), UP, amount);
+			if (stack != null) {
+				if (stack.amount == amount) return;
+				amount -= stack.amount;
+			}
+		}
+		boolean hasUp = nexts.remove(UP);
+		for (EnumFacing facing : nexts) {
+			FluidStack stack = FTWorker.applyFluid(world, pos.offset(facing), facing.getOpposite(), amount);
+			if (stack == null) continue;
+			if (stack.amount == amount) return;
+			amount -= stack.amount;
+		}
+		if (!hasUp) return;
+		FTWorker.applyFluid(world, pos.offset(UP), DOWN, amount);
 	}
 	
 	private boolean isRemove = false;
@@ -206,9 +223,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 	@DebugDetails
 	public class FluidSrcCap implements IFluid {
 		
-		/** 一格管道可以容纳的最大流体量 */
-		public static final int FLUID_TRANSFER_MAX_AMOUNT = 1000;
-		
 		/** 存储包含的流体类型 */
 		@Storage protected FluidStack stack = null;
 		/** 六个方向的连接数据 */
@@ -237,6 +251,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		public void setFluid(@Nullable FluidStack stack) {
 			if (stack == null || stack.amount == 0) this.stack = null;
 			else this.stack = stack.copy();
+			updateTickableState();
 		}
 		
 		@Override
@@ -294,14 +309,15 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		
 		@Nonnull
 		@Override
-		public List<EnumFacing> next(EnumFacing pre) {
-			if (!isLinked(pre)) throw new IllegalArgumentException("输入的方向[" + pre + "]没有连接方块");
+		public List<EnumFacing> next() {
+			if (source != null && !isLinked(source))
+				throw new IllegalArgumentException("输入的方向[" + source + "]没有连接方块");
 			List<EnumFacing> result;
 			switch (stateEnum) {
 				case STRAIGHT:
 					for (EnumFacing value : values()) {
-						if (isLinked(value)) {
-							if (value == pre) continue;
+						if (hasAperture(value)) {
+							if (value == source) continue;
 							result = new ArrayList<>(1);
 							result.add(value);
 							return result;

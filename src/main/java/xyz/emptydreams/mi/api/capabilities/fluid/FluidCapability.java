@@ -10,6 +10,7 @@ import net.minecraftforge.fluids.FluidStack;
 import xyz.emptydreams.mi.api.register.others.AutoLoader;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -60,8 +61,8 @@ public class FluidCapability {
 					}
 					@Nonnull
 					@Override
-					public List<EnumFacing> next(EnumFacing pre) {
-						return null;
+					public List<EnumFacing> next() {
+						return Collections.emptyList();
 					}
 					@Override
 					public boolean hasAperture(EnumFacing facing) {

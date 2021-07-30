@@ -17,6 +17,9 @@ import static net.minecraft.util.EnumFacing.*;
  */
 public interface IFluid {
 	
+	/** 一格管道可以容纳的最大流体量 */
+	int FLUID_TRANSFER_MAX_AMOUNT = 1000;
+	
 	/** 获取流体容量（单位：mB） */
 	int fluidAmount();
 	
@@ -63,12 +66,11 @@ public interface IFluid {
 	
 	/**
 	 * 获取下一个可用的流体去向
-	 * @param pre 上一个方块（即来源）
 	 * @throws IllegalArgumentException 如果来源没有与管道连接
 	 * @return 返回结果无序
 	 */
 	@Nonnull
-	List<EnumFacing> next(EnumFacing pre);
+	List<EnumFacing> next();
 	
 	/** 判断指定方向是否含有开口 */
 	boolean hasAperture(EnumFacing facing);
@@ -207,26 +209,32 @@ public interface IFluid {
 	boolean hasPlugEast();
 	
 	/** 向下运输一格 */
+	@Nullable
 	default FluidStack transportDown(int amount, boolean simulate) {
 		return transport(DOWN, amount, simulate);
 	}
 	/** 向上运输一格 */
+	@Nullable
 	default FluidStack transportUp(int amount, boolean simulate) {
 		return transport(UP, amount, simulate);
 	}
 	/** 向东运输一格 */
+	@Nullable
 	default FluidStack transportEast(int amount, boolean simulate) {
 		return transport(EAST, amount, simulate);
 	}
 	/** 向西运输一格 */
+	@Nullable
 	default FluidStack transportWest(int amount, boolean simulate) {
 		return transport(WEST, amount, simulate);
 	}
 	/** 向北运输一格 */
+	@Nullable
 	default FluidStack transportNorth(int amount, boolean simulate) {
 		return transport(NORTH, amount, simulate);
 	}
 	/** 向南运输一格 */
+	@Nullable
 	default FluidStack transportSouth(int amount, boolean simulate) {
 		return transport(SOUTH, amount, simulate);
 	}
@@ -237,10 +245,11 @@ public interface IFluid {
 	 * @param simulate 是否为模拟，为true时不修改内部数据
 	 * @return 真实运输的流体
 	 */
+	@Nullable
 	default FluidStack transport(EnumFacing facing, int amount, boolean simulate) {
 		Fluid fluid = fluid();
 		if (fluid == null) return null;
-		FluidStack out = new FluidStack(fluid, amount);
+		FluidStack out = new FluidStack(fluid, Math.min(amount, FLUID_TRANSFER_MAX_AMOUNT));
 		out.amount = extract(out, true);
 		if (out.amount == 0) return null;
 		IFluid that = getLinkedTransfer(facing);
