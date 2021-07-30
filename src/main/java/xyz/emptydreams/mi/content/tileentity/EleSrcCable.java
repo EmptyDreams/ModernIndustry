@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.content.tileentity;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -40,6 +41,7 @@ import xyz.emptydreams.mi.data.info.EnumVoltage;
 import xyz.emptydreams.mi.data.info.IETForEach;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -222,10 +224,9 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 				default: setDown(true);
 			}
 		}
-		if (linkedBlocks.isEmpty()) remove();
-		else add();
-		markDirty();
+		updateTickableState();
 		players.clear();
+		markDirty();
 	}
 	
 	/**
@@ -305,15 +306,15 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	private static final CableCache CLIENT_CACHE = new CableCache();
 	@Override
 	public void update() {
+		updateTickableState();
 		if (cache == null) {
 			if (world.isRemote) {
 				cache = CLIENT_CACHE;
-				remove();
 			} else {
 				CableCache.calculate(this);
 			}
 		}
-		
+		send();
 		for (BlockPos block : linkedBlocks) {
 			TileEntity entity = world.getTileEntity(block);
 			@SuppressWarnings("ConstantConditions")
@@ -330,16 +331,16 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		send();
 	}
 	
-	private void remove() {
-		if (isRemove) return;
-		isRemove = true;
-		WorldUtil.removeTickable(this);
-	}
-	
-	private void add() {
-		if (!isRemove) return;
-		isRemove = false;
-		WorldUtil.addTickable(this);
+	public void updateTickableState() {
+		if (world.isRemote || linkedBlocks.isEmpty()) {
+			if (isRemove) return;
+			isRemove = true;
+			WorldUtil.removeTickable(this);
+		} else {
+			if (!isRemove) return;
+			isRemove = false;
+			WorldUtil.addTickable(this);
+		}
 	}
 	
 	/** 设置最大电流指数 */
@@ -441,8 +442,6 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	@Nonnull
 	public final OverloadCounter getCounter() {
 		if (counter == null) {
-			BiggerVoltage bigger = new BiggerVoltage(2, EnumBiggerVoltage.FIRE);
-			bigger.setFireRadius(1);
 			OrdinaryCounter counter = new OrdinaryCounter(getBiggerMaxTime());
 			counter.setPos(pos);
 			counter.setWorld(world);
@@ -455,11 +454,20 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	public final void setCounter(OverloadCounter counter) {
 		this.counter = StringUtil.checkNull(counter, "counter");
 	}
-
+	
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return super.getUpdatePacket();
+	}
+	
 	@Override
 	public NBTTagCompound getUpdateTag() {
 		players.clear();
-		send();
+		if (isRemove) {
+			isRemove = false;
+			WorldUtil.addTickable(this);
+		}
 		return super.getUpdateTag();
 	}
 
@@ -470,12 +478,12 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	 */
 	private final List<String> players = new ArrayList<>(1);
 	/** 存储网络数据传输的更新范围，只有在范围内的玩家需要进行更新 */
-	private Range3D net_range;
+	private Range3D netRange;
 	
 	@Override
 	public void setPos(BlockPos posIn) {
 		super.setPos(posIn);
-		net_range = new Range3D(pos.getX(), pos.getY(), pos.getZ(), 128);
+		netRange = new Range3D(pos.getX(), pos.getY(), pos.getZ(), 128);
 	}
 	
 	@Override
@@ -495,7 +503,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		operator.writeByte((byte) linkInfo);
 		IMessage message = BlockMessage.instance().create(operator, new BlockAddition(this));
 		MessageSender.sendToClientIf(message, world, player -> {
-			if (players.contains(player.getName()) || !net_range.isIn(new Point3D(player))) return false;
+			if (players.contains(player.getName()) || !netRange.isIn(new Point3D(player))) return false;
 			players.add(player.getName());
 			return true;
 		});

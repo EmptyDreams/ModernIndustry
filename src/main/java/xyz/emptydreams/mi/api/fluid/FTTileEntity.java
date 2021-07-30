@@ -151,7 +151,10 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 	
 	@Override
 	public NBTTagCompound getUpdateTag() {
-		send();
+		if (isRemove) {
+			isRemove = false;
+			WorldUtil.addTickable(this);
+		}
 		return super.getUpdateTag();
 	}
 	
@@ -181,6 +184,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 			nowTime = 0;
 			return;
 		}
+		send();
 		if (++nowTime != sleepTime) return;
 		nowTime = 0;
 		List<EnumFacing> nexts = cap.next();
