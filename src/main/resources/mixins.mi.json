@@ -3,6 +3,7 @@
   "mixins": [
     "MixinCraftingHelper",
     "MixinItemStack",
+    "MixinUniversalBucket",
     "cap.MixinCapability",
     "cap.MixinCapabilityManager",
     "gui.MixinFMLNetworkHandler"
