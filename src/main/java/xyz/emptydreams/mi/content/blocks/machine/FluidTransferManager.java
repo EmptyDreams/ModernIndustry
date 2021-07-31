@@ -1,7 +1,7 @@
 package xyz.emptydreams.mi.content.blocks.machine;
 
 import xyz.emptydreams.mi.api.register.others.AutoManager;
-import xyz.emptydreams.mi.content.blocks.base.PipeBlocks.*;
+import xyz.emptydreams.mi.content.blocks.base.pipes.StraightPipe;
 
 /**
  * 包含大部分流体管道
