@@ -9,8 +9,9 @@ import xyz.emptydreams.mi.content.blocks.base.pipes.StraightPipe;
  */
 @SuppressWarnings("unused")
 @AutoManager(block = true)
-public final class FluidTransferManager {
+public final class PipeManager {
 	
 	public static final StraightPipe IRON_STRAIGHT = new StraightPipe("iron_straight_ft");
+	//public static final AnglePipe IRON_ANGLE = new AnglePipe("iron_angle_ft");
 	
 }

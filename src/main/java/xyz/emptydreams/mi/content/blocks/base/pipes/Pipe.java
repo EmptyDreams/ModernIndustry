@@ -20,12 +20,12 @@ import net.minecraftforge.fluids.FluidUtil;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability;
 import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
-import xyz.emptydreams.mi.api.fluid.FTStateEnum;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.content.blocks.base.TEBlockBase;
+import xyz.emptydreams.mi.content.blocks.base.pipes.enums.FTStateEnum;
 import xyz.emptydreams.mi.content.items.base.ItemBlockExpand;
 
 import javax.annotation.Nonnull;
@@ -36,6 +36,7 @@ import java.util.Random;
 /**
  * @author EmptyDreams
  */
+@SuppressWarnings("deprecation")
 abstract public class Pipe extends TEBlockBase {
 	
 	protected final Item ITEM;

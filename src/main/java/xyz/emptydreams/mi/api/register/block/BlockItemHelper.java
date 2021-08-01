@@ -10,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * 方块物品辅助注册工具，其中实现方法来返回Item对象来减少{@link Item#getItemFromBlock(Block)}的调用
@@ -24,7 +25,8 @@ public interface BlockItemHelper {
 	Item getBlockItem();
 	
 	/**
-	 * 根据方块被放置时的信息创建一个TileEntity，该TileEntity会在方块被放置前设置到世界中
+	 * <p>根据方块被放置时的信息创建一个TileEntity，该TileEntity会在方块被放置前设置到世界中
+	 * <p>该方法被调用时，TileEntity已经在世界中存在，可以通过{@link World#getTileEntity(BlockPos)}获取默认TileEntity
 	 * @param stack 方块物品
 	 * @param player 执行操作的玩家
 	 * @param world 所在世界
@@ -33,8 +35,11 @@ public interface BlockItemHelper {
 	 * @param hitX 鼠标点击位置的坐标
 	 * @param hitY 鼠标点击位置的坐标
 	 * @param hitZ 鼠标点击位置的坐标
-	 * @return 若为null则表示使用默认TileEntity
+	 * @return <p>需要被替换到世界中的TileEntity对象
+	 *         <p>若为null则表示不进行替换TileEntity
+	 *         <p>如果该方法只需要修改TileEntity中的数据，则应当返回null
 	 */
+	@Nullable
 	default TileEntity createTileEntity(ItemStack stack, EntityPlayer player, World world, BlockPos pos,
 	                                    EnumFacing side, float hitX, float hitY, float hitZ) {
 		return null;

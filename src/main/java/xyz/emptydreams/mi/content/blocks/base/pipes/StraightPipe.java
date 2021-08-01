@@ -14,9 +14,9 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability;
 import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
-import xyz.emptydreams.mi.api.fluid.FTStateEnum;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.utils.MathUtil;
+import xyz.emptydreams.mi.content.blocks.base.pipes.enums.FTStateEnum;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,7 +25,8 @@ import java.util.List;
 import static xyz.emptydreams.mi.api.utils.properties.MIProperty.ALL_FACING;
 
 /**
- * 直线型管道
+ * <p>直线型管道
+ * <p>关于管道朝向的设定：管道朝向为两个开口的任意一个开口的方向
  * @author EmptyDreams
  */
 public class StraightPipe extends Pipe {
@@ -87,18 +88,23 @@ public class StraightPipe extends Pipe {
 		return null;
 	}
 	
-	@SuppressWarnings("ConstantConditions")
-	private static boolean link(World world, BlockPos pos, IFluid cap, EnumFacing facing) {
+	/**
+	 * 尝试连接两个方块
+	 * @param world 当前世界
+	 * @param pos 当前方块坐标
+	 * @param cap 当前方块的IFluid对象
+	 * @param facing 要连接的方块相对于当前方块的方向
+	 * @return 是否连接成功
+	 */
+	@SuppressWarnings("ConstantConditions") //打这个舒注释是因为如果cap.link返回true则thatTE和that不可能为null
+	public static boolean link(World world, BlockPos pos, IFluid cap, EnumFacing facing) {
 		if (!cap.link(facing)) return false;
 		TileEntity thatTE = world.getTileEntity(pos.offset(facing));
 		IFluid that = thatTE.getCapability(FluidCapability.TRANSFER, null);
 		cap.setFacing(facing);
 		EnumFacing side = facing.getOpposite();
-		EnumFacing old = that.getFacing();
-		that.setFacing(side);
 		if (!that.link(side)) {
 			cap.unlink(facing);
-			that.setFacing(old);
 			return false;
 		}
 		thatTE.markDirty();
@@ -107,9 +113,7 @@ public class StraightPipe extends Pipe {
 	
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-		FTTileEntity te = (FTTileEntity) source.getTileEntity(pos);
-		if (te == null) return FULL_BLOCK_AABB;
-		EnumFacing facing = te.getFTCapability().getFacing();
+		EnumFacing facing = state.getValue(ALL_FACING);
 		switch (facing) {
 			case DOWN:
 			case UP:

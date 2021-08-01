@@ -70,7 +70,7 @@ public interface IFluid {
 	/**
 	 * 获取下一个可用的流体去向
 	 * @throws IllegalArgumentException 如果来源没有与管道连接
-	 * @return 返回结果无序
+	 * @return 返回结果无序且允许更改（更改返回结果不影响内部数据）
 	 */
 	@Nonnull
 	List<EnumFacing> next();

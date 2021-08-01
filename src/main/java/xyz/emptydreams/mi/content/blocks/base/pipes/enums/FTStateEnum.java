@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.fluid;
+package xyz.emptydreams.mi.content.blocks.base.pipes.enums;
 
 import net.minecraft.util.IStringSerializable;
 

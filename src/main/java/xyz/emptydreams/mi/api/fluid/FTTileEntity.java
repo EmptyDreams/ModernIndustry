@@ -30,6 +30,8 @@ import xyz.emptydreams.mi.api.utils.data.io.DataSerialize;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
+import xyz.emptydreams.mi.content.blocks.base.pipes.AnglePipe;
+import xyz.emptydreams.mi.content.blocks.base.pipes.enums.FTStateEnum;
 import xyz.emptydreams.mi.content.items.debug.DebugDetails;
 
 import javax.annotation.Nonnull;
@@ -319,21 +321,17 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		@Nonnull
 		@Override
 		public List<EnumFacing> next() {
-			List<EnumFacing> result;
 			switch (stateEnum) {
-				case STRAIGHT:
+				case STRAIGHT: case ANGLE:
 					for (EnumFacing value : values()) {
 						if (hasAperture(value)) {
 							if (value == source) continue;
-							result = new ArrayList<>(1);
+							List<EnumFacing> result = new ArrayList<>(1);
 							result.add(value);
 							return result;
 						}
 					}
-					result = Collections.emptyList();
-					return result;
-				case ANGLE:
-					break;
+					return Collections.emptyList();
 				case SHUNT:
 					break;
 				default: throw new IllegalArgumentException("未知的状态：" + stateEnum);
@@ -346,7 +344,10 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 			switch (stateEnum) {
 				case STRAIGHT:
 					return !hasPlug(facing) && (facing == getFacing() || facing == getFacing().getOpposite());
-				case ANGLE: return true;
+				case ANGLE:
+					if (facing == getFacing()) return true;
+					EnumFacing after = AnglePipe.getAfterFacing(cap);
+					return facing == after;
 				case SHUNT: return true;
 				default: throw new IllegalArgumentException("该状态不属于任何一种状态：" + stateEnum);
 			}
@@ -373,10 +374,8 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 			if (!canLink(facing)) return false;
 			if (linkData == 0) {
 				switch (stateEnum) {
-					case STRAIGHT:
+					case STRAIGHT: case ANGLE:
 						setFacing(facing);
-						break;
-					case ANGLE:
 						break;
 					case SHUNT:
 						break;
