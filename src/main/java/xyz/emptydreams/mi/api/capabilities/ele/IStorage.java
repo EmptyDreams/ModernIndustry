@@ -3,7 +3,6 @@ package xyz.emptydreams.mi.api.capabilities.ele;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
-import xyz.emptydreams.mi.api.electricity.info.EnumEleState;
 import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 
@@ -41,7 +40,7 @@ public interface IStorage {
 	
 	/** 获取最适电压. 若voltage在允许的电压范围内则返回voltage，否则返回最接近voltage的电压 */
 	@Nonnull
-	IVoltage getVoltage(EnumEleState state, IVoltage voltage);
+	IVoltage getVoltage(EleStateEnum state, IVoltage voltage);
 	
 	/** 获取电压范围 */
 	VoltageRange getReceiveVoltageRange();

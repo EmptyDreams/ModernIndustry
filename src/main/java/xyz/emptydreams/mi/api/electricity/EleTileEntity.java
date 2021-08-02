@@ -15,7 +15,7 @@ import xyz.emptydreams.mi.api.capabilities.ele.IStorage;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.EnergyRange;
-import xyz.emptydreams.mi.api.electricity.info.EnumEleState;
+import xyz.emptydreams.mi.api.capabilities.ele.EleStateEnum;
 import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.event.EnergyEvent;
@@ -235,8 +235,8 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		}
 		
 		@Override
-		public IVoltage getVoltage(EnumEleState state, IVoltage voltage) {
-			return state == EnumEleState.IN ? getReceiveRange().getOptimalVoltage(voltage) :
+		public IVoltage getVoltage(EleStateEnum state, IVoltage voltage) {
+			return state == EleStateEnum.IN ? getReceiveRange().getOptimalVoltage(voltage) :
 					       getExtractRange().getOptimalVoltage(voltage);
 		}
 		

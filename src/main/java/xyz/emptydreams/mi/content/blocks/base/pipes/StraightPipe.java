@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.content.blocks.base.pipes;
 
-import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -31,15 +30,9 @@ import static xyz.emptydreams.mi.api.utils.properties.MIProperty.ALL_FACING;
  */
 public class StraightPipe extends Pipe {
 	
-	/** 前方是否有管塞 */
-	public static final PropertyBool BEFORE = PropertyBool.create("before");
-	/** 后方是否有管塞 */
-	public static final PropertyBool AFTER = PropertyBool.create("after");
-	
 	public StraightPipe(String name, String... ores) {
 		super(name, FTStateEnum.STRAIGHT, ores);
-		setDefaultState(blockState.getBaseState().withProperty(ALL_FACING, EnumFacing.NORTH)
-				.withProperty(BEFORE, false).withProperty(AFTER, false));
+		setDefaultState(blockState.getBaseState().withProperty(ALL_FACING, EnumFacing.NORTH));
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -54,9 +47,7 @@ public class StraightPipe extends Pipe {
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 		IFluid cap = worldIn.getTileEntity(pos).getCapability(FluidCapability.TRANSFER, null);
 		EnumFacing facing = cap.getFacing();
-		return state.withProperty(BEFORE, cap.hasPlug(facing))
-				.withProperty(AFTER, cap.hasPlug(facing.getOpposite()))
-				.withProperty(ALL_FACING, facing);
+		return state.withProperty(ALL_FACING, facing);
 	}
 	
 	@Override
@@ -158,7 +149,7 @@ public class StraightPipe extends Pipe {
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, ALL_FACING, BEFORE, AFTER);
+		return new BlockStateContainer(this, ALL_FACING);
 	}
 	
 }

@@ -12,14 +12,6 @@
       "south": { "y": 180 },
       "up": { "x": 90 },
       "down": { "x": 270 }
-    },
-    "before": {
-      "false": { },
-      "true": { }
-    },
-    "after": {
-      "false": { },
-      "true": { }
     }
   }
 }

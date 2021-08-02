@@ -1,6 +1,7 @@
 package xyz.emptydreams.mi.content.blocks.machine;
 
 import xyz.emptydreams.mi.api.register.others.AutoManager;
+import xyz.emptydreams.mi.content.blocks.base.pipes.AnglePipe;
 import xyz.emptydreams.mi.content.blocks.base.pipes.StraightPipe;
 
 /**
@@ -12,6 +13,6 @@ import xyz.emptydreams.mi.content.blocks.base.pipes.StraightPipe;
 public final class PipeManager {
 	
 	public static final StraightPipe IRON_STRAIGHT = new StraightPipe("iron_straight_ft");
-	//public static final AnglePipe IRON_ANGLE = new AnglePipe("iron_angle_ft");
+	public static final AnglePipe IRON_ANGLE = new AnglePipe("iron_angle_ft");
 	
 }

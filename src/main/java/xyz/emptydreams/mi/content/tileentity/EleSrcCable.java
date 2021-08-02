@@ -19,7 +19,7 @@ import xyz.emptydreams.mi.api.capabilities.ele.IStorage;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
-import xyz.emptydreams.mi.api.electricity.info.EnumEleState;
+import xyz.emptydreams.mi.api.capabilities.ele.EleStateEnum;
 import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
@@ -563,7 +563,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		
 		@Nonnull
 		@Override
-		public IVoltage getVoltage(EnumEleState state, IVoltage voltage) {
+		public IVoltage getVoltage(EleStateEnum state, IVoltage voltage) {
 			return voltage;
 		}
 		

@@ -7,7 +7,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
-import xyz.emptydreams.mi.api.electricity.info.EnumEleState;
 import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.register.others.AutoLoader;
@@ -45,7 +44,7 @@ public class EleCapability {
 			public int receiveEnergy(EleEnergy energy, boolean simulate) { return 0; }
 			@SuppressWarnings("ConstantConditions")
 			@Override
-			public IVoltage getVoltage(EnumEleState state, IVoltage voltage) { return null; }
+			public IVoltage getVoltage(EleStateEnum state, IVoltage voltage) { return null; }
 			@Override
 			public VoltageRange getReceiveVoltageRange() { return null; }
 			@SuppressWarnings("ConstantConditions")

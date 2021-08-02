@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "horizontal=north,ver=up":    { "model": "mi:iron_ft/angle", "x": 270, "y": 270 },
+    "horizontal=north,ver=down":  { "model": "mi:iron_ft/angle", "x": 90, "y": 270 },
+    "horizontal=north,ver=left":  { "model": "mi:iron_ft/angle" },
+    "horizontal=north,ver=right": { "model": "mi:iron_ft/angle", "y": 270 },
+    "horizontal=south,ver=up":    { "model": "mi:iron_ft/angle", "x": 270, "y": 90 },
+    "horizontal=south,ver=down":  { "model": "mi:iron_ft/angle", "x": 90, "y": 90 },
+    "horizontal=south,ver=left":  { "model": "mi:iron_ft/angle", "y": 180 },
+    "horizontal=south,ver=right": { "model": "mi:iron_ft/angle", "y": 90  },
+    "horizontal=west,ver=up":     { "model": "mi:iron_ft/angle", "x": 270, "y": 180 },
+    "horizontal=west,ver=down":   { "model": "mi:iron_ft/angle", "x": 90, "y": 180 },
+    "horizontal=west,ver=left":   { "model": "mi:iron_ft/angle", "y": 270 },
+    "horizontal=west,ver=right":  { "model": "mi:iron_ft/angle", "y": 180 },
+    "horizontal=east,ver=up":     { "model": "mi:iron_ft/angle", "x": 270 },
+    "horizontal=east,ver=down":   { "model": "mi:iron_ft/angle", "x": 90},
+    "horizontal=east,ver=left":   { "model": "mi:iron_ft/angle", "y": 90 },
+    "horizontal=east,ver=right":  { "model": "mi:iron_ft/angle" }
+  }
+}

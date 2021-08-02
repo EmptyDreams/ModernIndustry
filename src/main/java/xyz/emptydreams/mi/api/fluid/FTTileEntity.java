@@ -105,6 +105,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 	public void receive(@Nonnull IDataReader compound) {
 		cap.linkData = compound.readByte();
 		cap.setFacing(EnumFacing.values()[compound.readByte()]);
+		stateEnum = FTStateEnum.values()[compound.readByte()];
 		if (!compound.readBoolean()) {
 			cap.stack = DataSerialize.read(compound, FluidStack.class, FluidStack.class, null);
 		}
@@ -130,6 +131,7 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		ByteDataOperator operator = new ByteDataOperator(1);
 		operator.writeByte((byte) cap.linkData);
 		operator.writeByte((byte) cap.getFacing().getIndex());
+		operator.writeByte((byte) stateEnum.ordinal());
 		operator.writeBoolean(cap.stack == null);
 		if (cap.stack != null) {
 			DataSerialize.write(operator, cap.stack, FluidStack.class);
@@ -346,7 +348,8 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 					return !hasPlug(facing) && (facing == getFacing() || facing == getFacing().getOpposite());
 				case ANGLE:
 					if (facing == getFacing()) return true;
-					EnumFacing after = AnglePipe.getAfterFacing(cap);
+					EnumFacing after = world.getBlockState(pos)
+							.getValue(AnglePipe.ANGLE_FACING).toEnumFacing(getFacing());
 					return facing == after;
 				case SHUNT: return true;
 				default: throw new IllegalArgumentException("该状态不属于任何一种状态：" + stateEnum);

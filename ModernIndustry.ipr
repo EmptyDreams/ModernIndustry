@@ -264,7 +264,7 @@
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="Minecraft Client" type="Application" factoryName="Application" singleton="false">
+    <configuration default="false" name="Minecraft Client" type="Application" factoryName="Application" singleton="true">
       <option name="MAIN_CLASS_NAME" value="GradleStart" />
       <module name="ModernIndustry.main" />
       <option name="PROGRAM_PARAMETERS" value="-username=HEI_MAO --tweakClass xyz.emptydreams.mi.coremod.boot.MIMixinTweaker" />

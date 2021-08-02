@@ -7,7 +7,7 @@ import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.capabilities.ele.EleCapability;
 import xyz.emptydreams.mi.api.capabilities.ele.IStorage;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
-import xyz.emptydreams.mi.api.electricity.info.EnumEleState;
+import xyz.emptydreams.mi.api.capabilities.ele.EleStateEnum;
 import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleInputer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
@@ -54,7 +54,7 @@ public class EleCapInputer implements IEleInputer {
 	@Override
 	public IVoltage getVoltage(TileEntity now, IVoltage voltage) {
 		//noinspection ConstantConditions
-		return now.getCapability(EleCapability.ENERGY, null).getVoltage(EnumEleState.IN, voltage);
+		return now.getCapability(EleCapability.ENERGY, null).getVoltage(EleStateEnum.IN, voltage);
 	}
 	
 	@Override

@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.content.blocks.base.pipes;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,6 +39,8 @@ import java.util.Random;
  */
 @SuppressWarnings("deprecation")
 abstract public class Pipe extends TEBlockBase {
+	
+	public static final PropertyDirection PLUG = PropertyDirection.create("plug");
 	
 	protected final Item ITEM;
 	protected final FTStateEnum state;

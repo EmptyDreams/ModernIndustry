@@ -14,7 +14,6 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability;
 import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
-import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.AngleFacingEnum;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.FTStateEnum;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.PropertyAngleFacing;
@@ -37,12 +36,14 @@ public class AnglePipe extends Pipe {
 	
 	public AnglePipe(String name, String... ores) {
 		super(name, FTStateEnum.ANGLE, ores);
+		setDefaultState(blockState.getBaseState().withProperty(HORIZONTAL, EnumFacing.NORTH)
+				.withProperty(ANGLE_FACING, AngleFacingEnum.UP));
 	}
 	
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, HORIZONTAL, ANGLE_FACING, BEFORE, AFTER);
+		return new BlockStateContainer(this, HORIZONTAL, ANGLE_FACING);
 	}
 	
 	@SuppressWarnings("ConstantConditions")
@@ -50,11 +51,7 @@ public class AnglePipe extends Pipe {
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 		TileEntity te = worldIn.getTileEntity(pos);
 		IFluid cap = te.getCapability(FluidCapability.TRANSFER, null);
-		EnumFacing after = getAfterFacing(cap);
-		return state.withProperty(BEFORE, cap.hasPlug(cap.getFacing()))
-				.withProperty(AFTER, cap.hasPlug(after))
-				.withProperty(HORIZONTAL, cap.getFacing())
-				.withProperty(ANGLE_FACING, AngleFacingEnum.valueOf(cap.getFacing(), after));
+		return state.withProperty(HORIZONTAL, cap.getFacing()).withProperty(ANGLE_FACING, AngleFacingEnum.DOWN);
 	}
 	
 	/** 获取管道的后端开口方向 */
@@ -79,8 +76,7 @@ public class AnglePipe extends Pipe {
 		for (EnumFacing value : EnumFacing.values()) {
 			link(world, pos, cap, value);
 		}
-		if (cap.getLinkAmount() == 0)
-			cap.setFacing(MathUtil.getPlayerFacing(player, pos));
+		if (cap.getLinkAmount() == 0) cap.setFacing(player.getHorizontalFacing().getOpposite());
 		te.markDirty();
 		return te;
 	}
@@ -92,31 +88,31 @@ public class AnglePipe extends Pipe {
 		switch (facing) {
 			case EAST:
 				switch (after) {
-					case UP: return new AxisAlignedBB(1/4d, 1/4d, 1/4d, 3/4d, 1, 1);
-					case DOWN: return new AxisAlignedBB(1/4d, 0, 1/4d, 3/4d, 3/4d, 1);
-					case NORTH: return new AxisAlignedBB(0, 1/4d, 1/4d, 3/4d, 3/4d, 1);
-					case SOUTH: return new AxisAlignedBB(1/4d, 1/4d, 1/4d, 1, 3/4d, 1);
+					case UP: return new AxisAlignedBB(1/4d, 1/4d, 1/4d, 1, 1, 3/4d);
+					case DOWN: return new AxisAlignedBB(1/4d, 0, 1/4d, 1, 3/4d, 3/4d);
+					case NORTH: return new AxisAlignedBB(1/4d, 1/4d, 1/4d, 1, 3/4d, 1);
+					case SOUTH: return new AxisAlignedBB(1/4d, 1/4d, 0, 1, 3/4d, 3/4d);
 				}
 			case WEST:
 				switch (after) {
-					case UP: return new AxisAlignedBB(1/4d, 1/4d, 0, 3/4d, 1, 3/4d);
-					case DOWN: return new AxisAlignedBB(1/4d, 0, 0, 3/4d, 3/4d, 3/4d);
-					case NORTH: return new AxisAlignedBB(0, 1/4d, 0, 3/4d, 3/4d, 3/4d);
-					case SOUTH: return new AxisAlignedBB(1/4d, 1/4d, 0, 1, 3/4d, 3/4d);
+					case UP: return new AxisAlignedBB(0, 1/4d, 1/4d, 3/4d, 1, 3/4d);
+					case DOWN: return new AxisAlignedBB(0, 0, 1/4d, 3/4d, 3/4d, 3/4d);
+					case NORTH: return new AxisAlignedBB(0, 1/4d, 1/4d, 3/4d, 3/4d, 1);
+					case SOUTH: return new AxisAlignedBB(0, 1/4d, 0, 3/4d, 3/4d, 3/4d);
 				}
 			case NORTH:
 				switch (after) {
-					case UP: return new AxisAlignedBB(0, 1/4d, 1/4d, 3/4d, 1, 3/4d);
-					case DOWN: return new AxisAlignedBB(0, 0, 1/4d, 3/4d, 3/4d, 3/4d);
-					case EAST: return new AxisAlignedBB(0, 1/4d, 1/4d, 3/4d, 3/4d, 1);
+					case UP: return new AxisAlignedBB(1/4d, 1/4d, 0, 3/4d, 1, 3/4d);
+					case DOWN: return new AxisAlignedBB(1/4d, 0, 0, 3/4d, 3/4d, 3/4d);
+					case EAST: return new AxisAlignedBB(1/4d, 1/4d, 0, 1, 3/4d, 3/4d);
 					case WEST: return new AxisAlignedBB(0, 1/4d, 0, 3/4d, 3/4d, 3/4d);
 				}
 			case SOUTH:
 				switch (after) {
-					case UP: return new AxisAlignedBB(1/4d, 1/4d, 1/4d, 1, 1, 3/4d);
-					case DOWN: return new AxisAlignedBB(1/4d, 0, 1/4d, 1, 3/4d, 3/4d);
-					case EAST: return new AxisAlignedBB(1/4d, 1/4d, 1/4d, 1, 3/4d, 1);
-					case WEST: return new AxisAlignedBB(1/4d, 1/4d, 0, 1, 3/4d, 3/4d);
+					case UP: return new AxisAlignedBB(1/4d, 1/4d, 1/4d, 3/4d, 1, 1);
+					case DOWN: return new AxisAlignedBB(1/4d, 0, 1/4d, 3/4d, 3/4d, 1);
+					case EAST: return new AxisAlignedBB(0, 1/4d, 1/4d, 3/4d, 3/4d, 1);
+					case WEST: return new AxisAlignedBB(1/4d, 1/4d, 1/4d, 1, 3/4d, 1);
 				}
 		}
 		throw new IllegalArgumentException("不合理的方向组合：facing=" + facing + ",after=" + after);
@@ -148,19 +144,19 @@ public class AnglePipe extends Pipe {
 				break;
 			case NORTH:
 				addCollisionBoxToList(pos, entityBox, collidingBoxes,
-						new AxisAlignedBB(0, 5/16d, 5/16d, 5/16d, 11/16d, 11/16d));
+					new AxisAlignedBB(5/16d, 5/16d, 0, 11/16d, 11/16d, 5/16d));
 				break;
 			case SOUTH:
 				addCollisionBoxToList(pos, entityBox, collidingBoxes,
-						new AxisAlignedBB(11/16d, 5/16d, 5/16d, 1, 11/16d, 11/16d));
+						new AxisAlignedBB(5/16d, 5/16d, 11/16d, 11/16d, 11/16d, 1));
 				break;
 			case WEST:
 				addCollisionBoxToList(pos, entityBox, collidingBoxes,
-						new AxisAlignedBB(5/16d, 5/16d, 0, 11/16d, 11/16d, 5/16d));
+						new AxisAlignedBB(0, 5/16d, 5/16d, 5/16d, 11/16d, 11/16d));
 				break;
 			case EAST:
 				addCollisionBoxToList(pos, entityBox, collidingBoxes,
-						new AxisAlignedBB(5/16d, 5/16d, 11/16d, 11/16d, 11/16d, 1));
+						new AxisAlignedBB(11/16d, 5/16d, 5/16d, 1, 11/16d, 11/16d));
 				break;
 		}
 	}
