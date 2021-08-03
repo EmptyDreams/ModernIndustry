@@ -13,9 +13,9 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability;
 import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
-import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.FTStateEnum;
+import xyz.emptydreams.mi.content.tileentity.pipes.StraightPipeTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,37 +45,32 @@ public class StraightPipe extends Pipe {
 	@SuppressWarnings("ConstantConditions")
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-		IFluid cap = worldIn.getTileEntity(pos).getCapability(FluidCapability.TRANSFER, null);
-		EnumFacing facing = cap.getFacing();
-		return state.withProperty(ALL_FACING, facing);
+		StraightPipeTileEntity te = (StraightPipeTileEntity) worldIn.getTileEntity(pos);
+		return state.withProperty(ALL_FACING, te.getFacing());
 	}
 	
 	@Override
 	public TileEntity createTileEntity(ItemStack stack, EntityPlayer player,
 	                                   World world, BlockPos pos, EnumFacing side,
 	                                   float hitX, float hitY, float hitZ) {
-		FTTileEntity te = (FTTileEntity) world.getTileEntity(pos);
+		StraightPipeTileEntity te = (StraightPipeTileEntity) world.getTileEntity(pos);
 		EnumFacing facing = side.getOpposite();
 		@SuppressWarnings("ConstantConditions")
 		IFluid cap = te.getFTCapability();
 		if (link(world, pos, cap, facing)) {
 			link(world, pos, cap, side);
-			te.markDirty();
 			return null;
 		}
 		if (link(world, pos, cap, side)) {
-			te.markDirty();
 			return null;
 		}
 		for (EnumFacing value : EnumFacing.values()) {
 			if (link(world, pos, cap, value)) {
 				link(world, pos, cap, value.getOpposite());
-				te.markDirty();
 				return null;
 			}
 		}
-		cap.setFacing(MathUtil.getPlayerFacing(player, pos));
-		te.markDirty();
+		te.setFacing(MathUtil.getPlayerFacing(player, pos));
 		return null;
 	}
 	
@@ -155,4 +150,9 @@ public class StraightPipe extends Pipe {
 		return new BlockStateContainer(this, ALL_FACING);
 	}
 	
+	@Nullable
+	@Override
+	public TileEntity createNewTileEntity(World worldIn, int meta) {
+		return new StraightPipeTileEntity();
+	}
 }

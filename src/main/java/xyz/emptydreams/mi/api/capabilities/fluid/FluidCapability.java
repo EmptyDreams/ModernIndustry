@@ -46,18 +46,10 @@ public class FluidCapability {
 						return 0;
 					}
 					@Override
-					public void setFacing(EnumFacing facing) { }
-					@Override
-					public void setSource(EnumFacing facing) {
-					
-					}
+					public void setSource(EnumFacing facing) { }
 					@Override
 					public int getMaxAmount() {
 						return 0;
-					}
-					@Override
-					public EnumFacing getFacing() {
-						return null;
 					}
 					@Override
 					public IFluid getLinkedTransfer(EnumFacing facing) {

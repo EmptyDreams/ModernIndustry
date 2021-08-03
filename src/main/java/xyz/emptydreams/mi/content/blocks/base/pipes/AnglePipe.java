@@ -11,19 +11,18 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability;
 import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
-import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.AngleFacingEnum;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.FTStateEnum;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.PropertyAngleFacing;
+import xyz.emptydreams.mi.content.tileentity.pipes.AnglePipeTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
 import static xyz.emptydreams.mi.api.utils.properties.MIProperty.HORIZONTAL;
-import static xyz.emptydreams.mi.content.blocks.base.pipes.StraightPipe.*;
+import static xyz.emptydreams.mi.content.blocks.base.pipes.StraightPipe.link;
 
 /**
  * <p>直角拐弯的管道
@@ -49,20 +48,20 @@ public class AnglePipe extends Pipe {
 	@SuppressWarnings("ConstantConditions")
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-		TileEntity te = worldIn.getTileEntity(pos);
-		IFluid cap = te.getCapability(FluidCapability.TRANSFER, null);
-		return state.withProperty(HORIZONTAL, cap.getFacing());
+		AnglePipeTileEntity te = (AnglePipeTileEntity) worldIn.getTileEntity(pos);
+		AngleFacingEnum after = AngleFacingEnum.valueOf(te.getFacing(), te.getAfter());
+		return state.withProperty(HORIZONTAL, te.getFacing()).withProperty(ANGLE_FACING, after);
 	}
 	
 	@Override
 	public TileEntity createTileEntity(ItemStack stack, EntityPlayer player,
 	                                   World world, BlockPos pos, EnumFacing side,
 	                                   float hitX, float hitY, float hitZ) {
-		FTTileEntity te = (FTTileEntity) world.getTileEntity(pos);
-		EnumFacing facing = side.getOpposite();
-		@SuppressWarnings("ConstantConditions")
+		AnglePipeTileEntity te = (AnglePipeTileEntity) world.getTileEntity(pos);
+		//noinspection ConstantConditions
 		IFluid cap = te.getFTCapability();
-		cap.setFacing(player.getHorizontalFacing().getOpposite());
+		EnumFacing facing = side.getOpposite();
+		te.setFacing(player.getHorizontalFacing().getOpposite());
 		link(world, pos, cap, facing);
 		for (EnumFacing value : EnumFacing.values()) {
 			link(world, pos, cap, value);
@@ -151,4 +150,9 @@ public class AnglePipe extends Pipe {
 		}
 	}
 	
+	@Nullable
+	@Override
+	public TileEntity createNewTileEntity(World worldIn, int meta) {
+		return new AnglePipeTileEntity();
+	}
 }

@@ -13,6 +13,6 @@ public interface IAutoNetwork {
 	/**
 	 * 处理接收的信息
 	 */
-	void receive(@Nonnull IDataReader compound);
+	void receive(@Nonnull IDataReader reader);
 	
 }

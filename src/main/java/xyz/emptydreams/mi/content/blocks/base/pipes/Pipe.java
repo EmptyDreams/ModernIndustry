@@ -139,10 +139,4 @@ abstract public class Pipe extends TEBlockBase {
 		return ITEM;
 	}
 	
-	@Nullable
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new FTTileEntity(this.state);
-	}
-	
 }

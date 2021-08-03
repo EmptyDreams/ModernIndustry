@@ -19,26 +19,22 @@ import xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability;
 import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
+import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.net.handler.MessageSender;
 import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
-import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.DataSerialize;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
-import xyz.emptydreams.mi.content.blocks.base.pipes.AnglePipe;
-import xyz.emptydreams.mi.content.blocks.base.pipes.enums.AngleFacingEnum;
-import xyz.emptydreams.mi.content.blocks.base.pipes.enums.FTStateEnum;
 import xyz.emptydreams.mi.content.items.debug.DebugDetails;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -50,26 +46,22 @@ import static xyz.emptydreams.mi.api.capabilities.fluid.IFluid.FLUID_TRANSFER_MA
  * 流体管道的TileEntity的父类
  * @author EmptyDreams
  */
-@AutoTileEntity("FLUID_TRANSFER_TILE_ENTITY")
-public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITickable {
+public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITickable {
 	
-	@Storage protected final FluidSrcCap cap = new FluidSrcCap();
+	protected final FluidSrcCap cap = new FluidSrcCap();
 	
-	/** 存储当前管道的blockState，存储的原因是在管道放置之后就不会再替换state */
-	@Storage protected FTStateEnum stateEnum;
+	/** 存储包含的流体类型 */
+	@Storage protected FluidStack fluidStack = null;
+	/** 六个方向的连接数据 */
+	@Storage(byte.class) protected int linkData = 0b000000;
+	/** 六个方向的管塞数据 */
+	@Storage protected final Map<EnumFacing, Item> plugData = new EnumMap<>(EnumFacing.class);
+	/** 存储管道方向 */
+	@Storage protected EnumFacing facing = NORTH;
+	/** 存储管道内流体来源 */
+	@Storage protected EnumFacing source = null;
 	
-	public FTTileEntity(FTStateEnum stateEnum) {
-		this.stateEnum = stateEnum;
-	}
-	
-	/** @deprecated 仅供MC反射调用 */
-	@Deprecated
 	public FTTileEntity() { }
-	
-	/** 获取当前方块的blockState */
-	public FTStateEnum getStateEnum() {
-		return stateEnum;
-	}
 	
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
@@ -103,12 +95,10 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 	}
 	
 	@Override
-	public void receive(@Nonnull IDataReader compound) {
-		cap.linkData = compound.readByte();
-		cap.setFacing(EnumFacing.values()[compound.readByte()]);
-		stateEnum = FTStateEnum.values()[compound.readByte()];
-		if (!compound.readBoolean()) {
-			cap.stack = DataSerialize.read(compound, FluidStack.class, FluidStack.class, null);
+	public void receive(@Nonnull IDataReader reader) {
+		linkData = reader.readByte();
+		if (!reader.readBoolean()) {
+			fluidStack = DataSerialize.read(reader, FluidStack.class, FluidStack.class, null);
 		}
 		updateBlockState();
 	}
@@ -122,6 +112,9 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 	/** 存储网络数据传输的更新范围，只有在范围内的玩家需要进行更新 */
 	private Range3D netRange;
 	
+	/** 用于写入需要同步的数据 */
+	abstract protected void sync(IDataWriter writer);
+	
 	/**
 	 * <p>像客户端发送服务端存储的信息
 	 * <p><b>这其中写有更新内部数据的代码，重写时应该调用</b>
@@ -130,13 +123,12 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		if (world.isRemote) return;
 		if (players.size() == world.playerEntities.size()) return;
 		ByteDataOperator operator = new ByteDataOperator(1);
-		operator.writeByte((byte) cap.linkData);
-		operator.writeByte((byte) cap.getFacing().getIndex());
-		operator.writeByte((byte) stateEnum.ordinal());
-		operator.writeBoolean(cap.stack == null);
-		if (cap.stack != null) {
-			DataSerialize.write(operator, cap.stack, FluidStack.class);
+		operator.writeByte((byte) linkData);
+		operator.writeBoolean(fluidStack == null);
+		if (fluidStack != null) {
+			DataSerialize.write(operator, fluidStack, FluidStack.class);
 		}
+		sync(operator);
 		IMessage message = BlockMessage.instance().create(operator, new BlockAddition(this));
 		MessageSender.sendToClientIf(message, world, player -> {
 			if (players.contains(player.getName()) || !netRange.isIn(new Point3D(player))) return false;
@@ -227,73 +219,97 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		return false;
 	}
 	
+	/** @see IFluid#next() */
+	abstract public List<EnumFacing> next();
+	
+	/** @see IFluid#hasAperture(EnumFacing) */
+	abstract public boolean hasAperture(EnumFacing facing);
+	
+	/** @see IFluid#canLink(EnumFacing) */
+	abstract public boolean canLink(EnumFacing facing);
+	
+	/** @see IFluid#link(EnumFacing) */
+	abstract public boolean link(EnumFacing facing);
+	
+	protected void setLinkedData(EnumFacing facing, boolean isLinked) {
+		switch (facing) {
+			case DOWN:
+				if (isLinked) linkData |= 0b010000;
+				else linkData &= 0b101111;
+				break;
+			case UP:
+				if (isLinked) linkData |= 0b100000;
+				else linkData &= 0b0111111;
+				break;
+			case NORTH:
+				if (isLinked) linkData |= 0b000001;
+				else linkData &= 0b111110;
+				break;
+			case SOUTH:
+				if (isLinked) linkData |= 0b000010;
+				else linkData &= 0b111101;
+				break;
+			case WEST:
+				if (isLinked) linkData |= 0b000100;
+				else linkData &= 0b111011;
+				break;
+			case EAST:
+				if (isLinked) linkData |= 0b001000;
+				else linkData &= 0b110111;
+				break;
+		}
+	}
+	
 	@DebugDetails
 	public class FluidSrcCap implements IFluid {
 		
-		/** 存储包含的流体类型 */
-		@Storage protected FluidStack stack = null;
-		/** 六个方向的连接数据 */
-		@Storage(byte.class) protected int linkData = 0b000000;
-		/** 六个方向的管塞数据 */
-		@Storage protected final Map<EnumFacing, Item> plugData = new EnumMap<>(EnumFacing.class);
-		/** 存储管道方向 */
-		@Storage protected EnumFacing facing = NORTH;
-		/** 存储管道内流体来源 */
-		@Storage protected EnumFacing source = null;
-		
 		@Override
 		public int fluidAmount() {
-			if (stack == null) return 0;
-			return stack.amount;
+			if (fluidStack == null) return 0;
+			return fluidStack.amount;
 		}
 		
 		@Nullable
 		@Override
 		public Fluid fluid() {
-			if (stack == null || stack.amount == 0) return null;
-			return stack.getFluid();
+			if (fluidStack == null || fluidStack.amount == 0) return null;
+			return fluidStack.getFluid();
 		}
 		
 		@Override
 		public void setFluid(@Nullable FluidStack stack) {
-			if (stack == null || stack.amount == 0) this.stack = null;
-			else this.stack = stack.copy();
+			if (stack == null || stack.amount == 0) fluidStack = null;
+			else fluidStack = stack.copy();
 			updateTickableState();
 		}
 		
 		@Override
 		public int extract(FluidStack stack, boolean simulate) {
-			if (this.stack == null) return 0;
-			int real = Math.min(stack.amount, this.stack.amount);
+			if (fluidStack == null) return 0;
+			int real = Math.min(stack.amount, fluidStack.amount);
 			if (simulate) return real;
-			this.stack.amount -= real;
+			fluidStack.amount -= real;
 			updateTickableState();
 			return real;
 		}
 		
 		@Override
 		public int insert(FluidStack stack, EnumFacing facing, boolean simulate) {
-			if (this.stack == null) this.stack = new FluidStack(stack.getFluid(), 0);
-			int sum = this.stack.amount + stack.amount;
+			if (fluidStack == null) fluidStack = new FluidStack(stack.getFluid(), 0);
+			int sum = fluidStack.amount + stack.amount;
 			if (sum <= getMaxAmount()) {
 				if (simulate) return stack.amount;
-				this.stack.amount = sum;
+				fluidStack.amount = sum;
 				source = facing;
 				updateTickableState();
 				return stack.amount;
 			}
-			int real = getMaxAmount() - this.stack.amount;
+			int real = getMaxAmount() - fluidStack.amount;
 			if (simulate) return real;
-			this.stack.amount = getMaxAmount();
+			fluidStack.amount = getMaxAmount();
 			source = facing;
 			updateTickableState();
 			return real;
-		}
-		
-		@Override
-		public void setFacing(EnumFacing facing) {
-			if (facing == getFacing()) return;
-			this.facing = facing;
 		}
 		
 		@Override
@@ -304,11 +320,6 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		@Override
 		public int getMaxAmount() {
 			return FLUID_TRANSFER_MAX_AMOUNT;
-		}
-		
-		@Override
-		public EnumFacing getFacing() {
-			return facing;
 		}
 		
 		@Nullable
@@ -324,124 +335,27 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		@Nonnull
 		@Override
 		public List<EnumFacing> next() {
-			switch (stateEnum) {
-				case STRAIGHT: case ANGLE:
-					for (EnumFacing value : values()) {
-						if (hasAperture(value)) {
-							if (value == source) continue;
-							List<EnumFacing> result = new ArrayList<>(1);
-							result.add(value);
-							return result;
-						}
-					}
-					return Collections.emptyList();
-				case SHUNT:
-					break;
-				default: throw new IllegalArgumentException("未知的状态：" + stateEnum);
-			}
-			return Collections.emptyList();
+			return FTTileEntity.this.next();
 		}
 		
 		@Override
 		public boolean hasAperture(EnumFacing facing) {
-			switch (stateEnum) {
-				case STRAIGHT:
-					return !hasPlug(facing) && (facing == getFacing() || facing == getFacing().getOpposite());
-				case ANGLE:
-					if (facing == getFacing()) return true;
-					EnumFacing after = world.getBlockState(pos)
-							.getValue(AnglePipe.ANGLE_FACING).toEnumFacing(getFacing());
-					return facing == after;
-				case SHUNT: return true;
-				default: throw new IllegalArgumentException("该状态不属于任何一种状态：" + stateEnum);
-			}
+			return FTTileEntity.this.hasAperture(facing);
 		}
 		
 		@Override
 		public boolean canLink(EnumFacing facing) {
-			if (hasAperture(facing)) return true;
-			switch (stateEnum) {
-				case STRAIGHT:
-					return linkData == 0;
-				case ANGLE:
-					if (linkData == 0) return true;
-					if (getLinkAmount() != 1) return false;
-					return AngleFacingEnum.match(getFacing(), facing);
-				case SHUNT:
-					return true;
-				default: throw new IllegalArgumentException("未知的状态：" + stateEnum);
-			}
+			return FTTileEntity.this.canLink(facing);
 		}
 		
 		@Override
 		public boolean link(EnumFacing facing) {
-			if (isLinked(facing)) return true;
-			if (!canLink(facing)) return false;
-			switch (stateEnum) {
-				case STRAIGHT:
-					if (linkData == 0) setFacing(facing);
-					break;
-				case ANGLE:
-					if (facing == DOWN || facing == UP) {
-						if (linkData == 0 || getLinkAmount() == 1 && AngleFacingEnum.match(getFacing(), facing)) {
-							setOtherFacing(facing);
-						}
-					} else {
-						if (linkData == 0) setFacing(facing);
-						else if (getLinkAmount() == 1 && AngleFacingEnum.match(getFacing(), facing))
-							setOtherFacing(facing);
-					}
-					break;
-				case SHUNT:
-					break;
-			}
-			setLinkedData(facing, true);
-			return true;
-		}
-		
-		private EnumFacing getAfterFacing() {
-			return world.getBlockState(pos).getValue(AnglePipe.ANGLE_FACING).toEnumFacing(getFacing());
-		}
-		
-		private void setOtherFacing(EnumFacing after) {
-			IBlockState oldState = world.getBlockState(pos);
-			IBlockState newState = oldState.withProperty(AnglePipe.ANGLE_FACING,
-									AngleFacingEnum.valueOf(getFacing(), after));
-			WorldUtil.setBlockState(world, pos, oldState, newState);
+			return FTTileEntity.this.link(facing);
 		}
 		
 		@Override
 		public void unlink(EnumFacing facing) {
 			setLinkedData(facing, false);
-		}
-		
-		private void setLinkedData(EnumFacing facing, boolean isLinked) {
-			switch (facing) {
-				case DOWN:
-					if (isLinked) linkData |= 0b010000;
-					else linkData &= 0b101111;
-					break;
-				case UP:
-					if (isLinked) linkData |= 0b100000;
-					else linkData &= 0b0111111;
-					break;
-				case NORTH:
-					if (isLinked) linkData |= 0b000001;
-					else linkData &= 0b111110;
-					break;
-				case SOUTH:
-					if (isLinked) linkData |= 0b000010;
-					else linkData &= 0b111101;
-					break;
-				case WEST:
-					if (isLinked) linkData |= 0b000100;
-					else linkData &= 0b111011;
-					break;
-				case EAST:
-					if (isLinked) linkData |= 0b001000;
-					else linkData &= 0b110111;
-					break;
-			}
 		}
 		
 		@Override

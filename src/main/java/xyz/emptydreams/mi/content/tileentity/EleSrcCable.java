@@ -487,8 +487,8 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	}
 	
 	@Override
-	public void receive(@Nonnull IDataReader message) {
-		linkInfo = message.readByte();
+	public void receive(@Nonnull IDataReader reader) {
+		linkInfo = reader.readByte();
 		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	

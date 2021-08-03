@@ -47,14 +47,8 @@ public interface IFluid {
 	 */
 	int insert(FluidStack stack, EnumFacing facing, boolean simulate);
 	
-	/** 设置管道朝向 */
-	void setFacing(EnumFacing facing);
-	
 	/** 设置流体来源方向 */
 	void setSource(EnumFacing facing);
-	
-	/** 获取管道朝向 */
-	EnumFacing getFacing();
 	
 	/** 获取流体管道最大流量 */
 	int getMaxAmount();
