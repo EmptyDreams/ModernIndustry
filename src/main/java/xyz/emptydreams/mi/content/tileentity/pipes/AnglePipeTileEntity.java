@@ -78,9 +78,24 @@ public class AnglePipeTileEntity extends FTTileEntity {
 				after = facing;
 			}
 		} else {
-			if (linkData == 0) this.facing = facing;
-			else if (cap.getLinkAmount() == 1 && AngleFacingEnum.match(this.facing, facing))
+			if (linkData == 0) {
+				this.facing = facing;
+				if (!AngleFacingEnum.match(facing, after)) {
+					boolean result = true;
+					if (after != UP && after != DOWN) {
+						for (EnumFacing value : HORIZONTALS) {
+							if (AngleFacingEnum.match(facing, value)) {
+								result = false;
+								after = value;
+								break;
+							}
+						}
+					}
+					if (result) after = after == DOWN ? UP : DOWN;
+				}
+			} else if (cap.getLinkAmount() == 1 && AngleFacingEnum.match(this.facing, facing)) {
 				after = facing;
+			}
 		}
 		setLinkedData(facing, true);
 		return true;
