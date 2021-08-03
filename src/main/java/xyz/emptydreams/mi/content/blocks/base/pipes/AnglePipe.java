@@ -80,15 +80,15 @@ public class AnglePipe extends Pipe {
 				switch (after) {
 					case UP: return new AxisAlignedBB(1/4d, 1/4d, 1/4d, 1, 1, 3/4d);
 					case DOWN: return new AxisAlignedBB(1/4d, 0, 1/4d, 1, 3/4d, 3/4d);
-					case NORTH: return new AxisAlignedBB(1/4d, 1/4d, 1/4d, 1, 3/4d, 1);
-					case SOUTH: return new AxisAlignedBB(1/4d, 1/4d, 0, 1, 3/4d, 3/4d);
+					case NORTH: return new AxisAlignedBB(1/4d, 1/4d, 0, 1, 3/4d, 3/4d);
+					case SOUTH: return new AxisAlignedBB(1/4d, 1/4d, 1/4d, 1, 3/4d, 1);
 				}
 			case WEST:
 				switch (after) {
 					case UP: return new AxisAlignedBB(0, 1/4d, 1/4d, 3/4d, 1, 3/4d);
 					case DOWN: return new AxisAlignedBB(0, 0, 1/4d, 3/4d, 3/4d, 3/4d);
-					case NORTH: return new AxisAlignedBB(0, 1/4d, 1/4d, 3/4d, 3/4d, 1);
-					case SOUTH: return new AxisAlignedBB(0, 1/4d, 0, 3/4d, 3/4d, 3/4d);
+					case NORTH: return new AxisAlignedBB(0, 1/4d, 0, 3/4d, 3/4d, 3/4d);
+					case SOUTH: return new AxisAlignedBB(0, 1/4d, 1/4d, 3/4d, 3/4d, 1);
 				}
 			case NORTH:
 				switch (after) {
@@ -101,8 +101,9 @@ public class AnglePipe extends Pipe {
 				switch (after) {
 					case UP: return new AxisAlignedBB(1/4d, 1/4d, 1/4d, 3/4d, 1, 1);
 					case DOWN: return new AxisAlignedBB(1/4d, 0, 1/4d, 3/4d, 3/4d, 1);
-					case EAST: return new AxisAlignedBB(0, 1/4d, 1/4d, 3/4d, 3/4d, 1);
-					case WEST: return new AxisAlignedBB(1/4d, 1/4d, 1/4d, 1, 3/4d, 1);
+					case EAST: return new AxisAlignedBB(1/4d, 1/4d, 1/4d, 1, 3/4d, 1);
+					case WEST: return new AxisAlignedBB(0, 1/4d, 1/4d, 3/4d, 3/4d, 1);
+					
 				}
 		}
 		throw new IllegalArgumentException("不合理的方向组合：facing=" + facing + ",after=" + after);
