@@ -62,6 +62,7 @@ public class AnglePipe extends Pipe {
 		IFluid cap = te.getFTCapability();
 		EnumFacing facing = side.getOpposite();
 		te.setFacing(player.getHorizontalFacing().getOpposite());
+		te.setAfter(player.rotationPitch > 0 ? EnumFacing.UP : EnumFacing.DOWN);
 		link(world, pos, cap, facing);
 		for (EnumFacing value : EnumFacing.values()) {
 			link(world, pos, cap, value);
