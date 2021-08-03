@@ -106,4 +106,13 @@ public enum AngleFacingEnum implements IStringSerializable {
 		}
 	}
 	
+	/**
+	 * 判断两个方向是否可以进行组合
+	 * @param facing 正方向
+	 * @param after 后方向
+	 */
+	public static boolean match(EnumFacing facing, EnumFacing after) {
+		return facing != after && facing.getOpposite() != after;
+	}
+	
 }

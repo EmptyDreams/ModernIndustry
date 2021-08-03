@@ -31,6 +31,7 @@ import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 import xyz.emptydreams.mi.content.blocks.base.pipes.AnglePipe;
+import xyz.emptydreams.mi.content.blocks.base.pipes.enums.AngleFacingEnum;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.FTStateEnum;
 import xyz.emptydreams.mi.content.items.debug.DebugDetails;
 
@@ -172,12 +173,12 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 	
 	@Override
 	public void update() {
+		send();
 		//检查运行条件
 		if (updateTickableState()) {
 			nowTime = 0;
 			return;
 		}
-		send();
 		if (++nowTime != sleepTime) return;
 		nowTime = 0;
 		List<EnumFacing> nexts = cap.next();
@@ -358,16 +359,17 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		
 		@Override
 		public boolean canLink(EnumFacing facing) {
-			TileEntity te = world.getTileEntity(pos.offset(facing));
-			if (te == null) return false;
-			IFluid cap = te.getCapability(FluidCapability.TRANSFER, null);
-			if (cap == null) return false;
-			if (cap.hasAperture(facing.getOpposite())) {
-				return hasAperture(facing) || getLinkAmount() == 0;
-			} else if (cap.getLinkAmount() == 0) {
-				return hasAperture(facing) || getLinkAmount() == 0;
-			} else {
-				return false;
+			if (hasAperture(facing)) return true;
+			switch (stateEnum) {
+				case STRAIGHT:
+					return linkData == 0;
+				case ANGLE:
+					if (linkData == 0) return true;
+					if (getLinkAmount() != 1) return false;
+					return AngleFacingEnum.match(getFacing(), facing);
+				case SHUNT:
+					return true;
+				default: throw new IllegalArgumentException("未知的状态：" + stateEnum);
 			}
 		}
 		
@@ -375,17 +377,37 @@ public class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITicka
 		public boolean link(EnumFacing facing) {
 			if (isLinked(facing)) return true;
 			if (!canLink(facing)) return false;
-			if (linkData == 0) {
-				switch (stateEnum) {
-					case STRAIGHT: case ANGLE:
-						setFacing(facing);
-						break;
-					case SHUNT:
-						break;
-				}
+			switch (stateEnum) {
+				case STRAIGHT:
+					if (linkData == 0) setFacing(facing);
+					break;
+				case ANGLE:
+					if (facing == DOWN || facing == UP) {
+						if (linkData == 0 || getLinkAmount() == 1 && AngleFacingEnum.match(getFacing(), facing)) {
+							setOtherFacing(facing);
+						}
+					} else {
+						if (linkData == 0) setFacing(facing);
+						else if (getLinkAmount() == 1 && AngleFacingEnum.match(getFacing(), facing))
+							setOtherFacing(facing);
+					}
+					break;
+				case SHUNT:
+					break;
 			}
 			setLinkedData(facing, true);
 			return true;
+		}
+		
+		private EnumFacing getAfterFacing() {
+			return world.getBlockState(pos).getValue(AnglePipe.ANGLE_FACING).toEnumFacing(getFacing());
+		}
+		
+		private void setOtherFacing(EnumFacing after) {
+			IBlockState oldState = world.getBlockState(pos);
+			IBlockState newState = oldState.withProperty(AnglePipe.ANGLE_FACING,
+									AngleFacingEnum.valueOf(getFacing(), after));
+			WorldUtil.setBlockState(world, pos, oldState, newState);
 		}
 		
 		@Override

@@ -87,19 +87,22 @@ public class StraightPipe extends Pipe {
 	 * @param facing 要连接的方块相对于当前方块的方向
 	 * @return 是否连接成功
 	 */
-	@SuppressWarnings("ConstantConditions") //打这个舒注释是因为如果cap.link返回true则thatTE和that不可能为null
 	public static boolean link(World world, BlockPos pos, IFluid cap, EnumFacing facing) {
-		if (!cap.link(facing)) return false;
 		TileEntity thatTE = world.getTileEntity(pos.offset(facing));
+		if (thatTE == null) return false;
 		IFluid that = thatTE.getCapability(FluidCapability.TRANSFER, null);
-		cap.setFacing(facing);
+		if (that == null) return false;
 		EnumFacing side = facing.getOpposite();
-		if (!that.link(side)) {
-			cap.unlink(facing);
-			return false;
-		}
+		if (!that.canLink(side)) return false;
+		if (!cap.link(facing)) return false;
+		if (!that.link(side)) return unlink(cap, facing);
 		thatTE.markDirty();
 		return true;
+	}
+	
+	private static boolean unlink(IFluid cap, EnumFacing facing) {
+		cap.unlink(facing);
+		return false;
 	}
 	
 	@Override

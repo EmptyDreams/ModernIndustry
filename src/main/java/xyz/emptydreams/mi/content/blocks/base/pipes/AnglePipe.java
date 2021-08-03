@@ -51,17 +51,7 @@ public class AnglePipe extends Pipe {
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 		TileEntity te = worldIn.getTileEntity(pos);
 		IFluid cap = te.getCapability(FluidCapability.TRANSFER, null);
-		return state.withProperty(HORIZONTAL, cap.getFacing()).withProperty(ANGLE_FACING, AngleFacingEnum.DOWN);
-	}
-	
-	/** 获取管道的后端开口方向 */
-	public static EnumFacing getAfterFacing(IFluid fluid) {
-		EnumFacing facing = fluid.getFacing();
-		for (EnumFacing value : EnumFacing.values()) {
-			if (value == facing) continue;
-			if (fluid.hasAperture(value)) return value;
-		}
-		throw new IllegalArgumentException("管道只有一个开口");
+		return state.withProperty(HORIZONTAL, cap.getFacing());
 	}
 	
 	@Override
@@ -72,11 +62,11 @@ public class AnglePipe extends Pipe {
 		EnumFacing facing = side.getOpposite();
 		@SuppressWarnings("ConstantConditions")
 		IFluid cap = te.getFTCapability();
+		cap.setFacing(player.getHorizontalFacing().getOpposite());
 		link(world, pos, cap, facing);
 		for (EnumFacing value : EnumFacing.values()) {
 			link(world, pos, cap, value);
 		}
-		if (cap.getLinkAmount() == 0) cap.setFacing(player.getHorizontalFacing().getOpposite());
 		te.markDirty();
 		return te;
 	}
