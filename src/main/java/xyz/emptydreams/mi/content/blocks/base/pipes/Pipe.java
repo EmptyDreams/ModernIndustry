@@ -78,7 +78,7 @@ abstract public class Pipe extends TEBlockBase {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
-		if (FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, facing.getOpposite())) {
+		if (FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, facing)) {
 			TileEntity te = worldIn.getTileEntity(pos);
 			IFluid cap = te.getCapability(FluidCapability.TRANSFER, facing);
 			cap.setSource(facing);
