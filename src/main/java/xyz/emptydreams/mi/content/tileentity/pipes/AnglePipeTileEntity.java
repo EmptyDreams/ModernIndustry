@@ -40,8 +40,7 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	}
 	
 	@Override
-	public void receive(@Nonnull IDataReader reader) {
-		super.receive(reader);
+	public void syncClient(@Nonnull IDataReader reader) {
 		facing = EnumFacing.values()[reader.readByte()];
 		after = EnumFacing.values()[reader.readByte()];
 	}

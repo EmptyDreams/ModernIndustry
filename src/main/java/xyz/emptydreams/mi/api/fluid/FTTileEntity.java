@@ -15,6 +15,8 @@ import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability;
 import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
@@ -95,12 +97,13 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	}
 	
 	@Override
-	public void receive(@Nonnull IDataReader reader) {
+	public final void receive(@Nonnull IDataReader reader) {
 		linkData = reader.readByte();
-		if (!reader.readBoolean()) {
+		if (reader.readBoolean()) {
 			fluidStack = DataSerialize.read(reader, FluidStack.class, FluidStack.class, null);
 		}
-		updateBlockState();
+		syncClient(reader);
+		updateBlockState(true);
 	}
 	
 	/**
@@ -115,16 +118,20 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	/** 用于写入需要同步的数据 */
 	abstract protected void sync(IDataWriter writer);
 	
+	/** 用于客户端同步数据 */
+	@SideOnly(Side.CLIENT)
+	abstract protected void syncClient(IDataReader reader);
+	
 	/**
 	 * <p>像客户端发送服务端存储的信息
 	 * <p><b>这其中写有更新内部数据的代码，重写时应该调用</b>
 	 */
-	protected void send() {
+	protected final void send() {
 		if (world.isRemote) return;
 		if (players.size() == world.playerEntities.size()) return;
 		ByteDataOperator operator = new ByteDataOperator(1);
 		operator.writeByte((byte) linkData);
-		operator.writeBoolean(fluidStack == null);
+		operator.writeBoolean(fluidStack != null);
 		if (fluidStack != null) {
 			DataSerialize.write(operator, fluidStack, FluidStack.class);
 		}
@@ -135,7 +142,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 			players.add(player.getName());
 			return true;
 		});
-		updateBlockState();
+		updateBlockState(false);
 	}
 	
 	@Override
@@ -154,7 +161,8 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		return super.getUpdateTag();
 	}
 	
-	public void updateBlockState() {
+	public void updateBlockState(boolean isRunOnClient) {
+		if (world.isRemote && !isRunOnClient) return;
 		IBlockState oldState = world.getBlockState(pos);
 		IBlockState newState = oldState.getActualState(world, pos);
 		WorldUtil.setBlockState(world, pos, oldState, newState);
