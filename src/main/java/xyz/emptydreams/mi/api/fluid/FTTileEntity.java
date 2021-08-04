@@ -329,7 +329,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 			BlockPos target = pos.offset(facing);
 			TileEntity entity = world.getTileEntity(target);
 			if (entity == null) return null;
-			return entity.getCapability(FluidCapability.TRANSFER, facing);
+			return entity.getCapability(FluidCapability.TRANSFER, facing.getOpposite());
 		}
 		
 		@Nonnull

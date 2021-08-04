@@ -44,7 +44,7 @@ public class StraightPipeTileEntity extends FTTileEntity {
 		EnumFacing side = facing.getOpposite();
 		if (source == null) return Lists.newArrayList(facing, side);
 		if (source == facing) return Lists.newArrayList(side);
-		if (source == side) Lists.newArrayList(facing);
+		if (source == side) return Lists.newArrayList(facing);
 		throw new IllegalArgumentException("输入了没有开口的方向：" + source);
 	}
 	
