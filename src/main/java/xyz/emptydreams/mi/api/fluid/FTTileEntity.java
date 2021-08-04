@@ -298,6 +298,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 			if (simulate) return real;
 			fluidStack.amount -= real;
 			updateTickableState();
+			markDirty();
 			return real;
 		}
 		
@@ -310,6 +311,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 				fluidStack.amount = sum;
 				source = facing;
 				updateTickableState();
+				markDirty();
 				return stack.amount;
 			}
 			int real = getMaxAmount() - fluidStack.amount;
@@ -317,6 +319,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 			fluidStack.amount = getMaxAmount();
 			source = facing;
 			updateTickableState();
+			markDirty();
 			return real;
 		}
 		
