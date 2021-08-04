@@ -14,7 +14,6 @@ import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability;
 import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
 import xyz.emptydreams.mi.api.utils.MathUtil;
-import xyz.emptydreams.mi.content.blocks.base.pipes.enums.FTStateEnum;
 import xyz.emptydreams.mi.content.tileentity.pipes.StraightPipeTileEntity;
 
 import javax.annotation.Nonnull;
@@ -31,7 +30,7 @@ import static xyz.emptydreams.mi.api.utils.properties.MIProperty.ALL_FACING;
 public class StraightPipe extends Pipe {
 	
 	public StraightPipe(String name, String... ores) {
-		super(name, FTStateEnum.STRAIGHT, ores);
+		super(name, ores);
 		setDefaultState(blockState.getBaseState().withProperty(ALL_FACING, EnumFacing.NORTH));
 	}
 	
@@ -50,28 +49,28 @@ public class StraightPipe extends Pipe {
 	}
 	
 	@Override
-	public TileEntity createTileEntity(ItemStack stack, EntityPlayer player,
-	                                   World world, BlockPos pos, EnumFacing side,
-	                                   float hitX, float hitY, float hitZ) {
-		StraightPipeTileEntity te = (StraightPipeTileEntity) world.getTileEntity(pos);
+	public boolean initTileEntity(ItemStack stack, EntityPlayer player,
+	                                 World world, BlockPos pos, EnumFacing side,
+	                                 float hitX, float hitY, float hitZ) {
+		StraightPipeTileEntity te = new StraightPipeTileEntity();
+		putBlock(world, pos, getDefaultState(), te, player, stack);
 		EnumFacing facing = side.getOpposite();
-		@SuppressWarnings("ConstantConditions")
 		IFluid cap = te.getFTCapability();
 		if (link(world, pos, cap, facing)) {
 			link(world, pos, cap, side);
-			return null;
+			return true;
 		}
 		if (link(world, pos, cap, side)) {
-			return null;
+			return true;
 		}
 		for (EnumFacing value : EnumFacing.values()) {
 			if (link(world, pos, cap, value)) {
 				link(world, pos, cap, value.getOpposite());
-				return null;
+				return true;
 			}
 		}
 		te.setFacing(MathUtil.getPlayerFacing(player, pos));
-		return null;
+		return true;
 	}
 	
 	/**

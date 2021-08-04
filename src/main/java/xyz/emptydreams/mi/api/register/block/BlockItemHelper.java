@@ -1,7 +1,10 @@
 package xyz.emptydreams.mi.api.register.block;
 
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -25,8 +28,9 @@ public interface BlockItemHelper {
 	Item getBlockItem();
 	
 	/**
-	 * <p>根据方块被放置时的信息创建一个TileEntity，该TileEntity会在方块被放置前设置到世界中
-	 * <p>该方法被调用时，TileEntity已经在世界中存在，可以通过{@link World#getTileEntity(BlockPos)}获取默认TileEntity
+	 * <p>根据方块被放置时的信息创建一个TileEntity
+	 * <p><b>该方法被调用时方块并没有被放置到世界中，复写该方法时用户需手动将IBlockState和TE放置到世界中
+	 * <p>放置方块时使用{@link #putBlock(World, BlockPos, IBlockState, TileEntity, EntityPlayer, ItemStack)}方法</b>
 	 * @param stack 方块物品
 	 * @param player 执行操作的玩家
 	 * @param world 所在世界
@@ -35,14 +39,21 @@ public interface BlockItemHelper {
 	 * @param hitX 鼠标点击位置的坐标
 	 * @param hitY 鼠标点击位置的坐标
 	 * @param hitZ 鼠标点击位置的坐标
-	 * @return <p>需要被替换到世界中的TileEntity对象
-	 *         <p>若为null则表示不进行替换TileEntity
-	 *         <p>如果该方法只需要修改TileEntity中的数据，则应当返回null
+	 * @return 是否复写了该方法
 	 */
 	@Nullable
-	default TileEntity createTileEntity(ItemStack stack, EntityPlayer player, World world, BlockPos pos,
-	                                    EnumFacing side, float hitX, float hitY, float hitZ) {
-		return null;
+	default boolean initTileEntity(ItemStack stack, EntityPlayer player, World world, BlockPos pos,
+	                                  EnumFacing side, float hitX, float hitY, float hitZ) {
+		return false;
+	}
+	
+	default void putBlock(World world, BlockPos pos, IBlockState state,
+	                      TileEntity te, EntityPlayer player, ItemStack stack) {
+		world.setBlockState(pos, state);
+		world.setTileEntity(pos, te);
+		state.getBlock().onBlockPlacedBy(world, pos, state, player, stack);
+		if (player instanceof EntityPlayerMP)
+			CriteriaTriggers.PLACED_BLOCK.trigger((EntityPlayerMP) player, pos, stack);
 	}
 	
 }

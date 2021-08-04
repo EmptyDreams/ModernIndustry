@@ -1,14 +1,15 @@
 package xyz.emptydreams.mi.content.items.base;
 
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.register.block.BlockItemHelper;
@@ -27,25 +28,36 @@ public class ItemBlockExpand extends ItemBlock {
 		setRegistryName(block.getRegistryName());
 	}
 	
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos,
-	                            EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
-		if (!world.setBlockState(pos, newState, 11)) return false;
-		IBlockState state = world.getBlockState(pos);
-		TileEntity te = createTileEntity(stack, player, world, pos, side, hitX, hitY, hitZ);
-		if (te != null) world.setTileEntity(pos, te);
-		if (state.getBlock() == this.block) {
-			setTileEntityNBT(world, player, pos, stack);
-			this.block.onBlockPlacedBy(world, pos, state, player, stack);
-			if (player instanceof EntityPlayerMP)
-				CriteriaTriggers.PLACED_BLOCK.trigger((EntityPlayerMP)player, pos, stack);
+	@Override
+	public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos,
+	                                  EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		IBlockState iblockstate = worldIn.getBlockState(pos);
+		Block block = iblockstate.getBlock();
+		if (!block.isReplaceable(worldIn, pos)) pos = pos.offset(facing);
+		ItemStack itemstack = player.getHeldItem(hand);
+		
+		if (!itemstack.isEmpty() && player.canPlayerEdit(pos, facing, itemstack)
+				&& worldIn.mayPlace(this.block, pos, false, facing, null)) {
+			boolean skip = false;
+			if (blockItemHelper != null) {
+				skip = blockItemHelper.initTileEntity(
+						itemstack.copy(), player, worldIn, pos, facing, hitX, hitY, hitZ);
+			}
+			if (!skip) {
+				int i = this.getMetadata(itemstack.getMetadata());
+				placeBlockAt(itemstack, player, worldIn, pos, facing, hitX, hitY, hitZ,
+						this.block.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, i, player, hand));
+			}
+			IBlockState newState = worldIn.getBlockState(pos);
+			SoundType soundtype = newState.getBlock().getSoundType(newState, worldIn, pos, player);
+			worldIn.playSound(player, pos, soundtype.getPlaceSound(),
+								SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F,
+								soundtype.getPitch() * 0.8F);
+			itemstack.shrink(1);
+			return EnumActionResult.SUCCESS;
+		} else {
+			return EnumActionResult.FAIL;
 		}
-		return true;
-	}
-	
-	protected TileEntity createTileEntity(ItemStack stack, EntityPlayer player, World world, BlockPos pos,
-	                                      EnumFacing side, float hitX, float hitY, float hitZ) {
-		return blockItemHelper == null ? null
-				: blockItemHelper.createTileEntity(stack, player, world, pos, side, hitX, hitY, hitZ);
 	}
 	
 }

@@ -3,7 +3,6 @@ package xyz.emptydreams.mi.content.blocks.base.pipes;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,7 +25,6 @@ import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.content.blocks.base.TEBlockBase;
-import xyz.emptydreams.mi.content.blocks.base.pipes.enums.FTStateEnum;
 import xyz.emptydreams.mi.content.items.base.ItemBlockExpand;
 
 import javax.annotation.Nonnull;
@@ -40,14 +38,10 @@ import java.util.Random;
 @SuppressWarnings("deprecation")
 abstract public class Pipe extends TEBlockBase {
 	
-	public static final PropertyDirection PLUG = PropertyDirection.create("plug");
-	
 	protected final Item ITEM;
-	protected final FTStateEnum state;
 	
-	public Pipe(String name, FTStateEnum stateEnum, String... ores) {
+	public Pipe(String name, String... ores) {
 		super(Material.IRON);
-		state = stateEnum;
 		setSoundType(SoundType.SNOW);
 		setHardness(0.5F);
 		setCreativeTab(ModernIndustry.TAB_WIRE);
@@ -89,11 +83,6 @@ abstract public class Pipe extends TEBlockBase {
 	
 	@Override
 	abstract public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos);
-	
-	@Override
-	abstract public TileEntity createTileEntity(ItemStack stack, EntityPlayer player,
-	                                            World world, BlockPos pos,
-	                                            EnumFacing side, float hitX, float hitY, float hitZ);
 	
 	@Override
 	abstract public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos);

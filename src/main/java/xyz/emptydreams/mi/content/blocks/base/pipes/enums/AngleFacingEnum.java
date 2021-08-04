@@ -65,12 +65,13 @@ public enum AngleFacingEnum implements IStringSerializable {
 	
 	/**
 	 * 将EnumFacing转化为AngleFacingEnum
-	 * @param facing 管道朝向
+	 * @param facing 管道开口朝向
 	 * @param after 管道另一开口朝向
 	 * @throws IllegalArgumentException 如果输入的facing或after不符合规范
 	 */
 	@Nonnull
 	public static AngleFacingEnum valueOf(EnumFacing facing, EnumFacing after) {
+		if (facing == EnumFacing.UP || facing == EnumFacing.DOWN) return valueOf(after, facing);
 		switch (after) {
 			case UP: return AngleFacingEnum.UP;
 			case DOWN: return AngleFacingEnum.DOWN;

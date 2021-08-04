@@ -63,10 +63,11 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	public boolean canLink(EnumFacing facing) {
 		if (hasAperture(facing)) return true;
 		if (linkData == 0) return true;
-		if (cap.isLinked(facing)) {
+		if (cap.isLinked(this.facing)) {
 			if (cap.isLinked(after)) return false;
+			return AngleFacingEnum.match(this.facing, facing);
 		}
-		return AngleFacingEnum.match(this.facing, facing);
+		return AngleFacingEnum.match(after, facing);
 	}
 	
 	@Override
@@ -74,7 +75,10 @@ public class AnglePipeTileEntity extends FTTileEntity {
 		if (cap.isLinked(facing)) return true;
 		if (!canLink(facing)) return false;
 		if (facing == DOWN || facing == UP) {
-			if (linkData == 0 || cap.getLinkAmount() == 1 && AngleFacingEnum.match(this.facing, facing)) {
+			if (linkData == 0) {
+				this.facing = facing;
+				if (after == DOWN || after == UP) after = NORTH;
+			} else {
 				after = facing;
 			}
 		} else {
@@ -101,19 +105,13 @@ public class AnglePipeTileEntity extends FTTileEntity {
 		return true;
 	}
 	
-	public void setFacing(EnumFacing facing) {
-		this.facing = facing;
-	}
-	
-	public void setAfter(EnumFacing after) {
-		this.after = after;
-	}
-	
 	public EnumFacing getFacing() {
+		if (facing == UP || facing == DOWN) return after;
 		return facing;
 	}
 	
 	public EnumFacing getAfter() {
+		if (facing == UP || facing == DOWN) return facing;
 		return after;
 	}
 }

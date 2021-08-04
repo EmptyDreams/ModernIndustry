@@ -13,7 +13,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.AngleFacingEnum;
-import xyz.emptydreams.mi.content.blocks.base.pipes.enums.FTStateEnum;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.PropertyAngleFacing;
 import xyz.emptydreams.mi.content.tileentity.pipes.AnglePipeTileEntity;
 
@@ -34,7 +33,7 @@ public class AnglePipe extends Pipe {
 	public static final PropertyAngleFacing ANGLE_FACING = PropertyAngleFacing.create("ver");
 	
 	public AnglePipe(String name, String... ores) {
-		super(name, FTStateEnum.ANGLE, ores);
+		super(name, ores);
 		setDefaultState(blockState.getBaseState().withProperty(HORIZONTAL, EnumFacing.NORTH)
 				.withProperty(ANGLE_FACING, AngleFacingEnum.UP));
 	}
@@ -54,21 +53,19 @@ public class AnglePipe extends Pipe {
 	}
 	
 	@Override
-	public TileEntity createTileEntity(ItemStack stack, EntityPlayer player,
-	                                   World world, BlockPos pos, EnumFacing side,
-	                                   float hitX, float hitY, float hitZ) {
-		AnglePipeTileEntity te = (AnglePipeTileEntity) world.getTileEntity(pos);
-		//noinspection ConstantConditions
+	public boolean initTileEntity(ItemStack stack, EntityPlayer player,
+	                                 World world, BlockPos pos, EnumFacing side,
+	                                 float hitX, float hitY, float hitZ) {
+		AnglePipeTileEntity te = new AnglePipeTileEntity(player.getHorizontalFacing().getOpposite(),
+											player.rotationPitch > 0 ? EnumFacing.UP : EnumFacing.DOWN);
+		putBlock(world, pos, getDefaultState(), te, player, stack);
 		IFluid cap = te.getFTCapability();
 		EnumFacing facing = side.getOpposite();
-		te.setFacing(player.getHorizontalFacing().getOpposite());
-		te.setAfter(player.rotationPitch > 0 ? EnumFacing.UP : EnumFacing.DOWN);
 		link(world, pos, cap, facing);
 		for (EnumFacing value : EnumFacing.values()) {
 			link(world, pos, cap, value);
 		}
-		te.markDirty();
-		return te;
+		return true;
 	}
 	
 	@Override
