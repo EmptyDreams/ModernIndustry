@@ -9,6 +9,8 @@ import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static net.minecraft.util.EnumFacing.*;
@@ -54,15 +56,18 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	public boolean canLink(EnumFacing facing) {
 		if (hasAperture(facing)) return true;
 		if (linkData == 0) return true;
-		return cap.getLinkAmount() == 1;
+		List<EnumFacing> all = calculatePossibleSide(linked);
+		all.retainAll(getPossibleSides(facing));
+		return !all.isEmpty();
 	}
 	
 	@Override
 	public boolean link(EnumFacing facing) {
+		if (world.isRemote) return false;
 		if (cap.isLinked(facing)) return true;
 		if (!canLink(facing)) return false;
 		setLinkedData(facing, true);
-		side = linkData == 0 ? getSide(facing) : getSide(facing, linked.get(0));
+		side = calculateSide();
 		return true;
 	}
 	
@@ -73,29 +78,46 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 		else linked.remove(facing);
 	}
 	
-	protected static EnumFacing getSide(EnumFacing facing, EnumFacing other) {
-		switch (facing) {
-			case DOWN: case UP:
-				switch (other) {
-					case NORTH: case SOUTH: return WEST;
-					default: return NORTH;
-				}
-			case NORTH: case SOUTH:
-				switch (other) {
-					case DOWN: case UP: return WEST;
-					default: return UP;
-				}
-			default:
-				switch (other) {
-					case DOWN: case UP: return NORTH;
-					default: return UP;
-				}
+	protected EnumFacing calculateSide() {
+		if (linked.size() == 1) {
+			EnumFacing facing = linked.get(0);
+			if (facing == UP || facing == DOWN) {
+				if (side != UP && side != DOWN) return side;
+				return NORTH;
+			}
+			if (calculatePossibleSide(facing).contains(side)) return side;
+			return UP;
 		}
+		return calculatePossibleSide(linked).get(0);
 	}
 	
-	protected static EnumFacing getSide(EnumFacing facing) {
-		if (facing == UP || facing == DOWN) return NORTH;
-		return UP;
+	protected static List<EnumFacing> calculatePossibleSide(Collection<EnumFacing> facings) {
+		List<EnumFacing> all = Lists.newArrayList(EnumFacing.values());
+		facings.stream().map(ShuntPipeTileEntity::getPossibleSides).forEach(all::retainAll);
+		return all;
+	}
+	
+	protected static List<EnumFacing> calculatePossibleSide(EnumFacing... facings) {
+		List<EnumFacing> all = Lists.newArrayList(EnumFacing.values());
+		for (EnumFacing value : facings) {
+			all.retainAll(getPossibleSides(value));
+		}
+		return all;
+	}
+	
+	private static final List<EnumFacing> SIDE_UP =
+								Collections.unmodifiableList(Lists.newArrayList(HORIZONTALS));
+	private static final List<EnumFacing> SIDE_WEST =
+								Collections.unmodifiableList(Lists.newArrayList(UP, DOWN, SOUTH, NORTH));
+	private static final List<EnumFacing> SIDE_NORTH =
+								Collections.unmodifiableList(Lists.newArrayList(UP, DOWN, WEST, EAST));
+	
+	private static List<EnumFacing> getPossibleSides(EnumFacing facing) {
+		switch (facing) {
+			case DOWN: case UP: return SIDE_UP;
+			case NORTH: case SOUTH: return SIDE_NORTH;
+			default: return SIDE_WEST;
+		}
 	}
 	
 	public EnumFacing getSide() {

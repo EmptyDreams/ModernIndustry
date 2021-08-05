@@ -6,7 +6,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -54,16 +53,13 @@ abstract public class Pipe extends TEBlockBase {
 	@Override
 	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
 		TileEntity fromEntity = worldIn.getTileEntity(fromPos);
-		if (fromEntity instanceof FTTileEntity) return;
 		Block block = fromEntity == null ? worldIn.getBlockState(fromPos).getBlock() : fromEntity.getBlockType();
+		if (block instanceof Pipe) return;
 		FTTileEntity nowEntity = (FTTileEntity) worldIn.getTileEntity(pos);
 		@SuppressWarnings("ConstantConditions") IFluid cap = nowEntity.getFTCapability();
 		EnumFacing facing = WorldUtil.whatFacing(pos, fromPos);
-		if (block == Blocks.AIR || fromEntity == null) {
-			cap.unlink(facing);
-		} else {
-			cap.link(facing);
-		}
+		if (fromEntity == null) cap.unlink(facing);
+		else cap.link(facing);
 		nowEntity.markDirty();
 	}
 	

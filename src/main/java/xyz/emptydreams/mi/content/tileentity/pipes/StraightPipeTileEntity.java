@@ -60,6 +60,7 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	
 	@Override
 	public boolean link(EnumFacing facing) {
+		if (world.isRemote) return false;
 		if (cap.isLinked(facing)) return true;
 		if (!cap.canLink(facing)) return false;
 		if (linkData == 0) setFacing(facing);

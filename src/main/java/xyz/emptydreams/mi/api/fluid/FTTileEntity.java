@@ -58,8 +58,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	@Storage(byte.class) protected int linkData = 0b000000;
 	/** 六个方向的管塞数据 */
 	@Storage protected final Map<EnumFacing, Item> plugData = new EnumMap<>(EnumFacing.class);
-	/** 存储管道方向 */
-	@Storage protected EnumFacing facing = NORTH;
 	/** 存储管道内流体来源 */
 	@Storage protected EnumFacing source = null;
 	
@@ -245,6 +243,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	abstract public boolean link(EnumFacing facing);
 	
 	protected void setLinkedData(EnumFacing facing, boolean isLinked) {
+		if (world.isRemote) return;
 		switch (facing) {
 			case DOWN:
 				if (isLinked) linkData |= 0b010000;
@@ -252,7 +251,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 				break;
 			case UP:
 				if (isLinked) linkData |= 0b100000;
-				else linkData &= 0b0111111;
+				else linkData &= 0b011111;
 				break;
 			case NORTH:
 				if (isLinked) linkData |= 0b000001;
@@ -298,6 +297,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		
 		@Override
 		public int extract(FluidStack stack, boolean simulate) {
+			if (world.isRemote) return 0;
 			if (fluidStack == null) return 0;
 			int real = Math.min(stack.amount, fluidStack.amount);
 			if (simulate) return real;
@@ -309,6 +309,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		
 		@Override
 		public int insert(FluidStack stack, EnumFacing facing, boolean simulate) {
+			if (world.isRemote) return 0;
 			if (fluidStack == null) fluidStack = new FluidStack(stack.getFluid(), 0);
 			int sum = fluidStack.amount + stack.amount;
 			if (sum <= getMaxAmount()) {
@@ -371,7 +372,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		
 		@Override
 		public void unlink(EnumFacing facing) {
-			setLinkedData(facing, false);
+			if (!world.isRemote) setLinkedData(facing, false);
 		}
 		
 		@Override
