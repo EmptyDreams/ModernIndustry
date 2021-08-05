@@ -50,7 +50,7 @@ import static xyz.emptydreams.mi.api.capabilities.fluid.IFluid.FLUID_TRANSFER_MA
  */
 public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITickable {
 	
-	protected final FluidSrcCap cap = new FluidSrcCap();
+	protected final FluidSrcCap cap = initCap();
 	
 	/** 存储包含的流体类型 */
 	@Storage protected FluidStack fluidStack = null;
@@ -64,6 +64,11 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	@Storage protected EnumFacing source = null;
 	
 	public FTTileEntity() { }
+	
+	/** 初始化流体Cap，子类可重写该方法以修改cap指向的对象 */
+	protected FluidSrcCap initCap() {
+		return new FluidSrcCap();
+	}
 	
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {

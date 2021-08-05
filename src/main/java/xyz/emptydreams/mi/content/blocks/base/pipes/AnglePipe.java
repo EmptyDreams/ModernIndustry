@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.content.blocks.base.pipes;
 
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -18,7 +17,6 @@ import xyz.emptydreams.mi.content.tileentity.pipes.AnglePipeTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 import static xyz.emptydreams.mi.api.utils.properties.MIProperty.HORIZONTAL;
 import static xyz.emptydreams.mi.content.blocks.base.pipes.StraightPipe.link;
@@ -104,49 +102,6 @@ public class AnglePipe extends Pipe {
 				}
 		}
 		throw new IllegalArgumentException("不合理的方向组合：facing=" + facing + ",after=" + after);
-	}
-	
-	@Override
-	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos,
-	                                  AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes,
-	                                  @Nullable Entity entityIn, boolean isActualState) {
-		if (!isActualState) state = state.getActualState(worldIn, pos);
-		addCollisionBoxToList(pos, entityBox, collidingBoxes,
-				new AxisAlignedBB(5/16d, 5/16d, 5/16d, 11/16d, 11/16d, 11/16d));
-		EnumFacing facing = state.getValue(HORIZONTAL);
-		EnumFacing after = state.getValue(ANGLE_FACING).toEnumFacing(facing);
-		addCollisionBoxToList(facing, pos, entityBox, collidingBoxes);
-		addCollisionBoxToList(after, pos, entityBox, collidingBoxes);
-	}
-	
-	public void addCollisionBoxToList(EnumFacing facing, BlockPos pos,
-	                                         AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes) {
-		switch (facing) {
-			case DOWN:
-				addCollisionBoxToList(pos, entityBox, collidingBoxes,
-						new AxisAlignedBB(5/16d, 0, 5/16d, 11/16d, 5/16d, 11/16d));
-				break;
-			case UP:
-				addCollisionBoxToList(pos, entityBox, collidingBoxes,
-						new AxisAlignedBB(5/16d, 11/16d, 5/16d, 11/16d, 1, 11/16d));
-				break;
-			case NORTH:
-				addCollisionBoxToList(pos, entityBox, collidingBoxes,
-					new AxisAlignedBB(5/16d, 5/16d, 0, 11/16d, 11/16d, 5/16d));
-				break;
-			case SOUTH:
-				addCollisionBoxToList(pos, entityBox, collidingBoxes,
-						new AxisAlignedBB(5/16d, 5/16d, 11/16d, 11/16d, 11/16d, 1));
-				break;
-			case WEST:
-				addCollisionBoxToList(pos, entityBox, collidingBoxes,
-						new AxisAlignedBB(0, 5/16d, 5/16d, 5/16d, 11/16d, 11/16d));
-				break;
-			case EAST:
-				addCollisionBoxToList(pos, entityBox, collidingBoxes,
-						new AxisAlignedBB(11/16d, 5/16d, 5/16d, 1, 11/16d, 11/16d));
-				break;
-		}
 	}
 	
 	@Nullable

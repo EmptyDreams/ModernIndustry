@@ -81,16 +81,54 @@ abstract public class Pipe extends TEBlockBase {
 		return false;
 	}
 	
+	@SuppressWarnings("ConstantConditions")
+	@Override
+	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos,
+	                                  AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes,
+	                                  @Nullable Entity entityIn, boolean isActualState) {
+		addCollisionBoxToList(pos, entityBox, collidingBoxes,
+				new AxisAlignedBB(5/16d, 5/16d, 5/16d, 11/16d, 11/16d, 11/16d));
+		IFluid cap = worldIn.getTileEntity(pos).getCapability(FluidCapability.TRANSFER, null);
+		for (EnumFacing facing : EnumFacing.values()) {
+			if (cap.hasAperture(facing)) addCollisionBoxToList(facing, pos, entityBox, collidingBoxes);
+		}
+	}
+	
+	protected void addCollisionBoxToList(EnumFacing facing, BlockPos pos,
+	                                  AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes) {
+		switch (facing) {
+			case DOWN:
+				addCollisionBoxToList(pos, entityBox, collidingBoxes,
+						new AxisAlignedBB(5/16d, 0, 5/16d, 11/16d, 5/16d, 11/16d));
+				break;
+			case UP:
+				addCollisionBoxToList(pos, entityBox, collidingBoxes,
+						new AxisAlignedBB(5/16d, 11/16d, 5/16d, 11/16d, 1, 11/16d));
+				break;
+			case NORTH:
+				addCollisionBoxToList(pos, entityBox, collidingBoxes,
+						new AxisAlignedBB(5/16d, 5/16d, 0, 11/16d, 11/16d, 5/16d));
+				break;
+			case SOUTH:
+				addCollisionBoxToList(pos, entityBox, collidingBoxes,
+						new AxisAlignedBB(5/16d, 5/16d, 11/16d, 11/16d, 11/16d, 1));
+				break;
+			case WEST:
+				addCollisionBoxToList(pos, entityBox, collidingBoxes,
+						new AxisAlignedBB(0, 5/16d, 5/16d, 5/16d, 11/16d, 11/16d));
+				break;
+			case EAST:
+				addCollisionBoxToList(pos, entityBox, collidingBoxes,
+						new AxisAlignedBB(11/16d, 5/16d, 5/16d, 1, 11/16d, 11/16d));
+				break;
+		}
+	}
+	
 	@Override
 	abstract public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos);
 	
 	@Override
 	abstract public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos);
-	
-	@Override
-	abstract public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos,
-	                                           AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes,
-	                                           @Nullable Entity entityIn, boolean isActualState);
 	
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {

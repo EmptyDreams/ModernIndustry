@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.content.blocks.base.pipes;
 
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -18,7 +17,6 @@ import xyz.emptydreams.mi.content.tileentity.pipes.StraightPipeTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 import static xyz.emptydreams.mi.api.utils.properties.MIProperty.ALL_FACING;
 
@@ -112,32 +110,6 @@ public class StraightPipe extends Pipe {
 			case WEST:
 			case EAST:
 				return new AxisAlignedBB(0, 1 / 4d, 1 / 4d, 1, 3 / 4d, 3 / 4d);
-			default:
-				throw new IllegalArgumentException("facing[" + facing + "]不属于任何一个方向");
-		}
-	}
-	
-	@Override
-	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos,
-	                                  AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes,
-	                                  @Nullable Entity entityIn, boolean isActualState) {
-		EnumFacing facing = state.getValue(ALL_FACING);
-		switch (facing) {
-			case DOWN:
-			case UP:
-				addCollisionBoxToList(pos, entityBox, collidingBoxes,
-						new AxisAlignedBB(5 / 16d, 0, 5 / 16d, 11 / 16d, 1, 11 / 16d));
-				break;
-			case NORTH:
-			case SOUTH:
-				addCollisionBoxToList(pos, entityBox, collidingBoxes,
-						new AxisAlignedBB(5 / 16d, 5 / 16d, 0, 11 / 16d, 11 / 16d, 1));
-				break;
-			case WEST:
-			case EAST:
-				addCollisionBoxToList(pos, entityBox, collidingBoxes,
-						new AxisAlignedBB(0, 5 / 16d, 5 / 16d, 1, 11 / 16d, 11 / 16d));
-				break;
 			default:
 				throw new IllegalArgumentException("facing[" + facing + "]不属于任何一个方向");
 		}
