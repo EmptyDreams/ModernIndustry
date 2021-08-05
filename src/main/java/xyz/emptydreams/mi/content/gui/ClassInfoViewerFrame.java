@@ -8,9 +8,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.event.GuiRegistryEvent;
@@ -26,6 +29,7 @@ import xyz.emptydreams.mi.api.net.handler.MessageSender;
 import xyz.emptydreams.mi.api.net.message.player.PlayerAddition;
 import xyz.emptydreams.mi.api.net.message.player.PlayerMessage;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
+import xyz.emptydreams.mi.api.tools.FrontTileEntity;
 import xyz.emptydreams.mi.content.items.debug.DebugDetails;
 import xyz.emptydreams.mi.content.net.ClassInfoViewerMessage;
 
@@ -85,59 +89,92 @@ public class ClassInfoViewerFrame extends MIFrame {
 	public ClassInfoViewerFrame(TileEntity entity, EntityPlayer player) {
 		super(LOCATION_NAME, player);
 		setSize(210, 180);
+		RollGroup rollGroup = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
+		rollGroup.setControlPanel(Panels::horizontalUp);
+		rollGroup.setMinDistance(6);
+		rollGroup.setSize(185, 150);
+		rollGroup.setLocation(0, 14);
+		Class<?> clazz = entity.getClass();
+		Group nameGroup = new Group(Panels::verticalRight);
+		Group valueGroup = new Group(Panels::verticalLeft);
 		try {
-			RollGroup rollGroup = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
-			rollGroup.setControlPanel(Panels::horizontalUp);
-			rollGroup.setMinDistance(6);
-			rollGroup.setSize(185, 150);
-			rollGroup.setLocation(0, 14);
-			Class<?> clazz = entity.getClass();
-			Group nameGroup = new Group(Panels::verticalRight);
-			Group valueGroup = new Group(Panels::verticalLeft);
+			Class<TileEntity> teClass = TileEntity.class;
+			addText(nameGroup, valueGroup, "pos", entity.getPos().toString(), 8388352);
 			while (isContinue(clazz)) {
 				Field[] fields = clazz.getDeclaredFields();
+				String className = clazz.getSimpleName();
 				clazz = clazz.getSuperclass();
 				if (fields.length == 0) continue;
+				boundary(nameGroup, valueGroup, className);
 				task(nameGroup, valueGroup, fields, entity);
 			}
-			rollGroup.adds(nameGroup, valueGroup);
-			add(rollGroup);
 		} catch (Exception e) {
 			throw TransferException.instance("创建类信息查看GUI时出现异常", e);
 		}
+		rollGroup.adds(nameGroup, valueGroup);
+		add(rollGroup);
 	}
 	
 	private static void task(Group nameGroup, Group valueGroup, Field[] fields, Object obj)
 			throws IllegalAccessException {
 		for (Field field : fields) {
-			String nameText = field.getName();
-			if (nameText.contains("$")) continue;
-			if (!Modifier.isPublic(field.getModifiers())) field.setAccessible(true);
-			Class<?> clazz = field.getType();
-			Object details = field.get(obj);
-			if (clazz.isAnnotationPresent(DebugDetails.class)) {
-				task(nameGroup, valueGroup, clazz.getDeclaredFields(), details);
-				return;
-			}
-			int color = getStringColor(field);
-			StringComponent name = new StringComponent(nameText);
-			StringComponent value = new StringComponent(getValue(details));
-			name.setColor(color);
-			value.setColor(color);
-			nameGroup.add(name);
-			valueGroup.add(value);
+			task(nameGroup, valueGroup, field, obj);
 		}
 	}
 	
+	private static void task(Group nameGroup, Group valueGroup, Field field, Object obj)
+			throws IllegalAccessException {
+		String nameText = field.getName();
+		if (nameText.contains("$")) return;
+		if (!Modifier.isPublic(field.getModifiers())) field.setAccessible(true);
+		Class<?> clazz = field.getType();
+		Object details = field.get(obj);
+		if (clazz.isAnnotationPresent(DebugDetails.class)) {
+			task(nameGroup, valueGroup, clazz.getDeclaredFields(), details);
+			return;
+		}
+		int color = getStringColor(field);
+		addText(nameGroup, valueGroup, nameText, getValue(details), color);
+	}
+	
+	private static void addText(Group nameGroup, Group valueGroup, String name, String value, int color) {
+		StringComponent nameComponent = new StringComponent(name);
+		StringComponent valueComponent = new StringComponent(value);
+		nameComponent.setColor(color);
+		valueComponent.setColor(color);
+		nameGroup.add(nameComponent);
+		valueGroup.add(valueComponent);
+	}
+	
+	private static void boundary(Group nameGroup, Group valueGroup, String name) {
+		StringComponent boundary = new StringComponent("*-*" + name);
+		StringComponent nullComponent = new StringComponent("*-*-*-*-*-*-*-*");
+		boundary.setColor(292325);
+		nameGroup.add(boundary);
+		valueGroup.add(nullComponent);
+	}
+	
 	private static String getValue(Object details) {
+		if (details instanceof FluidStack) {
+			FluidStack stack = (FluidStack) details;
+			return getValue(stack.getFluid()) + ":" + stack.amount;
+		}
 		String text = String.valueOf(details);
 		String hash = '@' + Integer.toHexString(System.identityHashCode(details));
-		if (text.endsWith(hash)) return "未重写toString()";
+		if (text.endsWith(hash)) {
+			if (details instanceof IForgeRegistryEntry.Impl) {
+				return ((IForgeRegistryEntry.Impl<?>) details).getRegistryName().toString();
+			}
+			if (details instanceof Fluid) {
+				return I18n.format(((Fluid) details).getBlock().getUnlocalizedName() + ".name");
+			}
+			return "未重写toString()";
+		}
 		return text;
 	}
 	
 	private static boolean isContinue(Class<?> clazz) {
-		return clazz != TileEntity.class && clazz != BaseTileEntity.class;
+		return clazz != TileEntity.class && clazz != BaseTileEntity.class && clazz != FrontTileEntity.class;
 	}
 	
 	private static int getStringColor(Field field) {
