@@ -157,7 +157,8 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	
 	@Override
 	public NBTTagCompound getUpdateTag() {
-		if (isRemove) {
+		send();
+		if (isRemove && players.size() != world.playerEntities.size()) {
 			isRemove = false;
 			WorldUtil.addTickable(this);
 		}
