@@ -297,7 +297,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		
 		@Override
 		public int extract(FluidStack stack, boolean simulate) {
-			if (world.isRemote) return 0;
 			if (fluidStack == null) return 0;
 			int real = Math.min(stack.amount, fluidStack.amount);
 			if (simulate) return real;
@@ -309,7 +308,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		
 		@Override
 		public int insert(FluidStack stack, EnumFacing facing, boolean simulate) {
-			if (world.isRemote) return 0;
 			if (fluidStack == null) fluidStack = new FluidStack(stack.getFluid(), 0);
 			int sum = fluidStack.amount + stack.amount;
 			if (sum <= getMaxAmount()) {
