@@ -34,7 +34,7 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	@Override
 	protected void syncClient(IDataReader reader) {
 		side = EnumFacing.values()[reader.readByte()];
-		if (linkData == 0) return;
+		if (linkData == 0 || !linked.isEmpty()) return;
 		for (EnumFacing value : values()) {
 			if (cap.isLinked(value)) linked.add(value);
 		}
@@ -63,7 +63,6 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	
 	@Override
 	public boolean link(EnumFacing facing) {
-		if (world.isRemote) return false;
 		if (cap.isLinked(facing)) return true;
 		if (!canLink(facing)) return false;
 		setLinkedData(facing, true);
@@ -88,7 +87,11 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 			if (calculatePossibleSide(facing).contains(side)) return side;
 			return UP;
 		}
-		return calculatePossibleSide(linked).get(0);
+		List<EnumFacing> facing = calculatePossibleSide(linked);
+		if (facing.isEmpty()) {
+			return UP;
+		}
+		return facing.get(0);
 	}
 	
 	protected static List<EnumFacing> calculatePossibleSide(Collection<EnumFacing> facings) {

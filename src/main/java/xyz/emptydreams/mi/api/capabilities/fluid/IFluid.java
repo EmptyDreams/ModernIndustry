@@ -7,6 +7,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 import static net.minecraft.util.EnumFacing.*;
@@ -249,6 +250,12 @@ public interface IFluid {
 		FluidStack out = new FluidStack(fluid, Math.min(amount, FLUID_TRANSFER_MAX_AMOUNT));
 		out.amount = extract(out, true);
 		if (out.amount == 0) return null;
+		
+		List<EnumFacing> nexts = Collections.emptyList();
+		//do {
+		
+		//} while (!nexts.isEmpty());
+		
 		IFluid that = getLinkedTransfer(facing);
 		if (that == null) return null;
 		int realIn = that.insert(out, null, true);
@@ -259,6 +266,15 @@ public interface IFluid {
 			that.insert(out, facing.getOpposite(), false);
 		}
 		return out;
+	}
+	
+	/** 按照传输优先级对可选方向进行排序 */
+	default void sortFacing(List<EnumFacing> facings) {
+		if (facings.isEmpty()) return;
+		facings.sort((o1, o2) -> {
+			if (o1.getAxis() == Axis.Y) return o2.getAxis() == Axis.Y ? 0 : 1;
+			else return o2.getAxis() == Axis.Y ? -1 : 0;
+		});
 	}
 	
 }

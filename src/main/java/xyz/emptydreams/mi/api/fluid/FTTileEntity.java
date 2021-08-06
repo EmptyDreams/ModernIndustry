@@ -244,7 +244,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	abstract public boolean link(EnumFacing facing);
 	
 	protected void setLinkedData(EnumFacing facing, boolean isLinked) {
-		if (world.isRemote) return;
 		switch (facing) {
 			case DOWN:
 				if (isLinked) linkData |= 0b010000;
@@ -373,7 +372,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		
 		@Override
 		public void unlink(EnumFacing facing) {
-			if (!world.isRemote) setLinkedData(facing, false);
+			setLinkedData(facing, false);
 		}
 		
 		@Override

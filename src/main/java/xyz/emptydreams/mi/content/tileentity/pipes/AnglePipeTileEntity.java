@@ -71,7 +71,6 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	
 	@Override
 	public boolean link(EnumFacing facing) {
-		if (world.isRemote) return false;
 		if (cap.isLinked(facing)) return true;
 		if (!canLink(facing)) return false;
 		if (facing == DOWN || facing == UP) {

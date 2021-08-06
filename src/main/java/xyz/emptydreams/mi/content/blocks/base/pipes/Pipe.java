@@ -51,13 +51,13 @@ abstract public class Pipe extends TEBlockBase {
 	}
 	
 	@Override
-	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
-		TileEntity fromEntity = worldIn.getTileEntity(fromPos);
-		Block block = fromEntity == null ? worldIn.getBlockState(fromPos).getBlock() : fromEntity.getBlockType();
+	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
+		TileEntity fromEntity = world.getTileEntity(neighbor);
+		Block block = fromEntity == null ? world.getBlockState(neighbor).getBlock() : fromEntity.getBlockType();
 		if (block instanceof Pipe) return;
-		FTTileEntity nowEntity = (FTTileEntity) worldIn.getTileEntity(pos);
+		FTTileEntity nowEntity = (FTTileEntity) world.getTileEntity(pos);
 		@SuppressWarnings("ConstantConditions") IFluid cap = nowEntity.getFTCapability();
-		EnumFacing facing = WorldUtil.whatFacing(pos, fromPos);
+		EnumFacing facing = WorldUtil.whatFacing(pos, neighbor);
 		if (fromEntity == null) cap.unlink(facing);
 		else cap.link(facing);
 		nowEntity.markDirty();
