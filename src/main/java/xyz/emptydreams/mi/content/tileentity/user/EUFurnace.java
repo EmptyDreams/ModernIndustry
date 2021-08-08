@@ -87,7 +87,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 
 		IBlockState old = world.getBlockState(pos);
 		IBlockState state = old.withProperty(MIProperty.WORKING, workingTime > 0);
-		WorldUtil.setBlockState(world, pos, old, state);
+		WorldUtil.setBlockState(world, pos, state);
 	}
 
 	public IProgressBar getProgressBar() { return progressBar; }

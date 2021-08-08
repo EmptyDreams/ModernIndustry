@@ -49,7 +49,7 @@ public interface BlockItemHelper {
 	
 	default void putBlock(World world, BlockPos pos, IBlockState state,
 	                      TileEntity te, EntityPlayer player, ItemStack stack) {
-		world.setBlockState(pos, state);
+		world.setBlockState(pos, state, 11);
 		world.setTileEntity(pos, te);
 		state.getBlock().onBlockPlacedBy(world, pos, state, player, stack);
 		if (player instanceof EntityPlayerMP)

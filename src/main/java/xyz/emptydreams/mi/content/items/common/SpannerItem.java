@@ -79,7 +79,7 @@ public class SpannerItem extends Item {
 		EnumFacing decide = decideFacing(facing, hitX, hitY, hitZ);
 		PropertyDirection property = getPropertyDirection(worldIn, pos, state);
 		if (property == null || !property.getAllowedValues().contains(decide)) return EnumActionResult.PASS;
-		WorldUtil.setBlockState(worldIn, pos, state, state.withProperty(property, decide));
+		WorldUtil.setBlockState(worldIn, pos, state.withProperty(property, decide));
 
 		return EnumActionResult.SUCCESS;
 	}

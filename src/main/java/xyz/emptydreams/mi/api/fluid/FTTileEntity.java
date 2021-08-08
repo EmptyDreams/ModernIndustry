@@ -126,10 +126,9 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	abstract protected void syncClient(IDataReader reader);
 	
 	/**
-	 * <p>像客户端发送服务端存储的信息
-	 * <p><b>这其中写有更新内部数据的代码，重写时应该调用</b>
+	 * <p>向客户端发送服务端存储的信息并更新显示
 	 */
-	protected final void send() {
+	public final void send() {
 		if (world.isRemote) return;
 		if (players.size() == world.playerEntities.size()) return;
 		ByteDataOperator operator = new ByteDataOperator(1);
@@ -150,8 +149,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	
 	@Override
 	public void markDirty() {
-		players.clear();
-		send();
 		super.markDirty();
 	}
 	
@@ -169,7 +166,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		if (world.isRemote && !isRunOnClient) return;
 		IBlockState oldState = world.getBlockState(pos);
 		IBlockState newState = oldState.getActualState(world, pos);
-		WorldUtil.setBlockState(world, pos, oldState, newState);
+		WorldUtil.setBlockState(world, pos, newState);
 	}
 	
 	protected int sleepTime = 20;

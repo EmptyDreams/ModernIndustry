@@ -71,7 +71,14 @@ public enum AngleFacingEnum implements IStringSerializable {
 	 */
 	@Nonnull
 	public static AngleFacingEnum valueOf(EnumFacing facing, EnumFacing after) {
-		if (facing == EnumFacing.UP || facing == EnumFacing.DOWN) return valueOf(after, facing);
+		if (facing == EnumFacing.UP || facing == EnumFacing.DOWN) {
+			if (after == EnumFacing.UP || after == EnumFacing.DOWN) {
+				throw new IllegalArgumentException(
+						"输入了不可能的方向：facing=" + facing + ",after=" + after);
+			} else {
+				return valueOf(after, facing);
+			}
+		}
 		switch (after) {
 			case UP: return AngleFacingEnum.UP;
 			case DOWN: return AngleFacingEnum.DOWN;

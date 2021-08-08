@@ -173,18 +173,6 @@ public final class WorldUtil {
 	}
 	
 	/**
-	 * 设置BlockState，当新旧state一致时不进行替换
-	 * @param world 所在世界
-	 * @param pos 方块坐标
-	 * @param oldState 旧的state
-	 * @param newState 新的state
-	 */
-	public static void setBlockState(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
-		if (!oldState.equals(newState)) world.setBlockState(pos, newState, 11);
-		world.markBlockRangeForRenderUpdate(pos, pos);
-	}
-	
-	/**
 	 * 判断指定方块是否为完整方块或接近于完整方块
 	 * @param access 所在世界
 	 * @param pos 方块坐标

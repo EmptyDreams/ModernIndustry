@@ -86,7 +86,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 			burnItem = null;
 			state = old.withProperty(MIProperty.WORKING, false);
 		}
-		WorldUtil.setBlockState(world, pos, old, state);
+		WorldUtil.setBlockState(world, pos, state);
 		progressBar.setMax(maxTime);
 		markDirty();
 	}

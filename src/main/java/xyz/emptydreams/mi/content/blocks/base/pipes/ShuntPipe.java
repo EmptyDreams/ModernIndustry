@@ -44,6 +44,7 @@ public class ShuntPipe extends Pipe {
 	
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+		state = state.getActualState(source, pos);
 		switch (state.getValue(ALL_FACING)) {
 			case DOWN: case UP: return new AxisAlignedBB(0, 1/4d, 0, 1, 3/4d, 1);
 			case NORTH: case SOUTH: return new AxisAlignedBB(0, 0, 1/4d, 1, 1, 3/4d);

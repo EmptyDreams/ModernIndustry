@@ -84,7 +84,7 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 		
 		IBlockState oldState = world.getBlockState(pos);
 		IBlockState newState = oldState.withProperty(WORKING, isWorking());
-		WorldUtil.setBlockState(world, pos, oldState, newState);
+		WorldUtil.setBlockState(world, pos, newState);
 	}
 	
 	/** 更新工作时间 */

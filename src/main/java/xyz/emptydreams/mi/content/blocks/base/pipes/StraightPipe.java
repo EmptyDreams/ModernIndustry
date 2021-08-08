@@ -99,6 +99,7 @@ public class StraightPipe extends Pipe {
 	
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+		state = state.getActualState(source, pos);
 		EnumFacing facing = state.getValue(ALL_FACING);
 		switch (facing) {
 			case DOWN:

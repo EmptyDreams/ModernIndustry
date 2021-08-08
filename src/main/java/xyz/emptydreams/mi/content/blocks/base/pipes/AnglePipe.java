@@ -68,6 +68,7 @@ public class AnglePipe extends Pipe {
 	
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+		state = state.getActualState(source, pos);
 		EnumFacing facing = state.getValue(HORIZONTAL);
 		EnumFacing after = state.getValue(ANGLE_FACING).toEnumFacing(facing);
 		switch (facing) {

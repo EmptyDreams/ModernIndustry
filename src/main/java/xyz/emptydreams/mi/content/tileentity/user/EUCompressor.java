@@ -136,7 +136,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		IBlockState old = world.getBlockState(pos);
 		IBlockState state = old.withProperty(MIProperty.EMPTY, isEmpty())
 				                    .withProperty(MIProperty.WORKING, isWorking);
-		WorldUtil.setBlockState(world, pos, old, state);
+		WorldUtil.setBlockState(world, pos, state);
 	}
 	
 	/**
