@@ -144,7 +144,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 			players.add(player.getName());
 			return true;
 		});
-		updateBlockState(false);
 	}
 	
 	@Override
@@ -163,7 +162,13 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	}
 	
 	public void updateBlockState(boolean isRunOnClient) {
-		if (world.isRemote && !isRunOnClient) return;
+		markDirty();
+		if (world.isRemote) {
+			if (!isRunOnClient) return;
+		} else {
+			players.clear();
+			send();
+		}
 		IBlockState oldState = world.getBlockState(pos);
 		IBlockState newState = oldState.getActualState(world, pos);
 		WorldUtil.setBlockState(world, pos, newState);
@@ -210,13 +215,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	 * @return 如果移除成功则返回true
 	 */
 	public boolean updateTickableState() {
-		if (world.isRemote) {
-			if (!isRemove) {
-				isRemove = true;
-				WorldUtil.removeTickable(this);
-			}
-			return true;
-		}
 		if (!isRemove && cap.fluid() == null) {
 			isRemove = true;
 			WorldUtil.removeTickable(this);
@@ -267,6 +265,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 				else linkData &= 0b110111;
 				break;
 		}
+		updateBlockState(false);
 	}
 	
 	@DebugDetails
