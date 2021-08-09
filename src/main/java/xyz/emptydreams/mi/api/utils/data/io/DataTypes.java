@@ -62,6 +62,7 @@ public final class DataTypes {
 		registry(new VoltageData(),                            50);
 		registry(new NbtData(),                                50);
 		registry(new FluidStackData(),                         50);
+		registry(new FluidStackArrayData(),                    50);
 		registry(new EnumData(),                               50);
 		registry(new StringBuilderData(),                     100);
 		registry(new StringBufferData(),                      100);
@@ -1556,6 +1557,71 @@ public final class DataTypes {
 			String name = DataSerialize.read(buf, String.class, String.class, null);
 			Fluid fluid = FluidRegistry.getFluid(name);
 			return new FluidStack(fluid, amount);
+		}
+		
+	}
+	
+	public static final class FluidStackArrayData implements IDataIO<FluidStack[]> {
+		
+		@Override
+		public boolean match(@Nonnull Class<?> objType, @Nullable Class<?> fieldType) {
+			return objType == FluidStack[].class;
+		}
+		
+		@Override
+		public void writeToData(IDataWriter writer, FluidStack[] data) {
+			writer.writeVarInt(data.length);
+			for (FluidStack value : data) {
+				DataSerialize.write(writer, value, FluidStack.class);
+			}
+		}
+		
+		@Override
+		public FluidStack[] readFromData(IDataReader reader, Class<?> fieldType, Supplier<FluidStack[]> getter) {
+			FluidStack[] result = new FluidStack[reader.readVarInt()];
+			for (int i = 0; i < result.length; i++) {
+				result[i] = DataSerialize.read(reader, FluidStack.class, FluidStack.class, null);
+			}
+			return result;
+		}
+		
+		@Override
+		public void writeToNBT(NBTTagCompound nbt, String name, FluidStack[] data) {
+			nbt.setInteger("size", data.length);
+			NBTTagCompound tag = new NBTTagCompound();
+			for (int i = 0; i < data.length; i++) {
+				DataSerialize.write(tag, String.valueOf(i), data[i], FluidStack.class);
+			}
+			nbt.setTag("tag", tag);
+		}
+		
+		@Override
+		public FluidStack[] readFromNBT(NBTTagCompound nbt, String name,
+		                                Class<?> fieldType, Supplier<FluidStack[]> getter) {
+			FluidStack[] result = new FluidStack[nbt.getInteger("size")];
+			NBTTagCompound tag = nbt.getCompoundTag("tag");
+			for (int i = 0; i < result.length; i++) {
+				result[i] = DataSerialize.read(tag, String.valueOf(i),
+						FluidStack.class, FluidStack.class, null);
+			}
+			return result;
+		}
+		
+		@Override
+		public void writeToByteBuf(ByteBuf buf, FluidStack[] data) {
+			buf.writeInt(data.length);
+			for (FluidStack value : data) {
+				DataSerialize.write(buf, value, FluidStack.class);
+			}
+		}
+		
+		@Override
+		public FluidStack[] readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<FluidStack[]> getter) {
+			FluidStack[] result = new FluidStack[buf.readInt()];
+			for (int i = 0; i < result.length; i++) {
+				result[i] = DataSerialize.read(buf, FluidStack.class, FluidStack.class, null);
+			}
+			return result;
 		}
 		
 	}
