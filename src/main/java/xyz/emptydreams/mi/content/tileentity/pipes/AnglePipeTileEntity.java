@@ -11,7 +11,6 @@ import xyz.emptydreams.mi.content.blocks.base.pipes.enums.AngleFacingEnum;
 import xyz.emptydreams.mi.content.tileentity.pipes.data.DataManager;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,12 +56,11 @@ public class AnglePipeTileEntity extends FTTileEntity {
 		after = EnumFacing.values()[reader.readByte()];
 	}
 	
-	@Nullable
 	@Override
 	protected DataManager getDataManager(EnumFacing facing) {
 		if (facing == this.facing) return facingData;
 		else if (facing == this.after) return afterData;
-		return null;
+		throw new IllegalArgumentException("输入方向上没有开口：" + facing);
 	}
 	
 	@Override

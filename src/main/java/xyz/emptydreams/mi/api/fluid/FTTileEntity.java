@@ -150,13 +150,16 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		WorldUtil.setBlockState(world, pos, newState);
 	}
 	
+	/**
+	 * 方法内包含管道正常运行的方法，重写时务必使用{@code super.update()}调用
+	 */
 	@Override
 	public void update() {
 		send();
-		//检查运行条件
 		updateTickableState();
 	}
 	
+	/** 存储该TE是否已经从tickable的列表中移除 */
 	private boolean isRemove = false;
 	
 	/**
@@ -175,6 +178,11 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		return false;
 	}
 	
+	/**
+	 * 设置指定方向上的连接状态
+	 * @param facing 指定方向
+	 * @param isLinked 是否连接
+	 */
 	protected void setLinkedData(EnumFacing facing, boolean isLinked) {
 		switch (facing) {
 			case DOWN:
@@ -322,7 +330,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		markDirty();
 	}
 	
-	@Nullable
+	@Nonnull
 	abstract protected DataManager getDataManager(EnumFacing facing);
 	
 	abstract protected boolean matchFacing(EnumFacing facing);

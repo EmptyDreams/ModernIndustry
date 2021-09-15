@@ -58,7 +58,9 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	@Nullable
 	@Override
 	protected DataManager getDataManager(EnumFacing facing) {
-		return null;
+		if (facing.getAxis() == this.facing.getAxis())
+			return manager;
+		throw new IllegalArgumentException("输入方向上没有开口：" + facing);
 	}
 	
 	@Override
