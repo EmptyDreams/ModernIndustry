@@ -178,6 +178,7 @@ public class StraightPipeTileEntity extends FTTileEntity {
 		if (linkData == 0) setFacing(facing);
 		setLinkedData(facing, true);
 		manager = manager.rotate(facing);
+		updateBlockState(false);
 		return true;
 	}
 	

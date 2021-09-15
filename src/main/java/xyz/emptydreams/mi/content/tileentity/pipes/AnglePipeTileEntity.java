@@ -131,6 +131,7 @@ public class AnglePipeTileEntity extends FTTileEntity {
 		}
 		setLinkedData(facing, true);
 		rotate();
+		updateBlockState(false);
 		return true;
 	}
 	

@@ -202,7 +202,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 				else linkData &= 0b110111;
 				break;
 		}
-		updateBlockState(false);
 	}
 	
 	@Override
@@ -218,6 +217,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	@Override
 	public void unlink(EnumFacing facing) {
 		setLinkedData(facing, false);
+		updateBlockState(false);
 	}
 	
 	@Override

@@ -115,6 +115,7 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 		setLinkedData(facing, true);
 		side = calculateSide();
 		rotate();
+		updateBlockState(false);
 		return true;
 	}
 	
@@ -123,6 +124,7 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 		super.setLinkedData(facing, isLinked);
 		if (isLinked) linked.add(facing);
 		else linked.remove(facing);
+		updateBlockState(false);
 	}
 	
 	protected void rotate() {
