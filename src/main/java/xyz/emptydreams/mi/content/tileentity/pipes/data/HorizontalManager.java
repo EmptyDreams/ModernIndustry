@@ -87,7 +87,8 @@ public class HorizontalManager extends DataManager {
 		} else {
 			VerticalManager result = new VerticalManager(facing, getMax());
 			for (int i = content.size() - 1; i >= 0; i--) {
-				ListIterator<FluidData> it = content.get(i).content.listIterator(content.size());
+				SrcDataManager manager = content.get(i);
+				ListIterator<FluidData> it = manager.content.listIterator(manager.content.size());
 				while (it.hasPrevious()) {
 					result.insert(it.previous(), true, false);
 				}
