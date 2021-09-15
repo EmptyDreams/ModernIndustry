@@ -120,6 +120,13 @@ abstract public class Pipe extends TEBlockBase {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
+	@Nullable
+	@Override
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
+		return new AxisAlignedBB(3 / 16d, 3 / 16d, 3 / 16d, 10 / 16d, 10 / 16d, 10 / 16d);
+	}
+	
 	@Override
 	abstract public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos);
 	

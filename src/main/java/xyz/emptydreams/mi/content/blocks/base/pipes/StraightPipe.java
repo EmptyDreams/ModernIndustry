@@ -32,13 +32,6 @@ public class StraightPipe extends Pipe {
 		setDefaultState(blockState.getBaseState().withProperty(ALL_FACING, EnumFacing.NORTH));
 	}
 	
-	@SuppressWarnings("deprecation")
-	@Nullable
-	@Override
-	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
-		return new AxisAlignedBB(3 / 16d, 3 / 16d, 3 / 16d, 10 / 16d, 10 / 16d, 10 / 16d);
-	}
-	
 	@SuppressWarnings("ConstantConditions")
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
