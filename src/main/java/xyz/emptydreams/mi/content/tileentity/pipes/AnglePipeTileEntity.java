@@ -130,7 +130,13 @@ public class AnglePipeTileEntity extends FTTileEntity {
 			}
 		}
 		setLinkedData(facing, true);
+		rotate();
 		return true;
+	}
+	
+	protected void rotate() {
+		facingData = facingData.rotate(facing);
+		afterData = afterData.rotate(after);
 	}
 	
 	public EnumFacing getFacing() {

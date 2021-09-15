@@ -42,6 +42,7 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	
 	public StraightPipeTileEntity(EnumFacing facing) {
 		this.facing = facing;
+		manager = DataManager.instance(facing, getMaxAmount());
 	}
 	
 	@Override
@@ -176,6 +177,7 @@ public class StraightPipeTileEntity extends FTTileEntity {
 		if (!canLink(facing)) return false;
 		if (linkData == 0) setFacing(facing);
 		setLinkedData(facing, true);
+		manager = manager.rotate(facing);
 		return true;
 	}
 	
