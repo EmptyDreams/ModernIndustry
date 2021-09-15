@@ -1,22 +1,22 @@
 package xyz.emptydreams.mi.api.capabilities.fluid;
 
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
+import xyz.emptydreams.mi.api.fluid.TransportResult;
 import xyz.emptydreams.mi.api.register.others.AutoLoader;
+import xyz.emptydreams.mi.content.tileentity.pipes.data.FluidData;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * 流体管道的Cap
  * @author EmptyDreams
  */
+@SuppressWarnings("ConstantConditions")
 @AutoLoader
 public class FluidCapability {
 	
@@ -26,39 +26,28 @@ public class FluidCapability {
 	static {
 		CapabilityManager.INSTANCE.register(IFluid.class, new FluidStore(),
 				() -> new IFluid() {
-			
 					@Override
-					public int fluidAmount() {
-						return -1;
+					public boolean isEmpty() {
+						return false;
 					}
 					@Override
-					public Fluid fluid() {
-						return null;
+					public TransportResult extract(int amount, EnumFacing facing, boolean simulate) {
+						return new TransportResult();
 					}
 					@Override
-					public void setFluid(FluidStack stack) { }
-					@Override
-					public int extract(FluidStack stack, boolean simulate) {
-						return 0;
+					public TransportResult insert(FluidData data, EnumFacing facing, boolean simulate) {
+						return new TransportResult();
 					}
 					@Override
-					public int insert(FluidStack stack, EnumFacing facing, boolean simulate) {
-						return 0;
-					}
+					public void setSource(EnumFacing facing) {}
 					@Override
-					public void setSource(EnumFacing facing) { }
-					@Override
-					public int getMaxAmount() {
-						return 0;
-					}
-					@Override
-					public IFluid getLinkedTransfer(EnumFacing facing) {
+					public EnumFacing getSource() {
 						return null;
 					}
 					@Nonnull
 					@Override
-					public List<EnumFacing> next() {
-						return Collections.emptyList();
+					public List<EnumFacing> next(EnumFacing facing) {
+						return null;
 					}
 					@Override
 					public boolean hasAperture(EnumFacing facing) {
@@ -99,27 +88,27 @@ public class FluidCapability {
 						return false;
 					}
 					@Override
-					public boolean setPlugUp(Item plug) {
+					public boolean setPlugUp(ItemStack plug) {
 						return false;
 					}
 					@Override
-					public boolean setPlugDown(Item plug) {
+					public boolean setPlugDown(ItemStack plug) {
 						return false;
 					}
 					@Override
-					public boolean setPlugNorth(Item plug) {
+					public boolean setPlugNorth(ItemStack plug) {
 						return false;
 					}
 					@Override
-					public boolean setPlugSouth(Item plug) {
+					public boolean setPlugSouth(ItemStack plug) {
 						return false;
 					}
 					@Override
-					public boolean setPlugWest(Item plug) {
+					public boolean setPlugWest(ItemStack plug) {
 						return false;
 					}
 					@Override
-					public boolean setPlugEast(Item plug) {
+					public boolean setPlugEast(ItemStack plug) {
 						return false;
 					}
 					@Override

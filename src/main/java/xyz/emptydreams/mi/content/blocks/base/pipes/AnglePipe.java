@@ -10,7 +10,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.AngleFacingEnum;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.PropertyAngleFacing;
 import xyz.emptydreams.mi.content.tileentity.pipes.AnglePipeTileEntity;
@@ -57,11 +56,10 @@ public class AnglePipe extends Pipe {
 		AnglePipeTileEntity te = new AnglePipeTileEntity(player.getHorizontalFacing().getOpposite(),
 											player.rotationPitch > 0 ? EnumFacing.UP : EnumFacing.DOWN);
 		putBlock(world, pos, getDefaultState(), te, player, stack);
-		IFluid cap = te.getFTCapability();
 		EnumFacing facing = side.getOpposite();
-		link(world, pos, cap, facing);
+		link(world, pos, te, facing);
 		for (EnumFacing value : EnumFacing.values()) {
-			link(world, pos, cap, value);
+			link(world, pos, te, value);
 		}
 		return true;
 	}

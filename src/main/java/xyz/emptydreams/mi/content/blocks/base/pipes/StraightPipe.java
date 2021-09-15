@@ -53,17 +53,16 @@ public class StraightPipe extends Pipe {
 		StraightPipeTileEntity te = new StraightPipeTileEntity();
 		putBlock(world, pos, getDefaultState(), te, player, stack);
 		EnumFacing facing = side.getOpposite();
-		IFluid cap = te.getFTCapability();
-		if (link(world, pos, cap, facing)) {
-			link(world, pos, cap, side);
+		if (link(world, pos, te, facing)) {
+			link(world, pos, te, side);
 			return true;
 		}
-		if (link(world, pos, cap, side)) {
+		if (link(world, pos, te, side)) {
 			return true;
 		}
 		for (EnumFacing value : EnumFacing.values()) {
-			if (link(world, pos, cap, value)) {
-				link(world, pos, cap, value.getOpposite());
+			if (link(world, pos, te, value)) {
+				link(world, pos, te, value.getOpposite());
 				return true;
 			}
 		}

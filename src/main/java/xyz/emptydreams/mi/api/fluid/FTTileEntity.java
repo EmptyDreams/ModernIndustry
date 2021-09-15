@@ -1,19 +1,13 @@
 package xyz.emptydreams.mi.api.fluid;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -28,69 +22,54 @@ import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
-import xyz.emptydreams.mi.api.utils.data.io.DataSerialize;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
-import xyz.emptydreams.mi.content.items.debug.DebugDetails;
+import xyz.emptydreams.mi.content.tileentity.pipes.data.DataManager;
+import xyz.emptydreams.mi.content.tileentity.pipes.data.FluidData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import static net.minecraft.util.EnumFacing.*;
-import static xyz.emptydreams.mi.api.capabilities.fluid.IFluid.FLUID_TRANSFER_MAX_AMOUNT;
 
 /**
  * 流体管道的TileEntity的父类
  * @author EmptyDreams
  */
-public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITickable {
+public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITickable, IFluid {
 	
-	protected final FluidSrcCap cap = initCap();
-	
-	/** 存储包含的流体类型 */
-	@Storage protected FluidStack fluidStack = null;
 	/** 六个方向的连接数据 */
 	@Storage(byte.class) protected int linkData = 0b000000;
 	/** 六个方向的管塞数据 */
-	@Storage protected final Map<EnumFacing, Item> plugData = new EnumMap<>(EnumFacing.class);
+	@Storage protected final Map<EnumFacing, ItemStack> plugData = new EnumMap<>(EnumFacing.class);
 	/** 存储管道内流体来源 */
 	@Storage protected EnumFacing source = null;
 	
 	public FTTileEntity() { }
 	
-	/** 初始化流体Cap，子类可重写该方法以修改cap指向的对象 */
-	protected FluidSrcCap initCap() {
-		return new FluidSrcCap();
-	}
-	
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
 		if (super.hasCapability(capability, facing)) return true;
-		boolean aperture = facing == null || cap.hasAperture(facing);
-		if (!aperture) return false;
-		return capability == FluidCapability.TRANSFER
-				|| capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+		return capability == FluidCapability.TRANSFER && (facing == null || hasAperture(facing));
 	}
 	
 	@Nullable
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
 		if (capability == FluidCapability.TRANSFER
-				&& (facing == null || cap.hasAperture(facing))) {
-			return  FluidCapability.TRANSFER.cast(cap);
+				&& (facing == null || hasAperture(facing))) {
+			return  FluidCapability.TRANSFER.cast(this);
 		}
-		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(handler);
 		return super.getCapability(capability, facing);
-	}
-	
-	public IFluid getFTCapability() {
-		return cap;
 	}
 	
 	@Override
@@ -102,9 +81,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	@Override
 	public final void receive(@Nonnull IDataReader reader) {
 		linkData = reader.readByte();
-		if (reader.readBoolean()) {
-			fluidStack = DataSerialize.read(reader, FluidStack.class, FluidStack.class, null);
-		}
 		syncClient(reader);
 		updateBlockState(true);
 	}
@@ -133,10 +109,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		if (players.size() == world.playerEntities.size()) return;
 		ByteDataOperator operator = new ByteDataOperator(1);
 		operator.writeByte((byte) linkData);
-		operator.writeBoolean(fluidStack != null);
-		if (fluidStack != null) {
-			DataSerialize.write(operator, fluidStack, FluidStack.class);
-		}
 		sync(operator);
 		IMessage message = BlockMessage.instance().create(operator, new BlockAddition(this));
 		MessageSender.sendToClientIf(message, world, player -> {
@@ -161,6 +133,10 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		return super.getUpdateTag();
 	}
 	
+	/**
+	 * 更新IBlockState
+	 * @param isRunOnClient 是否在客户端运行
+	 */
 	public void updateBlockState(boolean isRunOnClient) {
 		markDirty();
 		if (world.isRemote) {
@@ -174,38 +150,11 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		WorldUtil.setBlockState(world, pos, newState);
 	}
 	
-	protected int sleepTime = 20;
-	protected int nowTime = 0;
-	
 	@Override
 	public void update() {
 		send();
 		//检查运行条件
-		if (updateTickableState()) {
-			nowTime = 0;
-			return;
-		}
-		if (++nowTime != sleepTime) return;
-		nowTime = 0;
-		List<EnumFacing> nexts = cap.next();
-		int amount = Math.min(cap.fluidAmount(), FLUID_TRANSFER_MAX_AMOUNT);
-		if (nexts.isEmpty()) return;
-		if (nexts.remove(DOWN)) {
-			FluidStack stack = FTWorker.applyFluid(world, pos.offset(DOWN), UP, amount);
-			if (stack != null) {
-				if (stack.amount == amount) return;
-				amount -= stack.amount;
-			}
-		}
-		boolean hasUp = nexts.remove(UP);
-		for (EnumFacing facing : nexts) {
-			FluidStack stack = FTWorker.applyFluid(world, pos.offset(facing), facing.getOpposite(), amount);
-			if (stack == null) continue;
-			if (stack.amount == amount) return;
-			amount -= stack.amount;
-		}
-		if (!hasUp) return;
-		FTWorker.applyFluid(world, pos.offset(UP), DOWN, amount);
+		updateTickableState();
 	}
 	
 	private boolean isRemove = false;
@@ -215,7 +164,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	 * @return 如果移除成功则返回true
 	 */
 	public boolean updateTickableState() {
-		if (!isRemove && cap.fluid() == null) {
+		if (!isRemove && isEmpty()) {
 			isRemove = true;
 			WorldUtil.removeTickable(this);
 			return true;
@@ -225,18 +174,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		}
 		return false;
 	}
-	
-	/** @see IFluid#next() */
-	abstract public List<EnumFacing> next();
-	
-	/** @see IFluid#hasAperture(EnumFacing) */
-	abstract public boolean hasAperture(EnumFacing facing);
-	
-	/** @see IFluid#canLink(EnumFacing) */
-	abstract public boolean canLink(EnumFacing facing);
-	
-	/** @see IFluid#link(EnumFacing) */
-	abstract public boolean link(EnumFacing facing);
 	
 	protected void setLinkedData(EnumFacing facing, boolean isLinked) {
 		switch (facing) {
@@ -268,243 +205,252 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		updateBlockState(false);
 	}
 	
-	@DebugDetails
-	public class FluidSrcCap implements IFluid {
-		
-		@Override
-		public int fluidAmount() {
-			if (fluidStack == null) return 0;
-			return fluidStack.amount;
-		}
-		
-		@Nullable
-		@Override
-		public Fluid fluid() {
-			if (fluidStack == null || fluidStack.amount == 0) return null;
-			return fluidStack.getFluid();
-		}
-		
-		@Override
-		public void setFluid(@Nullable FluidStack stack) {
-			if (stack == null || stack.amount == 0) fluidStack = null;
-			else fluidStack = stack.copy();
-			updateTickableState();
-		}
-		
-		@Override
-		public int extract(FluidStack stack, boolean simulate) {
-			if (fluidStack == null) return 0;
-			int real = Math.min(stack.amount, fluidStack.amount);
-			if (simulate) return real;
-			fluidStack.amount -= real;
-			updateTickableState();
-			markDirty();
-			return real;
-		}
-		
-		@Override
-		public int insert(FluidStack stack, EnumFacing facing, boolean simulate) {
-			if (fluidStack == null) fluidStack = new FluidStack(stack.getFluid(), 0);
-			int sum = fluidStack.amount + stack.amount;
-			if (sum <= getMaxAmount()) {
-				if (simulate) return stack.amount;
-				fluidStack.amount = sum;
-				source = facing;
-				updateTickableState();
-				markDirty();
-				return stack.amount;
-			}
-			int real = getMaxAmount() - fluidStack.amount;
-			if (simulate) return real;
-			fluidStack.amount = getMaxAmount();
-			source = facing;
-			updateTickableState();
-			markDirty();
-			return real;
-		}
-		
-		@Override
-		public void setSource(EnumFacing facing) {
-			source = facing;
-		}
-		
-		@Override
-		public int getMaxAmount() {
-			return FLUID_TRANSFER_MAX_AMOUNT;
-		}
-		
-		@Nullable
-		@Override
-		public IFluid getLinkedTransfer(EnumFacing facing) {
-			if (facing == null) return this;
-			BlockPos target = pos.offset(facing);
-			TileEntity entity = world.getTileEntity(target);
-			if (entity == null) return null;
-			return entity.getCapability(FluidCapability.TRANSFER, facing.getOpposite());
-		}
-		
-		@Nonnull
-		@Override
-		public List<EnumFacing> next() {
-			return FTTileEntity.this.next();
-		}
-		
-		@Override
-		public boolean hasAperture(EnumFacing facing) {
-			return FTTileEntity.this.hasAperture(facing);
-		}
-		
-		@Override
-		public boolean canLink(EnumFacing facing) {
-			return FTTileEntity.this.canLink(facing);
-		}
-		
-		@Override
-		public boolean link(EnumFacing facing) {
-			return FTTileEntity.this.link(facing);
-		}
-		
-		@Override
-		public void unlink(EnumFacing facing) {
-			setLinkedData(facing, false);
-		}
-		
-		@Override
-		public boolean isLinkedUp() {
-			return (linkData & 0b100000) == 0b100000;
-		}
-		@Override
-		public boolean isLinkedDown() {
-			return (linkData & 0b010000) == 0b010000;
-		}
-		@Override
-		public boolean isLinkedEast() {
-			return (linkData & 0b001000) == 0b001000;
-		}
-		@Override
-		public boolean isLinkedWest() {
-			return (linkData & 0b000100) == 0b000100;
-		}
-		@Override
-		public boolean isLinkedSouth() {
-			return (linkData & 0b000010) == 0b000010;
-		}
-		@Override
-		public boolean isLinkedNorth() {
-			return (linkData & 0b000001) == 0b000001;
-		}
-		
-		@Override
-		public boolean setPlugUp(Item plug) {
-			if ((hasPlugUp() && plug != null) || !canSetPlug(UP)) return false;
-			setPlugData(UP, plug);
-			return true;
-		}
-		
-		@Override
-		public boolean setPlugDown(Item plug) {
-			if ((hasPlugDown() && plug != null) || !canSetPlug(DOWN)) return false;
-			setPlugData(DOWN, plug);
-			return true;
-		}
-		
-		@Override
-		public boolean setPlugNorth(Item plug) {
-			if ((hasPlugNorth() && plug != null) || !canSetPlug(NORTH)) return false;
-			setPlugData(NORTH, plug);
-			return true;
-		}
-		
-		@Override
-		public boolean setPlugSouth(Item plug) {
-			if ((hasPlugSouth() && plug != null) || !canSetPlug(SOUTH)) return false;
-			setPlugData(SOUTH, plug);
-			return true;
-		}
-		
-		@Override
-		public boolean setPlugWest(Item plug) {
-			if ((hasPlugWest() && plug != null) || !canSetPlug(WEST)) return false;
-			setPlugData(WEST, plug);
-			return true;
-		}
-		
-		@Override
-		public boolean setPlugEast(Item plug) {
-			if ((hasPlugEast() && plug != null) || !canSetPlug(EAST)) return false;
-			setPlugData(EAST, plug);
-			return true;
-		}
-		
-		@Override
-		public boolean hasPlugUp() {
-			return plugData.get(UP) != null;
-		}
-		
-		@Override
-		public boolean hasPlugDown() {
-			return plugData.get(DOWN) != null;
-		}
-		
-		@Override
-		public boolean hasPlugNorth() {
-			return plugData.get(NORTH) != null;
-		}
-		
-		@Override
-		public boolean hasPlugSouth() {
-			return plugData.get(SOUTH) != null;
-		}
-		
-		@Override
-		public boolean hasPlugWest() {
-			return plugData.get(WEST) != null;
-		}
-		
-		@Override
-		public boolean hasPlugEast() {
-			return plugData.get(EAST) != null;
-		}
-		
-		private void setPlugData(EnumFacing facing, Item plug) {
-			plugData.put(facing, plug);
-			markDirty();
-		}
-		
+	@Override
+	public void setSource(EnumFacing facing) {
+		source = facing;
 	}
 	
-	private final IFluidHandler handler = new IFluidHandler() {
-		@Nullable
-		@Override
-		public FluidStack drain(FluidStack resource, boolean doDrain) {
-			if (resource == null) return null;
-			int result = cap.extract(resource, !doDrain);
-			if (result == 0) return null;
-			if (result == resource.amount) return resource;
-			return new FluidStack(resource.getFluid(), result);
+	@Override
+	public EnumFacing getSource() {
+		return source;
+	}
+	
+	@Override
+	public void unlink(EnumFacing facing) {
+		setLinkedData(facing, false);
+	}
+	
+	@Override
+	public boolean isLinkedUp() {
+		return (linkData & 0b100000) == 0b100000;
+	}
+	@Override
+	public boolean isLinkedDown() {
+		return (linkData & 0b010000) == 0b010000;
+	}
+	@Override
+	public boolean isLinkedEast() {
+		return (linkData & 0b001000) == 0b001000;
+	}
+	@Override
+	public boolean isLinkedWest() {
+		return (linkData & 0b000100) == 0b000100;
+	}
+	@Override
+	public boolean isLinkedSouth() {
+		return (linkData & 0b000010) == 0b000010;
+	}
+	@Override
+	public boolean isLinkedNorth() {
+		return (linkData & 0b000001) == 0b000001;
+	}
+	
+	@Override
+	public boolean setPlugUp(ItemStack plug) {
+		if (!(plug != null && hasPlugUp() && canSetPlug(UP))) return false;
+		setPlugData(UP, plug);
+		return true;
+	}
+	
+	@Override
+	public boolean setPlugDown(ItemStack plug) {
+		if (!(plug != null && hasPlugDown() && canSetPlug(DOWN))) return false;
+		setPlugData(DOWN, plug);
+		return true;
+	}
+	
+	@Override
+	public boolean setPlugNorth(ItemStack plug) {
+		if (!(plug != null && hasPlugNorth() && canSetPlug(NORTH))) return false;
+		setPlugData(NORTH, plug);
+		return true;
+	}
+	
+	@Override
+	public boolean setPlugSouth(ItemStack plug) {
+		if (!(plug != null && hasPlugSouth() && canSetPlug(SOUTH))) return false;
+		setPlugData(SOUTH, plug);
+		return true;
+	}
+	
+	@Override
+	public boolean setPlugWest(ItemStack plug) {
+		if (!(plug != null && hasPlugWest() && canSetPlug(WEST))) return false;
+		setPlugData(WEST, plug);
+		return true;
+	}
+	
+	@Override
+	public boolean setPlugEast(ItemStack plug) {
+		if (!(plug != null && hasPlugEast() && canSetPlug(EAST))) return false;
+		setPlugData(EAST, plug);
+		return true;
+	}
+	
+	@Override
+	public boolean hasPlugUp() {
+		return plugData.get(UP) != null;
+	}
+	
+	@Override
+	public boolean hasPlugDown() {
+		return plugData.get(DOWN) != null;
+	}
+	
+	@Override
+	public boolean hasPlugNorth() {
+		return plugData.get(NORTH) != null;
+	}
+	
+	@Override
+	public boolean hasPlugSouth() {
+		return plugData.get(SOUTH) != null;
+	}
+	
+	@Override
+	public boolean hasPlugWest() {
+		return plugData.get(WEST) != null;
+	}
+	
+	@Override
+	public boolean hasPlugEast() {
+		return plugData.get(EAST) != null;
+	}
+	
+	private void setPlugData(EnumFacing facing, ItemStack plug) {
+		plugData.put(facing, plug.copy());
+		markDirty();
+	}
+	
+	@Nullable
+	abstract protected DataManager getDataManager(EnumFacing facing);
+	
+	abstract protected boolean matchFacing(EnumFacing facing);
+	
+	@Nonnull
+	@Override
+	public TransportResult extract(int amount, EnumFacing facing, boolean simulate) {
+		TransportResult result = new TransportResult();
+		if (!matchFacing(facing)) return result;
+		List<EnumFacing> next = next(facing);
+		IFluid.sortFacing(next);
+		@SuppressWarnings("unchecked")
+		Iterator<FluidData>[] its = new Iterator[next.size()];
+		//通过遍历将其他方向的流体数据取出指定量
+		ListIterator<EnumFacing> it = next.listIterator(next.size());
+		int k = amount / next.size();
+		int i = 0;
+		while (it.hasPrevious()) {
+			EnumFacing value = it.previous();
+			if (!it.hasPrevious()) k = amount - k * (next.size() - 1);
+			DataManager manager = getDataManager(value);
+			LinkedList<FluidData> nowRe = manager.extract(k, false, simulate);
+			its[i++] = nowRe.iterator();
+			//处理后续管道
+			BlockPos pre = pos.offset(value);
+			TileEntity te = world.getTileEntity(pre);
+			if (te == null) continue;
+			IFluid cap = te.getCapability(FluidCapability.TRANSFER, value.getOpposite());
+			if (cap == null) continue;
+			result.combine(cap.extract(k, value.getOpposite(), simulate));
 		}
-		
-		@Nullable
-		@Override
-		public FluidStack drain(int maxDrain, boolean doDrain) {
-			Fluid fluid = cap.fluid();
-			if (fluid == null) return null;
-			return drain(new FluidStack(fluid, maxDrain), doDrain);
+		//将从其他方向上取出的数据汇总到主干
+		DataManager manager = getDataManager(facing);
+		result.setFinal(manager.extract(amount, facing, simulate), facing);
+		while (Arrays.stream(its).anyMatch(Iterator::hasNext)) {
+			Arrays.stream(its).filter(Iterator::hasNext)
+					.forEach(iterator -> manager.insert(iterator.next(), false, simulate));
 		}
-		
-		@Override
-		public int fill(FluidStack resource, boolean doFill) {
-			return cap.insert(resource, null, !doFill);
+		return result;
+	}
+	
+	@Nonnull
+	@Override
+	public TransportResult insert(FluidData data, EnumFacing facing, boolean simulate) {
+		TransportResult result = new TransportResult();
+		if (!matchFacing(facing)) return result;
+		List<EnumFacing> next = next(facing);
+		IFluid.sortFacing(next);
+		LinkedList<FluidData> out = getDataManager(facing).insert(data, true, simulate);
+		List<FluidData>[] datas = split(out, next.size());
+		int i = -1;
+		for (EnumFacing value : next) {
+			++i;
+			DataManager manager = getDataManager(value);
+			List<FluidData> list = new LinkedList<>();
+			for (FluidData fluidData : datas[i]) {
+				list.addAll(manager.insert(fluidData, false, simulate));
+			}
+			BlockPos nextPos = pos.offset(value);
+			TileEntity nextTe = world.getTileEntity(nextPos);
+			if (nextTe == null)
+				return putFluid2World(data, facing.getOpposite(), simulate,
+						result, datas[i], nextPos, true, manager, this);
+			IFluid cap = nextTe.getCapability(FluidCapability.TRANSFER, facing.getOpposite());
+			if (cap == null)
+				return putFluid2World(data, facing.getOpposite(), simulate,
+						result, datas[i], nextPos, true, manager, this);
+			for (FluidData fluidData : datas[i]) {
+				result.combine(cap.insert(fluidData, facing, simulate));
+			}
 		}
-		
-		@Override
-		public IFluidTankProperties[] getTankProperties() {
-			Fluid fluid = cap.fluid();
-			FluidStack stack = (fluid == null || cap.fluidAmount() == 0)
-					? null : new FluidStack(fluid, cap.fluidAmount());
-			return new IFluidTankProperties[] {
-					new FluidTankProperties(stack, FLUID_TRANSFER_MAX_AMOUNT, true, true) };
+		return result;
+	}
+	
+	/* 将数据平均分割为指定份数 */
+	protected List<FluidData>[] split(List<FluidData> data, int copies) {
+		@SuppressWarnings("unchecked") List<FluidData>[] result = new List[copies];
+		if (copies == 1) {
+			result[0] = data;
+			return result;
 		}
-	};
+		int sum = data.stream().mapToInt(FluidData::getAmount).sum();
+		for (int i = 0; i < copies; ++i) {
+			int amount = i == (copies - 1) ? sum - (sum / copies * (copies - 1)) : sum / copies;
+			result[i] = new LinkedList<>();
+			Iterator<FluidData> iterator = data.iterator();
+			while (iterator.hasNext()) {
+				FluidData datum = iterator.next();
+				if (datum.getAmount() > amount) {
+					datum.plusAmount(-amount);
+					result[i].add(new FluidData(datum.getFluid(), amount));
+					break;
+				}
+				if (datum.getAmount() <= amount) {
+					amount -= datum.getAmount();
+					result[i].add(datum);
+					iterator.remove();
+					if (amount == 0) break;
+				}
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * 尝试将流体释放到世界中
+	 * @param data 要插入的流体
+	 * @param facing 流体流动方向
+	 * @param simulate 是否为模拟
+	 * @param result 结果对象
+	 * @param out 要排放的流体
+	 * @param next 目标方块
+	 * @param isInput 是否是由插入流体引发的操作，为false时不会将流体释放到世界
+	 * @param manager 参与计算的数据管理器
+	 * @return 输入的TransportResult对象
+	 */
+	public static TransportResult putFluid2World(FluidData data, EnumFacing facing, boolean simulate,
+	                                             TransportResult result, List<FluidData> out,
+	                                             BlockPos next, boolean isInput, DataManager manager, TileEntity te) {
+		List<FluidData> list = IFluid.putFluid2World(
+				te.getWorld(), te.getPos(), next, out, !isInput || simulate);
+		result.setFinal(list, facing);
+		int outAmount = list.stream().mapToInt(FluidData::getAmount).sum();
+		if ((!simulate) && outAmount != 0)
+			manager.insert(new FluidData(data.getFluid(), outAmount), facing.getOpposite(), false);
+		for (FluidData fluidData : list)
+			result.getNode(fluidData.getFluid()).plus(facing, fluidData.getAmount());
+		return result;
+	}
 	
 }

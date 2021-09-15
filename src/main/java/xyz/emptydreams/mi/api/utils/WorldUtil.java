@@ -162,6 +162,18 @@ public final class WorldUtil {
 	}
 	
 	/**
+	 * 放置流体到世界
+	 * @param world 世界
+	 * @param pos 坐标
+	 * @param from 周围的方块坐标
+	 * @param fluid 流体
+	 */
+	public static void putFluid(World world, BlockPos pos, BlockPos from, Fluid fluid) {
+		setBlockState(world, pos, fluid.getBlock().getDefaultState());
+		fluid.getBlock().onNeighborChange(world, pos, from);
+	}
+	
+	/**
 	 * 设置BlockState，当新旧state一致时不进行替换
 	 * @param world 所在世界
 	 * @param pos 方块坐标

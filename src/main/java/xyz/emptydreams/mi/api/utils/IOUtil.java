@@ -5,13 +5,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
 
 /**
  * @author EmptyDreams
  */
-public final class IOUtils {
+public final class IOUtil {
 	
 	/**
 	 * 将字符串写入buf
@@ -50,18 +49,6 @@ public final class IOUtils {
 	@Nonnull
 	public static BlockPos readBlockPos(NBTTagCompound compound, String name) {
 		if (!compound.hasKey(name + "_x")) throw new IllegalArgumentException("Key值不存在：" + name);
-		return new BlockPos(compound.getInteger(name + "_x"),
-				compound.getInteger(name + "_y"), compound.getInteger(name + "_z"));
-	}
-	
-	/**
-	 * 尝试读取坐标，如果NBT中不包含指定信息则返回null
-	 * @param compound 要读取的标签
-	 * @param name 名称
-	 */
-	@Nullable
-	public static BlockPos tryReadBlockPos(NBTTagCompound compound, String name) {
-		if (!compound.hasKey(name + "_x")) return null;
 		return new BlockPos(compound.getInteger(name + "_x"),
 				compound.getInteger(name + "_y"), compound.getInteger(name + "_z"));
 	}

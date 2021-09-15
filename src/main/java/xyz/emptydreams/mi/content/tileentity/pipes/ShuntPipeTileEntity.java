@@ -1,17 +1,21 @@
 package xyz.emptydreams.mi.content.tileentity.pipes;
 
 import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
+import xyz.emptydreams.mi.content.tileentity.pipes.data.DataManager;
+import xyz.emptydreams.mi.content.tileentity.pipes.data.HorizontalManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static net.minecraft.util.EnumFacing.*;
 
@@ -25,6 +29,29 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	/** 管道侧面面对的方向 */
 	@Storage protected EnumFacing side = UP;
 	protected List<EnumFacing> linked = new ArrayList<>(4);
+	/**
+	 * <p>存储流体数据
+	 * <p>格式要求：所有正方向朝向外部
+	 */
+	protected final DataManager[] managers = new DataManager[4];
+	
+	private static final Map<EnumFacing.Axis, EnumFacing[]> sideMap =
+			new Object2ObjectArrayMap<EnumFacing.Axis, EnumFacing[]>(3) {
+					{
+						put(Axis.Y, new EnumFacing[] { SOUTH, NORTH, WEST, EAST });
+						put(Axis.X, new EnumFacing[] { UP, DOWN, SOUTH, NORTH });
+						put(Axis.Z, new EnumFacing[] { UP, DOWN, WEST, EAST });
+					}
+	};
+	
+	public ShuntPipeTileEntity() {
+		assert getMaxAmount() % 4 != 0;
+		int nodeMax = getMaxAmount() / 4;
+		managers[0] = new HorizontalManager(SOUTH, nodeMax);
+		managers[1] = new HorizontalManager(NORTH, nodeMax);
+		managers[2] = new HorizontalManager(WEST, nodeMax);
+		managers[3] = new HorizontalManager(EAST, nodeMax);
+	}
 	
 	@Override
 	protected void sync(IDataWriter writer) {
@@ -36,14 +63,34 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 		side = EnumFacing.values()[reader.readByte()];
 		if (linkData == 0 || !linked.isEmpty()) return;
 		for (EnumFacing value : values()) {
-			if (cap.isLinked(value)) linked.add(value);
+			if (isLinked(value)) linked.add(value);
 		}
 	}
 	
 	@Override
-	public List<EnumFacing> next() {
+	public boolean isEmpty() {
+		return false;
+	}
+	
+	/** 获取指定方向上的数据 */
+	@Override
+	protected DataManager getDataManager(EnumFacing facing) {
+		for (DataManager manager : managers) {
+			if (manager.isPositive(facing)) return manager;
+		}
+		throw new IllegalArgumentException("输入的方向上没有开口：" + facing);
+	}
+	
+	@Override
+	protected boolean matchFacing(EnumFacing facing) {
+		return facing.getAxis() != side.getAxis();
+	}
+	
+	@Override
+	public List<EnumFacing> next(EnumFacing facing) {
 		List<EnumFacing> result = Lists.newArrayList(getFacing());
-		result.remove(source);
+		result.remove(facing);
+		result.removeIf(this::hasPlug);
 		return result;
 	}
 	
@@ -63,10 +110,11 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	
 	@Override
 	public boolean link(EnumFacing facing) {
-		if (cap.isLinked(facing)) return true;
+		if (isLinked(facing)) return true;
 		if (!canLink(facing)) return false;
 		setLinkedData(facing, true);
 		side = calculateSide();
+		rotate();
 		return true;
 	}
 	
@@ -75,6 +123,13 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 		super.setLinkedData(facing, isLinked);
 		if (isLinked) linked.add(facing);
 		else linked.remove(facing);
+	}
+	
+	protected void rotate() {
+		EnumFacing[] temp = sideMap.get(side.getAxis());
+		for (int i = 0; i < managers.length; i++) {
+			managers[i].rotate(temp[i]);
+		}
 	}
 	
 	protected EnumFacing calculateSide() {

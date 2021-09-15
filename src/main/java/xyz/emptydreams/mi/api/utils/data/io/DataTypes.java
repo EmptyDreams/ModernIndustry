@@ -17,7 +17,7 @@ import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.register.others.AutoLoader;
-import xyz.emptydreams.mi.api.utils.IOUtils;
+import xyz.emptydreams.mi.api.utils.IOUtil;
 import xyz.emptydreams.mi.api.utils.container.Wrapper;
 import xyz.emptydreams.mi.coremod.other.ICapManagerCheck;
 import xyz.emptydreams.mi.coremod.other.ICapStorageType;
@@ -576,12 +576,12 @@ public final class DataTypes {
 		
 		@Override
 		public void writeToByteBuf(ByteBuf buf, String data) {
-			IOUtils.writeStringToBuf(buf, data);
+			IOUtil.writeStringToBuf(buf, data);
 		}
 		
 		@Override
 		public String readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<String> getter) {
-			return IOUtils.readStringFromBuf(buf);
+			return IOUtil.readStringFromBuf(buf);
 		}
 		
 		@SuppressWarnings("unchecked")
@@ -1068,14 +1068,14 @@ public final class DataTypes {
 		
 		@Override
 		public void writeToByteBuf(ByteBuf buf, Enum<?> data) {
-			IOUtils.writeStringToBuf(buf, data.name());
-			IOUtils.writeStringToBuf(buf, data.getClass().getName());
+			IOUtil.writeStringToBuf(buf, data.name());
+			IOUtil.writeStringToBuf(buf, data.getClass().getName());
 		}
 		
 		@Override
 		public Enum<?> readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Enum<?>> getter) {
-			String name = IOUtils.readStringFromBuf(buf);
-			String clazz = IOUtils.readStringFromBuf(buf);
+			String name = IOUtil.readStringFromBuf(buf);
+			String clazz = IOUtil.readStringFromBuf(buf);
 			try {
 				//noinspection unchecked,rawtypes
 				return Enum.valueOf((Class) Class.forName(clazz), name);
@@ -1165,12 +1165,12 @@ public final class DataTypes {
 		
 		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, BlockPos data) {
-			IOUtils.writeBlockPos(nbt, data, name);
+			IOUtil.writeBlockPos(nbt, data, name);
 		}
 		
 		@Override
 		public BlockPos readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<BlockPos> getter) {
-			return IOUtils.readBlockPos(nbt, name);
+			return IOUtil.readBlockPos(nbt, name);
 		}
 		
 		@Override
@@ -1269,14 +1269,14 @@ public final class DataTypes {
 		
 		@Override
 		public void writeToByteBuf(ByteBuf buf, Class<?> data) {
-			IOUtils.writeStringToBuf(buf, data.getName());
+			IOUtil.writeStringToBuf(buf, data.getName());
 		}
 		
 		@Override
 		public Class<?> readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Class<?>> getter) {
 			if (getter != null) return getter.get();
 			try {
-				return Class.forName(IOUtils.readStringFromBuf(buf));
+				return Class.forName(IOUtil.readStringFromBuf(buf));
 			} catch (ClassNotFoundException e) {
 				throw TransferException.instance("需要读写的类不存在", e);
 			}
@@ -1578,7 +1578,8 @@ public final class DataTypes {
 		
 		@Override
 		public FluidStack[] readFromData(IDataReader reader, Class<?> fieldType, Supplier<FluidStack[]> getter) {
-			FluidStack[] result = new FluidStack[reader.readVarInt()];
+			FluidStack[] result = getter.get();
+			if (result == null) result = new FluidStack[reader.readVarInt()];
 			for (int i = 0; i < result.length; i++) {
 				result[i] = DataSerialize.read(reader, FluidStack.class, FluidStack.class, null);
 			}
@@ -1598,7 +1599,8 @@ public final class DataTypes {
 		@Override
 		public FluidStack[] readFromNBT(NBTTagCompound nbt, String name,
 		                                Class<?> fieldType, Supplier<FluidStack[]> getter) {
-			FluidStack[] result = new FluidStack[nbt.getInteger("size")];
+			FluidStack[] result = getter.get();
+			if (result == null) result = new FluidStack[nbt.getInteger("size")];
 			NBTTagCompound tag = nbt.getCompoundTag("tag");
 			for (int i = 0; i < result.length; i++) {
 				result[i] = DataSerialize.read(tag, String.valueOf(i),
@@ -1617,7 +1619,8 @@ public final class DataTypes {
 		
 		@Override
 		public FluidStack[] readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<FluidStack[]> getter) {
-			FluidStack[] result = new FluidStack[buf.readInt()];
+			FluidStack[] result = getter.get();
+			if (result == null) result = new FluidStack[buf.readInt()];
 			for (int i = 0; i < result.length; i++) {
 				result[i] = DataSerialize.read(buf, FluidStack.class, FluidStack.class, null);
 			}

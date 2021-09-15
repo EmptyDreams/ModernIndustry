@@ -8,8 +8,12 @@ import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.AngleFacingEnum;
+import xyz.emptydreams.mi.content.tileentity.pipes.data.DataManager;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static net.minecraft.util.EnumFacing.*;
@@ -21,16 +25,24 @@ import static net.minecraft.util.EnumFacing.*;
 @AutoTileEntity("AnglePipe")
 public class AnglePipeTileEntity extends FTTileEntity {
 	
+	/** 正方向 */
 	@Storage protected EnumFacing facing;
+	/** 后侧方向 */
 	@Storage protected EnumFacing after;
+	protected DataManager facingData;
+	protected DataManager afterData;
 	
 	public AnglePipeTileEntity() {
 		this(NORTH, UP);
 	}
 	
 	public AnglePipeTileEntity(EnumFacing facing, EnumFacing after) {
+		if (getMaxAmount() % 2 != 0)
+			throw new IllegalArgumentException("最大容量[" + getMaxAmount() + "]应当能被2整除");
 		this.facing = facing;
 		this.after = after;
+		facingData = DataManager.instance(getFacing(), getMaxAmount() / 2);
+		afterData = DataManager.instance(getAfter(), getMaxAmount() / 2);
 	}
 	
 	@Override
@@ -45,12 +57,38 @@ public class AnglePipeTileEntity extends FTTileEntity {
 		after = EnumFacing.values()[reader.readByte()];
 	}
 	
+	@Nullable
 	@Override
-	public List<EnumFacing> next() {
-		if (source == null) return Lists.newArrayList(facing, after);
-		if (source == facing) return Lists.newArrayList(after);
-		if (source == after) return Lists.newArrayList(facing);
-		throw new IllegalArgumentException("输入了没有开口的方向：" + source);
+	protected DataManager getDataManager(EnumFacing facing) {
+		if (facing == this.facing) return facingData;
+		else if (facing == this.after) return afterData;
+		return null;
+	}
+	
+	@Override
+	protected boolean matchFacing(EnumFacing facing) {
+		return facing == this.facing || facing == this.after;
+	}
+	
+	@Override
+	public boolean isEmpty() {
+		return facingData.isEmpty() && afterData.isEmpty();
+	}
+	
+	@Nonnull
+	@Override
+	public List<EnumFacing> next(EnumFacing facing) {
+		if (facing == this.facing)
+			return hasPlug(this.facing) ? Collections.emptyList() : Lists.newArrayList(after);
+		if (facing == after)
+			return hasPlug(after) ? Collections.emptyList() : Lists.newArrayList(this.facing);
+		if (facing == null) {
+			List<EnumFacing> result = new ArrayList<>(2);
+			if (!hasPlug(this.facing)) result.add(this.facing);
+			if (!hasPlug(after)) result.add(after);
+			return result;
+		}
+		throw new IllegalArgumentException("输入方向上没有开口：" + facing);
 	}
 	
 	@Override
@@ -62,8 +100,8 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	public boolean canLink(EnumFacing facing) {
 		if (hasAperture(facing)) return true;
 		if (linkData == 0) return true;
-		if (cap.isLinked(this.facing)) {
-			if (cap.isLinked(after)) return false;
+		if (isLinked(this.facing)) {
+			if (isLinked(after)) return false;
 			return AngleFacingEnum.match(this.facing, facing);
 		}
 		return AngleFacingEnum.match(after, facing);
@@ -71,7 +109,7 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	
 	@Override
 	public boolean link(EnumFacing facing) {
-		if (cap.isLinked(facing)) return true;
+		if (isLinked(facing)) return true;
 		if (!canLink(facing)) return false;
 		if (facing == DOWN || facing == UP) {
 			if (linkData == 0) {
@@ -86,8 +124,8 @@ public class AnglePipeTileEntity extends FTTileEntity {
 				if (after == facing || after == facing.getOpposite()) {
 					after = UP;
 				}
-			} else if (cap.getLinkAmount() == 1) {
-				if (cap.isLinked(this.facing)) after = facing;
+			} else if (getLinkAmount() == 1) {
+				if (isLinked(this.facing)) after = facing;
 				else this.facing = facing;
 			}
 		}

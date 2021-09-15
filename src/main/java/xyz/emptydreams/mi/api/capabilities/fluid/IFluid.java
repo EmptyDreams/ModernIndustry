@@ -1,13 +1,16 @@
 package xyz.emptydreams.mi.api.capabilities.fluid;
 
-import net.minecraft.item.Item;
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import xyz.emptydreams.mi.api.fluid.TransportResult;
+import xyz.emptydreams.mi.api.utils.WorldUtil;
+import xyz.emptydreams.mi.content.tileentity.pipes.data.FluidData;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import static net.minecraft.util.EnumFacing.*;
@@ -18,57 +21,56 @@ import static net.minecraft.util.EnumFacing.*;
  */
 public interface IFluid {
 	
-	/** 一格管道可以容纳的最大流体量 */
-	int FLUID_TRANSFER_MAX_AMOUNT = 1000;
+	/**
+	 * <p>获取可存储的最大量
+	 * <p>该方法可能会在对象构造函数中调用，必须保证构造过程中也可以返回正确的值
+	 */
+	default int getMaxAmount() {
+		return 1000;
+	}
 	
-	/** 获取流体容量（单位：mB） */
-	int fluidAmount();
+	/** 获取容器最大流量 */
+	default int getMaxCirculation() {
+		return 100;
+	}
 	
-	/** 获取所包含的流体类型 */
-	@Nullable
-	Fluid fluid();
-	
-	/** 设置流体 */
-	void setFluid(@Nullable FluidStack stack);
+	/** 判断容器是否为空 */
+	boolean isEmpty();
 	
 	/**
 	 * 取出指定数额的流体
-	 * @param stack 输出的流体
+	 * @param amount 需求的数量
+	 * @param facing 取出的方向
 	 * @param simulate 是否为模拟，为true时不修改内部数据
-	 * @return 真实取出的流体量
+	 * @return 运算结果
 	 */
-	int extract(FluidStack stack, boolean simulate);
+	@Nonnull
+	TransportResult extract(int amount, EnumFacing facing, boolean simulate);
 	
 	/**
 	 * 放入指定数额的流体
-	 * @param stack 输入的流体
-	 * @param facing 流体输入的方向在方块的方向(如果方向不确定或simulate为true则可以为null)
+	 * @param data 输入的流体
+	 * @param facing 流体输入的方向在方块的方向
 	 * @param simulate 是否为模拟，为true时不修改内部数据
-	 * @return 真实取出的流体量
+	 * @return 运算结果
 	 */
-	int insert(FluidStack stack, EnumFacing facing, boolean simulate);
+	@Nonnull
+	TransportResult insert(FluidData data, EnumFacing facing, boolean simulate);
 	
 	/** 设置流体来源方向 */
 	void setSource(EnumFacing facing);
 	
-	/** 获取流体管道最大流量 */
-	int getMaxAmount();
-	
-	/**
-	 * 获取指定方向上连接的方块
-	 * @param facing 方向
-	 * @return 如果没有连接则返回null，若输入为null则返回本身
-	 */
-	@Nullable
-	IFluid getLinkedTransfer(EnumFacing facing);
+	/** 获取流体来源方向 */
+	EnumFacing getSource();
 	
 	/**
 	 * 获取下一个可用的流体去向
+	 * @param facing 来源方向
 	 * @throws IllegalArgumentException 如果来源没有与管道连接
 	 * @return 返回结果无序且允许更改（更改返回结果不影响内部数据）
 	 */
 	@Nonnull
-	List<EnumFacing> next();
+	List<EnumFacing> next(EnumFacing facing);
 	
 	/** 判断指定方向是否含有开口 */
 	boolean hasAperture(EnumFacing facing);
@@ -81,7 +83,7 @@ public interface IFluid {
 		return hasPlug(facing) && !isLinked(facing);
 	}
 	
-	/** 获取管道已经连接的数量 */
+	/** 获取容器已经连接的数量 */
 	default int getLinkAmount() {
 		int result = 0;
 		for (EnumFacing value : values()) {
@@ -134,15 +136,14 @@ public interface IFluid {
 	 * @param facing 方向
 	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
 	 */
-	default boolean setPlug(EnumFacing facing, Item plug) {
+	default boolean setPlug(EnumFacing facing, ItemStack plug) {
 		switch (facing) {
 			case DOWN: return setPlugDown(plug);
 			case UP: return setPlugUp(plug);
 			case NORTH: return setPlugNorth(plug);
 			case SOUTH: return setPlugSouth(plug);
 			case WEST: return setPlugWest(plug);
-			case EAST: return setPlugEast(plug);
-			default: throw new IllegalArgumentException("facing[" + facing + "]不属于任何一个方向");
+			default: return setPlugEast(plug);
 		}
 	}
 	/**
@@ -150,37 +151,37 @@ public interface IFluid {
 	 * @param plug 管塞物品对象，为null表示去除管塞
 	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
 	 */
-	boolean setPlugUp(Item plug);
+	boolean setPlugUp(ItemStack plug);
 	/**
 	 * 在管道下方设置管塞
 	 * @param plug 管塞物品对象，为null表示去除管塞
 	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
 	 */
-	boolean setPlugDown(Item plug);
+	boolean setPlugDown(ItemStack plug);
 	/**
 	 * 在管道北方设置管塞
 	 * @param plug 管塞物品对象，为null表示去除管塞
 	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
 	 */
-	boolean setPlugNorth(Item plug);
+	boolean setPlugNorth(ItemStack plug);
 	/**
 	 *在管道南方设置管塞
 	 * @param plug 管塞物品对象，为null表示去除管塞
 	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
 	 */
-	boolean setPlugSouth(Item plug);
+	boolean setPlugSouth(ItemStack plug);
 	/**
 	 * 在管道西方设置管塞
 	 * @param plug 管塞物品对象，为null表示去除管塞
 	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
 	 */
-	boolean setPlugWest(Item plug);
+	boolean setPlugWest(ItemStack plug);
 	/**
 	 * 在管道东方设置管塞
 	 * @param plug 管塞物品对象，为null表示去除管塞
 	 * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
 	 */
-	boolean setPlugEast(Item plug);
+	boolean setPlugEast(ItemStack plug);
 	
 	default boolean hasPlug(EnumFacing facing) {
 		switch (facing) {
@@ -206,75 +207,62 @@ public interface IFluid {
 	/** 判断管道东方是否含有管塞 */
 	boolean hasPlugEast();
 	
-	/** 向下运输一格 */
-	@Nullable
-	default FluidStack transportDown(int amount, boolean simulate) {
-		return transport(DOWN, amount, simulate);
-	}
-	/** 向上运输一格 */
-	@Nullable
-	default FluidStack transportUp(int amount, boolean simulate) {
-		return transport(UP, amount, simulate);
-	}
-	/** 向东运输一格 */
-	@Nullable
-	default FluidStack transportEast(int amount, boolean simulate) {
-		return transport(EAST, amount, simulate);
-	}
-	/** 向西运输一格 */
-	@Nullable
-	default FluidStack transportWest(int amount, boolean simulate) {
-		return transport(WEST, amount, simulate);
-	}
-	/** 向北运输一格 */
-	@Nullable
-	default FluidStack transportNorth(int amount, boolean simulate) {
-		return transport(NORTH, amount, simulate);
-	}
-	/** 向南运输一格 */
-	@Nullable
-	default FluidStack transportSouth(int amount, boolean simulate) {
-		return transport(SOUTH, amount, simulate);
-	}
-	/**
-	 * 向指定方向运输一格
-	 * @param facing 方向
-	 * @param amount 运输量(mB)
-	 * @param simulate 是否为模拟，为true时不修改内部数据
-	 * @return 真实运输的流体
-	 */
-	@Nullable
-	default FluidStack transport(EnumFacing facing, int amount, boolean simulate) {
-		Fluid fluid = fluid();
-		if (fluid == null) return null;
-		FluidStack out = new FluidStack(fluid, Math.min(amount, FLUID_TRANSFER_MAX_AMOUNT));
-		out.amount = extract(out, true);
-		if (out.amount == 0) return null;
-		
-		List<EnumFacing> nexts = Collections.emptyList();
-		//do {
-		
-		//} while (!nexts.isEmpty());
-		
-		IFluid that = getLinkedTransfer(facing);
-		if (that == null) return null;
-		int realIn = that.insert(out, null, true);
-		out.amount = Math.min(out.amount, realIn);
-		if (out.amount == 0) return null;
-		if (!simulate) {
-			extract(out, false);
-			that.insert(out, facing.getOpposite(), false);
-		}
-		return out;
+	/** 判断指定方向上能否通过流体 */
+	default boolean isOpen(EnumFacing facing) {
+		return hasAperture(facing) && !hasPlug(facing);
 	}
 	
 	/** 按照传输优先级对可选方向进行排序 */
-	default void sortFacing(List<EnumFacing> facings) {
+	static void sortFacing(List<EnumFacing> facings) {
 		if (facings.isEmpty()) return;
 		facings.sort((o1, o2) -> {
-			if (o1.getAxis() == Axis.Y) return o2.getAxis() == Axis.Y ? 0 : 1;
+			if (o1 == o2) return 0;
+			if (o1.getAxis() == Axis.Y) return o1 == UP ? -1 : 1;
 			else return o2.getAxis() == Axis.Y ? -1 : 0;
 		});
+	}
+	
+	/**
+	 * 将列表中的同种元素合并，不修改传入的列表
+	 * @param list 列表
+	 * @return 整合后的列表
+	 */
+	@Nonnull
+	static List<FluidData> integrate(List<FluidData> list) {
+		List<FluidData> result = new LinkedList<>();
+		o : for (FluidData data : list) {
+			for (FluidData inner : result) {
+				if (inner.getFluid() == data.getFluid()) {
+					inner.plusAmount(data.getAmount());
+					continue o;
+				}
+			}
+			result.add(data.copy());
+		}
+		return result;
+	}
+	
+	/**
+	 * 将流体释放到世界中
+	 * @param world 世界对象
+	 * @param pos 当前坐标
+	 * @param target 目标坐标
+	 * @param out 要释放的流体
+	 * @return 一个列表，包含被释放的流体
+	 */
+	static List<FluidData> putFluid2World(World world, BlockPos pos, BlockPos target,
+	                                      List<FluidData> out, boolean simulate) {
+		List<FluidData> result = new LinkedList<>();
+		Block block = world.getBlockState(pos).getBlock();
+		if (!block.isReplaceable(world, pos)) return result;
+		out = integrate(out);
+		for (FluidData data : out) {
+			if ((!data.isAir()) && data.getAmount() >= 1000) {
+				result.add(data);
+				if (!simulate) WorldUtil.putFluid(world, pos, target, data.getFluid());
+			}
+		}
+		return result;
 	}
 	
 }
