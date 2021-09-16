@@ -154,7 +154,7 @@ public class VarDataReader implements IDataReader {
 		int result = 0;
 		for (int i = 0; i < 5; ++i) {
 			byte data = readByte();
-			result |= (data & 0b01111111);
+			result |= (data & 0b01111111) << (i * 7);
 			if ((data & 0b10000000) == 0) break;
 		}
 		return result;
