@@ -212,7 +212,7 @@ public class SlotGroup extends MComponent implements Iterable<SlotGroup.Node> {
 	public void realTimePaint(GuiPainter painter) {
 		int slotSize = getYSize();
 		int interval = getInterval();
-		RuntimeTexture texture = createTexture(createTextureName(), slotSize, slotSize, ImageData.SLOT);
+		RuntimeTexture texture = createTexture(ImageData.SLOT, slotSize, slotSize, createTextureName());
 		texture.bindTexture();
 		for (int y = 0; y < getSlotSize(); ++y) {
 			for (int x = 0; x < getSlotSize(); ++x) {

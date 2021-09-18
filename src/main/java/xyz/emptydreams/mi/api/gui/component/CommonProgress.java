@@ -60,8 +60,8 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	}
 	
 	public void paintBackground(@Nonnull GuiPainter painter) {
-		RuntimeTexture texture = createTexture(createTextureName(),
-				getStyle().getWidth(), getStyle().getHeight(), PROGRESS_BAR);
+		RuntimeTexture texture = createTexture(PROGRESS_BAR,
+				getStyle().getWidth(), getStyle().getHeight(), createTextureName());
 		texture.bindTexture();
 		painter.drawTexture(getStyle().getX(),
 				getStyle().getY(), getStyle().getWidth(), getStyle().getHeight(), texture);

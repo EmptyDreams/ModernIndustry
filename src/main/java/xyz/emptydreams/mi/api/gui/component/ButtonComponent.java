@@ -158,56 +158,56 @@ public class ButtonComponent extends InvisibleButton {
 		
 		@SideOnly(CLIENT)
 		private static void recPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(REC.getTextureName(size),
-										size.getWidth(), size.getHeight(), BUTTON_REC);
+			RuntimeTexture texture = createTexture(BUTTON_REC,
+										size.getWidth(), size.getHeight(), REC.getTextureName(size));
 			texture.bindTexture();
 			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}
 		
 		@SideOnly(CLIENT)
 		private static void pageLeftPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(TRIANGLE_LEFT.getTextureName(size),
-										size.getWidth(), size.getHeight(), BUTTON_PAGE_LEFT);
+			RuntimeTexture texture = createTexture(BUTTON_PAGE_LEFT,
+										size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size));
 			texture.bindTexture();
 			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}
 		
 		@SideOnly(CLIENT)
 		private static void pageRightPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(TRIANGLE_LEFT.getTextureName(size),
-					size.getWidth(), size.getHeight(), BUTTON_PAGE_RIGHT);
+			RuntimeTexture texture = createTexture(BUTTON_PAGE_RIGHT,
+					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size));
 			texture.bindTexture();
 			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}
 		
 		@SideOnly(CLIENT)
 		private static void pageUpPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(TRIANGLE_LEFT.getTextureName(size),
-					size.getWidth(), size.getHeight(), BUTTON_PAGE_UP);
+			RuntimeTexture texture = createTexture(BUTTON_PAGE_UP,
+					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size));
 			texture.bindTexture();
 			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}
 		
 		@SideOnly(CLIENT)
 		private static void pageDownPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(TRIANGLE_LEFT.getTextureName(size),
-					size.getWidth(), size.getHeight(), BUTTON_PAGE_DOWN);
+			RuntimeTexture texture = createTexture(BUTTON_PAGE_DOWN,
+					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size));
 			texture.bindTexture();
 			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}
 		
 		@SideOnly(CLIENT)
 		private static void triangleRightPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(TRIANGLE_LEFT.getTextureName(size),
-					size.getWidth(), size.getHeight(), BUTTON_TRIANGLE_RIGHT);
+			RuntimeTexture texture = createTexture(BUTTON_TRIANGLE_RIGHT,
+					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size));
 			texture.bindTexture();
 			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}
 		
 		@SideOnly(CLIENT)
 		private static void triangleLeftPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(TRIANGLE_LEFT.getTextureName(size),
-					size.getWidth(), size.getHeight(), BUTTON_TRIANGLE_LEFT);
+			RuntimeTexture texture = createTexture(BUTTON_TRIANGLE_LEFT,
+					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size));
 			texture.bindTexture();
 			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}

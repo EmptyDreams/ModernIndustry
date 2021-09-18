@@ -163,11 +163,11 @@ public class RollComponent extends MComponent {
 	public void paintBackground(@Nonnull GuiPainter painter) {
 		RuntimeTexture texture;
 		if (isVertical()) {
-			texture = ImageData.createTexture(createTextureName("ver"),
-					getWidth(), getHeight(), ImageData.ROLL_BACKGROUND_VER);
+			texture = ImageData.createTexture(ImageData.ROLL_BACKGROUND_VER,
+					getWidth(), getHeight(), createTextureName("ver"));
 		} else {
-			texture = ImageData.createTexture(createTextureName("hor"),
-					getWidth(), getHeight(), ImageData.ROLL_BACKGROUND_VER);
+			texture = ImageData.createTexture(ImageData.ROLL_BACKGROUND_VER,
+					getWidth(), getHeight(), createTextureName("hor"));
 		}
 		texture.bindTexture();
 		painter.drawTexture(0, 0, getWidth(), getHeight(), texture);

@@ -8,6 +8,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
+import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
@@ -50,7 +51,9 @@ public class MSlot extends MComponent {
 	
 	@Override
 	public void realTimePaint(GuiPainter painter) {
-		ImageData.createTexture(createTextureName(), getWidth(), getHeight(), SLOT);
+		RuntimeTexture texture = ImageData.createTexture(SLOT, getWidth(), getHeight(), createTextureName());
+		texture.bindTexture();
+		painter.drawTexture(0, 0, getWidth(), getHeight(), texture);
 	}
 	
 	@Override

@@ -197,14 +197,14 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 				if (preComponent != null) activateExited(inventorySlots, preComponent, mouseX, mouseY);
 				if (onComponent != null) activateEntered(inventorySlots, onComponent, mouseX, mouseY);
 			}
-			
 			preComponent = onComponent;
 		} else if (preComponent != null) {
 			activateExited(inventorySlots, preComponent, mouseX, mouseY);
 			preComponent = null;
 		}
 		for (IComponent component : components) {
-			GuiPainter painter = new GuiPainter(this, component.getX(), component.getY());
+			GuiPainter painter = new GuiPainter(this, component.getX(), component.getY(),
+					0, 0, component.getWidth(), component.getHeight());
 			activateLocation(inventorySlots, component, mouseX, mouseY);
 			component.realTimePaint(painter);
 		}
