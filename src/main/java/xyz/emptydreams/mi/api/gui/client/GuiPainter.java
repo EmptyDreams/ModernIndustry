@@ -69,16 +69,31 @@ public final class GuiPainter {
 	 * <p><b>注意：使用前需自行装载材质</b>
 	 * @param x 在画板中的横坐标
 	 * @param y 在画板中的纵坐标
+	 * @param u 材质横坐标
+	 * @param v 材质纵坐标
+	 * @param width 要绘制的宽度
+	 * @param height 要绘制的高度
+	 * @param texture 要绘制的材质
+	 */
+	public void drawTexture(int x, int y, int u, int v, int width, int height, RuntimeTexture texture) {
+		int realX = x + xOffset;
+		int realY = y + yOffset;
+		scissor();
+		texture.drawToFrame(realX, realY, u, v, width, height);
+		unscissor();
+	}
+	
+	/**
+	 * <p>将材质绘制到GUI中
+	 * <p><b>注意：使用前需自行装载材质</b>
+	 * @param x 在画板中的横坐标
+	 * @param y 在画板中的纵坐标
 	 * @param width 要绘制的宽度
 	 * @param height 要绘制的高度
 	 * @param texture 要绘制的材质
 	 */
 	public void drawTexture(int x, int y, int width, int height, RuntimeTexture texture) {
-		int realX = x + xOffset;
-		int realY = y + yOffset;
-		scissor();
-		texture.drawToFrame(realX, realY, 0, 0, width, height);
-		unscissor();
+		drawTexture(x, y, 0, 0, width, height, texture);
 	}
 	
 	/**
@@ -137,7 +152,7 @@ public final class GuiPainter {
 	 */
 	@Nonnull
 	public GuiPainter createPainter(int x, int y, int width, int height) {
-		return new GuiPainter(gui, x + this.x, y + this.y, xOffset, yOffset,
+		return new GuiPainter(gui, x + this.x, y + this.y, xOffset - gui.getGuiLeft(), yOffset - gui.getGuiTop(),
 				Math.min(width, maxWidth - x), Math.min(height, maxHeight - y));
 	}
 	

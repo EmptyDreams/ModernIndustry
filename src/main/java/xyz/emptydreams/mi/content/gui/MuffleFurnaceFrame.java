@@ -57,8 +57,8 @@ public class MuffleFurnaceFrame {
 				left.setMaxDistance(5);
 				//noinspection ConstantConditions
 				left.adds(new MSlot(furnace.getUp()), furnace.getBurnProgress(), new MSlot(furnace.getDown()));
-				group.adds(left, furnace.getWorkProgress(), new MSlot(furnace.getOut()));
-				frame.add(group);
+				//group.adds(left, furnace.getWorkProgress(), new MSlot(furnace.getOut()));
+				frame.add(left);
 			}
 			
 		});

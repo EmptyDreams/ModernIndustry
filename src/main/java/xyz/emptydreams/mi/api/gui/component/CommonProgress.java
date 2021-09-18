@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.api.gui.component;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraftforge.fml.relauncher.Side;
@@ -53,18 +52,16 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void realTimePaint(GuiPainter painter) {
-		GlStateManager.color(1, 1, 1);
 		paintBackground(painter);
 		front.accept(new Node(painter.getGuiContainer()));
 		if (getStringShower() != null) getStringShower().draw(this, painter.getGuiContainer());
 	}
 	
 	public void paintBackground(@Nonnull GuiPainter painter) {
-		RuntimeTexture texture = createTexture(PROGRESS_BAR,
-				getStyle().getWidth(), getStyle().getHeight(), createTextureName());
+		RuntimeTexture texture = createTexture(PROGRESS_BAR, createTextureName());
 		texture.bindTexture();
-		painter.drawTexture(getStyle().getX(),
-				getStyle().getY(), getStyle().getWidth(), getStyle().getHeight(), texture);
+		painter.drawTexture(0, 0, getStyle().getX(), getStyle().getY(),
+				getStyle().getWidth(), getStyle().getHeight(), texture);
 	}
 
 	@Override
