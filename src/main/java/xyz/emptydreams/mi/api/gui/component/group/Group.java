@@ -40,7 +40,7 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	protected int maxDistance = 10;
 
 	public Group() {
-		this(0, 0, 0, 0, null);
+		this(0, 0, 0, 0, Panels::non);
 	}
 	
 	public Group(Consumer<Group> panel) {
@@ -61,7 +61,7 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		mode = panel;
+		mode = StringUtil.checkNull(panel, "panel");
 	}
 
 	/**
@@ -120,9 +120,11 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	/** 设置两个控件间的最远距离 */
 	public void setMaxDistance(int maxDistance) { this.maxDistance = maxDistance; }
 	/** 获取排列模式 */
-	public Consumer<Group> getArrangeMode() { return mode; }
+	public Consumer<Group> getControlMode() { return mode; }
 	/** 设置排列模式，传入为空表示不自动进行排列 */
-	public void setControlPanel(Consumer<Group> mode) { this.mode = mode; }
+	public void setControlPanel(Consumer<Group> mode) {
+		this.mode = StringUtil.checkNull(mode, "mode");
+	}
 	/** 遍历控件 */
 	@Override
 	public Iterator<IComponent> iterator() { return components.iterator(); }
@@ -138,13 +140,13 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	
 	private boolean isSort = true;
 	
-	public void sort() {
+	private void sort() {
 		if (isSort) {
 			isSort = false;
 			for (IComponent component : components) {
 				if (component instanceof Group) ((Group) component).sort();
 			}
-			if (mode != null) mode.accept(this);
+			mode.accept(this);
 		}
 	}
 	
@@ -165,7 +167,7 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 		for (IComponent component : components) {
 			if (component instanceof Group) ((Group) component).sort();
 		}
-		if (mode != null) mode.accept(this);
+		mode.accept(this);
 		components.forEach(it -> it.onAddToGUI(con, player));
 	}
 
@@ -189,7 +191,7 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	}
 
 	@SideOnly(Side.CLIENT)
-	private void paintHelper(Graphics g, IComponent component) {
+	protected void paintHelper(Graphics g, IComponent component) {
 		Graphics graphics = g.create(component.getX() - getX(), component.getY() - getY(),
 				component.getWidth(), component.getHeight());
 		component.paint(graphics);

@@ -115,7 +115,15 @@ public class ButtonComponent extends InvisibleButton {
 		/** 向右三角形按钮 */
 		TRIANGLE_RIGHT(Style::triangleRightPaint, Style::triangleRightDrawMouseIn, Style::stringPainter),
 		/** 向左三角形按钮 */
-		TRIANGLE_LEFT(Style::triangleLeftPaint, Style::triangleLeftDrawMouseIn, Style::stringPainter);
+		TRIANGLE_LEFT(Style::triangleLeftPaint, Style::triangleLeftDrawMouseIn, Style::stringPainter),
+		/** 向左翻页按钮 */
+		PAGE_LEFT(Style::pageLeftPaint, Style::pageLeftDrawMouseIn, Style::stringPainterNon),
+		/** 向右翻页按钮 */
+		PAGE_RIGHT(Style::pageRightPaint, Style::pageRightDrawMouseIn, Style::stringPainterNon),
+		/** */
+		PAGE_UP(Style::pageUpPaint, Style::pageUpDrawMouseIn, Style::stringPainterNon),
+		/** */
+		PAGE_DOWN(Style::pageDownPaint, Style::pageDownDrawMouseIn, Style::stringPainterNon);
 		
 		private final BiConsumer<Graphics, Size2D> printer;
 		private final ThConsumer<GuiPainter, IComponent, String> clickEffect;
@@ -160,6 +168,30 @@ public class ButtonComponent extends InvisibleButton {
 		}
 		
 		@SideOnly(CLIENT)
+		private static void pageLeftPaint(Graphics g, Size2D size) {
+			g.drawImage(ImageData.getImage(BUTTON_PAGE_LEFT,
+					size.getWidth(), size.getHeight()), 0, 0, null);
+		}
+		
+		@SideOnly(CLIENT)
+		private static void pageRightPaint(Graphics g, Size2D size) {
+			g.drawImage(ImageData.getImage(BUTTON_PAGE_RIGHT,
+					size.getWidth(), size.getHeight()), 0, 0, null);
+		}
+		
+		@SideOnly(CLIENT)
+		private static void pageUpPaint(Graphics g, Size2D size) {
+			g.drawImage(ImageData.getImage(BUTTON_PAGE_UP,
+					size.getWidth(), size.getHeight()), 0, 0, null);
+		}
+		
+		@SideOnly(CLIENT)
+		private static void pageDownPaint(Graphics g, Size2D size) {
+			g.drawImage(ImageData.getImage(BUTTON_PAGE_DOWN,
+					size.getWidth(), size.getHeight()), 0, 0, null);
+		}
+		
+		@SideOnly(CLIENT)
 		private static void triangleRightPaint(Graphics g, Size2D size) {
 			g.drawImage(ImageData.getImage(BUTTON_TRIANGLE_RIGHT,
 					size.getWidth(), size.getHeight()), 0, 0, null);
@@ -177,6 +209,26 @@ public class ButtonComponent extends InvisibleButton {
 		}
 		
 		@SideOnly(CLIENT)
+		private static void pageLeftDrawMouseIn(GuiPainter painter, IComponent component, String name) {
+			imageDrawMouseIn(painter, component, name, BUTTON_PAGE_LEFT_CLICK);
+		}
+		
+		@SideOnly(CLIENT)
+		private static void pageRightDrawMouseIn(GuiPainter painter, IComponent component, String name) {
+			imageDrawMouseIn(painter, component, name, BUTTON_PAGE_RIGHT_CLICK);
+		}
+		
+		@SideOnly(CLIENT)
+		private static void pageUpDrawMouseIn(GuiPainter painter, IComponent component, String name) {
+			imageDrawMouseIn(painter, component, name, BUTTON_PAGE_UP_CLICK);
+		}
+		
+		@SideOnly(CLIENT)
+		private static void pageDownDrawMouseIn(GuiPainter painter, IComponent component, String name) {
+			imageDrawMouseIn(painter, component, name, BUTTON_PAGE_DOWN_CLICK);
+		}
+		
+		@SideOnly(CLIENT)
 		private static void triangleRightDrawMouseIn(GuiPainter painter, IComponent component, String name) {
 			imageDrawMouseIn(painter, component, name, BUTTON_TRIANGLE_RIGHT_CLICK);
 		}
@@ -185,6 +237,9 @@ public class ButtonComponent extends InvisibleButton {
 		private static void triangleLeftDrawMouseIn(GuiPainter painter, IComponent component, String name) {
 			imageDrawMouseIn(painter, component, name, BUTTON_TRIANGLE_LEFT_CLICK);
 		}
+		
+		@SideOnly(CLIENT)
+		private static void stringPainterNon(GuiPainter painter, ButtonComponent button) { }
 		
 		@SideOnly(CLIENT)
 		private static void stringPainter(GuiPainter painter, ButtonComponent button) {

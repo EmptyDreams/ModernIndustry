@@ -103,11 +103,6 @@ public class RollGroup extends Group {
 	}
 	
 	@Override
-	public void adds(IComponent... components) {
-		this.innerGroup.adds(components);
-	}
-	
-	@Override
 	public IComponent containCode(int code) {
 		IComponent result = super.containCode(code);
 		if (result == null) return innerGroup.containCode(code);
@@ -135,8 +130,8 @@ public class RollGroup extends Group {
 	}
 	
 	@Override
-	public Consumer<Group> getArrangeMode() {
-		return innerGroup.getArrangeMode();
+	public Consumer<Group> getControlMode() {
+		return innerGroup.getControlMode();
 	}
 	
 	@Override
@@ -166,7 +161,7 @@ public class RollGroup extends Group {
 			}
 		});
 		registryListener((MouseWheelListener) wheel -> {
-			int roll = - wheel * 3;
+			int roll = -wheel * 3;
 			if (isShift) {
 				if (horRoll == null) {
 					if (verRoll != null) verRoll.plusIndex(roll);
