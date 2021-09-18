@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -18,7 +19,6 @@ import xyz.emptydreams.mi.api.net.message.gui.GuiMessage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -60,12 +60,6 @@ public interface IComponent {
 	}
 	
 	/**
-	 * 绘制图像，在组件被渲染时调用.
-	 * @param g 画笔
-	 */
-	@SideOnly(Side.CLIENT)
-	void paint(@Nonnull Graphics g);
-	/**
 	 * 在组件被添加到GUI时调用.<br>
 	 *     <b>和窗体无关的初始化操作不应该放在这个方法里，因为这可能会导致重复初始化，
 	 *          如果必须在该方法中进行初始化，须自行检查是否应当进行初始化</b>
@@ -104,6 +98,29 @@ public interface IComponent {
 	/** 实时渲染 */
 	@SideOnly(Side.CLIENT)
 	default void realTimePaint(GuiPainter painter) { }
+	
+	/**
+	 * 构建一个默认的材质名称
+	 * @return 格式：[modid]:[类名简称]@[width]![height]
+	 */
+	@Nonnull
+	@SideOnly(Side.CLIENT)
+	default String createTextureName() {
+		return FMLCommonHandler.instance().getModName()
+				+ ":"  +getClass().getSimpleName() + "@" + getWidth() + "!" + getHeight();
+	}
+	
+	/**
+	 * 构建一个默认的材质名称
+	 * @param extra 额外信息
+	 * @return 格式：[modid]:[类名简称]+[extra]@[width]![height]
+	 */
+	@Nonnull
+	@SideOnly(Side.CLIENT)
+	default String createTextureName(String extra) {
+		return FMLCommonHandler.instance().getModName() + ":"
+				+ getClass().getSimpleName() + "+" + extra  + "@" + getWidth() + "!" + getHeight();
+	}
 	
 	/**
 	 * 发送数据到客户端，发送所需的varToUpdate参数范围是[{@link #getCode()}, {@link #getCode()} + 100)

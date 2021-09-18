@@ -7,18 +7,17 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.emptydreams.mi.api.gui.client.ImageData;
-import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
+import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 
 import javax.annotation.Nonnull;
-import java.awt.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static xyz.emptydreams.mi.api.gui.client.ImageData.PROGRESS_BAR;
+import static xyz.emptydreams.mi.api.gui.client.ImageData.createTexture;
 import static xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar.getTexture;
 import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
 
@@ -55,15 +54,17 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	@Override
 	public void realTimePaint(GuiPainter painter) {
 		GlStateManager.color(1, 1, 1);
+		paintBackground(painter);
 		front.accept(new Node(painter.getGuiContainer()));
 		if (getStringShower() != null) getStringShower().draw(this, painter.getGuiContainer());
 	}
 	
-	@Override
-	public void paint(@Nonnull Graphics g) {
-		g.drawImage(ImageData.getImage(PROGRESS_BAR).getSubimage(
-				getStyle().getX(), getStyle().getY(), getStyle().getWidth(), getStyle().getHeight()),
-											0, 0, null);
+	public void paintBackground(@Nonnull GuiPainter painter) {
+		RuntimeTexture texture = createTexture(createTextureName(),
+				getStyle().getWidth(), getStyle().getHeight(), PROGRESS_BAR);
+		texture.bindTexture();
+		painter.drawTexture(getStyle().getX(),
+				getStyle().getY(), getStyle().getWidth(), getStyle().getHeight(), texture);
 	}
 
 	@Override

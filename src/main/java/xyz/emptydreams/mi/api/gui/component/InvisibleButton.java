@@ -17,9 +17,7 @@ import xyz.emptydreams.mi.api.interfaces.ObjBooleanConsumer;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
 
 /**
  * 隐形按钮
@@ -45,9 +43,6 @@ public class InvisibleButton extends MComponent {
 	public void setAction(ObjBooleanConsumer<IFrame> consumer) {
 		onAction = StringUtil.checkNull(consumer, "consumer");
 	}
-	
-	@Override
-	public void paint(@Nonnull Graphics g) { }
 	
 	@Override
 	protected void init(MIFrame frame, EntityPlayer player) {

@@ -5,17 +5,16 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
-import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseLocationListener;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
@@ -183,18 +182,12 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 			if (component.update(codeID, data)) return true;
 		return false;
 	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void paint(@Nonnull Graphics g) {
-		components.forEach(it -> paintHelper(g, it));
-	}
-
+	
 	@SideOnly(Side.CLIENT)
 	protected void paintHelper(Graphics g, IComponent component) {
 		Graphics graphics = g.create(component.getX() - getX(), component.getY() - getY(),
 				component.getWidth(), component.getHeight());
-		component.paint(graphics);
+		//component.paint(graphics);
 		graphics.dispose();
 	}
 

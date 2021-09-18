@@ -67,19 +67,17 @@ public final class GuiPainter {
 	/**
 	 * <p>将材质绘制到GUI中
 	 * <p><b>注意：使用前需自行装载材质</b>
-	 * @param x 在GUI中的横坐标
-	 * @param y 在GUI中的纵坐标
-	 * @param u 材质横坐标
-	 * @param v 材质纵坐标
+	 * @param x 在画板中的横坐标
+	 * @param y 在画板中的纵坐标
 	 * @param width 要绘制的宽度
 	 * @param height 要绘制的高度
 	 * @param texture 要绘制的材质
 	 */
-	public void drawTexture(int x, int y, int u, int v, int width, int height, RuntimeTexture texture) {
+	public void drawTexture(int x, int y, int width, int height, RuntimeTexture texture) {
 		int realX = x + xOffset;
 		int realY = y + yOffset;
 		scissor();
-		texture.drawToFrame(realX, realY, u, v, width, height);
+		texture.drawToFrame(realX, realY, 0, 0, width, height);
 		unscissor();
 	}
 	
@@ -128,6 +126,19 @@ public final class GuiPainter {
 		scissor();
 		Minecraft.getMinecraft().fontRenderer.drawString(text, guiX, guiY, color);
 		unscissor();
+	}
+	
+	/**
+	 * 构建一个子画笔
+	 * @param x 相对于画板X轴坐标
+	 * @param y 相对于画板的Y轴坐标
+	 * @param width 宽度
+	 * @param height 高度
+	 */
+	@Nonnull
+	public GuiPainter createPainter(int x, int y, int width, int height) {
+		return new GuiPainter(gui, x + this.x, y + this.y, xOffset, yOffset,
+				Math.min(width, maxWidth - x), Math.min(height, maxHeight - y));
 	}
 	
 	private void scissor() {

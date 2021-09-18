@@ -14,15 +14,13 @@ import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.listener.IListener;
-import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
 import xyz.emptydreams.mi.api.gui.listener.ListenerTrigger;
+import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.container.WeakList;
 
-import javax.annotation.Nonnull;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -146,10 +144,6 @@ public abstract class MComponent implements IComponent {
 		craftGuide = null;
 		slotGroupGetter = null;
 	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public abstract void paint(@Nonnull Graphics g);
 	
 	/**
 	 * 在服务端或客户端第一次将控件添加到窗体时调用.

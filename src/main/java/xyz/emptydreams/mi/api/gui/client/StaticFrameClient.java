@@ -77,12 +77,6 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 			BufferedImage image = new BufferedImage(xSize, ySize, 6);
 			Graphics g = image.getGraphics();
 			drawBackground(g, xSize, ySize);
-			for (IComponent component : components) {
-				Graphics graphics = g.create(
-						component.getX(), component.getY(), component.getWidth(), component.getHeight());
-				component.paint(graphics);
-				graphics.dispose();
-			}
 			RuntimeTexture.setInstance(name, image);
 		}
 	}

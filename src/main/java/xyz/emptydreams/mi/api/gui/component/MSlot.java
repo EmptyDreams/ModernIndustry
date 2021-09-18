@@ -6,12 +6,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.utils.StringUtil;
-
-import javax.annotation.Nonnull;
-import java.awt.*;
 
 import static xyz.emptydreams.mi.api.gui.client.ImageData.SLOT;
 
@@ -51,8 +49,8 @@ public class MSlot extends MComponent {
 	}
 	
 	@Override
-	public void paint(@Nonnull Graphics g) {
-		g.drawImage(ImageData.getImage(SLOT, getWidth(), getHeight()), 0, 0, null);
+	public void realTimePaint(GuiPainter painter) {
+		ImageData.createTexture(createTextureName(), getWidth(), getHeight(), SLOT);
 	}
 	
 	@Override

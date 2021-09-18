@@ -2,12 +2,9 @@ package xyz.emptydreams.mi.api.gui.component.group;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.items.SlotItemHandler;
+import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
-import xyz.emptydreams.mi.api.gui.client.GuiPainter;
-
-import javax.annotation.Nonnull;
-import java.awt.*;
 
 /**
  * 抽象的SlotGroup，功能与{@link SlotGroup}相同，但是不能被添加到GUI中
@@ -21,9 +18,6 @@ public class AbstractSlotGroup extends SlotGroup {
 			setSlot(i, 0, slots[i]);
 		}
 	}
-	
-	@Override
-	public void paint(@Nonnull Graphics g) { }
 	
 	@Override
 	public void realTimePaint(GuiPainter painter) { }

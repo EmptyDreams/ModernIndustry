@@ -11,7 +11,6 @@ import xyz.emptydreams.mi.api.gui.listener.mouse.MouseLocationListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseReleasedListener;
 
 import javax.annotation.Nonnull;
-import java.awt.*;
 
 /**
  * 滚动轴控件
@@ -149,15 +148,29 @@ public class RollComponent extends MComponent {
 	@Override
 	public void realTimePaint(GuiPainter painter) {
 		GlStateManager.color(1, 1, 1);
+		paintBackground(painter);
 		double index = getIndex();
 		RuntimeTexture texture = bindTexture();
 		if (isVertical()) {
 			int offset = (int) (getHeight() * index);
-			painter.drawTexture(getX() + 1, getY() + offset, 0, 0, buttonSize, 15, texture);
+			painter.drawTexture(getX() + 1, getY() + offset, buttonSize, 15, texture);
 		} else {
 			int offset = (int) (getWidth() * index);
-			painter.drawTexture(getX() + offset, getY() + 1, 0, 0, 15, buttonSize, texture);
+			painter.drawTexture(getX() + offset, getY() + 1, 15, buttonSize, texture);
 		}
+	}
+	
+	public void paintBackground(@Nonnull GuiPainter painter) {
+		RuntimeTexture texture;
+		if (isVertical()) {
+			texture = ImageData.createTexture(createTextureName("ver"),
+					getWidth(), getHeight(), ImageData.ROLL_BACKGROUND_VER);
+		} else {
+			texture = ImageData.createTexture(createTextureName("hor"),
+					getWidth(), getHeight(), ImageData.ROLL_BACKGROUND_VER);
+		}
+		texture.bindTexture();
+		painter.drawTexture(0, 0, getWidth(), getHeight(), texture);
 	}
 	
 	private RuntimeTexture bindTexture() {
@@ -184,15 +197,6 @@ public class RollComponent extends MComponent {
 						ImageData.ROLL_BUTTON_DISABLE_HOR, 15, buttonSize, getButtonTextureName());
 			else return ImageData.createTexture(
 						ImageData.ROLL_BUTTON_HOR, 15, buttonSize, getButtonTextureName());
-		}
-	}
-	
-	@Override
-	public void paint(@Nonnull Graphics g) {
-		if (isVertical()) {
-			g.drawImage(ImageData.getImage(ImageData.ROLL_BACKGROUND_VER, getWidth(), getHeight()), 0, 0, null);
-		} else {
-			g.drawImage(ImageData.getImage(ImageData.ROLL_BACKGROUND_HOR, getWidth(), getHeight()), 0, 0, null);
 		}
 	}
 	

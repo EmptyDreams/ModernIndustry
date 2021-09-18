@@ -8,9 +8,6 @@ import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 
-import javax.annotation.Nonnull;
-import java.awt.*;
-
 /**
  * 用于显示单行字符串
  * @author EmptyDreams
@@ -53,9 +50,6 @@ public class StringComponent extends MComponent {
 		if (WorldUtil.isClient())
 			width = Minecraft.getMinecraft().fontRenderer.getStringWidth(str);
 	}
-
-	@Override
-	public void paint(@Nonnull Graphics g) { }
 	
 	@Override
 	public String toString() {

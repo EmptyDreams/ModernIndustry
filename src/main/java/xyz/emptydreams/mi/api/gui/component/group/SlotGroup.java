@@ -6,7 +6,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
+import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
+import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
@@ -14,11 +16,12 @@ import xyz.emptydreams.mi.api.gui.component.MSlot;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 
 import javax.annotation.Nonnull;
-import java.awt.*;
 import java.util.Iterator;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
+
+import static xyz.emptydreams.mi.api.gui.client.ImageData.createTexture;
 
 /**
  * @author EmptyDreams
@@ -46,6 +49,11 @@ public class SlotGroup extends MComponent implements Iterable<SlotGroup.Node> {
 		setSize(width * (size + interval), height * (size + interval));
 	}
 	
+	/**
+	 * 从指定位置开始创建SlotItemHandler
+	 * @param start 起始位置（包括）
+	 * @param builder 构建器
+	 */
 	public void writeFrom(int start, IntFunction<SlotItemHandler> builder) {
 		for (int y = 0; y < getYSize(); ++y) {
 			for (int x = 0; x < getXSize(); ++x) {
@@ -56,7 +64,6 @@ public class SlotGroup extends MComponent implements Iterable<SlotGroup.Node> {
 	
 	/**
 	 * 自动创建指定数量的Slot
-	 * @param handler 指定ItemStackHandler
 	 * @param start 下标起点
 	 * @param size 创建数量
 	 * @param builder 构建一个新的SlotItemHandler
@@ -202,35 +209,23 @@ public class SlotGroup extends MComponent implements Iterable<SlotGroup.Node> {
 	}
 	
 	@Override
-	public void paint(@Nonnull Graphics g) {
-		paintGroup(g, 0, 0, getSlotSize(), getXSize(), getYSize(), getInterval());
+	public void realTimePaint(GuiPainter painter) {
+		int slotSize = getYSize();
+		int interval = getInterval();
+		RuntimeTexture texture = createTexture(createTextureName(), slotSize, slotSize, ImageData.SLOT);
+		texture.bindTexture();
+		for (int y = 0; y < getSlotSize(); ++y) {
+			for (int x = 0; x < getSlotSize(); ++x) {
+				int drawX = (slotSize * x) + (interval * x);
+				int drawY = (slotSize * y) + (interval * y);
+				painter.drawTexture(drawX, drawY, slotSize, slotSize, texture);
+			}
+		}
 	}
 	
 	@Override
 	public IComponent getMouseTarget(float mouseX, float mouseY) {
 		return null;
-	}
-	
-	/**
-	 * 绘制图像
-	 * @param g 画笔
-	 * @param offsetX X轴偏移量
-	 * @param offsetY Y轴偏移量
-	 * @param slotSize 单个Slot的大小
-	 * @param xSize X轴方向Slot数量
-	 * @param ySize Y轴方向Slot数量
-	 * @param interval Slot之间的间隔
-	 */
-	public static void paintGroup(Graphics g, int offsetX, int offsetY,
-	                              int slotSize, int xSize, int ySize, int interval) {
-		Image image = ImageData.getImage(ImageData.SLOT, slotSize, slotSize);
-		for (int y = 0; y < ySize; ++y) {
-			for (int x = 0; x < xSize; ++x) {
-				int drawX = (slotSize * x) + (interval * x) + offsetX;
-				int drawY = (slotSize * y) + (interval * y) + offsetY;
-				g.drawImage(image, drawX, drawY, null);
-			}
-		}
 	}
 	
 	@Override

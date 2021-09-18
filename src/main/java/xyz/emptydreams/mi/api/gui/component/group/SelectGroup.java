@@ -17,7 +17,6 @@ import xyz.emptydreams.mi.api.utils.data.math.Size2D;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -138,12 +137,6 @@ public class SelectGroup extends MComponent {
 			if (result != null) return result;
 		}
 		return null;
-	}
-	
-	@Override
-	public void paint(@Nonnull Graphics g) {
-		components.paint(g);
-		
 	}
 	
 	@Override
