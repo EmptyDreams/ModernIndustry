@@ -59,8 +59,16 @@ public class MSlot extends MComponent {
 	@Override
 	public void onAdd2Manager(IComponentManager con, EntityPlayer player) {
 		StringUtil.checkNull(getSlot(), "slot");
-		getSlot().xPos += con.getX();
-		getSlot().yPos += con.getY();
+		int xSum = 0;
+		int ySum = 0;
+		IComponentManager now = con;
+		do {
+			xSum += now.getX();
+			ySum += now.getY();
+			now = now.getSuperManager();
+		} while (!now.isFrame());
+		getSlot().xPos += xSum;
+		getSlot().yPos += ySum;
 		con.addSlotToContainer(slot);
 	}
 	

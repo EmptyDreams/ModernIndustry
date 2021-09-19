@@ -164,6 +164,7 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	
 	@Override
 	public void onAdd2Manager(IComponentManager manager, EntityPlayer player) {
+		superManager = manager;
 		super.onAdd2Manager(manager, player);
 		sort();
 		components.forEach(it -> {
