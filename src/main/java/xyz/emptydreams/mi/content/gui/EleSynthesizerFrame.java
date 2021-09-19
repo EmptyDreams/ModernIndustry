@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
  * @author EmptyDreams
  */
 @Mod.EventBusSubscriber
-public class ElectronSynthesizerFrame {
+public class EleSynthesizerFrame {
 	
 	public final static ResourceLocation NAME =
 			new ResourceLocation(ModernIndustry.MODID, "electron_synthesizer");
@@ -51,12 +51,10 @@ public class ElectronSynthesizerFrame {
 				EUElectronSynthesizer synthesizer = (EUElectronSynthesizer) world.getTileEntity(pos);
 				frame.init(world);
 				
-				Group backpack = new Group(0, 125, 230, 0, Panels::horizontalCenter);
 				Group group = new Group(0, 18, 230, 0, Panels::horizontalCenter);
 				//noinspection ConstantConditions
 				group.adds(synthesizer.getInput(), synthesizer.getProgress(), synthesizer.getOutput());
 				
-				frame.add(backpack);
 				frame.add(group);
 			}
 			

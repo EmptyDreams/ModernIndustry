@@ -9,7 +9,6 @@ import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
-import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
@@ -190,35 +189,22 @@ public class SlotGroup extends MComponent implements Iterable<SlotGroup.Node> {
 		super.onAdd2Manager(manager, player);
 		for (int y = 0; y < getYSize(); ++y) {
 			for (int x = 0; x < getXSize(); ++x) {
-				getSlot(x, y).xPos = getX() + (getSlotSize() * x) + (getInterval() * x) + 1;
-				getSlot(x, y).yPos = getY() + (getSlotSize() * y) + (getInterval() * y) + 1;
+				getSlot(x, y).xPos = getX() + (getSlotSize() * x) + (getInterval() * x) + 1 + manager.getX();
+				getSlot(x, y).yPos = getY() + (getSlotSize() * y) + (getInterval() * y) + 1 + manager.getY();
 				manager.addSlotToContainer(getSlot(x, y));
 			}
 		}
 	}
 	
 	@Override
-	public void onAdd2ClientFrame(StaticFrameClient frame, EntityPlayer player) {
-		super.onAdd2ClientFrame(frame, player);
-		for (int y = 0; y < getYSize(); ++y) {
-			for (int x = 0; x < getXSize(); ++x) {
-				getSlot(x, y).xPos = getX() + (getSlotSize() * x) + (getInterval() * x) + 1;
-				getSlot(x, y).yPos = getY() + (getSlotSize() * y) + (getInterval() * y) + 1;
-			}
-		}
-	}
-	
-	@Override
 	public void realTimePaint(GuiPainter painter) {
-		int slotSize = getYSize();
-		int interval = getInterval();
-		RuntimeTexture texture = createTexture(ImageData.SLOT, slotSize, slotSize, createTextureName());
+		RuntimeTexture texture = createTexture(ImageData.SLOT, getSlotSize(), getSlotSize(), createTextureName());
 		texture.bindTexture();
 		for (int y = 0; y < getSlotSize(); ++y) {
 			for (int x = 0; x < getSlotSize(); ++x) {
-				int drawX = (slotSize * x) + (interval * x);
-				int drawY = (slotSize * y) + (interval * y);
-				painter.drawTexture(drawX, drawY, slotSize, slotSize, texture);
+				int drawX = (getSlotSize() * x) + (interval * x);
+				int drawY = (getSlotSize() * y) + (interval * y);
+				painter.drawTexture(drawX, drawY, getSlotSize(), getSlotSize(), texture);
 			}
 		}
 	}

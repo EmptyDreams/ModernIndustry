@@ -17,7 +17,7 @@ import xyz.emptydreams.mi.api.register.block.AutoBlockRegister;
 import xyz.emptydreams.mi.content.blocks.CommonUtil;
 import xyz.emptydreams.mi.content.blocks.base.MachineBlock;
 import xyz.emptydreams.mi.content.tileentity.user.EUElectronSynthesizer;
-import xyz.emptydreams.mi.content.gui.ElectronSynthesizerFrame;
+import xyz.emptydreams.mi.content.gui.EleSynthesizerFrame;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,7 +47,7 @@ public class ElectronSynthesizerBlock extends MachineBlock {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
-		return CommonUtil.openGui(playerIn, ElectronSynthesizerFrame.NAME, worldIn, pos);
+		return CommonUtil.openGui(playerIn, EleSynthesizerFrame.NAME, worldIn, pos);
 	}
 	
 	@Nullable
