@@ -10,10 +10,10 @@ import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
-import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
@@ -186,20 +186,20 @@ public class SlotGroup extends MComponent implements Iterable<SlotGroup.Node> {
 	}
 	
 	@Override
-	public void onAddToGUI(MIFrame con, EntityPlayer player) {
-		super.onAddToGUI(con, player);
+	public void onAdd2Manager(IComponentManager manager, EntityPlayer player) {
+		super.onAdd2Manager(manager, player);
 		for (int y = 0; y < getYSize(); ++y) {
 			for (int x = 0; x < getXSize(); ++x) {
 				getSlot(x, y).xPos = getX() + (getSlotSize() * x) + (getInterval() * x) + 1;
 				getSlot(x, y).yPos = getY() + (getSlotSize() * y) + (getInterval() * y) + 1;
-				con.addSlotToContainer(getSlot(x, y));
+				manager.addSlotToContainer(getSlot(x, y));
 			}
 		}
 	}
 	
 	@Override
-	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
-		super.onAddToGUI(con, player);
+	public void onAdd2ClientFrame(StaticFrameClient frame, EntityPlayer player) {
+		super.onAdd2ClientFrame(frame, player);
 		for (int y = 0; y < getYSize(); ++y) {
 			for (int x = 0; x < getXSize(); ++x) {
 				getSlot(x, y).xPos = getX() + (getSlotSize() * x) + (getInterval() * x) + 1;

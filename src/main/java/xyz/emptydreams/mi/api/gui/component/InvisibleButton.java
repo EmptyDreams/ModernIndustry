@@ -10,6 +10,7 @@ import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseEnteredListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseExitedListener;
@@ -45,12 +46,13 @@ public class InvisibleButton extends MComponent {
 	}
 	
 	@Override
-	protected void init(MIFrame frame, EntityPlayer player) {
-		super.init(frame, player);
+	protected void init(IComponentManager manager, EntityPlayer player) {
+		super.init(manager, player);
 		registryListener((MouseEnteredListener) (mouseX, mouseY) -> mouse = true);
 		registryListener((MouseExitedListener) (mouseX, mouseY) -> mouse = false);
 		registryListener(new MouseActionListener() {
 			float mouseX, mouseY;
+			final MIFrame frame = manager.getFrame();
 			
 			@Override
 			public void mouseAction(float mouseX, float mouseY) {

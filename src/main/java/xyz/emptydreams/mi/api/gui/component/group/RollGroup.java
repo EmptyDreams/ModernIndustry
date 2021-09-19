@@ -4,9 +4,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
-import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.RollComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 import xyz.emptydreams.mi.api.gui.listener.key.KeyListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseWheelListener;
 import xyz.emptydreams.mi.api.utils.StringUtil;
@@ -143,8 +143,8 @@ public class RollGroup extends Group {
 	private boolean isShift = false;
 	
 	@Override
-	protected void init(MIFrame frame, EntityPlayer player) {
-		super.init(frame, player);
+	protected void init(IComponentManager manager, EntityPlayer player) {
+		super.init(manager, player);
 		registryListener(new KeyListener() {
 			@Override
 			public void pressed(int keyCode, boolean isFocus) {
@@ -209,9 +209,9 @@ public class RollGroup extends Group {
 	}
 	
 	@Override
-	public void onAddToGUI(MIFrame con, EntityPlayer player) {
+	public void onAdd2Manager(IComponentManager manager, EntityPlayer player) {
 		initGroupComponent();
-		super.onAddToGUI(con, player);
+		super.onAdd2Manager(manager, player);
 		innerGroup.calculate();
 		if (horRoll != null && innerGroup.getRealWidth() <= innerGroup.getWidth()) {
 			horRoll.setDisable(true);

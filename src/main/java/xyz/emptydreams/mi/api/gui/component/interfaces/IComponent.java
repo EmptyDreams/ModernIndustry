@@ -60,20 +60,20 @@ public interface IComponent {
 	}
 	
 	/**
-	 * 在组件被添加到GUI时调用.<br>
-	 *     <b>和窗体无关的初始化操作不应该放在这个方法里，因为这可能会导致重复初始化，
+	 * <p>在组件被添加到管理类时调用。
+	 *     <p><b>和窗体无关的初始化操作不应该放在这个方法里，因为这可能会导致重复初始化，
 	 *          如果必须在该方法中进行初始化，须自行检查是否应当进行初始化</b>
 	 * @throws NullPointerException 如果需要使用con或player却传入了null
 	 */
-	void onAddToGUI(MIFrame con, EntityPlayer player);
+	void onAdd2Manager(IComponentManager manager, EntityPlayer player);
+	
 	/**
-	 * 在组件被添加到客户端GUI时调用.<br>
-	 *     <b>和窗体无关的初始化操作不应该放在这个方法里，因为这可能会导致重复初始化
+	 * <p>在组件于客户端被添加到GUI时调用。
+	 *     <p><b>和窗体无关的初始化操作不应该放在这个方法里，因为这可能会导致重复初始化，
 	 *          如果必须在该方法中进行初始化，须自行检查是否应当进行初始化</b>
 	 * @throws NullPointerException 如果需要使用con或player却传入了null
 	 */
-	@SideOnly(Side.CLIENT)
-	void onAddToGUI(StaticFrameClient con, EntityPlayer player);
+	void onAdd2ClientFrame(StaticFrameClient frame, EntityPlayer player);
 	
 	/**
 	 * 判断鼠标是否在组件内

@@ -13,6 +13,7 @@ import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.function.Consumer;
  */
 public class MIFrame extends Container implements IFrame, IComponentManager {
 	
-	/** 存储窗体的尺寸，可以更改 */
+	/** 存储窗体的尺寸 */
 	protected int width, height;
 	/** 所在世界 */
 	protected World world;
@@ -208,7 +209,7 @@ public class MIFrame extends Container implements IFrame, IComponentManager {
 	@Override
 	public void add(IComponent component) {
 		components.add(StringUtil.checkNull(component, "component"));
-		component.onAddToGUI(this, player);
+		component.onAdd2Manager(this, player);
 		allocID(component);
 	}
 	
@@ -246,6 +247,17 @@ public class MIFrame extends Container implements IFrame, IComponentManager {
 	public void allocID(IComponent component) {
 		component.setCodeStart(codeStart);
 		codeStart += 100;
+	}
+	
+	@Nonnull
+	@Override
+	public IComponentManager getSuperManager() {
+		return this;
+	}
+	
+	@Override
+	public boolean isFrame() {
+		return true;
 	}
 	
 	@Override

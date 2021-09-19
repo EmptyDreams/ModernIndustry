@@ -13,6 +13,7 @@ import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 import xyz.emptydreams.mi.api.gui.listener.IListener;
 import xyz.emptydreams.mi.api.gui.listener.ListenerTrigger;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
@@ -46,7 +47,7 @@ public abstract class MComponent implements IComponent {
 	/** 合成表按钮 */
 	protected CraftButton craftButton = null;
 	/** 存储加载过的窗体 */
-	protected final WeakList<MIFrame> LOADED = new WeakList<>();
+	protected final WeakList<IComponentManager> LOADED = new WeakList<>();
 	
 	@Override
 	public void setLocation(int x, int y) {
@@ -147,46 +148,44 @@ public abstract class MComponent implements IComponent {
 	
 	/**
 	 * 在服务端或客户端第一次将控件添加到窗体时调用.
-	 * @param frame 窗体对象
+	 * @param manager 管理类
 	 * @param player 玩家对象
 	 */
-	protected void init(MIFrame frame, EntityPlayer player) {
+	protected void init(IComponentManager manager, EntityPlayer player) {
 		if (craftGuide != null) {
 			registryListener((MouseActionListener) (mouseX, mouseY) ->
-					ListenerTrigger.activateAction(frame, craftButton, mouseX, mouseY));
+					ListenerTrigger.activateAction(manager.getFrame(), craftButton, mouseX, mouseY));
 		}
 	}
 	
 	/**
-	 * {@inheritDoc}<br>
-	 * <b>子类重写该方法时务必使用{@code super.onAddToGUI}调用该方法，
+	 * <p>{@inheritDoc}
+	 * <b>子类重写该方法时务必使用{@code super.onAdd2Manager}调用该方法，
 	 *      否则会导致部分功能无法正常工作</b>
 	 */
 	@Override
-	public void onAddToGUI(MIFrame con, EntityPlayer player) {
+	public void onAdd2Manager(IComponentManager manager, EntityPlayer player) {
 		if (craftGuide != null) {
 			craftButton = new CraftButton(craftGuide, this, player, slotGroupGetter);
-			con.add(craftButton);
+			manager.add(craftButton);
 		}
-		if (LOADED.contains(con)) return;
-		LOADED.add(con);
-		init(con, player);
+		if (LOADED.contains(manager)) return;
+		LOADED.add(manager);
+		init(manager, player);
 	}
 	
 	/**
 	 * {@inheritDoc}<br>
-	 * <b>子类重写该方法时务必使用{@code super.onAddToGUI}调用该方法，
+	 * <b>子类重写该方法时务必使用{@code super.onAdd2Manager}调用该方法，
 	 *      否则会导致部分功能无法正常工作</b>
 	 */
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
+	public void onAdd2ClientFrame(StaticFrameClient con, EntityPlayer player) {
 		MIFrame client = con.getInventorySlots();
-		for (MIFrame frame : LOADED) {
-			if (frame.getID().hashCode() == client.getID().hashCode()
-					&& frame.getID().equals(client.getID())) return;
-		}
+		if (LOADED.contains(client)) return;
 		LOADED.add(client);
+		init(client, player);
 	}
 	
 	@Override

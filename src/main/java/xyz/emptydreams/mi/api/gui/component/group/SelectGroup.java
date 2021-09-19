@@ -7,11 +7,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
-import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.ButtonComponent;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 import xyz.emptydreams.mi.api.utils.data.math.Point2D;
 import xyz.emptydreams.mi.api.utils.data.math.Size2D;
 
@@ -79,24 +79,24 @@ public class SelectGroup extends MComponent {
 	public void setSize(int width, int height) { }
 	
 	@Override
-	protected void init(MIFrame frame, EntityPlayer player) {
-		super.init(frame, player);
-		components.init(frame, player);
-		innerList.forEach(it -> it.init(frame, player));
+	protected void init(IComponentManager manager, EntityPlayer player) {
+		super.init(manager, player);
+		components.init(manager, player);
+		innerList.forEach(it -> it.init(manager, player));
 	}
 	
 	@Override
-	public void onAddToGUI(MIFrame con, EntityPlayer player) {
-		super.onAddToGUI(con, player);
-		components.onAddToGUI(con, player);
-		innerList.forEach(it -> it.onAddToGUI(con, player));
+	public void onAdd2Manager(IComponentManager manager, EntityPlayer player) {
+		super.onAdd2Manager(manager, player);
+		components.onAdd2Manager(manager, player);
+		innerList.forEach(it -> it.onAdd2Manager(components, player));
 	}
 	
 	@Override
-	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
-		super.onAddToGUI(con, player);
-		components.onAddToGUI(con, player);
-		innerList.forEach(it -> it.onAddToGUI(con, player));
+	public void onAdd2ClientFrame(StaticFrameClient frame, EntityPlayer player) {
+		super.onAdd2ClientFrame(frame, player);
+		components.onAdd2ClientFrame(frame, player);
+		innerList.forEach(it -> it.onAdd2ClientFrame(frame, player));
 	}
 	
 	@Override

@@ -7,7 +7,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
-import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
@@ -15,6 +14,7 @@ import xyz.emptydreams.mi.api.gui.listener.mouse.MouseLocationListener;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,6 +36,8 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	protected int minDistance = 3;
 	/** 两个控件间的最远距离(像素) */
 	protected int maxDistance = 10;
+	/** */
+	private IComponentManager superManager;
 
 	public Group() {
 		this(0, 0, 0, 0, Panels::non);
@@ -98,6 +100,18 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 		return components.size();
 	}
 	
+	@Nonnull
+	@Override
+	public IComponentManager getSuperManager() {
+		if (superManager == null) throw new NullPointerException("不存在上级管理类");
+		return superManager;
+	}
+	
+	@Override
+	public boolean isFrame() {
+		return false;
+	}
+	
 	@Override
 	public IComponent containCode(int code) {
 		IComponent component = super.containCode(code);
@@ -128,10 +142,10 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	public Iterator<IComponent> iterator() { return components.iterator(); }
 	
 	@Override
-	protected void init(MIFrame frame, EntityPlayer player) {
-		super.init(frame, player);
+	protected void init(IComponentManager manager, EntityPlayer player) {
+		super.init(manager, player);
 		registryListener((MouseLocationListener) (mouseX, mouseY) ->
-				components.forEach(it -> it.activateListener(frame,
+				components.forEach(it -> it.activateListener(manager.getFrame(),
 															 MouseLocationListener.class,
 															 event -> event.mouseLocation(mouseX, mouseY))));
 	}
@@ -149,24 +163,23 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	}
 	
 	@Override
-	public void onAddToGUI(MIFrame con, EntityPlayer player) {
-		super.onAddToGUI(con, player);
+	public void onAdd2Manager(IComponentManager manager, EntityPlayer player) {
+		super.onAdd2Manager(manager, player);
 		sort();
 		components.forEach(it -> {
-			//it.setLocation(it.getX() + getX(), it.getY() + getY());
-			con.allocID(it);
-			it.onAddToGUI(con, player);
+			manager.allocID(it);
+			it.onAdd2Manager(this, player);
 		});
 	}
 
 	@Override
-	public void onAddToGUI(StaticFrameClient con, EntityPlayer player) {
-		super.onAddToGUI(con, player);
+	public void onAdd2ClientFrame(StaticFrameClient frame, EntityPlayer player) {
+		super.onAdd2ClientFrame(frame, player);
 		for (IComponent component : components) {
 			if (component instanceof Group) ((Group) component).sort();
 		}
 		mode.accept(this);
-		components.forEach(it -> it.onAddToGUI(con, player));
+		components.forEach(it -> it.onAdd2ClientFrame(frame, player));
 	}
 
 	@Override

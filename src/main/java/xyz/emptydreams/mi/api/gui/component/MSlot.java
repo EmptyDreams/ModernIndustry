@@ -9,7 +9,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
-import xyz.emptydreams.mi.api.gui.common.MIFrame;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import static xyz.emptydreams.mi.api.gui.client.ImageData.SLOT;
@@ -57,8 +57,10 @@ public class MSlot extends MComponent {
 	}
 	
 	@Override
-	public void onAddToGUI(MIFrame con, EntityPlayer player) {
+	public void onAdd2Manager(IComponentManager con, EntityPlayer player) {
 		StringUtil.checkNull(getSlot(), "slot");
+		getSlot().xPos += con.getX();
+		getSlot().yPos += con.getY();
 		con.addSlotToContainer(slot);
 	}
 	

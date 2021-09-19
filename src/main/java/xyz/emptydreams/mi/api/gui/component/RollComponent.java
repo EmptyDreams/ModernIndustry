@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
-import xyz.emptydreams.mi.api.gui.common.MIFrame;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseLocationListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseReleasedListener;
@@ -98,8 +98,8 @@ public class RollComponent extends MComponent {
 	private int reLocation = -1;
 	
 	@Override
-	protected void init(MIFrame frame, EntityPlayer player) {
-		super.init(frame, player);
+	protected void init(IComponentManager manager, EntityPlayer player) {
+		super.init(manager, player);
 		registryListener((MouseLocationListener) (mouseX, mouseY) -> {
 			if (isDisable) return;
 			float rX = mouseX - getX();
