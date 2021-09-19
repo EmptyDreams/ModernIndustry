@@ -4,19 +4,20 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
+import xyz.emptydreams.mi.api.gui.common.ChildFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
+import xyz.emptydreams.mi.api.gui.craft.CraftShower;
 import xyz.emptydreams.mi.api.gui.listener.IListener;
 import xyz.emptydreams.mi.api.gui.listener.ListenerTrigger;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.MouseClickListener;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
@@ -44,8 +45,6 @@ public abstract class MComponent implements IComponent {
 	protected CraftGuide<?, ?> craftGuide = null;
 	/** CraftShower用到的填充表 */
 	protected Function<TileEntity, SlotGroup> slotGroupGetter = null;
-	/** 合成表按钮 */
-	protected CraftButton craftButton = null;
 	/** 存储加载过的窗体 */
 	protected final WeakList<IComponentManager> LOADED = new WeakList<>();
 	
@@ -154,7 +153,7 @@ public abstract class MComponent implements IComponent {
 	protected void init(IComponentManager manager, EntityPlayer player) {
 		if (craftGuide != null) {
 			registryListener((MouseActionListener) (mouseX, mouseY) ->
-					ListenerTrigger.activateAction(manager.getFrame(), craftButton, mouseX, mouseY));
+					ListenerTrigger.activateAction(manager.getFrame(), this, mouseX, mouseY));
 		}
 	}
 	
@@ -165,27 +164,19 @@ public abstract class MComponent implements IComponent {
 	 */
 	@Override
 	public void onAdd2Manager(IComponentManager manager, EntityPlayer player) {
-		if (craftGuide != null) {
-			craftButton = new CraftButton(craftGuide, this, player, slotGroupGetter);
-			manager.add(craftButton);
-		}
+		if (craftGuide != null) initCraftButton(player);
 		if (LOADED.contains(manager)) return;
 		LOADED.add(manager);
 		init(manager, player);
 	}
 	
-	/**
-	 * {@inheritDoc}<br>
-	 * <b>子类重写该方法时务必使用{@code super.onAdd2Manager}调用该方法，
-	 *      否则会导致部分功能无法正常工作</b>
-	 */
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void onAdd2ClientFrame(StaticFrameClient con, EntityPlayer player) {
-		MIFrame client = con.getInventorySlots();
-		if (LOADED.contains(client)) return;
-		LOADED.add(client);
-		init(client, player);
+	public void onAdd2ClientFrame(StaticFrameClient frame, EntityPlayer player) { }
+	
+	private void initCraftButton(EntityPlayer player) {
+		//noinspection ConstantConditions
+		registryListener((MouseClickListener) (mouseX, mouseY, mouseButton) ->
+				CraftShower.show(craftGuide, ChildFrame.getGuiTileEntity(player).getPos(), slotGroupGetter));
 	}
 	
 	@Override

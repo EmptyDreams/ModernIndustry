@@ -209,8 +209,8 @@ public class MIFrame extends Container implements IFrame, IComponentManager {
 	@Override
 	public void add(IComponent component) {
 		components.add(StringUtil.checkNull(component, "component"));
-		component.onAdd2Manager(this, player);
 		allocID(component);
+		component.onAdd2Manager(this, player);
 	}
 	
 	/** 遍历所有组件 */

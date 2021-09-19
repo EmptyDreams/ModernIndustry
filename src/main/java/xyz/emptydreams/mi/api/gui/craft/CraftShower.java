@@ -28,13 +28,13 @@ public final class CraftShower {
 	 * @param craft 要显示的合成表
 	 * @param slotGroupGetter 通过TileEntity来获取slotGroupGetter
 	 */
-	public static void show(CraftGuide<?, ?> craft, TileEntity te,
+	public static void show(CraftGuide<?, ?> craft, BlockPos pos,
 	                        Function<TileEntity, SlotGroup> slotGroupGetter) {
 		if (craft.size() == 0) return;
 		//该代码在if前是为了在打开合成表时在服务端记录下数据
 		Frame frame = FRAMES.computeIfAbsent(craft, c -> new Frame(c, slotGroupGetter));
 		if (WorldUtil.isServer()) return;
-		LocalChildFrame.openGUI(frame, te.getPos());
+		LocalChildFrame.openGUI(frame, pos);
 	}
 	
 	/**

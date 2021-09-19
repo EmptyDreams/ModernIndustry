@@ -175,7 +175,6 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 
 	@Override
 	public void onAdd2ClientFrame(StaticFrameClient frame, EntityPlayer player) {
-		super.onAdd2ClientFrame(frame, player);
 		for (IComponent component : components) {
 			if (component instanceof Group) ((Group) component).sort();
 		}
