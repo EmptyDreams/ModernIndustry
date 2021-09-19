@@ -34,7 +34,7 @@ public class StringComponent extends MComponent {
 	@Override
 	public void realTimePaint(GuiPainter painter) {
 		if (text == null) text = I18n.format(getString());
-		painter.drawString(getX(), getY(), text, getColor());
+		painter.drawString(0, 0, text, getColor());
 	}
 
 	/** 设置字符串颜色 */

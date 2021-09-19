@@ -181,7 +181,7 @@ public class RollComponent extends MComponent {
 	
 	/** 获取按钮材质的名称 */
 	private String getButtonTextureName() {
-		return "MI:Roll" + buttonSize + getHeight() + isVertical();
+		return "MI:Roll" + buttonSize + getHeight() + isVertical() + isDisable();
 	}
 	
 	private RuntimeTexture createTexture() {

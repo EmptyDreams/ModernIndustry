@@ -12,6 +12,7 @@ import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 /**
@@ -138,7 +139,7 @@ public class RollGroup extends Group {
 		return innerGroup.iterator();
 	}
 	
-	private boolean isShift = false;
+	private final AtomicBoolean isShift = new AtomicBoolean(false);
 	
 	@Override
 	protected void init(IComponentManager manager, EntityPlayer player) {
@@ -146,17 +147,17 @@ public class RollGroup extends Group {
 		registryListener(new KeyListener() {
 			@Override
 			public void pressed(int keyCode, boolean isFocus) {
-				isShift = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode() == keyCode;
+				isShift.set(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode() == keyCode);
 			}
 			
 			@Override
 			public void release(int keyCode, boolean isFocus) {
-				isShift = false;
+				isShift.set(false);
 			}
 		});
 		registryListener((MouseWheelListener) wheel -> {
 			int roll = -wheel * 3;
-			if (isShift) {
+			if (isShift.get()) {
 				if (horRoll == null) {
 					if (verRoll != null) verRoll.plusIndex(roll);
 				} else if (!horRoll.plusIndex(roll)) {
@@ -182,12 +183,9 @@ public class RollGroup extends Group {
 			verRoll.realTimePaint(
 					painter.createPainter(verRoll.getX(), verRoll.getY(), verRoll.getWidth(), verRoll.getHeight()));
 		}
-		GuiPainter innerPainter = new GuiPainter(painter.getGuiContainer(), innerGroup.getX(), innerGroup.getY(),
-				getXOffset(), getYOffset(), innerGroup.getWidth(), innerGroup.getHeight());
-		//innerGroup.realTimePaint(innerPainter);
-		//if (verRoll != null) verRoll.realTimePaint(painter);
-		//if (horRoll != null) horRoll.realTimePaint(painter);
-	}
+		GuiPainter innerPainter = painter.createPainter(innerGroup.getX() + getXOffset(), innerGroup.getY() + getYOffset(),
+				innerGroup.getWidth(), innerGroup.getHeight());
+		innerGroup.realTimePaint(innerPainter);}
 	
 	private int getXOffset() {
 		if (horizontal == HorizontalEnum.NON) return 0;

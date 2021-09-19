@@ -150,9 +150,9 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 															 event -> event.mouseLocation(mouseX, mouseY))));
 	}
 	
-	private boolean isSort = true;
+	protected boolean isSort = true;
 	
-	private void sort() {
+	protected void sort() {
 		if (isSort) {
 			isSort = false;
 			for (IComponent component : components) {
@@ -198,8 +198,10 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void realTimePaint(GuiPainter painter) {
-		components.forEach(it -> it.realTimePaint(
-				painter.createPainter(it.getX(), it.getY(), it.getWidth(), it.getHeight())));
+		for (IComponent it : components) {
+			it.realTimePaint(
+					painter.createPainter(it.getX(), it.getY(), it.getWidth(), it.getHeight()));
+		}
 	}
 	
 	@Nullable
