@@ -203,8 +203,8 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 			preComponent = null;
 		}
 		for (IComponent component : components) {
-			GuiPainter painter = new GuiPainter(this, component.getX(), component.getY(),
-					0, 0, component.getWidth(), component.getHeight());
+			GuiPainter painter = new GuiPainter(this,
+					component.getX(), component.getY(), component.getWidth(), component.getHeight());
 			activateLocation(inventorySlots, component, mouseX, mouseY);
 			GlStateManager.color(1, 1, 1);
 			component.realTimePaint(painter);

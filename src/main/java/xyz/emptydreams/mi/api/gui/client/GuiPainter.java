@@ -19,7 +19,7 @@ public final class GuiPainter {
 	
 	private final GuiContainer gui;
 	private final int xOffset, yOffset;
-	private final int maxWidth, maxHeight;
+	private final int width, height;
 	private final int x, y;
 	
 	/** 绘制区域在裁剪时的X坐标 */
@@ -27,13 +27,21 @@ public final class GuiPainter {
 	/** 绘制区域在裁剪时的Y坐标 */
 	private final int realY;
 	/** 绘制区域在裁剪时的宽度 */
-	private final int realMaxWidth;
+	private final int realWidth;
 	/** 绘制区域在裁剪时的高度 */
-	private final int realMaxHeight;
+	private final int realHeight;
 	
-	
-	public GuiPainter(GuiContainer gui, int x, int y) {
-		this(gui, x, y, 0, 0, gui.width, gui.height);
+	/**
+	 * 在特定位置创建一个有限画板
+	 * @param gui 当前被打开的GUI
+	 * @param x 区域X轴坐标
+	 * @param y 区域Y轴坐标
+	 * @param width 绘制区域宽度
+	 * @param height 绘制区域高度
+	 */
+	public GuiPainter(GuiContainer gui, int x, int y, int width, int height) {
+		this(gui, x, y, 0, 0, width, height);
+		
 	}
 	
 	/**
@@ -41,27 +49,27 @@ public final class GuiPainter {
 	 * @param gui 当前被打开的GUI
 	 * @param x 区域X轴坐标
 	 * @param y 区域Y轴坐标
-	 * @param xOffset 绘制起点X轴偏移量（右正左负）
-	 * @param yOffset 绘制起点Y轴偏移量（下正上负）
-	 * @param maxWidth 绘制区域宽度
-	 * @param maxHeight 绘制区域高度
+	 * @param xOffset 渲染时X轴偏移量
+	 * @param yOffset 渲染时Y轴偏移量
+	 * @param width 绘制区域宽度
+	 * @param height 绘制区域高度
 	 */
-	public GuiPainter(GuiContainer gui, int x, int y, int xOffset, int yOffset, int maxWidth, int maxHeight) {
+	public GuiPainter(GuiContainer gui, int x, int y, int xOffset, int yOffset, int width, int height) {
 		this.gui = gui;
 		this.x = x;
 		this.y = y;
-		this.xOffset = xOffset + gui.getGuiLeft();
-		this.yOffset = yOffset + gui.getGuiTop();
-		this.maxWidth = maxWidth;
-		this.maxHeight = maxHeight;
+		this.xOffset = xOffset;
+		this.yOffset = yOffset;
+		this.width = Math.min(width, gui.getXSize() - x);
+		this.height = Math.min(height, gui.getYSize() - y);
 		Minecraft mc = Minecraft.getMinecraft();
 		ScaledResolution res = new ScaledResolution(mc);
 		double scaleViewX = mc.displayWidth / res.getScaledWidth_double();
 		double scaleViewY = mc.displayHeight / res.getScaledHeight_double();
-		realX = (int) ((getX() + getGuiContainer().getGuiLeft()) * scaleViewX);
-		realY = (int) (mc.displayHeight - ((getY() + getGuiContainer().getGuiTop()) + maxHeight) * scaleViewY);
-		realMaxWidth = (int) (this.maxWidth * scaleViewX);
-		realMaxHeight = (int) (this.maxHeight * scaleViewY);
+		realX = (int) ((Math.max(x, 0) + getGuiContainer().getGuiLeft()) * scaleViewX);
+		realY = (int) (mc.displayHeight - ((Math.max(y, 0) + getGuiContainer().getGuiTop()) + height) * scaleViewY);
+		realWidth = width > 0 ? (int) (this.width * scaleViewX) : -1;
+		realHeight = height > 0 ? (int) (this.height * scaleViewY) : -1;
 	}
 	
 	/**
@@ -76,9 +84,9 @@ public final class GuiPainter {
 	 * @param texture 要绘制的材质
 	 */
 	public void drawTexture(int x, int y, int u, int v, int width, int height, RuntimeTexture texture) {
-		int realX = x + xOffset + this.x;
-		int realY = y + yOffset + this.y;
-		scissor();
+		int realX = x + getXOffset() + this.x;
+		int realY = y + getYOffset() + this.y;
+		if (scissor()) return;
 		texture.drawToFrame(realX, realY, u, v, width, height);
 		unscissor();
 	}
@@ -110,9 +118,9 @@ public final class GuiPainter {
 	 */
 	public void drawTexture(int x, int y, int u, int v,
 	                        int width, int height, int textureWidth, int textureHeight) {
-		int realX = x + xOffset + this.x;
-		int realY = y + yOffset + this.y;
-		scissor();
+		int realX = x + getXOffset() + this.x;
+		int realY = y + getYOffset() + this.y;
+		if (scissor()) return;
 		Gui.drawModalRectWithCustomSizedTexture(realX, realY, u, v, width, height, textureWidth, textureHeight);
 		unscissor();
 	}
@@ -128,17 +136,17 @@ public final class GuiPainter {
 	 * @param height 要绘制的高度
 	 */
 	public void drawTexture(int x, int y, int u, int v, int width, int height) {
-		int realX = x + xOffset + this.x;
-		int realY = y + yOffset + this.y;
-		scissor();
+		int realX = x + getXOffset() + this.x;
+		int realY = y + getYOffset() + this.y;
+		if (scissor()) return;
 		gui.drawTexturedModalRect(realX, realY, u, v, width, height);
 		unscissor();
 	}
 	
 	public void drawString(int x, int y, String text, int color) {
-		int guiX = x + xOffset + this.x;
-		int guiY = y + yOffset + this.y;
-		scissor();
+		int guiX = x + getXOffset() + this.x;
+		int guiY = y + getYOffset() + this.y;
+		if (scissor()) return;
 		Minecraft.getMinecraft().fontRenderer.drawString(text, guiX, guiY, color);
 		unscissor();
 	}
@@ -152,9 +160,37 @@ public final class GuiPainter {
 	 */
 	@Nonnull
 	public GuiPainter createPainter(int x, int y, int width, int height) {
-		return new GuiPainter(gui, x > 0 ? x + this.x : this.x, y > 0 ? y + this.y : this.y,
-				xOffset - gui.getGuiLeft(), yOffset - gui.getGuiTop(),
-				Math.min(width, maxWidth - x), Math.min(height, maxHeight - y));
+		return createPainter(x, y, 0, 0, width, height);
+	}
+	
+	/**
+	 * 构建一个子画笔
+	 * @param x 相对于画板X轴坐标
+	 * @param y 相对于画板的Y轴坐标
+	 * @param xOffset 渲染时X轴偏移量
+	 * @param yOffset 渲染时Y轴偏移量
+	 * @param width 宽度
+	 * @param height 高度
+	 */
+	public GuiPainter createPainter(int x, int y, int xOffset, int yOffset, int width, int height) {
+		return createPainter(x, y, xOffset, yOffset, width, height, true);
+	}
+	
+	/**
+	 * 构建一个子画笔
+	 * @param x 相对于画板X轴坐标
+	 * @param y 相对于画板的Y轴坐标
+	 * @param xOffset 渲染时X轴偏移量
+	 * @param yOffset 渲染时Y轴偏移量
+	 * @param width 宽度
+	 * @param height 高度
+	 * @param inherit 是否继承父级画笔的渲染偏移量
+	 */
+	public GuiPainter createPainter(int x, int y, int xOffset, int yOffset,
+	                                int width, int height, boolean inherit) {
+		return new GuiPainter(gui, this.x + x + (inherit ? this.xOffset : 0), this.y + y + (inherit ? this.yOffset : 0),
+				xOffset, yOffset,
+				Math.min(width, this.width - x - this.xOffset), Math.min(height, this.height - y - this.yOffset));
 	}
 	
 	/**
@@ -166,14 +202,14 @@ public final class GuiPainter {
 	 */
 	@Nonnull
 	public GuiPainter extraPainter(int x, int y, int width, int height) {
-		return new GuiPainter(gui, x + this.x, y + this.y,
-				xOffset - gui.getGuiLeft(), yOffset - gui.getGuiTop(),
-				width, height);
+		return new GuiPainter(gui, x + this.x, y + this.y, width, height);
 	}
 	
-	private void scissor() {
+	private boolean scissor() {
+		if (realWidth == -1 || realHeight == -1) return true;
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		GL11.glScissor(realX, realY, realMaxWidth, realMaxHeight);
+		GL11.glScissor(realX, realY, realWidth, realHeight);
+		return false;
 	}
 	
 	private void unscissor() {
@@ -182,22 +218,22 @@ public final class GuiPainter {
 	
 	/** 获取横坐标起点偏移量 */
 	public int getXOffset() {
-		return xOffset;
+		return xOffset + gui.getGuiLeft();
 	}
 	
 	/** 获取纵坐标起点偏移量 */
 	public int getYOffset() {
-		return yOffset;
+		return yOffset + gui.getGuiTop();
 	}
 	
 	/** 获取可绘制区域宽度 */
-	public int getMaxWidth() {
-		return maxWidth;
+	public int getWidth() {
+		return width;
 	}
 	
 	/** 获取可绘制区域高度 */
-	public int getMaxHeight() {
-		return maxHeight;
+	public int getHeight() {
+		return height;
 	}
 	
 	/** 获取绘制区域的X轴坐标 */
