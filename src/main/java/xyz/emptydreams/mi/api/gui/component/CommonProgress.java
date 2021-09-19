@@ -13,7 +13,6 @@ import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 import javax.annotation.Nonnull;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static xyz.emptydreams.mi.api.gui.client.ImageData.PROGRESS_BAR;
 import static xyz.emptydreams.mi.api.gui.client.ImageData.createTexture;
@@ -54,7 +53,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	public void realTimePaint(GuiPainter painter) {
 		paintBackground(painter);
 		front.accept(new Node(painter.getGuiContainer()));
-		if (getStringShower() != null) getStringShower().draw(this, painter.getGuiContainer());
+		if (getStringShower() != null) getStringShower().draw(this, painter);
 	}
 	
 	public void paintBackground(@Nonnull GuiPainter painter) {
@@ -62,18 +61,6 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		texture.bindTexture();
 		painter.drawTexture(0, 0, getStyle().getX(), getStyle().getY(),
 				getStyle().getWidth(), getStyle().getHeight(), texture);
-	}
-
-	@Override
-	public int getWidth() {
-		if (getStringShower() == null) return super.getWidth();
-		return getStringShower().getter.apply(this)[0];
-	}
-
-	@Override
-	public int getHeight() {
-		if (getStringShower() == null) return super.getHeight();
-		return getStringShower().getter.apply(this)[1];
 	}
 
 	/** 是否含有进度条显示 */
@@ -125,25 +112,20 @@ public class CommonProgress extends MComponent implements IProgressBar {
 
 	public enum ProgressStyle {
 
-		UP((bar, con) -> drawHelper(bar, con, bar.getY() - 9),
-				bar -> new int[] { bar.getStyle().getWidth(), bar.getStyle().getHeight() + 9 }),
-		DOWN((bar, con) -> drawHelper(bar, con, bar.getY() + bar.getStyle().getHeight()),
-				bar -> new int[] { bar.getStyle().getWidth(), bar.getStyle().getHeight() + 9 }),
-		CENTER((bar, con) -> drawHelper(bar, con, (bar.getHeight() - 9) / 2 + bar.getY()),
-				bar -> new int[] { bar.getStyle().getWidth(), Math.max(bar.getStyle().getHeight(), 9) });
+		UP((bar, painter) -> drawHelper(bar, painter, -10)),
+		DOWN((bar, painter) -> drawHelper(bar, painter, bar.getHeight())),
+		CENTER((bar, painter) -> drawHelper(bar, painter, (bar.getHeight() - 9) / 2 + bar.getY()));
 
-		private final BiConsumer<CommonProgress, GuiContainer> task;
-		private final Function<CommonProgress, int[]> getter;
+		private final BiConsumer<CommonProgress, GuiPainter> task;
 
-		ProgressStyle(BiConsumer<CommonProgress, GuiContainer> task, Function<CommonProgress, int[]> getter) {
+		ProgressStyle(BiConsumer<CommonProgress, GuiPainter> task) {
 			this.task = task;
-			this.getter = getter;
 		}
 
 		/** 绘制 */
 		@SideOnly(Side.CLIENT)
-		public void draw(CommonProgress bar, GuiContainer gui) {
-			task.accept(bar, gui);
+		public void draw(CommonProgress bar, GuiPainter painter) {
+			task.accept(bar, painter);
 		}
 
 		/** 格式化字符串 */
@@ -151,11 +133,11 @@ public class CommonProgress extends MComponent implements IProgressBar {
 			return bar.getNow() + "/" + bar.getMax();
 		}
 
-		private static void drawHelper(CommonProgress bar, GuiContainer gui, int y) {
+		private static void drawHelper(CommonProgress bar, GuiPainter painter, int y) {
 			String show = format(bar);
 			Minecraft mc = Minecraft.getMinecraft();
 			int x = (bar.getWidth() - mc.fontRenderer.getStringWidth(show)) / 2;
-			mc.fontRenderer.drawString(show, x + gui.getGuiLeft() + bar.getX(), y + gui.getGuiTop(), 0);
+			painter.extraPainter(0, y, bar.getWidth(), 9).drawString(x, 0, show, 0);
 		}
 
 	}

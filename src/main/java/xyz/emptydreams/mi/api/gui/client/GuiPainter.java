@@ -152,9 +152,23 @@ public final class GuiPainter {
 	 */
 	@Nonnull
 	public GuiPainter createPainter(int x, int y, int width, int height) {
-		return new GuiPainter(gui, x + this.x, y + this.y,
+		return new GuiPainter(gui, x > 0 ? x + this.x : this.x, y > 0 ? y + this.y : this.y,
 				xOffset - gui.getGuiLeft(), yOffset - gui.getGuiTop(),
 				Math.min(width, maxWidth - x), Math.min(height, maxHeight - y));
+	}
+	
+	/**
+	 * 构建一个子画笔。与{@link #createPainter(int, int, int, int)}不同的是，该方法构建的画笔绘制范围不受父画笔限制。
+	 * @param x 相对于画板X轴坐标
+	 * @param y 相对于画板的Y轴坐标
+	 * @param width 宽度
+	 * @param height 高度
+	 */
+	@Nonnull
+	public GuiPainter extraPainter(int x, int y, int width, int height) {
+		return new GuiPainter(gui, x + this.x, y + this.y,
+				xOffset - gui.getGuiLeft(), yOffset - gui.getGuiTop(),
+				width, height);
 	}
 	
 	private void scissor() {
