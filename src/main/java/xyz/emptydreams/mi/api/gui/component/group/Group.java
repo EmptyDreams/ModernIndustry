@@ -16,7 +16,6 @@ import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -120,7 +119,7 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	public void setMaxDistance(int maxDistance) { this.maxDistance = maxDistance; }
 	/** 获取排列模式 */
 	public Consumer<Group> getControlMode() { return mode; }
-	/** 设置排列模式，传入为空表示不自动进行排列 */
+	/** 设置排列模式 */
 	public void setControlPanel(Consumer<Group> mode) {
 		this.mode = StringUtil.checkNull(mode, "mode");
 	}
@@ -154,7 +153,7 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 		super.onAddToGUI(con, player);
 		sort();
 		components.forEach(it -> {
-			it.setLocation(it.getX() + getX(), it.getY() + getY());
+			//it.setLocation(it.getX() + getX(), it.getY() + getY());
 			con.allocID(it);
 			it.onAddToGUI(con, player);
 		});
@@ -181,14 +180,6 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 		for (IComponent component : components)
 			if (component.update(codeID, data)) return true;
 		return false;
-	}
-	
-	@SideOnly(Side.CLIENT)
-	protected void paintHelper(Graphics g, IComponent component) {
-		Graphics graphics = g.create(component.getX() - getX(), component.getY() - getY(),
-				component.getWidth(), component.getHeight());
-		//component.paint(graphics);
-		graphics.dispose();
 	}
 
 	@SideOnly(Side.CLIENT)

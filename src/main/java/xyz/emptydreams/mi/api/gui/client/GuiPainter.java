@@ -76,8 +76,8 @@ public final class GuiPainter {
 	 * @param texture 要绘制的材质
 	 */
 	public void drawTexture(int x, int y, int u, int v, int width, int height, RuntimeTexture texture) {
-		int realX = x + xOffset;
-		int realY = y + yOffset;
+		int realX = x + xOffset + this.x;
+		int realY = y + yOffset + this.y;
 		scissor();
 		texture.drawToFrame(realX, realY, u, v, width, height);
 		unscissor();
@@ -110,8 +110,8 @@ public final class GuiPainter {
 	 */
 	public void drawTexture(int x, int y, int u, int v,
 	                        int width, int height, int textureWidth, int textureHeight) {
-		int realX = x + xOffset;
-		int realY = y + yOffset;
+		int realX = x + xOffset + this.x;
+		int realY = y + yOffset + this.y;
 		scissor();
 		Gui.drawModalRectWithCustomSizedTexture(realX, realY, u, v, width, height, textureWidth, textureHeight);
 		unscissor();
@@ -128,16 +128,16 @@ public final class GuiPainter {
 	 * @param height 要绘制的高度
 	 */
 	public void drawTexture(int x, int y, int u, int v, int width, int height) {
-		int realX = x + xOffset;
-		int realY = y + yOffset;
+		int realX = x + xOffset + this.x;
+		int realY = y + yOffset + this.y;
 		scissor();
 		gui.drawTexturedModalRect(realX, realY, u, v, width, height);
 		unscissor();
 	}
 	
 	public void drawString(int x, int y, String text, int color) {
-		int guiX = x + xOffset;
-		int guiY = y + yOffset;
+		int guiX = x + xOffset + this.x;
+		int guiY = y + yOffset + this.y;
 		scissor();
 		Minecraft.getMinecraft().fontRenderer.drawString(text, guiX, guiY, color);
 		unscissor();
@@ -152,7 +152,8 @@ public final class GuiPainter {
 	 */
 	@Nonnull
 	public GuiPainter createPainter(int x, int y, int width, int height) {
-		return new GuiPainter(gui, x + this.x, y + this.y, xOffset - gui.getGuiLeft(), yOffset - gui.getGuiTop(),
+		return new GuiPainter(gui, x + this.x, y + this.y,
+				xOffset - gui.getGuiLeft(), yOffset - gui.getGuiTop(),
 				Math.min(width, maxWidth - x), Math.min(height, maxHeight - y));
 	}
 	
