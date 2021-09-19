@@ -89,39 +89,30 @@ public class ClassInfoViewerFrame extends MIFrame {
 	public ClassInfoViewerFrame(TileEntity entity, EntityPlayer player) {
 		super(LOCATION_NAME, player);
 		setSize(210, 180);
-		
-		RollGroup serviceRoll = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
-		RollGroup clientRoll = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
-		TileEntity clientTE = player.world.getTileEntity(entity.getPos());
-		//noinspection ConstantConditions
-		init(clientRoll, clientTE, player);
-		init(serviceRoll, entity, player);
-		
-		
-	}
-	
-	private void init(RollGroup rollGroup, TileEntity te, EntityPlayer player) {
+		RollGroup rollGroup = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
 		rollGroup.setControlPanel(Panels::horizontalUp);
 		rollGroup.setMinDistance(6);
 		rollGroup.setSize(185, 150);
 		rollGroup.setLocation(0, 14);
-		Class<?> clazz = te.getClass();
+		Class<?> clazz = entity.getClass();
 		Group nameGroup = new Group(Panels::verticalRight);
 		Group valueGroup = new Group(Panels::verticalLeft);
 		try {
-			addText(nameGroup, valueGroup, "pos", te.getPos().toString(), 8388352);
+			Class<TileEntity> teClass = TileEntity.class;
+			addText(nameGroup, valueGroup, "pos", entity.getPos().toString(), 8388352);
 			while (isContinue(clazz)) {
 				Field[] fields = clazz.getDeclaredFields();
 				String className = clazz.getSimpleName();
 				clazz = clazz.getSuperclass();
 				if (fields.length == 0) continue;
 				boundary(nameGroup, valueGroup, className);
-				task(nameGroup, valueGroup, fields, te);
+				task(nameGroup, valueGroup, fields, entity);
 			}
 		} catch (Exception e) {
 			throw TransferException.instance("创建类信息查看GUI时出现异常", e);
 		}
 		rollGroup.adds(nameGroup, valueGroup);
+		add(rollGroup);
 	}
 	
 	private static void task(Group nameGroup, Group valueGroup, Field[] fields, Object obj)

@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.gui.component;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
@@ -147,16 +146,15 @@ public class RollComponent extends MComponent {
 	
 	@Override
 	public void realTimePaint(GuiPainter painter) {
-		GlStateManager.color(1, 1, 1);
 		paintBackground(painter);
 		double index = getIndex();
 		RuntimeTexture texture = bindTexture();
 		if (isVertical()) {
 			int offset = (int) (getHeight() * index);
-			painter.drawTexture(getX() + 1, getY() + offset, buttonSize, 15, texture);
+			painter.drawTexture(1, offset, buttonSize, 15, texture);
 		} else {
 			int offset = (int) (getWidth() * index);
-			painter.drawTexture(getX() + offset, getY() + 1, 15, buttonSize, texture);
+			painter.drawTexture(offset, 1, 15, buttonSize, texture);
 		}
 	}
 	
@@ -166,7 +164,7 @@ public class RollComponent extends MComponent {
 			texture = ImageData.createTexture(ImageData.ROLL_BACKGROUND_VER,
 					getWidth(), getHeight(), createTextureName("ver"));
 		} else {
-			texture = ImageData.createTexture(ImageData.ROLL_BACKGROUND_VER,
+			texture = ImageData.createTexture(ImageData.ROLL_BACKGROUND_HOR,
 					getWidth(), getHeight(), createTextureName("hor"));
 		}
 		texture.bindTexture();

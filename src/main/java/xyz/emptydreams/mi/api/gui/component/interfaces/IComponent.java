@@ -87,8 +87,8 @@ public interface IComponent {
 	
 	/**
 	 * 获取鼠标指向的组件
-	 * @param mouseX 鼠标X轴坐标（相对于GUI）
-	 * @param mouseY 鼠标Y轴坐标（相对于GUI）
+	 * @param mouseX 鼠标X轴坐标（相对于控件组）
+	 * @param mouseY 鼠标Y轴坐标（相对于控件组）
 	 * @return 若鼠标坐标不在组件范围内或指定地点无组件则返回null
 	 */
 	@Nullable

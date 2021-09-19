@@ -130,6 +130,7 @@ public class SelectGroup extends MComponent {
 	@Nullable
 	@Override
 	public IComponent getMouseTarget(float mouseX, float mouseY) {
+		mouseX -= getX();   mouseY -= getY();
 		IComponent result = components.getMouseTarget(mouseX, mouseY);
 		if (result != null) return result;
 		for (Group group : innerList) {

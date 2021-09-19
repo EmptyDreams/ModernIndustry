@@ -205,11 +205,11 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	@Nullable
 	@Override
 	public IComponent getMouseTarget(float mouseX, float mouseY) {
+		mouseX -= getX();   mouseY -= getY();
 		for (IComponent component : components) {
 			if (MathUtil.checkMouse2DRec(mouseX, mouseY, component)) {
 				IComponent result = component.getMouseTarget(mouseX, mouseY);
-				if (result != null)
-					return result;
+				if (result != null) return result;
 			}
 		}
 		return null;

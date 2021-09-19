@@ -1,7 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.component.RollComponent;
@@ -11,7 +10,6 @@ import xyz.emptydreams.mi.api.gui.listener.key.KeyListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.MouseWheelListener;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.function.Consumer;
@@ -174,28 +172,21 @@ public class RollGroup extends Group {
 		});
 	}
 	
-	private String innerName;
-	
-	public void paintBackground(@Nonnull GuiPainter painter) {
-		GuiPainter innerPainter = painter.createPainter(verRoll.getX() - getX(), verRoll.getY() - getY(),
-				verRoll.getWidth(), verRoll.getHeight());
-		if (vertical != VerticalEnum.NON) {
-			verRoll.paintBackground(innerPainter);
-		}
-		if (horizontal != HorizontalEnum.NON) {
-			horRoll.paintBackground(innerPainter);
-		}
-	}
-	
 	@Override
 	public void realTimePaint(GuiPainter painter) {
-		GlStateManager.color(1, 1, 1);
+		if (horizontal != HorizontalEnum.NON) {
+			horRoll.realTimePaint(
+					painter.createPainter(horRoll.getX(), horRoll.getY(), horRoll.getWidth(), horRoll.getHeight()));
+		}
+		if (vertical != VerticalEnum.NON) {
+			verRoll.realTimePaint(
+					painter.createPainter(verRoll.getX(), verRoll.getY(), verRoll.getWidth(), verRoll.getHeight()));
+		}
 		GuiPainter innerPainter = new GuiPainter(painter.getGuiContainer(), innerGroup.getX(), innerGroup.getY(),
 				getXOffset(), getYOffset(), innerGroup.getWidth(), innerGroup.getHeight());
-		paintBackground(painter);
-		innerGroup.realTimePaint(innerPainter);
-		if (verRoll != null) verRoll.realTimePaint(painter);
-		if (horRoll != null) horRoll.realTimePaint(painter);
+		//innerGroup.realTimePaint(innerPainter);
+		//if (verRoll != null) verRoll.realTimePaint(painter);
+		//if (horRoll != null) horRoll.realTimePaint(painter);
 	}
 	
 	private int getXOffset() {
@@ -226,7 +217,7 @@ public class RollGroup extends Group {
 	public IComponent getMouseTarget(float mouseX, float mouseY) {
 		IComponent target = super.getMouseTarget(mouseX, mouseY);
 		if (target == null)
-			return innerGroup.getMouseTarget(mouseX, mouseY);
+			return innerGroup.getMouseTarget(mouseX - getX(), mouseY - getY());
 		return target;
 	}
 	
