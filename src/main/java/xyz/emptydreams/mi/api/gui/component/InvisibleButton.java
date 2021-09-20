@@ -11,9 +11,9 @@ import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.gui.common.IFrame;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
-import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
-import xyz.emptydreams.mi.api.gui.listener.mouse.MouseEnteredListener;
-import xyz.emptydreams.mi.api.gui.listener.mouse.MouseExitedListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseActionListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseEnteredListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseExitedListener;
 import xyz.emptydreams.mi.api.interfaces.ObjBooleanConsumer;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
@@ -48,9 +48,9 @@ public class InvisibleButton extends MComponent {
 	@Override
 	protected void init(IComponentManager manager, EntityPlayer player) {
 		super.init(manager, player);
-		registryListener((MouseEnteredListener) (mouseX, mouseY) -> mouse = true);
-		registryListener((MouseExitedListener) (mouseX, mouseY) -> mouse = false);
-		registryListener(new MouseActionListener() {
+		registryListener((IMouseEnteredListener) (mouseX, mouseY) -> mouse = true);
+		registryListener((IMouseExitedListener) () -> mouse = false);
+		registryListener(new IMouseActionListener() {
 			float mouseX, mouseY;
 			final MIFrame frame = manager.getFrame();
 			

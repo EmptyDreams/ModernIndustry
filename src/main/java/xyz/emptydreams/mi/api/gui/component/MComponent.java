@@ -16,14 +16,13 @@ import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 import xyz.emptydreams.mi.api.gui.craft.CraftShower;
 import xyz.emptydreams.mi.api.gui.listener.IListener;
 import xyz.emptydreams.mi.api.gui.listener.ListenerTrigger;
-import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
-import xyz.emptydreams.mi.api.gui.listener.mouse.MouseClickListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseActionListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseClickListener;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.container.WeakList;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -60,11 +59,6 @@ public abstract class MComponent implements IComponent {
 		if (height < 0) throw new IllegalArgumentException("height[" + height + "] < 0");
 		this.width = width;
 		this.height = height;
-	}
-	
-	@Override
-	public List<IListener> getListeners() {
-		return new ArrayList<>(listeners);
 	}
 	
 	@Override
@@ -152,7 +146,7 @@ public abstract class MComponent implements IComponent {
 	 */
 	protected void init(IComponentManager manager, EntityPlayer player) {
 		if (craftGuide != null) {
-			registryListener((MouseActionListener) (mouseX, mouseY) ->
+			registryListener((IMouseActionListener) (mouseX, mouseY) ->
 					ListenerTrigger.activateAction(manager.getFrame(), this, mouseX, mouseY));
 		}
 	}
@@ -175,7 +169,7 @@ public abstract class MComponent implements IComponent {
 	
 	private void initCraftButton(EntityPlayer player) {
 		//noinspection ConstantConditions
-		registryListener((MouseClickListener) (mouseX, mouseY, mouseButton) ->
+		registryListener((IMouseClickListener) (mouseX, mouseY, mouseButton) ->
 				CraftShower.show(craftGuide, ChildFrame.getGuiTileEntity(player).getPos(), slotGroupGetter));
 	}
 	

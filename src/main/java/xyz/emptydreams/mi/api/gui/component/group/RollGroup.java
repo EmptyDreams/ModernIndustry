@@ -6,8 +6,9 @@ import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.component.RollComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
-import xyz.emptydreams.mi.api.gui.listener.key.KeyListener;
-import xyz.emptydreams.mi.api.gui.listener.mouse.MouseWheelListener;
+import xyz.emptydreams.mi.api.gui.listener.key.IKeyPressedListener;
+import xyz.emptydreams.mi.api.gui.listener.key.IKeyReleaseListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseWheelListener;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nullable;
@@ -144,18 +145,10 @@ public class RollGroup extends Group {
 	@Override
 	protected void init(IComponentManager manager, EntityPlayer player) {
 		super.init(manager, player);
-		registryListener(new KeyListener() {
-			@Override
-			public void pressed(int keyCode, boolean isFocus) {
-				isShift.set(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode() == keyCode);
-			}
-			
-			@Override
-			public void release(int keyCode, boolean isFocus) {
-				isShift.set(false);
-			}
-		});
-		registryListener((MouseWheelListener) wheel -> {
+		registryListener((IKeyPressedListener) (keyCode, isFocus)
+				-> isShift.set(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode() == keyCode));
+		registryListener((IKeyReleaseListener) (keyCode, isFocus) -> isShift.set(false));
+		registryListener((IMouseWheelListener) wheel -> {
 			int roll = -wheel * 3;
 			if (isShift.get()) {
 				if (horRoll == null) {

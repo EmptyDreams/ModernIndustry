@@ -194,12 +194,14 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		if (mouseX >= 0 && mouseY >= 0 && mouseX <= getXSize() && mouseY <= getYSize()) {
 			IComponent onComponent = getComponentFromMouse(mouseX, mouseY);
 			if (preComponent != onComponent) {
-				if (preComponent != null) activateExited(inventorySlots, preComponent, mouseX, mouseY);
-				if (onComponent != null) activateEntered(inventorySlots, onComponent, mouseX, mouseY);
+				if (preComponent != null)
+					activateExited(inventorySlots, preComponent);
+				if (onComponent != null)
+					activateEntered(inventorySlots, onComponent, mouseX, mouseY);
 			}
 			preComponent = onComponent;
 		} else if (preComponent != null) {
-			activateExited(inventorySlots, preComponent, mouseX, mouseY);
+			activateExited(inventorySlots, preComponent);
 			preComponent = null;
 		}
 		for (IComponent component : components) {

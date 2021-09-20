@@ -5,9 +5,9 @@ import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
-import xyz.emptydreams.mi.api.gui.listener.mouse.MouseActionListener;
-import xyz.emptydreams.mi.api.gui.listener.mouse.MouseLocationListener;
-import xyz.emptydreams.mi.api.gui.listener.mouse.MouseReleasedListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseActionListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseLocationListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseReleasedListener;
 
 import javax.annotation.Nonnull;
 
@@ -99,27 +99,25 @@ public class RollComponent extends MComponent {
 	@Override
 	protected void init(IComponentManager manager, EntityPlayer player) {
 		super.init(manager, player);
-		registryListener((MouseLocationListener) (mouseX, mouseY) -> {
+		registryListener((IMouseLocationListener) (mouseX, mouseY) -> {
 			if (isDisable) return;
-			float rX = mouseX - getX();
-			float rY = mouseY - getY();
-			isMouse = isMouseInButton(rX, rY);
+			isMouse = isMouseInButton(mouseX, mouseY);
 			if (clicked) {
 				index = Math.max(min, Math.min(max + min, getReLocation(mouseX, mouseY) - reLocation));
 			}
 		});
-		registryListener((MouseActionListener) (mouseX, mouseY) -> {
+		registryListener((IMouseActionListener) (mouseX, mouseY) -> {
 			if (isDisable) return;
 			clicked = isMouse;
 			reLocation = getReLocation(mouseX, mouseY) - index;
 		});
-		registryListener((MouseReleasedListener) (mouseX, mouseY, mouseButton) -> clicked = false);
+		registryListener((IMouseReleasedListener) (mouseX, mouseY, mouseButton) -> clicked = false);
 	}
 	
 	private int getReLocation(float mouseX, float mouseY) {
 		int result = (int)
-				((isVertical() ? (mouseY - getStart()) / getHeight()
-						: (mouseX - getStart()) / getWidth()) * FULL);
+				((isVertical() ? (mouseY + 1) / getHeight()
+						: (mouseX + 1) / getWidth()) * FULL);
 		return Math.max(result, 0);
 	}
 	

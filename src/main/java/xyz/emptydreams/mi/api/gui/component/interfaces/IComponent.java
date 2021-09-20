@@ -19,7 +19,6 @@ import xyz.emptydreams.mi.api.net.message.gui.GuiMessage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -187,13 +186,6 @@ public interface IComponent {
 	default IComponent containCode(int code) {
 		return (code >= getCode() && code < getCode() + 100) ? this : null;
 	}
-	
-	/**
-	 * 获取GUI监听的事件列表
-	 * @return 返回值需经过保护性拷贝
-	 */
-	@Nonnull
-	List<IListener> getListeners();
 	
 	/** 获取指定下标的事件 */
 	@Nonnull

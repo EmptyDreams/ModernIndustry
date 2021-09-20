@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.gui.component.interfaces;
 
 import net.minecraft.inventory.Slot;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
+import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseListener;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -65,6 +66,21 @@ public interface IComponentManager {
 			result = result.getSuperManager();
 		}
 		return (MIFrame) result;
+	}
+	
+	/**
+	 * 触发指定控件的鼠标
+	 * @param listenerClass 触发的事件的class
+	 * @param component 要触发事件的控件
+	 * @param mouseX 鼠标X轴坐标（相对于控件组）
+	 * @param mouseY 鼠标Y轴坐标（相对于控件组）
+	 * @param code 鼠标按钮代码
+	 * @param wheel 鼠标滚轮滚动距离
+	 */
+	default void activeMouseListener(Class<? extends IMouseListener> listenerClass,
+	                         IComponent component, float mouseX, float mouseY, int code, int wheel) {
+		component.activateListener(getFrame(), listenerClass,
+				it -> it.active(mouseX - component.getX(), mouseY - component.getY(), code, wheel));
 	}
 	
 }

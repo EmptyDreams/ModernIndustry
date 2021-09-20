@@ -10,7 +10,8 @@ import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
-import xyz.emptydreams.mi.api.gui.listener.mouse.MouseLocationListener;
+import xyz.emptydreams.mi.api.gui.listener.IListener;
+import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseLocationListener;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
@@ -144,9 +145,9 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	@Override
 	protected void init(IComponentManager manager, EntityPlayer player) {
 		super.init(manager, player);
-		registryListener((MouseLocationListener) (mouseX, mouseY) ->
+		registryListener((IMouseLocationListener) (mouseX, mouseY) ->
 				components.forEach(it -> it.activateListener(manager.getFrame(),
-															 MouseLocationListener.class,
+															 IMouseLocationListener.class,
 															 event -> event.mouseLocation(mouseX, mouseY))));
 	}
 	
