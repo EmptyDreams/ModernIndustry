@@ -15,21 +15,21 @@ import javax.annotation.Nonnull;
  * @author EmptyDreams
  */
 @SideOnly(Side.CLIENT)
-public final class GuiPainter {
+public class GuiPainter {
 	
-	private final GuiContainer gui;
-	private final int xOffset, yOffset;
-	private final int width, height;
-	private final int x, y;
+	protected final GuiContainer gui;
+	protected final int xOffset, yOffset;
+	protected final int width, height;
+	protected final int x, y;
 	
 	/** 绘制区域在裁剪时的X坐标 */
-	private final int realX;
+	protected int realX;
 	/** 绘制区域在裁剪时的Y坐标 */
-	private final int realY;
+	protected int realY;
 	/** 绘制区域在裁剪时的宽度 */
-	private final int realWidth;
+	protected int realWidth;
 	/** 绘制区域在裁剪时的高度 */
-	private final int realHeight;
+	protected int realHeight;
 	
 	/**
 	 * 在特定位置创建一个有限画板
@@ -66,8 +66,8 @@ public final class GuiPainter {
 		ScaledResolution res = new ScaledResolution(mc);
 		double scaleViewX = mc.displayWidth / res.getScaledWidth_double();
 		double scaleViewY = mc.displayHeight / res.getScaledHeight_double();
-		realX = (int) ((Math.max(x, 0) + getGuiContainer().getGuiLeft()) * scaleViewX);
-		realY = (int) (mc.displayHeight - ((Math.max(y, 0) + getGuiContainer().getGuiTop()) + height) * scaleViewY);
+		realX = (int) ((x + getGuiContainer().getGuiLeft()) * scaleViewX);
+		realY = (int) (mc.displayHeight - ((y + getGuiContainer().getGuiTop()) + height) * scaleViewY);
 		realWidth = width > 0 ? (int) (this.width * scaleViewX) : -1;
 		realHeight = height > 0 ? (int) (this.height * scaleViewY) : -1;
 	}
@@ -173,24 +173,13 @@ public final class GuiPainter {
 	 * @param height 高度
 	 */
 	public GuiPainter createPainter(int x, int y, int xOffset, int yOffset, int width, int height) {
-		return createPainter(x, y, xOffset, yOffset, width, height, true);
-	}
-	
-	/**
-	 * 构建一个子画笔
-	 * @param x 相对于画板X轴坐标
-	 * @param y 相对于画板的Y轴坐标
-	 * @param xOffset 渲染时X轴偏移量
-	 * @param yOffset 渲染时Y轴偏移量
-	 * @param width 宽度
-	 * @param height 高度
-	 * @param inherit 是否继承父级画笔的渲染偏移量
-	 */
-	public GuiPainter createPainter(int x, int y, int xOffset, int yOffset,
-	                                int width, int height, boolean inherit) {
-		return new GuiPainter(gui, this.x + x + (inherit ? this.xOffset : 0), this.y + y + (inherit ? this.yOffset : 0),
+		GuiPainter result = new GuiPainter(gui,
+				this.x + x + this.xOffset, this.y + y + this.yOffset,
 				xOffset, yOffset,
 				Math.min(width, this.width - x - this.xOffset), Math.min(height, this.height - y - this.yOffset));
+		result.correctY(this.realY, realHeight);
+		result.correctX(this.realX, realWidth);
+		return result;
 	}
 	
 	/**
@@ -205,14 +194,34 @@ public final class GuiPainter {
 		return new GuiPainter(gui, x + this.x, y + this.y, width, height);
 	}
 	
-	private boolean scissor() {
-		if (realWidth == -1 || realHeight == -1) return true;
+	public void correctX(int minRealX, int maxRealWidth) {
+		int oldX = realX;
+		realX = Math.max(minRealX, realX);
+		if (oldX == realX) {
+			realWidth = Math.min(realWidth, realWidth - ((oldX + realWidth) - (minRealX + maxRealWidth)));
+		} else {
+			realWidth = Math.min(realWidth, maxRealWidth - ((minRealX + maxRealWidth) - (oldX + realWidth)));
+		}
+	}
+	
+	public void correctY(int minRealY, int maxRealHeight) {
+		int oldY = realY;
+		realY = Math.max(minRealY, realY);
+		if (oldY == realY) {
+			realHeight = Math.min(realHeight, realHeight - ((oldY + realHeight) - (minRealY + maxRealHeight)));
+		} else {
+			realHeight = Math.min(realHeight, maxRealHeight - ((minRealY + maxRealHeight) - (oldY + realHeight)));
+		}
+	}
+	
+	protected boolean scissor() {
+		if (realWidth < 0 || realHeight < 0) return true;
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		GL11.glScissor(realX, realY, realWidth, realHeight);
 		return false;
 	}
 	
-	private void unscissor() {
+	protected void unscissor() {
 		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 	}
 	

@@ -327,10 +327,8 @@ public class RollGroup extends Group {
 		
 		public void calculate() {
 			for (IComponent it : this) {
-				int x = it.getX() - getX();
-				int y = it.getY() - getY();
-				realWidth = Math.max(realWidth, x + it.getWidth());
-				realHeight = Math.max(realHeight, y + it.getHeight());
+				realWidth = Math.max(realWidth, it.getX() + it.getWidth());
+				realHeight = Math.max(realHeight, it.getY() + it.getHeight());
 			}
 		}
 		
