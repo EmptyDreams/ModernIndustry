@@ -1,5 +1,7 @@
 package xyz.emptydreams.mi.api.gui.listener.mouse;
 
+import xyz.emptydreams.mi.api.gui.listener.MouseData;
+
 /**
  * @author EmptyDreams
  */
@@ -12,8 +14,9 @@ public interface IMouseReleasedListener extends IMouseListener {
 	 */
 	void mouseReleased(float mouseX, float mouseY, float code);
 	
-	default void active(float mouseX, float mouseY, int code, int wheel) {
-		mouseReleased(mouseX, mouseY, code);
+	@Override
+	default void active(MouseData data) {
+		mouseReleased(data.mouseX, data.mouseY, data.code);
 	}
 	
 }

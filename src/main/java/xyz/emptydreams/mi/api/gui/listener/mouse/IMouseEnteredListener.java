@@ -1,5 +1,7 @@
 package xyz.emptydreams.mi.api.gui.listener.mouse;
 
+import xyz.emptydreams.mi.api.gui.listener.MouseData;
+
 /**
  * 在鼠标进入控件时触发的事件
  * @author EmptyDreams
@@ -12,8 +14,9 @@ public interface IMouseEnteredListener extends IMouseListener {
 	 */
 	void mouseEntered(float mouseX, float mouseY);
 	
-	default void active(float mouseX, float mouseY, int code, int wheel) {
-		mouseEntered(mouseX, mouseY);
+	@Override
+	default void active(MouseData data) {
+		mouseEntered(data.mouseX, data.mouseY);
 	}
 	
 }

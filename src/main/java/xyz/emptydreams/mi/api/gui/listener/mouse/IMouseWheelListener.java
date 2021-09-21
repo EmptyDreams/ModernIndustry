@@ -1,5 +1,7 @@
 package xyz.emptydreams.mi.api.gui.listener.mouse;
 
+import xyz.emptydreams.mi.api.gui.listener.MouseData;
+
 /**
  * 鼠标滚轮事件
  * @author EmptyDreams
@@ -12,8 +14,9 @@ public interface IMouseWheelListener extends IMouseListener {
 	 */
 	void mouseWheel(int wheel);
 	
-	default void active(float mouseX, float mouseY, int code, int wheel) {
-		mouseWheel(wheel);
+	@Override
+	default void active(MouseData data) {
+		mouseWheel(data.wheel);
 	}
 	
 }

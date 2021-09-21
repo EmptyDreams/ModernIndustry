@@ -1,5 +1,7 @@
 package xyz.emptydreams.mi.api.gui.listener.mouse;
 
+import xyz.emptydreams.mi.api.gui.listener.MouseData;
+
 /**
  * 鼠标点击事件
  * @author EmptyDreams
@@ -13,8 +15,9 @@ public interface IMouseClickListener extends IMouseListener {
 	 */
 	void mouseClick(float mouseX, float mouseY, int code);
 	
-	default void active(float mouseX, float mouseY, int code, int wheel) {
-		mouseClick(mouseX, mouseY, code);
+	@Override
+	default void active(MouseData data) {
+		mouseClick(data.mouseX, data.mouseY, data.code);
 	}
 	
 }

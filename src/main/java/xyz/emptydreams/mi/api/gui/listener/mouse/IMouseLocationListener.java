@@ -1,5 +1,7 @@
 package xyz.emptydreams.mi.api.gui.listener.mouse;
 
+import xyz.emptydreams.mi.api.gui.listener.MouseData;
+
 /**
  * 鼠标在控件内时的事件
  * @author EmptyDreams
@@ -12,8 +14,9 @@ public interface IMouseLocationListener extends IMouseListener {
 	 */
 	void mouseLocation(float mouseX, float mouseY);
 	
-	default void active(float mouseX, float mouseY, int code, int wheel) {
-		mouseLocation(mouseX, mouseY);
+	@Override
+	default void active(MouseData data) {
+		mouseLocation(data.mouseX, data.mouseY);
 	}
 	
 }

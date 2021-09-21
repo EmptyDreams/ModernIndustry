@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.gui.component.interfaces;
 
 import net.minecraft.inventory.Slot;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
+import xyz.emptydreams.mi.api.gui.listener.MouseData;
 import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseListener;
 
 import javax.annotation.Nonnull;
@@ -86,19 +87,16 @@ public interface IComponentManager {
 	 * 触发指定控件的鼠标
 	 * @param listenerClass 触发的事件的class
 	 * @param component 要触发事件的控件，留空则尝试触发所有符合条件的控件
-	 * @param mouseX 鼠标X轴坐标（相对于控件组）
-	 * @param mouseY 鼠标Y轴坐标（相对于控件组）
-	 * @param code 鼠标按钮代码
-	 * @param wheel 鼠标滚轮滚动距离
+	 * @param data 鼠标参数
 	 * @param optimize 是否进行优化，为true时若鼠标不在控件上就不会触发事件
 	 * @return 成功触发事件的控件列表
 	 */
 	default List<IComponent> activeMouseListener(Class<? extends IMouseListener> listenerClass,
-	                                             IComponent component,
-	                                             float mouseX, float mouseY, int code, int wheel,
+	                                             IComponent component, MouseData data,
 	                                             boolean optimize) {
 		MIFrame frame = getFrame();
 		List<IComponent> result = new LinkedList<>();
+		float mouseX = data.mouseX, mouseY = data.mouseY;
 		if (component == null) {
 			forEachComponent(it -> {
 				if (optimize && !(it.getX() <= mouseX && it.getY() <= mouseY
@@ -109,10 +107,10 @@ public interface IComponentManager {
 				float x = mouseX - it.getX();
 				float y = mouseY - it.getY();
 				it.activateListener(frame, listenerClass,
-						listener -> listener.active(x, y, code, wheel));
+						listener -> listener.active(data.create(x, y)));
 				if (it instanceof IComponentManager) {
 					result.addAll(((IComponentManager) it).activeMouseListener(
-							listenerClass, null, x, y, code, wheel, optimize));
+							listenerClass, null, data.create(x, y), optimize));
 				}
 				return true;
 			});
@@ -127,11 +125,11 @@ public interface IComponentManager {
 				float y = mouseY - it.getY();
 				if (it instanceof IComponentManager) {
 					result.addAll(((IComponentManager) it).activeMouseListener(
-							listenerClass, real, x, y, code, wheel, optimize));
+							listenerClass, real, data.create(x, y), optimize));
 				}
 				if (it == real) {
 					result.add(it);
-					it.activateListener(frame, listenerClass, listener -> listener.active(x, y, code, wheel));
+					it.activateListener(frame, listenerClass, listener -> listener.active(data.create(x, y)));
 					return false;
 				}
 				return true;
