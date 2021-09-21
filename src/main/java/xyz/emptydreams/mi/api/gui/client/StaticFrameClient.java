@@ -211,7 +211,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 			activateLocation(inventorySlots, component,
 					mouseX - component.getX(), mouseY - component.getY());
 			GlStateManager.color(1, 1, 1);
-			component.realTimePaint(painter);
+			component.paint(painter);
 		}
 		activeMouseWheelListener(mouseX, mouseY);
 	}

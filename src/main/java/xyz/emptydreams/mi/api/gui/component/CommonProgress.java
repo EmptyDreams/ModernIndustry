@@ -50,7 +50,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void realTimePaint(GuiPainter painter) {
+	public void paint(GuiPainter painter) {
 		paintBackground(painter);
 		front.accept(new Node(painter.getGuiContainer()));
 		if (getStringShower() != null) getStringShower().draw(this, painter);

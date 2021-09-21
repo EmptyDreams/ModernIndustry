@@ -91,7 +91,7 @@ public class ButtonComponent extends InvisibleButton {
 	}
 	
 	@Override
-	public void realTimePaint(GuiPainter painter) {
+	public void paint(GuiPainter painter) {
 		getStyle().paint(painter, new Size2D(getWidth(), getHeight()));
 		//如果鼠标在按钮内则绘制特效
 		if (isMouseIn()) {

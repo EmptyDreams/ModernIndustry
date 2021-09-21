@@ -32,7 +32,7 @@ public class StringComponent extends MComponent {
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void realTimePaint(GuiPainter painter) {
+	public void paint(GuiPainter painter) {
 		if (text == null) text = I18n.format(getString());
 		painter.drawString(0, 0, text, getColor());
 	}

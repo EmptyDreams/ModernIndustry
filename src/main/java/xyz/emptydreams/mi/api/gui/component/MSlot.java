@@ -50,7 +50,7 @@ public class MSlot extends MComponent {
 	}
 	
 	@Override
-	public void realTimePaint(GuiPainter painter) {
+	public void paint(GuiPainter painter) {
 		RuntimeTexture texture = ImageData.createTexture(SLOT, getWidth(), getHeight(), createTextureName());
 		texture.bindTexture();
 		painter.drawTexture(0, 0, getWidth(), getHeight(), texture);

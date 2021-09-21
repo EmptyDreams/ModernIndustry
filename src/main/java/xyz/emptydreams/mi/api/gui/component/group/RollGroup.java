@@ -167,19 +167,19 @@ public class RollGroup extends Group {
 	}
 	
 	@Override
-	public void realTimePaint(GuiPainter painter) {
+	public void paint(GuiPainter painter) {
 		if (horizontal != HorizontalEnum.NON) {
-			horRoll.realTimePaint(
+			horRoll.paint(
 					painter.createPainter(horRoll.getX(), horRoll.getY(), horRoll.getWidth(), horRoll.getHeight()));
 		}
 		if (vertical != VerticalEnum.NON) {
-			verRoll.realTimePaint(
+			verRoll.paint(
 					painter.createPainter(verRoll.getX(), verRoll.getY(), verRoll.getWidth(), verRoll.getHeight()));
 		}
 		GuiPainter innerPainter = painter.createPainter(
 				innerGroup.getX(), innerGroup.getY(), -getXOffset(), -getYOffset(),
 				innerGroup.getWidth(), innerGroup.getHeight());
-		innerGroup.realTimePaint(innerPainter);
+		innerGroup.paint(innerPainter);
 	}
 	
 	private int getXOffset() {

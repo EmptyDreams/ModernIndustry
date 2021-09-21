@@ -97,7 +97,7 @@ public interface IComponent {
 	
 	/** 实时渲染 */
 	@SideOnly(Side.CLIENT)
-	default void realTimePaint(GuiPainter painter) { }
+	default void paint(GuiPainter painter) { }
 	
 	/**
 	 * 构建一个默认的材质名称

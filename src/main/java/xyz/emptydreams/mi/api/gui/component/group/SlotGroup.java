@@ -197,7 +197,7 @@ public class SlotGroup extends MComponent implements Iterable<SlotGroup.Node> {
 	}
 	
 	@Override
-	public void realTimePaint(GuiPainter painter) {
+	public void paint(GuiPainter painter) {
 		RuntimeTexture texture = createTexture(ImageData.SLOT, getSlotSize(), getSlotSize(), createTextureName());
 		texture.bindTexture();
 		for (int y = 0; y < getSlotSize(); ++y) {

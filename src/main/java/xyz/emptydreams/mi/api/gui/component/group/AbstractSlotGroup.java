@@ -20,7 +20,7 @@ public class AbstractSlotGroup extends SlotGroup {
 	}
 	
 	@Override
-	public void realTimePaint(GuiPainter painter) { }
+	public void paint(GuiPainter painter) { }
 	
 	@Override
 	public void onAdd2Manager(IComponentManager con, EntityPlayer player) {

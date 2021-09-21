@@ -200,9 +200,9 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void realTimePaint(GuiPainter painter) {
+	public void paint(GuiPainter painter) {
 		for (IComponent it : components) {
-			it.realTimePaint(painter.createPainter(
+			it.paint(painter.createPainter(
 					it.getX(), it.getY(), 0, 0, it.getWidth(), it.getHeight()));
 		}
 	}

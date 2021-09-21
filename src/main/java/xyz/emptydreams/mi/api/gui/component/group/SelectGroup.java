@@ -141,7 +141,7 @@ public class SelectGroup extends MComponent {
 	}
 	
 	@Override
-	public void realTimePaint(GuiPainter painter) {
+	public void paint(GuiPainter painter) {
 		//暂时扔在这
 	}
 	

@@ -143,7 +143,7 @@ public class RollComponent extends MComponent {
 	}
 	
 	@Override
-	public void realTimePaint(GuiPainter painter) {
+	public void paint(GuiPainter painter) {
 		paintBackground(painter);
 		double index = getIndex();
 		RuntimeTexture texture = bindTexture();
