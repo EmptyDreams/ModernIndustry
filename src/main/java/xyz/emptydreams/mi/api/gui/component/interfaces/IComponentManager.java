@@ -113,17 +113,26 @@ public interface IComponentManager {
 				return true;
 			});
 		} else {
+			IComponent real = component instanceof IComponentManager ? null : component;
 			forEachComponent(it -> {
 				float x = mouseX - it.getX();
 				float y = mouseY - it.getY();
-				if (it == component) {
+				if (it instanceof IComponentManager) {
+					if (it == component) {
+						result.add(it);
+						it.activateListener(frame, listenerClass, listener -> listener.active(x, y, code, wheel));
+					}
+					if (it.getX() <= mouseX && it.getY() <= mouseY
+							&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY) {
+						result.addAll(((IComponentManager) it).activeMouseListener(
+								listenerClass, real, x, y, code, wheel));
+						return result.isEmpty();
+					}
+				}
+				if (it == real) {
 					result.add(it);
 					it.activateListener(frame, listenerClass, listener -> listener.active(x, y, code, wheel));
 					return false;
-				} else if (it instanceof IComponentManager) {
-					result.addAll(((IComponentManager) it).activeMouseListener(
-							listenerClass, component, x, y, code, wheel));
-					return result.isEmpty();
 				}
 				return true;
 			});

@@ -209,15 +209,13 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 			for (IComponent component : onComponents) {
 				if (preComponents.contains(component)) continue;
 				preComponents.add(component);
-				activateEntered(inventorySlots, component,
-						mouseX - component.getX(), mouseY - component.getY());
+				activateEntered(inventorySlots, component, mouseX, mouseY);
 			}
 		}
 		for (IComponent component : components) {
 			GuiPainter painter = new GuiPainter(this,
 					component.getX(), component.getY(), component.getWidth(), component.getHeight());
-			activateLocation(inventorySlots, component,
-					mouseX - component.getX(), mouseY - component.getY());
+			activateLocation(inventorySlots, component, mouseX, mouseY);
 			GlStateManager.color(1, 1, 1);
 			component.paint(painter);
 		}
@@ -243,13 +241,11 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		mouseX -= getGuiLeft();     mouseY -= getGuiTop();
-		for (IComponent component : components) {
-			mouseX -= component.getX();
-			mouseY -= component.getY();
-			if (mouseButton == 0)
-				clickedComponents.addAll(activateAction(inventorySlots, component, mouseX, mouseY));
-			clickedComponents.addAll(activateClick(inventorySlots, component, mouseX, mouseY, mouseButton));
-		}
+		float fx = mouseX, fy = mouseY;
+		forEachAllComponents(mouseX, mouseY, it -> {
+			if (mouseButton == 0) clickedComponents.addAll(activateAction(inventorySlots, it, fx, fy));
+			clickedComponents.addAll(activateClick(inventorySlots, it, fx, fy, mouseButton));
+		});
 	}
 	
 	@Override
@@ -257,8 +253,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		super.mouseReleased(mouseX, mouseY, state);
 		mouseX -= getGuiLeft();     mouseY -= getGuiTop();
 		for (IComponent component : clickedComponents) {
-			activateReleased(inventorySlots, component,
-					mouseX - component.getX(), mouseY - component.getY(), state);
+			activateReleased(inventorySlots, component, mouseX, mouseY, state);
 		}
 		clickedComponents.clear();
 	}
