@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
@@ -128,6 +129,7 @@ public class SelectGroup extends MComponent {
 	
 	@Override
 	public void paint(GuiPainter painter) {
+		GlStateManager.color(1, 1, 1);
 		//暂时扔在这
 	}
 	

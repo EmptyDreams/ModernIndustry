@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
@@ -199,6 +200,7 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void paint(GuiPainter painter) {
+		GlStateManager.color(1, 1, 1);
 		for (IComponent it : components) {
 			it.paint(painter.createPainter(
 					it.getX(), it.getY(), 0, 0, it.getWidth(), it.getHeight()));

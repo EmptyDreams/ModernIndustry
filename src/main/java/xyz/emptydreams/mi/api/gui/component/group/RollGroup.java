@@ -1,6 +1,7 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.component.RollComponent;
@@ -167,6 +168,7 @@ public class RollGroup extends Group {
 	
 	@Override
 	public void paint(GuiPainter painter) {
+		GlStateManager.color(1, 1, 1);
 		if (horizontal != HorizontalEnum.NON) {
 			horRoll.paint(
 					painter.createPainter(horRoll.getX(), horRoll.getY(), horRoll.getWidth(), horRoll.getHeight()));

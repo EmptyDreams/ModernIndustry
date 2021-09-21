@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.gui.component;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraftforge.fml.relauncher.Side;
@@ -51,6 +52,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void paint(GuiPainter painter) {
+		GlStateManager.color(1, 1, 1);
 		paintBackground(painter);
 		front.accept(new Node(painter.getGuiContainer()));
 		if (getStringShower() != null) getStringShower().draw(this, painter);

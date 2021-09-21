@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -197,6 +198,7 @@ public class SlotGroup extends MComponent implements Iterable<SlotGroup.Node> {
 	
 	@Override
 	public void paint(GuiPainter painter) {
+		GlStateManager.color(1, 1, 1);
 		RuntimeTexture texture = createTexture(ImageData.SLOT, getSlotSize(), getSlotSize(), createTextureName());
 		texture.bindTexture();
 		for (int y = 0; y < getSlotSize(); ++y) {

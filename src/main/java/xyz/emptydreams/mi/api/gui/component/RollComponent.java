@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
@@ -144,6 +145,7 @@ public class RollComponent extends MComponent {
 	
 	@Override
 	public void paint(GuiPainter painter) {
+		GlStateManager.color(1, 1, 1);
 		paintBackground(painter);
 		double index = getIndex();
 		RuntimeTexture texture = bindTexture();

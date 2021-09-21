@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -51,6 +52,7 @@ public class MSlot extends MComponent {
 	
 	@Override
 	public void paint(GuiPainter painter) {
+		GlStateManager.color(1, 1, 1);
 		RuntimeTexture texture = ImageData.createTexture(SLOT, getWidth(), getHeight(), createTextureName());
 		texture.bindTexture();
 		painter.drawTexture(0, 0, getWidth(), getHeight(), texture);

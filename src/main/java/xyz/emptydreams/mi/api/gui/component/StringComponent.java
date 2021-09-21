@@ -1,6 +1,7 @@
 package xyz.emptydreams.mi.api.gui.component;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -33,6 +34,7 @@ public class StringComponent extends MComponent {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void paint(GuiPainter painter) {
+		GlStateManager.color(1, 1, 1);
 		if (text == null) text = I18n.format(getString());
 		painter.drawString(0, 0, text, getColor());
 	}
