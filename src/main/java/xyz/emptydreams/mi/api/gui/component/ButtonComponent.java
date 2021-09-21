@@ -8,8 +8,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
-import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
-import xyz.emptydreams.mi.api.interfaces.ThConsumer;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.data.math.Size2D;
 
@@ -25,8 +24,6 @@ import static xyz.emptydreams.mi.api.gui.client.ImageData.*;
  */
 public class ButtonComponent extends InvisibleButton {
 	
-	/** 资源名称 */
-	private String name;
 	/** 要显示的文字 */
 	private String text = "";
 	/** 文字颜色 */
@@ -41,7 +38,6 @@ public class ButtonComponent extends InvisibleButton {
 	public ButtonComponent(int width, int height, Style style) {
 		super(width, height);
 		this.style = style;
-		name = getStyle().name() + width + "!" + height;
 	}
 	
 	/** 设置文字颜色 */
@@ -87,15 +83,17 @@ public class ButtonComponent extends InvisibleButton {
 	@Override
 	public void setSize(int width, int height) {
 		super.setSize(width, height);
-		if (style != null) name = getStyle().name() + width + "!" + height;
 	}
 	
 	@Override
 	public void paint(GuiPainter painter) {
-		getStyle().paint(painter, new Size2D(getWidth(), getHeight()));
+		GlStateManager.color(1, 1, 1);
 		//如果鼠标在按钮内则绘制特效
 		if (isMouseIn()) {
-			getStyle().drawOnMouseIn(painter, this, name);
+			MISysInfo.print(getStyle());
+			getStyle().drawOnMouseIn(painter, new Size2D(getWidth(), getHeight()));
+		} else {
+			getStyle().paint(painter, new Size2D(getWidth(), getHeight()));
 		}
 		//绘制文字
 		if (getText().length() > 0) {
@@ -121,7 +119,7 @@ public class ButtonComponent extends InvisibleButton {
 		PAGE_DOWN(Style::pageDownPaint, Style::pageDownDrawMouseIn, Style::stringPainterNon);
 		
 		private final BiConsumer<GuiPainter, Size2D> printer;
-		private final ThConsumer<GuiPainter, IComponent, String> clickEffect;
+		private final BiConsumer<GuiPainter, Size2D> clickEffect;
 		private final BiConsumer<GuiPainter, ButtonComponent> stringPainter;
 		
 		/**
@@ -129,7 +127,7 @@ public class ButtonComponent extends InvisibleButton {
 		 * @param clickEffect 点击效果绘制器
 		 * @param stringPainter 字符串绘制器
 		 */
-		Style(BiConsumer<GuiPainter, Size2D> painter, ThConsumer<GuiPainter, IComponent, String> clickEffect,
+		Style(BiConsumer<GuiPainter, Size2D> painter, BiConsumer<GuiPainter, Size2D> clickEffect,
 		      BiConsumer<GuiPainter, ButtonComponent> stringPainter) {
 			this.printer = painter;
 			this.clickEffect = clickEffect;
@@ -150,8 +148,8 @@ public class ButtonComponent extends InvisibleButton {
 		
 		/** 绘制鼠标在按钮范围内时的效果 */
 		@SideOnly(CLIENT)
-		public void drawOnMouseIn(GuiPainter painter, IComponent component, String name) {
-			clickEffect.accept(painter, component, name);
+		public void drawOnMouseIn(GuiPainter painter, Size2D size) {
+			clickEffect.accept(painter, size);
 		}
 		
 		//--------------------以下为工具方法-----------------//
@@ -159,7 +157,7 @@ public class ButtonComponent extends InvisibleButton {
 		@SideOnly(CLIENT)
 		private static void recPaint(GuiPainter painter, Size2D size) {
 			RuntimeTexture texture = createTexture(BUTTON_REC,
-										size.getWidth(), size.getHeight(), REC.getTextureName(size));
+					size.getWidth(), size.getHeight(), REC.getTextureName(size, false));
 			texture.bindTexture();
 			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}
@@ -167,7 +165,7 @@ public class ButtonComponent extends InvisibleButton {
 		@SideOnly(CLIENT)
 		private static void pageLeftPaint(GuiPainter painter, Size2D size) {
 			RuntimeTexture texture = createTexture(BUTTON_PAGE_LEFT,
-										size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size));
+					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size, false));
 			texture.bindTexture();
 			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}
@@ -175,7 +173,7 @@ public class ButtonComponent extends InvisibleButton {
 		@SideOnly(CLIENT)
 		private static void pageRightPaint(GuiPainter painter, Size2D size) {
 			RuntimeTexture texture = createTexture(BUTTON_PAGE_RIGHT,
-					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size));
+					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size, false));
 			texture.bindTexture();
 			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}
@@ -183,7 +181,7 @@ public class ButtonComponent extends InvisibleButton {
 		@SideOnly(CLIENT)
 		private static void pageUpPaint(GuiPainter painter, Size2D size) {
 			RuntimeTexture texture = createTexture(BUTTON_PAGE_UP,
-					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size));
+					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size, false));
 			texture.bindTexture();
 			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}
@@ -191,7 +189,7 @@ public class ButtonComponent extends InvisibleButton {
 		@SideOnly(CLIENT)
 		private static void pageDownPaint(GuiPainter painter, Size2D size) {
 			RuntimeTexture texture = createTexture(BUTTON_PAGE_DOWN,
-					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size));
+					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size, false));
 			texture.bindTexture();
 			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}
@@ -199,7 +197,7 @@ public class ButtonComponent extends InvisibleButton {
 		@SideOnly(CLIENT)
 		private static void triangleRightPaint(GuiPainter painter, Size2D size) {
 			RuntimeTexture texture = createTexture(BUTTON_TRIANGLE_RIGHT,
-					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size));
+					size.getWidth(), size.getHeight(), TRIANGLE_RIGHT.getTextureName(size, false));
 			texture.bindTexture();
 			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}
@@ -207,44 +205,50 @@ public class ButtonComponent extends InvisibleButton {
 		@SideOnly(CLIENT)
 		private static void triangleLeftPaint(GuiPainter painter, Size2D size) {
 			RuntimeTexture texture = createTexture(BUTTON_TRIANGLE_LEFT,
-					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size));
+					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size, false));
 			texture.bindTexture();
 			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}
 		
 		@SideOnly(CLIENT)
-		private static void recDrawMouseIn(GuiPainter gui, IComponent component, String name) {
-			imageDrawMouseIn(gui, component, name, BUTTON_REC_CLICK);
+		private static void recDrawMouseIn(GuiPainter gui, Size2D size) {
+			imageDrawMouseIn(gui, size, REC.getTextureName(size, true), BUTTON_REC_CLICK);
 		}
 		
 		@SideOnly(CLIENT)
-		private static void pageLeftDrawMouseIn(GuiPainter painter, IComponent component, String name) {
-			imageDrawMouseIn(painter, component, name, BUTTON_PAGE_LEFT_CLICK);
+		private static void pageLeftDrawMouseIn(GuiPainter painter, Size2D size) {
+			imageDrawMouseIn(painter, size,
+					PAGE_LEFT.getTextureName(size, true), BUTTON_PAGE_LEFT_CLICK);
 		}
 		
 		@SideOnly(CLIENT)
-		private static void pageRightDrawMouseIn(GuiPainter painter, IComponent component, String name) {
-			imageDrawMouseIn(painter, component, name, BUTTON_PAGE_RIGHT_CLICK);
+		private static void pageRightDrawMouseIn(GuiPainter painter, Size2D size) {
+			imageDrawMouseIn(painter, size,
+					PAGE_RIGHT.getTextureName(size, true), BUTTON_PAGE_RIGHT_CLICK);
 		}
 		
 		@SideOnly(CLIENT)
-		private static void pageUpDrawMouseIn(GuiPainter painter, IComponent component, String name) {
-			imageDrawMouseIn(painter, component, name, BUTTON_PAGE_UP_CLICK);
+		private static void pageUpDrawMouseIn(GuiPainter painter, Size2D size) {
+			imageDrawMouseIn(painter, size,
+					PAGE_UP.getTextureName(size, true), BUTTON_PAGE_UP_CLICK);
 		}
 		
 		@SideOnly(CLIENT)
-		private static void pageDownDrawMouseIn(GuiPainter painter, IComponent component, String name) {
-			imageDrawMouseIn(painter, component, name, BUTTON_PAGE_DOWN_CLICK);
+		private static void pageDownDrawMouseIn(GuiPainter painter, Size2D size) {
+			imageDrawMouseIn(painter, size,
+					PAGE_DOWN.getTextureName(size, true), BUTTON_PAGE_DOWN_CLICK);
 		}
 		
 		@SideOnly(CLIENT)
-		private static void triangleRightDrawMouseIn(GuiPainter painter, IComponent component, String name) {
-			imageDrawMouseIn(painter, component, name, BUTTON_TRIANGLE_RIGHT_CLICK);
+		private static void triangleRightDrawMouseIn(GuiPainter painter, Size2D size) {
+			imageDrawMouseIn(painter, size,
+					TRIANGLE_RIGHT.getTextureName(size, true), BUTTON_TRIANGLE_RIGHT_CLICK);
 		}
 		
 		@SideOnly(CLIENT)
-		private static void triangleLeftDrawMouseIn(GuiPainter painter, IComponent component, String name) {
-			imageDrawMouseIn(painter, component, name, BUTTON_TRIANGLE_LEFT_CLICK);
+		private static void triangleLeftDrawMouseIn(GuiPainter painter, Size2D size) {
+			imageDrawMouseIn(painter, size,
+					TRIANGLE_LEFT.getTextureName(size, true), BUTTON_TRIANGLE_LEFT_CLICK);
 		}
 		
 		@SideOnly(CLIENT)
@@ -254,7 +258,7 @@ public class ButtonComponent extends InvisibleButton {
 		private static void stringPainter(GuiPainter painter, ButtonComponent button) {
 			FontRenderer font = Minecraft.getMinecraft().fontRenderer;
 			int width = button.getWidth(), height = button.getHeight();
-			int x = button.getX(), y = button.getY();
+			int x = painter.getX(), y = painter.getY();
 			int textWidth = font.getStringWidth(button.getText());
 			
 			int centerX = x + (width / 2) + painter.getGuiContainer().getGuiLeft() + 1;
@@ -269,27 +273,25 @@ public class ButtonComponent extends InvisibleButton {
 		/**
 		 * 绘制鼠标进入按钮后的图像
 		 * @param painter GUI画笔
-		 * @param component 按钮对象
+		 * @param size 按钮大小
 		 * @param name 资源名称
 		 * @param click 点击图像名称
 		 */
 		@SideOnly(CLIENT)
-		private static void imageDrawMouseIn(GuiPainter painter, IComponent component, String name, String click) {
+		private static void imageDrawMouseIn(GuiPainter painter, Size2D size, String name, String click) {
 			GlStateManager.color(1, 1, 1);
 			RuntimeTexture texture = RuntimeTexture.getInstance(name);
-			int width = component.getWidth(), height = component.getHeight();
+			int width = size.getWidth(), height = size.getHeight();
 			if (texture == null) {
 				texture = ImageData.createTexture(click, width, height, name);
 			}
 			texture.bindTexture();
-			texture.drawToFrame(component.getX() + painter.getGuiContainer().getGuiLeft(),
-					component.getY() + painter.getGuiContainer().getGuiTop(),
-					0, 0, width, height);
+			painter.drawTexture(0, 0, width, height, texture);
 		}
 		
-		private String getTextureName(Size2D size) {
+		private String getTextureName(Size2D size, boolean activate) {
 			return FMLCommonHandler.instance().getModName() + ":" + "ButtonComponent" + "!"
-					+ name() + "@" + size.getWidth() + "#" + size.getHeight();
+					+ name() + "*" + activate + "@" + size.getWidth() + "#" + size.getHeight();
 		}
 		
 	}

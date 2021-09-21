@@ -32,7 +32,6 @@ import xyz.emptydreams.mi.api.utils.data.enums.OperateResult;
 
 import java.util.List;
 
-import static xyz.emptydreams.mi.api.gui.component.ButtonComponent.Style.REC;
 import static xyz.emptydreams.mi.api.gui.component.ButtonComponent.Style.TRIANGLE_LEFT;
 import static xyz.emptydreams.mi.api.gui.component.ButtonComponent.Style.TRIANGLE_RIGHT;
 import static xyz.emptydreams.mi.api.gui.craft.CraftFrameUtil.removeItemStack;
@@ -103,7 +102,7 @@ public class CraftFrame extends MIFrame {
 								getWidth(), 0, Panels::horizontalCenter);
 		ButtonComponent prevButton = new ButtonComponent(10, 10, TRIANGLE_LEFT);
 		ButtonComponent nextButton = new ButtonComponent(10, 10, TRIANGLE_RIGHT);
-		ButtonComponent fillButton = new ButtonComponent(11, 10, REC);
+		ButtonComponent fillButton = new ButtonComponent(11, 10);
 		prevButton.setAction((frame, isClient) -> preShape());
 		nextButton.setAction((frame, isClient) -> nextShape());
 		fillButton.setAction((frame, isClient) -> fill());
