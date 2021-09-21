@@ -11,7 +11,6 @@ import xyz.emptydreams.mi.api.gui.listener.key.IKeyReleaseListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseWheelListener;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
-import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
@@ -203,15 +202,6 @@ public class RollGroup extends Group {
 		if (verRoll != null && innerGroup.getRealHeight() <= innerGroup.getHeight()) {
 			verRoll.setDisable(true);
 		}
-	}
-	
-	@Nullable
-	@Override
-	public IComponent getMouseTarget(float mouseX, float mouseY) {
-		IComponent target = super.getMouseTarget(mouseX, mouseY);
-		if (target == null)
-			return innerGroup.getMouseTarget(mouseX - getX(), mouseY - getY());
-		return target;
 	}
 	
 	/** 初始化内部控件 */

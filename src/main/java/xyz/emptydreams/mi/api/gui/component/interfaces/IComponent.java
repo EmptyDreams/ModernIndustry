@@ -18,7 +18,6 @@ import xyz.emptydreams.mi.api.net.message.gui.GuiAddition;
 import xyz.emptydreams.mi.api.net.message.gui.GuiMessage;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 /**
@@ -74,26 +73,6 @@ public interface IComponent {
 	 * @throws NullPointerException 如果需要使用con或player却传入了null
 	 */
 	void onAdd2ClientFrame(StaticFrameClient frame, EntityPlayer player);
-	
-	/**
-	 * 判断鼠标是否在组件内
-	 * @param mouseX 鼠标X轴坐标（相对于GUI）
-	 * @param mouseY 鼠标Y轴坐标（相对于GUI）
-	 */
-	default boolean isMouseInside(float mouseX, float mouseY) {
-		return getMouseTarget(mouseX, mouseY) != null;
-	}
-	
-	/**
-	 * 获取鼠标指向的组件
-	 * @param mouseX 鼠标X轴坐标（相对于控件组）
-	 * @param mouseY 鼠标Y轴坐标（相对于控件组）
-	 * @return 若鼠标坐标不在组件范围内或指定地点无组件则返回null
-	 */
-	@Nullable
-	default IComponent getMouseTarget(float mouseX, float mouseY) {
-		return this;
-	}
 	
 	/** 实时渲染 */
 	@SideOnly(Side.CLIENT)

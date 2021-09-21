@@ -11,7 +11,6 @@ import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.MSlot;
-import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 
 import javax.annotation.Nonnull;
@@ -207,11 +206,6 @@ public class SlotGroup extends MComponent implements Iterable<SlotGroup.Node> {
 				painter.drawTexture(drawX, drawY, getSlotSize(), getSlotSize(), texture);
 			}
 		}
-	}
-	
-	@Override
-	public IComponent getMouseTarget(float mouseX, float mouseY) {
-		return null;
 	}
 	
 	@Override

@@ -3,10 +3,11 @@ package xyz.emptydreams.mi.api.gui.component.interfaces;
 import net.minecraft.inventory.Slot;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseListener;
-import xyz.emptydreams.mi.api.utils.container.IntWrapper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -89,22 +90,23 @@ public interface IComponentManager {
 	 * @param mouseY 鼠标Y轴坐标（相对于控件组）
 	 * @param code 鼠标按钮代码
 	 * @param wheel 鼠标滚轮滚动距离
+	 * @return 成功触发事件的控件列表
 	 */
-	default int activeMouseListener(Class<? extends IMouseListener> listenerClass, IComponent component,
-	                                 float mouseX, float mouseY, int code, int wheel) {
+	default List<IComponent> activeMouseListener(Class<? extends IMouseListener> listenerClass, IComponent component,
+	                                             float mouseX, float mouseY, int code, int wheel) {
 		MIFrame frame = getFrame();
-		IntWrapper result = new IntWrapper();
+		List<IComponent> result = new LinkedList<>();
 		if (component == null) {
 			forEachComponent(it -> {
 				if (it.getX() <= mouseX && it.getY() <= mouseY
 						&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY) {
-					result.increment();
+					result.add(it);
 					float x = mouseX - it.getX();
 					float y = mouseY - it.getY();
 					it.activateListener(frame, listenerClass,
 							listener -> listener.active(x, y, code, wheel));
 					if (it instanceof IComponentManager) {
-						result.add(((IComponentManager) it).activeMouseListener(
+						result.addAll(((IComponentManager) it).activeMouseListener(
 								listenerClass, null, x, y, code, wheel));
 					}
 				}
@@ -115,18 +117,18 @@ public interface IComponentManager {
 				float x = mouseX - it.getX();
 				float y = mouseY - it.getY();
 				if (it == component) {
-					result.increment();
+					result.add(it);
 					it.activateListener(frame, listenerClass, listener -> listener.active(x, y, code, wheel));
 					return false;
 				} else if (it instanceof IComponentManager) {
-					result.add(((IComponentManager) it).activeMouseListener(
+					result.addAll(((IComponentManager) it).activeMouseListener(
 							listenerClass, component, x, y, code, wheel));
-					return result.get() == 0;
+					return result.isEmpty();
 				}
 				return true;
 			});
 		}
-		return result.get();
+		return result;
 	}
 	
 }

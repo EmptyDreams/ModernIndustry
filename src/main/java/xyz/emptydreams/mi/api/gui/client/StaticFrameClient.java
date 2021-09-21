@@ -21,7 +21,12 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 import static xyz.emptydreams.mi.api.gui.listener.ListenerTrigger.*;
 import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
@@ -180,30 +185,33 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		return I18n.format(getTitle());
 	}
 	
-	private IComponent preComponent = null;
+	private final List<IComponent> preComponents = new LinkedList<>();
 	
 	@Override
 	protected final void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		mouseX -= getGuiLeft();     mouseY -= getGuiTop();
 		if (isPaintBackGround) drawDefaultBackground();
-		else GlStateManager.color(1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F);
 		RuntimeTexture texture = getTexture();
 		int offsetX = (this.width - this.xSize) / 2, offsetY = (this.height - this.ySize) / 2;
 		texture.drawToFrame(offsetX, offsetY, 0, 0, xSize, ySize);
 		
+		List<IComponent> onComponents = new LinkedList<>();
+		forEachAllComponents(mouseX, mouseY, onComponents::add);
+		Iterator<IComponent> it = preComponents.iterator();
+		while (it.hasNext()) {
+			IComponent component = it.next();
+			if (onComponents.contains(component)) continue;
+			activateExited(inventorySlots, component);
+			it.remove();
+		}
 		if (mouseX >= 0 && mouseY >= 0 && mouseX <= getXSize() && mouseY <= getYSize()) {
-			IComponent onComponent = getComponentFromMouse(mouseX, mouseY);
-			if (preComponent != onComponent) {
-				if (preComponent != null)
-					activateExited(inventorySlots, preComponent);
-				if (onComponent != null)
-					activateEntered(inventorySlots, onComponent,
-							mouseX - onComponent.getX(), mouseY - onComponent.getY());
+			for (IComponent component : onComponents) {
+				if (preComponents.contains(component)) continue;
+				preComponents.add(component);
+				activateEntered(inventorySlots, component,
+						mouseX - component.getX(), mouseY - component.getY());
 			}
-			preComponent = onComponent;
-		} else if (preComponent != null) {
-			activateExited(inventorySlots, preComponent);
-			preComponent = null;
 		}
 		for (IComponent component : components) {
 			GuiPainter painter = new GuiPainter(this,
@@ -219,29 +227,28 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	private void activeMouseWheelListener(int mouseX, int mouseY) {
 		int wheel = Mouse.getDWheel();
 		if (wheel == 0) return;
-		for (IComponent it : components) {
-			if (it.getX() <= mouseX && it.getY() <= mouseY
-					&& it.getX() + it.getWidth() >= mouseX
-					&& it.getY() + it.getHeight() >= mouseY) {
-				activateWheel(inventorySlots, it, wheel);
-			}
-		}
+		forEachAllComponents(mouseX, mouseY, it -> activateWheel(inventorySlots, it, wheel));
 	}
 	
 	/** 存储被点击的控件 */
-	private IComponent clickedComponents = null;
+	private final List<IComponent> clickedComponents = new LinkedList<IComponent>() {
+		@Override
+		public boolean addAll(int index, Collection<? extends IComponent> c) {
+			c.removeIf(this::contains);
+			return super.addAll(index, c);
+		}
+	};
 	
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		mouseX -= getGuiLeft();     mouseY -= getGuiTop();
-		IComponent component = getComponentFromMouse(mouseX, mouseY);
-		clickedComponents = component;
-		if (component != null) {
+		for (IComponent component : components) {
 			mouseX -= component.getX();
 			mouseY -= component.getY();
-			if (mouseButton == 0) activateAction(inventorySlots, component, mouseX, mouseY);
-			activateClick(inventorySlots, component, mouseX, mouseY, mouseButton);
+			if (mouseButton == 0)
+				clickedComponents.addAll(activateAction(inventorySlots, component, mouseX, mouseY));
+			clickedComponents.addAll(activateClick(inventorySlots, component, mouseX, mouseY, mouseButton));
 		}
 	}
 	
@@ -249,9 +256,11 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
 		super.mouseReleased(mouseX, mouseY, state);
 		mouseX -= getGuiLeft();     mouseY -= getGuiTop();
-		if (clickedComponents != null)
-			activateReleased(inventorySlots, clickedComponents,
-					mouseX - clickedComponents.getX(), mouseY - clickedComponents.getY(), state);
+		for (IComponent component : clickedComponents) {
+			activateReleased(inventorySlots, component,
+					mouseX - component.getX(), mouseY - component.getY(), state);
+		}
+		clickedComponents.clear();
 	}
 	
 	private int keyCode = -1;
@@ -263,21 +272,21 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		if (Keyboard.getEventKeyState()) {
 			keyCode = key;
 			for (IComponent it : components) {
-				activateKeyPressed(inventorySlots, it, key, it == clickedComponents);
+				activateKeyPressed(inventorySlots, it, key, clickedComponents.contains(it));
 				if (it instanceof IComponentManager) {
 					IComponentManager manager = (IComponentManager) it;
 					manager.forEachAllComponent(component -> activateKeyPressed(inventorySlots,
-							component, key, component == clickedComponents));
+							component, key, clickedComponents.contains(component)));
 				}
 			}
 		} else if (keyCode == key) {
 			keyCode = -1;
 			for (IComponent it : components) {
-				activateKeyRelease(inventorySlots, it, key, it == clickedComponents);
+				activateKeyRelease(inventorySlots, it, key, clickedComponents.contains(it));
 				if (it instanceof IComponentManager) {
 					IComponentManager manager = (IComponentManager) it;
 					manager.forEachAllComponent(component -> activateKeyRelease(inventorySlots,
-							component, key, component == clickedComponents));
+							component, key, clickedComponents.contains(component)));
 				}
 			}
 		}
@@ -297,24 +306,17 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		}
 	}
 	
-	/**
-	 * 根据鼠标坐标查找控件
-	 * @return 若没有则返回null
-	 */
-	@Nullable
-	public IComponent getComponentFromMouse(float mouseX, float mouseY) {
+	@Override
+	public void init(World world) { }
+	
+	private void forEachAllComponents(int mouseX, int mouseY, Consumer<IComponent> consumer) {
 		for (IComponent it : components) {
 			if (it.getX() <= mouseX && it.getY() <= mouseY
 					&& it.getX() + it.getWidth() >= mouseX
 					&& it.getY() + it.getHeight() >= mouseY) {
-				IComponent c = it.getMouseTarget(mouseX, mouseY);
-				if (c != null) return c;
+				consumer.accept(it);
 			}
 		}
-		return null;
 	}
 	
-	@Override
-	public void init(World world) { }
-
 }

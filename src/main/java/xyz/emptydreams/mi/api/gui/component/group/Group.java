@@ -11,11 +11,9 @@ import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseLocationListener;
-import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -205,19 +203,6 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 			it.paint(painter.createPainter(
 					it.getX(), it.getY(), 0, 0, it.getWidth(), it.getHeight()));
 		}
-	}
-	
-	@Nullable
-	@Override
-	public IComponent getMouseTarget(float mouseX, float mouseY) {
-		mouseX -= getX();   mouseY -= getY();
-		for (IComponent component : components) {
-			if (MathUtil.checkMouse2DRec(mouseX, mouseY, component)) {
-				IComponent result = component.getMouseTarget(mouseX, mouseY);
-				if (result != null) return result;
-			}
-		}
-		return null;
 	}
 	
 	@Override

@@ -16,7 +16,6 @@ import xyz.emptydreams.mi.api.utils.data.math.Point2D;
 import xyz.emptydreams.mi.api.utils.data.math.Size2D;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -122,19 +121,6 @@ public class SelectGroup extends MComponent {
 		if (result != null) return result;
 		for (Group group : innerList) {
 			result = group.containCode(code);
-			if (result != null) return result;
-		}
-		return null;
-	}
-	
-	@Nullable
-	@Override
-	public IComponent getMouseTarget(float mouseX, float mouseY) {
-		mouseX -= getX();   mouseY -= getY();
-		IComponent result = components.getMouseTarget(mouseX, mouseY);
-		if (result != null) return result;
-		for (Group group : innerList) {
-			result = group.getMouseTarget(mouseX, mouseY);
 			if (result != null) return result;
 		}
 		return null;
