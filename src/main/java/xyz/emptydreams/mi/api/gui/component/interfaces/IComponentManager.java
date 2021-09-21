@@ -160,15 +160,15 @@ public interface IComponentManager {
 					return true;
 				}
 				result.add(it);
-				if (ignore.contains(it)) return true;
 				float x = mouseX - it.getX();
 				float y = mouseY - it.getY();
-				it.activateListener(frame, listenerClass,
-						listener -> listener.active(data.create(x, y)));
 				if (it instanceof IComponentManager) {
 					result.addAll(((IComponentManager) it).activeMouseListener(
 							listenerClass, null, data.create(x, y), optimize, ignore));
 				}
+				if (ignore.contains(it)) return true;
+				it.activateListener(frame, listenerClass,
+						listener -> listener.active(data.create(x, y)));
 				return true;
 			});
 		} else {
@@ -178,22 +178,18 @@ public interface IComponentManager {
 						&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY)) {
 					return true;
 				}
-				if (ignore.contains(it)) {
-					if (it == real) {
-						result.add(it);
-						return false;
-					}
-					return true;
-				}
 				float x = mouseX - it.getX();
 				float y = mouseY - it.getY();
 				if (it instanceof IComponentManager) {
 					result.addAll(((IComponentManager) it).activeMouseListener(
 							listenerClass, real, data.create(x, y), optimize, ignore));
+					if (!result.isEmpty()) return false;
 				}
 				if (it == real) {
 					result.add(it);
-					it.activateListener(frame, listenerClass, listener -> listener.active(data.create(x, y)));
+					if (!ignore.contains(it))
+						it.activateListener(frame, listenerClass,
+								listener -> listener.active(data.create(x, y)));
 					return false;
 				}
 				return true;
