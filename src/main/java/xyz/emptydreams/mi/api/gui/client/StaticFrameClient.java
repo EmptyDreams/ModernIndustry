@@ -196,8 +196,8 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		int offsetX = (this.width - this.xSize) / 2, offsetY = (this.height - this.ySize) / 2;
 		texture.drawToFrame(offsetX, offsetY, 0, 0, xSize, ySize);
 		
-		List<IComponent> onComponents = new LinkedList<>();
-		forEachAllComponents(mouseX, mouseY, onComponents::add);
+		List<IComponent> onComponents = activateEntered(
+				inventorySlots, null, mouseX, mouseY, preComponents);
 		Iterator<IComponent> it = preComponents.iterator();
 		while (it.hasNext()) {
 			IComponent component = it.next();
@@ -205,12 +205,9 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 			activateExited(inventorySlots, component);
 			it.remove();
 		}
-		if (mouseX >= 0 && mouseY >= 0 && mouseX <= getXSize() && mouseY <= getYSize()) {
-			for (IComponent component : onComponents) {
-				if (preComponents.contains(component)) continue;
-				preComponents.add(component);
-				activateEntered(inventorySlots, component, mouseX, mouseY);
-			}
+		for (IComponent component : onComponents) {
+			if (preComponents.contains(component)) continue;
+			preComponents.add(component);
 		}
 		for (IComponent component : components) {
 			GuiPainter painter = new GuiPainter(this,

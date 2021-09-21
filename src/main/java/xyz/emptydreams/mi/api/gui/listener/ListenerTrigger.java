@@ -14,6 +14,7 @@ import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseLocationListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseReleasedListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseWheelListener;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,51 +25,55 @@ import java.util.List;
 public final class ListenerTrigger {
 
 	/** 尝试触发鼠标松开事件 */
-	public static List<IComponent> activateReleased(IComponentManager frame, IComponent component,
+	public static void activateReleased(IComponentManager frame, IComponent component,
 	                                    float mouseX, float mouseY, int code) {
-		return frame.activeMouseListener(IMouseReleasedListener.class,
-				component, new MouseData(mouseX, mouseY, code, 0), false);
+		frame.activeMouseListenerNoLog(IMouseReleasedListener.class,
+				component, new MouseData(mouseX, mouseY, code, 0), false, Collections.emptyList());
 	}
 	
 	/** 尝试触发鼠标离开事件 */
-	public static List<IComponent> activateExited(IComponentManager frame, IComponent component) {
-		return frame.activeMouseListener(
-				IMouseExitedListener.class, component, MouseData.EMPTY, false);
+	public static void activateExited(IComponentManager frame, IComponent component) {
+		frame.activeMouseListenerNoLog(IMouseExitedListener.class,
+				component, MouseData.EMPTY, false, Collections.emptyList());
 	}
 	
 	/** 尝试触发鼠标左键单击事件 */
 	public static List<IComponent> activateAction(IComponentManager frame,
 	                                              IComponent component, float mouseX, float mouseY) {
 		return frame.activeMouseListener(IMouseActionListener.class,
-				component, new MouseData(mouseX, mouseY, -1, 0), true);
+				component, new MouseData(mouseX, mouseY, -1, 0),
+				true, Collections.emptyList());
 	}
 	
 	/** 尝试触发鼠标点击事件 */
 	public static List<IComponent> activateClick(IComponentManager frame, IComponent component,
 	                                 float mouseX, float mouseY, int code) {
 		return frame.activeMouseListener(IMouseClickListener.class,
-				component, new MouseData(mouseX, mouseY, code, 0), true);
+				component, new MouseData(mouseX, mouseY, code, 0), true, Collections.emptyList());
 	}
 	
 	/** 尝试触发鼠标进入的事件 */
 	public static List<IComponent> activateEntered(IComponentManager frame,
-	                                               IComponent component, float mouseX, float mouseY) {
+	                                               IComponent component, float mouseX, float mouseY,
+	                                               List<IComponent> ignore) {
 		return frame.activeMouseListener(IMouseEnteredListener.class,
-				component, new MouseData(mouseX, mouseY, -1, 0), true);
+				component, new MouseData(mouseX, mouseY, -1, 0), true, ignore);
 	}
 	
 	/** 尝试触发鼠标坐标事件 */
-	public static List<IComponent> activateLocation(IComponentManager frame,
+	public static void activateLocation(IComponentManager frame,
 	                                                IComponent component, float mouseX, float mouseY) {
-		return frame.activeMouseListener(IMouseLocationListener.class,
-				component, new MouseData(mouseX, mouseY, -1, 0), false);
+		frame.activeMouseListenerNoLog(IMouseLocationListener.class,
+				component, new MouseData(mouseX, mouseY, -1, 0),
+				false, Collections.emptyList());
 	}
 	
 	/** 尝试触发鼠标滚轮事件 */
-	public static List<IComponent> activateWheel(IComponentManager frame,
+	public static void activateWheel(IComponentManager frame,
 	                                             IComponent component, int wheel) {
-		return frame.activeMouseListener(IMouseWheelListener.class,
-				component, new MouseData(0, 0, -1, wheel), true);
+		frame.activeMouseListenerNoLog(IMouseWheelListener.class,
+				component, new MouseData(0, 0, -1, wheel),
+				true, Collections.emptyList());
 	}
 	
 	/** 尝试触发键盘按下事件 */

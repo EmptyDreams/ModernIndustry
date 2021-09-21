@@ -84,16 +84,72 @@ public interface IComponentManager {
 	}
 	
 	/**
+	 * <p>触发指定控件的鼠标。
+	 * <p>与{@link #activeMouseListener(Class, IComponent, MouseData, boolean, List)}
+	 *      不同的是该方法不会生成记录调用结果的列表。
+	 * @param listenerClass 触发的事件的class
+	 * @param component 要触发事件的控件，留空则尝试触发所有符合条件的控件
+	 * @param data 鼠标参数
+	 * @param optimize 是否进行优化，为true时若鼠标不在控件上就不会触发事件
+	 * @param ignore 忽略列表，该列表中的控件不会触发事件
+	 */
+	default void activeMouseListenerNoLog(Class<? extends IMouseListener> listenerClass,
+	                                      IComponent component, MouseData data,
+	                                      boolean optimize, List<IComponent> ignore) {
+		MIFrame frame = getFrame();
+		float mouseX = data.mouseX, mouseY = data.mouseY;
+		if (component == null) {
+			forEachComponent(it -> {
+				if (optimize && !(it.getX() <= mouseX && it.getY() <= mouseY
+						&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY)
+						&& !ignore.contains(it)) {
+					return true;
+				}
+				float x = mouseX - it.getX();
+				float y = mouseY - it.getY();
+				it.activateListener(frame, listenerClass,
+						listener -> listener.active(data.create(x, y)));
+				if (it instanceof IComponentManager) {
+					((IComponentManager) it).activeMouseListenerNoLog(
+							listenerClass, null, data.create(x, y), optimize, ignore);
+				}
+				return true;
+			});
+		} else {
+			IComponent real = component instanceof IComponentManager ? null : component;
+			forEachComponent(it -> {
+				if (optimize && !(it.getX() <= mouseX && it.getY() <= mouseY
+						&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY)
+						&& ignore.contains(it)) {
+					return true;
+				}
+				float x = mouseX - it.getX();
+				float y = mouseY - it.getY();
+				if (it instanceof IComponentManager) {
+					((IComponentManager) it).activeMouseListenerNoLog(
+							listenerClass, real, data.create(x, y), optimize, ignore);
+				}
+				if (it == real) {
+					it.activateListener(frame, listenerClass, listener -> listener.active(data.create(x, y)));
+					return false;
+				}
+				return true;
+			});
+		}
+	}
+	
+	/**
 	 * 触发指定控件的鼠标
 	 * @param listenerClass 触发的事件的class
 	 * @param component 要触发事件的控件，留空则尝试触发所有符合条件的控件
 	 * @param data 鼠标参数
 	 * @param optimize 是否进行优化，为true时若鼠标不在控件上就不会触发事件
+	 * @param ignore 忽略列表，该列表中的控件不会触发事件但是也会记录到触发事件的列表中
 	 * @return 成功触发事件的控件列表
 	 */
 	default List<IComponent> activeMouseListener(Class<? extends IMouseListener> listenerClass,
 	                                             IComponent component, MouseData data,
-	                                             boolean optimize) {
+	                                             boolean optimize, List<IComponent> ignore) {
 		MIFrame frame = getFrame();
 		List<IComponent> result = new LinkedList<>();
 		float mouseX = data.mouseX, mouseY = data.mouseY;
@@ -104,13 +160,14 @@ public interface IComponentManager {
 					return true;
 				}
 				result.add(it);
+				if (ignore.contains(it)) return true;
 				float x = mouseX - it.getX();
 				float y = mouseY - it.getY();
 				it.activateListener(frame, listenerClass,
 						listener -> listener.active(data.create(x, y)));
 				if (it instanceof IComponentManager) {
 					result.addAll(((IComponentManager) it).activeMouseListener(
-							listenerClass, null, data.create(x, y), optimize));
+							listenerClass, null, data.create(x, y), optimize, ignore));
 				}
 				return true;
 			});
@@ -121,11 +178,18 @@ public interface IComponentManager {
 						&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY)) {
 					return true;
 				}
+				if (ignore.contains(it)) {
+					if (it == real) {
+						result.add(it);
+						return false;
+					}
+					return true;
+				}
 				float x = mouseX - it.getX();
 				float y = mouseY - it.getY();
 				if (it instanceof IComponentManager) {
 					result.addAll(((IComponentManager) it).activeMouseListener(
-							listenerClass, real, data.create(x, y), optimize));
+							listenerClass, real, data.create(x, y), optimize, ignore));
 				}
 				if (it == real) {
 					result.add(it);
