@@ -90,44 +90,44 @@ public interface IComponentManager {
 	 * @param mouseY 鼠标Y轴坐标（相对于控件组）
 	 * @param code 鼠标按钮代码
 	 * @param wheel 鼠标滚轮滚动距离
+	 * @param optimize 是否进行优化，为true时若鼠标不在控件上就不会触发事件
 	 * @return 成功触发事件的控件列表
 	 */
-	default List<IComponent> activeMouseListener(Class<? extends IMouseListener> listenerClass, IComponent component,
-	                                             float mouseX, float mouseY, int code, int wheel) {
+	default List<IComponent> activeMouseListener(Class<? extends IMouseListener> listenerClass,
+	                                             IComponent component,
+	                                             float mouseX, float mouseY, int code, int wheel,
+	                                             boolean optimize) {
 		MIFrame frame = getFrame();
 		List<IComponent> result = new LinkedList<>();
 		if (component == null) {
 			forEachComponent(it -> {
-				if (it.getX() <= mouseX && it.getY() <= mouseY
-						&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY) {
-					result.add(it);
-					float x = mouseX - it.getX();
-					float y = mouseY - it.getY();
-					it.activateListener(frame, listenerClass,
-							listener -> listener.active(x, y, code, wheel));
-					if (it instanceof IComponentManager) {
-						result.addAll(((IComponentManager) it).activeMouseListener(
-								listenerClass, null, x, y, code, wheel));
-					}
+				if (optimize && !(it.getX() <= mouseX && it.getY() <= mouseY
+						&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY)) {
+					return true;
+				}
+				result.add(it);
+				float x = mouseX - it.getX();
+				float y = mouseY - it.getY();
+				it.activateListener(frame, listenerClass,
+						listener -> listener.active(x, y, code, wheel));
+				if (it instanceof IComponentManager) {
+					result.addAll(((IComponentManager) it).activeMouseListener(
+							listenerClass, null, x, y, code, wheel, optimize));
 				}
 				return true;
 			});
 		} else {
 			IComponent real = component instanceof IComponentManager ? null : component;
 			forEachComponent(it -> {
+				if (optimize && !(it.getX() <= mouseX && it.getY() <= mouseY
+						&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY)) {
+					return true;
+				}
 				float x = mouseX - it.getX();
 				float y = mouseY - it.getY();
 				if (it instanceof IComponentManager) {
-					if (it == component) {
-						result.add(it);
-						it.activateListener(frame, listenerClass, listener -> listener.active(x, y, code, wheel));
-					}
-					if (it.getX() <= mouseX && it.getY() <= mouseY
-							&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY) {
-						result.addAll(((IComponentManager) it).activeMouseListener(
-								listenerClass, real, x, y, code, wheel));
-						return result.isEmpty();
-					}
+					result.addAll(((IComponentManager) it).activeMouseListener(
+							listenerClass, real, x, y, code, wheel, optimize));
 				}
 				if (it == real) {
 					result.add(it);
