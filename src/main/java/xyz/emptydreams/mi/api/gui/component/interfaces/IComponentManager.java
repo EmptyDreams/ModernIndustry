@@ -3,10 +3,12 @@ package xyz.emptydreams.mi.api.gui.component.interfaces;
 import net.minecraft.inventory.Slot;
 import xyz.emptydreams.mi.api.gui.common.MIFrame;
 import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseListener;
+import xyz.emptydreams.mi.api.utils.container.IntWrapper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * 控件组
@@ -21,8 +23,19 @@ public interface IComponentManager {
 	 */
 	void add(IComponent component);
 	
-	/** 遍历所有组件 */
-	void forEachComponent(Consumer<? super IComponent> consumer);
+	/**
+	 * 遍历所有组件
+	 * @param predicate 对元素的操作，返回值用于判断是否继续遍历
+	 */
+	void forEachComponent(Predicate<? super IComponent> predicate);
+	
+	/** 遍历所有控件 */
+	default void forEachAllComponent(Consumer<? super IComponent> consumer) {
+		forEachComponent(it -> {
+			consumer.accept(it);
+			return true;
+		});
+	}
 	
 	/** 克隆控件列表 */
 	ArrayList<IComponent> cloneComponent();
@@ -71,16 +84,49 @@ public interface IComponentManager {
 	/**
 	 * 触发指定控件的鼠标
 	 * @param listenerClass 触发的事件的class
-	 * @param component 要触发事件的控件
+	 * @param component 要触发事件的控件，留空则尝试触发所有符合条件的控件
 	 * @param mouseX 鼠标X轴坐标（相对于控件组）
 	 * @param mouseY 鼠标Y轴坐标（相对于控件组）
 	 * @param code 鼠标按钮代码
 	 * @param wheel 鼠标滚轮滚动距离
 	 */
-	default void activeMouseListener(Class<? extends IMouseListener> listenerClass,
-	                         IComponent component, float mouseX, float mouseY, int code, int wheel) {
-		component.activateListener(getFrame(), listenerClass,
-				it -> it.active(mouseX - component.getX(), mouseY - component.getY(), code, wheel));
+	default int activeMouseListener(Class<? extends IMouseListener> listenerClass, IComponent component,
+	                                 float mouseX, float mouseY, int code, int wheel) {
+		MIFrame frame = getFrame();
+		IntWrapper result = new IntWrapper();
+		if (component == null) {
+			forEachComponent(it -> {
+				if (it.getX() <= mouseX && it.getY() <= mouseY
+						&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY) {
+					result.increment();
+					float x = mouseX - it.getX();
+					float y = mouseY - it.getY();
+					it.activateListener(frame, listenerClass,
+							listener -> listener.active(x, y, code, wheel));
+					if (it instanceof IComponentManager) {
+						result.add(((IComponentManager) it).activeMouseListener(
+								listenerClass, null, x, y, code, wheel));
+					}
+				}
+				return true;
+			});
+		} else {
+			forEachComponent(it -> {
+				float x = mouseX - it.getX();
+				float y = mouseY - it.getY();
+				if (it == component) {
+					result.increment();
+					it.activateListener(frame, listenerClass, listener -> listener.active(x, y, code, wheel));
+					return false;
+				} else if (it instanceof IComponentManager) {
+					result.add(((IComponentManager) it).activeMouseListener(
+							listenerClass, component, x, y, code, wheel));
+					return result.get() == 0;
+				}
+				return true;
+			});
+		}
+		return result.get();
 	}
 	
 }

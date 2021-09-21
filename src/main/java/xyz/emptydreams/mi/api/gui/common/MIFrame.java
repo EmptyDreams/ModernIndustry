@@ -17,10 +17,10 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
- * MI版本窗体，通过该类可以便捷的创建和控制UI界面
+ * MI版本窗体，通过该类可以便捷地创建和控制UI界面
  * @author EmptyDreams
  */
 public class MIFrame extends Container implements IFrame, IComponentManager {
@@ -215,8 +215,10 @@ public class MIFrame extends Container implements IFrame, IComponentManager {
 	
 	/** 遍历所有组件 */
 	@Override
-	public void forEachComponent(Consumer<? super IComponent> consumer) {
-		components.forEach(consumer);
+	public void forEachComponent(Predicate<? super IComponent> predicate) {
+		for (IComponent component : components) {
+			if (!predicate.test(component)) break;
+		}
 	}
 	
 	/** 获取复制的组件列表 */

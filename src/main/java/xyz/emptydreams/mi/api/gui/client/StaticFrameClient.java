@@ -197,7 +197,8 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 				if (preComponent != null)
 					activateExited(inventorySlots, preComponent);
 				if (onComponent != null)
-					activateEntered(inventorySlots, onComponent, mouseX, mouseY);
+					activateEntered(inventorySlots, onComponent,
+							mouseX - onComponent.getX(), mouseY - onComponent.getY());
 			}
 			preComponent = onComponent;
 		} else if (preComponent != null) {
@@ -207,7 +208,8 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		for (IComponent component : components) {
 			GuiPainter painter = new GuiPainter(this,
 					component.getX(), component.getY(), component.getWidth(), component.getHeight());
-			activateLocation(inventorySlots, component, mouseX, mouseY);
+			activateLocation(inventorySlots, component,
+					mouseX - component.getX(), mouseY - component.getY());
 			GlStateManager.color(1, 1, 1);
 			component.realTimePaint(painter);
 		}
@@ -236,6 +238,8 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		IComponent component = getComponentFromMouse(mouseX, mouseY);
 		clickedComponents = component;
 		if (component != null) {
+			mouseX -= component.getX();
+			mouseY -= component.getY();
 			if (mouseButton == 0) activateAction(inventorySlots, component, mouseX, mouseY);
 			activateClick(inventorySlots, component, mouseX, mouseY, mouseButton);
 		}
@@ -246,7 +250,8 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		super.mouseReleased(mouseX, mouseY, state);
 		mouseX -= getGuiLeft();     mouseY -= getGuiTop();
 		if (clickedComponents != null)
-			activateReleased(inventorySlots, clickedComponents, mouseX, mouseY, state);
+			activateReleased(inventorySlots, clickedComponents,
+					mouseX - clickedComponents.getX(), mouseY - clickedComponents.getY(), state);
 	}
 	
 	private int keyCode = -1;
@@ -261,7 +266,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 				activateKeyPressed(inventorySlots, it, key, it == clickedComponents);
 				if (it instanceof IComponentManager) {
 					IComponentManager manager = (IComponentManager) it;
-					manager.forEachComponent(component -> activateKeyPressed(inventorySlots,
+					manager.forEachAllComponent(component -> activateKeyPressed(inventorySlots,
 							component, key, component == clickedComponents));
 				}
 			}
@@ -271,7 +276,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 				activateKeyRelease(inventorySlots, it, key, it == clickedComponents);
 				if (it instanceof IComponentManager) {
 					IComponentManager manager = (IComponentManager) it;
-					manager.forEachComponent(component -> activateKeyRelease(inventorySlots,
+					manager.forEachAllComponent(component -> activateKeyRelease(inventorySlots,
 							component, key, component == clickedComponents));
 				}
 			}

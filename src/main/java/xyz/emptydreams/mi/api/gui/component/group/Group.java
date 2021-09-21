@@ -10,7 +10,6 @@ import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
-import xyz.emptydreams.mi.api.gui.listener.IListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseLocationListener;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
@@ -22,6 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * 控件包，支持自动排版
@@ -85,8 +85,10 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	
 	/** 遍历所有组件 */
 	@Override
-	public void forEachComponent(Consumer<? super IComponent> consumer) {
-		components.forEach(consumer);
+	public void forEachComponent(Predicate<? super IComponent> predicate) {
+		for (IComponent component : components) {
+			if (!predicate.test(component)) break;
+		}
 	}
 	
 	/** 获取复制的组件列表 */

@@ -26,6 +26,14 @@ public final class IntWrapper {
 	public void set(int v) { value = v; }
 	/** 加法 */
 	public void add(int plus) { value += plus; }
+	/** 自加 */
+	public void increment() {
+		++value;
+	}
+	/** 自减 */
+	public void decrement() {
+		--value;
+	}
 	/** 设置并获取 */
 	public int setAndGet(int v) { return (value = v); }
 	/** 加并获取 */
