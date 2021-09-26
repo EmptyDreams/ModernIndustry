@@ -36,7 +36,10 @@ public class StringComponent extends MComponent {
 	public void paint(GuiPainter painter) {
 		GlStateManager.color(1, 1, 1);
 		if (text == null) text = I18n.format(getString());
-		painter.drawString(0, 0, text, getColor());
+		int real = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
+		int realX = (getWidth() - real) / 2;
+		int realY = (getHeight() - 9) / 2;
+		painter.drawString(realX, realY, text, getColor());
 	}
 
 	/** 设置字符串颜色 */
@@ -49,8 +52,10 @@ public class StringComponent extends MComponent {
 	public void setString(String str) {
 		this.value = StringUtil.checkNull(str, "str");
 		text = null;
-		if (WorldUtil.isClient())
-			width = Minecraft.getMinecraft().fontRenderer.getStringWidth(str);
+		if (WorldUtil.isClient()) {
+			int real = Minecraft.getMinecraft().fontRenderer.getStringWidth(str);
+			if (real > width) width = real;
+		}
 	}
 	
 	@Override
