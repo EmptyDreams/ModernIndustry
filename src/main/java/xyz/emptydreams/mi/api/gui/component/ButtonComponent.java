@@ -8,7 +8,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
-import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.data.math.Size2D;
 
@@ -90,7 +89,6 @@ public class ButtonComponent extends InvisibleButton {
 		GlStateManager.color(1, 1, 1);
 		//如果鼠标在按钮内则绘制特效
 		if (isMouseIn()) {
-			MISysInfo.print(getStyle());
 			getStyle().drawOnMouseIn(painter, new Size2D(getWidth(), getHeight()));
 		} else {
 			getStyle().paint(painter, new Size2D(getWidth(), getHeight()));
@@ -173,7 +171,7 @@ public class ButtonComponent extends InvisibleButton {
 		@SideOnly(CLIENT)
 		private static void pageRightPaint(GuiPainter painter, Size2D size) {
 			RuntimeTexture texture = createTexture(BUTTON_PAGE_RIGHT,
-					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size, false));
+					size.getWidth(), size.getHeight(), TRIANGLE_RIGHT.getTextureName(size, false));
 			texture.bindTexture();
 			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}
