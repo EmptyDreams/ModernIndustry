@@ -1,18 +1,9 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
-import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
 import xyz.emptydreams.mi.api.gui.component.ButtonComponent;
-import xyz.emptydreams.mi.api.gui.component.MComponent;
 import xyz.emptydreams.mi.api.gui.component.StringComponent;
-import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
-import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 import xyz.emptydreams.mi.api.utils.data.math.Point2D;
 import xyz.emptydreams.mi.api.utils.data.math.Size2D;
 
@@ -27,7 +18,7 @@ import static xyz.emptydreams.mi.api.gui.component.ButtonComponent.Style.*;
  * 带选择框的Group
  * @author EmptyDreams
  */
-public class SelectGroup extends MComponent {
+public class SelectGroup extends Group {
 
 	/** 翻页键位置 */
 	private final Style style;
@@ -37,19 +28,18 @@ public class SelectGroup extends MComponent {
 	private boolean showPageNum = true;
 	/** 是否锁定 */
 	private boolean isLock = false;
-	/** 内部管理器 */
-	private final Group components;
 	/** 当前页面 */
 	protected int index = 0;
+	/** 页码显示器 */
+	private StringComponent pageNumShower;
 	
 	public SelectGroup(Style style, int width, int height) {
 		this(style, width, height, Panels::non);
 	}
 	
-	public SelectGroup(Style style, int width, int height, Consumer<Group> panel) {
+	public SelectGroup(Style style, int width, int height, Consumer<Group> panel) {;
 		this.style = style;
 		super.setSize(width, height);
-		components = new Group(0, 0, width, height, Panels::non);
 		style.initComponents(this);
 	}
 	
@@ -72,6 +62,7 @@ public class SelectGroup extends MComponent {
 			public void setLocation(int x, int y) { }
 		};
 		innerList.add(result);
+		add(result);
 		return result;
 	}
 	
@@ -79,58 +70,18 @@ public class SelectGroup extends MComponent {
 	public void setSize(int width, int height) { }
 	
 	@Override
-	protected void init(IComponentManager manager, EntityPlayer player) {
-		super.init(manager, player);
-		components.init(manager, player);
-		innerList.forEach(it -> it.init(manager, player));
-	}
-	
-	@Override
-	public void onAdd2Manager(IComponentManager manager, EntityPlayer player) {
-		super.onAdd2Manager(manager, player);
-		components.onAdd2Manager(manager, player);
-		innerList.forEach(it -> it.onAdd2Manager(components, player));
-	}
-	
-	@Override
-	public void onAdd2ClientFrame(StaticFrameClient frame, EntityPlayer player) {
-		super.onAdd2ClientFrame(frame, player);
-		components.onAdd2ClientFrame(frame, player);
-		innerList.forEach(it -> it.onAdd2ClientFrame(frame, player));
-	}
-	
-	@Override
-	public void send(Container con, IContainerListener listener) {
-		super.send(con, listener);
-		components.send(con, listener);
-		innerList.forEach(it -> it.send(con, listener));
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public boolean update(int codeID, int data) {
-		if (super.update(codeID, data)) return true;
-		if (components.update(codeID, data)) return true;
-		return innerList.stream().anyMatch(it -> it.update(codeID, data));
-	}
-	
-	@Override
-	public IComponent containCode(int code) {
-		IComponent result = super.containCode(code);
-		if (result != null) return result;
-		result = components.containCode(code);
-		if (result != null) return result;
-		for (Group group : innerList) {
-			result = group.containCode(code);
-			if (result != null) return result;
-		}
-		return null;
-	}
-	
-	@Override
 	public void paint(GuiPainter painter) {
 		GlStateManager.color(1, 1, 1);
-		//暂时扔在这
+		painter.paintComponent(super.components.get(0));
+		painter.paintComponent(getActiveGroup());
+		if (isShowPageNum()) {
+			if (pageNumShower == null) {
+				pageNumShower = new StringComponent();
+			}
+			pageNumShower.setString(String.valueOf(getActiveIndex()));
+			getStyle().initShowerLocation(this);
+			painter.paintComponent(pageNumShower);
+		}
 	}
 	
 	/**
@@ -141,28 +92,34 @@ public class SelectGroup extends MComponent {
 		isLock = true;
 	}
 	
+	/** 设置是否显示页码 */
 	public void showPageNum(boolean is) {
 		showPageNum = is;
 	}
 	
 	/** 获取子页面 */
-	public Group getInnerGroup(int index) {
-		return innerList.get(index);
+	public Group getActiveGroup() {
+		return innerList.get(getActiveIndex());
 	}
 	
 	public boolean isLock() {
 		return isLock;
 	}
 	
+	/** 获取已激活的页码 */
+	public int getActiveIndex() {
+		return index;
+	}
+	
+	/** 判断是否显示页码 */
 	public boolean isShowPageNum() {
 		return showPageNum;
 	}
 	
+	/** 获取风格 */
 	public Style getStyle() {
 		return style;
 	}
-	
-	private StringComponent pageNumShower;
 	
 	public enum Style {
 		
@@ -174,12 +131,18 @@ public class SelectGroup extends MComponent {
 			
 			@Override
 			public Point2D getInnerLocation(SelectGroup select) {
-				return new Point2D(0, 19);
+				return new Point2D(0, 0);
 			}
 			
 			@Override
 			public void initComponents(SelectGroup select) {
 				Style.initHelper(select, 0, 0, PAGE_LEFT, PAGE_RIGHT, true, Panels::horizontalCenter);
+			}
+			
+			@Override
+			public void initShowerLocation(SelectGroup selectGroup) {
+				selectGroup.pageNumShower.setSize(selectGroup.getWidth(), 9);
+				selectGroup.pageNumShower.setLocation(0, 0);
 			}
 		},
 		DOWN {
@@ -198,6 +161,12 @@ public class SelectGroup extends MComponent {
 				Style.initHelper(select, 0, select.getHeight() - 15,
 						PAGE_LEFT, PAGE_RIGHT, true, Panels::horizontalCenter);
 			}
+			
+			@Override
+			public void initShowerLocation(SelectGroup selectGroup) {
+				selectGroup.pageNumShower.setSize(selectGroup.getWidth(), 9);
+				selectGroup.pageNumShower.setLocation(0, selectGroup.getHeight() - 10);
+			}
 		},
 		LEFT {
 			@Override
@@ -213,6 +182,12 @@ public class SelectGroup extends MComponent {
 			@Override
 			public void initComponents(SelectGroup select) {
 				Style.initHelper(select, 0, 0, PAGE_UP, PAGE_DOWN, false, Panels::verticalCenter);
+			}
+			
+			@Override
+			public void initShowerLocation(SelectGroup selectGroup) {
+				selectGroup.pageNumShower.setSize(15, selectGroup.getHeight());
+				selectGroup.pageNumShower.setLocation(0, 0);
 			}
 		},
 		RIGHT {
@@ -231,11 +206,22 @@ public class SelectGroup extends MComponent {
 				Style.initHelper(select, select.getWidth() - 15, 0,
 						PAGE_UP, PAGE_DOWN, false, Panels::verticalCenter);
 			}
+			
+			@Override
+			public void initShowerLocation(SelectGroup selectGroup) {
+				selectGroup.pageNumShower.setSize(15, selectGroup.getHeight());
+				selectGroup.pageNumShower.setLocation(selectGroup.getWidth() - 15, 0);
+			}
 		};
 		
+		/** 获取内部Group的大小 */
 		abstract public Size2D getInnerSize(SelectGroup select);
+		/** 获取内部Group的坐标 */
 		abstract public Point2D getInnerLocation(SelectGroup select);
+		/** 初始化SelectGroup */
 		abstract public void initComponents(SelectGroup select);
+		/** 初始化页码显示器 */
+		abstract public void initShowerLocation(SelectGroup selectGroup);
 		
 		/**
 		 * @param select 选择框控件
@@ -256,6 +242,7 @@ public class SelectGroup extends MComponent {
 			select.pageNumShower = new StringComponent();
 			select.pageNumShower.setSize(isHor ? 20 : 15, isHor ? 15 : 20);
 			group.adds(left, select.pageNumShower, right);
+			select.add(group);
 		}
 		
 	}

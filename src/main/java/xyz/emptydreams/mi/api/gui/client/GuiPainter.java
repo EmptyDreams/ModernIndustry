@@ -7,6 +7,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
+import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 
 import javax.annotation.Nonnull;
 
@@ -149,6 +150,16 @@ public class GuiPainter {
 		if (scissor()) return;
 		Minecraft.getMinecraft().fontRenderer.drawString(text, guiX, guiY, color);
 		unscissor();
+	}
+	
+	/** 绘制一个控件 */
+	public void paintComponent(IComponent component) {
+		component.paint(createPainterForComponent(component));
+	}
+	
+	/** 根据控件大小、坐标创建一个子画笔 */
+	public GuiPainter createPainterForComponent(IComponent component) {
+		return createPainter(component.getX(), component.getY(), component.getWidth(), component.getHeight());
 	}
 	
 	/**
