@@ -116,7 +116,6 @@ public interface IComponentManager {
 				return true;
 			});
 		} else {
-			IComponent real = component instanceof IComponentManager ? null : component;
 			forEachComponent(it -> {
 				if (optimize && !(it.getX() <= mouseX && it.getY() <= mouseY
 						&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY)
@@ -126,10 +125,10 @@ public interface IComponentManager {
 				float x = mouseX - it.getX();
 				float y = mouseY - it.getY();
 				if (it instanceof IComponentManager) {
-					((IComponentManager) it).activeMouseListenerNoLog(
-							listenerClass, real, data.create(x, y), optimize, ignore);
+					((IComponentManager) it).activeMouseListenerNoLog(listenerClass,
+							component == it ? null : component, data.create(x, y), optimize, ignore);
 				}
-				if (it == real) {
+				if (it == component) {
 					it.activateListener(frame, listenerClass, listener -> listener.active(data.create(x, y)));
 					return false;
 				}

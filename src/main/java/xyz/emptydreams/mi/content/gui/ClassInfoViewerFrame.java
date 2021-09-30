@@ -25,7 +25,6 @@ import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.gui.component.group.Group;
 import xyz.emptydreams.mi.api.gui.component.group.Panels;
 import xyz.emptydreams.mi.api.gui.component.group.RollGroup;
-import xyz.emptydreams.mi.api.gui.component.group.SelectGroup;
 import xyz.emptydreams.mi.api.net.handler.MessageSender;
 import xyz.emptydreams.mi.api.net.message.player.PlayerAddition;
 import xyz.emptydreams.mi.api.net.message.player.PlayerMessage;
@@ -97,19 +96,13 @@ public class ClassInfoViewerFrame extends MIFrame {
 		//noinspection ConstantConditions
 		init(clientRoll, clientTE);
 		init(serviceRoll, entity);
-		SelectGroup select = new SelectGroup(SelectGroup.Style.UP,
-				getWidth(), getHeight() - 10, Panels::horizontalCenter);
-		select.createGroup().add(serviceRoll);
-		select.createGroup().add(clientRoll);
-		select.setLocation(0, 20);
-		add(select);
+		add(serviceRoll);
 	}
 	
 	private void init(RollGroup rollGroup, TileEntity te) {
 		rollGroup.setControlPanel(Panels::horizontalUp);
 		rollGroup.setMinDistance(6);
 		rollGroup.setSize(185, 150);
-		rollGroup.setLocation(0, 14);
 		Class<?> clazz = te.getClass();
 		Group nameGroup = new Group(Panels::verticalRight);
 		Group valueGroup = new Group(Panels::verticalLeft);

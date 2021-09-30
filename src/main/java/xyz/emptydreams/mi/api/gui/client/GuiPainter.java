@@ -42,7 +42,6 @@ public class GuiPainter {
 	 */
 	public GuiPainter(GuiContainer gui, int x, int y, int width, int height) {
 		this(gui, x, y, 0, 0, width, height);
-		
 	}
 	
 	/**
@@ -205,7 +204,7 @@ public class GuiPainter {
 		return new GuiPainter(gui, x + this.x, y + this.y, width, height);
 	}
 	
-	public void correctX(int minRealX, int maxRealWidth) {
+	protected void correctX(int minRealX, int maxRealWidth) {
 		int oldX = realX;
 		realX = Math.max(minRealX, realX);
 		if (oldX == realX) {
@@ -215,7 +214,7 @@ public class GuiPainter {
 		}
 	}
 	
-	public void correctY(int minRealY, int maxRealHeight) {
+	protected void correctY(int minRealY, int maxRealHeight) {
 		int oldY = realY;
 		realY = Math.max(minRealY, realY);
 		if (oldY == realY) {
