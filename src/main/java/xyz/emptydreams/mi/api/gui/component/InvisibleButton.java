@@ -30,6 +30,8 @@ public class InvisibleButton extends MComponent {
 	
 	/** 鼠标是否在控件中 */
 	private boolean mouse = false;
+	/** 是否不可用 */
+	private boolean isInvalid = false;
 	/** 点击时执行的操作 */
 	private ObjBooleanConsumer<IFrame> onAction = SRC_ACTION;
 	
@@ -45,19 +47,29 @@ public class InvisibleButton extends MComponent {
 		onAction = StringUtil.checkNull(consumer, "consumer");
 	}
 	
+	/** 判断是否可用 */
+	@SuppressWarnings("unused")
+	public boolean isInvalid() {
+		return isInvalid;
+	}
+	
+	/** 设置是否不可用 */
+	@SuppressWarnings("unused")
+	public void setInvalid(boolean value) {
+		isInvalid = value;
+	}
+	
 	@Override
 	protected void init(IComponentManager manager, EntityPlayer player) {
 		super.init(manager, player);
 		registryListener((IMouseEnteredListener) (mouseX, mouseY) -> mouse = true);
 		registryListener((IMouseExitedListener) () -> mouse = false);
 		registryListener(new IMouseActionListener() {
-			float mouseX, mouseY;
 			final MIFrame frame = manager.getFrame();
 			
 			@Override
 			public void mouseAction(float mouseX, float mouseY) {
-				this.mouseX = mouseX;
-				this.mouseY = mouseY;
+				if (isInvalid()) return;
 				onAction.accept(frame, WorldUtil.isClient());
 				if (WorldUtil.isClient()) {
 					playSound();
@@ -67,7 +79,7 @@ public class InvisibleButton extends MComponent {
 			@Nullable
 			@Override
 			public boolean writeTo(IDataWriter writer) {
-				return true;
+				return !isInvalid();
 			}
 			
 			@Override

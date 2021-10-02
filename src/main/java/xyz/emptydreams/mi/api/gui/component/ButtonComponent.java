@@ -87,11 +87,13 @@ public class ButtonComponent extends InvisibleButton {
 	@Override
 	public void paint(GuiPainter painter) {
 		GlStateManager.color(1, 1, 1);
-		//如果鼠标在按钮内则绘制特效
-		if (isMouseIn()) {
-			getStyle().drawOnMouseIn(painter, new Size2D(getWidth(), getHeight()));
+		Size2D size = new Size2D(getWidth(), getHeight());
+		if (isInvalid()) {
+			getStyle().paintDisable(painter, size);
+		} else if (isMouseIn()) {
+			getStyle().drawOnMouseIn(painter, size);
 		} else {
-			getStyle().paint(painter, new Size2D(getWidth(), getHeight()));
+			getStyle().paint(painter, size);
 		}
 		//绘制文字
 		if (getText().length() > 0) {
@@ -109,22 +111,28 @@ public class ButtonComponent extends InvisibleButton {
 		TRIANGLE_LEFT(BUTTON_TRIANGLE_LEFT, BUTTON_TRIANGLE_LEFT_CLICK, Style::stringPainter),
 		
 		/** 向左翻页按钮（矩形） */
-		REC_PAGE_LEFT(BUTTON_REC_PAGE_LEFT, BUTTON_REC_PAGE_LEFT_CLICK, Style::stringPainterNon),
+		REC_PAGE_LEFT(BUTTON_REC_PAGE_LEFT, BUTTON_REC_PAGE_LEFT_CLICK,
+						BUTTON_REC_PAGE_LEFT_DISABLE, Style::stringPainterNon),
 		/** 向右翻页按钮（矩形） */
-		REC_PAGE_RIGHT(BUTTON_REC_PAGE_RIGHT, BUTTON_REC_PAGE_RIGHT_CLICK, Style::stringPainterNon),
+		REC_PAGE_RIGHT(BUTTON_REC_PAGE_RIGHT, BUTTON_REC_PAGE_RIGHT_CLICK,
+						BUTTON_REC_PAGE_RIGHT_DISABLE, Style::stringPainterNon),
 		/** 向上翻页按钮（矩形） */
-		REC_PAGE_UP(BUTTON_REC_PAGE_UP, BUTTON_REC_PAGE_UP_CLICK, Style::stringPainterNon),
+		REC_PAGE_UP(BUTTON_REC_PAGE_UP, BUTTON_REC_PAGE_UP_CLICK,
+						BUTTON_REC_PAGE_UP_DISABLE, Style::stringPainterNon),
 		/** 向下翻页按钮（矩形） */
-		REC_PAGE_DOWN(BUTTON_REC_PAGE_DOWN, BUTTON_REC_PAGE_DOWN_CLICK, Style::stringPainterNon),
+		REC_PAGE_DOWN(BUTTON_REC_PAGE_DOWN, BUTTON_REC_PAGE_DOWN_CLICK,
+						BUTTON_REC_PAGE_DOWN_DISABLE, Style::stringPainterNon),
 		
 		/** 向左翻页按钮（弧形） */
-		ARC_PAGE_LEFT(BUTTON_ARC_PAGE_LEFT, BUTTON_ARC_PAGE_LEFT_CLICK, Style::stringPainterNon),
+		ARC_PAGE_LEFT(BUTTON_ARC_PAGE_LEFT, BUTTON_ARC_PAGE_LEFT_CLICK,
+						BUTTON_ARC_PAGE_LEFT_DISABLE, Style::stringPainterNon),
 		/** 向右翻页按钮（弧形） */
-		ARC_PAGE_RIGHT(BUTTON_ARC_PAGE_RIGHT, BUTTON_ARC_PAGE_RIGHT_CLICK, Style::stringPainterNon);
-		
+		ARC_PAGE_RIGHT(BUTTON_ARC_PAGE_RIGHT, BUTTON_ARC_PAGE_RIGHT_CLICK,
+						BUTTON_ARC_PAGE_RIGHT_DISABLE, Style::stringPainterNon);
 		
 		private final String SRC_NAME;
 		private final String CLICKED_NAME;
+		private final String DISABLE_NAME;
 		private final BiConsumer<GuiPainter, ButtonComponent> stringPainter;
 		
 		/**
@@ -134,8 +142,20 @@ public class ButtonComponent extends InvisibleButton {
 		 */
 		Style(String src, String clicked,
 		      BiConsumer<GuiPainter, ButtonComponent> stringPainter) {
+			this(src, clicked, null, stringPainter);
+		}
+		
+		/**
+		 * @param src 默认显示的按钮
+		 * @param clicked 鼠标点击时的显示
+		 * @param disable 不可用时的显示，为null表示与默认一样
+		 * @param stringPainter 字符串绘制器
+		 */
+		Style(String src, String clicked, String disable,
+		      BiConsumer<GuiPainter, ButtonComponent> stringPainter) {
 			this.SRC_NAME = src;
 			this.CLICKED_NAME = clicked;
+			this.DISABLE_NAME = disable;
 			this.stringPainter = stringPainter;
 		}
 		
@@ -158,6 +178,19 @@ public class ButtonComponent extends InvisibleButton {
 		@SideOnly(CLIENT)
 		public void drawOnMouseIn(GuiPainter painter, Size2D size) {
 			imageDrawMouseIn(painter, size, getTextureName(size, true), CLICKED_NAME);
+		}
+		
+		/** 绘制鼠标不可用时的效果 */
+		@SideOnly(CLIENT)
+		public void paintDisable(GuiPainter painter, Size2D size) {
+			if (DISABLE_NAME == null) {
+				paint(painter, size);
+			} else {
+				RuntimeTexture texture = createTexture(DISABLE_NAME,
+						size.getWidth(), size.getHeight(), getTextureName(size, false));
+				texture.bindTexture();
+				painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
+			}
 		}
 		
 		@SideOnly(CLIENT)
