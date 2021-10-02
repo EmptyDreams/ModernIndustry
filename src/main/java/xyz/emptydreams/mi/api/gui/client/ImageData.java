@@ -119,18 +119,18 @@ public final class ImageData {
 	public static final String BUTTON_TRIANGLE_LEFT_CLICK = "leftButtonClick";
 	
 	/** 向上翻页按钮 */
-	public static final String BUTTON_PAGE_UP = "upPageButton";
+	public static final String BUTTON_REC_PAGE_UP = "upPageButton";
 	/** 向上翻页按钮（点击） */
-	public static final String BUTTON_PAGE_UP_CLICK = "upPageButtonClick";
+	public static final String BUTTON_REC_PAGE_UP_CLICK = "upPageButtonClick";
 	/** 向上翻页按钮（不可用） */
-	public static final String BUTTON_PAGE_UP_DISABLE = "upPageButtonDisable";
+	public static final String BUTTON_REC_PAGE_UP_DISABLE = "upPageButtonDisable";
 	
 	/** 向下翻页按钮 */
-	public static final String BUTTON_PAGE_DOWN = "downPageButton";
+	public static final String BUTTON_REC_PAGE_DOWN = "downPageButton";
 	/** 向下翻页按钮（点击） */
-	public static final String BUTTON_PAGE_DOWN_CLICK = "downPageButtonClick";
+	public static final String BUTTON_REC_PAGE_DOWN_CLICK = "downPageButtonClick";
 	/** 向下翻页按钮（不可用） */
-	public static final String BUTTON_PAGE_DOWN_DISABLE = "downPageButtonDisable";
+	public static final String BUTTON_REC_PAGE_DOWN_DISABLE = "downPageButtonDisable";
 	
 	/** 向左翻页按钮（矩形） */
 	public static final String BUTTON_REC_PAGE_LEFT = "leftRecPageButton";
@@ -192,12 +192,12 @@ public final class ImageData {
 			put(ROLL_BACKGROUND_HOR,                    new Node(246, 256, 82, 14));
 			put(ROLL_BUTTON_HOR,                        new Node(231, 256, 15, 12));
 			put(ROLL_BUTTON_DISABLE_HOR,                new Node(231, 268, 15, 12));
-			put(BUTTON_PAGE_UP,                         new Node(132, 76, 15, 10));
-			put(BUTTON_PAGE_UP_CLICK,                   new Node(132, 86, 15, 10));
-			put(BUTTON_PAGE_UP_DISABLE,                 new Node(132, 96, 15, 10));
-			put(BUTTON_PAGE_DOWN,                       new Node(147, 76, 15, 10));
-			put(BUTTON_PAGE_DOWN_CLICK,                 new Node(147, 89, 15, 10));
-			put(BUTTON_PAGE_DOWN_DISABLE,               new Node(147, 96, 15, 10));
+			put(BUTTON_REC_PAGE_UP,                         new Node(132, 76, 15, 10));
+			put(BUTTON_REC_PAGE_UP_CLICK,                   new Node(132, 86, 15, 10));
+			put(BUTTON_REC_PAGE_UP_DISABLE,                 new Node(132, 96, 15, 10));
+			put(BUTTON_REC_PAGE_DOWN,                       new Node(147, 76, 15, 10));
+			put(BUTTON_REC_PAGE_DOWN_CLICK,                 new Node(147, 89, 15, 10));
+			put(BUTTON_REC_PAGE_DOWN_DISABLE,               new Node(147, 96, 15, 10));
 			put(BUTTON_REC_PAGE_LEFT,                   new Node(132, 121, 10, 15));
 			put(BUTTON_REC_PAGE_LEFT_CLICK,             new Node(142, 121, 10, 15));
 			put(BUTTON_REC_PAGE_LEFT_DISABLE,           new Node(152, 121, 10, 15));

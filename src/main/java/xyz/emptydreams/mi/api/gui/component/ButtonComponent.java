@@ -102,40 +102,40 @@ public class ButtonComponent extends InvisibleButton {
 	public enum Style {
 	
 		/** 矩形按钮 */
-		REC(Style::recPaint, Style::recDrawMouseIn, Style::stringPainter),
+		REC(BUTTON_REC, BUTTON_REC_CLICK, Style::stringPainter),
 		/** 向右三角形按钮 */
-		TRIANGLE_RIGHT(Style::triangleRightPaint, Style::triangleRightDrawMouseIn, Style::stringPainter),
+		TRIANGLE_RIGHT(BUTTON_TRIANGLE_RIGHT, BUTTON_TRIANGLE_LEFT_CLICK, Style::stringPainter),
 		/** 向左三角形按钮 */
-		TRIANGLE_LEFT(Style::triangleLeftPaint, Style::triangleLeftDrawMouseIn, Style::stringPainter),
+		TRIANGLE_LEFT(BUTTON_TRIANGLE_LEFT, BUTTON_TRIANGLE_LEFT_CLICK, Style::stringPainter),
 		
 		/** 向左翻页按钮（矩形） */
-		REC_PAGE_LEFT(Style::pageLeftPaint, Style::pageLeftDrawMouseIn, Style::stringPainterNon),
+		REC_PAGE_LEFT(BUTTON_REC_PAGE_LEFT, BUTTON_REC_PAGE_LEFT_CLICK, Style::stringPainterNon),
 		/** 向右翻页按钮（矩形） */
-		REC_PAGE_RIGHT(Style::pageRightPaint, Style::pageRightDrawMouseIn, Style::stringPainterNon),
+		REC_PAGE_RIGHT(BUTTON_REC_PAGE_RIGHT, BUTTON_REC_PAGE_RIGHT_CLICK, Style::stringPainterNon),
 		/** 向上翻页按钮（矩形） */
-		REC_PAGE_UP(Style::pageUpPaint, Style::pageUpDrawMouseIn, Style::stringPainterNon),
+		REC_PAGE_UP(BUTTON_REC_PAGE_UP, BUTTON_REC_PAGE_UP_CLICK, Style::stringPainterNon),
 		/** 向下翻页按钮（矩形） */
-		REC_PAGE_DOWN(Style::pageDownPaint, Style::pageDownDrawMouseIn, Style::stringPainterNon),
+		REC_PAGE_DOWN(BUTTON_REC_PAGE_DOWN, BUTTON_REC_PAGE_DOWN_CLICK, Style::stringPainterNon),
 		
 		/** 向左翻页按钮（弧形） */
-		ARC_PAGE_LEFT(Style::arcPageLeftPaint, Style::arcPageLeftDrawMouseIn, Style::stringPainterNon),
+		ARC_PAGE_LEFT(BUTTON_ARC_PAGE_LEFT, BUTTON_ARC_PAGE_LEFT_CLICK, Style::stringPainterNon),
 		/** 向右翻页按钮（弧形） */
-		ARC_PAGE_RIGHT(Style::arcPageRightPaint, Style::arcPageRightDrawMouseIn, Style::stringPainterNon);
+		ARC_PAGE_RIGHT(BUTTON_ARC_PAGE_RIGHT, BUTTON_ARC_PAGE_RIGHT_CLICK, Style::stringPainterNon);
 		
 		
-		private final BiConsumer<GuiPainter, Size2D> printer;
-		private final BiConsumer<GuiPainter, Size2D> clickEffect;
+		private final String SRC_NAME;
+		private final String CLICKED_NAME;
 		private final BiConsumer<GuiPainter, ButtonComponent> stringPainter;
 		
 		/**
-		 * @param painter 底层图样绘制器
-		 * @param clickEffect 点击效果绘制器
+		 * @param src 默认显示的按钮
+		 * @param clicked 鼠标点击时的显示
 		 * @param stringPainter 字符串绘制器
 		 */
-		Style(BiConsumer<GuiPainter, Size2D> painter, BiConsumer<GuiPainter, Size2D> clickEffect,
+		Style(String src, String clicked,
 		      BiConsumer<GuiPainter, ButtonComponent> stringPainter) {
-			this.printer = painter;
-			this.clickEffect = clickEffect;
+			this.SRC_NAME = src;
+			this.CLICKED_NAME = clicked;
 			this.stringPainter = stringPainter;
 		}
 		
@@ -148,140 +148,16 @@ public class ButtonComponent extends InvisibleButton {
 		/** 绘制材质资源 */
 		@SideOnly(CLIENT)
 		public void paint(GuiPainter painter, Size2D size) {
-			printer.accept(painter, size);
+			RuntimeTexture texture = createTexture(SRC_NAME,
+					size.getWidth(), size.getHeight(), getTextureName(size, false));
+			texture.bindTexture();
+			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
 		}
 		
 		/** 绘制鼠标在按钮范围内时的效果 */
 		@SideOnly(CLIENT)
 		public void drawOnMouseIn(GuiPainter painter, Size2D size) {
-			clickEffect.accept(painter, size);
-		}
-		
-		//--------------------以下为工具方法-----------------//
-		
-		@SideOnly(CLIENT)
-		private static void recPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(BUTTON_REC,
-					size.getWidth(), size.getHeight(), REC.getTextureName(size, false));
-			texture.bindTexture();
-			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void pageLeftPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(BUTTON_REC_PAGE_LEFT,
-					size.getWidth(), size.getHeight(), REC_PAGE_LEFT.getTextureName(size, false));
-			texture.bindTexture();
-			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void pageRightPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(BUTTON_REC_PAGE_RIGHT,
-					size.getWidth(), size.getHeight(), REC_PAGE_RIGHT.getTextureName(size, false));
-			texture.bindTexture();
-			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void pageUpPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(BUTTON_PAGE_UP,
-					size.getWidth(), size.getHeight(), REC_PAGE_UP.getTextureName(size, false));
-			texture.bindTexture();
-			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void pageDownPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(BUTTON_PAGE_DOWN,
-					size.getWidth(), size.getHeight(), REC_PAGE_DOWN.getTextureName(size, false));
-			texture.bindTexture();
-			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void arcPageLeftPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(BUTTON_PAGE_DOWN,
-					size.getWidth(), size.getHeight(), ARC_PAGE_LEFT.getTextureName(size, false));
-			texture.bindTexture();
-			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void arcPageRightPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(BUTTON_PAGE_DOWN,
-					size.getWidth(), size.getHeight(), ARC_PAGE_RIGHT.getTextureName(size, false));
-			texture.bindTexture();
-			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void triangleRightPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(BUTTON_TRIANGLE_RIGHT,
-					size.getWidth(), size.getHeight(), TRIANGLE_RIGHT.getTextureName(size, false));
-			texture.bindTexture();
-			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void triangleLeftPaint(GuiPainter painter, Size2D size) {
-			RuntimeTexture texture = createTexture(BUTTON_TRIANGLE_LEFT,
-					size.getWidth(), size.getHeight(), TRIANGLE_LEFT.getTextureName(size, false));
-			texture.bindTexture();
-			painter.drawTexture(0, 0, size.getWidth(), size.getHeight(), texture);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void recDrawMouseIn(GuiPainter gui, Size2D size) {
-			imageDrawMouseIn(gui, size, REC.getTextureName(size, true), BUTTON_REC_CLICK);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void pageLeftDrawMouseIn(GuiPainter painter, Size2D size) {
-			imageDrawMouseIn(painter, size,
-					REC_PAGE_LEFT.getTextureName(size, true), BUTTON_REC_PAGE_LEFT_CLICK);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void pageRightDrawMouseIn(GuiPainter painter, Size2D size) {
-			imageDrawMouseIn(painter, size,
-					REC_PAGE_RIGHT.getTextureName(size, true), BUTTON_REC_PAGE_RIGHT_CLICK);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void pageUpDrawMouseIn(GuiPainter painter, Size2D size) {
-			imageDrawMouseIn(painter, size,
-					REC_PAGE_UP.getTextureName(size, true), BUTTON_PAGE_UP_CLICK);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void pageDownDrawMouseIn(GuiPainter painter, Size2D size) {
-			imageDrawMouseIn(painter, size,
-					REC_PAGE_DOWN.getTextureName(size, true), BUTTON_PAGE_DOWN_CLICK);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void arcPageLeftDrawMouseIn(GuiPainter painter, Size2D size) {
-			imageDrawMouseIn(painter, size,
-					ARC_PAGE_LEFT.getTextureName(size, true), BUTTON_PAGE_DOWN_CLICK);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void arcPageRightDrawMouseIn(GuiPainter painter, Size2D size) {
-			imageDrawMouseIn(painter, size,
-					ARC_PAGE_RIGHT.getTextureName(size, true), BUTTON_PAGE_DOWN_CLICK);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void triangleRightDrawMouseIn(GuiPainter painter, Size2D size) {
-			imageDrawMouseIn(painter, size,
-					TRIANGLE_RIGHT.getTextureName(size, true), BUTTON_TRIANGLE_RIGHT_CLICK);
-		}
-		
-		@SideOnly(CLIENT)
-		private static void triangleLeftDrawMouseIn(GuiPainter painter, Size2D size) {
-			imageDrawMouseIn(painter, size,
-					TRIANGLE_LEFT.getTextureName(size, true), BUTTON_TRIANGLE_LEFT_CLICK);
+			imageDrawMouseIn(painter, size, getTextureName(size, true), CLICKED_NAME);
 		}
 		
 		@SideOnly(CLIENT)
