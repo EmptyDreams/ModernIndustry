@@ -132,19 +132,33 @@ public final class ImageData {
 	/** 向下翻页按钮（不可用） */
 	public static final String BUTTON_PAGE_DOWN_DISABLE = "downPageButtonDisable";
 	
-	/** 向左翻页按钮 */
-	public static final String BUTTON_PAGE_LEFT = "leftPageButton";
-	/** 向左翻页按钮（点击） */
-	public static final String BUTTON_PAGE_LEFT_CLICK = "leftPageButtonClick";
-	/** 向左翻页按钮（不可用） */
-	public static final String BUTTON_PAGE_LEFT_DISABLE = "leftPageButtonDisable";
+	/** 向左翻页按钮（矩形） */
+	public static final String BUTTON_REC_PAGE_LEFT = "leftRecPageButton";
+	/** 向左翻页按钮（矩形，点击） */
+	public static final String BUTTON_REC_PAGE_LEFT_CLICK = "leftRecPageButtonClick";
+	/** 向左翻页按钮（矩形，不可用） */
+	public static final String BUTTON_REC_PAGE_LEFT_DISABLE = "leftRecPageButtonDisable";
 	
-	/** 向右翻页按钮 */
-	public static final String BUTTON_PAGE_RIGHT = "rightPageButton";
-	/** 向右翻页按钮（点击） */
-	public static final String BUTTON_PAGE_RIGHT_CLICK = "rightPageButtonClick";
-	/** 向右翻页按钮（不可用） */
-	public static final String BUTTON_PAGE_RIGHT_DISABLE = "rightPageButtonDisable";
+	/** 向右翻页按钮（矩形） */
+	public static final String BUTTON_REC_PAGE_RIGHT = "rightRecPageButton";
+	/** 向右翻页按钮（矩形，点击） */
+	public static final String BUTTON_REC_PAGE_RIGHT_CLICK = "rightRecPageButtonClick";
+	/** 向右翻页按钮（矩形，不可用） */
+	public static final String BUTTON_REC_PAGE_RIGHT_DISABLE = "rightRecPageButtonDisable";
+	
+	/** 向左翻页按钮（弧型） */
+	public static final String BUTTON_ARC_PAGE_LEFT = "leftArcPageButton";
+	/** 向左翻页按钮（弧型，点击） */
+	public static final String BUTTON_ARC_PAGE_LEFT_CLICK = "leftArcPageButtonClick";
+	/** 向左翻页按钮（弧型，不可用） */
+	public static final String BUTTON_ARC_PAGE_LEFT_DISABLE = "leftArcPageButtonDisable";
+	
+	/** 右翻页按钮（弧型） */
+	public static final String BUTTON_ARC_PAGE_RIGHT = "rightArcPageButton";
+	/** 向右翻页按钮（弧型，点击） */
+	public static final String BUTTON_ARC_PAGE_RIGHT_CLICK = "rightArcPageButtonClick";
+	/** 向右翻页按钮（弧型，不可用） */
+	public static final String BUTTON_ARC_PAGE_RIGHT_DISABLE = "rightArcPageButtonDisable";
 	
 	/** 滚动轴背景（垂直） */
 	public static final String ROLL_BACKGROUND_VER = "rollBackgroundV";
@@ -184,12 +198,18 @@ public final class ImageData {
 			put(BUTTON_PAGE_DOWN,                       new Node(147, 76, 15, 10));
 			put(BUTTON_PAGE_DOWN_CLICK,                 new Node(147, 89, 15, 10));
 			put(BUTTON_PAGE_DOWN_DISABLE,               new Node(147, 96, 15, 10));
-			put(BUTTON_PAGE_LEFT,                       new Node(132, 121, 10, 15));
-			put(BUTTON_PAGE_LEFT_CLICK,                 new Node(142, 121, 10, 15));
-			put(BUTTON_PAGE_LEFT_DISABLE,               new Node(152, 121, 10, 15));
-			put(BUTTON_PAGE_RIGHT,                      new Node(132, 106, 10, 15));
-			put(BUTTON_PAGE_RIGHT_CLICK,                new Node(142, 106, 10, 15));
-			put(BUTTON_PAGE_RIGHT_DISABLE,              new Node(152, 106, 10, 15));
+			put(BUTTON_REC_PAGE_LEFT,                   new Node(132, 121, 10, 15));
+			put(BUTTON_REC_PAGE_LEFT_CLICK,             new Node(142, 121, 10, 15));
+			put(BUTTON_REC_PAGE_LEFT_DISABLE,           new Node(152, 121, 10, 15));
+			put(BUTTON_REC_PAGE_RIGHT,                  new Node(132, 106, 10, 15));
+			put(BUTTON_REC_PAGE_RIGHT_CLICK,            new Node(142, 106, 10, 15));
+			put(BUTTON_REC_PAGE_RIGHT_DISABLE,          new Node(152, 106, 10, 15));
+			put(BUTTON_ARC_PAGE_LEFT,                   new Node(114, 91, 18, 10));
+			put(BUTTON_ARC_PAGE_LEFT_CLICK,             new Node(96, 91, 18, 10));
+			put(BUTTON_ARC_PAGE_LEFT_DISABLE,           new Node(78, 91, 18, 10));
+			put(BUTTON_ARC_PAGE_RIGHT,                  new Node(114, 78, 18, 10));
+			put(BUTTON_ARC_PAGE_RIGHT_CLICK,            new Node(96, 78, 18, 10));
+			put(BUTTON_ARC_PAGE_RIGHT_DISABLE,          new Node(78, 78, 18, 10));
 		}
 	};
 	
