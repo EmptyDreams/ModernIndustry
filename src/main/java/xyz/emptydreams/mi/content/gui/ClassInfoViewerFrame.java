@@ -25,6 +25,7 @@ import xyz.emptydreams.mi.api.gui.component.StringComponent;
 import xyz.emptydreams.mi.api.gui.component.group.Group;
 import xyz.emptydreams.mi.api.gui.component.group.Panels;
 import xyz.emptydreams.mi.api.gui.component.group.RollGroup;
+import xyz.emptydreams.mi.api.gui.component.group.SelectGroup;
 import xyz.emptydreams.mi.api.net.handler.MessageSender;
 import xyz.emptydreams.mi.api.net.message.player.PlayerAddition;
 import xyz.emptydreams.mi.api.net.message.player.PlayerMessage;
@@ -90,13 +91,16 @@ public class ClassInfoViewerFrame extends MIFrame {
 		super(LOCATION_NAME, player);
 		setSize(210, 200);
 		
+		SelectGroup allGroup = new SelectGroup(SelectGroup.Style.REC_UP, 200, 190);
 		RollGroup serviceRoll = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
 		RollGroup clientRoll = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
 		TileEntity clientTE = player.world.getTileEntity(entity.getPos());
 		//noinspection ConstantConditions
 		init(clientRoll, clientTE);
 		init(serviceRoll, entity);
-		add(serviceRoll);
+		allGroup.createNewPage().add(serviceRoll);
+		allGroup.createNewPage().add(clientRoll);
+		add(allGroup);
 	}
 	
 	private void init(RollGroup rollGroup, TileEntity te) {

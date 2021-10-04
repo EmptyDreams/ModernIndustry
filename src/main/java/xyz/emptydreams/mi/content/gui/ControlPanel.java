@@ -31,6 +31,11 @@ public class ControlPanel extends Group {
 		preOperator.accept(this);
 	}
 	
+	public void setTitle(String title) {
+		shower.setString(title);
+		getControlMode().accept(this);
+	}
+	
 	public void setNextOperator(Consumer<ControlPanel> nextOperator) {
 		this.nextOperator = nextOperator;
 	}
@@ -64,6 +69,20 @@ public class ControlPanel extends Group {
 						15, 10, ButtonComponent.Style.REC_PAGE_UP);
 				ButtonComponent next = new ButtonComponent(
 						15, 10, ButtonComponent.Style.REC_PAGE_DOWN);
+				pre.setAction((frame, isClient) -> control.pre());
+				next.setAction((frame, isClient) -> control.next());
+				control.adds(pre, control.shower, next);
+			}
+		},
+		ARC_UP_AND_DOWN {
+			@Override
+			public void init(ControlPanel control, int longSide) {
+				control.setControlPanel(Panels::horizontalCenter);
+				control.setSize(15, longSide);
+				ButtonComponent pre = new ButtonComponent(
+						18, 10, ButtonComponent.Style.ARC_PAGE_LEFT);
+				ButtonComponent next = new ButtonComponent(
+						18, 10, ButtonComponent.Style.ARC_PAGE_RIGHT);
 				pre.setAction((frame, isClient) -> control.pre());
 				next.setAction((frame, isClient) -> control.next());
 				control.adds(pre, control.shower, next);
