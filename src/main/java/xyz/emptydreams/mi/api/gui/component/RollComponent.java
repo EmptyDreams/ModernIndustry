@@ -1,7 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.ImageData;
 import xyz.emptydreams.mi.api.gui.client.RuntimeTexture;
@@ -98,8 +97,8 @@ public class RollComponent extends MComponent {
 	private int reLocation = -1;
 	
 	@Override
-	protected void init(IComponentManager manager, EntityPlayer player) {
-		super.init(manager, player);
+	protected void init(IComponentManager manager) {
+		super.init(manager);
 		registryListener((IMouseLocationListener) (mouseX, mouseY) -> {
 			if (isDisable) return;
 			isMouse = isMouseInButton(mouseX, mouseY);
@@ -120,10 +119,6 @@ public class RollComponent extends MComponent {
 				((isVertical() ? (mouseY + 1) / getHeight()
 						: (mouseX + 1) / getWidth()) * FULL);
 		return Math.max(result, 0);
-	}
-	
-	private int getStart() {
-		return (isVertical() ? getY() : getX()) + 1;
 	}
 	
 	/**

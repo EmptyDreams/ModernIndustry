@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.api.gui.component;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
@@ -15,8 +14,6 @@ import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponentManager;
 import xyz.emptydreams.mi.api.gui.craft.CraftShower;
 import xyz.emptydreams.mi.api.gui.listener.IListener;
-import xyz.emptydreams.mi.api.gui.listener.ListenerTrigger;
-import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseActionListener;
 import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseClickListener;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
@@ -142,12 +139,13 @@ public abstract class MComponent implements IComponent {
 	/**
 	 * 在服务端或客户端第一次将控件添加到窗体时调用.
 	 * @param manager 管理类
-	 * @param player 玩家对象
 	 */
-	protected void init(IComponentManager manager, EntityPlayer player) {
+	protected void init(IComponentManager manager) {
 		if (craftGuide != null) {
-			registryListener((IMouseActionListener) (mouseX, mouseY) ->
-					ListenerTrigger.activateAction(manager.getFrame(), this, mouseX, mouseY));
+			//noinspection ConstantConditions
+			registryListener((IMouseClickListener) (mouseX, mouseY, mouseButton) ->
+					CraftShower.show(craftGuide, ChildFrame.getGuiTileEntity(
+							manager.getFrame().getPlayer()).getPos(), slotGroupGetter));
 		}
 	}
 	
@@ -157,21 +155,14 @@ public abstract class MComponent implements IComponent {
 	 *      否则会导致部分功能无法正常工作</b>
 	 */
 	@Override
-	public void onAdd2Manager(IComponentManager manager, EntityPlayer player) {
-		if (craftGuide != null) initCraftButton(player);
+	public void onAdd2Manager(IComponentManager manager) {
 		if (LOADED.contains(manager)) return;
 		LOADED.add(manager);
-		init(manager, player);
+		init(manager);
 	}
 	
 	@Override
-	public void onAdd2ClientFrame(StaticFrameClient frame, EntityPlayer player) { }
-	
-	private void initCraftButton(EntityPlayer player) {
-		//noinspection ConstantConditions
-		registryListener((IMouseClickListener) (mouseX, mouseY, mouseButton) ->
-				CraftShower.show(craftGuide, ChildFrame.getGuiTileEntity(player).getPos(), slotGroupGetter));
-	}
+	public void onAdd2ClientFrame(StaticFrameClient frame) { }
 	
 	@Override
 	public int getCode() {

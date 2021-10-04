@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.api.gui.component.group;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.component.RollComponent;
 import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
@@ -143,8 +142,8 @@ public class RollGroup extends Group {
 	private final AtomicBoolean isShift = new AtomicBoolean(false);
 	
 	@Override
-	protected void init(IComponentManager manager, EntityPlayer player) {
-		super.init(manager, player);
+	protected void init(IComponentManager manager) {
+		super.init(manager);
 		registryListener((IKeyPressedListener) (keyCode, isFocus)
 				-> isShift.set(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode() == keyCode));
 		registryListener((IKeyReleaseListener) (keyCode, isFocus) -> isShift.set(false));
@@ -194,9 +193,9 @@ public class RollGroup extends Group {
 	}
 	
 	@Override
-	public void onAdd2Manager(IComponentManager manager, EntityPlayer player) {
+	public void onAdd2Manager(IComponentManager manager) {
 		initGroupComponent();
-		super.onAdd2Manager(manager, player);
+		super.onAdd2Manager(manager);
 		innerGroup.calculate();
 		if (horRoll != null && innerGroup.getRealWidth() <= innerGroup.getWidth()) {
 			horRoll.setDisable(true);

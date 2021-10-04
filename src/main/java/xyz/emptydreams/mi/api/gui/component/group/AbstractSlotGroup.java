@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.items.SlotItemHandler;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.gui.client.StaticFrameClient;
@@ -23,12 +22,12 @@ public class AbstractSlotGroup extends SlotGroup {
 	public void paint(GuiPainter painter) { }
 	
 	@Override
-	public void onAdd2Manager(IComponentManager con, EntityPlayer player) {
+	public void onAdd2Manager(IComponentManager con) {
 		throw new UnsupportedOperationException("该组件不应该被添加到GUI");
 	}
 	
 	@Override
-	public void onAdd2ClientFrame(StaticFrameClient con, EntityPlayer player) {
+	public void onAdd2ClientFrame(StaticFrameClient con) {
 		throw new UnsupportedOperationException("该组件不应该被添加到GUI");
 	}
 	

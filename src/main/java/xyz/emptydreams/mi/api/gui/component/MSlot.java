@@ -59,7 +59,7 @@ public class MSlot extends MComponent {
 	}
 	
 	@Override
-	public void onAdd2Manager(IComponentManager con, EntityPlayer player) {
+	public void onAdd2Manager(IComponentManager con) {
 		StringUtil.checkNull(getSlot(), "slot");
 		int xSum = 0;
 		int ySum = 0;

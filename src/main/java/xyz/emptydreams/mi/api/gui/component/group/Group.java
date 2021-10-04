@@ -1,7 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraftforge.fml.relauncher.Side;
@@ -36,7 +35,7 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	protected int minDistance = 3;
 	/** 两个控件间的最远距离(像素) */
 	protected int maxDistance = 10;
-	/** */
+	/** 存储上一层管理类 */
 	private IComponentManager superManager;
 
 	public Group() {
@@ -70,6 +69,7 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	 */
 	public void add(IComponent component) {
 		components.add(StringUtil.checkNull(component, "component"));
+		if (superManager != null) component.onAdd2Manager(this);
 	}
 
 	/**
@@ -144,8 +144,8 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	public Iterator<IComponent> iterator() { return components.iterator(); }
 	
 	@Override
-	protected void init(IComponentManager manager, EntityPlayer player) {
-		super.init(manager, player);
+	protected void init(IComponentManager manager) {
+		super.init(manager);
 		registryListener((IMouseLocationListener) (mouseX, mouseY) ->
 				components.forEach(it -> it.activateListener(manager.getFrame(),
 															 IMouseLocationListener.class,
@@ -165,23 +165,27 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	}
 	
 	@Override
-	public void onAdd2Manager(IComponentManager manager, EntityPlayer player) {
-		superManager = manager;
-		super.onAdd2Manager(manager, player);
+	public void onAdd2Manager(IComponentManager manager) {
+		super.onAdd2Manager(manager);
 		sort();
-		components.forEach(it -> {
-			manager.allocID(it);
-			it.onAdd2Manager(this, player);
-		});
+		if (superManager == null) {
+			superManager = manager;
+			components.forEach(it -> {
+				it.onAdd2Manager(Group.this);
+				allocID(it);
+			});
+		} else {
+			components.forEach(manager::allocID);
+		}
 	}
 
 	@Override
-	public void onAdd2ClientFrame(StaticFrameClient frame, EntityPlayer player) {
+	public void onAdd2ClientFrame(StaticFrameClient frame) {
 		for (IComponent component : components) {
 			if (component instanceof Group) ((Group) component).sort();
 		}
 		mode.accept(this);
-		components.forEach(it -> it.onAdd2ClientFrame(frame, player));
+		components.forEach(it -> it.onAdd2ClientFrame(frame));
 	}
 
 	@Override

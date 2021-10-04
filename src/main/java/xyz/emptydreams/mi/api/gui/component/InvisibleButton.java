@@ -2,7 +2,6 @@ package xyz.emptydreams.mi.api.gui.component;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -60,8 +59,8 @@ public class InvisibleButton extends MComponent {
 	}
 	
 	@Override
-	protected void init(IComponentManager manager, EntityPlayer player) {
-		super.init(manager, player);
+	protected void init(IComponentManager manager) {
+		super.init(manager);
 		registryListener((IMouseEnteredListener) (mouseX, mouseY) -> mouse = true);
 		registryListener((IMouseExitedListener) () -> mouse = false);
 		registryListener(new IMouseActionListener() {

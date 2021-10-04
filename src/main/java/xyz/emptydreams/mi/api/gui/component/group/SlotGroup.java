@@ -1,7 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.ItemStackHandler;
@@ -185,8 +184,8 @@ public class SlotGroup extends MComponent implements Iterable<SlotGroup.Node> {
 	}
 	
 	@Override
-	public void onAdd2Manager(IComponentManager manager, EntityPlayer player) {
-		super.onAdd2Manager(manager, player);
+	public void onAdd2Manager(IComponentManager manager) {
+		super.onAdd2Manager(manager);
 		for (int y = 0; y < getYSize(); ++y) {
 			for (int x = 0; x < getXSize(); ++x) {
 				getSlot(x, y).xPos = getX() + (getSlotSize() * x) + (getInterval() * x) + 1 + manager.getX();
