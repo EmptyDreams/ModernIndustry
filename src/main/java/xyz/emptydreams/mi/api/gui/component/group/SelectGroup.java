@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
+import xyz.emptydreams.mi.api.utils.TickHelper;
 import xyz.emptydreams.mi.content.gui.ControlPanel;
 
 import java.util.ArrayList;
@@ -38,17 +39,25 @@ public class SelectGroup extends Group {
 	/** 下一页，如果当前页为最后一页，则不做反应 */
 	public void next() {
 		if (index == containers.size() - 1) return;
-		super.components.remove(getActivatePage());
+		Group remove = getActivatePage();
 		++index;
-		super.components.add(getActivatePage());
+		TickHelper.addAutoTask(() -> {
+			super.components.remove(remove);
+			super.add(getActivatePage());
+			return true;
+		});
 	}
 
 	/** 上一页，如果当前页为第一页，则不做反应 */
 	public void pre() {
 		if (index == 0) return;
-		super.components.remove(getActivatePage());
+		Group remove = getActivatePage();
 		--index;
-		super.components.add(getActivatePage());
+		TickHelper.addAutoTask(() -> {
+			super.components.remove(remove);
+			super.add(getActivatePage());
+			return true;
+		});
 	}
 	
 	/** 获取当前显示的页面 */
