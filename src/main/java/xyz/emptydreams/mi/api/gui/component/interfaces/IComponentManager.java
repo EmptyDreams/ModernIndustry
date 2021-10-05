@@ -130,7 +130,6 @@ public interface IComponentManager {
 				}
 				if (it == component) {
 					it.activateListener(frame, listenerClass, listener -> listener.active(data.create(x, y)));
-					return false;
 				}
 				return true;
 			});
@@ -182,14 +181,12 @@ public interface IComponentManager {
 				if (it instanceof IComponentManager) {
 					result.addAll(((IComponentManager) it).activeMouseListener(
 							listenerClass, real, data.create(x, y), optimize, ignore));
-					if (!result.isEmpty()) return false;
 				}
 				if (it == real) {
 					result.add(it);
 					if (!ignore.contains(it))
 						it.activateListener(frame, listenerClass,
 								listener -> listener.active(data.create(x, y)));
-					return false;
 				}
 				return true;
 			});

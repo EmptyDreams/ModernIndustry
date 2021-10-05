@@ -67,7 +67,7 @@ public class GuiPainter {
 		double scaleViewX = mc.displayWidth / res.getScaledWidth_double();
 		double scaleViewY = mc.displayHeight / res.getScaledHeight_double();
 		realX = (int) ((x + getGuiContainer().getGuiLeft()) * scaleViewX);
-		realY = (int) (mc.displayHeight - ((y + getGuiContainer().getGuiTop()) + height) * scaleViewY);
+		realY = (int) (mc.displayHeight - ((y + getGuiContainer().getGuiTop() + height) * scaleViewY));
 		realWidth = width > 0 ? (int) (this.width * scaleViewX) : -1;
 		realHeight = height > 0 ? (int) (this.height * scaleViewY) : -1;
 	}

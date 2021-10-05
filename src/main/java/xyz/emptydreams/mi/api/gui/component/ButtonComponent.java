@@ -106,7 +106,7 @@ public class ButtonComponent extends InvisibleButton {
 		/** 矩形按钮 */
 		REC(BUTTON_REC, BUTTON_REC_CLICK, Style::stringPainter),
 		/** 向右三角形按钮 */
-		TRIANGLE_RIGHT(BUTTON_TRIANGLE_RIGHT, BUTTON_TRIANGLE_LEFT_CLICK, Style::stringPainter),
+		TRIANGLE_RIGHT(BUTTON_TRIANGLE_RIGHT, BUTTON_TRIANGLE_RIGHT_CLICK, Style::stringPainter),
 		/** 向左三角形按钮 */
 		TRIANGLE_LEFT(BUTTON_TRIANGLE_LEFT, BUTTON_TRIANGLE_LEFT_CLICK, Style::stringPainter),
 		

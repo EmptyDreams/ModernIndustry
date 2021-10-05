@@ -89,7 +89,7 @@ public class ClassInfoViewerFrame extends MIFrame {
 	
 	public ClassInfoViewerFrame(TileEntity entity, EntityPlayer player) {
 		super(LOCATION_NAME, player);
-		setSize(210, 200);
+		setSize(210, 220);
 		
 		SelectGroup allGroup = new SelectGroup(SelectGroup.Style.REC_UP, 200, 190);
 		RollGroup serviceRoll = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
@@ -98,6 +98,7 @@ public class ClassInfoViewerFrame extends MIFrame {
 		//noinspection ConstantConditions
 		init(clientRoll, clientTE);
 		init(serviceRoll, entity);
+		allGroup.setLocation(0, 20);
 		allGroup.createNewPage().add(serviceRoll);
 		allGroup.createNewPage().add(clientRoll);
 		add(allGroup);
