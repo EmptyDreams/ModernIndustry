@@ -93,8 +93,9 @@ public class RollGroup extends Group {
 	}
 	
 	@Override
-	public void add(IComponent component) {
+	public RollGroup add(IComponent component) {
 		innerGroup.add(component);
+		return this;
 	}
 	
 	@Override

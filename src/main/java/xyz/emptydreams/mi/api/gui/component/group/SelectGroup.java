@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
+import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.utils.TickHelper;
 import xyz.emptydreams.mi.content.gui.ControlPanel;
 
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public class SelectGroup extends Group {
 	
-	protected final List<Group> containers = new ArrayList<>();
+	protected final List<InnerGroup> containers = new ArrayList<>();
 	protected final ControlPanel control;
 	protected final Style style;
 	protected int index = 0;
@@ -23,17 +24,18 @@ public class SelectGroup extends Group {
 		control = style.createControlPanel(this);
 	}
 	
-	/** 构建一个新的页面 */
-	public Group createNewPage() {
-		Group result = style.createContainerPanel(this);
+	/** 用指定标题构建一个页面 */
+	public Group createNewPage(String title) {
+		InnerGroup result = style.createContainerPanel(this);
+		result.setTitle(title);
 		if (containers.isEmpty()) add(result);
 		containers.add(result);
 		return result;
 	}
 	
-	/** 设置标题 */
-	public void setTitle(String title) {
-		control.setTitle(title);
+	/** 构建一个新的页面，标题为页码 */
+	public Group createNewPage() {
+		return createNewPage(String.valueOf(containers.size() + 1));
 	}
 	
 	/** 下一页，如果当前页为最后一页，则不做反应 */
@@ -61,8 +63,14 @@ public class SelectGroup extends Group {
 	}
 	
 	/** 获取当前显示的页面 */
-	public Group getActivatePage() {
+	public InnerGroup getActivatePage() {
 		return containers.get(index);
+	}
+	
+	@Override
+	public void paint(GuiPainter painter) {
+		control.setTitle(getActivatePage().getTitle());
+		super.paint(painter);
 	}
 	
 	public enum Style {
@@ -80,7 +88,7 @@ public class SelectGroup extends Group {
 			}
 			
 			@Override
-			public Group createContainerPanel(SelectGroup group) {
+			public InnerGroup createContainerPanel(SelectGroup group) {
 				return new InnerGroup(0, 18, group.getWidth(), group.getHeight() - 18);
 			}
 		},
@@ -97,7 +105,7 @@ public class SelectGroup extends Group {
 			}
 			
 			@Override
-			public Group createContainerPanel(SelectGroup group) {
+			public InnerGroup createContainerPanel(SelectGroup group) {
 				return new InnerGroup(0, 0, group.getWidth(), group.getHeight() - 18);
 			}
 		}
@@ -106,14 +114,24 @@ public class SelectGroup extends Group {
 		/** 创建一个控制面板 */
 		abstract public ControlPanel createControlPanel(SelectGroup group);
 		/** 创建一个容纳控件的控件组 */
-		abstract public Group createContainerPanel(SelectGroup group);
+		abstract public InnerGroup createContainerPanel(SelectGroup group);
 	
 	}
 	
 	private static class InnerGroup extends Group {
 		
+		private String title;
+		
 		InnerGroup(int x, int y, int width, int height) {
 			super(x, y, width, height, Panels::non);
+		}
+		
+		public void setTitle(String title) {
+			this.title = title;
+		}
+		
+		public String getTitle() {
+			return title;
 		}
 		
 		@Override

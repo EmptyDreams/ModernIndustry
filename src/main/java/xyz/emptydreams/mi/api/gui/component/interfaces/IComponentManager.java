@@ -21,9 +21,10 @@ public interface IComponentManager {
 	/**
 	 * 添加一个控件
 	 * @param component 要添加的控件
+	 * @return 返回本身
 	 * @throws NullPointerException 如果component == null
 	 */
-	void add(IComponent component);
+	IComponentManager add(IComponent component);
 	
 	/**
 	 * 遍历所有组件

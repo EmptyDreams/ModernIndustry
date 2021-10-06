@@ -62,14 +62,11 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 		this.height = height;
 		mode = StringUtil.checkNull(panel, "panel");
 	}
-
-	/**
-	 * 添加一个组件
-	 * @throws NullPointerException 如果component == null
-	 */
-	public void add(IComponent component) {
+	
+	public Group add(IComponent component) {
 		components.add(StringUtil.checkNull(component, "component"));
 		if (superManager != null) component.onAdd2Manager(this);
+		return this;
 	}
 
 	/**
