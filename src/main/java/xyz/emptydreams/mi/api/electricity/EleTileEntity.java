@@ -301,8 +301,8 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	};
 	
 	static {
-		World[] worlds = FMLCommonHandler.instance().getMinecraftServerInstance().worlds;
 		TickHelper.addServerTask(() -> {
+			World[] worlds = FMLCommonHandler.instance().getMinecraftServerInstance().worlds;
 			EleTileEntity entity;
 			for (World world : worlds) {
 				for (TileEntity te : world.loadedTileEntityList) {
