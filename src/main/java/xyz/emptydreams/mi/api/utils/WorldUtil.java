@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -15,9 +16,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
@@ -37,7 +35,6 @@ import java.util.function.Consumer;
  * 关于世界的操作
  * @author EmptyDreams
  */
-@Mod.EventBusSubscriber
 public final class WorldUtil {
 	
 	/** 获取本地玩家对象 */
@@ -147,18 +144,30 @@ public final class WorldUtil {
 	 */
 	public static void removeTickable(TileEntity tickable) {
 		StringUtil.checkNull(tickable, "tickable");
-		if (tickable.getWorld().isRemote)
+		if (tickable.getWorld().isRemote) {
 			CLIENT_REMOVES.computeIfAbsent(tickable.getWorld(), key -> new LinkedList<>()).add(tickable);
-		else
+			TickHelper.addClientTask(WorldUtil::clearClientTickableList);
+		} else {
 			SERVER_REMOVES.computeIfAbsent(tickable.getWorld(), key -> new LinkedList<>()).add(tickable);
+			TickHelper.addServerTask(WorldUtil::clearServerTickableList);
+		}
 	}
-
+	
+	/**
+	 * 将指定任务添加到每Tick的循环中
+	 * @param tickable 要添加的任务
+	 */
 	public static void addTickable(TileEntity tickable) {
 		StringUtil.checkNull(tickable, "tickable");
-		if (tickable.getWorld().isRemote)
+		if (!(tickable instanceof ITickable))
+			throw new IllegalArgumentException("输入的参数应当实现ITickable接口：" + tickable.getClass());
+		if (tickable.getWorld().isRemote) {
 			CLIENT_ADDS.computeIfAbsent(tickable.getWorld(), key -> new LinkedList<>()).add(tickable);
-		else
+			TickHelper.addClientTask(WorldUtil::clearClientTickableList);
+		} else {
 			SERVER_ADDS.computeIfAbsent(tickable.getWorld(), key -> new LinkedList<>()).add(tickable);
+			TickHelper.addServerTask(WorldUtil::clearServerTickableList);
+		}
 	}
 	
 	/**
@@ -294,21 +303,21 @@ public final class WorldUtil {
 	/** 服务端添加列表 */
 	private static final Map<World, List<TileEntity>> SERVER_ADDS = new Object2ObjectArrayMap<>(3);
 	
-	@SubscribeEvent
-	public static void atServerTickEnd(TickEvent.ServerTickEvent event) {
+	private static boolean clearServerTickableList() {
 		SERVER_REMOVES.forEach((key, value) -> key.tickableTileEntities.removeAll(value));
 		SERVER_REMOVES.clear();
 		SERVER_ADDS.forEach((key, value) -> key.tickableTileEntities.addAll(value));
 		SERVER_ADDS.clear();
+		return true;
 	}
-
-	@SubscribeEvent
+	
 	@SideOnly(Side.CLIENT)
-	public static void atClientTickEnd(TickEvent.ClientTickEvent event) {
+	private static boolean clearClientTickableList() {
 		CLIENT_REMOVES.forEach((key, value) -> key.tickableTileEntities.removeAll(value));
 		CLIENT_REMOVES.clear();
 		CLIENT_ADDS.forEach((key, value) -> key.tickableTileEntities.addAll(value));
 		CLIENT_ADDS.clear();
+		return true;
 	}
 	
 }

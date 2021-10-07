@@ -7,19 +7,17 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import xyz.emptydreams.mi.api.capabilities.ele.EleCapability;
+import xyz.emptydreams.mi.api.capabilities.ele.EleStateEnum;
 import xyz.emptydreams.mi.api.capabilities.ele.IStorage;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
 import xyz.emptydreams.mi.api.electricity.info.EnergyRange;
-import xyz.emptydreams.mi.api.capabilities.ele.EleStateEnum;
 import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.event.EnergyEvent;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
+import xyz.emptydreams.mi.api.utils.TickHelper;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.data.info.EnumVoltage;
 
@@ -33,7 +31,6 @@ import java.util.Set;
  * 机器的父类，其中包含了机器的一些默认实现
  * @author EmptyDreams
  */
-@Mod.EventBusSubscriber
 public abstract class EleTileEntity extends BaseTileEntity {
 	
 	/** 空的能量 */
@@ -303,19 +300,20 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		
 	};
 	
-	/** 在每Tick结尾将类中临时数据清空 */
-	@SubscribeEvent
-	public static void onTickEnd(TickEvent.ServerTickEvent event) {
+	static {
 		World[] worlds = FMLCommonHandler.instance().getMinecraftServerInstance().worlds;
-		EleTileEntity entity;
-		for (World world : worlds) {
-			for (TileEntity te : world.loadedTileEntityList) {
-				if (te instanceof EleTileEntity) {
-					entity = (EleTileEntity) te;
-					entity.reVoltage = entity.exVoltage = null;
+		TickHelper.addServerTask(() -> {
+			EleTileEntity entity;
+			for (World world : worlds) {
+				for (TileEntity te : world.loadedTileEntityList) {
+					if (te instanceof EleTileEntity) {
+						entity = (EleTileEntity) te;
+						entity.reVoltage = entity.exVoltage = null;
+					}
 				}
 			}
-		}
+			return false;
+		});
 	}
 	
 }
