@@ -78,11 +78,41 @@ public class ControlPanel extends Group {
 			@Override
 			public void init(ControlPanel control, int longSide) {
 				control.setControlPanel(Panels::horizontalCenter);
-				control.setSize(15, longSide);
+				control.setSize(longSide, 15);
 				ButtonComponent pre = new ButtonComponent(
 						18, 10, ButtonComponent.Style.ARC_PAGE_LEFT);
 				ButtonComponent next = new ButtonComponent(
 						18, 10, ButtonComponent.Style.ARC_PAGE_RIGHT);
+				pre.setAction((frame, isClient) -> control.pre());
+				next.setAction((frame, isClient) -> control.next());
+				control.adds(pre, control.shower, next);
+			}
+		},
+		SQUARE_UP_AND_DOWN {
+			@Override
+			public void init(ControlPanel control, int longSide) {
+				control.setControlPanel(Panels::horizontalCenter);
+				control.setSize(longSide, 15);
+				ButtonComponent pre = new ButtonComponent(
+						15, 15, ButtonComponent.Style.REC_PAGE_LEFT);
+				ButtonComponent next = new ButtonComponent(
+						15, 15, ButtonComponent.Style.REC_PAGE_RIGHT);
+				pre.setText("<");   next.setText(">");
+				pre.setAction((frame, isClient) -> control.pre());
+				next.setAction((frame, isClient) -> control.next());
+				control.adds(pre, control.shower, next);
+			}
+		},
+		SQUARE_LEFT_AND_RIGHT {
+			@Override
+			public void init(ControlPanel control, int longSide) {
+				control.setControlPanel(Panels::verticalCenter);
+				control.setSize(15, longSide);
+				ButtonComponent pre = new ButtonComponent(
+						15, 15, ButtonComponent.Style.REC_PAGE_UP);
+				ButtonComponent next = new ButtonComponent(
+						15, 15, ButtonComponent.Style.REC_PAGE_DOWN);
+				pre.setText("<");   next.setText(">");
 				pre.setAction((frame, isClient) -> control.pre());
 				next.setAction((frame, isClient) -> control.next());
 				control.adds(pre, control.shower, next);

@@ -89,9 +89,9 @@ public class ClassInfoViewerFrame extends MIFrame {
 	
 	public ClassInfoViewerFrame(TileEntity entity, EntityPlayer player) {
 		super(LOCATION_NAME, player);
-		setSize(210, 220);
+		setSize(210, 210);
 		
-		SelectGroup allGroup = new SelectGroup(SelectGroup.Style.REC_UP, 200, 190);
+		SelectGroup allGroup = new SelectGroup(SelectGroup.Style.SQUARE_UP, 200, 190);
 		RollGroup serviceRoll = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
 		RollGroup clientRoll = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
 		TileEntity clientTE = player.world.getTileEntity(entity.getPos());
@@ -99,15 +99,15 @@ public class ClassInfoViewerFrame extends MIFrame {
 		init(clientRoll, clientTE);
 		init(serviceRoll, entity);
 		allGroup.setLocation(0, 20);
-		allGroup.createNewPage().add(serviceRoll).setControlPanel(Panels::horizontalCenter);
-		allGroup.createNewPage().add(clientRoll).setControlPanel(Panels::horizontalCenter);
+		allGroup.createNewPage("Server Info").add(serviceRoll).setControlPanel(Panels::horizontalUp);
+		allGroup.createNewPage("Client Info").add(clientRoll).setControlPanel(Panels::horizontalUp);
 		add(allGroup);
 	}
 	
 	private void init(RollGroup rollGroup, TileEntity te) {
 		rollGroup.setControlPanel(Panels::horizontalUp);
 		rollGroup.setMinDistance(6);
-		rollGroup.setSize(185, 150);
+		rollGroup.setSize(185, 160);
 		Class<?> clazz = te.getClass();
 		Group nameGroup = new Group(Panels::verticalRight);
 		Group valueGroup = new Group(Panels::verticalLeft);

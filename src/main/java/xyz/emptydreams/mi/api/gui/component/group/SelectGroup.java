@@ -81,6 +81,7 @@ public class SelectGroup extends Group {
 	
 	public enum Style {
 		
+		/** 矩形按钮（上方） */
 		REC_UP {
 			@Override
 			public ControlPanel createControlPanel(SelectGroup group) {
@@ -98,6 +99,7 @@ public class SelectGroup extends Group {
 				return new InnerGroup(0, 18, group.getWidth(), group.getHeight() - 18);
 			}
 		},
+		/** 矩形按钮（下方） */
 		REC_DOWN {
 			@Override
 			public ControlPanel createControlPanel(SelectGroup group) {
@@ -113,6 +115,148 @@ public class SelectGroup extends Group {
 			@Override
 			public InnerGroup createContainerPanel(SelectGroup group) {
 				return new InnerGroup(0, 0, group.getWidth(), group.getHeight() - 18);
+			}
+		},
+		REC_LEFT {
+			@Override
+			public ControlPanel createControlPanel(SelectGroup group) {
+				ControlPanel result = new ControlPanel(
+						ControlPanel.Style.REC_RIGHT_AND_LEFT, group.getHeight());
+				result.setLocation(0, 0);
+				result.setNextOperator(it -> group.next());
+				result.setPreOperator(it -> group.pre());
+				group.add(result);
+				return result;
+			}
+			
+			@Override
+			public InnerGroup createContainerPanel(SelectGroup group) {
+				return new InnerGroup(18, 0, group.getWidth() - 18, group.getHeight());
+			}
+		},
+		REC_RIGHT {
+			@Override
+			public ControlPanel createControlPanel(SelectGroup group) {
+				ControlPanel result = new ControlPanel(
+						ControlPanel.Style.REC_RIGHT_AND_LEFT, group.getHeight());
+				result.setLocation(group.getWidth() - 15, 0);
+				result.setNextOperator(it -> group.next());
+				result.setPreOperator(it -> group.pre());
+				group.add(result);
+				return result;
+			}
+			
+			@Override
+			public InnerGroup createContainerPanel(SelectGroup group) {
+				return new InnerGroup(0, 0, group.getWidth() - 18, group.getHeight());
+			}
+		},
+		/** 弧形按钮（上方） */
+		ARC_UP {
+			@Override
+			public ControlPanel createControlPanel(SelectGroup group) {
+				ControlPanel result = new ControlPanel(
+						ControlPanel.Style.ARC_UP_AND_DOWN, group.getWidth());
+				result.setLocation(0, 0);
+				result.setNextOperator(it -> group.next());
+				result.setPreOperator(it -> group.pre());
+				group.add(result);
+				return result;
+			}
+			
+			@Override
+			public InnerGroup createContainerPanel(SelectGroup group) {
+				return new InnerGroup(0, 18, group.getWidth(), group.getHeight() - 18);
+			}
+		},
+		/** 弧形按钮（下方） */
+		ARC_DOWN {
+			@Override
+			public ControlPanel createControlPanel(SelectGroup group) {
+				ControlPanel result = new ControlPanel(
+						ControlPanel.Style.ARC_UP_AND_DOWN, group.getWidth());
+				result.setLocation(0, 18);
+				result.setNextOperator(it -> group.next());
+				result.setPreOperator(it -> group.pre());
+				group.add(result);
+				return result;
+			}
+			
+			@Override
+			public InnerGroup createContainerPanel(SelectGroup group) {
+				return new InnerGroup(0, 0, group.getWidth(), group.getHeight() - 18);
+			}
+		},
+		/** 正方形按钮（上方） */
+		SQUARE_UP {
+			@Override
+			public ControlPanel createControlPanel(SelectGroup group) {
+				ControlPanel result = new ControlPanel(
+						ControlPanel.Style.SQUARE_UP_AND_DOWN, group.getWidth());
+				result.setLocation(0, 0);
+				result.setNextOperator(it -> group.next());
+				result.setPreOperator(it -> group.pre());
+				group.add(result);
+				return result;
+			}
+			
+			@Override
+			public InnerGroup createContainerPanel(SelectGroup group) {
+				return new InnerGroup(0, 18, group.getWidth(), group.getHeight() - 18);
+			}
+		},
+		/** 正方形按钮（下方） */
+		SQUARE_DOWN {
+			@Override
+			public ControlPanel createControlPanel(SelectGroup group) {
+				ControlPanel result = new ControlPanel(
+						ControlPanel.Style.SQUARE_UP_AND_DOWN, group.getWidth());
+				result.setLocation(0, group.getHeight() - 15);
+				result.setNextOperator(it -> group.next());
+				result.setPreOperator(it -> group.pre());
+				group.add(result);
+				return result;
+			}
+			
+			@Override
+			public InnerGroup createContainerPanel(SelectGroup group) {
+				return new InnerGroup(0, 0, group.getWidth(), group.getHeight() - 18);
+			}
+		},
+		/** 正方向按钮（左侧） */
+		SQUARE_LEFT {
+			@Override
+			public ControlPanel createControlPanel(SelectGroup group) {
+				ControlPanel result = new ControlPanel(
+						ControlPanel.Style.SQUARE_LEFT_AND_RIGHT, group.getHeight());
+				result.setLocation(0, 0);
+				result.setNextOperator(it -> group.next());
+				result.setPreOperator(it -> group.pre());
+				group.add(result);
+				return result;
+			}
+			
+			@Override
+			public InnerGroup createContainerPanel(SelectGroup group) {
+				return new InnerGroup(18, 0, group.getWidth() - 18, group.getHeight());
+			}
+		},
+		/** 正方形按钮（右侧） */
+		SQUARE_RIGHT {
+			@Override
+			public ControlPanel createControlPanel(SelectGroup group) {
+				ControlPanel result = new ControlPanel(
+						ControlPanel.Style.SQUARE_LEFT_AND_RIGHT, group.getHeight());
+				result.setLocation(group.getWidth() - 15, 0);
+				result.setNextOperator(it -> group.next());
+				result.setPreOperator(it -> group.pre());
+				group.add(result);
+				return result;
+			}
+			
+			@Override
+			public InnerGroup createContainerPanel(SelectGroup group) {
+				return new InnerGroup(0, 0, group.getWidth() - 18, group.getHeight());
 			}
 		}
 		
