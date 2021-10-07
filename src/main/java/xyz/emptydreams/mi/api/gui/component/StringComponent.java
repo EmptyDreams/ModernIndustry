@@ -25,8 +25,7 @@ public class StringComponent extends MComponent {
 	public StringComponent(String str) {
 		value = StringUtil.checkNull(str, "str");
 		height = 9;
-		if (WorldUtil.isClient())
-			width = Minecraft.getMinecraft().fontRenderer.getStringWidth(str);
+		setString(str);
 	}
 
 	@SideOnly(Side.CLIENT) private String text;
@@ -53,7 +52,8 @@ public class StringComponent extends MComponent {
 		this.value = StringUtil.checkNull(str, "str");
 		text = null;
 		if (WorldUtil.isClient()) {
-			int real = Minecraft.getMinecraft().fontRenderer.getStringWidth(str);
+			text = I18n.format(str);
+			int real = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
 			if (real > width) width = real;
 		}
 	}
