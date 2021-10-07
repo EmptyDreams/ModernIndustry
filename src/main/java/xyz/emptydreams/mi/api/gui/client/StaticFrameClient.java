@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.function.Consumer;
 
 import static xyz.emptydreams.mi.api.gui.listener.ListenerTrigger.*;
 import static xyz.emptydreams.mi.api.utils.StringUtil.checkNull;
@@ -238,10 +237,9 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		mouseX -= getGuiLeft();     mouseY -= getGuiTop();
 		float fx = mouseX, fy = mouseY;
-		forEachAllComponents(mouseX, mouseY, it -> {
-			if (mouseButton == 0) clickedComponents.addAll(activateAction(inventorySlots, it, fx, fy));
-			clickedComponents.addAll(activateClick(inventorySlots, it, fx, fy, mouseButton));
-		});
+		if (mouseButton == 0)
+			clickedComponents.addAll(activateAction(inventorySlots, null, fx, fy));
+		clickedComponents.addAll(activateClick(inventorySlots, null, fx, fy, mouseButton));
 	}
 	
 	@Override
@@ -299,15 +297,5 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	
 	@Override
 	public void init(World world) { }
-	
-	private void forEachAllComponents(int mouseX, int mouseY, Consumer<IComponent> consumer) {
-		for (IComponent it : components) {
-			if (it.getX() <= mouseX && it.getY() <= mouseY
-					&& it.getX() + it.getWidth() >= mouseX
-					&& it.getY() + it.getHeight() >= mouseY) {
-				consumer.accept(it);
-			}
-		}
-	}
 	
 }
