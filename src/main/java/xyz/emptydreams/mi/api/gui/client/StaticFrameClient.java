@@ -221,7 +221,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	private void activeMouseWheelListener(int mouseX, int mouseY) {
 		int wheel = Mouse.getDWheel();
 		if (wheel == 0) return;
-		forEachAllComponents(mouseX, mouseY, it -> activateWheel(inventorySlots, it, wheel));
+		activateWheel(inventorySlots, null, mouseX, mouseY, wheel);
 	}
 	
 	/** 存储被点击的控件 */

@@ -70,9 +70,9 @@ public final class ListenerTrigger {
 	
 	/** 尝试触发鼠标滚轮事件 */
 	public static void activateWheel(IComponentManager frame,
-	                                             IComponent component, int wheel) {
+	                                             IComponent component, int mouseX, int mouseY, int wheel) {
 		frame.activeMouseListenerNoLog(IMouseWheelListener.class,
-				component, new MouseData(0, 0, -1, wheel),
+				component, new MouseData(mouseX, mouseY, -1, wheel),
 				true, Collections.emptyList());
 	}
 	
