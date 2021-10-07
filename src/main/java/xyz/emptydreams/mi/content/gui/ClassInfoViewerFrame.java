@@ -99,8 +99,8 @@ public class ClassInfoViewerFrame extends MIFrame {
 		init(clientRoll, clientTE);
 		init(serviceRoll, entity);
 		allGroup.setLocation(0, 20);
-		allGroup.createNewPage("Server Info").add(serviceRoll).setControlPanel(Panels::horizontalCenter);
-		allGroup.createNewPage("Client Info").add(clientRoll).setControlPanel(Panels::horizontalCenter);
+		allGroup.createNewPage().add(serviceRoll).setControlPanel(Panels::horizontalCenter);
+		allGroup.createNewPage().add(clientRoll).setControlPanel(Panels::horizontalCenter);
 		add(allGroup);
 	}
 	

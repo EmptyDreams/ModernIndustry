@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component.group;
 
+import net.minecraft.client.resources.I18n;
 import xyz.emptydreams.mi.api.gui.client.GuiPainter;
 import xyz.emptydreams.mi.api.utils.TickHelper;
 import xyz.emptydreams.mi.content.gui.ControlPanel;
@@ -35,7 +36,12 @@ public class SelectGroup extends Group {
 	
 	/** 构建一个新的页面，标题为页码 */
 	public Group createNewPage() {
-		return createNewPage(String.valueOf(containers.size() + 1));
+		int size = containers.size() + 1;
+		Group result = createNewPage(I18n.format("book.pageIndicator", size, size));
+		for (int i = 0; i < containers.size(); i++) {
+			containers.get(i).setTitle(I18n.format("book.pageIndicator", i + 1, size));
+		}
+		return result;
 	}
 	
 	/** 下一页，如果当前页为最后一页，则不做反应 */
