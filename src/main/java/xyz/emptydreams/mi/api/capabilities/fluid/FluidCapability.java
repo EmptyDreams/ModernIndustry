@@ -1,15 +1,17 @@
 package xyz.emptydreams.mi.api.capabilities.fluid;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import xyz.emptydreams.mi.api.fluid.TransportResult;
+import xyz.emptydreams.mi.api.fluid.TransportContent;
 import xyz.emptydreams.mi.api.register.others.AutoLoader;
-import xyz.emptydreams.mi.content.tileentity.pipes.data.FluidData;
+import xyz.emptydreams.mi.api.fluid.data.FluidData;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -23,6 +25,19 @@ public class FluidCapability {
 	@CapabilityInject(IFluid.class)
 	public static Capability<IFluid> TRANSFER;
 	
+	/**
+	 * 判断指定方块能否在指定方向上进行流体操作
+	 * @param te 指定方块的TE
+	 * @param facing 指定方向
+	 * @return 如果可以则返回IFluid对象，否则返回null
+	 */
+	@Nullable
+	public static IFluid canOperate(TileEntity te, EnumFacing facing) {
+		if (te == null) return null;
+		IFluid cap = te.getCapability(TRANSFER, facing);
+		return cap != null && cap.isLinked(facing) ? cap : null;
+	}
+	
 	static {
 		CapabilityManager.INSTANCE.register(IFluid.class, new FluidStore(),
 				() -> new IFluid() {
@@ -31,18 +46,12 @@ public class FluidCapability {
 						return false;
 					}
 					@Override
-					public TransportResult extract(int amount, EnumFacing facing, boolean simulate) {
-						return new TransportResult();
+					public TransportContent extract(int amount, EnumFacing facing, boolean simulate) {
+						return new TransportContent();
 					}
 					@Override
-					public TransportResult insert(FluidData data, EnumFacing facing, boolean simulate) {
-						return new TransportResult();
-					}
-					@Override
-					public void setSource(EnumFacing facing) {}
-					@Override
-					public EnumFacing getSource() {
-						return null;
+					public TransportContent insert(FluidData data, EnumFacing facing, boolean simulate) {
+						return new TransportContent();
 					}
 					@Nonnull
 					@Override
@@ -62,7 +71,7 @@ public class FluidCapability {
 						return false;
 					}
 					@Override
-					public void unlink(EnumFacing facing) { }
+					public void removeLink(EnumFacing facing) { }
 					@Override
 					public boolean isLinkedUp() {
 						return false;

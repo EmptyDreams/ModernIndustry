@@ -3,7 +3,6 @@ package xyz.emptydreams.mi.api.fluid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
@@ -25,18 +24,14 @@ import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
-import xyz.emptydreams.mi.content.tileentity.pipes.data.DataManager;
-import xyz.emptydreams.mi.content.tileentity.pipes.data.FluidData;
+import xyz.emptydreams.mi.api.fluid.data.FluidData;
+import xyz.emptydreams.mi.api.fluid.data.DataManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import static net.minecraft.util.EnumFacing.*;
@@ -51,8 +46,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	@Storage(byte.class) protected int linkData = 0b000000;
 	/** 六个方向的管塞数据 */
 	@Storage protected final Map<EnumFacing, ItemStack> plugData = new EnumMap<>(EnumFacing.class);
-	/** 存储管道内流体来源 */
-	@Storage protected EnumFacing source = null;
 	
 	public FTTileEntity() { }
 	
@@ -213,17 +206,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	}
 	
 	@Override
-	public void setSource(EnumFacing facing) {
-		source = facing;
-	}
-	
-	@Override
-	public EnumFacing getSource() {
-		return source;
-	}
-	
-	@Override
-	public void unlink(EnumFacing facing) {
+	public void removeLink(EnumFacing facing) {
 		setLinkedData(facing, false);
 		updateBlockState(false);
 	}
@@ -330,135 +313,28 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		markDirty();
 	}
 	
+	/**
+	 * 获取指定方向上的数据管理器
+	 * @throws IllegalArgumentException 如果指定方向上不存在数据管理器
+	 */
 	@Nonnull
 	abstract protected DataManager getDataManager(EnumFacing facing);
 	
-	abstract protected boolean matchFacing(EnumFacing facing);
-	
 	@Nonnull
 	@Override
-	public TransportResult extract(int amount, EnumFacing facing, boolean simulate) {
-		TransportResult result = new TransportResult();
-		if (!matchFacing(facing)) return result;
-		List<EnumFacing> next = next(facing);
-		IFluid.sortFacing(next);
-		@SuppressWarnings("unchecked")
-		Iterator<FluidData>[] its = new Iterator[next.size()];
-		//通过遍历将其他方向的流体数据取出指定量
-		ListIterator<EnumFacing> it = next.listIterator(next.size());
-		int k = amount / next.size();
-		int i = 0;
-		while (it.hasPrevious()) {
-			EnumFacing value = it.previous();
-			if (!it.hasPrevious()) k = amount - k * (next.size() - 1);
-			DataManager manager = getDataManager(value);
-			LinkedList<FluidData> nowRe = manager.extract(k, false, simulate);
-			its[i++] = nowRe.iterator();
-			//处理后续管道
-			BlockPos pre = pos.offset(value);
-			TileEntity te = world.getTileEntity(pre);
-			if (te == null) continue;
-			IFluid cap = te.getCapability(FluidCapability.TRANSFER, value.getOpposite());
-			if (cap == null) continue;
-			result.combine(cap.extract(k, value.getOpposite(), simulate));
-		}
-		//将从其他方向上取出的数据汇总到主干
-		DataManager manager = getDataManager(facing);
-		result.setFinal(manager.extract(amount, facing, simulate), facing);
-		while (Arrays.stream(its).anyMatch(Iterator::hasNext)) {
-			Arrays.stream(its).filter(Iterator::hasNext)
-					.forEach(iterator -> manager.insert(iterator.next(), false, simulate));
-		}
-		return result;
+	public TransportContent extract(int amount, EnumFacing facing, boolean simulate) {
+		TransportContent result = new TransportContent();
+		if (!isOpen(facing)) return result;
+		return null;
 	}
 	
 	@Nonnull
 	@Override
-	public TransportResult insert(FluidData data, EnumFacing facing, boolean simulate) {
-		TransportResult result = new TransportResult();
-		if (!matchFacing(facing)) return result;
-		List<EnumFacing> next = next(facing);
-		IFluid.sortFacing(next);
-		LinkedList<FluidData> out = getDataManager(facing).insert(data, true, simulate);
-		List<FluidData>[] datas = split(out, next.size());
-		int i = -1;
-		for (EnumFacing value : next) {
-			++i;
-			DataManager manager = getDataManager(value);
-			List<FluidData> list = new LinkedList<>();
-			for (FluidData fluidData : datas[i]) {
-				list.addAll(manager.insert(fluidData, false, simulate));
-			}
-			BlockPos nextPos = pos.offset(value);
-			TileEntity nextTe = world.getTileEntity(nextPos);
-			if (nextTe == null)
-				return putFluid2World(data, facing.getOpposite(), simulate,
-						result, datas[i], nextPos, true, manager, this);
-			IFluid cap = nextTe.getCapability(FluidCapability.TRANSFER, facing.getOpposite());
-			if (cap == null)
-				return putFluid2World(data, facing.getOpposite(), simulate,
-						result, datas[i], nextPos, true, manager, this);
-			for (FluidData fluidData : datas[i]) {
-				result.combine(cap.insert(fluidData, facing, simulate));
-			}
-		}
-		return result;
-	}
-	
-	/* 将数据平均分割为指定份数 */
-	protected List<FluidData>[] split(List<FluidData> data, int copies) {
-		@SuppressWarnings("unchecked") List<FluidData>[] result = new List[copies];
-		if (copies == 1) {
-			result[0] = data;
-			return result;
-		}
-		int sum = data.stream().mapToInt(FluidData::getAmount).sum();
-		for (int i = 0; i < copies; ++i) {
-			int amount = i == (copies - 1) ? sum - (sum / copies * (copies - 1)) : sum / copies;
-			result[i] = new LinkedList<>();
-			Iterator<FluidData> iterator = data.iterator();
-			while (iterator.hasNext()) {
-				FluidData datum = iterator.next();
-				if (datum.getAmount() > amount) {
-					datum.plusAmount(-amount);
-					result[i].add(new FluidData(datum.getFluid(), amount));
-					break;
-				}
-				if (datum.getAmount() <= amount) {
-					amount -= datum.getAmount();
-					result[i].add(datum);
-					iterator.remove();
-					if (amount == 0) break;
-				}
-			}
-		}
-		return result;
-	}
-	
-	/**
-	 * 尝试将流体释放到世界中
-	 * @param data 要插入的流体
-	 * @param facing 流体流动方向
-	 * @param simulate 是否为模拟
-	 * @param result 结果对象
-	 * @param out 要排放的流体
-	 * @param next 目标方块
-	 * @param isInput 是否是由插入流体引发的操作，为false时不会将流体释放到世界
-	 * @param manager 参与计算的数据管理器
-	 * @return 输入的TransportResult对象
-	 */
-	public static TransportResult putFluid2World(FluidData data, EnumFacing facing, boolean simulate,
-	                                             TransportResult result, List<FluidData> out,
-	                                             BlockPos next, boolean isInput, DataManager manager, TileEntity te) {
-		List<FluidData> list = IFluid.putFluid2World(
-				te.getWorld(), te.getPos(), next, out, !isInput || simulate);
-		result.setFinal(list, facing);
-		int outAmount = list.stream().mapToInt(FluidData::getAmount).sum();
-		if ((!simulate) && outAmount != 0)
-			manager.insert(new FluidData(data.getFluid(), outAmount), facing.getOpposite(), false);
-		for (FluidData fluidData : list)
-			result.getNode(fluidData.getFluid()).plus(facing, fluidData.getAmount());
-		return result;
+	public TransportContent insert(FluidData data, EnumFacing facing, boolean simulate) {
+		TransportContent result = new TransportContent();
+		if (!isOpen(facing)) return result;
+		DataManager facingManager = getDataManager(facing);
+		return null;
 	}
 	
 }

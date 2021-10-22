@@ -5,17 +5,14 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidUtil;
 import xyz.emptydreams.mi.ModernIndustry;
 import xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability;
 import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
@@ -58,23 +55,9 @@ abstract public class Pipe extends TEBlockBase {
 		if (block instanceof Pipe) return;
 		FTTileEntity nowEntity = (FTTileEntity) world.getTileEntity(pos);
 		EnumFacing facing = WorldUtil.whatFacing(pos, neighbor);
-		if (fromEntity == null) nowEntity.unlink(facing);
+		if (fromEntity == null) nowEntity.removeLink(facing);
 		else nowEntity.link(facing);
 		nowEntity.markDirty();
-	}
-	
-	@SuppressWarnings("ConstantConditions")
-	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
-	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
-	                                float hitX, float hitY, float hitZ) {
-		if (FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, facing)) {
-			TileEntity te = worldIn.getTileEntity(pos);
-			IFluid cap = te.getCapability(FluidCapability.TRANSFER, facing);
-			cap.setSource(facing);
-			return true;
-		}
-		return false;
 	}
 	
 	@SuppressWarnings("ConstantConditions")

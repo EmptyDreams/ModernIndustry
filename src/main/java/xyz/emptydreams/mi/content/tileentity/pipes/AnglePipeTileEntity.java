@@ -8,7 +8,7 @@ import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.AngleFacingEnum;
-import xyz.emptydreams.mi.content.tileentity.pipes.data.DataManager;
+import xyz.emptydreams.mi.api.fluid.data.DataManager;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -40,8 +40,9 @@ public class AnglePipeTileEntity extends FTTileEntity {
 			throw new IllegalArgumentException("最大容量[" + getMaxAmount() + "]应当能被2整除");
 		this.facing = facing;
 		this.after = after;
-		facingData = DataManager.instance(getFacing(), getMaxAmount() / 2);
-		afterData = DataManager.instance(getAfter(), getMaxAmount() / 2);
+		int max = getMaxAmount() / 2;
+		facingData = new DataManager(max);
+		afterData = new DataManager(max);
 	}
 	
 	@Override
@@ -61,11 +62,6 @@ public class AnglePipeTileEntity extends FTTileEntity {
 		if (facing == this.facing) return facingData;
 		else if (facing == this.after) return afterData;
 		throw new IllegalArgumentException("输入方向上没有开口：" + facing);
-	}
-	
-	@Override
-	protected boolean matchFacing(EnumFacing facing) {
-		return facing == this.facing || facing == this.after;
 	}
 	
 	@Override
@@ -106,36 +102,37 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	}
 	
 	@Override
+	public void removeLink(EnumFacing facing) {
+		if (facing == this.facing) {
+			this.facing = after;
+			after = facing;
+		}
+		super.removeLink(facing);
+	}
+	
+	@Override
 	public boolean link(EnumFacing facing) {
 		if (isLinked(facing)) return true;
 		if (!canLink(facing)) return false;
-		if (facing == DOWN || facing == UP) {
+		if (facing.getAxis() == Axis.Y) {
 			if (linkData == 0) {
 				this.facing = facing;
 				if (after == DOWN || after == UP) after = NORTH;
 			} else {
 				after = facing;
+				if (this.facing.getAxis() == Axis.Y) this.facing = NORTH;
 			}
 		} else {
 			if (linkData == 0) {
 				this.facing = facing;
-				if (after == facing || after == facing.getOpposite()) {
-					after = UP;
-				}
-			} else if (getLinkAmount() == 1) {
-				if (isLinked(this.facing)) after = facing;
-				else this.facing = facing;
+				if (after.getAxis() == facing.getAxis()) after = UP;
+			} else {
+				after = facing;
 			}
 		}
 		setLinkedData(facing, true);
-		rotate();
 		updateBlockState(false);
 		return true;
-	}
-	
-	protected void rotate() {
-		facingData = facingData.rotate(facing);
-		afterData = afterData.rotate(after);
 	}
 	
 	public EnumFacing getFacing() {

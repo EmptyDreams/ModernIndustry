@@ -3,8 +3,7 @@ package xyz.emptydreams.mi.api.fluid;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import xyz.emptydreams.mi.content.tileentity.pipes.data.CommonDataManager;
-import xyz.emptydreams.mi.content.tileentity.pipes.data.FluidData;
+import xyz.emptydreams.mi.api.fluid.data.FluidData;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -19,27 +18,38 @@ public final class TransportResult {
 	
 	private final List<Node> list = new LinkedList<>();
 	/** 实际运输量 */
-	private int now = 0;
+	private int realTransport = 0;
 	/** 被排出管道的流体 */
-	private CommonDataManager out;
+	private final List<FluidData> out = new LinkedList<>();
 	
-	public int getNow() {
-		return now;
+	public int getRealTransport() {
+		return realTransport;
 	}
 	
-	public void plusNow(int amount) {
-		now += amount;
+	public void plusRealTransport(int amount) {
+		realTransport += amount;
 	}
 	
-	public void plusNow(FluidStack stack) {
+	public void plusRealTransport(FluidStack stack) {
 		if (stack == null) return;
-		now += stack.amount;
+		realTransport += stack.amount;
 	}
 	
 	/** 增加指定方向上的运输量 */
 	public void plus(EnumFacing facing, FluidStack stack) {
 		if (stack == null) return;
-		getNode(stack.getFluid()).plus(facing, stack.amount);
+		plus(facing, stack.getFluid(), stack.amount);
+	}
+	
+	/** 增加指定方向上的运输量 */
+	public void plus(EnumFacing facing, FluidData data) {
+		plus(facing, data.getFluid(), data.getAmount());
+	}
+	
+	/** 增加指定方向上的运输量 */
+	public void plus(EnumFacing facing, Fluid fluid, int amount) {
+		if (fluid == null) return;
+		getNode(fluid).plus(facing, amount);
 	}
 	
 	@Nonnull
@@ -54,18 +64,23 @@ public final class TransportResult {
 	
 	/** 设置最终被挤出管道的流体 */
 	public void setFinal(Collection<FluidData> out, EnumFacing facing) {
-		if (out.isEmpty()) {
-			this.out = null;
-			return;
+		o : for (FluidData in : out) {
+			for (FluidData data : this.out) {
+				if (data.getFluid() == in.getFluid()) {
+					data.plusAmount(in.getAmount());
+					continue o;
+				}
+			}
+			out.add(in.copy());
 		}
-		int size = out.stream().mapToInt(FluidData::getAmount).sum();
-		this.out = new CommonDataManager(facing, size);
-		out.forEach(it -> this.out.insert(it, facing, false));
 	}
 	
-	/** 获取最终被挤出管道的流体 */
-	public CommonDataManager getFinal() {
-		return out;
+	/**
+	 * 判断是否运输且只运输了指定的流体
+	 * @param fluid 指定的流体
+	 */
+	public boolean isPure(Fluid fluid) {
+		return list.size() == 1 && list.get(0).getFluid() == fluid;
 	}
 	
 	/** 获取总运输量 */
@@ -77,20 +92,9 @@ public final class TransportResult {
 	 * 将另一个TransportResult中的数据合并到该对象中
 	 * @return 本对象
 	 */
+	@SuppressWarnings("UnusedReturnValue")
 	public TransportResult combine(TransportResult other) {
-		if (out == null) {
-			out = other.out;
-		} else if (other.out != null) {
-			CommonDataManager newOut = new CommonDataManager(
-					EnumFacing.NORTH, out.getMax() + other.out.getMax());
-			for (FluidData data : out.extract(out.getMax(), false, true)) {
-				newOut.insert(data, true, false);
-			}
-			for (FluidData data : other.out.extract(other.out.getMax(), false, true)) {
-				newOut.insert(data, true, false);
-			}
-			out = newOut;
-		}
+		out.addAll(other.out);
 		for (Node node : other.list) {
 			Node now = getNode(node.getFluid());
 			now.up += node.up;

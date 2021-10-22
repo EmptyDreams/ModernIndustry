@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.utils;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -7,7 +8,10 @@ import xyz.emptydreams.mi.api.gui.component.interfaces.IComponent;
 import xyz.emptydreams.mi.api.utils.data.math.Point2D;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Random;
+import java.util.function.Supplier;
 
 /**
  * 有关数学的计算
@@ -16,6 +20,65 @@ import java.util.Random;
 public final class MathUtil {
 	
 	private static final Random RANDOM = new Random();
+	
+	/**
+	 * 在数组中按序搜索指定元素
+	 * @param key 要查找的值
+	 * @param array 数组
+	 * @param <T> 数组和值的类型
+	 * @return 元素在数组中的下标，如果不存在则返回-1
+	 */
+	@SafeVarargs
+	public static <T> int searchElement(T key, T... array) {
+		if (key == null) {
+			for (int i = 0; i < array.length; i++) {
+				T t = array[i];
+				if (t == null) return i;
+			}
+		} else {
+			for (int i = 0; i < array.length; i++) {
+				T t = array[i];
+				if (t == null) continue;
+				if (key.hashCode() == t.hashCode() && key.equals(t)) return i;
+			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * 生成一个包含指定内容的Object2ObjectMap
+	 * @param keys Key值列表
+	 * @param values Value值列表
+	 * @param <K> Key值类型
+	 * @param <V> Value值类型
+	 * @throws IllegalArgumentException 如果输入的两个数组长度不相等
+	 */
+	@Nonnull
+	public static <K, V> Map<K, V> createArrayMap(K[] keys, V[] values) {
+		return createMap(() -> new Object2ObjectArrayMap<>(keys.length), keys, values);
+	}
+	
+	/**
+	 * 生成一个包含指定内容的Map
+	 * @param creater 构建器，用于生成一个Map对象
+	 * @param keys Key值列表
+	 * @param values Value值列表
+	 * @param <K> Key值类型
+	 * @param <V> Value值类型
+	 * @throws IllegalArgumentException 如果输入的两个数组长度不相等
+	 */
+	@Nonnull
+	public static <K, V> Map<K, V> createMap(Supplier<Map<K, V>> creater, K[] keys, V[] values) {
+		if (keys.length != values.length)
+			throw new IllegalArgumentException(
+				"输入的Keys和Values数量不相等：keys="
+						+ Arrays.toString(keys) + "; values=" + Arrays.toString(values));
+		Map<K, V> result = creater.get();
+		for (int i = 0; i < keys.length; ++i) {
+			result.put(keys[i], values[i]);
+		}
+		return result;
+	}
 	
 	/**
 	 * 获取玩家朝向

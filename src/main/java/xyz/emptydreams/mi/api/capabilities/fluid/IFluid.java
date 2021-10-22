@@ -1,19 +1,12 @@
 package xyz.emptydreams.mi.api.capabilities.fluid;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import xyz.emptydreams.mi.api.fluid.TransportResult;
-import xyz.emptydreams.mi.api.utils.WorldUtil;
-import xyz.emptydreams.mi.content.tileentity.pipes.data.FluidData;
+import xyz.emptydreams.mi.api.fluid.TransportContent;
+import xyz.emptydreams.mi.api.fluid.data.FluidData;
 
 import javax.annotation.Nonnull;
-import java.util.LinkedList;
 import java.util.List;
-
-import static net.minecraft.util.EnumFacing.*;
 
 /**
  * 流体管道信息
@@ -29,11 +22,6 @@ public interface IFluid {
 		return 1000;
 	}
 	
-	/** 获取容器最大流量 */
-	default int getMaxCirculation() {
-		return 100;
-	}
-	
 	/** 判断容器是否为空 */
 	boolean isEmpty();
 	
@@ -45,23 +33,17 @@ public interface IFluid {
 	 * @return 运算结果
 	 */
 	@Nonnull
-	TransportResult extract(int amount, EnumFacing facing, boolean simulate);
+	TransportContent extract(int amount, EnumFacing facing, boolean simulate);
 	
 	/**
 	 * 放入指定数额的流体
 	 * @param data 输入的流体
 	 * @param facing 流体输入的方向在方块的方向
 	 * @param simulate 是否为模拟，为true时不修改内部数据
-	 * @return 运算结果
+	 * @return 被挤出的流体量
 	 */
 	@Nonnull
-	TransportResult insert(FluidData data, EnumFacing facing, boolean simulate);
-	
-	/** 设置流体来源方向 */
-	void setSource(EnumFacing facing);
-	
-	/** 获取流体来源方向 */
-	EnumFacing getSource();
+	TransportContent insert(FluidData data, EnumFacing facing, boolean simulate);
 	
 	/**
 	 * 获取下一个可用的流体去向
@@ -83,15 +65,6 @@ public interface IFluid {
 		return hasPlug(facing) && !isLinked(facing);
 	}
 	
-	/** 获取容器已经连接的数量 */
-	default int getLinkAmount() {
-		int result = 0;
-		for (EnumFacing value : values()) {
-			if (isLinked(value)) ++result;
-		}
-		return result;
-	}
-	
 	/**
 	 * 连接指定方向上的设备
 	 * @param facing 方向
@@ -103,9 +76,12 @@ public interface IFluid {
 	 * 断开与指定方向上的设备的连接
 	 * @param facing 方向
 	 */
-	void unlink(EnumFacing facing);
+	void removeLink(EnumFacing facing);
 	
-	/** 是否连接指定方向 */
+	/**
+	 * <p>是否连接指定方向
+	 * <p>如果不是管道一类的对连接敏感的方块，该方法可以返回{@link #isOpen(EnumFacing)}的值
+	 */
 	default boolean isLinked(EnumFacing facing) {
 		switch (facing) {
 			case DOWN: return isLinkedDown();
@@ -183,6 +159,10 @@ public interface IFluid {
 	 */
 	boolean setPlugEast(ItemStack plug);
 	
+	/**
+	 * 判定指定方向上是否有管塞
+	 * @param facing 指定方向
+	 */
 	default boolean hasPlug(EnumFacing facing) {
 		switch (facing) {
 			case DOWN: return hasPlugDown();
@@ -208,61 +188,9 @@ public interface IFluid {
 	boolean hasPlugEast();
 	
 	/** 判断指定方向上能否通过流体 */
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	default boolean isOpen(EnumFacing facing) {
 		return hasAperture(facing) && !hasPlug(facing);
-	}
-	
-	/** 按照传输优先级对可选方向进行排序 */
-	static void sortFacing(List<EnumFacing> facings) {
-		if (facings.isEmpty()) return;
-		facings.sort((o1, o2) -> {
-			if (o1 == o2) return 0;
-			if (o1.getAxis() == Axis.Y) return o1 == UP ? -1 : 1;
-			else return o2.getAxis() == Axis.Y ? -1 : 0;
-		});
-	}
-	
-	/**
-	 * 将列表中的同种元素合并，不修改传入的列表
-	 * @param list 列表
-	 * @return 整合后的列表
-	 */
-	@Nonnull
-	static List<FluidData> integrate(List<FluidData> list) {
-		List<FluidData> result = new LinkedList<>();
-		o : for (FluidData data : list) {
-			for (FluidData inner : result) {
-				if (inner.getFluid() == data.getFluid()) {
-					inner.plusAmount(data.getAmount());
-					continue o;
-				}
-			}
-			result.add(data.copy());
-		}
-		return result;
-	}
-	
-	/**
-	 * 将流体释放到世界中
-	 * @param world 世界对象
-	 * @param pos 当前坐标
-	 * @param target 目标坐标
-	 * @param out 要释放的流体
-	 * @return 一个列表，包含被释放的流体
-	 */
-	static List<FluidData> putFluid2World(World world, BlockPos pos, BlockPos target,
-	                                      List<FluidData> out, boolean simulate) {
-		List<FluidData> result = new LinkedList<>();
-		Block block = world.getBlockState(pos).getBlock();
-		if (!block.isReplaceable(world, pos)) return result;
-		out = integrate(out);
-		for (FluidData data : out) {
-			if ((!data.isAir()) && data.getAmount() >= 1000) {
-				result.add(data);
-				if (!simulate) WorldUtil.putFluid(world, pos, target, data.getFluid());
-			}
-		}
-		return result;
 	}
 	
 }

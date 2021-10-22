@@ -9,18 +9,22 @@ import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 import xyz.emptydreams.mi.content.blocks.base.EleTransferBlock;
+import xyz.emptydreams.mi.api.fluid.data.FluidData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -74,6 +78,18 @@ public final class WorldUtil {
 			if (player != null) return player;
 		}
 		return null;
+	}
+	
+	/**
+	 * 获取指定区域内的玩家列表
+	 * @param world 世界对象
+	 * @param range 范围
+	 */
+	@Nonnull
+	public static List<EntityPlayer> getPlayersInRange(World world, Range3D range) {
+		List<EntityPlayer> result = new LinkedList<>();
+		forEachPlayers(world, range, result::add);
+		return result;
 	}
 	
 	/**
@@ -171,15 +187,51 @@ public final class WorldUtil {
 	}
 	
 	/**
+	 * <p>将流体释放到世界中。
+	 * <p>与{@link #putFluid2World(World, BlockPos, Fluid)}不同的是，该方法会将流体以垂直的形式放置到世界中
+	 * @param world 世界对象
+	 *
+	 * @param target 目标坐标
+	 * @param out 要释放的流体
+	 * @return 释放出的流体总量
+	 */
+	public static int bleedFluid2World(World world, BlockPos target, FluidData out, boolean simulate) {
+		Fluid fluid = out.getFluid();
+		if (out.getAmount() < 1000 || fluid == null || !fluid.canBePlacedInWorld()) return 0;
+		Block targetBlock = world.getBlockState(target).getBlock();
+		if (targetBlock != fluid.getBlock()) {
+			if (!targetBlock.isReplaceable(world, target)) return 0;
+			FluidStack stack = out.toStack();
+			List<EntityPlayer> players = WorldUtil.getPlayersInRange(world, new Range3D(target, 16));
+			if (world.provider.doesWaterVaporize() && fluid.doesVaporize(stack)) {
+				if (!simulate) players.forEach(it -> fluid.vaporize(it, world, target, stack));
+			} else {
+				if (!simulate) {
+					WorldUtil.putFluid2World(world, target, fluid);
+					SoundEvent soundevent = fluid.getEmptySound(stack);
+					players.forEach(it -> world.playSound(it,
+							target, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F));
+				}
+			}
+			int result = 1000;
+			if (out.getAmount() >= 2000) {
+				result += bleedFluid2World(world, target, out.copy(out.getAmount() - 1000), simulate);
+			}
+			return result;
+		} else {
+			return bleedFluid2World(world, target.offset(EnumFacing.DOWN), out, simulate);
+		}
+	}
+	
+	/**
 	 * 放置流体到世界
 	 * @param world 世界
 	 * @param pos 坐标
-	 * @param from 周围的方块坐标
 	 * @param fluid 流体
 	 */
-	public static void putFluid(World world, BlockPos pos, BlockPos from, Fluid fluid) {
+	public static void putFluid2World(World world, BlockPos pos, Fluid fluid) {
 		setBlockState(world, pos, fluid.getBlock().getDefaultState());
-		fluid.getBlock().onNeighborChange(world, pos, from);
+		fluid.getBlock().onNeighborChange(world, pos, pos.offset(EnumFacing.NORTH));
 	}
 	
 	/**
@@ -206,21 +258,6 @@ public final class WorldUtil {
 		double height = box.maxY - box.minY;
 		double length = box.maxZ - box.minZ;
 		return (width * height * length) >= 0.75;
-	}
-	
-	/**
-	 * 在指定位置放置流体
-	 * @param world 世界
-	 * @param pos 放置流体的坐标
-	 * @param fluid 流体
-	 * @param fromPos 与流体相邻的任意坐标
-	 */
-	public static void setFluid(World world, BlockPos pos, Fluid fluid, BlockPos fromPos) {
-		Block block = fluid.getBlock();
-		IBlockState state = block.getDefaultState();
-		setBlockState(world, pos, state);
-		Block fromBlock = world.getBlockState(fromPos).getBlock();
-		block.neighborChanged(state, world, pos, fromBlock, fromPos);
 	}
 	
 	/**
