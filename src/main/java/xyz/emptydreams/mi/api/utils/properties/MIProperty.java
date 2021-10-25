@@ -22,6 +22,8 @@ public final class MIProperty {
 	/** 状态：竖直方向 */
 	public static final PropertyDirection VERTICAL =
 					PropertyDirection.create("vertical", EnumFacing.Plane.VERTICAL);
+	/** 状态：所有方向 */
+	public static final PropertyAxis ALL_AXIS = PropertyAxis.createAll("axis");
 	
 	
 }

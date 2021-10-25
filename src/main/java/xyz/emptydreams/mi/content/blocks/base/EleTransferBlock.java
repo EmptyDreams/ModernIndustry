@@ -165,6 +165,10 @@ abstract public class EleTransferBlock extends TEBlockBase {
 			return;
 		}
 		IStorage fromStorage = fromEntity.getCapability(EleCapability.ENERGY, facing.getOpposite());
+		if (fromStorage == null) {
+			nowStorage.unLink(fromPos);
+			return;
+		}
 		linkBoth(nowStorage, fromStorage, pos, fromPos);
 	}
 	

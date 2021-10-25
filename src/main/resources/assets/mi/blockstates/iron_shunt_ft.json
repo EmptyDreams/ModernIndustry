@@ -5,13 +5,10 @@
   },
   "variants": {
     "inventory": [{ }],
-    "all_facing": {
-      "north": { "x": 90 },
-      "east": { "x": 90, "y": 90 },
-      "west": { "x": 90, "y": 90 },
-      "south": { "x": 90 },
-      "up": { },
-      "down": { }
+    "axis": {
+      "z": { "x": 90 },
+      "x": { "x": 90, "y": 90 },
+      "y": { }
     }
   }
 }

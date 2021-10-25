@@ -7,6 +7,7 @@ import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.fluid.TransportContent;
+import xyz.emptydreams.mi.api.fluid.data.DataManagerGroup;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.fluid.data.DataManager;
@@ -25,10 +26,12 @@ import java.util.List;
 @AutoTileEntity("StraightPipe")
 public class StraightPipeTileEntity extends FTTileEntity {
 	
+	/** */
+	protected final DataManagerGroup group = new DataManagerGroup();
 	/** 管道朝向 */
 	@Storage protected EnumFacing facing;
 	/** 管道存储内容，高位为管道正方向 */
-	protected DataManager manager;
+	protected DataManager manager = new DataManager(getMaxAmount());
 	
 	public StraightPipeTileEntity() {
 		this(EnumFacing.NORTH);
@@ -36,7 +39,8 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	
 	public StraightPipeTileEntity(EnumFacing facing) {
 		this.facing = facing;
-		manager = new DataManager(getMaxAmount());
+		group.setManager(facing, manager);
+		group.setManager(facing.getOpposite(), DataManager.opposite(manager));
 	}
 	
 	@Override
@@ -49,11 +53,10 @@ public class StraightPipeTileEntity extends FTTileEntity {
 		facing = EnumFacing.values()[reader.readByte()];
 	}
 	
-	@Nullable
+	@Nonnull
 	@Override
-	protected DataManager getDataManager(EnumFacing facing) {
-		if (facing.getAxis() == this.facing.getAxis()) return manager;
-		throw new IllegalArgumentException("输入方向上没有开口：" + facing);
+	protected DataManagerGroup getDataManagers() {
+		return group;
 	}
 	
 	@Override
@@ -72,6 +75,7 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	public TransportContent insert(FluidData data, EnumFacing facing, boolean simulate) {
 		TransportContent result = new TransportContent();
 		if (!isOpen(facing)) return result;     //如果插入方向上不能通过流体则直接退出
+		
 		return result;
 	}
 	

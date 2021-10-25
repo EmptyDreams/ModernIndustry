@@ -5,6 +5,7 @@ import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
+import xyz.emptydreams.mi.api.fluid.data.DataManagerGroup;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.AngleFacingEnum;
@@ -30,6 +31,7 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	@Storage protected EnumFacing after;
 	protected DataManager facingData;
 	protected DataManager afterData;
+	protected final DataManagerGroup group = new DataManagerGroup();
 	
 	public AnglePipeTileEntity() {
 		this(NORTH, UP);
@@ -43,6 +45,7 @@ public class AnglePipeTileEntity extends FTTileEntity {
 		int max = getMaxAmount() / 2;
 		facingData = new DataManager(max);
 		afterData = new DataManager(max);
+		
 	}
 	
 	@Override
@@ -58,10 +61,9 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	}
 	
 	@Override
-	protected DataManager getDataManager(EnumFacing facing) {
-		if (facing == this.facing) return facingData;
-		else if (facing == this.after) return afterData;
-		throw new IllegalArgumentException("输入方向上没有开口：" + facing);
+	@Nonnull
+	protected DataManagerGroup getDataManagers() {
+		return group;
 	}
 	
 	@Override

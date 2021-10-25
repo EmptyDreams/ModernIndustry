@@ -7,9 +7,32 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
+ * 流体数据管理器
  * @author EmptyDreams
  */
 public class DataManager {
+	
+	/** 翻转指定数据管理器的正方向 */
+	@Nonnull
+	public static DataManager opposite(DataManager manager) {
+		return new DataManager(manager.getMax()) {
+			@Override
+			public TransportContent insert(FluidData data, boolean isPositive, boolean simulate) {
+				return super.insert(data, !isPositive, simulate);
+			}
+			
+			@Nonnull
+			@Override
+			public FluidData extract(int amount, boolean isPositive, boolean simulate) {
+				return super.extract(amount, !isPositive, simulate);
+			}
+			
+			@Override
+			public int getVoidSpace(boolean isPositive) {
+				return super.getVoidSpace(!isPositive);
+			}
+		};
+	}
 	
 	/** 标记流体起点 */
 	protected int index = 0;

@@ -15,7 +15,7 @@ import xyz.emptydreams.mi.content.tileentity.pipes.ShuntPipeTileEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static xyz.emptydreams.mi.api.utils.properties.MIProperty.ALL_FACING;
+import static xyz.emptydreams.mi.api.utils.properties.MIProperty.ALL_AXIS;
 import static xyz.emptydreams.mi.content.blocks.base.pipes.StraightPipe.link;
 
 /**
@@ -25,28 +25,28 @@ public class ShuntPipe extends Pipe {
 	
 	public ShuntPipe(String name, String... ores) {
 		super(name, ores);
-		setDefaultState(blockState.getBaseState().withProperty(ALL_FACING, EnumFacing.UP));
+		setDefaultState(blockState.getBaseState().withProperty(ALL_AXIS, EnumFacing.Axis.Y));
 	}
 	
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, ALL_FACING);
+		return new BlockStateContainer(this, ALL_AXIS);
 	}
 	
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 		ShuntPipeTileEntity te = (ShuntPipeTileEntity) worldIn.getTileEntity(pos);
 		//noinspection ConstantConditions
-		return state.withProperty(ALL_FACING, te.getSide());
+		return state.withProperty(ALL_AXIS, te.getSide());
 	}
 	
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		state = state.getActualState(source, pos);
-		switch (state.getValue(ALL_FACING)) {
-			case DOWN: case UP: return new AxisAlignedBB(0, 1/4d, 0, 1, 3/4d, 1);
-			case NORTH: case SOUTH: return new AxisAlignedBB(0, 0, 1/4d, 1, 1, 3/4d);
+		switch (state.getValue(ALL_AXIS)) {
+			case Y: return new AxisAlignedBB(0, 1/4d, 0, 1, 3/4d, 1);
+			case Z: return new AxisAlignedBB(0, 0, 1/4d, 1, 1, 3/4d);
 			default: return new AxisAlignedBB(1/4d, 0, 0, 3/4d, 1, 1);
 		}
 	}

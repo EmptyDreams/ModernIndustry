@@ -15,6 +15,8 @@ import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
+import xyz.emptydreams.mi.api.fluid.data.DataManagerGroup;
+import xyz.emptydreams.mi.api.fluid.data.FluidData;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.net.handler.MessageSender;
 import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
@@ -24,8 +26,6 @@ import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
-import xyz.emptydreams.mi.api.fluid.data.FluidData;
-import xyz.emptydreams.mi.api.fluid.data.DataManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -316,15 +316,17 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	/**
 	 * 获取指定方向上的数据管理器
 	 * @throws IllegalArgumentException 如果指定方向上不存在数据管理器
+	 * @return
 	 */
 	@Nonnull
-	abstract protected DataManager getDataManager(EnumFacing facing);
+	abstract protected DataManagerGroup getDataManagers();
 	
 	@Nonnull
 	@Override
 	public TransportContent extract(int amount, EnumFacing facing, boolean simulate) {
 		TransportContent result = new TransportContent();
 		if (!isOpen(facing)) return result;
+		
 		return null;
 	}
 	
@@ -333,8 +335,9 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	public TransportContent insert(FluidData data, EnumFacing facing, boolean simulate) {
 		TransportContent result = new TransportContent();
 		if (!isOpen(facing)) return result;
-		DataManager facingManager = getDataManager(facing);
-		return null;
+		//DataManager facingManager = getDataManagers();
+		
+		return result;
 	}
 	
 }

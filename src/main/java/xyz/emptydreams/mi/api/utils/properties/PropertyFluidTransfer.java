@@ -19,8 +19,7 @@ public class PropertyFluidTransfer extends PropertyEnum<FTStateEnum> {
 	/**
 	 * 通过名称创建一个新的实例
 	 */
-	public static PropertyFluidTransfer create(String name)
-	{
+	public static PropertyFluidTransfer create(String name) {
 		return new PropertyFluidTransfer(name, Arrays.asList(FTStateEnum.values()));
 	}
 	
