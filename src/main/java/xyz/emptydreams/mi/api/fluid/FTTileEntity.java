@@ -324,39 +324,56 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	@Override
 	public TransportResult extract(int amount, EnumFacing facing, boolean simulate) {
 		TransportResult result = new TransportResult();
-		if (!isOpen(facing)) return result;
+		if (!isOpen(facing)) return result;                 //判断输出方向是否有开口
+		DataManagerGroup managers = getDataManagers();
+		if (!managers.hasManager(facing)) return result;    //判断输出方向上能否操作
 		
-		return null;
+		return result;
 	}
 	
 	@Nonnull
 	@Override
 	public TransportResult insert(FluidData data, EnumFacing facing, boolean simulate) {
 		TransportResult result = new TransportResult();
-		if (!isOpen(facing)) return result;
+		if (!isOpen(facing)) return result;                 //判断输入方向是否有开口
 		DataManagerGroup managers = getDataManagers();
+		if (!managers.hasManager(facing)) return result;    //判断输入方向能否进行操作
 		DataManager fromManager = managers.getManager(facing);
+		//模拟输入操作获取被输入方向挤出来的流体
 		TransportContent fromInsert = fromManager.insert(data, true, true);
-		int all = fromInsert.getAmount();
+		int amount = 0;      //存储运输距离
+		//如果管道在下方可以进行操作并且输入方向不为下方则优先对下方进行运算
 		if (facing != DOWN && managers.hasManager(DOWN)) {
-			DataManager downManager = managers.getManager(DOWN);
-			transportData(result, DOWN, downManager, fromInsert, simulate);
+			amount += transportData(result, DOWN, managers.getManager(DOWN), fromInsert, simulate);
 		}
+		//遍历水平方向
 		for (EnumFacing horizontal : HORIZONTALS) {
 			if (horizontal == facing || !managers.hasManager(horizontal)) continue;
 			DataManager horizontalManager = managers.getManager(horizontal);
-			transportData(result, horizontal, horizontalManager, fromInsert, simulate);
+			amount += transportData(result, horizontal, horizontalManager, fromInsert, simulate);
 			if (fromInsert.isEmpty()) break;
 		}
+		//如果管道在上方可以进行操作并且输入方向不为上方则对上方进行运算
 		if (facing != UP && managers.hasManager(UP)) {
-			transportData(result, UP, managers.getManager(UP), fromInsert, simulate);
+			amount += transportData(result, UP, managers.getManager(UP), fromInsert, simulate);
 		}
-		result.setRealTransport(all - fromInsert.getAmount());
+		result.setRealTransport(amount);
+		//如果不是模拟则修改输入方向的数据
+		if (!simulate) fromManager.insert(data.copy(amount), true, false);
 		return result;
 	}
 	
-	protected static void transportData(TransportResult result, EnumFacing facing,
+	/**
+	 * @param result 存储结果的对象
+	 * @param facing 运输方向
+	 * @param manager 数据管理类对象
+	 * @param list 要插入的流体数据
+	 * @param simulate 是否为模拟
+	 * @return 运输量
+	 */
+	protected static int transportData(TransportResult result, EnumFacing facing,
 	                                    DataManager manager, Iterable<FluidData> list, boolean simulate) {
+		int sum = 0;
 		Iterator<FluidData> iterator = list.iterator();
 		while (iterator.hasNext()) {
 			FluidData fluidData = iterator.next();
@@ -364,8 +381,10 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 			result.add(facing, content);
 			result.plusRealTransport(content.getTransportAmount());
 			fluidData.minusAmount(content.getTransportAmount());
+			sum += content.getTransportAmount();
 			if (fluidData.isEmpty()) iterator.remove();
 		}
+		return sum;
 	}
 	
 }
