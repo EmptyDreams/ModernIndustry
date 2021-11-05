@@ -2,7 +2,7 @@ package xyz.emptydreams.mi.api.capabilities.fluid;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import xyz.emptydreams.mi.api.fluid.TransportContent;
+import xyz.emptydreams.mi.api.fluid.TransportResult;
 import xyz.emptydreams.mi.api.fluid.data.FluidData;
 
 import javax.annotation.Nonnull;
@@ -33,7 +33,7 @@ public interface IFluid {
 	 * @return 运算结果
 	 */
 	@Nonnull
-	TransportContent extract(int amount, EnumFacing facing, boolean simulate);
+	TransportResult extract(int amount, EnumFacing facing, boolean simulate);
 	
 	/**
 	 * 放入指定数额的流体
@@ -43,7 +43,7 @@ public interface IFluid {
 	 * @return 被挤出的流体量
 	 */
 	@Nonnull
-	TransportContent insert(FluidData data, EnumFacing facing, boolean simulate);
+	TransportResult insert(FluidData data, EnumFacing facing, boolean simulate);
 	
 	/**
 	 * 获取下一个可用的流体去向

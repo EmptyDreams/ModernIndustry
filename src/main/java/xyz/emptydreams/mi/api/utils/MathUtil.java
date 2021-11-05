@@ -1,5 +1,6 @@
 package xyz.emptydreams.mi.api.utils;
 
+import it.unimi.dsi.fastutil.objects.Object2IntFunction;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
@@ -20,6 +21,20 @@ import java.util.function.Supplier;
 public final class MathUtil {
 	
 	private static final Random RANDOM = new Random();
+	
+	/**
+	 * 对某个可遍历的对象求和
+	 * @param iterable 需要遍历的对象
+	 * @param getter 将T类型的对象转换为int类型
+	 * @param <T> 遍历类型
+	 */
+	public static <T> int sumInt(Iterable<T> iterable, Object2IntFunction<T> getter) {
+		int result = 0;
+		for (T t : iterable) {
+			result += getter.get(t);
+		}
+		return result;
+	}
 	
 	/**
 	 * 在数组中按序搜索指定元素

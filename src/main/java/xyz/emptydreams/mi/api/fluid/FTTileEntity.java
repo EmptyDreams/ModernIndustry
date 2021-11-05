@@ -15,6 +15,7 @@ import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
+import xyz.emptydreams.mi.api.fluid.data.DataManager;
 import xyz.emptydreams.mi.api.fluid.data.DataManagerGroup;
 import xyz.emptydreams.mi.api.fluid.data.FluidData;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
@@ -31,6 +32,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -159,6 +161,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	 * 更新管道tickable的状态
 	 * @return 如果移除成功则返回true
 	 */
+	@SuppressWarnings("UnusedReturnValue")
 	public boolean updateTickableState() {
 		if (!isRemove && isEmpty()) {
 			isRemove = true;
@@ -313,18 +316,14 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		markDirty();
 	}
 	
-	/**
-	 * 获取指定方向上的数据管理器
-	 * @throws IllegalArgumentException 如果指定方向上不存在数据管理器
-	 * @return
-	 */
+	/** 获取数据管理器 */
 	@Nonnull
 	abstract protected DataManagerGroup getDataManagers();
 	
 	@Nonnull
 	@Override
-	public TransportContent extract(int amount, EnumFacing facing, boolean simulate) {
-		TransportContent result = new TransportContent();
+	public TransportResult extract(int amount, EnumFacing facing, boolean simulate) {
+		TransportResult result = new TransportResult();
 		if (!isOpen(facing)) return result;
 		
 		return null;
@@ -332,12 +331,41 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	
 	@Nonnull
 	@Override
-	public TransportContent insert(FluidData data, EnumFacing facing, boolean simulate) {
-		TransportContent result = new TransportContent();
+	public TransportResult insert(FluidData data, EnumFacing facing, boolean simulate) {
+		TransportResult result = new TransportResult();
 		if (!isOpen(facing)) return result;
-		//DataManager facingManager = getDataManagers();
-		
+		DataManagerGroup managers = getDataManagers();
+		DataManager fromManager = managers.getManager(facing);
+		TransportContent fromInsert = fromManager.insert(data, true, true);
+		int all = fromInsert.getAmount();
+		if (facing != DOWN && managers.hasManager(DOWN)) {
+			DataManager downManager = managers.getManager(DOWN);
+			transportData(result, DOWN, downManager, fromInsert, simulate);
+		}
+		for (EnumFacing horizontal : HORIZONTALS) {
+			if (horizontal == facing || !managers.hasManager(horizontal)) continue;
+			DataManager horizontalManager = managers.getManager(horizontal);
+			transportData(result, horizontal, horizontalManager, fromInsert, simulate);
+			if (fromInsert.isEmpty()) break;
+		}
+		if (facing != UP && managers.hasManager(UP)) {
+			transportData(result, UP, managers.getManager(UP), fromInsert, simulate);
+		}
+		result.setRealTransport(all - fromInsert.getAmount());
 		return result;
+	}
+	
+	protected static void transportData(TransportResult result, EnumFacing facing,
+	                                    DataManager manager, Iterable<FluidData> list, boolean simulate) {
+		Iterator<FluidData> iterator = list.iterator();
+		while (iterator.hasNext()) {
+			FluidData fluidData = iterator.next();
+			TransportContent content = manager.insert(fluidData, false, simulate);
+			result.add(facing, content);
+			result.plusRealTransport(content.getTransportAmount());
+			fluidData.minusAmount(content.getTransportAmount());
+			if (fluidData.isEmpty()) iterator.remove();
+		}
 	}
 	
 }

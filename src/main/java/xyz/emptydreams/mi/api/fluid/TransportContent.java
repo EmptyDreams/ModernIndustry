@@ -33,6 +33,28 @@ public final class TransportContent implements Iterable<FluidData> {
 		content.add(data.copy());
 	}
 	
+	/**
+	 * 尝试移除指定流体数据
+	 * @param data 要移除的流体数据
+	 * @return 成功移除的量
+	 */
+	public int remove(FluidData data) {
+		int amount = data.getAmount();
+		Iterator<FluidData> iterator = content.iterator();
+		while (amount != 0 && iterator.hasNext()) {
+			FluidData it = iterator.next();
+			if (it.getFluid() != data.getFluid()) continue;
+			if (amount >= it.getAmount()) {
+				amount -= it.getAmount();
+				iterator.remove();
+			} else {
+				it.minusAmount(amount);
+				amount = 0;
+			}
+		}
+		return data.getAmount() - amount;
+	}
+	
 	/** 增加运输量 */
 	public void plusTransportAmount(int amount) {
 		this.amount += amount;
@@ -60,6 +82,19 @@ public final class TransportContent implements Iterable<FluidData> {
 	/** 获取运输量 */
 	public int getTransportAmount() {
 		return amount;
+	}
+	
+	/** 判断是否为空 */
+	public boolean isEmpty() {
+		return content.isEmpty();
+	}
+	
+	/** 深度复制对象 */
+	public TransportContent copy() {
+		TransportContent result = new TransportContent();
+		this.content.forEach(it -> result.content.add(it.copy()));
+		result.amount = this.amount;
+		return result;
 	}
 	
 	@Override

@@ -6,12 +6,12 @@ import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
-import xyz.emptydreams.mi.api.fluid.TransportContent;
+import xyz.emptydreams.mi.api.fluid.TransportResult;
+import xyz.emptydreams.mi.api.fluid.data.DataManager;
 import xyz.emptydreams.mi.api.fluid.data.DataManagerGroup;
+import xyz.emptydreams.mi.api.fluid.data.FluidData;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
-import xyz.emptydreams.mi.api.fluid.data.DataManager;
-import xyz.emptydreams.mi.api.fluid.data.FluidData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -65,15 +65,15 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	}
 	
 	@Override
-	public TransportContent extract(int amount, EnumFacing facing, boolean simulate) {
-		TransportContent result = new TransportContent();
+	public TransportResult extract(int amount, EnumFacing facing, boolean simulate) {
+		TransportResult result = new TransportResult();
 		if (!isOpen(facing)) return result;     //如果插入方向上不能通过流体则直接退出
 		return result;
 	}
 	
 	@Override
-	public TransportContent insert(FluidData data, EnumFacing facing, boolean simulate) {
-		TransportContent result = new TransportContent();
+	public TransportResult insert(FluidData data, EnumFacing facing, boolean simulate) {
+		TransportResult result = new TransportResult();
 		if (!isOpen(facing)) return result;     //如果插入方向上不能通过流体则直接退出
 		
 		return result;

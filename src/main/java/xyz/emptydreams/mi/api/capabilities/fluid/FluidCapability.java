@@ -6,9 +6,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import xyz.emptydreams.mi.api.fluid.TransportContent;
-import xyz.emptydreams.mi.api.register.others.AutoLoader;
+import xyz.emptydreams.mi.api.fluid.TransportResult;
 import xyz.emptydreams.mi.api.fluid.data.FluidData;
+import xyz.emptydreams.mi.api.register.others.AutoLoader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,12 +46,12 @@ public class FluidCapability {
 						return false;
 					}
 					@Override
-					public TransportContent extract(int amount, EnumFacing facing, boolean simulate) {
-						return new TransportContent();
+					public TransportResult extract(int amount, EnumFacing facing, boolean simulate) {
+						return new TransportResult();
 					}
 					@Override
-					public TransportContent insert(FluidData data, EnumFacing facing, boolean simulate) {
-						return new TransportContent();
+					public TransportResult insert(FluidData data, EnumFacing facing, boolean simulate) {
+						return new TransportResult();
 					}
 					@Nonnull
 					@Override

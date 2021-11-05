@@ -72,6 +72,16 @@ public class FluidData {
 		return fluid;
 	}
 	
+	/** 判断当前数据的流体类型是否为指定流体 */
+	public boolean matchFluid(Fluid fluid) {
+		return getFluid() == fluid;
+	}
+	
+	/** 判断当前数据与指定数据的流体类型是否相同 */
+	public boolean matchFluid(FluidData data) {
+		return getFluid() == data.getFluid();
+	}
+	
 	/** 复制当前对象 */
 	@Nonnull
 	public FluidData copy() {

@@ -5,6 +5,7 @@ import net.minecraft.util.EnumFacing;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 /**
  * @author EmptyDreams
@@ -23,6 +24,13 @@ public class DataManagerGroup implements Iterable<Map.Entry<EnumFacing, DataMana
 	
 	public boolean hasManager(EnumFacing facing) {
 		return managers.containsKey(facing);
+	}
+	
+	/** 遍历水平方向上的管理类 */
+	public void foreachHorizontal(BiConsumer<? super EnumFacing, ? super DataManager> consumer) {
+		managers.forEach((facing, manager) -> {
+			if (facing.getAxis().isHorizontal()) consumer.accept(facing, manager);
+		});
 	}
 	
 	@Override
