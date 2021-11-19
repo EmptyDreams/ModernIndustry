@@ -13,9 +13,14 @@ import java.util.Objects;
  */
 public class FluidData {
 	
-	/** 获取一个空的数据 */
+	/** 获取一个空的对象 */
 	public static FluidData empty() {
-		return new FluidData(null, 0);
+		return air(0);
+	}
+	
+	/** 获取一个包含指定量空气的对象 */
+	public static FluidData air(int amount) {
+		return new FluidData(null, amount);
 	}
 	
 	/** 流体种类。null表示为空气 */

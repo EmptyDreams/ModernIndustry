@@ -40,7 +40,6 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	public StraightPipeTileEntity(EnumFacing facing) {
 		this.facing = facing;
 		group.setManager(facing, manager);
-		group.setManager(facing.getOpposite(), DataManager.opposite(manager));
 	}
 	
 	@Override

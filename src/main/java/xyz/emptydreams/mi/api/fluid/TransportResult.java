@@ -34,6 +34,7 @@ public final class TransportResult {
 	 * @param content 流体数据
 	 */
 	public void add(EnumFacing facing, TransportContent content) {
+		plusRealTransport(content.getTransportAmount());
 		Manager manager = dataMap.computeIfAbsent(facing, key -> new Manager());
 		for (FluidData fluidData : content) {
 			manager.add(fluidData);

@@ -371,13 +371,14 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	 * @param simulate 是否为模拟
 	 * @return 运输量
 	 */
-	protected static int transportData(TransportResult result, EnumFacing facing,
+	protected int transportData(TransportResult result, EnumFacing facing,
 	                                    DataManager manager, Iterable<FluidData> list, boolean simulate) {
 		int sum = 0;
 		Iterator<FluidData> iterator = list.iterator();
 		while (iterator.hasNext()) {
 			FluidData fluidData = iterator.next();
 			TransportContent content = manager.insert(fluidData, false, simulate);
+			
 			result.add(facing, content);
 			result.plusRealTransport(content.getTransportAmount());
 			fluidData.minusAmount(content.getTransportAmount());

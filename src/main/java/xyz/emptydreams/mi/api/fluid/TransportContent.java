@@ -69,12 +69,12 @@ public final class TransportContent implements Iterable<FluidData> {
 	}
 	
 	/** 获取总量 */
-	public int getAmount() {
+	public int getAllAmount() {
 		return content.stream().mapToInt(FluidData::getAmount).sum();
 	}
 	
 	/** 获取指定流体的总量 */
-	public int getAmount(Fluid fluid) {
+	public int getFluidAmount(Fluid fluid) {
 		return content.stream().filter(
 				data -> data.getFluid() == fluid).mapToInt(FluidData::getAmount).sum();
 	}
