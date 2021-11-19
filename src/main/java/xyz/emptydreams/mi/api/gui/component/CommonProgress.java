@@ -1,7 +1,6 @@
 package xyz.emptydreams.mi.api.gui.component;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
@@ -13,7 +12,6 @@ import xyz.emptydreams.mi.api.gui.component.interfaces.IProgressBar;
 
 import javax.annotation.Nonnull;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import static xyz.emptydreams.mi.api.gui.client.ImageData.PROGRESS_BAR;
 import static xyz.emptydreams.mi.api.gui.client.ImageData.createTexture;
@@ -54,7 +52,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 	public void paint(GuiPainter painter) {
 		GlStateManager.color(1, 1, 1);
 		paintBackground(painter);
-		front.accept(new Node(painter.getGuiContainer()));
+		front.accept(this, painter);
 		if (getStringShower() != null) getStringShower().draw(this, painter);
 	}
 	
@@ -210,67 +208,52 @@ public class CommonProgress extends MComponent implements IProgressBar {
 		/** 从左到右 */
 		RIGHT(CommonProgress::paintRight);
 		
-		private final Consumer<Node> consumer;
+		private final BiConsumer<CommonProgress, GuiPainter> consumer;
 		
-		Front(Consumer<Node> consumer) {
+		Front(BiConsumer<CommonProgress, GuiPainter> consumer) {
 			this.consumer = consumer;
 		}
 		
 		/** 执行计算 */
-		public void accept(Node node) {
-			consumer.accept(node);
+		public void accept(CommonProgress progress, GuiPainter painter) {
+			consumer.accept(progress, painter);
 		}
-		
-	}
-	
-	private final class Node {
-		/** 图形在窗口中的坐标 */
-		final int x, y;
-		
-		Node(GuiContainer gui) {
-			int offsetX = (gui.width - gui.getXSize()) / 2;
-			int offsetY = (gui.height - gui.getYSize()) / 2;
-			x = offsetX + getX();
-			y = offsetY + getY();
-		}
-		
-		CommonProgress getThis() { return CommonProgress.this; }
 		
 	}
 	
 	/** 绘制从下到上的图形 */
-	private static void paintUp(Node node) {
-		Style style = node.getThis().getStyle();
-		int height = (int) (style.getHeight() * node.getThis().getPer());
-		int y = node.y + style.getHeight() - height;
+	private static void paintUp(CommonProgress progress, GuiPainter painter) {
+		Style style = progress.getStyle();
+		int height = (int) (style.getHeight() * progress.getPer());
+		int y = style.getHeight() - height;
 		RuntimeTexture texture = getTexture();
-		texture.drawToFrame(node.x, y, style.getFillX(), style.getFillY(), style.getWidth(), height);
+		painter.drawTexture(0, y, style.getFillX(), style.getFillY(), style.getWidth(), height, texture);
 	}
 	
 	/** 绘制从上到下的图形 */
-	private static void paintDown(Node node) {
-		Style style = node.getThis().getStyle();
-		int height = (int) (style.getHeight() * node.getThis().getPer());
+	private static void paintDown(CommonProgress progress, GuiPainter painter) {
+		Style style = progress.getStyle();
+		int height = (int) (style.getHeight() * progress.getPer());
 		RuntimeTexture texture = getTexture();
-		texture.drawToFrame(node.x, node.y, style.getFillX(), style.getFillY(), style.getWidth(), height);
+		painter.drawTexture(0, 0, style.getFillX(), style.getFillY(), style.getWidth(), height, texture);
 	}
 	
 	/** 绘制从右到左的图形 */
-	private static void paintLeft(Node node) {
-		Style style = node.getThis().getStyle();
-		int width = (int) (style.getWidth() * node.getThis().getPer());
-		int x = node.x + style.getWidth() - width;
+	private static void paintLeft(CommonProgress progress, GuiPainter painter) {
+		Style style = progress.getStyle();
+		int width = (int) (style.getWidth() * progress.getPer());
+		int x = style.getWidth() - width;
 		int tX = style.getFillX() + style.getWidth() - width;
 		RuntimeTexture texture = getTexture();
-		texture.drawToFrame(x, node.y, tX, style.getFillY(), width, style.getHeight());
+		painter.drawTexture(x, 0, width, tX, style.getFillY(), style.getHeight(), texture);
 	}
 	
 	/** 绘制从左到右的图形 */
-	private static void paintRight(Node node) {
-		Style style = node.getThis().getStyle();
-		int width = (int) (style.getWidth() * node.getThis().getPer());
+	private static void paintRight(CommonProgress progress, GuiPainter painter) {
+		Style style = progress.getStyle();
+		int width = (int) (style.getWidth() * progress.getPer());
 		RuntimeTexture texture = getTexture();
-		texture.drawToFrame(node.x, node.y, style.getFillX(), style.getFillY(), width, style.getHeight());
+		painter.drawTexture(0, 0, style.getFillX(), style.getFillY(), width, style.getHeight(), texture);
 	}
 	
 }
