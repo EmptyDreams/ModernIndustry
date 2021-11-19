@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.crash.ICrashReportDetail;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -47,11 +49,17 @@ public class MixinEntityRenderer {
 	 * @reason 如果是子GUI发出了异常则打印子GUI的信息
 	 */
 	@Redirect(method = "updateCameraAndRender", at = @At(value = "INVOKE",
-			target = "Ljava/lang/Object;getClass()Ljava/lang/Class;"), remap = false)
-	private Class<?> updateCameraAndRender_getClass(Object o) {
-		GuiScreen child = LocalChildFrame.getContainer();
-		Object container = child == null ? o : child;
-		return container.getClass();
+			target = "Lnet/minecraft/crash/CrashReportCategory;addDetail" +
+					"(Ljava/lang/String;Lnet/minecraft/crash/ICrashReportDetail;)V"), remap = false)
+	private void updateCameraAndRender_addDetail(CrashReportCategory report,
+	                                             String nameIn, ICrashReportDetail<String> detail) {
+		if ("Screen name".equals(nameIn)) {
+			GuiScreen child = LocalChildFrame.getContainer();
+			if (child == null) report.addDetail(nameIn, detail);
+			else report.addDetail(nameIn, () -> child.getClass().getCanonicalName());
+		} else {
+			report.addDetail(nameIn, detail);
+		}
 	}
 	
 }

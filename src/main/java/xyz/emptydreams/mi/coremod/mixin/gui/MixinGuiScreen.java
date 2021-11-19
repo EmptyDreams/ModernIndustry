@@ -34,6 +34,7 @@ public abstract class MixinGuiScreen {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	public void setFocused(boolean hasFocusedControlIn) { }
 	
 }
