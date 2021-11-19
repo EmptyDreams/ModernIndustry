@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.api.gui.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.inventory.Container;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -18,7 +19,9 @@ import javax.annotation.Nullable;
 public final class LocalChildFrame {
 	
 	/** 存储当前打开的子GUI */
-	private static GuiScreen container;
+	volatile private static GuiScreen container;
+	/** 打开子GUI前玩家打开的GUI */
+	volatile private static Container oldContainer;
 	
 	/**
 	 * 打开一个子GUI，若已经有子GUI被打开，则先打开的将被关闭
@@ -27,6 +30,7 @@ public final class LocalChildFrame {
 	 */
 	public static void openGUI(ICraftFrameHandle handle, BlockPos pos) {
 		Minecraft mc = Minecraft.getMinecraft();
+		oldContainer = mc.player.openContainer;
 		StaticFrameClient localGUI = handle.createFrame(mc.world, mc.player, pos);
 		if (localGUI == null) return;
 		if (container != null) container.onGuiClosed();
@@ -41,8 +45,10 @@ public final class LocalChildFrame {
 	/** 关闭当前显示的子GUI */
 	public static void closeGUI() {
 		if (container == null) return;
+		Minecraft.getMinecraft().player.openContainer = oldContainer;
 		container.onGuiClosed();
 		container = null;
+		oldContainer = null;
 	}
 	
 	/** 判断是否有子GUI被显示 */
