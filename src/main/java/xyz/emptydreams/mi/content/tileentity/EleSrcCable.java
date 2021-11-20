@@ -28,6 +28,7 @@ import xyz.emptydreams.mi.api.net.handler.MessageSender;
 import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
+import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
@@ -490,6 +491,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	public void receive(@Nonnull IDataReader reader) {
 		linkInfo = reader.readByte();
 		world.markBlockRangeForRenderUpdate(pos, pos);
+		MISysInfo.print(linkInfo);
 	}
 	
 	/**

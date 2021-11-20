@@ -41,7 +41,7 @@ public abstract class MachineBlock extends TEBlockBase {
 	@Override
 	public void neighborChanged(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
 	                            @Nonnull Block blockIn, @Nonnull BlockPos fromPos) {
-		EleTransferBlock.neighborChangedHelper(state, world, pos, blockIn, fromPos);
+		EleTransferBlock.neighborChangedHelper(world, pos, fromPos);
 	}
 
 	private BooleanWrapper hasFacing = null;

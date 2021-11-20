@@ -38,11 +38,12 @@ public interface IClassData {
 	}
 	
 	/**
-	 * <p>读取所有需要读取的数据.
+	 * <p>读取所有需要读取的数据，并存储到存储器中
 	 * <p>方法内部调用{@link #needOperate(Field)}判断是否进行读写，
 	 *      调用{@link #write(Field, IDataWriter, Object)}进行数据读写。
 	 * <p><b>重写该方法时必须重写{@link #read(Field, IDataReader, Object)}</b>
 	 * @param reader 读取器
+	 * @param object 数据存储器
 	 */
 	default void readAll(IDataReader reader, Object object) {
 		Class<?> clazz = object.getClass();
@@ -121,9 +122,7 @@ public interface IClassData {
 	 * @throws IllegalAccessException 如果反射过程出现异常
 	 */
 	default boolean write(Field field, IDataWriter writer, Object object) throws IllegalAccessException {
-		if (!Modifier.isPublic(field.getModifiers())) {
-			field.setAccessible(true);
-		}
+		if (!Modifier.isPublic(field.getModifiers())) field.setAccessible(true);
 		Object data = field.get(object);
 		if (data == null) return false;
 		Class<?> cast = cast(field);
@@ -142,9 +141,7 @@ public interface IClassData {
 	 * @throws IllegalAccessException 如果反射过程出现异常
 	 */
 	default void read(Field field, IDataReader reader, Object object) throws IllegalAccessException {
-		if (!Modifier.isPublic(field.getModifiers())) {
-			field.setAccessible(true);
-		}
+		if (!Modifier.isPublic(field.getModifiers())) field.setAccessible(true);
 		Class<?> cast = cast(field);
 		Object data = DataSerialize.read(reader, cast == null ? field.getType() : cast, field.getType(), () -> {
 			try {
@@ -166,7 +163,5 @@ public interface IClassData {
 	default Class<?> cast(Field field) {
 		return null;
 	}
-	
-	
 	
 }

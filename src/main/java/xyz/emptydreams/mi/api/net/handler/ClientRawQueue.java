@@ -21,9 +21,9 @@ import java.util.List;
 public final class ClientRawQueue {
 	
 	private static final List<ServiceRawQueue.Node> queue = new LinkedList<>();
-	private static boolean isAdd = false;
+	volatile private static boolean isAdd = false;
 	
-	/** 将一个任务添加到队列中，方法内部自动解析Key值 */
+	/** 将一个任务添加到队列中 */
 	public static void add(IDataReader data, String key) {
 		synchronized (queue) {
 			queue.add(new ServiceRawQueue.Node(data, key, null));
@@ -33,12 +33,11 @@ public final class ClientRawQueue {
 	
 	/** 尝试清空人物列表 */
 	public static void tryToCleanQueue() {
-		if (isAdd) return;
-		World world = Minecraft.getMinecraft().world;
-		if (world == null || queue.isEmpty()) return;
+		if (isAdd || queue.isEmpty()) return;
 		isAdd = true;
 		TickHelper.addClientTask(() -> {
-			isAdd = false;
+			World world = Minecraft.getMinecraft().world;
+			if (world == null) return false;
 			synchronized (queue) {
 				Iterator<ServiceRawQueue.Node> it = queue.iterator();
 				ServiceRawQueue.Node node;
@@ -54,6 +53,7 @@ public final class ClientRawQueue {
 					}
 				}
 			}
+			isAdd = false;
 			return true;
 		});
 	}

@@ -72,6 +72,7 @@ public class ObjectData implements IClassData {
 	 * 写入数据到writer
 	 * @param writer 要进行写入的writer，如果为null则内部自动创建
 	 * @param obj 需要进行读取的对象
+	 * @return 如果writer不为null则返回writer，否则创建一个{@link ByteDataOperator}并返回
 	 */
 	public IDataWriter writeToData(IDataWriter writer, Object obj) {
 		ClassDataOperator operator = new ClassDataOperator(this);

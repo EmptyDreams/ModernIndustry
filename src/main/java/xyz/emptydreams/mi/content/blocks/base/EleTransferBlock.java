@@ -135,11 +135,10 @@ abstract public class EleTransferBlock extends TEBlockBase {
 		return false;
 	}
 	
-	
 	@Override
 	public void neighborChanged(IBlockState state,
 	                            World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
-		neighborChangedHelper(state, worldIn, pos, blockIn, fromPos);
+		neighborChangedHelper(worldIn, pos, fromPos);
 	}
 	
 	/** 使两者互相连接 */
@@ -152,8 +151,7 @@ abstract public class EleTransferBlock extends TEBlockBase {
 	}
 	
 	@SuppressWarnings("ConstantConditions")
-	public static void neighborChangedHelper(IBlockState state,
-	                                         World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
+	public static void neighborChangedHelper(World worldIn, BlockPos pos, BlockPos fromPos) {
 		EnumFacing facing = WorldUtil.whatFacing(pos, fromPos);
 		TileEntity nowTe = worldIn.getTileEntity(pos);
 		IStorage nowStorage = nowTe.getCapability(EleCapability.ENERGY, facing);
