@@ -10,7 +10,6 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import xyz.emptydreams.mi.api.capabilities.ele.EleCapability;
 import xyz.emptydreams.mi.api.capabilities.ele.EleStateEnum;
 import xyz.emptydreams.mi.api.capabilities.ele.IStorage;
@@ -24,15 +23,12 @@ import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
-import xyz.emptydreams.mi.api.net.handler.MessageSender;
-import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
-import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
+import xyz.emptydreams.mi.api.utils.IOUtil;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.io.instance.ObjectData;
-import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 import xyz.emptydreams.mi.data.info.BiggerVoltage;
 import xyz.emptydreams.mi.data.info.CableCache;
@@ -45,6 +41,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 默认电线
@@ -194,39 +191,25 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	
 	public void updateLinkShow() {
 		linkInfo = 0;
-		if (next != null) {
-			switch (WorldUtil.whatFacing(pos, next)) {
-				case EAST: setEast(true); break;
-				case WEST: setWest(true); break;
-				case SOUTH: setSouth(true); break;
-				case NORTH: setNorth(true); break;
-				case UP: setUp(true); break;
-				default: setDown(true);
-			}
-		}
-		if (prev != null) {
-			switch (WorldUtil.whatFacing(pos, prev)) {
-				case EAST: setEast(true); break;
-				case WEST: setWest(true); break;
-				case SOUTH: setSouth(true); break;
-				case NORTH: setNorth(true); break;
-				case UP: setUp(true); break;
-				default: setDown(true);
-			}
-		}
-		for (BlockPos block : linkedBlocks) {
-			switch (WorldUtil.whatFacing(pos, block)) {
-				case EAST: setEast(true); break;
-				case WEST: setWest(true); break;
-				case SOUTH: setSouth(true); break;
-				case NORTH: setNorth(true); break;
-				case UP: setUp(true); break;
-				default: setDown(true);
-			}
-		}
+		updateShowData(next);
+		updateShowData(prev);
+		linkedBlocks.forEach(this::updateShowData);
 		updateTickableState();
 		players.clear();
 		markDirty();
+	}
+	
+	private void updateShowData(BlockPos linked) {
+		if (linked != null) {
+			switch (WorldUtil.whatFacing(pos, linked)) {
+				case EAST: setEast(true); break;
+				case WEST: setWest(true); break;
+				case SOUTH: setSouth(true); break;
+				case NORTH: setNorth(true); break;
+				case UP: setUp(true); break;
+				default: setDown(true);
+			}
+		}
 	}
 	
 	/**
@@ -476,7 +459,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	 * 	不同方块不共用此列表且此列表不会离线存储，当玩家离开方块过远或退出游戏等操作导致
 	 * 		方块暂时“删除”后此列表将重置以保证所有玩家可以正常渲染电线方块
 	 */
-	private final List<String> players = new ArrayList<>(1);
+	private final List<UUID> players = new ArrayList<>(1);
 	/** 存储网络数据传输的更新范围，只有在范围内的玩家需要进行更新 */
 	private Range3D netRange;
 	
@@ -501,12 +484,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		if (players.size() == world.playerEntities.size()) return;
 		ByteDataOperator operator = new ByteDataOperator(1);
 		operator.writeByte((byte) linkInfo);
-		IMessage message = BlockMessage.instance().create(operator, new BlockAddition(this));
-		MessageSender.sendToClientIf(message, world, player -> {
-			if (players.contains(player.getName()) || !netRange.isIn(new Point3D(player))) return false;
-			players.add(player.getName());
-			return true;
-		});
+		IOUtil.sendBlockMessageIfNotUpdate(this, operator, players, netRange);
 	}
 	
 	@Override

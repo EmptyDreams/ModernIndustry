@@ -2,15 +2,35 @@ package xyz.emptydreams.mi.api.utils;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import xyz.emptydreams.mi.api.dor.ByteDataOperator;
+import xyz.emptydreams.mi.api.net.handler.MessageSender;
+import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
+import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
+import xyz.emptydreams.mi.api.utils.data.math.Point3D;
+import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 
 import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.UUID;
 
 /**
  * @author EmptyDreams
  */
 public final class IOUtil {
+	
+	public static void sendBlockMessageIfNotUpdate(
+			TileEntity te, ByteDataOperator operator, Collection<UUID> players, Range3D netRange) {
+		IMessage message = BlockMessage.instance().create(operator, new BlockAddition(te));
+		MessageSender.sendToClientIf(message, te.getWorld(), player -> {
+			if (players.contains(player.getUniqueID()) || !netRange.isIn(new Point3D(player))) return false;
+			players.add(player.getUniqueID());
+			return true;
+		});
+	}
 	
 	/**
 	 * 将字符串写入buf

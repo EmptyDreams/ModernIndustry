@@ -7,7 +7,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability;
@@ -19,13 +18,10 @@ import xyz.emptydreams.mi.api.fluid.data.DataManager;
 import xyz.emptydreams.mi.api.fluid.data.DataManagerGroup;
 import xyz.emptydreams.mi.api.fluid.data.FluidData;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
-import xyz.emptydreams.mi.api.net.handler.MessageSender;
-import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
-import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
+import xyz.emptydreams.mi.api.utils.IOUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
-import xyz.emptydreams.mi.api.utils.data.math.Point3D;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 
 import javax.annotation.Nonnull;
@@ -35,6 +31,7 @@ import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static net.minecraft.util.EnumFacing.*;
 
@@ -85,7 +82,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	 * 	不同方块不共用此列表且此列表不会离线存储，当玩家离开方块过远或退出游戏等操作导致
 	 * 		方块暂时“删除”后此列表将重置以保证所有玩家可以正常渲染电线方块
 	 */
-	private final List<String> players = new ArrayList<>(1);
+	private final List<UUID> players = new ArrayList<>(1);
 	/** 存储网络数据传输的更新范围，只有在范围内的玩家需要进行更新 */
 	private Range3D netRange;
 	
@@ -105,12 +102,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		ByteDataOperator operator = new ByteDataOperator(1);
 		operator.writeByte((byte) linkData);
 		sync(operator);
-		IMessage message = BlockMessage.instance().create(operator, new BlockAddition(this));
-		MessageSender.sendToClientIf(message, world, player -> {
-			if (players.contains(player.getName()) || !netRange.isIn(new Point3D(player))) return false;
-			players.add(player.getName());
-			return true;
-		});
+		IOUtil.sendBlockMessageIfNotUpdate(this, operator, players, netRange);
 	}
 	
 	@Override
