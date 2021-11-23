@@ -97,8 +97,8 @@ public class RollComponent extends MComponent {
 	private int reLocation = -1;
 	
 	@Override
-	protected void init(IComponentManager manager) {
-		super.init(manager);
+	protected void initForManager(IComponentManager manager) {
+		super.initForManager(manager);
 		registryListener((IMouseLocationListener) (mouseX, mouseY) -> {
 			if (isDisable) return;
 			isMouse = isMouseInButton(mouseX, mouseY);

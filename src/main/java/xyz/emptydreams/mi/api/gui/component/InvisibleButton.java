@@ -59,8 +59,8 @@ public class InvisibleButton extends MComponent {
 	}
 	
 	@Override
-	protected void init(IComponentManager manager) {
-		super.init(manager);
+	protected void initForManager(IComponentManager manager) {
+		super.initForManager(manager);
 		registryListener((IMouseEnteredListener) (mouseX, mouseY) -> mouse = true);
 		registryListener((IMouseExitedListener) () -> mouse = false);
 		registryListener(new IMouseActionListener() {

@@ -139,8 +139,8 @@ public class CraftFrame extends MIFrame {
 		//尝试用玩家背包中的物品填充合成表
 		OperateResult result = removeItemStack(inventory, list, null);
 		if (result == FAIL) return FAIL;
-		sendToServer();
 		LocalChildFrame.closeGUI();
+		sendToServer();
 		return result;
 	}
 	

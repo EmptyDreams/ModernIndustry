@@ -21,18 +21,19 @@ import java.util.function.Function;
  */
 public final class CraftShower {
 	
-	private static final Map<CraftGuide<?, ?>, Frame> FRAMES = new Object2ObjectArrayMap<>();
+	private static final Map<CraftGuide<?, ?>, FrameHandle> FRAMES = new Object2ObjectArrayMap<>();
 	
 	/**
 	 * 使指定玩家打开GUI
 	 * @param craft 要显示的合成表
+	 * @param pos 打开合成表的方块的坐标
 	 * @param slotGroupGetter 通过TileEntity来获取slotGroupGetter
 	 */
 	public static void show(CraftGuide<?, ?> craft, BlockPos pos,
 	                        Function<TileEntity, SlotGroup> slotGroupGetter) {
 		if (craft.size() == 0) return;
 		//该代码在if前是为了在打开合成表时在服务端记录下数据
-		Frame frame = FRAMES.computeIfAbsent(craft, c -> new Frame(c, slotGroupGetter));
+		FrameHandle frame = FRAMES.computeIfAbsent(craft, c -> new FrameHandle(c, slotGroupGetter));
 		if (WorldUtil.isServer()) return;
 		LocalChildFrame.openGUI(frame, pos);
 	}
@@ -47,12 +48,12 @@ public final class CraftShower {
 		return FRAMES.get(craft).getSlots(te);
 	}
 	
-	private static final class Frame implements ICraftFrameHandle {
+	private static final class FrameHandle implements ICraftFrameHandle {
 		
 		private final CraftGuide<?, ?> craft;
 		private final Function<TileEntity, SlotGroup> slotGroupGetter;
 		
-		Frame(CraftGuide<?, ?> craft, Function<TileEntity, SlotGroup> slotGroupGetter) {
+		FrameHandle(CraftGuide<?, ?> craft, Function<TileEntity, SlotGroup> slotGroupGetter) {
 			this.craft = craft;
 			this.slotGroupGetter = slotGroupGetter;
 		}

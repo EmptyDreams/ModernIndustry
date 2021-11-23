@@ -141,8 +141,8 @@ public class Group extends MComponent implements Iterable<IComponent>, IComponen
 	public Iterator<IComponent> iterator() { return components.iterator(); }
 	
 	@Override
-	protected void init(IComponentManager manager) {
-		super.init(manager);
+	protected void initForManager(IComponentManager manager) {
+		super.initForManager(manager);
 		registryListener((IMouseLocationListener) (mouseX, mouseY) ->
 				components.forEach(it -> it.activateListener(manager.getFrame(),
 															 IMouseLocationListener.class,

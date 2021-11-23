@@ -11,15 +11,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import xyz.emptydreams.mi.api.capabilities.ele.EleCapability;
+import xyz.emptydreams.mi.api.capabilities.ele.EleStateEnum;
+import xyz.emptydreams.mi.api.capabilities.ele.IStorage;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.electricity.EleWorker;
-import xyz.emptydreams.mi.api.capabilities.ele.EleCapability;
-import xyz.emptydreams.mi.api.capabilities.ele.IStorage;
 import xyz.emptydreams.mi.api.electricity.clock.OrdinaryCounter;
 import xyz.emptydreams.mi.api.electricity.clock.OverloadCounter;
 import xyz.emptydreams.mi.api.electricity.info.EleEnergy;
-import xyz.emptydreams.mi.api.capabilities.ele.EleStateEnum;
 import xyz.emptydreams.mi.api.electricity.info.VoltageRange;
 import xyz.emptydreams.mi.api.electricity.interfaces.IEleTransfer;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
@@ -28,7 +28,6 @@ import xyz.emptydreams.mi.api.net.handler.MessageSender;
 import xyz.emptydreams.mi.api.net.message.block.BlockAddition;
 import xyz.emptydreams.mi.api.net.message.block.BlockMessage;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
-import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
@@ -491,7 +490,6 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	public void receive(@Nonnull IDataReader reader) {
 		linkInfo = reader.readByte();
 		world.markBlockRangeForRenderUpdate(pos, pos);
-		MISysInfo.print(linkInfo);
 	}
 	
 	/**

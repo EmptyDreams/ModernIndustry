@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.gui.component;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
@@ -18,7 +19,6 @@ import xyz.emptydreams.mi.api.gui.listener.mouse.IMouseClickListener;
 import xyz.emptydreams.mi.api.utils.MISysInfo;
 import xyz.emptydreams.mi.api.utils.StringUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
-import xyz.emptydreams.mi.api.utils.container.WeakList;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +42,7 @@ public abstract class MComponent implements IComponent {
 	/** CraftShower用到的填充表 */
 	protected Function<TileEntity, SlotGroup> slotGroupGetter = null;
 	/** 存储加载过的窗体 */
-	protected final WeakList<IComponentManager> LOADED = new WeakList<>();
+	protected final List<String> LOADED = new LinkedList<>();
 	
 	@Override
 	public void setLocation(int x, int y) {
@@ -136,16 +136,29 @@ public abstract class MComponent implements IComponent {
 		slotGroupGetter = null;
 	}
 	
+	private boolean isInit = false;
+	
 	/**
-	 * 在服务端或客户端第一次将控件添加到窗体时调用.
+	 * <p>在服务端或客户端第一次将控件添加到窗体时调用
+	 * <p>注意：该方法对于每一个manager都会运行
 	 * @param manager 管理类
 	 */
-	protected void init(IComponentManager manager) {
+	protected void initForManager(IComponentManager manager) {
+		if (!isInit) {
+			isInit = true;
+			initSelfResources(manager.getFrame().getPlayer());
+		}
+	}
+	
+	/**
+	 * <p>初始化控件的自身资源
+	 * <p>与{@link #initForManager(IComponentManager)}不同的是该方法仅运行一次
+	 */
+	protected void initSelfResources(EntityPlayer player) {
 		if (craftGuide != null) {
 			//noinspection ConstantConditions
 			registryListener((IMouseClickListener) (mouseX, mouseY, mouseButton) ->
-					CraftShower.show(craftGuide, ChildFrame.getGuiTileEntity(
-							manager.getFrame().getPlayer()).getPos(), slotGroupGetter));
+					CraftShower.show(craftGuide, ChildFrame.getGuiTileEntity(player).getPos(), slotGroupGetter));
 		}
 	}
 	
@@ -156,9 +169,10 @@ public abstract class MComponent implements IComponent {
 	 */
 	@Override
 	public void onAdd2Manager(IComponentManager manager) {
-		if (LOADED.contains(manager)) return;
-		LOADED.add(manager);
-		init(manager);
+		MIFrame frame = manager.getFrame();
+		if (LOADED.contains(frame.getID())) return;
+		LOADED.add(frame.getID());
+		initForManager(manager);
 	}
 	
 	@Override

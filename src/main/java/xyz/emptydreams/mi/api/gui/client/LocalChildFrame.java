@@ -45,8 +45,8 @@ public final class LocalChildFrame {
 	/** 关闭当前显示的子GUI */
 	public static void closeGUI() {
 		if (container == null) return;
-		Minecraft.getMinecraft().player.openContainer = oldContainer;
 		container.onGuiClosed();
+		Minecraft.getMinecraft().player.openContainer = oldContainer;
 		container = null;
 		oldContainer = null;
 	}

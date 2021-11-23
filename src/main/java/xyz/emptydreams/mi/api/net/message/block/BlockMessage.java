@@ -43,7 +43,6 @@ public final class BlockMessage implements IMessageHandle<BlockAddition, ParseAd
 		BlockPos pos = addition.getPos();
 		if (!world.isBlockLoaded(pos)) {
 			MISysInfo.print("区块未加载");
-			//((ChunkProviderClient) world.getChunkProvider()).loadChunk()
 		}
 		TileEntity te = world.getTileEntity(pos);
 		if (te == null && result.getAmount() <= 1200) return result.setParseResult(RETRY);

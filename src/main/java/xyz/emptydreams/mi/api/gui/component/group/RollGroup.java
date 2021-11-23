@@ -143,8 +143,8 @@ public class RollGroup extends Group {
 	private final AtomicBoolean isShift = new AtomicBoolean(false);
 	
 	@Override
-	protected void init(IComponentManager manager) {
-		super.init(manager);
+	protected void initForManager(IComponentManager manager) {
+		super.initForManager(manager);
 		registryListener((IKeyPressedListener) (keyCode, isFocus)
 				-> isShift.set(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode() == keyCode));
 		registryListener((IKeyReleaseListener) (keyCode, isFocus) -> isShift.set(false));

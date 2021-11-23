@@ -87,7 +87,7 @@ public class StaticFrameClient extends GuiContainer implements IFrame {
 	
 	/** 获取并装载材质，切勿使用原版自带的方法装载 */
 	public RuntimeTexture getTexture() {
-		//init(true);
+		//initForManager(true);
 		RuntimeTexture texture = RuntimeTexture.getInstance(name);
 		if (texture == null) {
 			init(false);

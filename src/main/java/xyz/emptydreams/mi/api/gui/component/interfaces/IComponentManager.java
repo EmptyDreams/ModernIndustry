@@ -101,11 +101,7 @@ public interface IComponentManager {
 		float mouseX = data.mouseX, mouseY = data.mouseY;
 		if (component == null) {
 			forEachComponent(it -> {
-				if (optimize && !(it.getX() <= mouseX && it.getY() <= mouseY
-						&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY)
-						&& !ignore.contains(it)) {
-					return true;
-				}
+				if (checkConditions(it, mouseX, mouseY, optimize) && !ignore.contains(it)) return true;
 				float x = mouseX - it.getX();
 				float y = mouseY - it.getY();
 				it.activateListener(frame, listenerClass,
@@ -118,11 +114,7 @@ public interface IComponentManager {
 			});
 		} else {
 			forEachComponent(it -> {
-				if (optimize && !(it.getX() <= mouseX && it.getY() <= mouseY
-						&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY)
-						&& ignore.contains(it)) {
-					return true;
-				}
+				if (checkConditions(it, mouseX, mouseY, optimize) && ignore.contains(it)) return true;
 				float x = mouseX - it.getX();
 				float y = mouseY - it.getY();
 				if (it instanceof IComponentManager) {
@@ -154,10 +146,7 @@ public interface IComponentManager {
 		float mouseX = data.mouseX, mouseY = data.mouseY;
 		if (component == null) {
 			forEachComponent(it -> {
-				if (optimize && !(it.getX() <= mouseX && it.getY() <= mouseY
-						&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY)) {
-					return true;
-				}
+				if (checkConditions(it, mouseX, mouseY, optimize)) return true;
 				result.add(it);
 				float x = mouseX - it.getX();
 				float y = mouseY - it.getY();
@@ -173,10 +162,7 @@ public interface IComponentManager {
 		} else {
 			IComponent real = component instanceof IComponentManager ? null : component;
 			forEachComponent(it -> {
-				if (optimize && !(it.getX() <= mouseX && it.getY() <= mouseY
-						&& it.getX() + it.getWidth() >= mouseX && it.getY() + it.getHeight() >= mouseY)) {
-					return true;
-				}
+				if (checkConditions(it, mouseX, mouseY, optimize)) return true;
 				float x = mouseX - it.getX();
 				float y = mouseY - it.getY();
 				if (it instanceof IComponentManager) {
@@ -185,14 +171,21 @@ public interface IComponentManager {
 				}
 				if (it == real) {
 					result.add(it);
-					if (!ignore.contains(it))
-						it.activateListener(frame, listenerClass,
-								listener -> listener.active(data.create(x, y)));
+					if (!ignore.contains(it)) {
+						it.activateListener(frame,
+								listenerClass, listener -> listener.active(data.create(x, y)));
+					}
 				}
 				return true;
 			});
 		}
 		return result;
+	}
+	
+	/** 判断指定控件是否满足触发事件的条件 */
+	static boolean checkConditions(IComponent it, float x, float y, boolean optimize) {
+		return optimize && !(it.getX() <= x && it.getY() <= y
+				&& it.getX() + it.getWidth() >= x && it.getY() + it.getHeight() >= y);
 	}
 	
 }
