@@ -32,7 +32,6 @@ public class ServiceRawQueue {
 		if (queue.isEmpty()) return;
 		isAdd = true;
 		TickHelper.addServerTask(() -> {
-			isAdd = false;
 			synchronized (queue) {
 				Iterator<Node> it = queue.iterator();
 				Node node;
@@ -47,8 +46,9 @@ public class ServiceRawQueue {
 						it.remove();
 					}
 				}
+				if (queue.isEmpty()) isAdd = false;
 			}
-			return true;
+			return !isAdd;
 		});
 	}
 	

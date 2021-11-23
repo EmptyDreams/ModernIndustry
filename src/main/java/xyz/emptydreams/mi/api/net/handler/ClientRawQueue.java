@@ -52,9 +52,9 @@ public final class ClientRawQueue {
 						it.remove();
 					}
 				}
+				if (queue.isEmpty()) isAdd = false;
 			}
-			isAdd = false;
-			return true;
+			return !isAdd;
 		});
 	}
 	
