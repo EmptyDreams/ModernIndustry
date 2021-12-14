@@ -117,7 +117,6 @@ public class FluidData {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		
 		FluidData node = (FluidData) o;
 		if (amount != node.amount) return false;
 		return Objects.equals(fluid, node.fluid);
