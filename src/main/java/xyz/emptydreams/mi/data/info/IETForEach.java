@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 /**
  * @author EmptyDreams
  */
+@FunctionalInterface
 public interface IETForEach {
 	
 	/**
