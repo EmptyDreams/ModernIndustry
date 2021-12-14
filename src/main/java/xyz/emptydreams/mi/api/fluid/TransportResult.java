@@ -2,6 +2,7 @@ package xyz.emptydreams.mi.api.fluid;
 
 import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.fluid.data.FluidData;
+import xyz.emptydreams.mi.api.fluid.data.FluidDataList;
 
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -33,12 +34,21 @@ public final class TransportResult {
 	 * @param facing 流体运输方向
 	 * @param content 流体数据
 	 */
-	public void add(EnumFacing facing, TransportContent content) {
+	public void addAll(EnumFacing facing, TransportContent content) {
 		plusRealTransport(content.getTransportAmount());
 		Manager manager = dataMap.computeIfAbsent(facing, key -> new Manager());
 		for (FluidData fluidData : content) {
 			manager.add(fluidData);
 		}
+	}
+	
+	/**
+	 * 添加流体信息到管理器
+	 * @param facing 流体运输方向
+	 * @param list 流体数据列表
+	 */
+	public void addAll(EnumFacing facing, FluidDataList list) {
+		list.forEach(it -> add(facing, it));
 	}
 	
 	/** 设置流体前进总量 */
@@ -54,6 +64,12 @@ public final class TransportResult {
 	/** 获取流体运输总量 */
 	public int getRealTransport() {
 		return realTransport;
+	}
+	
+	/** 将指定类的信息合并到该类 */
+	public void combine(TransportResult result) {
+		realTransport += result.getRealTransport();
+		dataMap.putAll(result.dataMap);
 	}
 	
 	private static final class Manager implements Iterable<FluidData> {

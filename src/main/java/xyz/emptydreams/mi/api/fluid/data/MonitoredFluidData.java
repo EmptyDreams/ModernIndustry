@@ -14,9 +14,9 @@ import javax.annotation.Nonnull;
 public class MonitoredFluidData extends FluidData {
 	
 	/** 流体数量发生变动时的监视器，第一个参数为原数量，第二个参数是修改的数量，第三个参数是发生变动的类 */
-	private IntIntObjConsumer<FluidData> amountEdit = null;
+	private IntIntObjConsumer<MonitoredFluidData> amountEdit = null;
 	/** 流体种类发生变动时的监视器，第一个参数为原流体，第二个参数是变动后的流体，第三个参数是发生变动的类 */
-	private ThConsumer<Fluid, Fluid, FluidData> fluidEdit = null;
+	private ThConsumer<Fluid, Fluid, MonitoredFluidData> fluidEdit = null;
 	
 	public MonitoredFluidData(FluidData data) {
 		super(data.getFluid(), data.getAmount());
@@ -32,14 +32,16 @@ public class MonitoredFluidData extends FluidData {
 	
 	/** 注册流体种类变动监视器 */
 	@SuppressWarnings("unused")
-	public MonitoredFluidData registryFluidMonitor(ThConsumer<Fluid, Fluid, FluidData> monitor) {
+	public MonitoredFluidData registryFluidMonitor(
+			ThConsumer<Fluid, Fluid, MonitoredFluidData> monitor) {
 		fluidEdit = monitor;
 		return this;
 	}
 	
 	/** 注册数量变动监视器 */
 	@SuppressWarnings("UnusedReturnValue")
-	public MonitoredFluidData registryAmountMonitor(IntIntObjConsumer<FluidData> monitor) {
+	public MonitoredFluidData registryAmountMonitor(
+			IntIntObjConsumer<MonitoredFluidData> monitor) {
 		amountEdit = monitor;
 		return this;
 	}

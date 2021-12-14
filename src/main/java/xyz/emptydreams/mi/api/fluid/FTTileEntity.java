@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.api.fluid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
@@ -14,9 +15,9 @@ import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
-import xyz.emptydreams.mi.api.fluid.data.DataManager;
-import xyz.emptydreams.mi.api.fluid.data.DataManagerGroup;
 import xyz.emptydreams.mi.api.fluid.data.FluidData;
+import xyz.emptydreams.mi.api.fluid.data.FluidDataList;
+import xyz.emptydreams.mi.api.fluid.data.FluidPipeData;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.api.utils.IOUtil;
@@ -28,7 +29,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -45,8 +45,8 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	@Storage(byte.class) protected int linkData = 0b000000;
 	/** 六个方向的管塞数据 */
 	@Storage protected final Map<EnumFacing, ItemStack> plugData = new EnumMap<>(EnumFacing.class);
-	
-	public FTTileEntity() { }
+	/** */
+	@Storage protected FluidPipeData fluidValue = new FluidPipeData();
 	
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
@@ -308,18 +308,24 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		markDirty();
 	}
 	
-	/** 获取数据管理器 */
-	@Nonnull
-	abstract protected DataManagerGroup getDataManagers();
-	
 	@Nonnull
 	@Override
 	public TransportResult extract(int amount, EnumFacing facing, boolean simulate) {
 		TransportResult result = new TransportResult();
 		if (!isOpen(facing)) return result;                 //判断输出方向是否有开口
-		DataManagerGroup managers = getDataManagers();
-		if (!managers.hasManager(facing)) return result;    //判断输出方向上能否操作
-		
+		int success = fluidValue.extract(amount, simulate);
+		int all = success;
+		for (EnumFacing value : values()) {
+			if (!isLinked(value)) continue;
+			IFluid fluid = getFacingLinked(value);
+			@SuppressWarnings("ConstantConditions")
+			TransportResult inner = fluid.extract(
+							all, value.getOpposite(), simulate);
+			all -= inner.getRealTransport();
+			result.combine(inner);
+			if (all == 0) break;
+		}
+		result.setRealTransport(success);
 		return result;
 	}
 	
@@ -327,57 +333,54 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	@Override
 	public TransportResult insert(FluidData data, EnumFacing facing, boolean simulate) {
 		TransportResult result = new TransportResult();
-		if (!isOpen(facing)) return result;                 //判断输入方向是否有开口
-		DataManagerGroup managers = getDataManagers();
-		if (!managers.hasManager(facing)) return result;    //判断输入方向能否进行操作
-		DataManager fromManager = managers.getManager(facing);
-		//模拟输入操作获取被输入方向挤出来的流体
-		TransportContent fromInsert = fromManager.insert(data, true, true);
-		int amount = 0;      //存储运输距离
-		//如果管道在下方可以进行操作并且输入方向不为下方则优先对下方进行运算
-		if (facing != DOWN && managers.hasManager(DOWN)) {
-			amount += transportData(result, DOWN, managers.getManager(DOWN), fromInsert, simulate);
+		if (!isOpen(facing) || data.getAmount() == 0) return result;               //判断输入方向是否有开口
+		FluidDataList extrude = fluidValue.insert(data, true);
+		if (extrude.isEmpty()) {
+			if (!simulate) fluidValue.insert(data, false);
+			result.setRealTransport(data.getAmount());
+			return result;
 		}
-		//遍历水平方向
-		for (EnumFacing horizontal : HORIZONTALS) {
-			if (horizontal == facing || !managers.hasManager(horizontal)) continue;
-			DataManager horizontalManager = managers.getManager(horizontal);
-			amount += transportData(result, horizontal, horizontalManager, fromInsert, simulate);
-			if (fromInsert.isEmpty()) break;
+		if (facing != DOWN) {
+			IFluid downBlock = getFacingLinked(DOWN);
+			if (downBlock != null) {
+				for (FluidData value : extrude) {
+					TransportResult inner = downBlock.insert(value, UP, simulate);
+					result.combine(inner);
+					value.minusAmount(inner.getRealTransport());
+				}
+				if (extrude.isEmpty()) {
+					if (!simulate) fluidValue.insert(data, false);
+					return result;
+				}
+			}
 		}
-		//如果管道在上方可以进行操作并且输入方向不为上方则对上方进行运算
-		if (facing != UP && managers.hasManager(UP)) {
-			amount += transportData(result, UP, managers.getManager(UP), fromInsert, simulate);
+		o : for (EnumFacing value : HORIZONTALS) {
+			if (!isLinked(value)) continue;
+			for (FluidData now : extrude) {
+				if (now.isEmpty()) continue;
+				IFluid fluid = getFacingLinked(value);
+				if (fluid == null) break;
+				TransportResult inner = fluid.insert(now, value.getOpposite(), simulate);
+				result.combine(inner);
+				now.minusAmount(inner.getRealTransport());
+				if (extrude.isEmpty()) break o;
+			}
 		}
-		result.setRealTransport(amount);
-		//如果不是模拟则修改输入方向的数据
-		if (!simulate) fromManager.insert(data.copy(amount), true, false);
+		if (!simulate) fluidValue.insert(data.copy(result.getRealTransport()), false);
 		return result;
 	}
 	
 	/**
-	 * @param result 存储结果的对象
-	 * @param facing 运输方向
-	 * @param manager 数据管理类对象
-	 * @param list 要插入的流体数据
-	 * @param simulate 是否为模拟
-	 * @return 运输量
+	 * 获取指定方向上连接的方块的IFluid
+	 * @return 如果指定方向上没有连接方块则返回null
 	 */
-	protected int transportData(TransportResult result, EnumFacing facing,
-	                                    DataManager manager, Iterable<FluidData> list, boolean simulate) {
-		int sum = 0;
-		Iterator<FluidData> iterator = list.iterator();
-		while (iterator.hasNext()) {
-			FluidData fluidData = iterator.next();
-			TransportContent content = manager.insert(fluidData, false, simulate);
-			
-			result.add(facing, content);
-			result.plusRealTransport(content.getTransportAmount());
-			fluidData.minusAmount(content.getTransportAmount());
-			sum += content.getTransportAmount();
-			if (fluidData.isEmpty()) iterator.remove();
-		}
-		return sum;
+	@Nullable
+	public IFluid getFacingLinked(EnumFacing facing) {
+		if (isLinked(facing)) return null;
+		BlockPos target = pos.offset(facing);
+		TileEntity te = world.getTileEntity(target);
+		//noinspection ConstantConditions
+		return te.getCapability(FluidCapability.TRANSFER, facing);
 	}
 	
 }
