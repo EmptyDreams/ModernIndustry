@@ -2,7 +2,7 @@ package xyz.emptydreams.mi.api.gui.craft.handle;
 
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
-import xyz.emptydreams.mi.api.craftguide.multi.OrderlyShape;
+import xyz.emptydreams.mi.api.craftguide.multi.OrderedShape;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemList;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.gui.craft.HandleRegister;
@@ -15,15 +15,15 @@ import xyz.emptydreams.mi.api.utils.data.math.Size2D;
 import javax.annotation.Nonnull;
 
 /**
- * 匹配{@link OrderlyShape}的Handle
+ * 匹配{@link OrderedShape}的Handle
  * @author EmptyDreams
  */
 @AutoLoader
-public final class OrderlyShapeHandle extends CraftHandle<ItemList, ItemSet> {
+public final class OrderedShapeHandle extends CraftHandle<ItemList, ItemSet> {
 	
 	static {
 		HandleRegister.registry(new HandleRegister.HandleInfo(
-						ItemList.class, ItemSet.class, OrderlyShape.class), OrderlyShapeHandle::new);
+						ItemList.class, ItemSet.class, OrderedShape.class), OrderedShapeHandle::new);
 	}
 	
 	/** 原料栏大小 */
@@ -32,11 +32,11 @@ public final class OrderlyShapeHandle extends CraftHandle<ItemList, ItemSet> {
 	private final Size2D proSize;
 	
 	/**
-	 * 创建一个对于{@link OrderlyShape}的处理类
-	 * @param craft 必须为{@code CraftGuide<? extends OrderlyShape, ItemSet>}
+	 * 创建一个对于{@link OrderedShape}的处理类
+	 * @param craft 必须为{@code CraftGuide<? extends OrderedShape, ItemSet>}
 	 */
 	@SuppressWarnings({"rawtypes"})
-	public OrderlyShapeHandle(CraftGuide craft) {
+	public OrderedShapeHandle(CraftGuide craft) {
 		CraftHandle.check(craft, ItemList.class, ItemSet.class);
 		rawSize = craft.getShapeSize();
 		proSize = craft.getProtectSize();
@@ -71,7 +71,7 @@ public final class OrderlyShapeHandle extends CraftHandle<ItemList, ItemSet> {
 	
 	@Override
 	public Class<? extends IShape<ItemList, ItemSet>> getShapeClass() {
-		return OrderlyShape.class;
+		return OrderedShape.class;
 	}
 	
 }

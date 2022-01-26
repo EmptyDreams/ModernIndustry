@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.fluid.data;
+﻿package xyz.emptydreams.mi.api.fluid.data;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.util.EnumFacing;
@@ -11,7 +11,7 @@ import java.util.Map;
  * @author EmptyDreams
  */
 public class FluidShuntData implements Iterable<Map.Entry<EnumFacing, FluidData>> {
-
+	
 	private final Map<EnumFacing, FluidData> dataMap;
 	
 	/**

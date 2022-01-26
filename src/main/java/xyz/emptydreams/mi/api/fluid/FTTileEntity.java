@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.fluid;
+﻿package xyz.emptydreams.mi.api.fluid;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -28,6 +28,7 @@ import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -312,18 +313,19 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	@Override
 	public TransportResult extract(int amount, EnumFacing facing, boolean simulate) {
 		TransportResult result = new TransportResult();
-		if (!isOpen(facing)) return result;                 //判断输出方向是否有开口
+		//如果取出方向没有开口或取出数量为0则直接返回
+		if (!isOpen(facing) || amount == 0) return result;
+		//尽力取出流体
 		int success = fluidValue.extract(amount, simulate);
-		int all = success;
+		int copyAmount = amount;
 		for (EnumFacing value : values()) {
 			if (!isLinked(value)) continue;
 			IFluid fluid = getFacingLinked(value);
 			@SuppressWarnings("ConstantConditions")
 			TransportResult inner = fluid.extract(
-							all, value.getOpposite(), simulate);
-			all -= inner.getRealTransport();
+							copyAmount, value.getOpposite(), simulate);
+			copyAmount -= inner.getRealTransport();
 			result.combine(inner);
-			if (all == 0) break;
 		}
 		result.setRealTransport(success);
 		return result;
@@ -333,14 +335,16 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	@Override
 	public TransportResult insert(FluidData data, EnumFacing facing, boolean simulate) {
 		TransportResult result = new TransportResult();
-		if (!isOpen(facing) || data.getAmount() == 0) return result;               //判断输入方向是否有开口
-		FluidDataList extrude = fluidValue.insert(data, true);
-		if (extrude.isEmpty()) {
+		//如果输入方向无开口或输入数量为0则直接返回
+		if (!isOpen(facing) || data.getAmount() == 0) return result;
+		FluidDataList extrude = fluidValue.insert(data, true);  //模拟输入
+		if (extrude.isEmpty()) {    //如果没有挤出流体则不必进行后面的运算
 			if (!simulate) fluidValue.insert(data, false);
 			result.setRealTransport(data.getAmount());
 			return result;
 		}
-		if (facing != DOWN) {
+		
+		if (facing != DOWN) {   //如果输入方向不是下方且下方可以进行运输则优先向下方运输
 			IFluid downBlock = getFacingLinked(DOWN);
 			if (downBlock != null) {
 				for (FluidData value : extrude) {
@@ -356,14 +360,25 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		}
 		o : for (EnumFacing value : HORIZONTALS) {
 			if (!isLinked(value)) continue;
+			IFluid fluid = getFacingLinked(value);
 			for (FluidData now : extrude) {
 				if (now.isEmpty()) continue;
-				IFluid fluid = getFacingLinked(value);
-				if (fluid == null) break;
+				@SuppressWarnings("ConstantConditions")
 				TransportResult inner = fluid.insert(now, value.getOpposite(), simulate);
 				result.combine(inner);
 				now.minusAmount(inner.getRealTransport());
 				if (extrude.isEmpty()) break o;
+			}
+		}
+		//最后向上方运输
+		if (isLinkedUp() && !extrude.isEmpty()) {
+			IFluid fluid = getFacingLinked(UP);
+			for (FluidData value : extrude) {
+				if (value.isEmpty()) continue;
+				@SuppressWarnings("ConstantConditions")
+				TransportResult inner = fluid.insert(value, UP, simulate);
+				result.combine(inner);
+				value.minusAmount(inner.getRealTransport());
 			}
 		}
 		if (!simulate) fluidValue.insert(data.copy(result.getRealTransport()), false);
@@ -381,6 +396,11 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		TileEntity te = world.getTileEntity(target);
 		//noinspection ConstantConditions
 		return te.getCapability(FluidCapability.TRANSFER, facing);
+	}
+	
+	/** 获取连接总数 */
+	public int getLinkedAmount() {
+		return (int) Arrays.stream(values()).filter(this::isLinked).count();
 	}
 	
 }

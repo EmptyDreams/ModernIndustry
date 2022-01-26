@@ -41,8 +41,8 @@ public final class MouseData {
 	
 	@Override
 	public int hashCode() {
-		int result = (mouseX != +0.0f ? Float.floatToIntBits(mouseX) : 0);
-		result = 31 * result + (mouseY != +0.0f ? Float.floatToIntBits(mouseY) : 0);
+		int result = (mouseX != 0.0f ? Float.floatToIntBits(mouseX) : 0);
+		result = 31 * result + (mouseY != 0.0f ? Float.floatToIntBits(mouseY) : 0);
 		result = 31 * result + code;
 		result = 31 * result + wheel;
 		return result;

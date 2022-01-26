@@ -2,34 +2,37 @@ package xyz.emptydreams.mi.api.craftguide.multi;
 
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
+import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
+import xyz.emptydreams.mi.api.craftguide.sol.ItemList;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 
 import javax.annotation.Nonnull;
 
 /**
- * 多项无序合成表
+ * 多项有序合成表
  * @author EmptyDreams
  */
-public class UnorderlyShape implements IShape<ItemSet, ItemSet> {
+public class OrderedShape implements IShape<ItemList, ItemSet> {
 	
-	private final ItemSet raw;
+	private final ItemList list;
 	private final ItemSet production;
 	
-	public UnorderlyShape(ItemSet input, ItemSet output) {
-		raw = input.offset();
+	public OrderedShape(ItemList input, ItemSet output) {
+		list = input.offset();
 		production = output.offset();
 	}
 	
 	@Nonnull
 	@Override
-	public ItemSet getInput() {
-		return raw.copy();
+	public ItemList getInput() {
+		return list.copy();
 	}
 	
 	@Override
@@ -38,24 +41,24 @@ public class UnorderlyShape implements IShape<ItemSet, ItemSet> {
 	}
 	
 	@Override
-	public boolean apply(ItemSet that) {
-		return raw.apply(that);
+	public boolean apply(ItemList that) {
+		return list.apply(that);
 	}
 	
 	@Override
 	public boolean haveElement(ItemElement element) {
-		return raw.hasElement(element);
+		return list.hasElement(element);
 	}
 	
 	@Override
 	public boolean haveItem(ItemStack stack) {
-		return raw.hasItem(stack);
+		return list.hasItem(stack);
 	}
 	
 	@Nonnull
 	@Override
-	public Class<ItemSet> getInputClass() {
-		return ItemSet.class;
+	public Class<ItemList> getInputClass() {
+		return ItemList.class;
 	}
 	
 	@Nonnull
@@ -77,10 +80,22 @@ public class UnorderlyShape implements IShape<ItemSet, ItemSet> {
 	 */
 	@SuppressWarnings("ConstantConditions")
 	public static void pares(JsonObject json, Char2ObjectMap<ItemElement> keyMap) {
-		ItemSet input = ItemSet.parse(json, keyMap);
 		ItemSet result = ItemSet.parse(json.getAsJsonObject("result"), keyMap);
+		ItemList input = ItemList.parse(json, keyMap);
 		String group = json.get("group").getAsString();
-		CraftGuide.getInstance(new ResourceLocation(group)).registry(new UnorderlyShape(input, result));
+		Block block = Block.getBlockFromName(group);
+		if (block != null) {
+			CraftGuide.getInstance(new ResourceLocation(
+					block.getRegistryName().getResourceDomain(), block.getUnlocalizedName()))
+					.registry(new OrderedShape(input, result));
+		} else {
+			Item item = Item.getByNameOrId(group);
+			if (item != null) {
+				CraftGuide.getInstance(new ResourceLocation(
+						item.getRegistryName().getResourceDomain(), item.getUnlocalizedName()))
+						.registry(new OrderedShape(input, result));
+			}
+		}
 	}
 	
 }

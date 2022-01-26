@@ -3,7 +3,7 @@ package xyz.emptydreams.mi.api.gui.craft.handle;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
-import xyz.emptydreams.mi.api.craftguide.multi.UnorderlyShape;
+import xyz.emptydreams.mi.api.craftguide.multi.UnorderedShape;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.gui.craft.HandleRegister;
 import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
@@ -17,15 +17,15 @@ import javax.annotation.Nonnull;
 import java.util.function.ObjIntConsumer;
 
 /**
- * 匹配{@link UnorderlyShape}的Handle
+ * 匹配{@link UnorderedShape}的Handle
  * @author EmptyDreams
  */
 @AutoLoader
-public class UnorderlyShapeHandle extends CraftHandle<ItemSet, ItemSet> {
+public class UnorderedShapeHandle extends CraftHandle<ItemSet, ItemSet> {
 	
 	static {
 		HandleRegister.registry(new HandleRegister.HandleInfo(
-				ItemSet.class, ItemSet.class, UnorderlyShape.class), UnorderlyShapeHandle::new);
+				ItemSet.class, ItemSet.class, UnorderedShape.class), UnorderedShapeHandle::new);
 	}
 	
 	/** 原料栏大小 */
@@ -34,11 +34,11 @@ public class UnorderlyShapeHandle extends CraftHandle<ItemSet, ItemSet> {
 	private final Size2D proSize;
 	
 	/**
-	 * 创建一个对于{@link UnorderlyShape}的处理类
-	 * @param craft 必须为{@code CraftGuide<? extends UnorderlyShape, ItemSet>}
+	 * 创建一个对于{@link UnorderedShape}的处理类
+	 * @param craft 必须为{@code CraftGuide<? extends UnorderedShape, ItemSet>}
 	 */
 	@SuppressWarnings("rawtypes")
-	public UnorderlyShapeHandle(CraftGuide craft) {
+	public UnorderedShapeHandle(CraftGuide craft) {
 		CraftHandle.check(craft, ItemSet.class, ItemSet.class);
 		rawSize = craft.getShapeSize();
 		proSize = craft.getProtectSize();
@@ -75,7 +75,7 @@ public class UnorderlyShapeHandle extends CraftHandle<ItemSet, ItemSet> {
 	
 	@Override
 	public Class<? extends IShape<ItemSet, ItemSet>> getShapeClass() {
-		return UnorderlyShape.class;
+		return UnorderedShape.class;
 	}
 	
 }

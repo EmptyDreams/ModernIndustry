@@ -3,7 +3,7 @@ package xyz.emptydreams.mi.api.gui.craft.handle;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
-import xyz.emptydreams.mi.api.craftguide.only.OrderlyShapeOnly;
+import xyz.emptydreams.mi.api.craftguide.only.OrderedShapeOnly;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemList;
 import xyz.emptydreams.mi.api.gui.craft.HandleRegister;
 import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
@@ -13,15 +13,15 @@ import xyz.emptydreams.mi.api.utils.data.math.Size2D;
 import javax.annotation.Nonnull;
 
 /**
- * 匹配{@link OrderlyShapeOnly}的Handle
+ * 匹配{@link OrderedShapeOnly}的Handle
  * @author EmptyDreams
  */
 @AutoLoader
-public final class OrderlyShapeOnlyHandle extends CraftHandle<ItemList, ItemElement> {
+public final class OrderedShapeOnlyHandle extends CraftHandle<ItemList, ItemElement> {
 	
 	static {
 		HandleRegister.registry(new HandleRegister.HandleInfo(
-				ItemList.class, ItemElement.class, OrderlyShapeOnly.class), OrderlyShapeOnlyHandle::new);
+				ItemList.class, ItemElement.class, OrderedShapeOnly.class), OrderedShapeOnlyHandle::new);
 	}
 	
 	/** 原料栏大小 */
@@ -30,7 +30,7 @@ public final class OrderlyShapeOnlyHandle extends CraftHandle<ItemList, ItemElem
 	public static final Size2D proSize = new Size2D(1, 1);
 	
 	@SuppressWarnings("rawtypes")
-	public OrderlyShapeOnlyHandle(CraftGuide craft) {
+	public OrderedShapeOnlyHandle(CraftGuide craft) {
 		CraftHandle.check(craft, ItemList.class, ItemElement.class);
 		rawSize = craft.getShapeSize();
 	}
@@ -60,7 +60,7 @@ public final class OrderlyShapeOnlyHandle extends CraftHandle<ItemList, ItemElem
 	
 	@Override
 	public Class<? extends IShape<ItemList, ItemElement>> getShapeClass() {
-		return OrderlyShapeOnly.class;
+		return OrderedShapeOnly.class;
 	}
 	
 }

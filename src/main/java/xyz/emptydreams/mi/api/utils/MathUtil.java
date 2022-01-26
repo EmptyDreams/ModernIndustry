@@ -23,6 +23,21 @@ public final class MathUtil {
 	private static final Random RANDOM = new Random();
 	
 	/**
+	 * 将指定数额的数据均分为指定份
+	 * @param amount 总量
+	 * @param copies 份数
+	 * @return 分配后的数组，长度与份数相等
+	 */
+	public static int[] average(int amount, int copies) {
+		int[] result = new int[copies];
+		int value = amount / copies;
+		Arrays.fill(result, value);
+		int mod = amount % copies;
+		if (mod != 0) result[copies - 1] += mod;
+		return result;
+	}
+	
+	/**
 	 * 对某个可遍历的对象求和
 	 * @param iterable 需要遍历的对象
 	 * @param getter 将T类型的对象转换为int类型

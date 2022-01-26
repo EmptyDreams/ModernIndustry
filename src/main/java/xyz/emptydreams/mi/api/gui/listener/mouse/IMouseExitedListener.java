@@ -8,10 +8,6 @@ import xyz.emptydreams.mi.api.gui.listener.MouseData;
  */
 public interface IMouseExitedListener extends IMouseListener {
 	
-	/**
-	 * @param mouseX 鼠标X轴坐标（相对于Gui）
-	 * @param mouseY 鼠标Y轴坐标（相对于Gui）
-	 */
 	void mouseExited();
 	
 	@Override

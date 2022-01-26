@@ -39,6 +39,7 @@ public class MixinOpenGuiHandler {
 					ci.cancel();
 					modidField.set(msg, "内部" + modid);
 					MixinUtil.msg = msg;
+					//noinspection ConstantConditions
 					MixinUtil.handler = (OpenGuiHandler) (Object) this;
 				}
 			} else if (modid.startsWith("内部") && ClassInfoViewerMessage.isUpdate()) {

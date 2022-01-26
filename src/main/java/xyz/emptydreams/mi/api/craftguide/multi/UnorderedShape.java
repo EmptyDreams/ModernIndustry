@@ -1,4 +1,4 @@
-package xyz.emptydreams.mi.api.craftguide.only;
+package xyz.emptydreams.mi.api.craftguide.multi;
 
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
@@ -9,47 +9,47 @@ import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
-import xyz.emptydreams.mi.api.utils.JsonUtil;
 
 import javax.annotation.Nonnull;
 
 /**
- * 单项无序合成表
+ * 多项无序合成表
  * @author EmptyDreams
  */
-public class UnorderlyShapeOnly implements IShape<ItemSet, ItemElement> {
+public class UnorderedShape implements IShape<ItemSet, ItemSet> {
 	
-	private final ItemSet set;
-	private final ItemElement production;
+	private final ItemSet raw;
+	private final ItemSet production;
 	
-	public UnorderlyShapeOnly(ItemSet set, ItemElement production) {
-		this.set = set;
-		this.production = production;
+	public UnorderedShape(ItemSet input, ItemSet output) {
+		raw = input.offset();
+		production = output.offset();
 	}
 	
+	@Nonnull
 	@Override
 	public ItemSet getInput() {
-		return set.copy();
+		return raw.copy();
 	}
 	
 	@Override
-	public @Nonnull ItemElement getOutput() {
-		return production;
+	public ItemSet getOutput() {
+		return production.copy();
 	}
 	
 	@Override
 	public boolean apply(ItemSet that) {
-		return set.apply(that);
+		return raw.apply(that);
 	}
 	
 	@Override
 	public boolean haveElement(ItemElement element) {
-		return set.hasElement(element);
+		return raw.hasElement(element);
 	}
 	
 	@Override
 	public boolean haveItem(ItemStack stack) {
-		return set.hasItem(stack);
+		return raw.hasItem(stack);
 	}
 	
 	@Nonnull
@@ -60,13 +60,13 @@ public class UnorderlyShapeOnly implements IShape<ItemSet, ItemElement> {
 	
 	@Nonnull
 	@Override
-	public Class<ItemElement> getOutputClass() {
-		return ItemElement.class;
+	public Class<ItemSet> getOutputClass() {
+		return ItemSet.class;
 	}
 	
 	@Override
 	public String getMainlyName() {
-		return I18n.format(production.getItem().getUnlocalizedName() + ".name");
+		return I18n.format(production.iterator().next().getItem().getUnlocalizedName() + ".name");
 	}
 	
 	/**
@@ -78,9 +78,9 @@ public class UnorderlyShapeOnly implements IShape<ItemSet, ItemElement> {
 	@SuppressWarnings("ConstantConditions")
 	public static void pares(JsonObject json, Char2ObjectMap<ItemElement> keyMap) {
 		ItemSet input = ItemSet.parse(json, keyMap);
-		ItemElement result = JsonUtil.getElement(json.getAsJsonObject("result"));
+		ItemSet result = ItemSet.parse(json.getAsJsonObject("result"), keyMap);
 		String group = json.get("group").getAsString();
-		CraftGuide.getInstance(new ResourceLocation(group)).registry(new UnorderlyShapeOnly(input, result));
+		CraftGuide.getInstance(new ResourceLocation(group)).registry(new UnorderedShape(input, result));
 	}
 	
 }

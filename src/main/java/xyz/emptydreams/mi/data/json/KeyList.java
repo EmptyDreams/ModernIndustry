@@ -14,7 +14,7 @@ import java.util.function.Function;
  */
 public final class KeyList {
 	
-	private KeyList() { throw new AssertionError("不应该调用的构造函数"); };
+	private KeyList() { throw new AssertionError("不应该调用的构造函数"); }
 	
 	private static final Map<String, Function<Object, String>> KEYS =
 			new Object2ObjectArrayMap<String, Function<Object, String>>() {

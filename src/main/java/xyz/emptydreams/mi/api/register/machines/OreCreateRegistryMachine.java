@@ -25,13 +25,11 @@ public class OreCreateRegistryMachine extends AutoRegisterMachine<OreCreate, Obj
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public void registryAll(ASMDataTable asm) {
 		Object data = parse(asm);
-		Class<?> cache = getTargetClass();
-		if (!cache.isAnnotation())
+		Class<? extends Annotation> annotation = getTargetClass();
+		if (!annotation.isAnnotation())
 			throw new IllegalArgumentException("getTargetClass方法返回了非注解的class");
-		Class<? extends Annotation> annotation = (Class<? extends Annotation>) cache;
 		Set<ASMDataTable.ASMData> dataSet = asm.getAll(annotation.getName());
 		for (ASMDataTable.ASMData asmData : dataSet) {
 			try {

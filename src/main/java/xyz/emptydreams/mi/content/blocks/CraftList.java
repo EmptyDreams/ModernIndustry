@@ -7,8 +7,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
-import xyz.emptydreams.mi.api.craftguide.multi.OrderlyShape;
-import xyz.emptydreams.mi.api.craftguide.only.UnorderlyShapeOnly;
+import xyz.emptydreams.mi.api.craftguide.multi.OrderedShape;
+import xyz.emptydreams.mi.api.craftguide.only.UnorderedShapeOnly;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.event.CraftGuideRegistryEvent;
 import xyz.emptydreams.mi.api.register.others.AutoLoader;
@@ -36,29 +36,29 @@ public final class CraftList {
 	private static final Size2D ONLY = size(1, 1);
 	
 	/** 火力发电机 */
-	public static final CraftGuide<UnorderlyShapeOnly, ItemElement> FIRE_POWER
+	public static final CraftGuide<UnorderedShapeOnly, ItemElement> FIRE_POWER
 				= CraftGuide.instance(FirePowerBlock.instance(),
 									  ONLY, ONLY,
-									  UnorderlyShapeOnly.class,
+									  UnorderedShapeOnly.class,
 									  ItemElement.class);
 	/** 粉碎机 */
-	public static final CraftGuide<UnorderlyShapeOnly, ItemElement> PULVERIZER
+	public static final CraftGuide<UnorderedShapeOnly, ItemElement> PULVERIZER
 				= CraftGuide.instance(PulverizerBlock.instance(),
 									  ONLY, ONLY,
-									  UnorderlyShapeOnly.class,
+									  UnorderedShapeOnly.class,
 									  ItemElement.class);
 	/** 压缩机 */
-	public static final CraftGuide<UnorderlyShapeOnly, ItemElement> COMPRESSOR
+	public static final CraftGuide<UnorderedShapeOnly, ItemElement> COMPRESSOR
 				= CraftGuide.instance(CompressorBlock.instance(),
 									  ONLY, ONLY,
-									  UnorderlyShapeOnly.class,
+									  UnorderedShapeOnly.class,
 									  ItemElement.class);
 	/** 电子合成台 */
-	public static final CraftGuide<OrderlyShape, ItemSet> SYNTHESIZER
+	public static final CraftGuide<OrderedShape, ItemSet> SYNTHESIZER
 				= CraftGuide.instance(ElectronSynthesizerBlock.instance(),
 									  size(5, 5),
 									  size(2, 2),
-									  OrderlyShape.class,
+									  OrderedShape.class,
 									  ItemSet.class);
 
 	@SubscribeEvent
@@ -77,16 +77,16 @@ public final class CraftList {
 		);
 	}
 	
-	private static UnorderlyShapeOnly createOneCraft(Block input, Item output) {
+	private static UnorderedShapeOnly createOneCraft(Block input, Item output) {
 		ItemSet set = new ItemSet();
 		set.add(ItemElement.instance(input, 1));
-		return new UnorderlyShapeOnly(set, ItemElement.instance(output, 2));
+		return new UnorderedShapeOnly(set, ItemElement.instance(output, 2));
 	}
 	
-	private static UnorderlyShapeOnly createOneCraft(ItemStack input, ItemStack output) {
+	private static UnorderedShapeOnly createOneCraft(ItemStack input, ItemStack output) {
 		ItemSet set = new ItemSet();
 		set.add(ItemElement.instance(input));
-		return new UnorderlyShapeOnly(set, ItemElement.instance(output));
+		return new UnorderedShapeOnly(set, ItemElement.instance(output));
 	}
 	
 	private static Size2D size(int width, int height) {

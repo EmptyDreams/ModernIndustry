@@ -53,7 +53,6 @@ final class CraftFrameUtil {
 	 * <p><b>就算没有完全成功也会修改输入和stack中的数据</b>
 	 * @param input 输入
 	 * @param stack 要移除的物品
-	 * @param record 运算记录，留空表明不保留记录
 	 * @return 移除了几个物品
 	 */
 	@Nonnull

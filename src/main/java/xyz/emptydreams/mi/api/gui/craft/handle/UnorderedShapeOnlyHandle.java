@@ -3,7 +3,7 @@ package xyz.emptydreams.mi.api.gui.craft.handle;
 import xyz.emptydreams.mi.api.craftguide.CraftGuide;
 import xyz.emptydreams.mi.api.craftguide.IShape;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
-import xyz.emptydreams.mi.api.craftguide.only.UnorderlyShapeOnly;
+import xyz.emptydreams.mi.api.craftguide.only.UnorderedShapeOnly;
 import xyz.emptydreams.mi.api.craftguide.sol.ItemSet;
 import xyz.emptydreams.mi.api.gui.craft.HandleRegister;
 import xyz.emptydreams.mi.api.gui.component.group.SlotGroup;
@@ -16,28 +16,28 @@ import xyz.emptydreams.mi.api.utils.data.math.Size2D;
 import javax.annotation.Nonnull;
 
 /**
- * 匹配{@link UnorderlyShapeOnly}的Handle
+ * 匹配{@link UnorderedShapeOnly}的Handle
  * @author EmptyDreams
  */
 @AutoLoader
-public class UnorderlyShapeOnlyHandle extends CraftHandle<ItemSet, ItemElement> {
+public class UnorderedShapeOnlyHandle extends CraftHandle<ItemSet, ItemElement> {
 	
 	static {
 		HandleRegister.registry(new HandleRegister.HandleInfo(
-				ItemSet.class, ItemElement.class, UnorderlyShapeOnly.class), UnorderlyShapeOnlyHandle::new);
+				ItemSet.class, ItemElement.class, UnorderedShapeOnly.class), UnorderedShapeOnlyHandle::new);
 	}
 	
 	/** 原料栏大小 */
 	private final Size2D rawSize;
 	/** 产物栏大小 */
-	public static final Size2D proSize = OrderlyShapeOnlyHandle.proSize;
+	public static final Size2D proSize = OrderedShapeOnlyHandle.proSize;
 	
 	@SuppressWarnings("rawtypes")
-	public UnorderlyShapeOnlyHandle(CraftGuide craft) {
+	public UnorderedShapeOnlyHandle(CraftGuide craft) {
 		try {
 			check(craft, ItemSet.class, ItemElement.class);
 		} catch (IllegalArgumentException e) {
-			MISysInfo.err("[UnorderlyShapeOnlyHandle]MI加载了一个空的CraftGuide，" +
+			MISysInfo.err("[UnorderedShapeOnlyHandle]MI加载了一个空的CraftGuide，" +
 					"可能会导致运行异常，如果实际运行没有问题则可以忽略该警告");
 		} finally {
 			rawSize = craft.getShapeSize();
@@ -72,7 +72,7 @@ public class UnorderlyShapeOnlyHandle extends CraftHandle<ItemSet, ItemElement> 
 	
 	@Override
 	public Class<? extends IShape<ItemSet, ItemElement>> getShapeClass() {
-		return UnorderlyShapeOnly.class;
+		return UnorderedShapeOnly.class;
 	}
 	
 }

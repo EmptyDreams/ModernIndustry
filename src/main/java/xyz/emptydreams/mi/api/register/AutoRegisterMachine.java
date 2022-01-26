@@ -23,6 +23,7 @@ public abstract class AutoRegisterMachine<V extends Annotation, T>
 	 * 进行注册前提前解析ASM
 	 * @return 解析后的内容
 	 */
+	@SuppressWarnings("unused")
 	@Nullable
 	public T parse(ASMDataTable asm) {
 		return null;
@@ -35,17 +36,16 @@ public abstract class AutoRegisterMachine<V extends Annotation, T>
 	@Nonnull
 	public abstract Class<V> getTargetClass();
 	
-	@SuppressWarnings("unchecked")
 	public void registryAll(ASMDataTable asm) {
 		T data = parse(asm);
-		Class<?> cache = getTargetClass();
-		if (!cache.isAnnotation())
+		Class<? extends Annotation> annotation = getTargetClass();
+		if (!annotation.isAnnotation())
 			throw new IllegalArgumentException("getTargetClass方法返回了非注解的class");
-		Class<? extends Annotation> annotation = (Class<? extends Annotation>) cache;
 		Set<ASMDataTable.ASMData> dataSet = asm.getAll(annotation.getName());
 		for (ASMDataTable.ASMData asmData : dataSet) {
 			try {
 				Class<?> clazz = Class.forName(asmData.getClassName());
+				@SuppressWarnings("unchecked")
 				V an = (V) clazz.getAnnotation(annotation);
 				registry(clazz, an, data);
 			} catch (Throwable e) {
@@ -77,7 +77,7 @@ public abstract class AutoRegisterMachine<V extends Annotation, T>
 	}
 	
 	/** 判断当前注册机是否依赖指定注册机 */
-	public final boolean isDependency(AutoRegisterMachine<?, ?> register) {
+	public boolean isDependency(AutoRegisterMachine<?, ?> register) {
 		for (String key : getDependency()) {
 			AutoRegisterMachine<?, ?> dependency = AutoRegister.getInstance(key);
 			if (dependency.equals(register)) return true;

@@ -4,10 +4,10 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
-import xyz.emptydreams.mi.api.craftguide.multi.OrderlyShape;
-import xyz.emptydreams.mi.api.craftguide.multi.UnorderlyShape;
-import xyz.emptydreams.mi.api.craftguide.only.OrderlyShapeOnly;
-import xyz.emptydreams.mi.api.craftguide.only.UnorderlyShapeOnly;
+import xyz.emptydreams.mi.api.craftguide.multi.OrderedShape;
+import xyz.emptydreams.mi.api.craftguide.multi.UnorderedShape;
+import xyz.emptydreams.mi.api.craftguide.only.OrderedShapeOnly;
+import xyz.emptydreams.mi.api.craftguide.only.UnorderedShapeOnly;
 import xyz.emptydreams.mi.api.utils.JsonUtil;
 
 import java.util.Map;
@@ -50,10 +50,10 @@ public final class JsonCraftRegistry {
 	}
 	
 	static {
-		registryInstance("mi:orderly_shape", OrderlyShape::pares);
-		registryInstance("mi:unorderly_shape", UnorderlyShape::pares);
-		registryInstance("mi:orderly_shape_only", OrderlyShapeOnly::pares);
-		registryInstance("mi:unorderly_shape_only", UnorderlyShapeOnly::pares);
+		registryInstance("mi:orderly_shape", OrderedShape::pares);
+		registryInstance("mi:unorderly_shape", UnorderedShape::pares);
+		registryInstance("mi:orderly_shape_only", OrderedShapeOnly::pares);
+		registryInstance("mi:unorderly_shape_only", UnorderedShapeOnly::pares);
 	}
 	
 	private JsonCraftRegistry() { throw new UnsupportedOperationException(); }
