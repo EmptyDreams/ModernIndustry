@@ -7,8 +7,6 @@ import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.fluid.TransportResult;
-import xyz.emptydreams.mi.api.fluid.data.DataManager;
-import xyz.emptydreams.mi.api.fluid.data.DataManagerGroup;
 import xyz.emptydreams.mi.api.fluid.data.FluidData;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
@@ -26,12 +24,8 @@ import java.util.List;
 @AutoTileEntity("StraightPipe")
 public class StraightPipeTileEntity extends FTTileEntity {
 	
-	/** */
-	protected final DataManagerGroup group = new DataManagerGroup();
 	/** 管道朝向 */
 	@Storage protected EnumFacing facing;
-	/** 管道存储内容，高位为管道正方向 */
-	protected DataManager manager = new DataManager(getMaxAmount());
 	
 	public StraightPipeTileEntity() {
 		this(EnumFacing.NORTH);
@@ -39,7 +33,6 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	
 	public StraightPipeTileEntity(EnumFacing facing) {
 		this.facing = facing;
-		group.setManager(facing, manager);
 	}
 	
 	@Override
@@ -52,15 +45,9 @@ public class StraightPipeTileEntity extends FTTileEntity {
 		facing = EnumFacing.values()[reader.readByte()];
 	}
 	
-	@Nonnull
-	@Override
-	protected DataManagerGroup getDataManagers() {
-		return group;
-	}
-	
 	@Override
 	public boolean isEmpty() {
-		return manager.isEmpty();
+		return false;
 	}
 	
 	@Override

@@ -16,8 +16,6 @@ import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.fluid.data.FluidData;
-import xyz.emptydreams.mi.api.fluid.data.FluidDataList;
-import xyz.emptydreams.mi.api.fluid.data.FluidPipeData;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.api.utils.IOUtil;
@@ -46,8 +44,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 	@Storage(byte.class) protected int linkData = 0b000000;
 	/** 六个方向的管塞数据 */
 	@Storage protected final Map<EnumFacing, ItemStack> plugData = new EnumMap<>(EnumFacing.class);
-	/** */
-	@Storage protected FluidPipeData fluidValue = new FluidPipeData();
+	
 	
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
@@ -315,20 +312,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		TransportResult result = new TransportResult();
 		//如果取出方向没有开口或取出数量为0则直接返回
 		if (!isOpen(facing) || amount == 0) return result;
-		//尽力取出流体
-		int success = fluidValue.extract(amount, simulate);
-		int copyAmount = amount;
-		for (EnumFacing value : values()) {
-			if (!isLinked(value)) continue;
-			IFluid fluid = getFacingLinked(value);
-			@SuppressWarnings("ConstantConditions")
-			TransportResult inner = fluid.extract(
-							copyAmount, value.getOpposite(), simulate);
-			copyAmount -= inner.getRealTransport();
-			result.combine(inner);
-		}
-		result.setRealTransport(success);
-		return result;
+		
 	}
 	
 	@Nonnull
@@ -337,52 +321,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
 		TransportResult result = new TransportResult();
 		//如果输入方向无开口或输入数量为0则直接返回
 		if (!isOpen(facing) || data.getAmount() == 0) return result;
-		FluidDataList extrude = fluidValue.insert(data, true);  //模拟输入
-		if (extrude.isEmpty()) {    //如果没有挤出流体则不必进行后面的运算
-			if (!simulate) fluidValue.insert(data, false);
-			result.setRealTransport(data.getAmount());
-			return result;
-		}
 		
-		if (facing != DOWN) {   //如果输入方向不是下方且下方可以进行运输则优先向下方运输
-			IFluid downBlock = getFacingLinked(DOWN);
-			if (downBlock != null) {
-				for (FluidData value : extrude) {
-					TransportResult inner = downBlock.insert(value, UP, simulate);
-					result.combine(inner);
-					value.minusAmount(inner.getRealTransport());
-				}
-				if (extrude.isEmpty()) {
-					if (!simulate) fluidValue.insert(data, false);
-					return result;
-				}
-			}
-		}
-		o : for (EnumFacing value : HORIZONTALS) {
-			if (!isLinked(value)) continue;
-			IFluid fluid = getFacingLinked(value);
-			for (FluidData now : extrude) {
-				if (now.isEmpty()) continue;
-				@SuppressWarnings("ConstantConditions")
-				TransportResult inner = fluid.insert(now, value.getOpposite(), simulate);
-				result.combine(inner);
-				now.minusAmount(inner.getRealTransport());
-				if (extrude.isEmpty()) break o;
-			}
-		}
-		//最后向上方运输
-		if (isLinkedUp() && !extrude.isEmpty()) {
-			IFluid fluid = getFacingLinked(UP);
-			for (FluidData value : extrude) {
-				if (value.isEmpty()) continue;
-				@SuppressWarnings("ConstantConditions")
-				TransportResult inner = fluid.insert(value, UP, simulate);
-				result.combine(inner);
-				value.minusAmount(inner.getRealTransport());
-			}
-		}
-		if (!simulate) fluidValue.insert(data.copy(result.getRealTransport()), false);
-		return result;
 	}
 	
 	/**
