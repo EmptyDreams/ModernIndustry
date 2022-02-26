@@ -2,12 +2,13 @@ package xyz.emptydreams.mi.api.capabilities.fluid;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import xyz.emptydreams.mi.api.fluid.data.FluidData;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * 流体管道信息
+ * 流体容器
  * @author EmptyDreams
  */
 public interface IFluid {
@@ -20,8 +21,41 @@ public interface IFluid {
 		return 1000;
 	}
 	
-	//** 判断容器是否为空 */
-	//boolean isEmpty();
+	/** 判断容器是否为空 */
+	boolean isEmpty();
+	
+	/**
+	 * <p>向容器中插入流体
+	 * <p>注意：
+	 * <ol>
+	 *  <li><b>该方法仅负责向当前容器插入数据，至于是否会进行额外的运算并没有规定</b>
+	 *  <li>该方法保证不会修改输入的data
+	 * </ol>
+	 * @param data 要插入的数据
+	 * @param facing 相对于当前流体容器，流体向哪个方向流动
+	 * @param simulate 是否为模拟，为true不修改内部数据
+	 * @return 成功插入了多少流体
+	 */
+	int insert(FluidData data, EnumFacing facing, boolean simulate);
+	
+	/**
+	 * <p>从容器中取出流体
+	 * <p>补充：输入的data参数中，流体类型用来表示要取出的流体类型，如果能取出的和要取出的流体类型不符则不能取出
+	 * @param data 要取出的数据
+	 * @param facing 相对于当前流体容器，流体向哪个方向流动
+	 * @param simulate 是否为模拟，为true不修改内部数据
+	 * @return 取出了多少数据
+	 */
+	int extract(FluidData data, EnumFacing facing, boolean simulate);
+	
+	/**
+	 * 从容其中取出流体，该方法不关注取出什么类型的流体
+	 * @param amount 要取出的数量
+	 * @param facing 相对于当前流体容器，流体向哪个方向流动
+	 * @param simulate 是否为模拟，为true不修改内部数据
+	 * @return 去输了什么数据
+	 */
+	FluidData extract(int amount, EnumFacing facing, boolean simulate);
 	
 	/**
 	 * 获取下一个可用的流体去向
@@ -35,12 +69,17 @@ public interface IFluid {
 	/** 判断指定方向是否含有开口 */
 	boolean hasAperture(EnumFacing facing);
 	
+	/** 判断指定方向上能否通过流体 */
+	default boolean isOpen(EnumFacing facing) {
+		return hasAperture(facing) && !hasPlug(facing);
+	}
+	
 	/** 判断是否可以连接指定方向 */
 	boolean canLink(EnumFacing facing);
 	
 	/** 判断指定方向上是否可以设置管塞 */
 	default boolean canSetPlug(EnumFacing facing) {
-		return hasPlug(facing) && !isLinked(facing);
+		return !(hasPlug(facing) || isLinked(facing));
 	}
 	
 	/**
@@ -164,11 +203,5 @@ public interface IFluid {
 	boolean hasPlugWest();
 	/** 判断管道东方是否含有管塞 */
 	boolean hasPlugEast();
-	
-	/** 判断指定方向上能否通过流体 */
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	default boolean isOpen(EnumFacing facing) {
-		return hasAperture(facing) && !hasPlug(facing);
-	}
 	
 }

@@ -1,6 +1,7 @@
 package xyz.emptydreams.mi.api.fluid.data;
 
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
@@ -102,9 +103,13 @@ public class FluidData {
 		return new FluidData(fluid, amount);
 	}
 	
+	/**
+	 * 构建一个FluidStack
+	 * @return 如果isAir()返回true则FluidStack.getFluid()将返回WATER
+	 */
 	@Nonnull
 	public FluidStack toStack() {
-		return new FluidStack(fluid, amount);
+		return new FluidStack(isAir() ? FluidRegistry.WATER : fluid, amount);
 	}
 	
 	@Override

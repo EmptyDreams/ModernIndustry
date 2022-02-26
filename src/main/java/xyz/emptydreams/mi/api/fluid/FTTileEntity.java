@@ -15,6 +15,7 @@ import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
 import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
+import xyz.emptydreams.mi.api.fluid.data.FluidData;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.api.utils.IOUtil;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static java.lang.Math.min;
 import static net.minecraft.util.EnumFacing.*;
 
 /**
@@ -43,6 +45,8 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
     @Storage(byte.class) protected int linkData = 0b000000;
     /** 六个方向的管塞数据 */
     @Storage protected final Map<EnumFacing, ItemStack> plugData = new EnumMap<>(EnumFacing.class);
+    /** 管道内存储的流体量 */
+    @Storage protected FluidData fluidData = FluidData.empty();
     
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
@@ -58,6 +62,42 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
             return  FluidCapability.TRANSFER.cast(this);
         }
         return super.getCapability(capability, facing);
+    }
+    
+    @Override
+    public int insert(FluidData data, EnumFacing facing, boolean simulate) {
+        if (!fluidData.matchFluid(data)) return 0;
+        int result = min(getMaxAmount() - fluidData.getAmount(), data.getAmount());
+        if (!simulate) fluidData.plusAmount(result);
+        return result;
+    }
+    
+    @Override
+    public int extract(FluidData data, EnumFacing facing, boolean simulate) {
+        if (!fluidData.matchFluid(data)) return 0;
+        int result = min(fluidData.getAmount(), data.getAmount());
+        if (!simulate) fluidData.minusAmount(result);
+        return result;
+    }
+    
+    @Override
+    public FluidData extract(int amount, EnumFacing facing, boolean simulate) {
+        int result = min(fluidData.getAmount(), amount);
+        if (!simulate) fluidData.minusAmount(result);
+        return fluidData.copy(result);
+    }
+    
+    /**
+     * 获取管道内存储的流体数据
+     * @return 返回值经过保护性复制
+     */
+    public FluidData getFluidData() {
+        return fluidData.copy();
+    }
+    
+    @Override
+    public boolean isEmpty() {
+        return fluidData.isEmpty();
     }
     
     @Override
