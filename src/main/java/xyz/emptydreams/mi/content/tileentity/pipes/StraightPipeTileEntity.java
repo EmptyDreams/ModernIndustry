@@ -46,11 +46,6 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	}
 	
 	@Override
-	public boolean isEmpty() {
-		return false;
-	}
-	
-	@Override
 	public TransportResult extract(int amount, EnumFacing facing, boolean simulate) {
 		TransportResult result = new TransportResult();
 		if (!isOpen(facing)) return result;     //如果插入方向上不能通过流体则直接退出

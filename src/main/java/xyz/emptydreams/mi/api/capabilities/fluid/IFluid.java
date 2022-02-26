@@ -2,8 +2,6 @@ package xyz.emptydreams.mi.api.capabilities.fluid;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import xyz.emptydreams.mi.api.fluid.TransportResult;
-import xyz.emptydreams.mi.api.fluid.data.FluidData;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -22,28 +20,8 @@ public interface IFluid {
 		return 1000;
 	}
 	
-	/** 判断容器是否为空 */
-	boolean isEmpty();
-	
-	/**
-	 * 取出指定数额的流体
-	 * @param amount 需求的数量
-	 * @param facing 取出的方向
-	 * @param simulate 是否为模拟，为true时不修改内部数据
-	 * @return 运算结果
-	 */
-	@Nonnull
-	TransportResult extract(int amount, EnumFacing facing, boolean simulate);
-	
-	/**
-	 * 放入指定数额的流体
-	 * @param data 输入的流体
-	 * @param facing 流体输入的方向在方块的方向
-	 * @param simulate 是否为模拟，为true时不修改内部数据
-	 * @return 被挤出的流体量
-	 */
-	@Nonnull
-	TransportResult insert(FluidData data, EnumFacing facing, boolean simulate);
+	//** 判断容器是否为空 */
+	//boolean isEmpty();
 	
 	/**
 	 * 获取下一个可用的流体去向

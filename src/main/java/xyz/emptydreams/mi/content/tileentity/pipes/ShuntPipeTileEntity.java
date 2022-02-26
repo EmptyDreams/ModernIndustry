@@ -5,13 +5,10 @@ import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
-import xyz.emptydreams.mi.api.fluid.data.DataManager;
-import xyz.emptydreams.mi.api.fluid.data.DataManagerGroup;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.MathUtil;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,11 +28,6 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	/** 管道侧面面对的方向 */
 	@Storage protected Axis side = Axis.Y;
 	protected List<EnumFacing> linked = new ArrayList<>(4);
-	/**
-	 * <p>存储流体数据
-	 * <p>格式要求：所有正方向朝向外部
-	 */
-	protected final DataManager[] managers = new DataManager[4];
 	
 	private static final Map<EnumFacing.Axis, EnumFacing[]> sideMap =
 			MathUtil.createArrayMap(new Axis[]{ Axis.X, Axis.Y, Axis.Z },
@@ -44,8 +36,6 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 						new EnumFacing[] { UP, DOWN, SOUTH, NORTH },
 						new EnumFacing[] { NORTH, WEST, SOUTH, EAST }
 					});
-	
-	private final DataManagerGroup group = new DataManagerGroup();
 	
 	public ShuntPipeTileEntity() {
 		assert getMaxAmount() % 4 != 0;
@@ -65,17 +55,6 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 		for (EnumFacing value : values()) {
 			if (isLinked(value)) linked.add(value);
 		}
-	}
-	
-	@Override
-	public boolean isEmpty() {
-		return false;
-	}
-	
-	@Nonnull
-	@Override
-	protected DataManagerGroup getDataManagers() {
-		return group;
 	}
 	
 	@Override

@@ -5,11 +5,9 @@ import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
-import xyz.emptydreams.mi.api.fluid.data.DataManagerGroup;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.content.blocks.base.pipes.enums.AngleFacingEnum;
-import xyz.emptydreams.mi.api.fluid.data.DataManager;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -29,9 +27,6 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	@Storage protected EnumFacing facing;
 	/** 后侧方向 */
 	@Storage protected EnumFacing after;
-	protected DataManager facingData;
-	protected DataManager afterData;
-	protected final DataManagerGroup group = new DataManagerGroup();
 	
 	public AnglePipeTileEntity() {
 		this(NORTH, UP);
@@ -43,9 +38,6 @@ public class AnglePipeTileEntity extends FTTileEntity {
 		this.facing = facing;
 		this.after = after;
 		int max = getMaxAmount() / 2;
-		facingData = new DataManager(max);
-		afterData = new DataManager(max);
-		
 	}
 	
 	@Override
@@ -58,17 +50,6 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	public void syncClient(@Nonnull IDataReader reader) {
 		facing = EnumFacing.values()[reader.readByte()];
 		after = EnumFacing.values()[reader.readByte()];
-	}
-	
-	@Override
-	@Nonnull
-	protected DataManagerGroup getDataManagers() {
-		return group;
-	}
-	
-	@Override
-	public boolean isEmpty() {
-		return facingData.isEmpty() && afterData.isEmpty();
 	}
 	
 	@Nonnull
