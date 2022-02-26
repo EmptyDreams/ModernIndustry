@@ -6,8 +6,6 @@ import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
-import xyz.emptydreams.mi.api.fluid.TransportResult;
-import xyz.emptydreams.mi.api.fluid.data.FluidData;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 
@@ -43,21 +41,6 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	@Override
 	public void syncClient(@Nonnull IDataReader reader) {
 		facing = EnumFacing.values()[reader.readByte()];
-	}
-	
-	@Override
-	public TransportResult extract(int amount, EnumFacing facing, boolean simulate) {
-		TransportResult result = new TransportResult();
-		if (!isOpen(facing)) return result;     //如果插入方向上不能通过流体则直接退出
-		return result;
-	}
-	
-	@Override
-	public TransportResult insert(FluidData data, EnumFacing facing, boolean simulate) {
-		TransportResult result = new TransportResult();
-		if (!isOpen(facing)) return result;     //如果插入方向上不能通过流体则直接退出
-		
-		return result;
 	}
 	
 	@Override
