@@ -23,7 +23,6 @@
     <option name="PROCEED_ON_ERROR" value="false" />
     <option name="GENERATE_NO_WARNINGS" value="true" />
   </component>
-  <component name="Encoding" addBOMForNewFiles="with BOM" />
   <component name="EntryPointsManager">
     <list size="15">
       <item index="0" class="java.lang.String" itemvalue="net.minecraftforge.eventbus.api.SubscribeEvent" />
