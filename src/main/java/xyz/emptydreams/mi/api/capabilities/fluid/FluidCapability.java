@@ -62,32 +62,7 @@ public class FluidCapability {
                     }
                     
                     @Override
-                    public boolean isLinkedUp() {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean isLinkedDown() {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean isLinkedEast() {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean isLinkedWest() {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean isLinkedSouth() {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean isLinkedNorth() {
+                    public boolean isLinked(EnumFacing facing) {
                         return false;
                     }
                 });

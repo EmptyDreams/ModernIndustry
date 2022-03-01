@@ -45,6 +45,10 @@ public class ByteDataOperator implements IDataOperator {
 		this(32);
 	}
 	
+	/**
+	 * 构建一个指定大小的operator（可扩容）
+	 * @param size 指定大小（单位：字节）
+	 */
 	public ByteDataOperator(int size) {
 		memory = new ByteArrayList(size);
 	}

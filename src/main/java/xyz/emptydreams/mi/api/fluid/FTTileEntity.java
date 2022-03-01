@@ -21,6 +21,7 @@ import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.api.utils.IOUtil;
 import xyz.emptydreams.mi.api.utils.WorldUtil;
+import xyz.emptydreams.mi.api.utils.data.enums.IndexEnumMap;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 
@@ -29,7 +30,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static java.lang.Math.min;
@@ -47,9 +47,9 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
     public static final EnumFacing[] POP_EACH_PRIORITY = new EnumFacing[]{UP, EAST, SOUTH, WEST, NORTH, DOWN};
     
     /** 六个方向的连接数据 */
-    @Storage(byte.class) protected int linkData = 0b000000;
+    @Storage protected final IndexEnumMap<EnumFacing> linkData = new IndexEnumMap<>();
     /** 六个方向的管塞数据 */
-    @Storage protected final Map<EnumFacing, ItemStack> plugData = new EnumMap<>(EnumFacing.class);
+    @Storage protected final EnumMap<EnumFacing, ItemStack> plugData = new EnumMap<>(EnumFacing.class);
     /** 管道内存储的流体量 */
     @Storage protected FluidData fluidData = FluidData.empty();
     
@@ -129,7 +129,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
     
     @Override
     public final void receive(@Nonnull IDataReader reader) {
-        linkData = reader.readByte();
+        linkData.setValue(reader.readByte());
         syncClient(reader);
         updateBlockState(true);
     }
@@ -155,7 +155,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
         if (world.isRemote) return;
         if (players.size() == world.playerEntities.size()) return;
         ByteDataOperator operator = new ByteDataOperator(1);
-        operator.writeByte((byte) linkData);
+        operator.writeByte((byte) linkData.getValue());
         sync(operator);
         IOUtil.sendBlockMessageIfNotUpdate(this, operator, players, netRange);
     }
@@ -217,121 +217,28 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
         }
     }
     
-    /**
-     * 设置指定方向上的连接状态
-     * @param facing 指定方向
-     * @param isLinked 是否连接
-     */
-    protected void setLinkedData(EnumFacing facing, boolean isLinked) {
-        switch (facing) {
-            case DOWN:
-                if (isLinked) linkData |= 0b010000;
-                else linkData &= 0b101111;
-                break;
-            case UP:
-                if (isLinked) linkData |= 0b100000;
-                else linkData &= 0b011111;
-                break;
-            case NORTH:
-                if (isLinked) linkData |= 0b000001;
-                else linkData &= 0b111110;
-                break;
-            case SOUTH:
-                if (isLinked) linkData |= 0b000010;
-                else linkData &= 0b111101;
-                break;
-            case WEST:
-                if (isLinked) linkData |= 0b000100;
-                else linkData &= 0b111011;
-                break;
-            case EAST:
-                if (isLinked) linkData |= 0b001000;
-                else linkData &= 0b110111;
-                break;
-        }
-    }
-    
     @Override
     public void unlink(EnumFacing facing) {
-        setLinkedData(facing, false);
+        linkData.set(facing, false);
         updateBlockState(false);
     }
     
     @Override
-    public boolean isLinkedUp() {
-        return (linkData & 0b100000) == 0b100000;
-    }
-    @Override
-    public boolean isLinkedDown() {
-        return (linkData & 0b010000) == 0b010000;
-    }
-    @Override
-    public boolean isLinkedEast() {
-        return (linkData & 0b001000) == 0b001000;
-    }
-    @Override
-    public boolean isLinkedWest() {
-        return (linkData & 0b000100) == 0b000100;
-    }
-    @Override
-    public boolean isLinkedSouth() {
-        return (linkData & 0b000010) == 0b000010;
-    }
-    @Override
-    public boolean isLinkedNorth() {
-        return (linkData & 0b000001) == 0b000001;
+    public boolean isLinked(EnumFacing facing) {
+        return linkData.get(facing);
     }
     
     /**
      * 在指定方向上设置管塞
-     * @param plug 管塞物品对象
+     * @param plug 管塞物品对象，为null表示去除管塞
      * @param facing 方向
-     * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
+     * @return 是否设置成功（若管塞已经被设置也返回true）
      */
     public boolean setPlug(EnumFacing facing, ItemStack plug) {
-        switch (facing) {
-            case DOWN: return setPlugDown(plug);
-            case UP: return setPlugUp(plug);
-            case NORTH: return setPlugNorth(plug);
-            case SOUTH: return setPlugSouth(plug);
-            case WEST: return setPlugWest(plug);
-            default: return setPlugEast(plug);
-        }
-    }
-    
-    public boolean setPlugUp(ItemStack plug) {
-        if (!(plug != null && hasPlugUp() && canSetPlug(UP))) return false;
-        setPlugData(UP, plug);
-        return true;
-    }
-    
-    public boolean setPlugDown(ItemStack plug) {
-        if (!(plug != null && hasPlugDown() && canSetPlug(DOWN))) return false;
-        setPlugData(DOWN, plug);
-        return true;
-    }
-    
-    public boolean setPlugNorth(ItemStack plug) {
-        if (!(plug != null && hasPlugNorth() && canSetPlug(NORTH))) return false;
-        setPlugData(NORTH, plug);
-        return true;
-    }
-    
-    public boolean setPlugSouth(ItemStack plug) {
-        if (!(plug != null && hasPlugSouth() && canSetPlug(SOUTH))) return false;
-        setPlugData(SOUTH, plug);
-        return true;
-    }
-    
-    public boolean setPlugWest(ItemStack plug) {
-        if (!(plug != null && hasPlugWest() && canSetPlug(WEST))) return false;
-        setPlugData(WEST, plug);
-        return true;
-    }
-    
-    public boolean setPlugEast(ItemStack plug) {
-        if (!(plug != null && hasPlugEast() && canSetPlug(EAST))) return false;
-        setPlugData(EAST, plug);
+        if (!canSetPlug(facing)) return false;
+        if (plug == null) plugData.put(facing, null);
+        else plugData.put(facing, plug.copy());
+        markDirty();
         return true;
     }
     
@@ -340,44 +247,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
      * @param facing 指定方向
      */
     public boolean hasPlug(EnumFacing facing) {
-        switch (facing) {
-            case DOWN: return hasPlugDown();
-            case UP: return hasPlugUp();
-            case NORTH: return hasPlugNorth();
-            case SOUTH: return hasPlugSouth();
-            case WEST: return hasPlugWest();
-            case EAST: return hasPlugEast();
-            default: throw new IllegalArgumentException("facing[" + facing + "]不属于任何一个方向");
-        }
-    }
-    
-    public boolean hasPlugUp() {
-        return plugData.get(UP) != null;
-    }
-    
-    public boolean hasPlugDown() {
-        return plugData.get(DOWN) != null;
-    }
-    
-    public boolean hasPlugNorth() {
-        return plugData.get(NORTH) != null;
-    }
-    
-    public boolean hasPlugSouth() {
-        return plugData.get(SOUTH) != null;
-    }
-    
-    public boolean hasPlugWest() {
-        return plugData.get(WEST) != null;
-    }
-    
-    public boolean hasPlugEast() {
-        return plugData.get(EAST) != null;
-    }
-    
-    private void setPlugData(EnumFacing facing, ItemStack plug) {
-        plugData.put(facing, plug.copy());
-        markDirty();
+        return plugData.get(facing) != null;
     }
     
     /**

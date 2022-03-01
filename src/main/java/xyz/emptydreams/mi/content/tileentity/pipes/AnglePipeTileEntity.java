@@ -76,7 +76,7 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	@Override
 	public boolean canLink(EnumFacing facing) {
 		if (hasAperture(facing)) return true;
-		if (linkData == 0) return true;
+		if (linkData.isInit()) return true;
 		if (isLinked(this.facing)) {
 			if (isLinked(after)) return false;
 			return AngleFacingEnum.match(this.facing, facing);
@@ -98,7 +98,7 @@ public class AnglePipeTileEntity extends FTTileEntity {
 		if (isLinked(facing)) return true;
 		if (!canLink(facing)) return false;
 		if (facing.getAxis() == Axis.Y) {
-			if (linkData == 0) {
+			if (linkData.isInit()) {
 				this.facing = facing;
 				if (after == DOWN || after == UP) after = NORTH;
 			} else {
@@ -106,14 +106,14 @@ public class AnglePipeTileEntity extends FTTileEntity {
 				if (this.facing.getAxis() == Axis.Y) this.facing = NORTH;
 			}
 		} else {
-			if (linkData == 0) {
+			if (linkData.isInit()) {
 				this.facing = facing;
 				if (after.getAxis() == facing.getAxis()) after = UP;
 			} else {
 				after = facing;
 			}
 		}
-		setLinkedData(facing, true);
+		linkData.set(facing, true);
 		updateBlockState(false);
 		return true;
 	}
