@@ -12,8 +12,10 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import xyz.emptydreams.mi.api.craftguide.ItemElement;
+import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
+import xyz.emptydreams.mi.api.dor.interfaces.IDorSerialize;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.exception.TransferException;
 import xyz.emptydreams.mi.api.register.others.AutoLoader;
@@ -67,8 +69,57 @@ public final class DataTypes {
 		registry(new StringBuilderData(),                     100);
 		registry(new StringBufferData(),                      100);
 		registry(new AllEnumData(),                          1000);
-		registry(new SerializableData(),                     1000);
 		registry(new CapabilityData(),                       2000);
+		registry(new DorSerializeData(),                     2000);
+		registry(new SerializableData(),                     3000);
+	}
+	
+	public static final class DorSerializeData implements IDataIO<IDorSerialize> {
+		
+		@Override
+		public boolean match(@Nonnull Class<?> objType, @Nullable Class<?> fieldType) {
+			return IDorSerialize.class.isAssignableFrom(objType);
+		}
+		
+		@Override
+		public void writeToData(IDataWriter writer, IDorSerialize data) {
+			writer.writeData(data.serializeDor());
+		}
+		
+		@Override
+		public IDorSerialize readFromData(IDataReader reader, Class<?> fieldType, Supplier<IDorSerialize> getter) {
+			IDorSerialize result = getter.get();
+			result.deserializedDor(reader);
+			return result;
+		}
+		
+		@Override
+		public void writeToNBT(NBTTagCompound nbt, String name, IDorSerialize data) {
+			data.serializeDor().readToNBT(nbt, name);
+		}
+		
+		@Override
+		public IDorSerialize readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<IDorSerialize> getter) {
+			ByteDataOperator operator = new ByteDataOperator();
+			operator.writeFromNBT(nbt, name);
+			IDorSerialize result = getter.get();
+			result.deserializedDor(operator);
+			return result;
+		}
+		
+		@Override
+		public void writeToByteBuf(ByteBuf buf, IDorSerialize data) {
+			data.serializeDor().readToByteBuf(buf);
+		}
+		
+		@Override
+		public IDorSerialize readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<IDorSerialize> getter) {
+			ByteDataOperator operator = new ByteDataOperator();
+			operator.writeFromByteBuf(buf);
+			IDorSerialize result = getter.get();
+			result.deserializedDor(operator);
+			return result;
+		}
 	}
 	
 	public static final class IntData implements IDataIO<Integer> {
