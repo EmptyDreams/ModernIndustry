@@ -16,6 +16,7 @@ import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.fluid.data.FluidData;
+import xyz.emptydreams.mi.api.fluid.data.TransportReport;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
 import xyz.emptydreams.mi.api.utils.IOUtil;
@@ -26,7 +27,6 @@ import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +40,11 @@ import static net.minecraft.util.EnumFacing.*;
  * @author EmptyDreams
  */
 public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwork, ITickable, IFluid {
+    
+    /** 运送流体时流体运送方向优先级列表 */
+    public static final EnumFacing[] PUSH_EACH_PRIORITY = new EnumFacing[]{DOWN, NORTH, WEST, SOUTH, EAST, UP};
+    /** 吸取流体时吸取方向优先级列表 */
+    public static final EnumFacing[] POP_EACH_PRIORITY = new EnumFacing[]{UP, EAST, SOUTH, WEST, NORTH, DOWN};
     
     /** 六个方向的连接数据 */
     @Storage(byte.class) protected int linkData = 0b000000;
@@ -65,26 +70,45 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
     }
     
     @Override
-    public int insert(FluidData data, EnumFacing facing, boolean simulate) {
-        if (!fluidData.matchFluid(data)) return 0;
-        int result = min(getMaxAmount() - fluidData.getAmount(), data.getAmount());
-        if (!simulate) fluidData.plusAmount(result);
+    public int insert(FluidData data, EnumFacing facing, boolean simulate, TransportReport report) {
+        if (!(isOpen(facing.getOpposite()) && fluidData.matchFluid(data))) return 0;
+        int value = min(getMaxAmount() - fluidData.getAmount(), data.getAmount());
+        int result = value;
+        FluidData valueData = data.copy(value);
+        if (!simulate) fluidData.plus(valueData);
+        report.insert(facing, valueData);
+        int amount = data.getAmount() - value;
+        for (EnumFacing direction : PUSH_EACH_PRIORITY) {
+            if (amount == 0) break;
+            if (direction == facing.getOpposite()) continue;
+            IFluid next = getFacingLinked(direction);
+            if (next == null) continue;
+            int key = next.insert(data.copy(amount), direction, simulate, report);
+            amount -= key;
+            result += key;
+        }
         return result;
     }
     
     @Override
-    public int extract(FluidData data, EnumFacing facing, boolean simulate) {
-        if (!fluidData.matchFluid(data)) return 0;
-        int result = min(fluidData.getAmount(), data.getAmount());
-        if (!simulate) fluidData.minusAmount(result);
+    public int extract(FluidData data, EnumFacing facing, boolean simulate, TransportReport report) {
+        if (!(isOpen(facing) && fluidData.matchFluid(data))) return 0;
+        int value = min(fluidData.getAmount(), data.getAmount());
+        int result = value;
+        if (!simulate) fluidData.minusAmount(value);
+        report.insert(facing, fluidData.copy(value));
+        int amount = data.getAmount() - value;
+        for (EnumFacing direction : POP_EACH_PRIORITY) {
+            if (amount == 0) break;
+            if (direction == facing) continue;
+            IFluid next = getFacingLinked(direction);
+            if (next == null) continue;
+            int key = next.extract(data.copy(amount),
+                    direction.getOpposite(), simulate, report);
+            amount -= key;
+            result += key;
+        }
         return result;
-    }
-    
-    @Override
-    public FluidData extract(int amount, EnumFacing facing, boolean simulate) {
-        int result = min(fluidData.getAmount(), amount);
-        if (!simulate) fluidData.minusAmount(result);
-        return fluidData.copy(result);
     }
     
     /**
@@ -351,11 +375,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
         TileEntity te = world.getTileEntity(target);
         //noinspection ConstantConditions
         return te.getCapability(FluidCapability.TRANSFER, facing);
-    }
-    
-    /** 获取连接总数 */
-    public int getLinkedAmount() {
-        return (int) Arrays.stream(values()).filter(this::isLinked).count();
     }
     
 }

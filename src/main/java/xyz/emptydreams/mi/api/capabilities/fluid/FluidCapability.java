@@ -6,6 +6,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import xyz.emptydreams.mi.api.fluid.data.FluidData;
+import xyz.emptydreams.mi.api.fluid.data.TransportReport;
 import xyz.emptydreams.mi.api.register.others.AutoLoader;
 
 import javax.annotation.Nonnull;
@@ -30,22 +31,17 @@ public class FluidCapability {
                     public boolean isEmpty() {
                         return true;
                     }
-                    
+    
                     @Override
-                    public int insert(FluidData data, EnumFacing facing, boolean simulate) {
+                    public int insert(FluidData data, EnumFacing facing, boolean simulate, TransportReport report) {
                         return 0;
                     }
-                    
+    
                     @Override
-                    public int extract(FluidData data, EnumFacing facing, boolean simulate) {
+                    public int extract(FluidData data, EnumFacing facing, boolean simulate, TransportReport report) {
                         return 0;
                     }
-                    
-                    @Override
-                    public FluidData extract(int amount, EnumFacing facing, boolean simulate) {
-                        return null;
-                    }
-                    
+    
                     @Nonnull
                     @Override
                     public List<EnumFacing> next(EnumFacing facing) {
