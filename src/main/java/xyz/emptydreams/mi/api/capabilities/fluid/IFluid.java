@@ -3,6 +3,7 @@ package xyz.emptydreams.mi.api.capabilities.fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.fluid.data.FluidData;
+import xyz.emptydreams.mi.api.fluid.data.TransportReport;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -33,29 +34,22 @@ public interface IFluid {
 	 * </ol>
 	 * @param data 要插入的数据
 	 * @param facing 相对于当前流体容器，流体向哪个方向流动
-	 * @param simulate 是否为模拟，为true不修改内部数据
+	 * @param simulate 是否为模拟，为true不修改内部数据，但是会修改report
+	 * @param report 运算结果
 	 * @return 成功插入了多少流体
 	 */
-	int insert(FluidData data, EnumFacing facing, boolean simulate);
+	int insert(FluidData data, EnumFacing facing, boolean simulate, TransportReport report);
 	
 	/**
 	 * <p>从容器中取出流体
 	 * <p>补充：输入的data参数中，流体类型用来表示要取出的流体类型，如果能取出的和要取出的流体类型不符则不能取出
-	 * @param data 要取出的数据
+	 * @param data 要取出的数据，若data的流体类型为null则表明不关心取出什么类型的流体
 	 * @param facing 相对于当前流体容器，流体向哪个方向流动
 	 * @param simulate 是否为模拟，为true不修改内部数据
+	 * @param report 运算结果
 	 * @return 取出了多少数据
 	 */
-	int extract(FluidData data, EnumFacing facing, boolean simulate);
-	
-	/**
-	 * 从容其中取出流体，该方法不关注取出什么类型的流体
-	 * @param amount 要取出的数量
-	 * @param facing 相对于当前流体容器，流体向哪个方向流动
-	 * @param simulate 是否为模拟，为true不修改内部数据
-	 * @return 去输了什么数据
-	 */
-	FluidData extract(int amount, EnumFacing facing, boolean simulate);
+	int extract(FluidData data, EnumFacing facing, boolean simulate, TransportReport report);
 	
 	/**
 	 * 获取下一个可用的流体去向
