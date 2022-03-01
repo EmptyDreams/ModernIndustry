@@ -85,12 +85,12 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	}
 	
 	@Override
-	public void removeLink(EnumFacing facing) {
+	public void unlink(EnumFacing facing) {
 		if (facing == this.facing) {
 			this.facing = after;
 			after = facing;
 		}
-		super.removeLink(facing);
+		super.unlink(facing);
 	}
 	
 	@Override

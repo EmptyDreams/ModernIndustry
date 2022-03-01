@@ -111,10 +111,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
         return result;
     }
     
-    /**
-     * 获取管道内存储的流体数据
-     * @return 返回值经过保护性复制
-     */
+    /** 获取经过保护性拷贝的管道内存储的流体数据 */
     public FluidData getFluidData() {
         return fluidData.copy();
     }
@@ -138,24 +135,22 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
     }
     
     /**
-     * 存储已经更新过的玩家列表，因为作者认为单机时长会更多，所以选择1作为默认值。<br>
-     * 	不同方块不共用此列表且此列表不会离线存储，当玩家离开方块过远或退出游戏等操作导致
+     * <p>存储已经更新过的玩家列表
+     * <p>不同方块不共用此列表且此列表不会离线存储，当玩家离开方块过远或退出游戏等操作导致
      * 		方块暂时“删除”后此列表将重置以保证所有玩家可以正常渲染电线方块
      */
-    private final List<UUID> players = new ArrayList<>(1);
+    private final List<UUID> players = new ArrayList<>();
     /** 存储网络数据传输的更新范围，只有在范围内的玩家需要进行更新 */
     private Range3D netRange;
     
-    /** 用于写入需要同步的数据 */
+    /** 用于服务端写入需要同步的数据，写入的数据会发送给客户端 */
     abstract protected void sync(IDataWriter writer);
     
     /** 用于客户端同步数据 */
     @SideOnly(Side.CLIENT)
     abstract protected void syncClient(IDataReader reader);
     
-    /**
-     * <p>向客户端发送服务端存储的信息并更新显示
-     */
+    /** 向客户端发送服务端存储的信息并更新显示 */
     public final void send() {
         if (world.isRemote) return;
         if (players.size() == world.playerEntities.size()) return;
@@ -257,7 +252,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
     }
     
     @Override
-    public void removeLink(EnumFacing facing) {
+    public void unlink(EnumFacing facing) {
         setLinkedData(facing, false);
         updateBlockState(false);
     }
@@ -287,74 +282,95 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
         return (linkData & 0b000001) == 0b000001;
     }
     
-    @Override
+    /**
+     * 在指定方向上设置管塞
+     * @param plug 管塞物品对象
+     * @param facing 方向
+     * @return 是否设置成功（若管塞已经被设置或无法设置管塞则设置失败）
+     */
+    public boolean setPlug(EnumFacing facing, ItemStack plug) {
+        switch (facing) {
+            case DOWN: return setPlugDown(plug);
+            case UP: return setPlugUp(plug);
+            case NORTH: return setPlugNorth(plug);
+            case SOUTH: return setPlugSouth(plug);
+            case WEST: return setPlugWest(plug);
+            default: return setPlugEast(plug);
+        }
+    }
+    
     public boolean setPlugUp(ItemStack plug) {
         if (!(plug != null && hasPlugUp() && canSetPlug(UP))) return false;
         setPlugData(UP, plug);
         return true;
     }
     
-    @Override
     public boolean setPlugDown(ItemStack plug) {
         if (!(plug != null && hasPlugDown() && canSetPlug(DOWN))) return false;
         setPlugData(DOWN, plug);
         return true;
     }
     
-    @Override
     public boolean setPlugNorth(ItemStack plug) {
         if (!(plug != null && hasPlugNorth() && canSetPlug(NORTH))) return false;
         setPlugData(NORTH, plug);
         return true;
     }
     
-    @Override
     public boolean setPlugSouth(ItemStack plug) {
         if (!(plug != null && hasPlugSouth() && canSetPlug(SOUTH))) return false;
         setPlugData(SOUTH, plug);
         return true;
     }
     
-    @Override
     public boolean setPlugWest(ItemStack plug) {
         if (!(plug != null && hasPlugWest() && canSetPlug(WEST))) return false;
         setPlugData(WEST, plug);
         return true;
     }
     
-    @Override
     public boolean setPlugEast(ItemStack plug) {
         if (!(plug != null && hasPlugEast() && canSetPlug(EAST))) return false;
         setPlugData(EAST, plug);
         return true;
     }
     
-    @Override
+    /**
+     * 判定指定方向上是否有管塞
+     * @param facing 指定方向
+     */
+    public boolean hasPlug(EnumFacing facing) {
+        switch (facing) {
+            case DOWN: return hasPlugDown();
+            case UP: return hasPlugUp();
+            case NORTH: return hasPlugNorth();
+            case SOUTH: return hasPlugSouth();
+            case WEST: return hasPlugWest();
+            case EAST: return hasPlugEast();
+            default: throw new IllegalArgumentException("facing[" + facing + "]不属于任何一个方向");
+        }
+    }
+    
     public boolean hasPlugUp() {
         return plugData.get(UP) != null;
     }
     
-    @Override
     public boolean hasPlugDown() {
         return plugData.get(DOWN) != null;
     }
     
-    @Override
     public boolean hasPlugNorth() {
         return plugData.get(NORTH) != null;
     }
     
-    @Override
     public boolean hasPlugSouth() {
         return plugData.get(SOUTH) != null;
     }
     
-    @Override
     public boolean hasPlugWest() {
         return plugData.get(WEST) != null;
     }
     
-    @Override
     public boolean hasPlugEast() {
         return plugData.get(EAST) != null;
     }
@@ -375,6 +391,19 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
         TileEntity te = world.getTileEntity(target);
         //noinspection ConstantConditions
         return te.getCapability(FluidCapability.TRANSFER, facing);
+    }
+    
+    /** 判断指定方向是否含有开口 */
+    abstract public boolean hasAperture(EnumFacing facing);
+    
+    /** 判断指定方向上能否通过流体 */
+    public boolean isOpen(EnumFacing facing) {
+        return hasAperture(facing) && !hasPlug(facing);
+    }
+    
+    /** 判断指定方向上是否可以设置管塞 */
+    public boolean canSetPlug(EnumFacing facing) {
+        return !(hasPlug(facing) || isLinked(facing));
     }
     
 }

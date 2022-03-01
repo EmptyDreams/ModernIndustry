@@ -1,6 +1,5 @@
 package xyz.emptydreams.mi.api.capabilities.fluid;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -31,26 +30,21 @@ public class FluidCapability {
                     public boolean isEmpty() {
                         return true;
                     }
-    
+                    
                     @Override
                     public int insert(FluidData data, EnumFacing facing, boolean simulate, TransportReport report) {
                         return 0;
                     }
-    
+                    
                     @Override
                     public int extract(FluidData data, EnumFacing facing, boolean simulate, TransportReport report) {
                         return 0;
                     }
-    
+                    
                     @Nonnull
                     @Override
                     public List<EnumFacing> next(EnumFacing facing) {
                         return null;
-                    }
-                    
-                    @Override
-                    public boolean hasAperture(EnumFacing facing) {
-                        return false;
                     }
                     
                     @Override
@@ -64,7 +58,7 @@ public class FluidCapability {
                     }
                     
                     @Override
-                    public void removeLink(EnumFacing facing) {
+                    public void unlink(EnumFacing facing) {
                     }
                     
                     @Override
@@ -94,66 +88,6 @@ public class FluidCapability {
                     
                     @Override
                     public boolean isLinkedNorth() {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean setPlugUp(ItemStack plug) {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean setPlugDown(ItemStack plug) {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean setPlugNorth(ItemStack plug) {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean setPlugSouth(ItemStack plug) {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean setPlugWest(ItemStack plug) {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean setPlugEast(ItemStack plug) {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean hasPlugUp() {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean hasPlugDown() {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean hasPlugNorth() {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean hasPlugSouth() {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean hasPlugWest() {
-                        return false;
-                    }
-                    
-                    @Override
-                    public boolean hasPlugEast() {
                         return false;
                     }
                 });

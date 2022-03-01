@@ -14,8 +14,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import xyz.emptydreams.mi.ModernIndustry;
-import xyz.emptydreams.mi.api.capabilities.fluid.FluidCapability;
-import xyz.emptydreams.mi.api.capabilities.fluid.IFluid;
 import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.register.OreDicRegister;
 import xyz.emptydreams.mi.api.utils.StringUtil;
@@ -55,7 +53,7 @@ abstract public class Pipe extends TEBlockBase {
 		if (block instanceof Pipe) return;
 		FTTileEntity nowEntity = (FTTileEntity) world.getTileEntity(pos);
 		EnumFacing facing = WorldUtil.whatFacing(pos, neighbor);
-		if (fromEntity == null) nowEntity.removeLink(facing);
+		if (fromEntity == null) nowEntity.unlink(facing);
 		else nowEntity.link(facing);
 		nowEntity.markDirty();
 	}
@@ -67,9 +65,10 @@ abstract public class Pipe extends TEBlockBase {
 	                                  @Nullable Entity entityIn, boolean isActualState) {
 		addCollisionBoxToList(pos, entityBox, collidingBoxes,
 				new AxisAlignedBB(5/16d, 5/16d, 5/16d, 11/16d, 11/16d, 11/16d));
-		IFluid cap = worldIn.getTileEntity(pos).getCapability(FluidCapability.TRANSFER, null);
+		FTTileEntity transport = (FTTileEntity) worldIn.getTileEntity(pos);
 		for (EnumFacing facing : EnumFacing.values()) {
-			if (cap.hasAperture(facing)) addCollisionBoxToList(facing, pos, entityBox, collidingBoxes);
+			if (transport.hasAperture(facing))
+                addCollisionBoxToList(facing, pos, entityBox, collidingBoxes);
 		}
 	}
 	

@@ -85,7 +85,7 @@ public class StraightPipe extends Pipe {
 	}
 	
 	private static boolean unlink(IFluid cap, EnumFacing facing) {
-		cap.removeLink(facing);
+		cap.unlink(facing);
 		return false;
 	}
 	
