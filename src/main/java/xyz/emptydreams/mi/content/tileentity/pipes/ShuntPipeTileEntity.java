@@ -24,12 +24,6 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	@Storage protected Axis side = Axis.Y;
 	protected List<EnumFacing> linked = new ArrayList<>(4);
 	
-	public ShuntPipeTileEntity() {
-		assert getMaxAmount() % 4 != 0;
-		int nodeMax = getMaxAmount() / 4;
-		
-	}
-	
 	@Override
 	protected void sync(IDataWriter writer) {
 		writer.writeByte((byte) side.ordinal());
