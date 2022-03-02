@@ -53,22 +53,23 @@ public interface IClassData {
 				clazz = clazz.getSuperclass();
 				continue;
 			}
-			SignBytes indexTag = SignBytes.read(reader, fields.length);
-			IDataReader data = reader.readData();
 			int i = -1;
-			for (SignBytes.State state : indexTag) {
-				++i;
-				if (state.isZero()) continue;
-				try {
+			try {
+				SignBytes indexTag = SignBytes.read(reader, fields.length);
+				IDataReader data = reader.readData();
+				for (SignBytes.State state : indexTag) {
+					++i;
+					if (state.isZero()) continue;
 					read(fields[i], data, object);
-				} catch (Exception e) {
-					MISysInfo.err("读取信息时出现错误，跳过该项读写!\n"
-							+ "\t详细信息：\n"
-							+ "\t\tfield：" + fields[i]
-							+ "\n\t\tclass：" + clazz.getName()
-							+ "\n\t\t下标：" + indexTag.size()
-							+ "\t\t处理：跳过该项", e);
 				}
+				if (data.nowReadIndex() + 1 != data.endIndex())
+					throw new AssertionError("Reader中的信息没有被读取完毕就结束了读取");
+			} catch (Throwable e) {
+				MISysInfo.err("读取信息时出现错误，跳过该项读写!\n"
+						+ "\t详细信息：\n"
+						+ "\t\tfield：" + fields[i]
+						+ "\n\t\tclass：" + clazz.getName()
+						+ "\n\t\t处理：跳过该项", e);
 			}
 			clazz = clazz.getSuperclass();
 		}

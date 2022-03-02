@@ -20,6 +20,10 @@ public interface IDataReader {
 	int nextReadIndex();
 	/** 当前读取位点 */
 	int nowReadIndex();
+	/** 获取读取的结束位点 */
+	default int endIndex() {
+		return size();
+	}
 	/** 设置读取位点 */
 	void setReadIndex(int index);
 	/** 含有的数据总大小（单位：Bit） */

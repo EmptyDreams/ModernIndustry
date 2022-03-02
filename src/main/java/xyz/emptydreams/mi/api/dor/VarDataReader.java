@@ -63,6 +63,11 @@ public class VarDataReader implements IDataReader {
 	}
 	
 	@Override
+	public int endIndex() {
+		return endIndex;
+	}
+	
+	@Override
 	public void setReadIndex(int readIndex) {
 		checkIndex(readIndex);
 		this.readIndex = readIndex;
