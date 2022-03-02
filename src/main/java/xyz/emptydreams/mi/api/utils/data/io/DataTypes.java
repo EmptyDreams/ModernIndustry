@@ -18,6 +18,7 @@ import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.dor.interfaces.IDorSerialize;
 import xyz.emptydreams.mi.api.electricity.interfaces.IVoltage;
 import xyz.emptydreams.mi.api.exception.TransferException;
+import xyz.emptydreams.mi.api.fluid.data.FluidData;
 import xyz.emptydreams.mi.api.register.others.AutoLoader;
 import xyz.emptydreams.mi.api.utils.IOUtil;
 import xyz.emptydreams.mi.api.utils.container.Wrapper;
@@ -66,6 +67,7 @@ public final class DataTypes {
 		registry(new FluidStackData(),                         50);
 		registry(new FluidStackArrayData(),                    50);
 		registry(new EnumData(),                               50);
+		registry(new FluidDataData(),                           50);
 		registry(new StringBuilderData(),                     100);
 		registry(new StringBufferData(),                      100);
 		registry(new AllEnumData(),                          1000);
@@ -1073,6 +1075,63 @@ public final class DataTypes {
 			}
 		}
 		
+	}
+	
+	public static final class FluidDataData implements IDataIO<FluidData> {
+		
+		@Override
+		public boolean match(@Nonnull Class<?> objType, @Nullable Class<?> fieldType) {
+			return FluidData.class.isAssignableFrom(objType);
+		}
+		
+		@Override
+		public void writeToData(IDataWriter writer, FluidData data) {
+			writer.writeBoolean(data.isAir());
+			if (!data.isAir()) //noinspection ConstantConditions
+				writer.writeString(data.getFluid().getName());
+			writer.writeVarInt(data.getAmount());
+		}
+		
+		@Override
+		public FluidData readFromData(IDataReader reader, Class<?> fieldType, Supplier<FluidData> getter) {
+			boolean isAir = reader.readBoolean();
+			Fluid fluid = isAir ? null : FluidRegistry.getFluid(reader.readString());
+			int amount = reader.readVarInt();
+			return new FluidData(fluid, amount);
+		}
+		
+		@Override
+		public void writeToNBT(NBTTagCompound nbt, String name, FluidData data) {
+			if (!data.isAir()) //noinspection ConstantConditions
+				nbt.setString(name + 'f', data.getFluid().getName());
+			nbt.setInteger(name + 'a', data.getAmount());
+		}
+		
+		@Override
+		public FluidData readFromNBT(NBTTagCompound nbt,
+		                             String name, Class<?> fieldType, Supplier<FluidData> getter) {
+			String fluidName = nbt.getString(name + 'f');
+			Fluid fluid = fluidName.length() == 0 ? null : FluidRegistry.getFluid(fluidName);
+			int amount = nbt.getInteger(name + 'a');
+			return new FluidData(fluid, amount);
+		}
+		
+		@Override
+		public void writeToByteBuf(ByteBuf buf, FluidData data) {
+			buf.writeBoolean(data.isAir());
+			if (!data.isAir()) //noinspection ConstantConditions
+				DataSerialize.write(buf, data.getFluid().getName());
+			buf.writeInt(data.getAmount());
+		}
+		
+		@Override
+		public FluidData readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<FluidData> getter) {
+			boolean isAir = buf.readBoolean();
+			Fluid fluid = isAir ? null :
+					FluidRegistry.getFluid(DataSerialize.read(buf, String.class, null));
+			int amount = buf.readInt();
+			return new FluidData(fluid, amount);
+		}
 	}
 	
 	public static final class AllEnumData implements IDataIO<Enum<?>> {
