@@ -93,11 +93,8 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
     @Override
     public int extract(FluidData data, EnumFacing facing, boolean simulate, TransportReport report) {
         if (!(isOpen(facing) && fluidData.matchFluid(data))) return 0;
-        int value = min(fluidData.getAmount(), data.getAmount());
-        int result = value;
-        if (!simulate) fluidData.minusAmount(value);
-        report.insert(facing, fluidData.copy(value));
-        int amount = data.getAmount() - value;
+        int result = 0;
+        int amount = data.getAmount();
         for (EnumFacing direction : POP_EACH_PRIORITY) {
             if (amount == 0) break;
             if (direction == facing) continue;
@@ -108,6 +105,9 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
             amount -= key;
             result += key;
         }
+        amount = min(amount, fluidData.getAmount());
+        result += amount;
+        report.insert(facing, fluidData.copy(amount));
         return result;
     }
     
