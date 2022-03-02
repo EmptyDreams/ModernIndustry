@@ -8,7 +8,6 @@ import xyz.emptydreams.mi.api.fluid.FTTileEntity;
 import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static net.minecraft.util.EnumFacing.*;
@@ -22,7 +21,6 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	
 	/** 管道侧面面对的方向 */
 	@Storage protected Axis side = Axis.Y;
-	protected List<EnumFacing> linked = new ArrayList<>(4);
 	
 	@Override
 	protected void sync(IDataWriter writer) {
@@ -32,10 +30,6 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	@Override
 	protected void syncClient(IDataReader reader) {
 		side = Axis.values()[reader.readByte()];
-		if (linkData.isInit() || !linked.isEmpty()) return;
-		for (EnumFacing value : values()) {
-			if (isLinked(value)) linked.add(value);
-		}
 	}
 	
 	@Override
@@ -64,17 +58,10 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	}
 	
 	@Override
-	public void unlink(EnumFacing facing) {
-		linked.remove(facing);
-		super.unlink(facing);
-	}
-	
-	@Override
 	public boolean link(EnumFacing facing) {
 		if (isLinked(facing)) return true;
 		if (!canLink(facing)) return false;
 		linkData.set(facing, true);
-		linked.add(facing);
 		side = calculateSide();
 		updateBlockState(false);
 		return true;
