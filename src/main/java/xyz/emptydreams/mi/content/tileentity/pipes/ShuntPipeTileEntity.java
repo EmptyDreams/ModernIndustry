@@ -52,7 +52,7 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 		List<Axis> all = Lists.newArrayList(Axis.values());
 		all.remove(facing.getAxis());
 		for (EnumFacing value : values()) {
-			if (link(value)) all.remove(value.getAxis());
+			if (isLinked(value)) all.remove(value.getAxis());
 		}
 		return !all.isEmpty();
 	}
@@ -71,7 +71,7 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	protected Axis calculateSide() {
 		List<Axis> all = Lists.newArrayList(Axis.values());
 		for (EnumFacing value : values()) {
-			if (link(value)) all.remove(value.getAxis());
+			if (isLinked(value)) all.remove(value.getAxis());
 		}
 		if (all.contains(side)) return side;
 		return all.get(0);
