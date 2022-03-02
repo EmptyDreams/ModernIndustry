@@ -91,7 +91,7 @@ public final class DataTypes {
 		@Override
 		public IDorSerialize readFromData(IDataReader reader, Class<?> fieldType, Supplier<IDorSerialize> getter) {
 			IDorSerialize result = getter.get();
-			result.deserializedDor(reader);
+			result.deserializedDor(reader.readData());
 			return result;
 		}
 		
