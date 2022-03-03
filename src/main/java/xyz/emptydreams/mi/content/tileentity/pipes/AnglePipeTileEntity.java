@@ -118,6 +118,12 @@ public class AnglePipeTileEntity extends FTTileEntity {
 		return true;
 	}
 	
+	@Override
+	public int getLinkedAmount() {
+		if (isLinked(getFacing())) return isLinked(getAfter()) ? 2 : 1;
+		else return isLinked(getAfter()) ? 1 : 0;
+	}
+	
 	public EnumFacing getFacing() {
 		if (facing == UP || facing == DOWN) return after;
 		return facing;

@@ -77,6 +77,12 @@ public class StraightPipeTileEntity extends FTTileEntity {
 		return true;
 	}
 	
+	@Override
+	public int getLinkedAmount() {
+		if (isLinked(getFacing().getOpposite())) return isLinked(getFacing()) ? 2 : 1;
+		else return isLinked(getFacing()) ? 1 : 0;
+	}
+	
 	/** 设置管道正方向 */
 	public void setFacing(EnumFacing facing) {
 		//加一个判断是为了防止管道连接时方向倒转导致内容反转

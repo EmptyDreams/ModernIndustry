@@ -29,6 +29,7 @@ import xyz.emptydreams.mi.api.utils.data.math.Range3D;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.UUID;
@@ -165,6 +166,11 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
      */
     public boolean hasPlug(EnumFacing facing) {
         return plugData.get(facing) != null;
+    }
+    
+    /** 统计管道出口数量 */
+    public int getLinkedAmount() {
+        return (int) Arrays.stream(values()).filter(this::isLinked).count();
     }
     
     /**
