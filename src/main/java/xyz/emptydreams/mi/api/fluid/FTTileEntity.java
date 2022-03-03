@@ -135,6 +135,66 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
     }
     
     @Override
+    public void unlink(EnumFacing facing) {
+        linkData.set(facing, false);
+        updateBlockState(false);
+    }
+    
+    @Override
+    public boolean isLinked(EnumFacing facing) {
+        return linkData.get(facing);
+    }
+    
+    /**
+     * 在指定方向上设置管塞
+     * @param plug 管塞物品对象，为null表示去除管塞
+     * @param facing 方向
+     * @return 是否设置成功（若管塞已经被设置也返回true）
+     */
+    public boolean setPlug(EnumFacing facing, ItemStack plug) {
+        if (!canSetPlug(facing)) return false;
+        if (plug == null) plugData.put(facing, null);
+        else plugData.put(facing, plug.copy());
+        markDirty();
+        return true;
+    }
+    
+    /**
+     * 判定指定方向上是否有管塞
+     * @param facing 指定方向
+     */
+    public boolean hasPlug(EnumFacing facing) {
+        return plugData.get(facing) != null;
+    }
+    
+    /**
+     * 获取指定方向上连接的方块的IFluid
+     * @return 如果指定方向上没有连接方块则返回null
+     */
+    @Nullable
+    public IFluid getFacingLinked(EnumFacing facing) {
+        if (isLinked(facing)) return null;
+        BlockPos target = pos.offset(facing);
+        TileEntity te = world.getTileEntity(target);
+        //noinspection ConstantConditions
+        return te.getCapability(FluidCapability.TRANSFER, facing);
+    }
+    
+    /** 判断指定方向是否含有开口 */
+    abstract public boolean hasAperture(EnumFacing facing);
+    
+    /** 判断指定方向上能否通过流体 */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean isOpen(EnumFacing facing) {
+        return hasAperture(facing) && !hasPlug(facing);
+    }
+    
+    /** 判断指定方向上是否可以设置管塞 */
+    public boolean canSetPlug(EnumFacing facing) {
+        return !(hasPlug(facing) || isLinked(facing));
+    }
+    
+    @Override
     public void setPos(BlockPos posIn) {
         super.setPos(posIn);
         netRange = new Range3D(pos.getX(), pos.getY(), pos.getZ(), 128);
@@ -228,65 +288,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
             isRemove = true;
             WorldUtil.removeTickable(this);
         }
-    }
-    
-    @Override
-    public void unlink(EnumFacing facing) {
-        linkData.set(facing, false);
-        updateBlockState(false);
-    }
-    
-    @Override
-    public boolean isLinked(EnumFacing facing) {
-        return linkData.get(facing);
-    }
-    
-    /**
-     * 在指定方向上设置管塞
-     * @param plug 管塞物品对象，为null表示去除管塞
-     * @param facing 方向
-     * @return 是否设置成功（若管塞已经被设置也返回true）
-     */
-    public boolean setPlug(EnumFacing facing, ItemStack plug) {
-        if (!canSetPlug(facing)) return false;
-        if (plug == null) plugData.put(facing, null);
-        else plugData.put(facing, plug.copy());
-        markDirty();
-        return true;
-    }
-    
-    /**
-     * 判定指定方向上是否有管塞
-     * @param facing 指定方向
-     */
-    public boolean hasPlug(EnumFacing facing) {
-        return plugData.get(facing) != null;
-    }
-    
-    /**
-     * 获取指定方向上连接的方块的IFluid
-     * @return 如果指定方向上没有连接方块则返回null
-     */
-    @Nullable
-    public IFluid getFacingLinked(EnumFacing facing) {
-        if (isLinked(facing)) return null;
-        BlockPos target = pos.offset(facing);
-        TileEntity te = world.getTileEntity(target);
-        //noinspection ConstantConditions
-        return te.getCapability(FluidCapability.TRANSFER, facing);
-    }
-    
-    /** 判断指定方向是否含有开口 */
-    abstract public boolean hasAperture(EnumFacing facing);
-    
-    /** 判断指定方向上能否通过流体 */
-    public boolean isOpen(EnumFacing facing) {
-        return hasAperture(facing) && !hasPlug(facing);
-    }
-    
-    /** 判断指定方向上是否可以设置管塞 */
-    public boolean canSetPlug(EnumFacing facing) {
-        return !(hasPlug(facing) || isLinked(facing));
     }
     
 }

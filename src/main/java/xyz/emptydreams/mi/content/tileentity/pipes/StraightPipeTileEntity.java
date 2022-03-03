@@ -41,8 +41,6 @@ public class StraightPipeTileEntity extends FTTileEntity {
 		facing = EnumFacing.values()[reader.readByte()];
 	}
 	
-	
-	
 	@Override
 	public List<EnumFacing> next(EnumFacing source) {
 		EnumFacing side = facing.getOpposite();
