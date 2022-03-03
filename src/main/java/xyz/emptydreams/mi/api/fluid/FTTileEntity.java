@@ -16,6 +16,7 @@ import xyz.emptydreams.mi.api.dor.ByteDataOperator;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
 import xyz.emptydreams.mi.api.fluid.data.FluidData;
+import xyz.emptydreams.mi.api.fluid.data.FluidQueue;
 import xyz.emptydreams.mi.api.fluid.data.TransportReport;
 import xyz.emptydreams.mi.api.net.IAutoNetwork;
 import xyz.emptydreams.mi.api.tools.BaseTileEntity;
@@ -69,45 +70,52 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
         return super.getCapability(capability, facing);
     }
     
+    /**
+     * {@inheritDoc}
+     * <p>缺省算法因为自身缺陷，不会维护流体在管道中的顺序，所以有可能有一部分原本在流体管道中的流体逆流回传入的 queue 中。
+     * <p>该方法会优先将放置在队尾的流体送入管道，因为这样做可以尽可能地保证流体在管道中地顺序。
+     */
     @Override
-    public int insert(FluidData data, EnumFacing facing, boolean simulate, TransportReport report) {
-        if (!(isOpen(facing.getOpposite()) && fluidData.matchFluid(data))) return 0;
-        int value = min(getMaxAmount() - fluidData.getAmount(), data.getAmount());
-        int result = value;
-        FluidData valueData = data.copy(value);
-        if (!simulate) fluidData.plus(valueData);
-        report.insert(facing, valueData);
-        int amount = data.getAmount() - value;
-        for (EnumFacing direction : PUSH_EACH_PRIORITY) {
-            if (amount == 0) break;
-            if (direction == facing.getOpposite()) continue;
-            IFluid next = getFacingLinked(direction);
-            if (next == null) continue;
-            int key = next.insert(data.copy(amount), direction, simulate, report);
-            amount -= key;
-            result += key;
+    public int insert(FluidQueue queue, EnumFacing facing, boolean simulate, TransportReport report) {
+        if (!isOpen(facing.getOpposite())) return 0;
+        int result = 0;
+        FluidData newData = queue.popTail(getMaxAmount());
+        report.insert(facing, newData);
+        if (isEmpty()) {
+            result += newData.getAmount();
+            if (!simulate) fluidData.plus(newData);
+        } else {
+            queue.pushTail(fluidData);
+            if (!simulate) fluidData = newData;
+            for (EnumFacing value : PUSH_EACH_PRIORITY) {
+                if (queue.isEmpty()) break;
+                if (value == facing.getOpposite()) continue;
+                IFluid fluid = getFacingLinked(value);
+                if (fluid == null) continue;
+                result += fluid.insert(queue, value, simulate, report);
+            }
         }
         return result;
     }
     
+    /** 该方法保证返回的队列中头部为最先取出的流体 */
     @Override
-    public int extract(FluidData data, EnumFacing facing, boolean simulate, TransportReport report) {
-        if (!(isOpen(facing) && fluidData.matchFluid(data))) return 0;
-        int result = 0;
-        int amount = data.getAmount();
-        for (EnumFacing direction : POP_EACH_PRIORITY) {
-            if (amount == 0) break;
-            if (direction == facing) continue;
-            IFluid next = getFacingLinked(direction);
-            if (next == null) continue;
-            int key = next.extract(data.copy(amount),
-                    direction.getOpposite(), simulate, report);
-            amount -= key;
-            result += key;
+    public FluidQueue extract(int amount, EnumFacing facing, boolean simulate, TransportReport report) {
+        FluidQueue result = FluidQueue.empty();
+        if (!isOpen(facing)) return result;
+        int copy = amount;
+        for (EnumFacing value : POP_EACH_PRIORITY) {
+            if (copy == 0) break;
+            if (value == facing) continue;
+            IFluid fluid = getFacingLinked(value);
+            if (fluid == null) continue;
+            FluidQueue queue = fluid.extract(
+                    copy, value.getOpposite(), simulate, report);
+            copy -= result.pushTail(queue);
         }
-        amount = min(amount, fluidData.getAmount());
-        result += amount;
-        report.insert(facing, fluidData.copy(amount));
+        FluidData value = fluidData.copy(min(amount, fluidData.getAmount()));
+        fluidData = result.popTail(value.getAmount());
+        result.pushHead(value);
         return result;
     }
     
@@ -119,6 +127,11 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
     @Override
     public boolean isEmpty() {
         return fluidData.isEmpty();
+    }
+    
+    @Override
+    public boolean isFull() {
+        return fluidData.getAmount() == getMaxAmount();
     }
     
     @Override

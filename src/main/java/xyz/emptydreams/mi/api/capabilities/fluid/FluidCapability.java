@@ -4,7 +4,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import xyz.emptydreams.mi.api.fluid.data.FluidData;
+import xyz.emptydreams.mi.api.fluid.data.FluidQueue;
 import xyz.emptydreams.mi.api.fluid.data.TransportReport;
 import xyz.emptydreams.mi.api.register.others.AutoLoader;
 
@@ -32,13 +32,19 @@ public class FluidCapability {
                     }
                     
                     @Override
-                    public int insert(FluidData data, EnumFacing facing, boolean simulate, TransportReport report) {
-                        return 0;
+                    public boolean isFull() {
+                        return false;
                     }
                     
                     @Override
-                    public int extract(FluidData data, EnumFacing facing, boolean simulate, TransportReport report) {
+                    public int insert(FluidQueue queue, EnumFacing facing, boolean simulate, TransportReport report) {
                         return 0;
+                    }
+                    
+                    @Nonnull
+                    @Override
+                    public FluidQueue extract(int amount, EnumFacing facing, boolean simulate, TransportReport report) {
+                        return null;
                     }
                     
                     @Nonnull

@@ -1,7 +1,6 @@
 package xyz.emptydreams.mi.content.tileentity.pipes;
 
 import com.google.common.collect.Lists;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataReader;
 import xyz.emptydreams.mi.api.dor.interfaces.IDataWriter;
@@ -10,7 +9,6 @@ import xyz.emptydreams.mi.api.register.others.AutoTileEntity;
 import xyz.emptydreams.mi.api.utils.data.io.Storage;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,11 +41,15 @@ public class StraightPipeTileEntity extends FTTileEntity {
 		facing = EnumFacing.values()[reader.readByte()];
 	}
 	
+	
+	
 	@Override
 	public List<EnumFacing> next(EnumFacing source) {
 		EnumFacing side = facing.getOpposite();
-		if (source == facing) return hasPlug(facing) ? Collections.emptyList() : Lists.newArrayList(side);
-		if (source == side) return hasPlug(side) ? Collections.emptyList() : Lists.newArrayList(facing);
+		if (source == facing) return hasPlug(facing) ?
+				Collections.emptyList() : Lists.newArrayList(side);
+		if (source == side) return hasPlug(side) ?
+				Collections.emptyList() : Lists.newArrayList(facing);
 		if (source == null) {
 			List<EnumFacing> result = new ArrayList<>(2);
 			if (!hasPlug(facing)) result.add(facing);
@@ -75,20 +77,6 @@ public class StraightPipeTileEntity extends FTTileEntity {
 		linkData.set(facing, true);
 		updateBlockState(false);
 		return true;
-	}
-	
-	/**
-	 * 获取指定方向上连接的方块
-	 * @param facing 指定方向
-	 * @return 没有连接则返回null
-	 */
-	@Nullable
-	public TileEntity getNext(EnumFacing facing) {
-		if (isLinked(facing)) {
-			return world.getTileEntity(pos.offset(facing));
-		} else {
-			return null;
-		}
 	}
 	
 	/** 设置管道正方向 */
