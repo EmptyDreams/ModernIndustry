@@ -37,7 +37,7 @@ public class MixinCapabilityManager implements ICapManagerCheck {
 		return identityHashMap.put(key, value);
 	}
 	
-	@Shadow
+	@Shadow(remap = false)
 	private IdentityHashMap<String, Capability<?>> providers;
 	
 	@Override

@@ -26,7 +26,7 @@ public abstract class MixinUniversalBucket {
 		cir.setReturnValue(fluidStack.getLocalizedName());
 	}
 	
-	@Shadow
+	@Shadow(remap = false)
 	public abstract FluidStack getFluid(ItemStack stack);
 	
 }

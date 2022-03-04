@@ -16,7 +16,6 @@ import java.util.List;
 
 /**
  * @author EmptyDreams
- * @version V1.0
  */
 public class MIMixinTweaker implements ITweaker {
 	
