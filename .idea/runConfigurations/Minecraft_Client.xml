@@ -15,7 +15,7 @@
     </envs>
     <option name="MAIN_CLASS_NAME" value="net.minecraftforge.legacydev.MainClient" />
     <module name="ModernIndustry.main" />
-    <option name="PROGRAM_PARAMETERS" value="-username=HEI_MAO --tweakClass xyz.emptydreams.mi.coremod.boot.MIMixinTweaker" />
+    <option name="PROGRAM_PARAMETERS" value="-username=HEI_MAO --tweakClass top.kmar.mi.coremod.boot.MIMixinTweaker" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
     <method v="2">
       <option name="Make" enabled="true" />

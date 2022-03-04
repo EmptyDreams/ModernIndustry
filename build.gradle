@@ -18,7 +18,7 @@ apply plugin: 'kotlin'
 apply plugin: 'org.spongepowered.mixin'
 
 version = '1.0'
-group = 'xyz.emptydreams.mi' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = 'top.kmar.mi' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'mi'
 
 minecraft {
@@ -98,7 +98,7 @@ jar {
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "examplemodsareus",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "TweakClass": "xyz.emptydreams.mi.coremod.boot.MIMixinTweaker",
+                "TweakClass": "top.kmar.mi.coremod.boot.MIMixinTweaker",
                 "FMLCorePluginContainsFMLMod": true
     ])
 }

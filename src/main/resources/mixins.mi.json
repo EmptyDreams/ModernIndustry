@@ -1,5 +1,5 @@
 {
-  "package": "xyz.emptydreams.mi.coremod.mixin",
+  "package": "top.kmar.mi.coremod.mixin",
   "mixins": [
     "MixinCraftingHelper",
     "MixinItemStack",

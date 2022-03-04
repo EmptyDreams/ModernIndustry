@@ -12,7 +12,7 @@
     </envs>
     <option name="MAIN_CLASS_NAME" value="net.minecraftforge.legacydev.MainServer" />
     <module name="ModernIndustry.main" />
-    <option name="PROGRAM_PARAMETERS" value="--tweakClass xyz.emptydreams.mi.coremod.boot.MIMixinTweaker nogui" />
+    <option name="PROGRAM_PARAMETERS" value="--tweakClass top.kmar.mi.coremod.boot.MIMixinTweaker nogui" />
     <option name="VM_PARAMETERS" value="-Dforge.logging.console.level=debug -Dforge.logging.markers=REGISTRIES -Dnet.minecraftforge.gradle.GradleStart.srg.srg-mcp=D:\Workspace\ModernIndustry\build\createSrgToMcp\output.srg -Dmixin.env.remapRefMap=true -Dmixin.env.refMapRemappingFile=D:\Workspace\ModernIndustry\build\createSrgToMcp\output.srg -Dforge.enabledGameTestNamespaces=mi" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
     <method v="2">
