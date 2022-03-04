@@ -259,6 +259,7 @@
       <module fileurl="file://$PROJECT_DIR$/ModernIndustry.api.iml" filepath="$PROJECT_DIR$/ModernIndustry.api.iml" />
       <module fileurl="file://$PROJECT_DIR$/ModernIndustry.main.iml" filepath="$PROJECT_DIR$/ModernIndustry.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/ModernIndustry.test.iml" filepath="$PROJECT_DIR$/ModernIndustry.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xyz.emptydreams.mi.ModernIndustry.api.iml" filepath="$PROJECT_DIR$/xyz.emptydreams.mi.ModernIndustry.api.iml" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
@@ -642,9 +643,6 @@
       </SOURCES>
     </library>
     <library name="Gradle: net.minecraftforge:forgeSrc:1.12.2-14.23.5.2768">
-      <ANNOTATIONS>
-        <root url="file://$PROJECT_DIR$/contract" />
-      </ANNOTATIONS>
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/minecraft/net/minecraftforge/forge/1.12.2-14.23.5.2768/snapshot/20171003/forgeSrc-1.12.2-14.23.5.2768.jar!/" />
       </CLASSES>
