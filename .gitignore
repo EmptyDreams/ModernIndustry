@@ -9,6 +9,7 @@ bin
 # idea
 out
 *.iws
+.idea/workspace.xml
 
 # gradle
 build
