@@ -77,15 +77,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
         facing: EnumFacing?,
         simulate: Boolean,
         report: TransportReport
-    ): FluidQueue {
-        val result = FluidQueue.empty()
-        if (facing !== front) return result
-        val value = data.copy(min(amount, data.amount))
-        report.insert(facing, value)
-        result.pushHead(value)
-        if (!simulate) data.minusAmount(value.amount)
-        return result
-    }
+    ): FluidQueue = FluidQueue.empty()
 
     override fun update() {
         if (world.isRemote) {
