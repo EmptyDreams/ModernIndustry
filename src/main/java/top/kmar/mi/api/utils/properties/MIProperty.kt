@@ -5,7 +5,7 @@ import net.minecraft.block.properties.PropertyDirection
 import net.minecraft.util.EnumFacing
 
 /**
- *
+ * 放置常用的Property
  * @author EmptyDreams
  */
 @Suppress("MemberVisibilityCanBePrivate")
