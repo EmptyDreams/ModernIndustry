@@ -53,22 +53,6 @@ public class AnglePipeTileEntity extends FTTileEntity {
 		after = EnumFacing.values()[reader.readByte()];
 	}
 	
-	@Nonnull
-	@Override
-	public List<EnumFacing> next(EnumFacing facing) {
-		if (facing == this.facing)
-			return hasPlug(this.facing) ? Collections.emptyList() : Lists.newArrayList(after);
-		if (facing == after)
-			return hasPlug(after) ? Collections.emptyList() : Lists.newArrayList(this.facing);
-		if (facing == null) {
-			List<EnumFacing> result = new ArrayList<>(2);
-			if (!hasPlug(this.facing)) result.add(this.facing);
-			if (!hasPlug(after)) result.add(after);
-			return result;
-		}
-		throw new IllegalArgumentException("输入方向上没有开口：" + facing);
-	}
-	
 	@Override
 	public boolean hasAperture(EnumFacing facing) {
 		return facing == this.facing || facing == after;

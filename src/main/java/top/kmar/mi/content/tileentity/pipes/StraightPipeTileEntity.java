@@ -43,22 +43,6 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	}
 	
 	@Override
-	public List<EnumFacing> next(EnumFacing source) {
-		EnumFacing side = facing.getOpposite();
-		if (source == facing) return hasPlug(facing) ?
-				Collections.emptyList() : Lists.newArrayList(side);
-		if (source == side) return hasPlug(side) ?
-				Collections.emptyList() : Lists.newArrayList(facing);
-		if (source == null) {
-			List<EnumFacing> result = new ArrayList<>(2);
-			if (!hasPlug(facing)) result.add(facing);
-			if (!hasPlug(side)) result.add(side);
-			return result;
-		}
-		throw new IllegalArgumentException("输入了没有开口的方向：" + source);
-	}
-	
-	@Override
 	public boolean hasAperture(EnumFacing facing) {
 		return facing.getAxis() == this.facing.getAxis();
 	}

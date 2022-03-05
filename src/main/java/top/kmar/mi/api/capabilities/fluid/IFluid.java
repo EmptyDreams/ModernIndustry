@@ -13,14 +13,6 @@ import java.util.List;
  */
 public interface IFluid {
 	
-	/**
-	 * <p>获取可存储的最大量
-	 * <p>该方法可能会在对象构造函数中调用，必须保证构造过程中也可以返回正确的值
-	 */
-	default int getMaxAmount() {
-		return 1000;
-	}
-	
 	/** 判断容器是否为空 */
 	boolean isEmpty();
 	
@@ -55,15 +47,6 @@ public interface IFluid {
 	 */
 	@Nonnull
 	FluidQueue extract(int amount, EnumFacing facing, boolean simulate, TransportReport report);
-	
-	/**
-	 * 获取下一个可用的流体去向
-	 * @param facing 来源方向
-	 * @throws IllegalArgumentException 如果来源没有与管道连接
-	 * @return 返回结果无序且允许更改（更改返回结果不影响内部数据）
-	 */
-	@Nonnull
-	List<EnumFacing> next(EnumFacing facing);
 	
 	/** 判断是否可以连接指定方向 */
 	boolean canLink(EnumFacing facing);

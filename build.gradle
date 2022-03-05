@@ -1,6 +1,7 @@
 buildscript {
     ext.kotlin_version = '1.6.10'
     repositories {
+        mavenLocal()
         // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         maven { url = 'https://maven.minecraftforge.net' }

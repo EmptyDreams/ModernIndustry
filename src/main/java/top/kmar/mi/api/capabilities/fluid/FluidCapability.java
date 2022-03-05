@@ -47,12 +47,6 @@ public class FluidCapability {
                         return null;
                     }
                     
-                    @Nonnull
-                    @Override
-                    public List<EnumFacing> next(EnumFacing facing) {
-                        return null;
-                    }
-                    
                     @Override
                     public boolean canLink(EnumFacing facing) {
                         return false;

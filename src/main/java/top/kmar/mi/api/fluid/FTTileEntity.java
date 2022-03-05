@@ -125,6 +125,14 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
         return fluidData.copy();
     }
     
+    /**
+     * <p>获取可存储的最大量
+     * <p>该方法可能会在对象构造函数中调用，必须保证构造过程中也可以返回正确的值
+     */
+    public int getMaxAmount() {
+        return 1000;
+    }
+    
     @Override
     public boolean isEmpty() {
         return fluidData.isEmpty();

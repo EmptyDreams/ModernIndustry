@@ -34,14 +34,6 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	}
 	
 	@Override
-	public List<EnumFacing> next(EnumFacing facing) {
-		List<EnumFacing> result = Lists.newArrayList(getFacing());
-		result.remove(facing);
-		result.removeIf(this::hasPlug);
-		return result;
-	}
-	
-	@Override
 	public boolean hasAperture(EnumFacing facing) {
 		return facing.getAxis() != side;
 	}
