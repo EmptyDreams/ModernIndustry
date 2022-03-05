@@ -13,6 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import top.kmar.mi.api.utils.properties.MIProperty;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.gui.CompressorFrame;
 import top.kmar.mi.api.register.block.AutoBlockRegister;
@@ -43,7 +44,9 @@ public class CompressorBlock extends MachineBlock {
 	public CompressorBlock() {
 		super(Material.ROCK);
 		setDefaultState(blockState.getBaseState().withProperty(
-				HORIZONTAL, EnumFacing.EAST).withProperty(WORKING, false).withProperty(EMPTY, true));
+				MIProperty.getHORIZONTAL(), EnumFacing.EAST)
+				.withProperty(getWORKING(), false)
+				.withProperty(getEMPTY(), true));
 	}
 	
 	@Nonnull
@@ -72,7 +75,7 @@ public class CompressorBlock extends MachineBlock {
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, HORIZONTAL, WORKING, EMPTY);
+		return new BlockStateContainer(this, getHORIZONTAL(), getWORKING(), getEMPTY());
 	}
 	
 	@Override
@@ -89,8 +92,9 @@ public class CompressorBlock extends MachineBlock {
 	    if (enumfacing.getAxis() == EnumFacing.Axis.Y) {
 	        enumfacing = EnumFacing.NORTH;
 	    }
-	    return getDefaultState().withProperty(HORIZONTAL, enumfacing)
-	    		.withProperty(WORKING, burning).withProperty(EMPTY, isEmpty);
+	    return getDefaultState().withProperty(getHORIZONTAL(), enumfacing)
+	    		.withProperty(getWORKING(), burning)
+			    .withProperty(getEMPTY(), isEmpty);
 	}
 	
 	/** 
@@ -100,9 +104,9 @@ public class CompressorBlock extends MachineBlock {
 	 */
 	@Override
 	public int getMetaFromState(@Nonnull IBlockState state) {
-		return state.getValue(HORIZONTAL).getHorizontalIndex()
-				       | (state.getValue(WORKING) ? 0b0100 : 0b0000)
-				       | (state.getValue(EMPTY) ? 0b1000 : 0b0000);
+		return state.getValue(getHORIZONTAL()).getHorizontalIndex()
+				       | (state.getValue(getWORKING()) ? 0b0100 : 0b0000)
+				       | (state.getValue(getEMPTY()) ? 0b1000 : 0b0000);
 	}
 	
 	@Override

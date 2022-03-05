@@ -37,6 +37,8 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
     @Storage private var data = FluidData.empty()
     /** 出口入口是否连接 */
     @Storage private val linked = IndexEnumMap<EnumFacing>()
+    /** 水泵面板方向 */
+    @Storage var panelFacing = EnumFacing.WEST
     /** 水泵输出方向 */
     private var front = EnumFacing.NORTH
     override fun getFront(): EnumFacing = front
@@ -144,7 +146,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
      * 获取指定方向上连接的方块的IFluid
      * @return 是否为出水方向
      */
-    fun getFluidDirect(positive: Boolean): IFluid? {
+    private fun getFluidDirect(positive: Boolean): IFluid? {
         val facing = if (positive) front else front.opposite
         if (!isLinked(facing)) return null
         val target = pos.offset(facing)

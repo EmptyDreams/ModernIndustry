@@ -16,6 +16,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import top.kmar.mi.ModernIndustry;
+import top.kmar.mi.api.utils.properties.MIProperty;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.gui.MuffleFurnaceFrame;
 import top.kmar.mi.api.register.block.AutoBlockRegister;
@@ -28,8 +29,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-import static top.kmar.mi.api.utils.properties.MIProperty.HORIZONTAL;
-import static top.kmar.mi.api.utils.properties.MIProperty.WORKING;
+import static top.kmar.mi.api.utils.properties.MIProperty.getHORIZONTAL;
 
 /**
  * 高温熔炉
@@ -43,8 +43,8 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 	public MuffleFurnaceBlock() {
 		super(Material.ROCK);
 		setDefaultState(blockState.getBaseState()
-				                .withProperty(HORIZONTAL, EnumFacing.NORTH)
-				                .withProperty(WORKING, false));
+				                .withProperty(getHORIZONTAL(), EnumFacing.NORTH)
+				                .withProperty(MIProperty.getWORKING(), false));
 		setCreativeTab(ModernIndustry.TAB_BLOCK);
 		setSoundType(SoundType.STONE);
 		setHardness(3.5F);
@@ -84,7 +84,8 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing,
 	                                        float hitX, float hitY, float hitZ, int meta,
 	                                        EntityLivingBase placer, EnumHand hand) {
-		return getDefaultState().withProperty(HORIZONTAL, placer.getHorizontalFacing().getOpposite());
+		return getDefaultState().withProperty(
+				getHORIZONTAL(), placer.getHorizontalFacing().getOpposite());
 	}
 	
 	@Override

@@ -15,10 +15,9 @@ import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.gui.component.CommonProgress.Front;
 import top.kmar.mi.api.gui.component.CommonProgress.Style;
 import top.kmar.mi.api.register.others.AutoTileEntity;
+import top.kmar.mi.api.utils.properties.MIProperty;
 
 import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
-import static top.kmar.mi.api.utils.properties.MIProperty.HORIZONTAL;
-import static top.kmar.mi.api.utils.properties.MIProperty.WORKING;
 
 /**
  * 高温火炉
@@ -84,7 +83,7 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 		}
 		
 		IBlockState oldState = world.getBlockState(pos);
-		IBlockState newState = oldState.withProperty(WORKING, isWorking());
+		IBlockState newState = oldState.withProperty(MIProperty.getWORKING(), isWorking());
 		WorldUtil.setBlockState(world, pos, newState);
 	}
 	
@@ -126,7 +125,9 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 	/** 是否正在工作 */
 	public boolean isWorking() { return maxBurningTime != 0; }
 	/** 获取正面 */
-	public EnumFacing getFront() { return world.getBlockState(pos).getValue(HORIZONTAL); }
+	public EnumFacing getFront() {
+		return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
+	}
 	
 	/** 获取工作进度条 */
 	public IProgressBar getWorkProgress() { return workProgress; }

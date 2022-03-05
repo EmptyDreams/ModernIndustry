@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 
-import static top.kmar.mi.api.utils.properties.MIProperty.WORKING;
+import static top.kmar.mi.api.utils.properties.MIProperty.getWORKING;
 
 /**
  * @author EmptyDreams
@@ -40,7 +40,7 @@ public class ElectronSynthesizerBlock extends MachineBlock {
 	
 	public ElectronSynthesizerBlock() {
 		super(Material.IRON);
-		setDefaultState(blockState.getBaseState().withProperty(WORKING, false));
+		setDefaultState(blockState.getBaseState().withProperty(getWORKING(), false));
 	}
 	
 	@Override
@@ -68,18 +68,18 @@ public class ElectronSynthesizerBlock extends MachineBlock {
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, WORKING);
+		return new BlockStateContainer(this, getWORKING());
 	}
 	
 	@Override
 	public int getMetaFromState(@Nonnull IBlockState state) {
-		return state.getValue(WORKING) ? 1 : 0;
+		return state.getValue(getWORKING()) ? 1 : 0;
 	}
 	
 	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState().withProperty(WORKING, meta == 1);
+		return getDefaultState().withProperty(getWORKING(), meta == 1);
 	}
 	
 	@Nullable

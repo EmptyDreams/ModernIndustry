@@ -13,12 +13,13 @@ import net.minecraft.world.World;
 import top.kmar.mi.api.utils.MathUtil;
 import top.kmar.mi.api.capabilities.fluid.FluidCapability;
 import top.kmar.mi.api.capabilities.fluid.IFluid;
+import top.kmar.mi.api.utils.properties.MIProperty;
 import top.kmar.mi.content.tileentity.pipes.StraightPipeTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static top.kmar.mi.api.utils.properties.MIProperty.ALL_FACING;
+import static top.kmar.mi.api.utils.properties.MIProperty.getALL_FACING;
 
 /**
  * <p>直线型管道
@@ -29,14 +30,14 @@ public class StraightPipe extends Pipe {
 	
 	public StraightPipe(String name, String... ores) {
 		super(name, ores);
-		setDefaultState(blockState.getBaseState().withProperty(ALL_FACING, EnumFacing.NORTH));
+		setDefaultState(blockState.getBaseState().withProperty(getALL_FACING(), EnumFacing.NORTH));
 	}
 	
 	@SuppressWarnings("ConstantConditions")
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 		StraightPipeTileEntity te = (StraightPipeTileEntity) worldIn.getTileEntity(pos);
-		return state.withProperty(ALL_FACING, te.getFacing());
+		return state.withProperty(getALL_FACING(), te.getFacing());
 	}
 	
 	@Override
@@ -92,7 +93,7 @@ public class StraightPipe extends Pipe {
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		state = state.getActualState(source, pos);
-		EnumFacing facing = state.getValue(ALL_FACING);
+		EnumFacing facing = state.getValue(getALL_FACING());
 		switch (facing) {
 			case DOWN:
 			case UP:
@@ -111,7 +112,7 @@ public class StraightPipe extends Pipe {
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, ALL_FACING);
+		return new BlockStateContainer(this, getALL_FACING());
 	}
 	
 	@Nullable

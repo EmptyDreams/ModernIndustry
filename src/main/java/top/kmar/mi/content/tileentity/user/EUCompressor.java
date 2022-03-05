@@ -134,8 +134,8 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	 */
 	private void updateShow(boolean isWorking) {
 		IBlockState old = world.getBlockState(pos);
-		IBlockState state = old.withProperty(MIProperty.EMPTY, isEmpty())
-				                    .withProperty(MIProperty.WORKING, isWorking);
+		IBlockState state = old.withProperty(MIProperty.getEMPTY(), isEmpty())
+				                    .withProperty(MIProperty.getWORKING(), isWorking);
 		WorldUtil.setBlockState(world, pos, state);
 	}
 	
@@ -207,7 +207,9 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		return false;
 	}
 	@Override
-	public EnumFacing getFront() { return world.getBlockState(pos).getValue(MIProperty.HORIZONTAL); }
+	public EnumFacing getFront() {
+		return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
+	}
 	
 	private final class SlotMI extends SlotItemHandler {
 		

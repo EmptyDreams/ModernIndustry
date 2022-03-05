@@ -13,6 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import top.kmar.mi.api.utils.properties.MIProperty;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.gui.RedStoneConverterFrame;
 import top.kmar.mi.api.register.block.AutoBlockRegister;
@@ -22,9 +23,6 @@ import top.kmar.mi.content.tileentity.maker.EMRedStoneConverter;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-
-import static top.kmar.mi.api.utils.properties.MIProperty.HORIZONTAL;
-import static top.kmar.mi.api.utils.properties.MIProperty.WORKING;
 
 /**
  * 红石能转换器
@@ -38,8 +36,8 @@ public class RedStoneConverterBlock extends MachineBlock {
 	public RedStoneConverterBlock() {
 		super(Material.IRON);
 		setDefaultState(blockState.getBaseState()
-									.withProperty(HORIZONTAL, EnumFacing.NORTH)
-									.withProperty(WORKING, false));
+									.withProperty(MIProperty.getHORIZONTAL(), EnumFacing.NORTH)
+									.withProperty(MIProperty.getWORKING(), false));
 	}
 
 	@Override

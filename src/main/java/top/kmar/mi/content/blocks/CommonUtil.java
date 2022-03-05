@@ -15,13 +15,13 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import top.kmar.mi.ModernIndustry;
 import top.kmar.mi.api.gui.common.GuiLoader;
+import top.kmar.mi.api.utils.properties.MIProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
-import static top.kmar.mi.api.utils.properties.MIProperty.HORIZONTAL;
-import static top.kmar.mi.api.utils.properties.MIProperty.WORKING;
+import static top.kmar.mi.api.utils.properties.MIProperty.getWORKING;
 
 /**
  * 封装了对于State的常用操作
@@ -95,12 +95,13 @@ public final class CommonUtil {
 	
 	/** 为指定方块生成一个带方向与工作状态的{@link BlockStateContainer} */
 	public static BlockStateContainer createBlockState(Block block) {
-		return new BlockStateContainer(block, HORIZONTAL, WORKING);
+		return new BlockStateContainer(block, MIProperty.getHORIZONTAL(), getWORKING());
 	}
 
 	/** 依据IBlockState获取meta */
 	public static int getMetaFromState(@Nonnull IBlockState state) {
-		return state.getValue(getFacing(state)).ordinal() | (state.getValue(WORKING) ? 0b1000 : 0b0000);
+		return state.getValue(getFacing(state)).ordinal() |
+				(state.getValue(getWORKING()) ? 0b1000 : 0b0000);
 	}
 
 	/**
@@ -116,7 +117,7 @@ public final class CommonUtil {
 		}
 		return block.getDefaultState()
 				.withProperty(getFacing(block.getDefaultState()), facing)
-				.withProperty(WORKING, (meta & 0b1000) == 0b1000);
+				.withProperty(getWORKING(), (meta & 0b1000) == 0b1000);
 	}
 
 	@Nonnull

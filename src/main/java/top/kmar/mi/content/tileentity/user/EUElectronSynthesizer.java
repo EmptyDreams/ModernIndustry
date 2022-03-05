@@ -78,7 +78,8 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 				workingTime = Math.max(workingTime, 0);
 				maxTime = getMaxTime(input, output);
 				PROGRESS.setMax(maxTime);
-				IBlockState newState = world.getBlockState(getPos()).withProperty(MIProperty.WORKING, true);
+				IBlockState newState = world.getBlockState(
+						getPos()).withProperty(MIProperty.getWORKING(), true);
 				WorldUtil.setBlockState(world, pos, newState);
 			} else {
 				clear();
@@ -97,7 +98,8 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 		workingTime = -2;
 		MERGE = null;
 		refresh = true;
-		IBlockState newState = world.getBlockState(getPos()).withProperty(MIProperty.WORKING, false);
+		IBlockState newState = world.getBlockState(
+				getPos()).withProperty(MIProperty.getWORKING(), false);
 		WorldUtil.setBlockState(world, pos, newState);
 	}
 	

@@ -10,6 +10,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import top.kmar.mi.api.utils.properties.MIProperty;
 import top.kmar.mi.content.blocks.base.pipes.enums.AngleFacingEnum;
 import top.kmar.mi.content.blocks.base.pipes.enums.PropertyAngleFacing;
 import top.kmar.mi.content.tileentity.pipes.AnglePipeTileEntity;
@@ -17,7 +18,7 @@ import top.kmar.mi.content.tileentity.pipes.AnglePipeTileEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static top.kmar.mi.api.utils.properties.MIProperty.HORIZONTAL;
+import static top.kmar.mi.api.utils.properties.MIProperty.getHORIZONTAL;
 
 /**
  * <p>直角拐弯的管道
@@ -30,14 +31,14 @@ public class AnglePipe extends Pipe {
 	
 	public AnglePipe(String name, String... ores) {
 		super(name, ores);
-		setDefaultState(blockState.getBaseState().withProperty(HORIZONTAL, EnumFacing.NORTH)
+		setDefaultState(blockState.getBaseState().withProperty(getHORIZONTAL(), EnumFacing.NORTH)
 				.withProperty(ANGLE_FACING, AngleFacingEnum.UP));
 	}
 	
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, HORIZONTAL, ANGLE_FACING);
+		return new BlockStateContainer(this, getHORIZONTAL(), ANGLE_FACING);
 	}
 	
 	@SuppressWarnings("ConstantConditions")
@@ -45,7 +46,8 @@ public class AnglePipe extends Pipe {
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 		AnglePipeTileEntity te = (AnglePipeTileEntity) worldIn.getTileEntity(pos);
 		AngleFacingEnum after = AngleFacingEnum.valueOf(te.getFacing(), te.getAfter());
-		return state.withProperty(HORIZONTAL, te.getFacing()).withProperty(ANGLE_FACING, after);
+		return state.withProperty(getHORIZONTAL(), te.getFacing())
+				.withProperty(ANGLE_FACING, after);
 	}
 	
 	@Override
@@ -66,7 +68,7 @@ public class AnglePipe extends Pipe {
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		state = state.getActualState(source, pos);
-		EnumFacing facing = state.getValue(HORIZONTAL);
+		EnumFacing facing = state.getValue(getHORIZONTAL());
 		EnumFacing after = state.getValue(ANGLE_FACING).toEnumFacing(facing);
 		switch (facing) {
 			case EAST:

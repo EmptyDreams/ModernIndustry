@@ -24,8 +24,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static net.minecraft.util.EnumFacing.NORTH;
-import static top.kmar.mi.api.utils.properties.MIProperty.HORIZONTAL;
-import static top.kmar.mi.api.utils.properties.MIProperty.WORKING;
+import static top.kmar.mi.api.utils.properties.MIProperty.getHORIZONTAL;
+import static top.kmar.mi.api.utils.properties.MIProperty.getWORKING;
 
 /**
  * 高温火炉的Block
@@ -39,8 +39,8 @@ public class EleMFurnaceBlock extends MachineBlock {
 	public EleMFurnaceBlock() {
 		super(Material.IRON);
 		setDefaultState(blockState.getBaseState()
-				.withProperty(HORIZONTAL, NORTH)
-				.withProperty(WORKING, false));
+				.withProperty(getHORIZONTAL(), NORTH)
+				.withProperty(getWORKING(), false));
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class EleMFurnaceBlock extends MachineBlock {
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, HORIZONTAL, WORKING);
+		return new BlockStateContainer(this, getHORIZONTAL(), getWORKING());
 	}
 
 	@Override

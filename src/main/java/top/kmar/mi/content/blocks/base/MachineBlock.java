@@ -14,13 +14,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import top.kmar.mi.ModernIndustry;
+import top.kmar.mi.api.utils.properties.MIProperty;
 import top.kmar.mi.content.blocks.common.CommonBlocks;
 import top.kmar.mi.api.utils.container.BooleanWrapper;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-import static top.kmar.mi.api.utils.properties.MIProperty.HORIZONTAL;
+import static top.kmar.mi.api.utils.properties.MIProperty.getHORIZONTAL;
 
 /**
  * MI中所有耗电机器的父类
@@ -57,10 +58,11 @@ public abstract class MachineBlock extends TEBlockBase {
 	                                        EntityLivingBase placer, EnumHand hand) {
 		if (hasFacing == null) {
 			IBlockState state = getDefaultState();
-			hasFacing = new BooleanWrapper(state.getProperties().containsKey(HORIZONTAL));
+			hasFacing = new BooleanWrapper(state.getProperties().containsKey(getHORIZONTAL()));
 		}
 		if (hasFacing.get())
-			return getDefaultState().withProperty(HORIZONTAL, placer.getHorizontalFacing().getOpposite());
+			return getDefaultState().withProperty(
+					getHORIZONTAL(), placer.getHorizontalFacing().getOpposite());
 		return getDefaultState();
 	}
 	

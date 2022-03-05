@@ -46,5 +46,12 @@
       "name": ["working"],
       "type": ["bool"]
     }
+  },
+  "all_facing": {
+    "name": "template_all_facing.json",
+    "check": {
+      "name": ["all_facing", "horizontal", "working"],
+      "type": ["dir",        "dir_h",      "bool"]
+    }
   }
 }

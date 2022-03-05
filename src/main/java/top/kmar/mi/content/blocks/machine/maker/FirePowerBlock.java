@@ -14,6 +14,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import top.kmar.mi.ModernIndustry;
+import top.kmar.mi.api.utils.properties.MIProperty;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.gui.FirePowerFrame;
 import top.kmar.mi.api.register.block.AutoBlockRegister;
@@ -24,9 +25,6 @@ import top.kmar.mi.content.tileentity.maker.EMFirePower;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-
-import static top.kmar.mi.api.utils.properties.MIProperty.HORIZONTAL;
-import static top.kmar.mi.api.utils.properties.MIProperty.WORKING;
 
 /**
  * 火力发电机
@@ -48,7 +46,8 @@ public class FirePowerBlock extends MachineBlock {
 		super(Material.IRON);
 		setHarvestLevel(CommonBlocks.TC_PICKAXE, 2);
 		setDefaultState(blockState.getBaseState()
-				                .withProperty(HORIZONTAL, EnumFacing.NORTH).withProperty(WORKING, false));
+				                .withProperty(MIProperty.getHORIZONTAL(), EnumFacing.NORTH)
+				.withProperty(MIProperty.getWORKING(), false));
 		ITEM = new ItemBlock(this).setRegistryName(ModernIndustry.MODID, "fire_power");
 	}
 	

@@ -12,6 +12,7 @@ import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.api.utils.data.io.Storage;
+import top.kmar.mi.api.utils.properties.MIProperty;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.blocks.CraftList;
 import top.kmar.mi.data.info.BiggerVoltage;
@@ -24,9 +25,6 @@ import top.kmar.mi.api.register.others.AutoTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import static top.kmar.mi.api.utils.properties.MIProperty.HORIZONTAL;
-import static top.kmar.mi.api.utils.properties.MIProperty.WORKING;
 
 /**
  * 粉碎机的TileEntity
@@ -75,7 +73,8 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 		progressBar.setMax(getNeedTime());
 		progressBar.setNow(workingTime);
 		WorldUtil.setBlockState(world, pos,
-				world.getBlockState(pos).withProperty(WORKING, workingTime > 0));
+				world.getBlockState(pos)
+						.withProperty(MIProperty.getWORKING(), workingTime > 0));
 	}
 
 	/** 更新内部数据 */
@@ -140,7 +139,9 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 	public IProgressBar getProgress() { return progressBar; }
 	@Nullable
 	@Override
-	public EnumFacing getFront() { return world.getBlockState(pos).getValue(HORIZONTAL); }
+	public EnumFacing getFront() {
+		return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
+	}
 	@Override
 	public boolean isReAllowable(EnumFacing facing) { return true; }
 	@Override
