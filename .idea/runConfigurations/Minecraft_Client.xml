@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Minecraft Client" type="Application" factoryName="Application" singleton="false">
+  <configuration default="false" name="Minecraft Client" type="Application" factoryName="Application" singleton="true">
     <envs>
       <env name="MCP_TO_SRG" value="$PROJECT_DIR$/../ModernIndustry\build\createSrgToMcp\output.srg" />
       <env name="MOD_CLASSES" value="examplemod%%$PROJECT_DIR$/../ModernIndustry\build\resources\main;examplemod%%$PROJECT_DIR$/../ModernIndustry\build\classes\java\main" />
@@ -19,7 +19,6 @@
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
     <method v="2">
       <option name="Make" enabled="true" />
-      <option name="Gradle.BeforeRunTask" enabled="true" tasks=":prepareRunClient" externalProjectPath="$PROJECT_DIR$" />
     </method>
   </configuration>
 </component>
