@@ -12,12 +12,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import top.kmar.mi.api.capabilities.fluid.FluidCapability;
 import top.kmar.mi.api.capabilities.fluid.IFluid;
-import top.kmar.mi.api.utils.MathUtil;
 import top.kmar.mi.content.tileentity.pipes.StraightPipeTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static top.kmar.mi.api.utils.ExpandFunctionKt.getPlacingDirection;
 import static top.kmar.mi.api.utils.properties.MIProperty.getALL_FACING;
 
 /**
@@ -59,7 +59,7 @@ public class StraightPipe extends Pipe {
 				return true;
 			}
 		}
-		te.setFacing(MathUtil.getPlayerFacing(player, pos));
+		te.setFacing(getPlacingDirection(player, pos));
 		return true;
 	}
 	

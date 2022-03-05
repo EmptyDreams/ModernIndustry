@@ -14,6 +14,7 @@ import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import top.kmar.mi.api.register.block.AutoBlockRegister
+import top.kmar.mi.api.utils.getPlacingDirection
 import top.kmar.mi.api.utils.properties.MIProperty.Companion.WORKING
 import top.kmar.mi.api.utils.properties.MIProperty.Companion.createAllDirection
 import top.kmar.mi.content.blocks.base.MachineBlock
@@ -79,7 +80,10 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
         hitX: Float, hitY: Float, hitZ: Float
     ): Boolean {
         val result = EUFluidPump()
-        
+        for (value in EnumFacing.values()) if (result.link(value)) break
+        val panel = player.getPlacingDirection(pos)
+        if (panel.axis !== result.panelFacing.axis) result.panelFacing = panel
+        putBlock(world, pos, defaultState, result, player, stack)
         return true
     }
 

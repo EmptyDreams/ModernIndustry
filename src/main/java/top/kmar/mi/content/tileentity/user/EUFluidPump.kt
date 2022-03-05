@@ -1,6 +1,7 @@
 package top.kmar.mi.content.tileentity.user
 
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.EnumFacing.Axis
 import net.minecraft.util.ITickable
 import net.minecraftforge.common.capabilities.Capability
 import top.kmar.mi.api.capabilities.fluid.FluidCapability.TRANSFER
@@ -135,6 +136,14 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
     override fun link(facing: EnumFacing): Boolean {
         if (!canLink(facing)) return false
         linked.set(facing, true)
+        if (facing.axis === panelFacing.axis) {
+            for (value in EnumFacing.HORIZONTALS) {
+                if (value.axis !== facing.axis) {
+                    panelFacing = value
+                    break
+                }
+            }
+        }
         return true
     }
 
