@@ -10,10 +10,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import top.kmar.mi.api.utils.MathUtil;
 import top.kmar.mi.api.capabilities.fluid.FluidCapability;
 import top.kmar.mi.api.capabilities.fluid.IFluid;
-import top.kmar.mi.api.utils.properties.MIProperty;
+import top.kmar.mi.api.utils.MathUtil;
 import top.kmar.mi.content.tileentity.pipes.StraightPipeTileEntity;
 
 import javax.annotation.Nonnull;

@@ -1,6 +1,5 @@
 package top.kmar.mi.content.tileentity.pipes;
 
-import com.google.common.collect.Lists;
 import net.minecraft.util.EnumFacing;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.dor.interfaces.IDataWriter;
@@ -9,9 +8,6 @@ import top.kmar.mi.api.utils.data.io.Storage;
 import top.kmar.mi.api.register.others.AutoTileEntity;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * 直线型管道的TileEntity
