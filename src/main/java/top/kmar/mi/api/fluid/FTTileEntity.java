@@ -91,7 +91,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
             for (EnumFacing value : PUSH_EACH_PRIORITY) {
                 if (queue.isEmpty()) break;
                 if (value == facing.getOpposite()) continue;
-                IFluid fluid = getFacingLinked(value);
+                IFluid fluid = getFluidDirect(value);
                 if (fluid == null) continue;
                 result += fluid.insert(queue, value, simulate, report);
             }
@@ -108,7 +108,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
         for (EnumFacing value : POP_EACH_PRIORITY) {
             if (copy == 0) break;
             if (value == facing) continue;
-            IFluid fluid = getFacingLinked(value);
+            IFluid fluid = getFluidDirect(value);
             if (fluid == null) continue;
             FluidQueue queue = fluid.extract(
                     copy, value.getOpposite(), simulate, report);
@@ -186,8 +186,8 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
      * @return 如果指定方向上没有连接方块则返回null
      */
     @Nullable
-    public IFluid getFacingLinked(EnumFacing facing) {
-        if (isLinked(facing)) return null;
+    public IFluid getFluidDirect(EnumFacing facing) {
+        if (!isLinked(facing)) return null;
         BlockPos target = pos.offset(facing);
         TileEntity te = world.getTileEntity(target);
         //noinspection ConstantConditions

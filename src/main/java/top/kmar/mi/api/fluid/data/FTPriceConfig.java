@@ -1,6 +1,7 @@
 package top.kmar.mi.api.fluid.data;
 
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fluids.Fluid;
 
 /**
  * 存储流体运输成本
