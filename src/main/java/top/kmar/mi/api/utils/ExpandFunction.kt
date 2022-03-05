@@ -30,6 +30,5 @@ fun EntityPlayer.getPlacingDirection(pos: BlockPos): EnumFacing {
         if (rotationPitch > 8.3) return EnumFacing.DOWN
     }
     //如果玩家和方块大致处于同一平面
-    //如果玩家和方块大致处于同一平面
     return horizontalFacing
 }
