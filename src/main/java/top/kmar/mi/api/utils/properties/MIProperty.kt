@@ -8,19 +8,21 @@ import net.minecraft.util.EnumFacing
  *
  * @author EmptyDreams
  */
+@Suppress("MemberVisibilityCanBePrivate")
 class MIProperty {
 
     companion object {
 
         /** 构建一个水平方向上的property */
-        @JvmStatic fun createHorizontal(name: String = "horizontal") =
+        fun createHorizontal(name: String = "horizontal"): PropertyDirection =
             PropertyDirection.create(name, EnumFacing.Plane.HORIZONTAL)
 
         /** 构建一个所有方向的property */
-        @JvmStatic fun createAllDirection(name: String = "all_facing") = PropertyDirection.create(name)
+        fun createAllDirection(name: String = "all_facing"): PropertyDirection = PropertyDirection.create(name)
 
         /** 构建一个垂直方向的property */
-        fun createVertical(name: String = "vertical") = PropertyDirection.create(name, EnumFacing.Plane.VERTICAL)
+        fun createVertical(name: String = "vertical"): PropertyDirection =
+            PropertyDirection.create(name, EnumFacing.Plane.VERTICAL)
 
         /** 标志是否正在工作的property */
         @JvmStatic val WORKING: PropertyBool = PropertyBool.create("working")
