@@ -12,6 +12,7 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
+import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import top.kmar.mi.api.register.block.AutoBlockRegister
 import top.kmar.mi.api.utils.getPlacingDirection
@@ -67,6 +68,17 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
 
     override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
         return EUFluidPump()
+    }
+
+    override fun isOpaqueCube(state: IBlockState?) = false
+
+    override fun isFullCube(state: IBlockState?) = false
+
+    override fun getActualState(state: IBlockState, worldIn: IBlockAccess, pos: BlockPos): IBlockState {
+        val te = worldIn.getTileEntity(pos)
+        if (te !is EUFluidPump) return super.getActualState(state, worldIn, pos)
+        return defaultState.withProperty(createAllDirection("front"), te.front)
+            .withProperty(createAllDirection("panel"), te.panelFacing)
     }
 
     override fun getBlockItem(): Item {
