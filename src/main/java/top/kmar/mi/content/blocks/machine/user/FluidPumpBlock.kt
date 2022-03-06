@@ -15,13 +15,14 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import top.kmar.mi.api.register.block.AutoBlockRegister
+import top.kmar.mi.api.utils.data.enums.RelativeDirectionEnum.LEFT
 import top.kmar.mi.api.utils.getPlacingDirection
-import top.kmar.mi.content.utils.MIProperty.Companion.WORKING
-import top.kmar.mi.content.utils.MIProperty.Companion.createAllDirection
-import top.kmar.mi.content.utils.MIProperty.Companion.createBothWay
 import top.kmar.mi.content.blocks.base.MachineBlock
 import top.kmar.mi.content.items.base.ItemBlockExpand
 import top.kmar.mi.content.tileentity.user.EUFluidPump
+import top.kmar.mi.content.utils.MIProperty.Companion.WORKING
+import top.kmar.mi.content.utils.MIProperty.Companion.createAllDirection
+import top.kmar.mi.content.utils.MIProperty.Companion.createRelativeDirection
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
 @AutoBlockRegister(registryName = FluidPumpBlock.NAME, field = "innerInstance")
@@ -42,7 +43,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
 
     init {
         defaultState = blockState.baseState
-            .withProperty(createBothWay("front"), true)
+            .withProperty(createRelativeDirection("front"), LEFT)
             .withProperty(createAllDirection("panel"), EnumFacing.WEST)
             .withProperty(WORKING, false)
     }
@@ -62,7 +63,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
     override fun createBlockState(): BlockStateContainer {
         return BlockStateContainer(
             this,
-            createBothWay("front"),
+            createRelativeDirection("front"),
             createAllDirection("panel"),
             WORKING)
     }
@@ -78,7 +79,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
     override fun getActualState(state: IBlockState, worldIn: IBlockAccess, pos: BlockPos): IBlockState {
         val te = worldIn.getTileEntity(pos)
         if (te !is EUFluidPump) return super.getActualState(state, worldIn, pos)
-        return defaultState.withProperty(createBothWay("front"), te.calculateFront())
+        return defaultState.withProperty(createRelativeDirection("front"), te.calculateFront())
             .withProperty(createAllDirection("panel"), te.panelFacing)
     }
 

@@ -13,6 +13,7 @@ import top.kmar.mi.api.register.others.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
 import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.container.IndexEnumMap
+import top.kmar.mi.api.utils.data.enums.RelativeDirectionEnum
 import top.kmar.mi.api.utils.data.io.Storage
 import top.kmar.mi.content.blocks.machine.user.FluidPumpBlock
 import top.kmar.mi.data.info.BiggerVoltage
@@ -128,7 +129,8 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
         TODO("暂时不支持从世界泵入流体")
     }
 
-    fun calculateFront(): Boolean = true
+    /** 计算出水口在面板的哪一个方向 */
+    fun calculateFront(): RelativeDirectionEnum = RelativeDirectionEnum.LEFT
 
     override fun canLink(facing: EnumFacing): Boolean {
         return facing.axis !== front.axis && super.canLink(facing)

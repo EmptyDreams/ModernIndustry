@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <option name="DEFAULT_COMPILER" value="Eclipse" />
     <annotationProcessing>
       <profile name="Gradle Imported" enabled="true">
         <outputRelativeToContentRoot value="true" />
@@ -11,5 +12,9 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8" />
+  </component>
+  <component name="EclipseCompilerSettings">
+    <option name="PROCEED_ON_ERROR" value="false" />
+    <option name="GENERATE_NO_WARNINGS" value="true" />
   </component>
 </project>

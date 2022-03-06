@@ -33,13 +33,6 @@ class MIProperty {
         /** 构建一个所有方向的property */
         fun createAllDirection(name: String = "all_facing"): PropertyDirection = PropertyDirection.create(name)
 
-        /**
-         * 构建一个含两个方向的property
-         *
-         * true表示右，false表示左
-         */
-        fun createBothWay(name: String = "both"): PropertyBool = PropertyBool.create(name)
-
         /** 构建一个垂直方向的property */
         fun createVertical(name: String = "vertical"): PropertyDirection =
             PropertyDirection.create(name, EnumFacing.Plane.VERTICAL)
