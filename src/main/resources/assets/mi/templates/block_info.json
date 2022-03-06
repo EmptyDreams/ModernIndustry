@@ -26,13 +26,6 @@
       "type": ["dir_h"]
     }
   },
-  "ft": {
-    "name": "template_ft.json",
-    "check": {
-      "name": ["fluid", "up",   "down", "east", "west", "north","south"],
-      "type": ["fluid", "bool", "bool", "bool", "bool", "bool", "bool" ]
-    }
-  },
   "cable": {
     "name": "template_cable.json",
     "check": {
