@@ -16,8 +16,9 @@ import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import top.kmar.mi.api.register.block.AutoBlockRegister
 import top.kmar.mi.api.utils.getPlacingDirection
-import top.kmar.mi.api.utils.properties.MIProperty.Companion.WORKING
-import top.kmar.mi.api.utils.properties.MIProperty.Companion.createAllDirection
+import top.kmar.mi.content.utils.MIProperty.Companion.WORKING
+import top.kmar.mi.content.utils.MIProperty.Companion.createAllDirection
+import top.kmar.mi.content.utils.MIProperty.Companion.createBothWay
 import top.kmar.mi.content.blocks.base.MachineBlock
 import top.kmar.mi.content.items.base.ItemBlockExpand
 import top.kmar.mi.content.tileentity.user.EUFluidPump
@@ -41,7 +42,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
 
     init {
         defaultState = blockState.baseState
-            .withProperty(createAllDirection("front"), EnumFacing.NORTH)
+            .withProperty(createBothWay("front"), true)
             .withProperty(createAllDirection("panel"), EnumFacing.WEST)
             .withProperty(WORKING, false)
     }
@@ -61,7 +62,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
     override fun createBlockState(): BlockStateContainer {
         return BlockStateContainer(
             this,
-            createAllDirection("front"),
+            createBothWay("front"),
             createAllDirection("panel"),
             WORKING)
     }
@@ -77,7 +78,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
     override fun getActualState(state: IBlockState, worldIn: IBlockAccess, pos: BlockPos): IBlockState {
         val te = worldIn.getTileEntity(pos)
         if (te !is EUFluidPump) return super.getActualState(state, worldIn, pos)
-        return defaultState.withProperty(createAllDirection("front"), te.front)
+        return defaultState.withProperty(createBothWay("front"), te.calculateFront())
             .withProperty(createAllDirection("panel"), te.panelFacing)
     }
 
@@ -92,9 +93,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
         hitX: Float, hitY: Float, hitZ: Float
     ): Boolean {
         val result = EUFluidPump()
-        for (value in EnumFacing.values()) if (result.link(value)) break
-        val panel = player.getPlacingDirection(pos)
-        if (panel.axis !== result.panelFacing.axis) result.panelFacing = panel
+        result.panelFacing = player.getPlacingDirection(pos).opposite
         putBlock(world, pos, defaultState, result, player, stack)
         return true
     }

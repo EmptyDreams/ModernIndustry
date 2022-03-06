@@ -128,6 +128,8 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
         TODO("暂时不支持从世界泵入流体")
     }
 
+    fun calculateFront(): Boolean = true
+
     override fun canLink(facing: EnumFacing): Boolean {
         return facing.axis !== front.axis && super.canLink(facing)
     }

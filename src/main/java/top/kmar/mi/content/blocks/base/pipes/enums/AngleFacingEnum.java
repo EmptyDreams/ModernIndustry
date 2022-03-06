@@ -18,7 +18,7 @@ public enum AngleFacingEnum implements IStringSerializable {
 	
 	/** 获取相反的方向 */
 	@Nonnull
-	public AngleFacingEnum getOpposed() {
+	public AngleFacingEnum opposite() {
 		switch (this) {
 			case UP: return DOWN;
 			case DOWN: return UP;

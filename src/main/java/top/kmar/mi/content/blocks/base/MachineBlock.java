@@ -14,14 +14,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import top.kmar.mi.ModernIndustry;
-import top.kmar.mi.api.utils.properties.MIProperty;
 import top.kmar.mi.content.blocks.common.CommonBlocks;
 import top.kmar.mi.api.utils.container.BooleanWrapper;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-import static top.kmar.mi.api.utils.properties.MIProperty.getHORIZONTAL;
+import static top.kmar.mi.content.utils.MIProperty.getHORIZONTAL;
 
 /**
  * MI中所有耗电机器的父类

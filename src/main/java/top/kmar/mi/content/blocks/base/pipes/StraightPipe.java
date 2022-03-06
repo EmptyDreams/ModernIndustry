@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static top.kmar.mi.api.utils.ExpandFunctionKt.getPlacingDirection;
-import static top.kmar.mi.api.utils.properties.MIProperty.getALL_FACING;
+import static top.kmar.mi.content.utils.MIProperty.getALL_FACING;
 
 /**
  * <p>直线型管道

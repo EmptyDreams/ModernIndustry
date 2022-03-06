@@ -3,8 +3,9 @@ package top.kmar.mi.data.json.block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.util.EnumFacing;
-import top.kmar.mi.api.utils.properties.PropertyFluidTransfer;
+import top.kmar.mi.api.utils.data.enums.RelativeDirectionEnum;
 
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -37,7 +38,9 @@ public enum BlockPropertyType {
 		}
 		return false;
 	}),
-	FLUID("fluid", it -> it instanceof PropertyFluidTransfer),
+	/** 相对方向 */
+	RELATIVE_DIRECTION("rela",
+			it -> it instanceof PropertyEnum && it.getValueClass() == RelativeDirectionEnum.class),
 	/** 所有类型 */
 	ALL("*", it -> true);
 	

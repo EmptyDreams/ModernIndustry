@@ -16,7 +16,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import top.kmar.mi.ModernIndustry;
-import top.kmar.mi.api.utils.properties.MIProperty;
+import top.kmar.mi.content.utils.MIProperty;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.gui.MuffleFurnaceFrame;
 import top.kmar.mi.api.register.block.AutoBlockRegister;
@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-import static top.kmar.mi.api.utils.properties.MIProperty.getHORIZONTAL;
+import static top.kmar.mi.content.utils.MIProperty.getHORIZONTAL;
 
 /**
  * 高温熔炉
