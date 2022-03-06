@@ -34,7 +34,7 @@ import javax.annotation.Nullable;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
- * 扳手，用于拆卸机器
+ * 扳手，用于旋转、拆卸机器
  * @author EmptyDreams
  */
 @Mod.EventBusSubscriber
@@ -151,6 +151,7 @@ public class SpannerItem extends Item {
 		}
 	}
 
+	/** 玩家手持扳手右键方块时不触发方块的右键事件 */
 	@SubscribeEvent
 	public static void stopGUI(PlayerInteractEvent.RightClickBlock event) {
 		EntityPlayer player = event.getEntityPlayer();

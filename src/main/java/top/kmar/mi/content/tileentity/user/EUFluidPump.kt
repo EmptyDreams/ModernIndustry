@@ -1,7 +1,6 @@
 package top.kmar.mi.content.tileentity.user
 
 import net.minecraft.util.EnumFacing
-import net.minecraft.util.EnumFacing.Axis
 import net.minecraft.util.ITickable
 import net.minecraftforge.common.capabilities.Capability
 import top.kmar.mi.api.capabilities.fluid.FluidCapability.TRANSFER
@@ -13,7 +12,7 @@ import top.kmar.mi.api.fluid.data.TransportReport
 import top.kmar.mi.api.register.others.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
 import top.kmar.mi.api.utils.WorldUtil
-import top.kmar.mi.api.utils.data.enums.IndexEnumMap
+import top.kmar.mi.api.utils.container.IndexEnumMap
 import top.kmar.mi.api.utils.data.io.Storage
 import top.kmar.mi.content.blocks.machine.user.FluidPumpBlock
 import top.kmar.mi.data.info.BiggerVoltage
@@ -130,7 +129,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
     }
 
     override fun canLink(facing: EnumFacing): Boolean {
-        return super.canLink(facing) && facing.axis !== front.axis
+        return facing.axis !== front.axis && super.canLink(facing)
     }
 
     override fun link(facing: EnumFacing): Boolean {
