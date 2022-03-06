@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: net.minecraftforge:legacydev:fatjar:0.2.3.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minecraftforge/legacydev/0.2.3.1/f2cd4a8c9f09faf1c1e4a9a4c65df36e634f95db/legacydev-0.2.3.1-fatjar.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minecraftforge/legacydev/0.2.3.1/99cc20b7f67b1dfb00e041d8bb3ac68739100b85/legacydev-0.2.3.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
