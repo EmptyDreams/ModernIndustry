@@ -55,6 +55,8 @@ tile.mi.iron_melt.name=铁水
 fluid.iron_melt Bucket=铁水
 #管道
 tile.mi.iron_straight_ft.name=铁质管道（直线）
+tile.mi.iron_angle_ft.name=铁质管道（直角）
+tile.mi.iron_shunt_ft.name=铁质管道（十字）
 #调试物品
 item.mi.class_info_viewer.name=TileEntity信息查看器
 #矿物方块
@@ -71,6 +73,7 @@ tile.mi.pulverizer.name=粉碎机
 tile.mi.ele_mfurnace.name=高温电炉
 tile.mi.red_stone_converter.name=红石能转换机
 tile.mi.electron_synthesizer.name=电子合成台
+tile.mi.fluid_pump.name=水泵
 #线缆
 tile.mi.wire_copper.name=铜线
 #TAB
@@ -95,3 +98,7 @@ item.mi.tin_plate.name=锡板
 item.mi.gold_plate.name=金板
 #属性
 mi.property.poor_quality.name=劣质
+#GUI
+mi.gui.fluid_pump.energy=能量存储
+mi.gui.fluid_pump.consume=瞬时能量消耗
+mi.gui.fluid_pump.fluid=流体存储（%s）
