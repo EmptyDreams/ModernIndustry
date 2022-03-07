@@ -137,6 +137,8 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         report: TransportReport
     ): FluidQueue = FluidQueue.empty()
 
+    private var oldState = working
+
     override fun update() {
         if (world.isRemote) {
             WorldUtil.removeTickable(this)
@@ -150,7 +152,8 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
             markDirty()
         } else working = false
         updateGUI(old - nowEnergy)
-        send(old != nowEnergy)
+        send(working != oldState)
+        oldState = working
     }
 
     /** 向外部泵水 */
@@ -278,6 +281,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
             operator.writeByte(side.ordinal.toByte())
             operator.writeByte(panelFacing.ordinal.toByte())
             operator.writeBoolean(working)
+            operator.writeBoolean(start)
             operator
         }
     }
@@ -286,6 +290,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         side = EnumFacing.values()[reader.readByte().toInt()]
         panelFacing = EnumFacing.values()[reader.readByte().toInt()]
         working = reader.readBoolean()
+        start = reader.readBoolean()
         world.markBlockRangeForRenderUpdate(pos, pos)
         val value = data.fluid?.unlocalizedName ?: "mi.gui.fluid_pump.null"
         guiText.string = I18n.format("mi.gui.fluid_pump.fluid", I18n.format(value))
