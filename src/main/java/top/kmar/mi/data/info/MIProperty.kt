@@ -5,7 +5,6 @@ import net.minecraft.block.properties.PropertyDirection
 import net.minecraft.block.properties.PropertyEnum
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumFacing.Axis
-import top.kmar.mi.api.utils.data.enums.RelativeDirectionEnum
 
 /**
  * 放置常用的Property

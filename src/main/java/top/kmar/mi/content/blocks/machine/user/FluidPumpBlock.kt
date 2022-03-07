@@ -15,7 +15,6 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import top.kmar.mi.api.register.block.AutoBlockRegister
-import top.kmar.mi.api.utils.data.enums.RelativeDirectionEnum
 import top.kmar.mi.api.utils.getPlacingDirection
 import top.kmar.mi.content.blocks.base.MachineBlock
 import top.kmar.mi.content.items.base.ItemBlockExpand
@@ -23,6 +22,7 @@ import top.kmar.mi.content.tileentity.user.EUFluidPump
 import top.kmar.mi.data.info.MIProperty.Companion.WORKING
 import top.kmar.mi.data.info.MIProperty.Companion.createAllDirection
 import top.kmar.mi.data.info.MIProperty.Companion.createRelativeDirection
+import top.kmar.mi.data.info.RelativeDirectionEnum
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
 @AutoBlockRegister(registryName = FluidPumpBlock.NAME, field = "innerInstance")
@@ -37,14 +37,17 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
         val INSTANCE: FluidPumpBlock
             get() = innerInstance!!
 
+        val PROPERTY_SIDE = createRelativeDirection("front")
+        val PROPERTY_PANEL = createAllDirection("panel")
+
     }
 
     private val item: ItemBlock by lazy(PUBLICATION) { ItemBlockExpand(this) }
 
     init {
         defaultState = blockState.baseState
-            .withProperty(createRelativeDirection("front"), RelativeDirectionEnum.LEFT)
-            .withProperty(createAllDirection("panel"), EnumFacing.WEST)
+            .withProperty(PROPERTY_SIDE, RelativeDirectionEnum.LEFT)
+            .withProperty(PROPERTY_PANEL, EnumFacing.WEST)
             .withProperty(WORKING, false)
     }
 
@@ -60,13 +63,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
 
     override fun getMetaFromState(state: IBlockState) = 0
 
-    override fun createBlockState(): BlockStateContainer {
-        return BlockStateContainer(
-            this,
-            createRelativeDirection("front"),
-            createAllDirection("panel"),
-            WORKING)
-    }
+    override fun createBlockState() = BlockStateContainer(this, PROPERTY_SIDE, PROPERTY_PANEL, WORKING)
 
     override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
         return EUFluidPump()
@@ -78,9 +75,10 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
 
     override fun getActualState(state: IBlockState, worldIn: IBlockAccess, pos: BlockPos): IBlockState {
         val te = worldIn.getTileEntity(pos)
+        @Suppress("DEPRECATION")
         if (te !is EUFluidPump) return super.getActualState(state, worldIn, pos)
-        return defaultState.withProperty(createRelativeDirection("front"), te.calculateFront())
-            .withProperty(createAllDirection("panel"), te.panelFacing)
+        return defaultState.withProperty(PROPERTY_SIDE, te.calculateFront())
+            .withProperty(PROPERTY_PANEL, te.panelFacing)
     }
 
     override fun getBlockItem(): Item {
@@ -95,6 +93,9 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
     ): Boolean {
         val result = EUFluidPump()
         result.panelFacing = player.getPlacingDirection(pos).opposite
+        if (result.panelFacing.axis === EnumFacing.Axis.Y) {
+            result.side = EUFluidPump.may(player.horizontalFacing)[0]
+        }
         putBlock(world, pos, defaultState, result, player, stack)
         return true
     }

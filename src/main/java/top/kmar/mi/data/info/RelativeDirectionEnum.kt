@@ -1,4 +1,4 @@
-package top.kmar.mi.api.utils.data.enums
+package top.kmar.mi.data.info
 
 import net.minecraft.util.IStringSerializable
 

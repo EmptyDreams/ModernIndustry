@@ -13,12 +13,12 @@ import top.kmar.mi.api.register.others.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
 import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.container.IndexEnumMap
-import top.kmar.mi.api.utils.data.enums.RelativeDirectionEnum
 import top.kmar.mi.api.utils.data.io.Storage
 import top.kmar.mi.content.blocks.machine.user.FluidPumpBlock
 import top.kmar.mi.data.info.BiggerVoltage
 import top.kmar.mi.data.info.EnumBiggerVoltage
 import top.kmar.mi.data.info.EnumVoltage
+import top.kmar.mi.data.info.RelativeDirectionEnum
 import kotlin.math.min
 
 /**
@@ -27,6 +27,26 @@ import kotlin.math.min
  */
 @AutoTileEntity(FluidPumpBlock.NAME)
 open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
+
+    companion object {
+        private val MAY_X = listOf(EnumFacing.NORTH, EnumFacing.SOUTH)
+        private val MAY_Y = listOf(*EnumFacing.HORIZONTALS)
+        private val MAY_Z = listOf(EnumFacing.WEST, EnumFacing.EAST)
+
+        /** 判断指定的面板方向与管道方向是否匹配 */
+        fun match(panel: EnumFacing, side: EnumFacing) = may(panel).contains(side)
+
+        /**
+         * 获取指定面板朝向下出水口管道可能在哪些方向
+         * @return 一个不可修改的列表
+         */
+        @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
+        fun may(panel: EnumFacing) = when (panel.axis) {
+            EnumFacing.Axis.X -> MAY_X
+            EnumFacing.Axis.Y -> MAY_Y
+            EnumFacing.Axis.Z -> MAY_Z
+        }
+    }
 
     /** 最大存储容量 */
     var maxCapacity = 10000
@@ -40,9 +60,13 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
     @Storage private val linked = IndexEnumMap<EnumFacing>()
     /** 水泵面板方向 */
     @Storage var panelFacing = EnumFacing.WEST
+        set(value) {
+            field = value
+            val list = may(panelFacing)
+            if (!list.contains(side)) side = list[0]
+        }
     /** 水泵输出方向 */
-    private var front = EnumFacing.NORTH
-    override fun getFront(): EnumFacing = front
+    @Storage var side = EnumFacing.NORTH
 
     init {
         setReceiveRange(1, 100, EnumVoltage.C, EnumVoltage.D)
@@ -53,7 +77,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
         maxEnergy = 100
     }
 
-    override fun isReAllowable(facing: EnumFacing) = facing.axis !== front.axis
+    override fun isReAllowable(facing: EnumFacing) = facing.axis !== side.axis
 
     override fun isExAllowable(facing: EnumFacing?) = false
 
@@ -97,10 +121,10 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
         val fluid = getFluidDirect(true) ?: return
         val simulate = TransportReport()
         val value = FluidQueue.from(data.copy(min(data.amount, maxPower)))
-        if (fluid.insert(value, front, true, simulate) == 0) return
+        if (fluid.insert(value, side, true, simulate) == 0) return
         if (simulate.priceTotal > nowEnergy) return
         val report = TransportReport()
-        val pump = fluid.insert(value, front, false, report)
+        val pump = fluid.insert(value, side, false, report)
         shrinkEnergy(report.priceTotal)
         data.minusAmount(pump)
         TODO("暂时不支持向世界输出流体，也不支持运输一部分流体")
@@ -115,10 +139,10 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
         val fluid = getFluidDirect(false) ?: return
         val simulate = TransportReport()
         val pump = min(maxPower, maxCapacity - data.amount)
-        fluid.extract(pump, front, true, simulate)
+        fluid.extract(pump, side, true, simulate)
         if (simulate.priceTotal > nowEnergy) return
         val report = TransportReport()
-        val queue = fluid.extract(pump, front, false, report)
+        val queue = fluid.extract(pump, side, false, report)
         shrinkEnergy(report.priceTotal)
         while (!queue.isEmpty) {
             val value = queue.popHead(Int.MAX_VALUE)
@@ -130,41 +154,41 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
     }
 
     /** 计算出水口在面板的哪一个方向 */
-    fun calculateFront(): RelativeDirectionEnum {
-        return when (panelFacing.axis) {
-            EnumFacing.Axis.X -> {
-                val result = when (front) {
-                    EnumFacing.NORTH -> RelativeDirectionEnum.LEFT
-                    EnumFacing.SOUTH -> RelativeDirectionEnum.RIGHT
-                    else -> throw AssertionError("内部错误")
-                }
-                if (panelFacing == EnumFacing.WEST) result else result.opposite()
+    @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
+    fun calculateFront() = when (panelFacing.axis) {
+        EnumFacing.Axis.X -> {
+            val result = when (side) {
+                EnumFacing.NORTH -> RelativeDirectionEnum.LEFT
+                EnumFacing.SOUTH -> RelativeDirectionEnum.RIGHT
+                else -> throw AssertionError("内部错误")
             }
-            EnumFacing.Axis.Y -> {
-                val result = when (front) {
-                    EnumFacing.SOUTH -> RelativeDirectionEnum.UP
-                    EnumFacing.NORTH -> RelativeDirectionEnum.DOWN
-                    EnumFacing.EAST -> RelativeDirectionEnum.LEFT
-                    EnumFacing.WEST -> RelativeDirectionEnum.RIGHT
-                    else -> throw AssertionError("内部错误")
-                }
-                if (panelFacing == EnumFacing.DOWN) result else result.opposite()
+            if (panelFacing == EnumFacing.WEST) result else result.opposite()
+        }
+        EnumFacing.Axis.Y -> {
+            val result = when (side) {
+                EnumFacing.SOUTH -> RelativeDirectionEnum.UP
+                EnumFacing.NORTH -> RelativeDirectionEnum.DOWN
+                EnumFacing.EAST -> RelativeDirectionEnum.LEFT
+                EnumFacing.WEST -> RelativeDirectionEnum.RIGHT
+                else -> throw AssertionError("内部错误")
             }
-            EnumFacing.Axis.Z -> {
-                val result = when (front) {
-                    EnumFacing.WEST -> RelativeDirectionEnum.LEFT
-                    EnumFacing.EAST -> RelativeDirectionEnum.RIGHT
-                    else -> throw AssertionError("内部错误")
-                }
-                if (panelFacing == EnumFacing.SOUTH) result else result.opposite()
+            if (panelFacing == EnumFacing.DOWN) result else result.opposite()
+        }
+        EnumFacing.Axis.Z -> {
+            val result = when (side) {
+                EnumFacing.WEST -> RelativeDirectionEnum.LEFT
+                EnumFacing.EAST -> RelativeDirectionEnum.RIGHT
+                else -> throw AssertionError("内部错误")
             }
-            else -> throw AssertionError()
+            if (panelFacing == EnumFacing.SOUTH) result else result.opposite()
         }
     }
 
     override fun canLink(facing: EnumFacing): Boolean {
-        return facing.axis !== front.axis && super.canLink(facing)
+        return facing.axis !== side.axis && super.canLink(facing)
     }
+
+    override fun getFront() = panelFacing
 
     override fun link(facing: EnumFacing): Boolean {
         if (!canLink(facing)) return false
@@ -189,7 +213,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
      * @return 是否为出水方向
      */
     private fun getFluidDirect(positive: Boolean): IFluid? {
-        val facing = if (positive) front else front.opposite
+        val facing = if (positive) side else side.opposite
         if (!isLinked(facing)) return null
         val target = pos.offset(facing)
         val te = world.getTileEntity(target)
