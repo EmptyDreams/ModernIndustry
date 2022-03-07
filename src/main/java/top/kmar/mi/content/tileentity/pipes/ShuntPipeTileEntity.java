@@ -39,7 +39,7 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	}
 	
 	@Override
-	public boolean canLink(EnumFacing facing) {
+	public boolean canLinkFluid(EnumFacing facing) {
 		if (hasAperture(facing)) return true;
 		if (linkData.isInit()) return true;
 		List<Axis> all = Lists.newArrayList(Axis.values());
@@ -53,7 +53,7 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	@Override
 	public boolean link(EnumFacing facing) {
 		if (isLinked(facing)) return true;
-		if (!canLink(facing)) return false;
+		if (!canLinkFluid(facing)) return false;
 		linkData.set(facing, true);
 		side = calculateSide();
 		updateBlockState(false);

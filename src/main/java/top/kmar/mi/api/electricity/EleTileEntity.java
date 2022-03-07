@@ -107,7 +107,9 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	public abstract boolean isExAllowable(EnumFacing facing);
 	
 	/** 是否可以连接指定方向的方 */
-	public boolean canLink(EnumFacing facing) { return hasCapability(EleCapability.ENERGY, facing); }
+	public boolean canLinkEle(EnumFacing facing) {
+		return hasCapability(EleCapability.ENERGY, facing);
+	}
 	/** 连接指定方块 */
 	public boolean link(BlockPos pos) {
 		if (linkedBlocks.contains(pos)) return true;
@@ -280,7 +282,7 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		
 		@Override
 		public boolean canLink(EnumFacing facing) {
-			return EleTileEntity.this.canLink(facing);
+			return EleTileEntity.this.canLinkEle(facing);
 		}
 		@Override
 		public boolean link(BlockPos pos) {

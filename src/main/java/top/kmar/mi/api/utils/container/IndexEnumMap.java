@@ -49,4 +49,9 @@ public class IndexEnumMap<T extends Enum<?>> implements IDorSerialize {
     public void deserializedDor(IDataReader reader) {
         value = reader.readVarInt();
     }
+    
+    @Override
+    public String toString() {
+        return Integer.toBinaryString(getValue());
+    }
 }

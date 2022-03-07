@@ -14,6 +14,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import top.kmar.mi.ModernIndustry;
+import top.kmar.mi.api.capabilities.fluid.FluidCapability;
+import top.kmar.mi.api.capabilities.fluid.IFluid;
 import top.kmar.mi.api.fluid.FTTileEntity;
 import top.kmar.mi.api.register.OreDicRegister;
 import top.kmar.mi.api.utils.StringUtil;
@@ -47,15 +49,23 @@ abstract public class Pipe extends TEBlockBase {
 	
 	@SuppressWarnings("ConstantConditions")
 	@Override
-	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
-		TileEntity fromEntity = world.getTileEntity(neighbor);
-		Block block = fromEntity == null ? world.getBlockState(neighbor).getBlock() : fromEntity.getBlockType();
-		if (block instanceof Pipe) return;
-		FTTileEntity nowEntity = (FTTileEntity) world.getTileEntity(pos);
-		EnumFacing facing = WorldUtil.whatFacing(pos, neighbor);
-		if (fromEntity == null) nowEntity.unlink(facing);
-		else nowEntity.link(facing);
+	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
+		TileEntity fromEntity = worldIn.getTileEntity(fromPos);
+		FTTileEntity nowEntity = (FTTileEntity) worldIn.getTileEntity(pos);
+		EnumFacing facing = WorldUtil.whatFacing(pos, fromPos);
+		if (!linkBoth(nowEntity, fromEntity, facing)) nowEntity.unlink(facing);
 		nowEntity.markDirty();
+	}
+	
+	private boolean linkBoth(FTTileEntity now, TileEntity other, EnumFacing facing) {
+		if (other == null) return false;
+		IFluid fluid = other.getCapability(FluidCapability.TRANSFER, null);
+		if (fluid == null) return false;
+		if (now.link(facing)) {
+			if (fluid.link(facing.getOpposite())) return true;
+			now.unlink(facing);
+		}
+		return false;
 	}
 	
 	@SuppressWarnings("ConstantConditions")

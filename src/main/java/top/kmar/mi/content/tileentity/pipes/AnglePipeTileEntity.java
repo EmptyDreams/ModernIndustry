@@ -1,6 +1,5 @@
 package top.kmar.mi.content.tileentity.pipes;
 
-import com.google.common.collect.Lists;
 import net.minecraft.util.EnumFacing;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.dor.interfaces.IDataWriter;
@@ -10,9 +9,6 @@ import top.kmar.mi.content.blocks.base.pipes.enums.AngleFacingEnum;
 import top.kmar.mi.api.register.others.AutoTileEntity;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import static net.minecraft.util.EnumFacing.*;
 
@@ -59,7 +55,7 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	}
 	
 	@Override
-	public boolean canLink(EnumFacing facing) {
+	public boolean canLinkFluid(EnumFacing facing) {
 		if (hasAperture(facing)) return true;
 		if (linkData.isInit()) return true;
 		if (isLinked(this.facing)) {
@@ -81,7 +77,7 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	@Override
 	public boolean link(EnumFacing facing) {
 		if (isLinked(facing)) return true;
-		if (!canLink(facing)) return false;
+		if (!canLinkFluid(facing)) return false;
 		if (facing.getAxis() == Axis.Y) {
 			if (linkData.isInit()) {
 				this.facing = facing;

@@ -174,7 +174,6 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         val pump = fluid.insert(value, side, false, report)
         shrinkEnergy(report.priceTotal)
         data.minusAmount(pump)
-        TODO("暂时不支持向世界输出流体，也不支持运输一部分流体")
     }
 
     /**
@@ -197,7 +196,6 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
             else if (data.amount >= value.amount) data.minusAmount(value.amount)
             else data = value.copy(value.amount - data.amount)
         }
-        TODO("暂时不支持从世界泵入流体")
     }
 
     private fun updateGUI(consume: Int) {
@@ -243,14 +241,16 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         }
     }
 
-    override fun canLink(facing: EnumFacing): Boolean {
-        return facing.axis !== side.axis && super.canLink(facing)
-    }
+    override fun canLinkEle(facing: EnumFacing) =
+        linked.isInit || (facing.axis !== side.axis && facing !== panelFacing)
+
+    override fun canLinkFluid(facing: EnumFacing) =
+        (facing.axis !== panelFacing.axis && super.canLinkEle(facing)) || linked.isInit
 
     override fun getFront() = panelFacing
 
     override fun link(facing: EnumFacing): Boolean {
-        if (!canLink(facing)) return false
+        if (!canLinkEle(facing)) return false
         linked.set(facing, true)
         if (facing.axis === panelFacing.axis) {
             for (value in EnumFacing.HORIZONTALS) {

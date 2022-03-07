@@ -5,7 +5,6 @@ import top.kmar.mi.api.fluid.data.FluidQueue;
 import top.kmar.mi.api.fluid.data.TransportReport;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 /**
  * 流体容器
@@ -52,7 +51,7 @@ public interface IFluid {
 	FluidQueue extract(int amount, EnumFacing facing, boolean simulate, TransportReport report);
 	
 	/** 判断是否可以连接指定方向 */
-	boolean canLink(EnumFacing facing);
+	boolean canLinkFluid(EnumFacing facing);
 	
 	/**
 	 * 连接指定方向上的设备

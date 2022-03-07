@@ -77,7 +77,7 @@ public class StraightPipe extends Pipe {
 		IFluid that = thatTE.getCapability(FluidCapability.TRANSFER, null);
 		if (that == null) return false;
 		EnumFacing side = facing.getOpposite();
-		if (!that.canLink(side)) return false;
+		if (!that.canLinkFluid(side)) return false;
 		if (!cap.link(facing)) return false;
 		if (!that.link(side)) return unlink(cap, facing);
 		thatTE.markDirty();
