@@ -14,7 +14,9 @@ import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import top.kmar.mi.api.register.block.AutoBlockRegister
 import top.kmar.mi.api.utils.getPlacingDirection
+import top.kmar.mi.content.blocks.CommonUtil
 import top.kmar.mi.content.blocks.base.MachineBlock
+import top.kmar.mi.content.gui.FluidPumpFrame
 import top.kmar.mi.content.items.base.ItemBlockExpand
 import top.kmar.mi.content.tileentity.user.EUFluidPump
 import top.kmar.mi.data.info.MIProperty.Companion.WORKING
@@ -75,6 +77,12 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
             .withProperty(PROPERTY_PANEL, te.panelFacing)
             .withProperty(WORKING, te.working)
     }
+
+    override fun onBlockActivated(
+        worldIn: World, pos: BlockPos, state: IBlockState,
+        playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing,
+        hitX: Float, hitY: Float, hitZ: Float
+    ) = CommonUtil.openGui(playerIn, FluidPumpFrame.NAME, worldIn, pos)
 
     private val item: ItemBlock by lazy(PUBLICATION) { ItemBlockExpand(this) }
 

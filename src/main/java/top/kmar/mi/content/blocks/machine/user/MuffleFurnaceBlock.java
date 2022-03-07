@@ -16,13 +16,12 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import top.kmar.mi.ModernIndustry;
-import top.kmar.mi.data.info.MIProperty;
-import top.kmar.mi.content.blocks.CommonUtil;
-import top.kmar.mi.content.gui.MuffleFurnaceFrame;
 import top.kmar.mi.api.register.block.AutoBlockRegister;
+import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.blocks.base.TEBlockBase;
+import top.kmar.mi.content.gui.MuffleFurnaceFrame;
 import top.kmar.mi.content.tileentity.user.MuffleFurnace;
-import top.kmar.mi.content.items.common.SpannerItem;
+import top.kmar.mi.data.info.MIProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,7 +59,6 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
-		if (playerIn.getHeldItem(hand).getItem() == SpannerItem.getInstance()) return false;
 		return CommonUtil.openGui(playerIn, MuffleFurnaceFrame.NAME, worldIn, pos);
 	}
 
