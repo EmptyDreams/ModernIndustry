@@ -150,7 +150,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
             markDirty()
         } else working = false
         updateGUI(old - nowEnergy)
-        send()
+        send(old != nowEnergy)
     }
 
     /** 向外部泵水 */
@@ -270,11 +270,9 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     }
 
     private val networkRecord = mutableListOf<UUID>()
-    private var oldWorking = working
 
-    private fun send() {
-        if (oldWorking != working) networkRecord.clear()
-        oldWorking = working
+    private fun send(refresh: Boolean = false) {
+        if (refresh) networkRecord.clear()
         IOUtil.sendBlockMessageIfNotUpdate(this, networkRecord, 128) {
             val operator = ByteDataOperator()
             operator.writeByte(side.ordinal.toByte())
