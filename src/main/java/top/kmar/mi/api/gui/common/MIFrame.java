@@ -42,7 +42,7 @@ public class MIFrame extends Container implements IFrame, IComponentManager {
 	 * 创建一个大小未知，不包含玩家背包的GUI
 	 * @param id GUI的资源名称
 	 */
-	protected MIFrame(String id, EntityPlayer player) {
+	public MIFrame(String id, EntityPlayer player) {
 		hasBackpack = false;
 		backpackX = backpackY = Integer.MIN_VALUE;
 		this.id = id;

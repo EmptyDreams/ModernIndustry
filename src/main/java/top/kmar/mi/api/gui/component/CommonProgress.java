@@ -114,7 +114,7 @@ public class CommonProgress extends MComponent implements IProgressBar {
 
 		UP((bar, painter) -> drawHelper(bar, painter, -10)),
 		DOWN((bar, painter) -> drawHelper(bar, painter, bar.getHeight())),
-		CENTER((bar, painter) -> drawHelper(bar, painter, (bar.getHeight() - 9) / 2 + bar.getY()));
+		CENTER((bar, painter) -> drawHelper(bar, painter, (bar.getHeight() - 9) / 2));
 
 		private final BiConsumer<CommonProgress, GuiPainter> task;
 
