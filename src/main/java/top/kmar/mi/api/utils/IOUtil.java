@@ -4,8 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import top.kmar.mi.api.dor.ByteDataOperator;
+import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.net.handler.MessageSender;
 import top.kmar.mi.api.net.message.block.BlockAddition;
 import top.kmar.mi.api.net.message.block.BlockMessage;
@@ -16,6 +15,7 @@ import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 /**
  * @author EmptyDreams
@@ -23,13 +23,14 @@ import java.util.UUID;
 public final class IOUtil {
 	
 	public static void sendBlockMessageIfNotUpdate(
-			TileEntity te, ByteDataOperator operator, Collection<UUID> players, Range3D netRange) {
-		IMessage message = BlockMessage.instance().create(operator, new BlockAddition(te));
-		MessageSender.sendToClientIf(message, te.getWorld(), player -> {
+			TileEntity te, Collection<UUID> players, int r, Supplier<IDataReader> readerSupplier) {
+		Range3D netRange = new Range3D(te.getPos(), r);
+		MessageSender.sendToClientIf(te.getWorld(),  player -> {
 			if (players.contains(player.getUniqueID()) || !netRange.isIn(new Point3D(player))) return false;
 			players.add(player.getUniqueID());
 			return true;
-		});
+		}, () ->
+				BlockMessage.instance().create(readerSupplier.get(), new BlockAddition(te)));
 	}
 	
 	/**

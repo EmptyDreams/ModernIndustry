@@ -10,21 +10,20 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import top.kmar.mi.api.dor.interfaces.IDataReader;
-import top.kmar.mi.api.dor.interfaces.IDataWriter;
-import top.kmar.mi.api.tools.BaseTileEntity;
-import top.kmar.mi.api.utils.IOUtil;
-import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.api.capabilities.fluid.FluidCapability;
 import top.kmar.mi.api.capabilities.fluid.IFluid;
 import top.kmar.mi.api.dor.ByteDataOperator;
+import top.kmar.mi.api.dor.interfaces.IDataReader;
+import top.kmar.mi.api.dor.interfaces.IDataWriter;
 import top.kmar.mi.api.fluid.data.FluidData;
 import top.kmar.mi.api.fluid.data.FluidQueue;
 import top.kmar.mi.api.fluid.data.TransportReport;
 import top.kmar.mi.api.net.IAutoNetwork;
+import top.kmar.mi.api.tools.BaseTileEntity;
+import top.kmar.mi.api.utils.IOUtil;
+import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.api.utils.container.IndexEnumMap;
 import top.kmar.mi.api.utils.data.io.Storage;
-import top.kmar.mi.api.utils.data.math.Range3D;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -209,12 +208,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
     }
     
     @Override
-    public void setPos(BlockPos posIn) {
-        super.setPos(posIn);
-        netRange = new Range3D(pos.getX(), pos.getY(), pos.getZ(), 128);
-    }
-    
-    @Override
     public final void receive(@Nonnull IDataReader reader) {
         linkData.setValue(reader.readByte());
         syncClient(reader);
@@ -227,8 +220,6 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
      * 		方块暂时“删除”后此列表将重置以保证所有玩家可以正常渲染电线方块
      */
     private final List<UUID> players = new ArrayList<>();
-    /** 存储网络数据传输的更新范围，只有在范围内的玩家需要进行更新 */
-    private Range3D netRange;
     
     /** 用于服务端写入需要同步的数据，写入的数据会发送给客户端 */
     abstract protected void sync(IDataWriter writer);
@@ -241,10 +232,13 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
     public final void send() {
         if (world.isRemote) return;
         if (players.size() == world.playerEntities.size()) return;
-        ByteDataOperator operator = new ByteDataOperator(1);
-        operator.writeByte((byte) linkData.getValue());
-        sync(operator);
-        IOUtil.sendBlockMessageIfNotUpdate(this, operator, players, netRange);
+        
+        IOUtil.sendBlockMessageIfNotUpdate(this, players, 128, () -> {
+            ByteDataOperator operator = new ByteDataOperator(1);
+            operator.writeByte((byte) linkData.getValue());
+            sync(operator);
+            return operator;
+        });
     }
     
     @Override

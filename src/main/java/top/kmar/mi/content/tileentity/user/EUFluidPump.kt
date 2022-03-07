@@ -5,12 +5,16 @@ import net.minecraft.util.ITickable
 import net.minecraftforge.common.capabilities.Capability
 import top.kmar.mi.api.capabilities.fluid.FluidCapability.TRANSFER
 import top.kmar.mi.api.capabilities.fluid.IFluid
+import top.kmar.mi.api.dor.ByteDataOperator
+import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.electricity.clock.OrdinaryCounter
 import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.fluid.data.FluidQueue
 import top.kmar.mi.api.fluid.data.TransportReport
+import top.kmar.mi.api.net.IAutoNetwork
 import top.kmar.mi.api.register.others.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
+import top.kmar.mi.api.utils.IOUtil
 import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.container.IndexEnumMap
 import top.kmar.mi.api.utils.data.io.Storage
@@ -19,6 +23,7 @@ import top.kmar.mi.data.info.BiggerVoltage
 import top.kmar.mi.data.info.EnumBiggerVoltage
 import top.kmar.mi.data.info.EnumVoltage
 import top.kmar.mi.data.info.RelativeDirectionEnum
+import java.util.*
 import kotlin.math.min
 
 /**
@@ -26,7 +31,7 @@ import kotlin.math.min
  * @author EmptyDreams
  */
 @AutoTileEntity(FluidPumpBlock.NAME)
-open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
+open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
 
     companion object {
         private val MAY_X = listOf(EnumFacing.NORTH, EnumFacing.SOUTH)
@@ -67,6 +72,8 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
         }
     /** 水泵输出方向 */
     @Storage var side = EnumFacing.NORTH
+    /** 是否正在工作 */
+    var working = false
 
     init {
         setReceiveRange(1, 100, EnumVoltage.C, EnumVoltage.D)
@@ -111,9 +118,12 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
             WorldUtil.removeTickable(this)
             return
         }
-        if (!shrinkEnergy(baseLoss)) return
-        pumpFluidIn()
-        pumpFluidOut()
+        if (shrinkEnergy(baseLoss)) {
+            pumpFluidOut()
+            pumpFluidIn()
+            markDirty()
+        }
+        send()
     }
 
     /** 向外部泵水 */
@@ -218,6 +228,24 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
         val target = pos.offset(facing)
         val te = world.getTileEntity(target)
         return te!!.getCapability(TRANSFER, facing)
+    }
+
+    private val networkRecord = mutableListOf<UUID>()
+
+    private fun send() {
+        IOUtil.sendBlockMessageIfNotUpdate(this, networkRecord, 128) {
+            val operator = ByteDataOperator()
+            operator.writeByte(side.ordinal.toByte())
+            operator.writeByte(panelFacing.ordinal.toByte())
+            operator.writeBoolean(working)
+            operator
+        }
+    }
+
+    override fun receive(reader: IDataReader) {
+        side = EnumFacing.values()[reader.readByte().toInt()]
+        panelFacing = EnumFacing.values()[reader.readByte().toInt()]
+        working = reader.readBoolean()
     }
 
 }

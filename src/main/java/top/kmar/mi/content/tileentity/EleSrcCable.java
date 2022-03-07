@@ -10,11 +10,11 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.capabilities.ele.EleCapability;
 import top.kmar.mi.api.capabilities.ele.EleStateEnum;
 import top.kmar.mi.api.capabilities.ele.IStorage;
 import top.kmar.mi.api.dor.ByteDataOperator;
+import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.electricity.EleWorker;
 import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
 import top.kmar.mi.api.electricity.clock.OverloadCounter;
@@ -29,7 +29,6 @@ import top.kmar.mi.api.utils.StringUtil;
 import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.api.utils.data.io.Storage;
 import top.kmar.mi.api.utils.data.io.instance.ObjectData;
-import top.kmar.mi.api.utils.data.math.Range3D;
 import top.kmar.mi.data.info.BiggerVoltage;
 import top.kmar.mi.data.info.CableCache;
 import top.kmar.mi.data.info.EnumBiggerVoltage;
@@ -454,26 +453,18 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		return super.getUpdateTag();
 	}
 
+	@Override
+	public void receive(@Nonnull IDataReader reader) {
+		linkInfo = reader.readByte();
+		world.markBlockRangeForRenderUpdate(pos, pos);
+	}
+	
 	/**
 	 * 存储已经更新过的玩家列表，因为作者认为单机时长会更多，所以选择1作为默认值。<br>
 	 * 	不同方块不共用此列表且此列表不会离线存储，当玩家离开方块过远或退出游戏等操作导致
 	 * 		方块暂时“删除”后此列表将重置以保证所有玩家可以正常渲染电线方块
 	 */
 	private final List<UUID> players = new ArrayList<>(1);
-	/** 存储网络数据传输的更新范围，只有在范围内的玩家需要进行更新 */
-	private Range3D netRange;
-	
-	@Override
-	public void setPos(BlockPos posIn) {
-		super.setPos(posIn);
-		netRange = new Range3D(pos.getX(), pos.getY(), pos.getZ(), 128);
-	}
-	
-	@Override
-	public void receive(@Nonnull IDataReader reader) {
-		linkInfo = reader.readByte();
-		world.markBlockRangeForRenderUpdate(pos, pos);
-	}
 	
 	/**
 	 * <p>像客户端发送服务端存储的信息
@@ -482,9 +473,11 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	public void send() {
 		if (world.isRemote) return;
 		if (players.size() == world.playerEntities.size()) return;
-		ByteDataOperator operator = new ByteDataOperator(1);
-		operator.writeByte((byte) linkInfo);
-		IOUtil.sendBlockMessageIfNotUpdate(this, operator, players, netRange);
+		IOUtil.sendBlockMessageIfNotUpdate(this, players, 128, () -> {
+			ByteDataOperator operator = new ByteDataOperator(1);
+			operator.writeByte((byte) linkInfo);
+			return operator;
+		});
 	}
 	
 	@Override
