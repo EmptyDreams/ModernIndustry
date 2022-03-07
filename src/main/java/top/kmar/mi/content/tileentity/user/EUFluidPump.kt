@@ -4,6 +4,8 @@ import net.minecraft.client.resources.I18n
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ITickable
 import net.minecraftforge.common.capabilities.Capability
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.capabilities.fluid.FluidCapability.TRANSFER
 import top.kmar.mi.api.capabilities.fluid.IFluid
 import top.kmar.mi.api.dor.ByteDataOperator
@@ -291,6 +293,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     override fun receive(reader: IDataReader) {
         side = EnumFacing.values()[reader.readByte().toInt()]
         panelFacing = EnumFacing.values()[reader.readByte().toInt()]
@@ -299,7 +302,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         world.markBlockRangeForRenderUpdate(pos, pos)
         val value = data.fluid?.unlocalizedName ?: "mi.gui.fluid_pump.null"
         guiText.string = I18n.format("mi.gui.fluid_pump.fluid", I18n.format(value))
-        guiButton.text = if (start) "mi.gui.open" else "mi.gui.close"
+        guiButton.text = I18n.format(if (start) "mi.gui.open" else "mi.gui.close")
     }
 
 }
