@@ -5,10 +5,8 @@ import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.item.Item
 import net.minecraft.item.ItemBlock
 import net.minecraft.item.ItemStack
-import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
@@ -42,8 +40,6 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
 
     }
 
-    private val item: ItemBlock by lazy(PUBLICATION) { ItemBlockExpand(this) }
-
     init {
         defaultState = blockState.baseState
             .withProperty(PROPERTY_SIDE, RelativeDirectionEnum.LEFT)
@@ -65,9 +61,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
 
     override fun createBlockState() = BlockStateContainer(this, PROPERTY_SIDE, PROPERTY_PANEL, WORKING)
 
-    override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
-        return EUFluidPump()
-    }
+    override fun createNewTileEntity(worldIn: World, meta: Int) = EUFluidPump()
 
     override fun isOpaqueCube(state: IBlockState?) = false
 
@@ -82,9 +76,9 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
             .withProperty(WORKING, te.working)
     }
 
-    override fun getBlockItem(): Item {
-        return item
-    }
+    private val item: ItemBlock by lazy(PUBLICATION) { ItemBlockExpand(this) }
+
+    override fun getBlockItem() = item
 
     override fun initTileEntity(
         stack: ItemStack,
