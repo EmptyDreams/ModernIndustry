@@ -15,14 +15,14 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import top.kmar.mi.api.register.block.AutoBlockRegister
-import top.kmar.mi.api.utils.data.enums.RelativeDirectionEnum.LEFT
+import top.kmar.mi.api.utils.data.enums.RelativeDirectionEnum
 import top.kmar.mi.api.utils.getPlacingDirection
 import top.kmar.mi.content.blocks.base.MachineBlock
 import top.kmar.mi.content.items.base.ItemBlockExpand
 import top.kmar.mi.content.tileentity.user.EUFluidPump
-import top.kmar.mi.content.utils.MIProperty.Companion.WORKING
-import top.kmar.mi.content.utils.MIProperty.Companion.createAllDirection
-import top.kmar.mi.content.utils.MIProperty.Companion.createRelativeDirection
+import top.kmar.mi.data.info.MIProperty.Companion.WORKING
+import top.kmar.mi.data.info.MIProperty.Companion.createAllDirection
+import top.kmar.mi.data.info.MIProperty.Companion.createRelativeDirection
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
 @AutoBlockRegister(registryName = FluidPumpBlock.NAME, field = "innerInstance")
@@ -43,7 +43,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
 
     init {
         defaultState = blockState.baseState
-            .withProperty(createRelativeDirection("front"), LEFT)
+            .withProperty(createRelativeDirection("front"), RelativeDirectionEnum.LEFT)
             .withProperty(createAllDirection("panel"), EnumFacing.WEST)
             .withProperty(WORKING, false)
     }

@@ -17,7 +17,7 @@ import top.kmar.mi.content.tileentity.pipes.AnglePipeTileEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static top.kmar.mi.content.utils.MIProperty.getHORIZONTAL;
+import static top.kmar.mi.data.info.MIProperty.getHORIZONTAL;
 
 /**
  * <p>直角拐弯的管道

@@ -12,7 +12,7 @@ import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.api.utils.data.io.Storage;
-import top.kmar.mi.content.utils.MIProperty;
+import top.kmar.mi.data.info.MIProperty;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.blocks.CraftList;
 import top.kmar.mi.data.info.BiggerVoltage;

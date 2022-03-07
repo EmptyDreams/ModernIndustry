@@ -24,8 +24,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static net.minecraft.util.EnumFacing.NORTH;
-import static top.kmar.mi.content.utils.MIProperty.getHORIZONTAL;
-import static top.kmar.mi.content.utils.MIProperty.getWORKING;
+import static top.kmar.mi.data.info.MIProperty.getHORIZONTAL;
+import static top.kmar.mi.data.info.MIProperty.getWORKING;
 
 /**
  * 高温火炉的Block

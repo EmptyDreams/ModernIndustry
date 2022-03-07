@@ -20,7 +20,7 @@ import top.kmar.mi.api.utils.container.BooleanWrapper;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-import static top.kmar.mi.content.utils.MIProperty.getHORIZONTAL;
+import static top.kmar.mi.data.info.MIProperty.getHORIZONTAL;
 
 /**
  * MI中所有耗电机器的父类

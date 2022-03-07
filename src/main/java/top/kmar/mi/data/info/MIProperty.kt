@@ -1,4 +1,4 @@
-package top.kmar.mi.content.utils
+package top.kmar.mi.data.info
 
 import net.minecraft.block.properties.PropertyBool
 import net.minecraft.block.properties.PropertyDirection

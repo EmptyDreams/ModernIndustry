@@ -130,7 +130,37 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
     }
 
     /** 计算出水口在面板的哪一个方向 */
-    fun calculateFront(): RelativeDirectionEnum = RelativeDirectionEnum.LEFT
+    fun calculateFront(): RelativeDirectionEnum {
+        return when (panelFacing.axis) {
+            EnumFacing.Axis.X -> {
+                val result = when (front) {
+                    EnumFacing.NORTH -> RelativeDirectionEnum.LEFT
+                    EnumFacing.SOUTH -> RelativeDirectionEnum.RIGHT
+                    else -> throw AssertionError("内部错误")
+                }
+                if (panelFacing == EnumFacing.WEST) result else result.opposite()
+            }
+            EnumFacing.Axis.Y -> {
+                val result = when (front) {
+                    EnumFacing.SOUTH -> RelativeDirectionEnum.UP
+                    EnumFacing.NORTH -> RelativeDirectionEnum.DOWN
+                    EnumFacing.EAST -> RelativeDirectionEnum.LEFT
+                    EnumFacing.WEST -> RelativeDirectionEnum.RIGHT
+                    else -> throw AssertionError("内部错误")
+                }
+                if (panelFacing == EnumFacing.DOWN) result else result.opposite()
+            }
+            EnumFacing.Axis.Z -> {
+                val result = when (front) {
+                    EnumFacing.WEST -> RelativeDirectionEnum.LEFT
+                    EnumFacing.EAST -> RelativeDirectionEnum.RIGHT
+                    else -> throw AssertionError("内部错误")
+                }
+                if (panelFacing == EnumFacing.SOUTH) result else result.opposite()
+            }
+            else -> throw AssertionError()
+        }
+    }
 
     override fun canLink(facing: EnumFacing): Boolean {
         return facing.axis !== front.axis && super.canLink(facing)

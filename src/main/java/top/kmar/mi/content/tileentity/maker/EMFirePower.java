@@ -21,7 +21,7 @@ import top.kmar.mi.api.craftguide.sol.ItemSet;
 import top.kmar.mi.api.electricity.clock.NonCounter;
 import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.register.others.AutoTileEntity;
-import top.kmar.mi.content.utils.MIProperty;
+import top.kmar.mi.data.info.MIProperty;
 
 /**
  * 火力发电机的TE

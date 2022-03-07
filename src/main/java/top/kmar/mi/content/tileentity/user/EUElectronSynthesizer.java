@@ -23,7 +23,7 @@ import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
 import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.gui.component.MSlot.SlotHandler;
 import top.kmar.mi.api.register.others.AutoTileEntity;
-import top.kmar.mi.content.utils.MIProperty;
+import top.kmar.mi.data.info.MIProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

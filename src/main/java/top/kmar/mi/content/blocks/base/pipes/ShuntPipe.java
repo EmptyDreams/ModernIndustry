@@ -15,7 +15,7 @@ import top.kmar.mi.content.tileentity.pipes.ShuntPipeTileEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static top.kmar.mi.content.utils.MIProperty.getAXIS;
+import static top.kmar.mi.data.info.MIProperty.getAXIS;
 import static top.kmar.mi.content.blocks.base.pipes.StraightPipe.link;
 
 /**

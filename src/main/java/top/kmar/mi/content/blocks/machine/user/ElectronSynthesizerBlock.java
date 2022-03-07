@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 
-import static top.kmar.mi.content.utils.MIProperty.getWORKING;
+import static top.kmar.mi.data.info.MIProperty.getWORKING;
 
 /**
  * @author EmptyDreams
