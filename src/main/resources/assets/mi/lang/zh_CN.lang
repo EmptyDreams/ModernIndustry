@@ -99,6 +99,9 @@ item.mi.gold_plate.name=金板
 #属性
 mi.property.poor_quality.name=劣质
 #GUI
+mi.gui.open=开
+mi.gui.close=关
 mi.gui.fluid_pump.energy=能量存储
 mi.gui.fluid_pump.consume=瞬时能量消耗
 mi.gui.fluid_pump.fluid=流体存储（%s）
+mi.gui.fluid_pump.null=空

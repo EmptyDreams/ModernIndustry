@@ -12,6 +12,7 @@ import top.kmar.mi.api.electricity.clock.OrdinaryCounter
 import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.fluid.data.FluidQueue
 import top.kmar.mi.api.fluid.data.TransportReport
+import top.kmar.mi.api.gui.component.ButtonComponent
 import top.kmar.mi.api.gui.component.CommonProgress
 import top.kmar.mi.api.gui.component.CommonProgress.Front.RIGHT
 import top.kmar.mi.api.gui.component.CommonProgress.ProgressStyle.DOWN
@@ -80,8 +81,11 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         }
     /** 水泵输出方向 */
     @Storage var side = EnumFacing.NORTH
+    /** 是否工作 */
+    @Storage var start = false
     /** 是否正在工作 */
     var working = false
+        get() = field && start
 
     val guiEnergyText = StringComponent("mi.gui.fluid_pump.energy")
     val guiEnergy = CommonProgress(STRIPE, RIGHT)
@@ -89,6 +93,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     val guiConsume = CommonProgress(STRIPE, RIGHT)
     val guiText = StringComponent()
     val guiFluid = CommonProgress(STRIPE, RIGHT)
+    val guiButton = ButtonComponent(19, 30)
 
     init {
         setReceiveRange(1, 100, EnumVoltage.C, EnumVoltage.D)
@@ -100,6 +105,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         guiEnergy.stringShower = DOWN
         guiConsume.stringShower = DOWN
         guiFluid.stringShower = DOWN
+        guiButton.setAction { _, _ -> start = !start }
     }
 
     override fun isReAllowable(facing: EnumFacing) = facing.axis !== side.axis
@@ -137,7 +143,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
             return
         }
         val old = nowEnergy
-        if (shrinkEnergy(baseLoss)) {
+        if (start && shrinkEnergy(baseLoss)) {
             pumpFluidOut()
             pumpFluidIn()
             working = true
@@ -283,8 +289,9 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         panelFacing = EnumFacing.values()[reader.readByte().toInt()]
         working = reader.readBoolean()
         world.markBlockRangeForRenderUpdate(pos, pos)
-        val value = data.fluid?.unlocalizedName ?: "null"
+        val value = data.fluid?.unlocalizedName ?: "mi.gui.fluid_pump.null"
         guiText.string = I18n.format("mi.gui.fluid_pump.fluid", I18n.format(value))
+        guiButton.text = if (start) "mi.gui.open" else "mi.gui.close"
     }
 
 }

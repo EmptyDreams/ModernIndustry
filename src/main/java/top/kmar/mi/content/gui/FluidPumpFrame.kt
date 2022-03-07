@@ -56,7 +56,7 @@ class FluidPumpFrame {
                         createGroup(pump.guiConsumeText, pump.guiConsume),
                         createGroup(pump.guiText, pump.guiFluid)
                     )
-                    align.add(group)
+                    align.adds(group, pump.guiButton)
                     return frame.add(align)
                 }
 
