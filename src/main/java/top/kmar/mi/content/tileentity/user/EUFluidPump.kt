@@ -105,7 +105,12 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         guiEnergy.stringShower = DOWN
         guiConsume.stringShower = DOWN
         guiFluid.stringShower = DOWN
-        guiButton.setAction { _, _ -> start = !start }
+        guiButton.setAction { _, _ ->
+            if (!world.isRemote) {
+                start = !start
+                send(true)
+            }
+        }
     }
 
     override fun isReAllowable(facing: EnumFacing) = facing.axis !== side.axis
