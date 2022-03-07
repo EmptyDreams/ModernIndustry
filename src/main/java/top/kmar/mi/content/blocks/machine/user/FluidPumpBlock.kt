@@ -79,6 +79,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
         if (te !is EUFluidPump) return super.getActualState(state, worldIn, pos)
         return defaultState.withProperty(PROPERTY_SIDE, te.calculateFront())
             .withProperty(PROPERTY_PANEL, te.panelFacing)
+            .withProperty(WORKING, te.working)
     }
 
     override fun getBlockItem(): Item {

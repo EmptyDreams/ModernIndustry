@@ -34,6 +34,7 @@ import kotlin.math.min
 open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
 
     companion object {
+
         private val MAY_X = listOf(EnumFacing.NORTH, EnumFacing.SOUTH)
         private val MAY_Y = listOf(*EnumFacing.HORIZONTALS)
         private val MAY_Z = listOf(EnumFacing.WEST, EnumFacing.EAST)
@@ -51,6 +52,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
             EnumFacing.Axis.Y -> MAY_Y
             EnumFacing.Axis.Z -> MAY_Z
         }
+
     }
 
     /** 最大存储容量 */
@@ -121,8 +123,9 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         if (shrinkEnergy(baseLoss)) {
             pumpFluidOut()
             pumpFluidIn()
+            working = true
             markDirty()
-        }
+        } else working = false
         send()
     }
 
@@ -231,8 +234,11 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     }
 
     private val networkRecord = mutableListOf<UUID>()
+    private var oldWorking = working
 
     private fun send() {
+        if (oldWorking != working) networkRecord.clear()
+        oldWorking = working
         IOUtil.sendBlockMessageIfNotUpdate(this, networkRecord, 128) {
             val operator = ByteDataOperator()
             operator.writeByte(side.ordinal.toByte())
@@ -246,6 +252,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         side = EnumFacing.values()[reader.readByte().toInt()]
         panelFacing = EnumFacing.values()[reader.readByte().toInt()]
         working = reader.readBoolean()
+        world.markBlockRangeForRenderUpdate(pos, pos)
     }
 
 }
