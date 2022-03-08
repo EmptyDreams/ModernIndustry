@@ -5,7 +5,7 @@ package top.kmar.mi.api.utils
  * @param cycle 任务周期
  * @author EmptyDreams
  */
-class TickClock(val cycle: Int) {
+class TickClock(var cycle: Int) {
 
     private var counter = 0
 

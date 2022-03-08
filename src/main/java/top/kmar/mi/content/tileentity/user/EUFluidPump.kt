@@ -25,6 +25,7 @@ import top.kmar.mi.api.net.IAutoNetwork
 import top.kmar.mi.api.register.others.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
 import top.kmar.mi.api.utils.IOUtil
+import top.kmar.mi.api.utils.TickClock
 import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.container.IndexEnumMap
 import top.kmar.mi.api.utils.data.io.Storage
@@ -166,12 +167,14 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     ): FluidQueue = FluidQueue.empty()
 
     private var oldState = working
+    private val clock = TickClock(15)
 
     override fun update() {
         if (world.isRemote) {
             WorldUtil.removeTickable(this)
             return
         }
+        if (clock.notContinue()) return
         val old = nowEnergy
         if (start && shrinkEnergy(baseLoss)) {
             pumpFluidOut()
