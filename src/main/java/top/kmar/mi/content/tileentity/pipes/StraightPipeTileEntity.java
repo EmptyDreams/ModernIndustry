@@ -45,15 +45,15 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	
 	@Override
 	public boolean canLinkFluid(EnumFacing facing) {
-		return hasAperture(facing) || linkData.isInit();
+		return hasAperture(facing) || getLinkData().isInit();
 	}
 	
 	@Override
 	public boolean linkFluid(EnumFacing facing) {
 		if (isLinked(facing)) return true;
 		if (!canLinkFluid(facing)) return false;
-		if (linkData.isInit()) setFacing(facing);
-		linkData.set(facing, true);
+		if (getLinkData().isInit()) setFacing(facing);
+		getLinkData().set(facing, true);
 		updateBlockState(false);
 		return true;
 	}

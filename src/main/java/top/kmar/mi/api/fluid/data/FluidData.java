@@ -15,6 +15,7 @@ import java.util.Objects;
 public class FluidData {
 	
 	/** 获取一个空的对象 */
+	@Nonnull
 	public static FluidData empty() {
 		return new FluidData(null, 0);
 	}
