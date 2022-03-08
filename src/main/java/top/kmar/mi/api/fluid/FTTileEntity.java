@@ -2,7 +2,6 @@ package top.kmar.mi.api.fluid;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -150,7 +149,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
                 amount -= fluidStack.amount;
                 plus = new FluidData(fluidStack);
             } else if (amount >= 1000 && thatBlock instanceof BlockLiquid) {
-                if (thatBlock instanceof BlockStaticLiquid) {
+                if (world.getBlockState(value).getValue(BlockLiquid.LEVEL) == 0) {
                     amount -= 1000;
                     if (!simulate) world.setBlockToAir(value);
                     Fluid fluidType = thatBlock == Blocks.LAVA ? FluidRegistry.LAVA : FluidRegistry.WATER;
