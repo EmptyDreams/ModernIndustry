@@ -111,7 +111,7 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		return hasCapability(EleCapability.ENERGY, facing);
 	}
 	/** 连接指定方块 */
-	public boolean link(BlockPos pos) {
+	public boolean linkEle(BlockPos pos) {
 		if (linkedBlocks.contains(pos)) return true;
 		return linkedBlocks.add(pos);
 	}
@@ -286,7 +286,7 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		}
 		@Override
 		public boolean link(BlockPos pos) {
-			return EleTileEntity.this.link(pos);
+			return EleTileEntity.this.linkEle(pos);
 		}
 		@Override
 		public boolean unLink(BlockPos pos) { return EleTileEntity.this.unLink(pos); }

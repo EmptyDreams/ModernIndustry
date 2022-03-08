@@ -97,7 +97,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
         val result = EUFluidPump()
         result.panelFacing = player.getPlacingDirection(pos).opposite
         if (result.panelFacing.axis === EnumFacing.Axis.Y) {
-            result.side = EUFluidPump.may(player.horizontalFacing)[0]
+            result.side = EUFluidPump.maySide(player.horizontalFacing)[0]
         }
         putBlock(world, pos, defaultState, result, player, stack)
         return true

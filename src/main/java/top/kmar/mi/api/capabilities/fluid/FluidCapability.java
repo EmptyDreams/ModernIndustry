@@ -53,7 +53,7 @@ public class FluidCapability {
                     }
                     
                     @Override
-                    public boolean link(EnumFacing facing) {
+                    public boolean linkFluid(EnumFacing facing) {
                         return false;
                     }
                     

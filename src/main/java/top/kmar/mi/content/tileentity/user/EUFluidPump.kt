@@ -3,6 +3,7 @@ package top.kmar.mi.content.tileentity.user
 import net.minecraft.client.resources.I18n
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ITickable
+import net.minecraft.util.math.BlockPos
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
@@ -44,22 +45,37 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
 
     companion object {
 
-        private val MAY_X = listOf(EnumFacing.NORTH, EnumFacing.SOUTH)
-        private val MAY_Y = listOf(*EnumFacing.HORIZONTALS)
-        private val MAY_Z = listOf(EnumFacing.WEST, EnumFacing.EAST)
+        private val MAY_SIDE_X = listOf(EnumFacing.NORTH, EnumFacing.SOUTH)
+        private val MAY_SIDE_Y = listOf(*EnumFacing.HORIZONTALS)
+        private val MAY_SIDE_Z = listOf(EnumFacing.WEST, EnumFacing.EAST)
+
+        private val MAY_PANEL_X =
+            listOf(EnumFacing.NORTH, EnumFacing.UP, EnumFacing.SOUTH, EnumFacing.DOWN)
+        private val MAY_PANEL_Z =
+            listOf(EnumFacing.EAST, EnumFacing.DOWN, EnumFacing.WEST, EnumFacing.UP)
 
         /** 判断指定的面板方向与管道方向是否匹配 */
-        fun match(panel: EnumFacing, side: EnumFacing) = may(panel).contains(side)
+        fun match(panel: EnumFacing, side: EnumFacing) = maySide(panel).contains(side)
 
         /**
          * 获取指定面板朝向下出水口管道可能在哪些方向
          * @return 一个不可修改的列表
          */
         @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
-        fun may(panel: EnumFacing) = when (panel.axis) {
-            EnumFacing.Axis.X -> MAY_X
-            EnumFacing.Axis.Y -> MAY_Y
-            EnumFacing.Axis.Z -> MAY_Z
+        fun maySide(panel: EnumFacing) = when (panel.axis) {
+            EnumFacing.Axis.X -> MAY_SIDE_X
+            EnumFacing.Axis.Y -> MAY_SIDE_Y
+            EnumFacing.Axis.Z -> MAY_SIDE_Z
+        }
+
+        /**
+         * 获取指定出/入水口方向下面板可能在哪些方向
+         * @return 一个不可修改的列表
+         */
+        fun mayPanel(side: EnumFacing) = when (side.axis) {
+            EnumFacing.Axis.X -> MAY_PANEL_X
+            EnumFacing.Axis.Z -> MAY_PANEL_Z
+            else -> throw AssertionError()
         }
 
     }
@@ -78,11 +94,16 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     @Storage var panelFacing = EnumFacing.WEST
         set(value) {
             field = value
-            val list = may(panelFacing)
+            val list = maySide(value)
             if (!list.contains(side)) side = list[0]
         }
     /** 水泵输出方向 */
     @Storage var side = EnumFacing.NORTH
+        set(value) {
+            field = value
+            val list = mayPanel(value)
+            if (!list.contains(panelFacing)) panelFacing = list[0]
+        }
     /** 是否工作 */
     @Storage var start = false
     /** 是否正在工作 */
@@ -159,7 +180,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
             markDirty()
         } else working = false
         updateGUI(old - nowEnergy)
-        send(working != oldState)
+        send(marked || working != oldState)
         oldState = working
     }
 
@@ -241,16 +262,15 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         }
     }
 
-    override fun canLinkEle(facing: EnumFacing) =
-        linked.isInit || (facing.axis !== side.axis && facing !== panelFacing)
+    override fun canLinkEle(facing: EnumFacing) = facing.axis !== side.axis && facing !== panelFacing
 
     override fun canLinkFluid(facing: EnumFacing) =
         (facing.axis !== panelFacing.axis && super.canLinkEle(facing)) || linked.isInit
 
     override fun getFront() = panelFacing
 
-    override fun link(facing: EnumFacing): Boolean {
-        if (!canLinkEle(facing)) return false
+    override fun linkFluid(facing: EnumFacing): Boolean {
+        if (!canLinkFluid(facing)) return false
         linked.set(facing, true)
         if (facing.axis === panelFacing.axis) {
             for (value in EnumFacing.HORIZONTALS) {
@@ -260,6 +280,13 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
                 }
             }
         }
+        return true
+    }
+
+    override fun linkEle(pos: BlockPos): Boolean {
+        val facing = WorldUtil.whatFacing(this.pos, pos)
+        if (!canLinkEle(facing)) return false
+        linked.set(facing, true)
         return true
     }
 
@@ -279,7 +306,13 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         return te!!.getCapability(TRANSFER, facing)
     }
 
+    override fun markDirty() {
+        super.markDirty()
+        marked = true
+    }
+
     private val networkRecord = mutableListOf<UUID>()
+    private var marked = false
 
     private fun send(refresh: Boolean = false) {
         if (refresh) networkRecord.clear()

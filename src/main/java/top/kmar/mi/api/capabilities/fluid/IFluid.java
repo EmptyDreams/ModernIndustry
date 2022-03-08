@@ -51,6 +51,7 @@ public interface IFluid {
 	FluidQueue extract(int amount, EnumFacing facing, boolean simulate, TransportReport report);
 	
 	/** 判断是否可以连接指定方向 */
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	boolean canLinkFluid(EnumFacing facing);
 	
 	/**
@@ -58,7 +59,7 @@ public interface IFluid {
 	 * @param facing 方向
 	 * @return 连接是否成功，若该方向原本已经有连接则返回true
 	 */
-	boolean link(EnumFacing facing);
+	boolean linkFluid(EnumFacing facing);
 	
 	/** 断开与指定方向上的设备的连接 */
 	void unlink(EnumFacing facing);

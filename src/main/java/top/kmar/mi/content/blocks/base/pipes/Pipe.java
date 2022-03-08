@@ -61,8 +61,8 @@ abstract public class Pipe extends TEBlockBase {
 		if (other == null) return false;
 		IFluid fluid = other.getCapability(FluidCapability.TRANSFER, null);
 		if (fluid == null) return false;
-		if (now.link(facing)) {
-			if (fluid.link(facing.getOpposite())) return true;
+		if (now.linkFluid(facing)) {
+			if (fluid.linkFluid(facing.getOpposite())) return true;
 			now.unlink(facing);
 		}
 		return false;
