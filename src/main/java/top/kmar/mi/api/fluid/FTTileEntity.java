@@ -2,6 +2,7 @@ package top.kmar.mi.api.fluid;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -140,7 +141,7 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
             if (record.contains(value)) continue;
             record.add(value);
             Block thatBlock = world.getBlockState(value).getBlock();
-            FluidData plus;
+            FluidData plus = null;
             if (thatBlock instanceof IFluidBlock) {
                 IFluidBlock thatFluid = (IFluidBlock) thatBlock;
                 FluidStack fluidStack = thatFluid.drain(world, value, false);
@@ -148,18 +149,19 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
                 if (!simulate) thatFluid.drain(world, value, true);
                 amount -= fluidStack.amount;
                 plus = new FluidData(fluidStack);
-            } else if (amount >= 1000 && thatBlock == Blocks.LAVA || thatBlock == Blocks.WATER) {
-                float height = BlockLiquid.getBlockLiquidHeight(
-                        world.getBlockState(value), world, value);
-                if (Math.abs(height - 1) > 1e-6) continue;
-                amount -= 1000;
-                if (!simulate) world.setBlockToAir(value);
-                Fluid fluidType = thatBlock == Blocks.LAVA ? FluidRegistry.LAVA : FluidRegistry.WATER;
-                plus = new FluidData(fluidType, 1000);
+            } else if (amount >= 1000 && thatBlock instanceof BlockLiquid) {
+                if (thatBlock instanceof BlockStaticLiquid) {
+                    amount -= 1000;
+                    if (!simulate) world.setBlockToAir(value);
+                    Fluid fluidType = thatBlock == Blocks.LAVA ? FluidRegistry.LAVA : FluidRegistry.WATER;
+                    plus = new FluidData(fluidType, 1000);
+                }
             } else continue;
-            report.insert(facing.getOpposite(), plus);
-            result.pushTail(plus);
-            world.markBlockRangeForRenderUpdate(value, value);
+            if (plus != null) {
+                report.insert(facing.getOpposite(), plus);
+                result.pushTail(plus);
+                world.markBlockRangeForRenderUpdate(value, value);
+            }
             for (EnumFacing enumFacing : PUSH_EACH_PRIORITY) stack.push(value.offset(enumFacing));
         }
         return result;
