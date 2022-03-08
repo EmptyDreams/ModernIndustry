@@ -30,7 +30,7 @@ import java.util.*
 import javax.annotation.Nonnull
 
 /**
- *
+ * 流体管道的TileEntity的父类
  * @author EmptyDreams
  */
 abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable {
