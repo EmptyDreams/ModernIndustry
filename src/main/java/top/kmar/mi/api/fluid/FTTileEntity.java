@@ -1,6 +1,9 @@
 package top.kmar.mi.api.fluid;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -8,6 +11,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import top.kmar.mi.api.capabilities.fluid.FluidCapability;
@@ -30,7 +37,10 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 import java.util.UUID;
 
 import static java.lang.Math.min;
@@ -108,14 +118,50 @@ public abstract class FTTileEntity extends BaseTileEntity implements IAutoNetwor
             if (copy == 0) break;
             if (value == facing) continue;
             IFluid fluid = getFluidDirect(value);
-            if (fluid == null) continue;
-            FluidQueue queue = fluid.extract(
-                    copy, value.getOpposite(), simulate, report);
+            FluidQueue queue = fluid == null ?
+                    pumpFromWorld(amount, facing, simulate, report) :
+                    fluid.extract(copy, value.getOpposite(), simulate, report);
             copy -= result.pushTail(queue);
         }
         FluidData value = fluidData.copy(min(amount, fluidData.getAmount()));
         fluidData = result.popTail(value.getAmount());
         result.pushHead(value);
+        return result;
+    }
+    
+    @Nonnull
+    protected FluidQueue pumpFromWorld(int amount, EnumFacing facing, boolean simulate, TransportReport report) {
+        Stack<BlockPos> stack = new Stack<>();
+        Set<BlockPos> record = new HashSet<>();
+        stack.push(pos.offset(facing.getOpposite()));
+        FluidQueue result = FluidQueue.empty();
+        while (!stack.empty() && amount != 0) {
+            BlockPos value = stack.pop();
+            if (record.contains(value)) continue;
+            record.add(value);
+            Block thatBlock = world.getBlockState(value).getBlock();
+            FluidData plus;
+            if (thatBlock instanceof IFluidBlock) {
+                IFluidBlock thatFluid = (IFluidBlock) thatBlock;
+                FluidStack fluidStack = thatFluid.drain(world, value, false);
+                if (fluidStack == null || fluidStack.amount == 0 || amount < fluidStack.amount) continue;
+                if (!simulate) thatFluid.drain(world, value, true);
+                amount -= fluidStack.amount;
+                plus = new FluidData(fluidStack);
+            } else if (amount >= 1000 && thatBlock == Blocks.LAVA || thatBlock == Blocks.WATER) {
+                float height = BlockLiquid.getBlockLiquidHeight(
+                        world.getBlockState(value), world, value);
+                if (Math.abs(height - 1) > 1e-6) continue;
+                amount -= 1000;
+                if (!simulate) world.setBlockToAir(value);
+                Fluid fluidType = thatBlock == Blocks.LAVA ? FluidRegistry.LAVA : FluidRegistry.WATER;
+                plus = new FluidData(fluidType, 1000);
+            } else continue;
+            report.insert(facing.getOpposite(), plus);
+            result.pushTail(plus);
+            world.markBlockRangeForRenderUpdate(value, value);
+            for (EnumFacing enumFacing : PUSH_EACH_PRIORITY) stack.push(value.offset(enumFacing));
+        }
         return result;
     }
     
