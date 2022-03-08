@@ -1,5 +1,6 @@
 package top.kmar.mi.content.blocks.machine.user
 
+import net.minecraft.block.Block
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
@@ -12,7 +13,10 @@ import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
+import top.kmar.mi.api.capabilities.fluid.FluidCapability
+import top.kmar.mi.api.capabilities.fluid.IFluid
 import top.kmar.mi.api.register.block.AutoBlockRegister
+import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.getPlacingDirection
 import top.kmar.mi.content.blocks.CommonUtil
 import top.kmar.mi.content.blocks.base.MachineBlock
@@ -68,6 +72,35 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
     override fun isOpaqueCube(state: IBlockState?) = false
 
     override fun isFullCube(state: IBlockState?) = false
+
+    override fun neighborChanged(
+        state: IBlockState, world: World, pos: BlockPos,
+        blockIn: Block, fromPos: BlockPos
+    ) {
+        @Suppress("DEPRECATION")
+        super.neighborChanged(state, world, pos, blockIn, fromPos)
+        neighborChangedHelper(world, pos, fromPos)
+    }
+
+    protected fun neighborChangedHelper(world: World, pos: BlockPos, fromPos: BlockPos) {
+        val facing = WorldUtil.whatFacing(pos, fromPos)
+        val pump = world.getTileEntity(pos) as EUFluidPump
+        val fromTE = world.getTileEntity(fromPos)
+        if (fromTE === null) pump.unlink(facing)
+        else {
+            val fluid = fromTE.getCapability(FluidCapability.TRANSFER, null) ?: return
+            linkBoth(pump, fluid, facing)
+            fromTE.markDirty()
+        }
+        pump.markDirty()
+    }
+
+    protected fun linkBoth(pump: EUFluidPump, from: IFluid, facing: EnumFacing) {
+        if (pump.isLinked(facing)) return
+        if (pump.linkFluid(facing)) {
+            if (!from.linkFluid(facing.opposite)) pump.unlink(facing)
+        }
+    }
 
     override fun getActualState(state: IBlockState, worldIn: IBlockAccess, pos: BlockPos): IBlockState {
         val te = worldIn.getTileEntity(pos)
