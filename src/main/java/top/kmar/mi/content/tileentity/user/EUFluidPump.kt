@@ -167,7 +167,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     ): FluidQueue = FluidQueue.empty()
 
     private var oldState = working
-    private val clock = TickClock(15)
+    private val clock = TickClock(20)
 
     override fun update() {
         if (world.isRemote) {

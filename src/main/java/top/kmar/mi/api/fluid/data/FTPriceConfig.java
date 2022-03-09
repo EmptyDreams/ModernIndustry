@@ -1,7 +1,6 @@
 package top.kmar.mi.api.fluid.data;
 
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.Fluid;
 
 /**
  * 存储流体运输成本
@@ -15,7 +14,7 @@ public final class FTPriceConfig {
      * @param facing 流体运送方向
      */
     public static int getPrice(FluidData data, EnumFacing facing) {
-        return 0;
+        return 1;
     }
     
 }
