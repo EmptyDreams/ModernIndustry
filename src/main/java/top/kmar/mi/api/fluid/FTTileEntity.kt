@@ -143,6 +143,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
             record.add(dist)
             val value = queue.popTail(Int.MAX_VALUE)
             val block = value.fluid?.block
+            var base = 1.0
             when (judge(block, dist)) {
                 JudgeResultEnum.EQUALS -> {}
                 JudgeResultEnum.COVER -> {
@@ -153,7 +154,8 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
                         if (place.isSuccess) place.result.count else 0
                     }
                     if (amount == 0) continue
-                    report.insert(facing, value.copy(amount))
+
+                    report.insert(facing, value.copy((amount * base).toInt()))
                     value.minusAmount(amount)
                     result += amount
                 }
@@ -162,6 +164,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
                     continue
                 }
             }
+            base += 0.1
             queue.pushTail(value)
             stack.push(dist.offset(EnumFacing.UP))
             val sorted = Int2ObjectRBTreeMap<BlockPos>()
@@ -190,6 +193,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
         val record = HashSet<BlockPos>()
         stack.push(pos.offset(facing.opposite))
         val result = FluidQueue.empty()
+        var base = 1.0
         while (!stack.empty() && amountCopy != 0) {
             val value = stack.pop()
             if (record.contains(value)) continue
@@ -212,10 +216,12 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
                 }
             } else continue
             if (plus != null) {
-                report.insert(facing, plus)
                 result.pushTail(plus)
+                plus.amount = (plus.amount * base).toInt()
+                report.insert(facing, plus)
                 world.markBlockRangeForRenderUpdate(value, value)
             }
+            base += 0.1
             for (enumFacing in PUSH_EACH_PRIORITY) stack.push(value.offset(enumFacing))
         }
         return result
