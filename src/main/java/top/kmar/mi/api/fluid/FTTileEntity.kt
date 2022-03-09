@@ -6,6 +6,7 @@ import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.EnumFacing.HORIZONTALS
 import net.minecraft.util.ITickable
 import net.minecraft.util.math.BlockPos
 import net.minecraftforge.common.capabilities.Capability
@@ -59,18 +60,18 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
         fun randomHorizontals() = HOR_LIST[random().nextInt(HOR_LIST.size)]
 
         init {
-            val record = BooleanArray(4) {false}
-            val array = Array(4) {EnumFacing.UP}
-            for (i in 0 until EnumFacing.HORIZONTALS.size) dfs(0, i, record, array)
+            val record = BooleanArray(HORIZONTALS.size) {false}
+            val array = Array(HORIZONTALS.size) {EnumFacing.UP}
+            for (i in HORIZONTALS.indices) dfs(0, i, record, array)
         }
 
         private fun dfs(deep: Int, index: Int, record: BooleanArray, array: Array<EnumFacing>) {
             if (record[index]) return
-            array[deep] = EnumFacing.HORIZONTALS[index]
+            array[deep] = HORIZONTALS[index]
             if (deep == 3) HOR_LIST.add(array.clone())
             else {
                 record[index] = true
-                for (i in 0 until EnumFacing.HORIZONTALS.size) {
+                for (i in HORIZONTALS.indices) {
                     if (i != index) dfs(deep + 1, i, record, array)
                 }
                 record[index] = false
