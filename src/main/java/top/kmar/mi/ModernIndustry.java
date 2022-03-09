@@ -11,16 +11,17 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
-import top.kmar.mi.api.utils.ItemUtil;
-import top.kmar.mi.api.utils.MISysInfo;
-import top.kmar.mi.proxy.CommonProxy;
 import top.kmar.mi.api.register.others.AutoManager;
+import top.kmar.mi.api.utils.MISysInfo;
 import top.kmar.mi.content.blocks.common.CommonBlocks;
 import top.kmar.mi.content.blocks.machine.WireManager;
 import top.kmar.mi.content.items.common.CommonItems;
 import top.kmar.mi.content.items.tools.ToolRegister;
+import top.kmar.mi.proxy.CommonProxy;
 
 import javax.annotation.Nonnull;
+
+import static top.kmar.mi.api.utils.ExpandFunctionKt.newStack;
 
 @Mod(modid = ModernIndustry.MODID, name = ModernIndustry.NAME, version = ModernIndustry.VERSION)
 @AutoManager(item = true)
@@ -48,7 +49,7 @@ public final class ModernIndustry {
 		@Override
 		@Nonnull
 		public ItemStack getTabIconItem() {
-			return ItemUtil.newStack(CommonItems.ITEM_COPPER);
+			return newStack(CommonItems.ITEM_COPPER, 1);
 		}
 	};
 	/** 物品栏-工具 */
@@ -56,7 +57,7 @@ public final class ModernIndustry {
 		@Override
 		@Nonnull
 		public ItemStack getTabIconItem() {
-			return ItemUtil.newStack(ToolRegister.ITEM_COPPER_PICKAXE);
+			return newStack(ToolRegister.ITEM_COPPER_PICKAXE, 1);
 		}
 	};
 	/** 物品栏-方块 */
@@ -64,7 +65,7 @@ public final class ModernIndustry {
 		@Override
 		@Nonnull
 		public ItemStack getTabIconItem() {
-			return ItemUtil.newStack(CommonBlocks.ORE_COPPER.getBlockItem());
+			return newStack(CommonBlocks.ORE_COPPER.getBlockItem(), 1);
 		}
 	};
 	/** 物品栏-线缆 */
@@ -72,7 +73,7 @@ public final class ModernIndustry {
 		@Override
 		@Nonnull
 		public ItemStack getTabIconItem() {
-			return ItemUtil.newStack(WireManager.COPPER.getBlockItem());
+			return newStack(WireManager.COPPER.getBlockItem(), 1);
 		}
 	};
 	//内部物品，用于加载图片
@@ -81,7 +82,7 @@ public final class ModernIndustry {
 	public static final CreativeTabs TAB_DEBUG = new CreativeTabs(MODID + "_debug") {
 		@Override
 		@Nonnull
-		public ItemStack getTabIconItem() { return ItemUtil.newStack(DEBUG); }
+		public ItemStack getTabIconItem() { return newStack(DEBUG, 1); }
 	};
 	
 	@EventHandler

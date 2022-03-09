@@ -21,7 +21,7 @@ import top.kmar.mi.content.blocks.machine.user.PulverizerBlock;
 
 import static net.minecraft.init.Blocks.*;
 import static net.minecraft.init.Items.COAL;
-import static top.kmar.mi.api.utils.ItemUtil.newStack;
+import static top.kmar.mi.api.utils.ExpandFunctionKt.newStack;
 import static top.kmar.mi.content.blocks.common.OreBlock.getInstance;
 import static top.kmar.mi.content.items.common.CommonItems.*;
 
@@ -64,8 +64,10 @@ public final class CraftList {
 	@SubscribeEvent
 	public static void registryCraft(CraftGuideRegistryEvent event) {
 		FIRE_POWER.registry(
-				createOneCraft(new ItemStack(COAL), newStack(ITEM_COAL_BURN_POWDER)),
-				createOneCraft(new ItemStack(COAL, 1, 1), newStack(ITEM_COAL_BURN_POWDER))
+				createOneCraft(new ItemStack(COAL),
+						newStack(ITEM_COAL_BURN_POWDER, 1)),
+				createOneCraft(new ItemStack(COAL, 1, 1),
+						newStack(ITEM_COAL_BURN_POWDER, 1))
 		);
 		PULVERIZER.registry(
 				createOneCraft(COAL_ORE, ITEM_COAL_CRUSH),

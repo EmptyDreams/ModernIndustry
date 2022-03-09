@@ -42,6 +42,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import static top.kmar.mi.api.utils.ExpandFunctionKt.whatFacing;
+
 /**
  * 默认电线
  * @author EmptyDreams
@@ -174,7 +176,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	 * @return 是否连接成功
 	 */
 	public boolean linkMachine(TileEntity target) {
-		EnumFacing facing = WorldUtil.whatFacing(target.getPos(), pos);
+		EnumFacing facing = whatFacing(target.getPos(), pos);
 		IStorage link = target.getCapability(EleCapability.ENERGY, facing);
 		if (link == null) return false;
 		if (link.canLink(facing)) {
@@ -200,7 +202,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	
 	private void updateShowData(BlockPos linked) {
 		if (linked != null) {
-			switch (WorldUtil.whatFacing(pos, linked)) {
+			switch (whatFacing(pos, linked)) {
 				case EAST: setEast(true); break;
 				case WEST: setWest(true); break;
 				case SOUTH: setSouth(true); break;
@@ -300,7 +302,8 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		for (BlockPos block : linkedBlocks) {
 			TileEntity entity = world.getTileEntity(block);
 			@SuppressWarnings("ConstantConditions")
-			IStorage storage = entity.getCapability(EleCapability.ENERGY, WorldUtil.whatFacing(block, pos));
+			IStorage storage = entity.getCapability(
+					EleCapability.ENERGY, whatFacing(block, pos));
 			if (storage != null && storage.canReceive()) {
 				EleWorker.useEleEnergy(entity);
 			}

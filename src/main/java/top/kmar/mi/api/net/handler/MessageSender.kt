@@ -9,6 +9,8 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.net.NetworkLoader
 import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.data.math.Range3D
+import top.kmar.mi.api.utils.forEachPlayers
+import top.kmar.mi.api.utils.forEachPlayersAround
 import java.util.function.Predicate
 
 /**
@@ -37,7 +39,7 @@ class MessageSender {
         @JvmStatic
         fun sendToClientAround(world: World, range: Range3D, messageSupplier: () -> IMessage) {
             val message by lazy(LazyThreadSafetyMode.PUBLICATION) { messageSupplier() }
-            WorldUtil.forEachPlayers(world, range) { sendToClient(it as EntityPlayerMP, message) }
+            world.forEachPlayersAround(range) { sendToClient(it as EntityPlayerMP, message) }
         }
 
         /**
@@ -50,7 +52,7 @@ class MessageSender {
         @JvmStatic
         fun sendToClientIf(world: World, test: (EntityPlayer) -> Boolean, messageSupplier: () -> IMessage) {
             val message by lazy(LazyThreadSafetyMode.PUBLICATION) { messageSupplier() }
-            WorldUtil.forEachPlayers(world) {
+            world.forEachPlayers {
                 if (test(it)) sendToClient(it as EntityPlayerMP, message)
             }
         }
@@ -64,7 +66,7 @@ class MessageSender {
         @JvmStatic
         fun sendToClient(world: World, messageSupplier: () -> IMessage) {
             val message by lazy(LazyThreadSafetyMode.PUBLICATION) { messageSupplier() }
-            WorldUtil.forEachPlayers(world) { sendToClient(it as EntityPlayerMP, message) }
+            world.forEachPlayers { sendToClient(it as EntityPlayerMP, message) }
         }
 
         /**

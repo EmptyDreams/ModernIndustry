@@ -30,7 +30,7 @@ public class StringUtil {
 	/**
 	 * <p>根据字符串获取一个{@link Method}对象
 	 * <p>字符串格式：[类名]#[方法名](参数1,参数2)
-	 * <p>例：xyz.emptydreams.mi.api.utils.StringUtil#checkNull(java.lang.Object,java.lang.String)
+	 * <p>例：top.kmar.mi.api.utils.StringUtil#checkNull(java.lang.Object,java.lang.String)
 	 * <p>注：指定的方法必须为共有静态方法，字符串中无空格
 	 * @param name 字符串
 	 * @throws ClassNotFoundException 如果类不存在

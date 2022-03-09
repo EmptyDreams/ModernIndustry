@@ -24,9 +24,7 @@ import top.kmar.mi.api.gui.component.StringComponent
 import top.kmar.mi.api.net.IAutoNetwork
 import top.kmar.mi.api.register.others.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
-import top.kmar.mi.api.utils.IOUtil
-import top.kmar.mi.api.utils.TickClock
-import top.kmar.mi.api.utils.WorldUtil
+import top.kmar.mi.api.utils.*
 import top.kmar.mi.api.utils.container.IndexEnumMap
 import top.kmar.mi.api.utils.data.io.Storage
 import top.kmar.mi.content.blocks.machine.user.FluidPumpBlock
@@ -130,7 +128,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         guiConsume.stringShower = DOWN
         guiFluid.stringShower = DOWN
         guiButton.setAction { _, _ ->
-            if (!world.isRemote) {
+            if (world.isServer()) {
                 start = !start
                 send(true)
             }
@@ -170,8 +168,8 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     private val clock = TickClock(20)
 
     override fun update() {
-        if (world.isRemote) {
-            WorldUtil.removeTickable(this)
+        if (world.isClient()) {
+            removeTickable()
             return
         }
         if (clock.notContinue()) return
@@ -231,7 +229,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         guiConsume.now = consume
         guiFluid.now = data.amount
 
-        if (world.isRemote) guiText.string = I18n.format(data.fluid!!.unlocalizedName)
+        if (world.isClient()) guiText.string = I18n.format(data.fluid!!.unlocalizedName)
     }
 
     /** 计算出水口在面板的哪一个方向 */
@@ -287,7 +285,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     }
 
     override fun linkEle(pos: BlockPos): Boolean {
-        val facing = WorldUtil.whatFacing(this.pos, pos)
+        val facing = this.pos.whatFacing(pos)
         if (!canLinkEle(facing)) return false
         linked.set(facing, true)
         return true

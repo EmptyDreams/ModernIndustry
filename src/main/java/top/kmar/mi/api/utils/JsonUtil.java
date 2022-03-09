@@ -6,9 +6,6 @@ import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import net.minecraft.item.Item;
 import top.kmar.mi.api.craftguide.ItemElement;
-import top.kmar.mi.api.craftguide.sol.ItemList;
-import top.kmar.mi.api.craftguide.sol.ItemSet;
-import top.kmar.mi.api.craftguide.sol.ItemSol;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -39,18 +36,6 @@ public final class JsonUtil {
 			keyMap.put(entry.getKey().charAt(0), getElement(entry.getValue().getAsJsonObject()));
 		}
 		return keyMap;
-	}
-	
-	/** 读取ItemSol */
-	public static ItemSol getItemSol(JsonObject json, Char2ObjectMap<ItemElement> keyMap) {
-		String type = json.get("type").getAsString();
-		switch (type) {
-			case "ItemList":
-				return ItemList.parse(json, keyMap);
-			case "ItemSet":
-				return ItemSet.parse(json, keyMap);
-			default: throw new IllegalArgumentException("不支持的类型：" + type);
-		}
 	}
 	
 }

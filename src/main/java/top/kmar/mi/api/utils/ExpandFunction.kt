@@ -1,14 +1,122 @@
 package top.kmar.mi.api.utils
 
+import io.netty.buffer.ByteBuf
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.item.Item
+import net.minecraft.item.ItemStack
+import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
+import net.minecraft.world.World
+import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte1.other
+import top.kmar.mi.api.utils.data.math.Point3D
+import top.kmar.mi.api.utils.data.math.Range3D
+import java.nio.charset.StandardCharsets
 import kotlin.math.abs
 import kotlin.math.sqrt
 
 /**
+ * 创建一个新的ItemStack
+ * @receiver [Item]
+ */
+fun Item.newStack(amount: Int = 1) = ItemStack(this, amount)
+
+/**
+ * 读取坐标
+ * @receiver [NBTTagCompound]
+ */
+fun NBTTagCompound.getBlockPos(key: String): BlockPos {
+    val value = getIntArray(key)
+    return BlockPos(value[0], value[1], value[2])
+}
+
+/**
+ * 写入坐标
+ * @receiver [NBTTagCompound]
+ */
+fun NBTTagCompound.setBlockPos(key: String, value: BlockPos) =
+    setIntArray(key, intArrayOf(value.x, value.y, value.z))
+
+
+/**
+ * 读取字符串
+ * @receiver [ByteBuf]
+ */
+fun ByteBuf.readString(): String {
+    val size: Int = readInt()
+    val result = ByteArray(size)
+    for (i in 0 until size) {
+        result[i] = readByte()
+    }
+    return String(result)
+}
+
+/**
+ * 写入字符串
+ * @receiver [ByteBuf]
+ */
+fun ByteBuf.writeString(data: String) {
+    val bytes = data.toByteArray(StandardCharsets.UTF_8)
+    writeInt(bytes.size)
+    for (b in bytes) {
+        writeByte(b.toInt())
+    }
+}
+
+/**
+ * 遍历当前世界中在指定范围内得所有玩家
+ * @receiver [World]
+ */
+fun World.forEachPlayersAround(range: Range3D, consumer: (EntityPlayer) -> Unit) =
+    forEachPlayers { if (range.isIn(Point3D(it))) consumer(it) }
+
+/**
+ * 遍历当前世界中的所有玩家
+ * @receiver [World]
+ */
+fun World.forEachPlayers(consumer: (EntityPlayer) -> Unit) = playerEntities.forEach(consumer)
+
+/**
+ * @see WorldUtil.removeTickable
+ * @receiver [TileEntity]
+ */
+fun TileEntity.removeTickable() = WorldUtil.removeTickable(this)
+
+/**
+ * @see WorldUtil.addTickable
+ * @receiver [TileEntity]
+ */
+fun TileEntity.addTickable() = WorldUtil.addTickable(this)
+
+/**
+ * 判断当前世界是否为客户端
+ * @receiver [World]
+ */
+fun World.isClient() = isRemote
+
+/**
+ * 判断当前世界是否为服务端
+ * @receiver [World]
+ */
+fun World.isServer() = !isRemote
+
+/**
+ * 判断指定坐标在当前坐标的哪一个相邻方向
+ * @receiver [BlockPos]
+ * @throws IllegalArgumentException 如果传入的参数和当前坐标不相邻
+ */
+fun BlockPos.whatFacing(pos: BlockPos): EnumFacing {
+    for (facing in EnumFacing.values()) {
+        if (offset(facing) == pos) return facing
+    }
+    throw IllegalArgumentException("now[" + this + "]和other" + other + "不相邻！")
+}
+
+/**
  * 当玩家放置方块时判断方块的朝向
  * @param pos 放置的方块的坐标
+ * @receiver [EntityPlayer]
  */
 fun EntityPlayer.getPlacingDirection(pos: BlockPos): EnumFacing {
     val x: Double = posX - pos.x

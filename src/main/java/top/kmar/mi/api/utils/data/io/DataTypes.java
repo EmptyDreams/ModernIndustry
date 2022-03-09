@@ -16,15 +16,15 @@ import top.kmar.mi.api.dor.ByteDataOperator;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.dor.interfaces.IDataWriter;
 import top.kmar.mi.api.dor.interfaces.IDorSerialize;
+import top.kmar.mi.api.electricity.interfaces.IVoltage;
 import top.kmar.mi.api.exception.TransferException;
-import top.kmar.mi.api.utils.IOUtil;
+import top.kmar.mi.api.fluid.data.FluidData;
+import top.kmar.mi.api.register.others.AutoLoader;
+import top.kmar.mi.api.utils.ExpandFunctionKt;
+import top.kmar.mi.api.utils.container.Wrapper;
 import top.kmar.mi.coremod.other.ICapManagerCheck;
 import top.kmar.mi.coremod.other.ICapStorageType;
 import top.kmar.mi.data.info.EnumVoltage;
-import top.kmar.mi.api.electricity.interfaces.IVoltage;
-import top.kmar.mi.api.fluid.data.FluidData;
-import top.kmar.mi.api.register.others.AutoLoader;
-import top.kmar.mi.api.utils.container.Wrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import static top.kmar.mi.api.utils.ExpandFunctionKt.readString;
+import static top.kmar.mi.api.utils.ExpandFunctionKt.writeString;
 import static top.kmar.mi.api.utils.data.io.DataTypeRegister.registry;
 
 /**
@@ -629,12 +631,12 @@ public final class DataTypes {
 		
 		@Override
 		public void writeToByteBuf(ByteBuf buf, String data) {
-			IOUtil.writeStringToBuf(buf, data);
+			ExpandFunctionKt.writeString(buf, data);
 		}
 		
 		@Override
 		public String readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<String> getter) {
-			return IOUtil.readStringFromBuf(buf);
+			return readString(buf);
 		}
 		
 		@SuppressWarnings("unchecked")
@@ -1178,14 +1180,14 @@ public final class DataTypes {
 		
 		@Override
 		public void writeToByteBuf(ByteBuf buf, Enum<?> data) {
-			IOUtil.writeStringToBuf(buf, data.name());
-			IOUtil.writeStringToBuf(buf, data.getClass().getName());
+			writeString(buf, data.name());
+			writeString(buf, data.getClass().getName());
 		}
 		
 		@Override
 		public Enum<?> readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Enum<?>> getter) {
-			String name = IOUtil.readStringFromBuf(buf);
-			String clazz = IOUtil.readStringFromBuf(buf);
+			String name = readString(buf);
+			String clazz = readString(buf);
 			try {
 				//noinspection unchecked,rawtypes
 				return Enum.valueOf((Class) Class.forName(clazz), name);
@@ -1275,12 +1277,12 @@ public final class DataTypes {
 		
 		@Override
 		public void writeToNBT(NBTTagCompound nbt, String name, BlockPos data) {
-			IOUtil.writeBlockPos(nbt, data, name);
+			ExpandFunctionKt.setBlockPos(nbt, name, data);
 		}
 		
 		@Override
 		public BlockPos readFromNBT(NBTTagCompound nbt, String name, Class<?> fieldType, Supplier<BlockPos> getter) {
-			return IOUtil.readBlockPos(nbt, name);
+			return ExpandFunctionKt.getBlockPos(nbt, name);
 		}
 		
 		@Override
@@ -1379,14 +1381,14 @@ public final class DataTypes {
 		
 		@Override
 		public void writeToByteBuf(ByteBuf buf, Class<?> data) {
-			IOUtil.writeStringToBuf(buf, data.getName());
+			writeString(buf, data.getName());
 		}
 		
 		@Override
 		public Class<?> readFromByteBuf(ByteBuf buf, Class<?> fieldType, Supplier<Class<?>> getter) {
 			if (getter != null) return getter.get();
 			try {
-				return Class.forName(IOUtil.readStringFromBuf(buf));
+				return Class.forName(readString(buf));
 			} catch (ClassNotFoundException e) {
 				throw TransferException.instance("需要读写的类不存在", e);
 			}

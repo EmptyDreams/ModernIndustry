@@ -16,8 +16,8 @@ import net.minecraft.world.World
 import top.kmar.mi.api.capabilities.fluid.FluidCapability
 import top.kmar.mi.api.capabilities.fluid.IFluid
 import top.kmar.mi.api.register.block.AutoBlockRegister
-import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.getPlacingDirection
+import top.kmar.mi.api.utils.whatFacing
 import top.kmar.mi.content.blocks.CommonUtil
 import top.kmar.mi.content.blocks.base.MachineBlock
 import top.kmar.mi.content.gui.FluidPumpFrame
@@ -83,7 +83,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
     }
 
     protected fun neighborChangedHelper(world: World, pos: BlockPos, fromPos: BlockPos) {
-        val facing = WorldUtil.whatFacing(pos, fromPos)
+        val facing = pos.whatFacing(fromPos)
         val pump = world.getTileEntity(pos) as EUFluidPump
         val fromTE = world.getTileEntity(fromPos)
         if (fromTE === null) pump.unlink(facing)

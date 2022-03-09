@@ -1,6 +1,5 @@
 package top.kmar.mi.api.utils;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import top.kmar.mi.api.utils.data.enums.OperateResult;
 
@@ -60,14 +59,6 @@ public final class ItemUtil {
 		if (stack.isEmpty()) return SUCCESS;
 		if (stack.getCount() == stackOldSize) return FAIL;
 		return PARTIAL;
-	}
-	
-	/**
-	 * 创建一个新的{@link ItemStack}对象，用于在服务端替代{@link Item#getDefaultInstance()}
-	 * @param item 物品
-	 */
-	public static ItemStack newStack(Item item) {
-		return new ItemStack(item);
 	}
 	
 	/**

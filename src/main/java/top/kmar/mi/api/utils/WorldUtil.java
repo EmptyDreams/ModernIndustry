@@ -1,7 +1,6 @@
 package top.kmar.mi.api.utils;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,25 +8,17 @@ import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import top.kmar.mi.api.fluid.data.FluidData;
-import top.kmar.mi.api.utils.data.math.Point3D;
-import top.kmar.mi.api.utils.data.math.Range3D;
 import top.kmar.mi.content.blocks.base.EleTransferBlock;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -57,18 +48,6 @@ public final class WorldUtil {
 	}
 	
 	/**
-	 * 获取所有世界中指定名称的玩家的对象
-	 * @return 若玩家不存在则返回null
-	 */
-	public static EntityPlayer getPlayerAtService(String name) {
-		for (WorldServer world : FMLCommonHandler.instance().getMinecraftServerInstance().worlds) {
-			EntityPlayer player = world.getPlayerEntityByName(name);
-			if (player != null) return player;
-		}
-		return null;
-	}
-	
-	/**
 	 * 获取所有世界中指定UUID的玩家的对象
 	 * @return 若玩家不存在则返回null
 	 */
@@ -78,30 +57,6 @@ public final class WorldUtil {
 			if (player != null) return player;
 		}
 		return null;
-	}
-	
-	/**
-	 * 获取指定区域内的玩家列表
-	 * @param world 世界对象
-	 * @param range 范围
-	 */
-	@Nonnull
-	public static List<EntityPlayer> getPlayersInRange(World world, Range3D range) {
-		List<EntityPlayer> result = new LinkedList<>();
-		forEachPlayers(world, range, result::add);
-		return result;
-	}
-	
-	/**
-	 * 遍历指定世界中在指定范围内的所有玩家
-	 * @param world 指定世界
-	 * @param range 范围
-	 * @param consumer 操作
-	 */
-	public static void forEachPlayers(World world, Range3D range, Consumer<EntityPlayer> consumer) {
-		world.playerEntities.forEach(player -> {
-			if (range.isIn(new Point3D(player))) consumer.accept(player);
-		});
 	}
 	
 	/**
@@ -116,15 +71,6 @@ public final class WorldUtil {
 		} else {
 			getClientWorld().playerEntities.forEach(consumer);
 		}
-	}
-	
-	/**
-	 * 遍历指定世界中的所有玩家
-	 * @param world 指定世界
-	 * @param consumer 操作
-	 */
-	public static void forEachPlayers(World world, Consumer<EntityPlayer> consumer) {
-		world.playerEntities.forEach(consumer);
 	}
 	
 	/**
@@ -187,54 +133,6 @@ public final class WorldUtil {
 	}
 	
 	/**
-	 * <p>将流体释放到世界中。
-	 * <p>与{@link #putFluid2World(World, BlockPos, Fluid)}不同的是，该方法会将流体以垂直的形式放置到世界中
-	 * @param world 世界对象
-	 *
-	 * @param target 目标坐标
-	 * @param out 要释放的流体
-	 * @return 释放出的流体总量
-	 */
-	public static int bleedFluid2World(World world, BlockPos target, FluidData out, boolean simulate) {
-		Fluid fluid = out.getFluid();
-		if (out.getAmount() < 1000 || fluid == null || !fluid.canBePlacedInWorld()) return 0;
-		Block targetBlock = world.getBlockState(target).getBlock();
-		if (targetBlock != fluid.getBlock()) {
-			if (!targetBlock.isReplaceable(world, target)) return 0;
-			FluidStack stack = out.toStack();
-			List<EntityPlayer> players = WorldUtil.getPlayersInRange(world, new Range3D(target, 16));
-			if (world.provider.doesWaterVaporize() && fluid.doesVaporize(stack)) {
-				if (!simulate) players.forEach(it -> fluid.vaporize(it, world, target, stack));
-			} else {
-				if (!simulate) {
-					WorldUtil.putFluid2World(world, target, fluid);
-					SoundEvent soundevent = fluid.getEmptySound(stack);
-					players.forEach(it -> world.playSound(it,
-							target, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F));
-				}
-			}
-			int result = 1000;
-			if (out.getAmount() >= 2000) {
-				result += bleedFluid2World(world, target, out.copy(out.getAmount() - 1000), simulate);
-			}
-			return result;
-		} else {
-			return bleedFluid2World(world, target.offset(EnumFacing.DOWN), out, simulate);
-		}
-	}
-	
-	/**
-	 * 放置流体到世界
-	 * @param world 世界
-	 * @param pos 坐标
-	 * @param fluid 流体
-	 */
-	public static void putFluid2World(World world, BlockPos pos, Fluid fluid) {
-		setBlockState(world, pos, fluid.getBlock().getDefaultState());
-		fluid.getBlock().onNeighborChange(world, pos, pos.offset(EnumFacing.NORTH));
-	}
-	
-	/**
 	 * 设置BlockState，当新旧state一致时不进行替换
 	 * @param world 所在世界
 	 * @param pos 方块坐标
@@ -288,44 +186,14 @@ public final class WorldUtil {
 		}
 	}
 	
-	/**
-	 * 判断other在now的哪个方向
-	 */
-	public static EnumFacing whatFacing(BlockPos now, BlockPos other) {
-		for (EnumFacing facing : EnumFacing.values()) {
-			if (now.offset(facing).equals(other)) return facing;
-		}
-		throw new IllegalArgumentException("now[" + now + "]和other" + other + "不相邻！");
+	/** 判断是否为客户端 */
+	public static boolean isClient() {
+		return !isServer();
 	}
 	
 	/** 判断是否为服务端 */
 	public static boolean isServer() {
-		return isServer(null);
-	}
-	
-	/** 判断是否为客户端 */
-	public static boolean isClient() {
-		return !isServer(null);
-	}
-	
-	/**
-	 * 判断是否为服务端.
-	 * 因为判断方法不必须依赖世界对象，所以world也可以为null。
-	 * 使用null时将启动与使用world不同的算法。
-	 * @param world 世界对象（可为null）
-	 */
-	public static boolean isServer(@Nullable World world) {
-		if (world == null) {
-			if (FMLCommonHandler.instance().getEffectiveSide().isServer()) return true;
-			return Thread.currentThread().getName().toLowerCase().contains("server");
-		} else {
-			return !world.isRemote;
-		}
-	}
-	
-	/** @see #isServer(World) */
-	public static boolean isClient(@Nullable World world) {
-		return !isServer(world);
+		return FMLCommonHandler.instance().getEffectiveSide().isServer();
 	}
 	
 	//---------------------私有内容---------------------//

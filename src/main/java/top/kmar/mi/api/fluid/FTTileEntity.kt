@@ -30,6 +30,7 @@ import top.kmar.mi.api.utils.MathUtil.random
 import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.container.IndexEnumMap
 import top.kmar.mi.api.utils.data.io.Storage
+import top.kmar.mi.api.utils.isClient
 import java.util.*
 import javax.annotation.Nonnull
 
@@ -213,6 +214,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
                     if (!simulate) world.setBlockToAir(value)
                     val fluidType = if (thatBlock === Blocks.LAVA) FluidRegistry.LAVA else FluidRegistry.WATER
                     plus = FluidData(fluidType, 1000)
+
                 }
             } else continue
             if (plus != null) {
@@ -313,7 +315,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
 
     /** 向客户端发送服务端存储的信息并更新显示  */
     fun send() {
-        if (world.isRemote) return
+        if (world.isClient()) return
         if (players.size == world.playerEntities.size) return
         IOUtil.sendBlockMessageIfNotUpdate(this, players, 128) {
             val operator = ByteDataOperator(1)
@@ -338,7 +340,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
      */
     fun updateBlockState(isRunOnClient: Boolean) {
         markDirty()
-        if (world.isRemote) {
+        if (world.isClient()) {
             if (!isRunOnClient) return
         } else {
             players.clear()

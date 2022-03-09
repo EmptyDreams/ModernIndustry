@@ -12,7 +12,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.ArrayUtils;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.dor.interfaces.IDataWriter;
-import top.kmar.mi.api.utils.IOUtil;
+import top.kmar.mi.api.utils.ExpandFunctionKt;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -75,7 +75,7 @@ public final class ItemElement {
 	public static ItemElement instance(ByteBuf buf) {
 		int amount = buf.readInt();
 		int meta = buf.readInt();
-		String itemName = IOUtil.readStringFromBuf(buf);
+		String itemName = ExpandFunctionKt.readString(buf);
 		Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
 		ItemElement element = new ItemElement(item, amount, meta);
 		for (ItemElement instance : instances) {
@@ -220,7 +220,7 @@ public final class ItemElement {
 	public void writeToBuf(ByteBuf buf) {
 		buf.writeInt(amount);
 		buf.writeInt(meta);
-		IOUtil.writeStringToBuf(buf, element.getRegistryName().toString());
+		ExpandFunctionKt.writeString(buf, element.getRegistryName().toString());
 	}
 	
 	public void writeToData(IDataWriter writer) {

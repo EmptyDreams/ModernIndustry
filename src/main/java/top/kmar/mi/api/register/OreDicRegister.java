@@ -14,7 +14,7 @@ import top.kmar.mi.content.blocks.common.OreBlock;
 import java.util.HashMap;
 import java.util.Map;
 
-import static top.kmar.mi.api.utils.ItemUtil.newStack;
+import static top.kmar.mi.api.utils.ExpandFunctionKt.newStack;
 
 /**
  * 用于自动注册矿物词典
@@ -67,7 +67,8 @@ public final class OreDicRegister {
 		itemMap.forEach(OreDicRegister::registryDic);
 		blockMap.forEach(OreDicRegister::registryDic);
 		for (OreBlock block : OreBlock.LIST.values()) {
-			GameRegistry.addSmelting(block.getBlockItem(), newStack(block.getBurnOut()), 0.5F);
+			GameRegistry.addSmelting(block.getBlockItem(),
+					newStack(block.getBurnOut(), 1), 0.5F);
 		}
 		//使Map得以被GC回收
 		itemMap = null;
