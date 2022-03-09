@@ -1,5 +1,6 @@
 package top.kmar.mi.api.fluid
 
+import net.minecraft.block.Block
 import net.minecraft.block.BlockLiquid
 import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
@@ -9,6 +10,7 @@ import net.minecraft.util.ITickable
 import net.minecraft.util.math.BlockPos
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.FluidRegistry
+import net.minecraftforge.fluids.FluidUtil
 import net.minecraftforge.fluids.IFluidBlock
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
@@ -90,8 +92,9 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
             for (value in PUSH_EACH_PRIORITY) {
                 if (queue.isEmpty) break
                 if (value == facing.opposite) continue
-                val fluid = getFluidDirect(value) ?: continue
-                result += fluid.insert(queue, value, simulate, report)
+                val fluid = getFluidDirect(value)
+                result += fluid?.insert(queue, value, simulate, report) ?:
+                                pump2World(queue, facing, simulate, report)
             }
         }
         return result
@@ -121,13 +124,64 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
         return result
     }
 
+    protected enum class JudgeResultEnum {EQUALS, COVER, FAILED}
+
+    /** 将流体从管道放入世界 */
+    protected fun pump2World(
+        queue: FluidQueue, facing: EnumFacing,
+        simulate: Boolean, report: TransportReport
+    ): Int {
+        var result = 0
+        val stack = Stack<BlockPos>()
+        val record = HashSet<BlockPos>()
+        stack.push(pos.offset(facing))
+        while (!(queue.isEmpty || stack.isEmpty())) {
+            val dist = stack.pop()
+            if (record.contains(dist)) continue
+            record.add(dist)
+            val value = queue.popTail(Int.MAX_VALUE)
+            val block = value.fluid?.block
+            when (judge(block, dist)) {
+                JudgeResultEnum.EQUALS -> {}
+                JudgeResultEnum.COVER -> {
+                    val amount = if (block is IFluidBlock) block.place(world, dist, value.toStack(), !simulate)
+                    else {
+                        val place = FluidUtil.tryPlaceFluid(null, world, dist,
+                            FluidUtil.getFilledBucket(value.toStack()), value.toStack())
+                        if (place.isSuccess) place.result.count else 0
+                    }
+                    if (amount == 0) continue
+                    report.insert(facing, value.copy(amount))
+                    value.minusAmount(amount)
+                    result += amount
+                }
+                JudgeResultEnum.FAILED -> {
+                    queue.pushTail(value)
+                    continue
+                }
+            }
+            queue.pushTail(value)
+            for (enumFacing in POP_EACH_PRIORITY) stack.push(dist.offset(enumFacing))
+        }
+        return result
+    }
+
+    protected open fun judge(block: Block?, pos: BlockPos): JudgeResultEnum {
+        if (block == null) return JudgeResultEnum.FAILED
+        val state = world.getBlockState(pos)
+        if (state.material.isSolid || !state.block.isReplaceable(world, pos)) return JudgeResultEnum.FAILED
+        if (state.block == block && state.getValue(BlockLiquid.LEVEL) == 0) return JudgeResultEnum.EQUALS
+        return JudgeResultEnum.COVER
+    }
+
+    /** 将流体从世界抽入管道 */
     @Nonnull
     protected fun pumpFromWorld(
         amount: Int, facing: EnumFacing, simulate: Boolean, report: TransportReport
     ): FluidQueue {
         var amountCopy = amount
         val stack = Stack<BlockPos>()
-        val record: MutableSet<BlockPos> = HashSet()
+        val record = HashSet<BlockPos>()
         stack.push(pos.offset(facing.opposite))
         val result = FluidQueue.empty()
         while (!stack.empty() && amountCopy != 0) {
@@ -152,7 +206,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
                 }
             } else continue
             if (plus != null) {
-                report.insert(facing.opposite, plus)
+                report.insert(facing, plus)
                 result.pushTail(plus)
                 world.markBlockRangeForRenderUpdate(value, value)
             }
