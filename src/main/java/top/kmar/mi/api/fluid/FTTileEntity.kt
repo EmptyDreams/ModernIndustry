@@ -1,6 +1,5 @@
 package top.kmar.mi.api.fluid
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap
 import net.minecraft.block.Block
 import net.minecraft.block.BlockLiquid
 import net.minecraft.init.Blocks
@@ -54,6 +53,29 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
             EnumFacing.SOUTH, EnumFacing.WEST,
             EnumFacing.NORTH, EnumFacing.DOWN
         )
+
+        private val HOR_LIST = ArrayList<Array<EnumFacing>>(24)
+
+        fun randomHorizontals() = HOR_LIST[random().nextInt(HOR_LIST.size)]
+
+        init {
+            val record = BooleanArray(4) {false}
+            val array = Array(4) {EnumFacing.UP}
+            for (i in 0 until EnumFacing.HORIZONTALS.size) dfs(0, i, record, array)
+        }
+
+        private fun dfs(deep: Int, index: Int, record: BooleanArray, array: Array<EnumFacing>) {
+            if (record[index]) return
+            array[deep] = EnumFacing.HORIZONTALS[index]
+            if (deep == 3) HOR_LIST.add(array.clone())
+            else {
+                record[index] = true
+                for (i in 0 until EnumFacing.HORIZONTALS.size) {
+                    if (i != index) dfs(deep + 1, i, record, array)
+                }
+                record[index] = false
+            }
+        }
 
     }
 
@@ -168,9 +190,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
             base += 0.1
             queue.pushTail(value)
             stack.push(dist.offset(EnumFacing.UP))
-            val sorted = Int2ObjectRBTreeMap<BlockPos>()
-            for (enumFacing in EnumFacing.HORIZONTALS) sorted[random().nextInt()] = dist.offset(enumFacing)
-            for ((_, next) in sorted) stack.push(next)
+            for (enumFacing in randomHorizontals()) stack.push(dist.offset(enumFacing))
             stack.push(dist.offset(EnumFacing.DOWN))
         }
         return result
@@ -224,7 +244,9 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
                 world.markBlockRangeForRenderUpdate(value, value)
             }
             base += 0.1
-            for (enumFacing in PUSH_EACH_PRIORITY) stack.push(value.offset(enumFacing))
+            stack.push(value.offset(EnumFacing.DOWN))
+            for (enumFacing in randomHorizontals()) stack.push(value.offset(enumFacing))
+            stack.push(value.offset(EnumFacing.UP))
         }
         return result
     }
