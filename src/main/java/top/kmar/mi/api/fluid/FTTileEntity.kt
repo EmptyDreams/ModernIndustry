@@ -1,5 +1,6 @@
 package top.kmar.mi.api.fluid
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap
 import net.minecraft.block.Block
 import net.minecraft.block.BlockLiquid
 import net.minecraft.init.Blocks
@@ -25,6 +26,7 @@ import top.kmar.mi.api.fluid.data.TransportReport
 import top.kmar.mi.api.net.IAutoNetwork
 import top.kmar.mi.api.tools.BaseTileEntity
 import top.kmar.mi.api.utils.IOUtil
+import top.kmar.mi.api.utils.MathUtil.random
 import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.container.IndexEnumMap
 import top.kmar.mi.api.utils.data.io.Storage
@@ -161,7 +163,11 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
                 }
             }
             queue.pushTail(value)
-            for (enumFacing in POP_EACH_PRIORITY) stack.push(dist.offset(enumFacing))
+            stack.push(dist.offset(EnumFacing.UP))
+            val sorted = Int2ObjectRBTreeMap<BlockPos>()
+            for (enumFacing in EnumFacing.HORIZONTALS) sorted[random().nextInt()] = dist.offset(enumFacing)
+            for ((_, next) in sorted) stack.push(next)
+            stack.push(dist.offset(EnumFacing.DOWN))
         }
         return result
     }
