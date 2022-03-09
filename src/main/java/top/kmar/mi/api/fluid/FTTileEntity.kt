@@ -55,8 +55,10 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
             EnumFacing.NORTH, EnumFacing.DOWN
         )
 
+        @JvmStatic
         private val HOR_LIST = ArrayList<Array<EnumFacing>>(24)
 
+        @JvmStatic
         fun randomHorizontals() = HOR_LIST[random().nextInt(HOR_LIST.size)]
 
         init {
@@ -65,14 +67,14 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
             for (i in HORIZONTALS.indices) dfs(0, i, record, array)
         }
 
+        @JvmStatic
         private fun dfs(deep: Int, index: Int, record: BooleanArray, array: Array<EnumFacing>) {
-            if (record[index]) return
             array[deep] = HORIZONTALS[index]
             if (deep == 3) HOR_LIST.add(array.clone())
             else {
                 record[index] = true
                 for (i in HORIZONTALS.indices) {
-                    if (i != index) dfs(deep + 1, i, record, array)
+                    if (!record[i]) dfs(deep + 1, i, record, array)
                 }
                 record[index] = false
             }
