@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
+ * 管道的父类
  * @author EmptyDreams
  */
 @SuppressWarnings("deprecation")

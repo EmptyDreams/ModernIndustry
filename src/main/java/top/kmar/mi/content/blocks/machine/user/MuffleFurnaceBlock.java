@@ -21,14 +21,14 @@ import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.blocks.base.TEBlockBase;
 import top.kmar.mi.content.gui.MuffleFurnaceFrame;
 import top.kmar.mi.content.tileentity.user.MuffleFurnace;
-import top.kmar.mi.data.info.MIProperty;
+import top.kmar.mi.data.info.properties.MIProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-import static top.kmar.mi.data.info.MIProperty.getHORIZONTAL;
+import static top.kmar.mi.data.info.properties.MIProperty.getHORIZONTAL;
 
 /**
  * 高温熔炉

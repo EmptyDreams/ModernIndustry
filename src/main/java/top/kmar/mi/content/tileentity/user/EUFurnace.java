@@ -16,7 +16,7 @@ import top.kmar.mi.data.info.EnumVoltage;
 import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
 import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.register.others.AutoTileEntity;
-import top.kmar.mi.data.info.MIProperty;
+import top.kmar.mi.data.info.properties.MIProperty;
 
 import javax.annotation.Nullable;
 

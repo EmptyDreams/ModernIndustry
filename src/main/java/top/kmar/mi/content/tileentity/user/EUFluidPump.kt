@@ -31,7 +31,7 @@ import top.kmar.mi.content.blocks.machine.user.FluidPumpBlock
 import top.kmar.mi.data.info.BiggerVoltage
 import top.kmar.mi.data.info.EnumBiggerVoltage
 import top.kmar.mi.data.info.EnumVoltage
-import top.kmar.mi.data.info.RelativeDirectionEnum
+import top.kmar.mi.data.info.properties.RelativeDirectionEnum
 import java.util.*
 import kotlin.math.min
 

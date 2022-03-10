@@ -1,4 +1,4 @@
-package top.kmar.mi.content.blocks.base.pipes.enums;
+package top.kmar.mi.data.info.properties;
 
 import net.minecraft.block.properties.PropertyEnum;
 

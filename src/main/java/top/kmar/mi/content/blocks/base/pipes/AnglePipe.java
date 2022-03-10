@@ -10,14 +10,14 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import top.kmar.mi.content.blocks.base.pipes.enums.AngleFacingEnum;
-import top.kmar.mi.content.blocks.base.pipes.enums.PropertyAngleFacing;
+import top.kmar.mi.data.info.properties.AngleFacingEnum;
+import top.kmar.mi.data.info.properties.PropertyAngleFacing;
 import top.kmar.mi.content.tileentity.pipes.AnglePipeTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static top.kmar.mi.data.info.MIProperty.getHORIZONTAL;
+import static top.kmar.mi.data.info.properties.MIProperty.getHORIZONTAL;
 
 /**
  * <p>直角拐弯的管道

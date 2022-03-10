@@ -1,4 +1,4 @@
-package top.kmar.mi.data.info
+package top.kmar.mi.data.info.properties
 
 import net.minecraft.util.IStringSerializable
 

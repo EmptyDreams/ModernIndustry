@@ -5,7 +5,7 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.util.EnumFacing;
-import top.kmar.mi.data.info.RelativeDirectionEnum;
+import top.kmar.mi.data.info.properties.RelativeDirectionEnum;
 
 import java.util.Collection;
 import java.util.function.Predicate;

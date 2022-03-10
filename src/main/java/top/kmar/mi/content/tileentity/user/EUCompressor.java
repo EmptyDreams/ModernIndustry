@@ -26,7 +26,7 @@ import top.kmar.mi.api.craftguide.sol.ItemSet;
 import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
 import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.register.others.AutoTileEntity;
-import top.kmar.mi.data.info.MIProperty;
+import top.kmar.mi.data.info.properties.MIProperty;
 
 /**
  * 压缩机的TileEntity，存储方块内物品、工作时间等内容
