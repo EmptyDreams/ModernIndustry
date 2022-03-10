@@ -42,6 +42,7 @@ import kotlin.math.min
 @AutoTileEntity(FluidPumpBlock.NAME)
 open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
 
+    @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
     companion object {
 
         private val MAY_SIDE_X = listOf(EnumFacing.NORTH, EnumFacing.SOUTH)
@@ -50,6 +51,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
 
         private val MAY_PANEL_X =
             listOf(EnumFacing.NORTH, EnumFacing.UP, EnumFacing.SOUTH, EnumFacing.DOWN)
+        private val MAY_PANEL_Y = listOf<EnumFacing>()
         private val MAY_PANEL_Z =
             listOf(EnumFacing.EAST, EnumFacing.DOWN, EnumFacing.WEST, EnumFacing.UP)
 
@@ -60,7 +62,6 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
          * 获取指定面板朝向下出水口管道可能在哪些方向
          * @return 一个不可修改的列表
          */
-        @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
         fun maySide(panel: EnumFacing) = when (panel.axis) {
             EnumFacing.Axis.X -> MAY_SIDE_X
             EnumFacing.Axis.Y -> MAY_SIDE_Y
@@ -74,7 +75,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         fun mayPanel(side: EnumFacing) = when (side.axis) {
             EnumFacing.Axis.X -> MAY_PANEL_X
             EnumFacing.Axis.Z -> MAY_PANEL_Z
-            else -> throw AssertionError()
+            EnumFacing.Axis.Y -> MAY_PANEL_Y
         }
 
     }
@@ -266,21 +267,15 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     override fun canLinkEle(facing: EnumFacing) = facing.axis !== side.axis && facing !== panelFacing
 
     override fun canLinkFluid(facing: EnumFacing) =
-        (facing.axis !== panelFacing.axis && super.canLinkEle(facing)) || linked.isInit
+        facing.axis !== EnumFacing.Axis.Y &&
+                ((facing.axis !== panelFacing.axis && super.canLinkEle(facing)) || linked.isInit)
 
     override fun getFront() = panelFacing
 
     override fun linkFluid(facing: EnumFacing): Boolean {
         if (!canLinkFluid(facing)) return false
         linked.set(facing, true)
-        if (facing.axis === panelFacing.axis) {
-            for (value in EnumFacing.HORIZONTALS) {
-                if (value.axis !== facing.axis) {
-                    panelFacing = value
-                    break
-                }
-            }
-        }
+        if (facing.axis !== side.axis) side = facing
         return true
     }
 
