@@ -129,8 +129,10 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
     ): Boolean {
         val result = EUFluidPump()
         result.panelFacing = player.getPlacingDirection(pos).opposite
-        if (result.panelFacing.axis === EnumFacing.Axis.Y) {
-            result.side = EUFluidPump.maySide(player.horizontalFacing)[0]
+        result.side = when (result.panelFacing) {
+            EnumFacing.DOWN -> result.side
+            EnumFacing.UP -> player.horizontalFacing.rotateY()
+            else -> result.panelFacing.rotateY()
         }
         putBlock(world, pos, defaultState, result, player, stack)
         return true

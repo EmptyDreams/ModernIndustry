@@ -34,7 +34,7 @@ enum class RelativeDirectionEnum: IStringSerializable {
         LEFT -> RIGHT
         RIGHT -> LEFT
         UP -> DOWN
-        DOWN -> LEFT
+        DOWN -> UP
     }
 
     override fun getName() = name.lowercase()
