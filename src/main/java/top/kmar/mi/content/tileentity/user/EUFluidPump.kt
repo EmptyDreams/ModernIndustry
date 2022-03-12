@@ -190,11 +190,12 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     private fun pumpFluidOut() {
         val fluid = getFluidDirect(true) ?: return
         val simulate = TransportReport()
-        val value = FluidQueue.from(data.copy(min(data.amount, maxPower)))
-        if (fluid.insert(value, side, true, simulate) == 0) return
+        val testQueue = FluidQueue.from(data.copy(min(data.amount, maxPower)))
+        if (fluid.insert(testQueue, side, true, simulate) == 0) return
         if (simulate.priceTotal > nowEnergy) return
         val report = TransportReport()
-        val pump = fluid.insert(value, side, false, report)
+        val queue = FluidQueue.from(data.copy(min(data.amount, maxPower)))
+        val pump = fluid.insert(queue, side, false, report)
         shrinkEnergy(report.priceTotal)
         data.minusAmount(pump)
     }
