@@ -28,7 +28,6 @@ import top.kmar.mi.api.utils.IOUtil
 import top.kmar.mi.api.utils.MathUtil.random
 import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.container.DoubleIndexEnumMap
-import top.kmar.mi.api.utils.container.Wrapper
 import top.kmar.mi.api.utils.data.enums.HorizontalDirectionEnum.LEFT
 import top.kmar.mi.api.utils.data.enums.HorizontalDirectionEnum.RIGHT
 import top.kmar.mi.api.utils.data.io.Storage
@@ -98,7 +97,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
     /** 管道内存储的流体量  */
     @Storage
     protected var fluidData = FluidData.empty()
-    private var lineCode = Wrapper<BlockPos>()
+    private var lineCode: BlockPos? = null
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?) =
         if (super.hasCapability(capability, facing)) true
@@ -289,16 +288,25 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
         if (!canLinkFluid(facing)) return false
         val thatTE = world.getTileEntity(pos.offset(facing))
         if (thatTE is FTTileEntity) {
-            thatTE.lineCode = lineCode
             linkData[facing] = true
+            if (!thatTE.isLinked(facing.opposite)) {
+                thatTE.lineCode = lineCode
+                thatTE.forEachLine(facing.opposite) {
+                    it.lineCode = lineCode
+                    true
+                }
+            }
         } else linkData[facing, LEFT] = true
         return true
     }
 
-    /** 该函数会检查[lineCode]，字类重写时务必调用并检查返回值 */
+    /**
+     * 该函数会检查[lineCode]，字类重写时务必调用并检查返回值
+     */
     override fun canLinkFluid(facing: EnumFacing): Boolean {
         val thatTE = world.getTileEntity(pos.offset(facing))
-        return if (thatTE is FTTileEntity) lineCode != thatTE.lineCode else true
+        if (thatTE !is FTTileEntity) return true
+        return if (thatTE.isLinked(facing.opposite)) true else thatTE.lineCode != lineCode
     }
 
     override fun isLinked(facing: EnumFacing) = linkData[facing, LEFT]
@@ -388,19 +396,19 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
      */
     protected open fun forEachLine(from: EnumFacing?, function: (FTTileEntity) -> Boolean) {
         if (getLinkedAmount() < 3) {
-            var lastFT: FTTileEntity?
+            var lastFT: FTTileEntity = this
             var lastKey = from
             do {
-                val next = nextOnly(from)
+                val next = lastFT.nextOnly(lastKey)
                 if (next == null) {
-                    lastFT = null
+                    lastFT = this
                     break
                 }
                 lastFT = next.first
                 lastKey = next.second.opposite
                 if (lastFT.getLinkedAmount() > 2 || !function(lastFT)) break
             } while (true)
-            lastFT?.forEachLine(lastKey, function)
+            if (lastFT !== this) lastFT.forEachLine(lastKey, function)
         } else {
             for ((key, _, right) in linkData) {
                 if (key === from) continue
@@ -451,8 +459,8 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
      * @param force 是否强制更新
      */
     protected fun updateLinkCode(force: Boolean) {
-        if (lineCode.notNull() && !force) return
-        lineCode = Wrapper(pos)
+        if (lineCode !== null && !force) return
+        lineCode = pos
         forEachLine(null) {
             it.lineCode = lineCode
             true

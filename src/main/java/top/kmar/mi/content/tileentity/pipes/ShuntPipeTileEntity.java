@@ -40,6 +40,7 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	
 	@Override
 	public boolean canLinkFluid(EnumFacing facing) {
+		if (isLinked(facing)) return true;
 		if (!super.canLinkFluid(facing)) return false;
 		if (hasAperture(facing)) return true;
 		if (getLinkData().isInit()) return true;
