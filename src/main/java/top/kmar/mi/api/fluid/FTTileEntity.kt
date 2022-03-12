@@ -282,7 +282,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
     /** 该函数会检查[lineCode]，字类重写时务必调用并检查返回值 */
     override fun canLinkFluid(facing: EnumFacing): Boolean {
         val thatTE = world.getTileEntity(pos.offset(facing))
-        return if (thatTE is FTTileEntity) lineCode == thatTE.lineCode else true
+        return if (thatTE is FTTileEntity) lineCode != thatTE.lineCode else true
     }
 
     override fun isLinked(facing: EnumFacing) = linkData[facing]
