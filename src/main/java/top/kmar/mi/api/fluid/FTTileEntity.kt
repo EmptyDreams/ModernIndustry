@@ -343,7 +343,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
         if (!isLinked(facing)) return null
         val target = pos.offset(facing)
         val te = world.getTileEntity(target)
-        return te!!.getCapability(FluidCapability.TRANSFER, facing)
+        return te!!.getCapability(FluidCapability.TRANSFER, facing.opposite)
     }
 
     /** 判断指定方向是否含有开口  */
