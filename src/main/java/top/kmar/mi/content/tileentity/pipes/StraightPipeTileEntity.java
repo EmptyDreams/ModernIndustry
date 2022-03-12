@@ -51,9 +51,8 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	@Override
 	public boolean linkFluid(EnumFacing facing) {
 		if (isLinked(facing)) return true;
-		if (!canLinkFluid(facing)) return false;
+		if (!super.linkFluid(facing)) return false;
 		if (getLinkData().isInit()) setFacing(facing);
-		getLinkData().set(facing, true);
 		updateBlockState(false);
 		return true;
 	}

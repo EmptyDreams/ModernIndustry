@@ -8,7 +8,8 @@ import top.kmar.mi.api.dor.interfaces.IDorSerialize
  * 以Enum为key的布尔映射表，该类仅支持对象数量<=32的枚举类
  * @author EmptyDreams
  */
-class IndexEnumMap<T : Enum<*>>(private val keys: Array<T>) : IDorSerialize, Iterable<IndexEnumMap<T>.Entry> {
+class IndexEnumMap<T : Enum<*>>(private val keys: Array<T>) :
+        IDorSerialize, Iterable<IndexEnumMap<T>.Entry> {
 
     /** 布尔值  */
     private var value = 0

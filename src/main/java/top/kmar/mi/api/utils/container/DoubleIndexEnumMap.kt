@@ -11,7 +11,8 @@ import top.kmar.mi.api.utils.data.enums.HorizontalDirectionEnum.LEFT
  * @author EmptyDreams
  */
 @Suppress("NOTHING_TO_INLINE")
-class DoubleIndexEnumMap<T : Enum<*>>(val values: Array<T>): Iterable<DoubleIndexEnumMap<T>.Entry>, IDorSerialize {
+class DoubleIndexEnumMap<T : Enum<*>>(val values: Array<T>) :
+        Iterable<DoubleIndexEnumMap<T>.Entry>, IDorSerialize {
 
     private var data = 0
 
@@ -43,10 +44,24 @@ class DoubleIndexEnumMap<T : Enum<*>>(val values: Array<T>): Iterable<DoubleInde
         else setRight(key, value)
     }
 
+    /** 同时设置指定键的左值和右值 */
+    operator fun set(key: T, value: Boolean) {
+        setLeft(key, value)
+        setRight(key, value)
+    }
+
     operator fun get(key: T, direction: HorizontalDirectionEnum) =
         if (direction === LEFT) getLeft(key) else getRight(key)
 
     fun isInit() = data == 0
+
+    /** 设置内部值 */
+    fun setValue(value: Int) {
+        data = value
+    }
+
+    /** 获取内部值得整型表示 */
+    fun getValue() = data
 
     private inline fun getOffsetLeft(key: T) = (key.ordinal shl 1) + 1
 
@@ -82,9 +97,11 @@ class DoubleIndexEnumMap<T : Enum<*>>(val values: Array<T>): Iterable<DoubleInde
             get() = getRight(key)
             set(value) = setRight(key, value)
 
-        operator fun component1() = left
+        operator fun component1() = key
 
-        operator fun component2() = right
+        operator fun component2() = left
+
+        operator fun component3() = right
 
         override fun toString() = "left=$left,right=$right"
 
