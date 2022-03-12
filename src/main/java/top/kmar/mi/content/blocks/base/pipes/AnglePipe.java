@@ -2,17 +2,15 @@ package top.kmar.mi.content.blocks.base.pipes;
 
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import top.kmar.mi.content.tileentity.pipes.AnglePipeTileEntity;
 import top.kmar.mi.data.info.properties.AngleFacingEnum;
 import top.kmar.mi.data.info.properties.PropertyAngleFacing;
-import top.kmar.mi.content.tileentity.pipes.AnglePipeTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,21 +45,6 @@ public class AnglePipe extends Pipe {
 		AngleFacingEnum after = AngleFacingEnum.valueOf(te.getFacing(), te.getAfter());
 		return state.withProperty(getHORIZONTAL(), te.getFacing())
 				.withProperty(ANGLE_FACING, after);
-	}
-	
-	@Override
-	public boolean initTileEntity(ItemStack stack, EntityPlayer player,
-	                                 World world, BlockPos pos, EnumFacing side,
-	                                 float hitX, float hitY, float hitZ) {
-		AnglePipeTileEntity te = new AnglePipeTileEntity(player.getHorizontalFacing().getOpposite(),
-											player.rotationPitch > 0 ? EnumFacing.UP : EnumFacing.DOWN);
-		putBlock(world, pos, getDefaultState(), te, player, stack);
-		EnumFacing facing = side.getOpposite();
-		StraightPipe.link(world, pos, te, facing);
-		for (EnumFacing value : EnumFacing.values()) {
-			StraightPipe.link(world, pos, te, value);
-		}
-		return true;
 	}
 	
 	@Override

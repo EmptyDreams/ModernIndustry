@@ -2,8 +2,6 @@ package top.kmar.mi.content.blocks.base.pipes;
 
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -16,7 +14,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static top.kmar.mi.data.info.properties.MIProperty.getAXIS;
-import static top.kmar.mi.content.blocks.base.pipes.StraightPipe.link;
 
 /**
  * @author EmptyDreams
@@ -49,20 +46,6 @@ public class ShuntPipe extends Pipe {
 			case Z: return new AxisAlignedBB(0, 0, 1/4d, 1, 1, 3/4d);
 			default: return new AxisAlignedBB(1/4d, 0, 0, 3/4d, 1, 1);
 		}
-	}
-	
-	@Override
-	public boolean initTileEntity(ItemStack stack, EntityPlayer player,
-	                              World world, BlockPos pos, EnumFacing side,
-	                              float hitX, float hitY, float hitZ) {
-		ShuntPipeTileEntity te = new ShuntPipeTileEntity();
-		putBlock(world, pos, getDefaultState(), te, player, stack);
-		EnumFacing facing = side.getOpposite();
-		link(world, pos, te, facing);
-		for (EnumFacing value : EnumFacing.values()) {
-			link(world, pos, te, value);
-		}
-		return true;
 	}
 	
 	@Nullable

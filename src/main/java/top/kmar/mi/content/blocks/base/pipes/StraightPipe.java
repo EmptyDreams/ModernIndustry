@@ -2,8 +2,6 @@ package top.kmar.mi.content.blocks.base.pipes;
 
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -17,7 +15,6 @@ import top.kmar.mi.content.tileentity.pipes.StraightPipeTileEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static top.kmar.mi.api.utils.ExpandFunctionKt.getPlacingDirection;
 import static top.kmar.mi.data.info.properties.MIProperty.getALL_FACING;
 
 /**
@@ -37,30 +34,6 @@ public class StraightPipe extends Pipe {
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 		StraightPipeTileEntity te = (StraightPipeTileEntity) worldIn.getTileEntity(pos);
 		return state.withProperty(getALL_FACING(), te.getFacing());
-	}
-	
-	@Override
-	public boolean initTileEntity(ItemStack stack, EntityPlayer player,
-	                                 World world, BlockPos pos, EnumFacing side,
-	                                 float hitX, float hitY, float hitZ) {
-		StraightPipeTileEntity te = new StraightPipeTileEntity();
-		putBlock(world, pos, getDefaultState(), te, player, stack);
-		EnumFacing facing = side.getOpposite();
-		if (link(world, pos, te, facing)) {
-			link(world, pos, te, side);
-			return true;
-		}
-		if (link(world, pos, te, side)) {
-			return true;
-		}
-		for (EnumFacing value : EnumFacing.values()) {
-			if (link(world, pos, te, value)) {
-				link(world, pos, te, value.getOpposite());
-				return true;
-			}
-		}
-		te.setFacing(getPlacingDirection(player, pos));
-		return true;
 	}
 	
 	/**

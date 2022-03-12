@@ -6,6 +6,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -21,7 +22,6 @@ import top.kmar.mi.api.register.OreDicRegister;
 import top.kmar.mi.api.utils.ExpandFunctionKt;
 import top.kmar.mi.api.utils.StringUtil;
 import top.kmar.mi.content.blocks.base.TEBlockBase;
-import top.kmar.mi.content.items.base.ItemBlockExpand;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,7 +45,7 @@ abstract public class Pipe extends TEBlockBase {
 		setRegistryName(ModernIndustry.MODID, name);
 		setUnlocalizedName(StringUtil.getUnlocalizedName(name));
 		OreDicRegister.registry(this, ores);
-		ITEM = new ItemBlockExpand(this);
+		ITEM = new ItemBlock(this);
 	}
 	
 	@SuppressWarnings("ConstantConditions")
