@@ -1,20 +1,59 @@
 package top.kmar.mi.api.utils
 
 import io.netty.buffer.ByteBuf
+import net.minecraft.block.BlockLiquid
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.SoundCategory
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
+import net.minecraftforge.fluids.Fluid
+import net.minecraftforge.fluids.FluidUtil
+import net.minecraftforge.fluids.IFluidBlock
+import net.minecraftforge.fluids.capability.IFluidHandler
+import net.minecraftforge.fluids.capability.wrappers.BlockLiquidWrapper
+import net.minecraftforge.fluids.capability.wrappers.BlockWrapper
+import net.minecraftforge.fluids.capability.wrappers.FluidBlockWrapper
 import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte1.other
+import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.utils.data.math.Point3D
 import top.kmar.mi.api.utils.data.math.Range3D
 import java.nio.charset.StandardCharsets
 import kotlin.math.abs
 import kotlin.math.sqrt
+
+/** 检查指定位置是否可以放置指定流体方块 */
+fun World.pushFluid(pos: BlockPos, data: FluidData, simulate: Boolean): Int {
+    if (data.isEmpty) return 0
+    val fluid = data.fluid!!
+    if (!data.fluid!!.canBePlacedInWorld()) return 0
+    val stack = data.toStack()
+    val fluidSource = FluidUtil.getFluidHandler(FluidUtil.getFilledBucket(stack)) ?: return 0
+    if (fluidSource.drain(stack, false) == null) return 0
+    val state = getBlockState(pos)
+    if (!(state.material.isSolid || state.block.isReplaceable(this, pos))) return 0
+    if (provider.doesWaterVaporize() && fluid.doesVaporize(stack)) {
+        val result = fluidSource.drain(stack, !simulate) ?: return 0
+        result.fluid.vaporize(null, this, pos, result)
+        return result.amount
+    } else {
+        val handler = getFluidBlockHandler(fluid, pos)
+        val result = FluidUtil.tryFluidTransfer(handler, fluidSource, stack, !simulate) ?: return 0
+        playSound(null, pos, fluid.getFillSound(stack), SoundCategory.BLOCKS, 1F, 1F)
+        return result.amount
+    }
+}
+
+fun World.getFluidBlockHandler(fluid: Fluid, pos: BlockPos): IFluidHandler =
+    when (val block = fluid.block) {
+        is IFluidBlock -> FluidBlockWrapper(block, this, pos)
+        is BlockLiquid -> BlockLiquidWrapper(block, this, pos)
+        else -> BlockWrapper(block, this, pos)
+    }
 
 /**
  * 创建一个新的ItemStack

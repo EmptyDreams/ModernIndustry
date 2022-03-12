@@ -10,7 +10,6 @@ import net.minecraft.util.ITickable
 import net.minecraft.util.math.BlockPos
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.FluidRegistry
-import net.minecraftforge.fluids.FluidUtil
 import net.minecraftforge.fluids.IFluidBlock
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
@@ -24,15 +23,12 @@ import top.kmar.mi.api.fluid.data.FluidQueue
 import top.kmar.mi.api.fluid.data.TransportReport
 import top.kmar.mi.api.net.IAutoNetwork
 import top.kmar.mi.api.tools.BaseTileEntity
-import top.kmar.mi.api.utils.IOUtil
+import top.kmar.mi.api.utils.*
 import top.kmar.mi.api.utils.MathUtil.random
-import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.container.DoubleIndexEnumMap
 import top.kmar.mi.api.utils.data.enums.HorizontalDirectionEnum.LEFT
 import top.kmar.mi.api.utils.data.enums.HorizontalDirectionEnum.RIGHT
 import top.kmar.mi.api.utils.data.io.Storage
-import top.kmar.mi.api.utils.isClient
-import top.kmar.mi.api.utils.removeTickable
 import java.util.*
 import javax.annotation.Nonnull
 
@@ -181,13 +177,8 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
                 JudgeResultEnum.EQUALS -> {}
                 JudgeResultEnum.COVER -> {
                     val amount = if (block is IFluidBlock) block.place(world, dist, value.toStack(), !simulate)
-                    else {
-                        val place = FluidUtil.tryPlaceFluid(null, world, dist,
-                            FluidUtil.getFilledBucket(value.toStack()), value.toStack())
-                        if (place.isSuccess) place.result.count else 0
-                    }
+                                    else world.pushFluid(dist, value, simulate)
                     if (amount == 0) continue
-
                     report.insert(facing, value.copy((amount * base).toInt()))
                     value.minusAmount(amount)
                     result += amount
