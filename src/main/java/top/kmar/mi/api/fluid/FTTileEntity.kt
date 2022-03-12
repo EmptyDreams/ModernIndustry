@@ -269,6 +269,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
 
     override fun unlink(facing: EnumFacing) {
         linkData[facing] = false
+        updateLinkCode(true)
         updateBlockState(false)
     }
 
@@ -426,19 +427,26 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
     override fun update() {
         if (world.isClient()) removeTickable()
         else {
-            if (lineCode.isNull) {
-                lineCode.set(pos)
-                forEachLine(null) {
-                    if (it.lineCode.isNull) {
-                        it.lineCode.set(pos)
-                        true
-                    } else {
-                        lineCode.set(it.lineCode.nonnull)
-                        false
-                    }
-                }
-            }
+            updateLinkCode(false)
             send()
+        }
+    }
+
+    /**
+     * 更新线路信息
+     * @param force 是否强制更新
+     */
+    protected fun updateLinkCode(force: Boolean) {
+        if (lineCode.notNull() && !force) return
+        lineCode.set(pos)
+        forEachLine(null) {
+            if (it.lineCode.isNull) {
+                it.lineCode.set(pos)
+                true
+            } else {
+                lineCode.set(it.lineCode.nonnull)
+                false
+            }
         }
     }
 
