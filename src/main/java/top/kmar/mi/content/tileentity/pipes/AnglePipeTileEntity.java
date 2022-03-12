@@ -77,7 +77,8 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	@Override
 	public boolean linkFluid(EnumFacing facing) {
 		if (isLinked(facing)) return true;
-		if (!canLinkFluid(facing)) return false;
+		if (!(canLinkFluid(facing))) return false;
+		super.linkFluid(facing);
 		if (facing.getAxis() == Axis.Y) {
 			if (getLinkData().isInit()) {
 				this.facing = facing;

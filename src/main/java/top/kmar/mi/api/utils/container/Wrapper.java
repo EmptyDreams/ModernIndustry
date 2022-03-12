@@ -4,6 +4,7 @@ import top.kmar.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * 用于盛放对象引用的容器
@@ -42,6 +43,24 @@ public final class Wrapper<T> {
 	
 	public boolean notNull() {
 		return object != null;
+	}
+	
+	@Override
+	public String toString() {
+		return String.valueOf(getNullable());
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Wrapper<?> wrapper = (Wrapper<?>) o;
+		return Objects.equals(object, wrapper.object);
+	}
+	
+	@Override
+	public int hashCode() {
+		return object != null ? object.hashCode() : 0;
 	}
 	
 }

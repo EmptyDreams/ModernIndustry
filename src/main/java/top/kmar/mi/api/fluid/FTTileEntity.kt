@@ -4,7 +4,6 @@ import net.minecraft.block.Block
 import net.minecraft.block.BlockLiquid
 import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumFacing.HORIZONTALS
 import net.minecraft.util.ITickable
@@ -273,6 +272,17 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
         updateBlockState(false)
     }
 
+    override fun linkFluid(facing: EnumFacing): Boolean {
+        val thatTE = world.getTileEntity(pos.offset(facing))
+        if (thatTE is FTTileEntity) thatTE.lineCode.set(lineCode.nonnull)
+        return false
+    }
+
+    override fun canLinkFluid(facing: EnumFacing): Boolean {
+        val thatTE = world.getTileEntity(pos.offset(facing))
+        return if (thatTE is FTTileEntity) lineCode == thatTE.lineCode else true
+    }
+
     override fun isLinked(facing: EnumFacing) = linkData[facing]
 
     /**
@@ -353,22 +363,6 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
         }
     }
 
-    override fun getUpdateTag(): NBTTagCompound {
-        if (lineCode.isNull) {
-            lineCode.set(pos)
-            forEachLine(null) {
-                if (it.lineCode.isNull) {
-                    it.lineCode.set(pos)
-                    true
-                } else {
-                    lineCode.set(it.lineCode.nonnull)
-                    false
-                }
-            }
-        }
-        return super.getUpdateTag()
-    }
-
     /**
      * 遍历当前线路（不包含当前方块）
      * @param from 上一个方向，为null表示当前方块为起点
@@ -376,10 +370,14 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
      */
     protected open fun forEachLine(from: EnumFacing?, function: (FTTileEntity) -> Boolean) {
         if (getLinkedAmount() < 3) {
-            var lastFT: FTTileEntity? = null
+            var lastFT: FTTileEntity?
             var lastKey = from
             do {
-                val next = nextOnly(from) ?: break
+                val next = nextOnly(from)
+                if (next == null) {
+                    lastFT = null
+                    break
+                }
                 lastFT = next.first
                 lastKey = next.second.opposite
                 if (lastFT.getLinkedAmount() > 2 || !function(lastFT)) break
@@ -425,7 +423,21 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
     /** 方法内包含管道正常运行的方法，重写时务必使用`super.update()`调用 */
     override fun update() {
         if (world.isClient()) removeTickable()
-        send()
+        else {
+            if (lineCode.isNull) {
+                lineCode.set(pos)
+                forEachLine(null) {
+                    if (it.lineCode.isNull) {
+                        it.lineCode.set(pos)
+                        true
+                    } else {
+                        lineCode.set(it.lineCode.nonnull)
+                        false
+                    }
+                }
+            }
+            send()
+        }
     }
 
 }

@@ -14,6 +14,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import top.kmar.mi.api.utils.MISysInfo;
+import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.content.net.ClassInfoViewerMessage;
 import top.kmar.mi.ModernIndustry;
 import top.kmar.mi.api.dor.ByteDataOperator;
@@ -89,8 +91,8 @@ public class ClassInfoViewerFrame extends MIFrame {
 	
 	public ClassInfoViewerFrame(TileEntity entity, EntityPlayer player) {
 		super(LOCATION_NAME, player);
+		if (!player.world.isRemote) MISysInfo.print("----------TileEntity Info----------");
 		setSize(210, 210);
-		
 		SelectGroup allGroup = new SelectGroup(SelectGroup.Style.SQUARE_UP, 200, 190);
 		RollGroup serviceRoll = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
 		RollGroup clientRoll = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
@@ -102,6 +104,7 @@ public class ClassInfoViewerFrame extends MIFrame {
 		allGroup.createNewPage("Server Info").add(serviceRoll).setControlPanel(Panels::horizontalUp);
 		allGroup.createNewPage("Client Info").add(clientRoll).setControlPanel(Panels::horizontalUp);
 		add(allGroup);
+		if (!player.world.isRemote) MISysInfo.print("---------- end ----------");
 	}
 	
 	private void init(RollGroup rollGroup, TileEntity te) {
@@ -146,7 +149,9 @@ public class ClassInfoViewerFrame extends MIFrame {
 			return;
 		}
 		int color = getStringColor(field);
-		addText(nameGroup, valueGroup, nameText, getValue(details), color);
+		String value = getValue(details);
+		addText(nameGroup, valueGroup, nameText, value, color);
+		if (WorldUtil.isServer()) MISysInfo.print(nameText + ":" + value);
 	}
 	
 	private static void addText(Group nameGroup, Group valueGroup, String name, String value, int color) {
