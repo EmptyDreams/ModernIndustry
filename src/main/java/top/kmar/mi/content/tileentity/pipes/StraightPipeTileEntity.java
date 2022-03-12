@@ -45,7 +45,7 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	
 	@Override
 	public boolean canLinkFluid(EnumFacing facing) {
-		return hasAperture(facing) || getLinkData().isInit();
+		return super.canLinkFluid(facing) && (hasAperture(facing) || getLinkData().isInit());
 	}
 	
 	@Override

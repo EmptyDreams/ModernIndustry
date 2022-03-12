@@ -272,12 +272,14 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
         updateBlockState(false)
     }
 
+    /** 该函数符则修改[lineCode]数据，字类重写时务必调用 */
     override fun linkFluid(facing: EnumFacing): Boolean {
         val thatTE = world.getTileEntity(pos.offset(facing))
         if (thatTE is FTTileEntity) thatTE.lineCode.set(lineCode.nonnull)
         return false
     }
 
+    /** 该函数会检查[lineCode]，字类重写时务必调用并检查返回值 */
     override fun canLinkFluid(facing: EnumFacing): Boolean {
         val thatTE = world.getTileEntity(pos.offset(facing))
         return if (thatTE is FTTileEntity) lineCode == thatTE.lineCode else true

@@ -56,6 +56,7 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	
 	@Override
 	public boolean canLinkFluid(EnumFacing facing) {
+		if (!super.canLinkFluid(facing)) return false;
 		if (hasAperture(facing)) return true;
 		if (getLinkData().isInit()) return true;
 		if (isLinked(this.facing)) {
