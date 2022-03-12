@@ -54,7 +54,6 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	
 	@Override
 	public boolean linkFluid(EnumFacing facing) {
-		if (isLinked(facing)) return true;
 		if (!super.linkFluid(facing)) return false;
 		side = calculateSide();
 		updateBlockState(false);

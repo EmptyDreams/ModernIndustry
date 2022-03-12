@@ -67,12 +67,14 @@ class DoubleIndexEnumMap<T : Enum<*>>(val values: Array<T>) :
 
     private inline fun getOffsetRight(key: T) = key.ordinal shl 1
 
+    override fun toString(): String = Integer.toBinaryString(data)
+    
     override fun serializeDor(): IDataReader {
         val operator = ByteDataOperator(5)
         operator.writeVarInt(data)
         return operator
     }
-
+    
     override fun deserializedDor(reader: IDataReader) {
         data = reader.readVarInt()
     }

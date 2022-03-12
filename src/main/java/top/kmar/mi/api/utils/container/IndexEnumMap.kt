@@ -47,9 +47,7 @@ class IndexEnumMap<T : Enum<*>>(private val keys: Array<T>) :
         value = reader.readVarInt()
     }
 
-    override fun toString(): String {
-        return Integer.toBinaryString(getValue())
-    }
+    override fun toString(): String = Integer.toBinaryString(getValue())
 
     override fun iterator() = EnumIterator(0)
 

@@ -454,6 +454,11 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
         }
     }
 
+    override fun markDirty() {
+        super.markDirty()
+        players.clear()
+    }
+
     /**
      * 更新线路信息
      * @param force 是否强制更新
