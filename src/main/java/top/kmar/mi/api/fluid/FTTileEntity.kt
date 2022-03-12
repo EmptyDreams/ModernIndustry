@@ -29,8 +29,10 @@ import top.kmar.mi.api.utils.IOUtil
 import top.kmar.mi.api.utils.MathUtil.random
 import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.container.IndexEnumMap
+import top.kmar.mi.api.utils.container.Wrapper
 import top.kmar.mi.api.utils.data.io.Storage
 import top.kmar.mi.api.utils.isClient
+import top.kmar.mi.api.utils.removeTickable
 import java.util.*
 import javax.annotation.Nonnull
 
@@ -84,13 +86,14 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
 
     /** 六个方向的连接数据  */
     @Storage
-    protected val linkData = IndexEnumMap<EnumFacing>()
+    protected val linkData = IndexEnumMap(EnumFacing.values())
     /** 六个方向的管塞数据  */
     @Storage
     protected val plugData = EnumMap<EnumFacing, ItemStack>(EnumFacing::class.java)
     /** 管道内存储的流体量  */
     @Storage
     protected var fluidData = FluidData.empty()
+    private var lineCode = Wrapper<BlockPos>()
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?) =
         if (super.hasCapability(capability, facing)) true
@@ -317,7 +320,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
     open fun canSetPlug(facing: EnumFacing) = !(hasPlug(facing) || isLinked(facing))
 
     override fun receive(@Nonnull reader: IDataReader) {
-        linkData.value = reader.readByte().toInt()
+        linkData.setValue(reader.readByte().toInt())
         syncClient(reader)
         updateBlockState(true)
     }
@@ -344,21 +347,64 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
         if (players.size == world.playerEntities.size) return
         IOUtil.sendBlockMessageIfNotUpdate(this, players, 128) {
             val operator = ByteDataOperator(1)
-            operator.writeByte(linkData.value.toByte())
+            operator.writeByte(linkData.getValue().toByte())
             sync(operator)
             operator
         }
     }
 
     override fun getUpdateTag(): NBTTagCompound {
-        send()
-        if (isRemove && players.size != world.playerEntities.size) {
-            isRemove = false
-            WorldUtil.addTickable(this)
+        if (lineCode.isNull) {
+            lineCode.set(pos)
+            forEachLine(null) {
+                if (it.lineCode.isNull) {
+                    it.lineCode.set(pos)
+                    true
+                } else {
+                    lineCode.set(it.lineCode.nonnull)
+                    false
+                }
+            }
         }
         return super.getUpdateTag()
     }
 
+    /**
+     * 遍历当前线路（不包含当前方块）
+     * @param from 上一个方向，为null表示当前方块为起点
+     * @param function 操作，返回false表示终止当前线路的遍历
+     */
+    protected open fun forEachLine(from: EnumFacing?, function: (FTTileEntity) -> Boolean) {
+        if (getLinkedAmount() < 3) {
+            var lastFT: FTTileEntity? = null
+            var lastKey = from
+            do {
+                val next = nextOnly(from) ?: break
+                lastFT = next.first
+                lastKey = next.second.opposite
+                if (lastFT.getLinkedAmount() > 2 || !function(lastFT)) break
+            } while (true)
+            lastFT?.forEachLine(lastKey, function)
+        } else {
+            for ((key, _) in linkData) {
+                if (key === from) continue
+                val value = getFluidDirect(key) ?: continue
+                if (value is FTTileEntity) {
+                    if (function(value)) value.forEachLine(key.opposite, function)
+                }
+            }
+        }
+    }
+
+    protected open fun nextOnly(from: EnumFacing?): Pair<FTTileEntity, EnumFacing>? {
+        for ((key, _) in linkData) {
+            if (key === from) continue
+            val value = getFluidDirect(key) ?: continue
+            if (value is FTTileEntity) return Pair(value, key)
+        }
+        return null
+    }
+    
     /**
      * 更新IBlockState
      * @param isRunOnClient 是否在客户端运行
@@ -376,28 +422,10 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
         WorldUtil.setBlockState(world, pos, newState)
     }
 
-    /**
-     * 方法内包含管道正常运行的方法，重写时务必使用`super.update()`调用
-     */
+    /** 方法内包含管道正常运行的方法，重写时务必使用`super.update()`调用 */
     override fun update() {
+        if (world.isClient()) removeTickable()
         send()
-        updateTickableState()
-    }
-
-    /** 存储该TE是否已经从tickable的列表中移除  */
-    private var isRemove = false
-
-    /**
-     * 更新管道tickable的状态
-     */
-    fun updateTickableState() {
-        if (isRemove) {
-            isRemove = false
-            WorldUtil.addTickable(this)
-        } else {
-            isRemove = true
-            WorldUtil.removeTickable(this)
-        }
     }
 
 }

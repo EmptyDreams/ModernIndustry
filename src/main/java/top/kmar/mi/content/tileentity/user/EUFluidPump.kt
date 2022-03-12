@@ -89,7 +89,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     /** 内部存储的流体 */
     @Storage private var data = FluidData.empty()
     /** 出口入口是否连接 */
-    @Storage private val linked = IndexEnumMap<EnumFacing>()
+    @Storage private val linked = IndexEnumMap(EnumFacing.values())
     /** 水泵面板方向 */
     @Storage var panelFacing = EnumFacing.WEST
         set(value) {
@@ -268,13 +268,13 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
 
     override fun canLinkFluid(facing: EnumFacing) =
         facing.axis !== EnumFacing.Axis.Y &&
-                ((facing.axis !== panelFacing.axis && super.canLinkEle(facing)) || linked.isInit)
+                ((facing.axis !== panelFacing.axis && super.canLinkEle(facing)) || linked.isInit())
 
     override fun getFront() = panelFacing
 
     override fun linkFluid(facing: EnumFacing): Boolean {
         if (!canLinkFluid(facing)) return false
-        linked.set(facing, true)
+        linked[facing] = true
         if (facing.axis !== side.axis) side = facing
         return true
     }
@@ -282,7 +282,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     override fun linkEle(pos: BlockPos): Boolean {
         val facing = this.pos.whatFacing(pos)
         if (!canLinkEle(facing)) return false
-        linked.set(facing, true)
+        linked[facing] = true
         return true
     }
 

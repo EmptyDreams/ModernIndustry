@@ -155,7 +155,7 @@ public class CableCache {
 		double loss = getLoss(start, end, energy, path);
 		if (loss <= 0)
 			 throw new IllegalArgumentException("传入的起点和终点不在一条线路内");
-		Data data = new Data(start.getPos(), end, loss, energy.getVoltage(), path.get());
+		Data data = new Data(start.getPos(), end, loss, energy.getVoltage(), path.getNullable());
 		datas.add(data);
 		return data;
 	}

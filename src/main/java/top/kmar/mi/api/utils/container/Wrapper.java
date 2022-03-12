@@ -1,5 +1,8 @@
 package top.kmar.mi.api.utils.container;
 
+import top.kmar.mi.api.utils.StringUtil;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -24,8 +27,21 @@ public final class Wrapper<T> {
 	public Wrapper() { this(null); }
 	
 	@Nullable
-	public T get() { return object; }
+	public T getNullable() { return object; }
+	
+	@Nonnull
+	public T getNonnull() {
+		return StringUtil.checkNull(object, "object");
+	}
 	
 	public void set(T o) { object = o; }
+	
+	public boolean isNull() {
+		return object == null;
+	}
+	
+	public boolean notNull() {
+		return object != null;
+	}
 	
 }

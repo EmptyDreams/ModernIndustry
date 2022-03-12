@@ -1823,7 +1823,7 @@ public final class DataTypes {
 				}
 				return false;
 			});
-			return result.get();
+			return result.getNullable();
 		}
 		
 	}
