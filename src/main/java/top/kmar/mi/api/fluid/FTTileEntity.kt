@@ -119,8 +119,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
             if (queue.isEmpty) break
             if (value == facing.opposite || !isOpen(value)) continue
             val fluid = getFluidDirect(value)
-            fluid?.insert(queue, value, simulate, report) ?:
-            pump2World(queue, facing, simulate, report)
+            fluid?.insert(queue, value, simulate, report) ?: pump2World(queue, facing, simulate, report)
         }
         return newData.amount
     }
