@@ -111,24 +111,18 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
      */
     override fun insert(queue: FluidQueue, facing: EnumFacing, simulate: Boolean, report: TransportReport): Int {
         if (!isOpen(facing.opposite)) return 0
-        var result = 0
         val newData = queue.popTail(getMaxAmount())
         report.insert(facing, newData)
-        if (isEmpty) {
-            result += newData.amount
-            if (!simulate) fluidData.plus(newData)
-        } else {
-            queue.pushTail(fluidData)
-            if (!simulate) fluidData = newData
-            for (value in PUSH_EACH_PRIORITY) {
-                if (queue.isEmpty) break
-                if (value == facing.opposite || !isOpen(value)) continue
-                val fluid = getFluidDirect(value)
-                fluid?.insert(queue, value, simulate, report) ?:
-                                pump2World(queue, facing, simulate, report)
-            }
+        queue.pushTail(fluidData)
+        if (!simulate) fluidData = newData
+        for (value in PUSH_EACH_PRIORITY) {
+            if (queue.isEmpty) break
+            if (value == facing.opposite || !isOpen(value)) continue
+            val fluid = getFluidDirect(value)
+            fluid?.insert(queue, value, simulate, report) ?:
+            pump2World(queue, facing, simulate, report)
         }
-        return result
+        return newData.amount
     }
 
     /** 该方法保证返回的队列中头部为最先取出的流体  */
