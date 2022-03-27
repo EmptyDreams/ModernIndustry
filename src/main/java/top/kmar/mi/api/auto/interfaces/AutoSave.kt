@@ -1,5 +1,6 @@
 package top.kmar.mi.api.auto.interfaces
 
+import java.lang.reflect.Field
 import kotlin.reflect.KClass
 
 annotation class AutoSave(
@@ -27,3 +28,5 @@ annotation class AutoSave(
     val local: KClass<*> = Any::class
 
 )
+
+fun AutoSave.value(field: Field): String = value.ifEmpty { field.name }

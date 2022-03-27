@@ -52,6 +52,8 @@ class RWResult private constructor(
 
     fun isSkip() = state == Result.SKIP
 
+    fun hasException() = exception != null
+
     private enum class Result {
         /** 读写成功 */
         SUCCESSFUL,
