@@ -62,7 +62,7 @@ public interface IClassData {
 					if (state.isZero()) continue;
 					read(fields[i], data, object);
 				}
-				if (data.nowReadIndex() + 1 != data.endIndex())
+				if (!data.isEnd())
 					throw new AssertionError("Reader中的信息没有被读取完毕就结束了读取");
 			} catch (Throwable e) {
 				MISysInfo.err("读取信息时出现错误，跳过该项读写!\n"
