@@ -44,10 +44,10 @@ interface IAutoRW {
      *
      * @param field 属性的`Field`
      *
-     * @param builder 默认值构建器，为null表明不支持（或不需要）生成默认值
+     * @param obj 持有该`field`的类的对象
      *
      * @return 读取的结果，当写入过程发生异常时应当将异常包含在[RWResult]中而非直接抛出
      */
-    fun readFromLocal(reader: IDataReader, field: Field, builder: (() -> Any)?): RWResult
+    fun readFromLocal(reader: IDataReader, field: Field, obj: Any): RWResult
 
 }

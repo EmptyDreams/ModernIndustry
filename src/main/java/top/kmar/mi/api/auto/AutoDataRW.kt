@@ -28,7 +28,7 @@ object AutoDataRW {
         val machine = AutoTypeRegister.match(field) ?: return RWResult.failedUnsupport()
         val check = checkField(field, machine)
         if (!check.isSuccessful()) return check
-        return machine.readFromLocal(reader, field) { field[obj] }
+        return machine.readFromLocal(reader, field, obj)
     }
 
     private fun checkField(field: Field, machine: IAutoRW): RWResult {
