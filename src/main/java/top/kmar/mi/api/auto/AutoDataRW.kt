@@ -1,7 +1,8 @@
 package top.kmar.mi.api.auto
 
+import top.kmar.mi.api.auto.interfaces.IAutoRW
+import top.kmar.mi.api.auto.interfaces.RWResult
 import top.kmar.mi.api.auto.registers.AutoTypeRegister
-import top.kmar.mi.api.auto.registers.IAutoRW
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
 import java.lang.reflect.Field

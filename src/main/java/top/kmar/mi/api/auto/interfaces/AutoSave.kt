@@ -1,4 +1,4 @@
-package top.kmar.mi.api.auto
+package top.kmar.mi.api.auto.interfaces
 
 import kotlin.reflect.KClass
 

@@ -1,5 +1,6 @@
 package top.kmar.mi.api.auto.registers
 
+import top.kmar.mi.api.auto.interfaces.IAutoRW
 import java.lang.reflect.Field
 import java.util.*
 import kotlin.reflect.KClass

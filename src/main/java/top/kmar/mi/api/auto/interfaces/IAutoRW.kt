@@ -1,6 +1,5 @@
-package top.kmar.mi.api.auto.registers
+package top.kmar.mi.api.auto.interfaces
 
-import top.kmar.mi.api.auto.RWResult
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
 import java.lang.reflect.Field

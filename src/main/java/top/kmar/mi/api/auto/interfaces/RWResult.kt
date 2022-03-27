@@ -1,4 +1,4 @@
-package top.kmar.mi.api.auto
+package top.kmar.mi.api.auto.interfaces
 
 /**
  * 表明读写操作的结果

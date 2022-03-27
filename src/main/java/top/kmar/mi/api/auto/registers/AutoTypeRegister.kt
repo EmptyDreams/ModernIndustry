@@ -1,6 +1,7 @@
 package top.kmar.mi.api.auto.registers
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap
+import top.kmar.mi.api.auto.interfaces.IAutoRW
 import java.lang.reflect.Field
 import kotlin.reflect.KClass
 
