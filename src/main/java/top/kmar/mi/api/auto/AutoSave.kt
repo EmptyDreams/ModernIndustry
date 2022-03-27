@@ -2,22 +2,28 @@ package top.kmar.mi.api.auto
 
 import kotlin.reflect.KClass
 
-/**
- * 用于标志需要被离线的数据，不能被static修饰
- *
- * 对于`val`（或`final`）类型的变量，如果其可以在不被修改的情况下完成写入则可以支持，否则不允许为其添加该注解
- * @author EmptyDreams
- */
-@Target(AnnotationTarget.FIELD)
-@Retention(AnnotationRetention.RUNTIME)
-@MustBeDocumented
 annotation class AutoSave(
-    /** 存储key，默认为变量名 */
+
+    /** 存储唯一标识名，默认为变量名 */
     val value: String = "",
 
-    /** 数据的源类型，默认为声明的类型 */
-    val from: KClass<*> = Any::class,
+    /**
+     * 存储源类型，默认为属性声明类型
+     *
+     * 例如：
+     * ```kotlin
+     *  @AutoSave var intTest = 10;
+     *  @AutoSave var listTest: List<Int> = new ArrayList();
+     * ```
+     *
+     * 上述代码中，`intTest`的`from`属性为`Int::class`，`listTest`的`from`属性为`List::class`
+     */
+    val source: KClass<*> = Any::class,
 
-    /** 目的独写类型，默认为被注解的变量的类型 */
-    val to: KClass<*> = Any::class
+    /**
+     * 存储时的类型，默认为属性声明类型
+     * @see [source]
+     */
+    val local: KClass<*> = Any::class
+
 )
