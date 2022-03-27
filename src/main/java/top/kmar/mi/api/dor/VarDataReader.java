@@ -63,8 +63,8 @@ public class VarDataReader implements IDataReader {
 	}
 	
 	@Override
-	public int endIndex() {
-		return endIndex;
+	public boolean isEnd() {
+		return readIndex == endIndex;
 	}
 	
 	@Override

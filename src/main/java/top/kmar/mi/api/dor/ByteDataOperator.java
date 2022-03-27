@@ -74,6 +74,11 @@ public class ByteDataOperator implements IDataOperator {
 	}
 	
 	@Override
+	public boolean isEnd() {
+		return readIndex == size();
+	}
+	
+	@Override
 	public void setReadIndex(int readIndex) {
 		this.readIndex = readIndex;
 	}

@@ -68,6 +68,7 @@ object AutoDataRW {
     private fun read2ObjAndPrintErr(reader: IDataReader, field: Field, obj: Any) {
         val check = read2Obj(reader, field, obj)
         if (check.isFailed()) printErr(obj, field, check)
+        else if (!reader.isEnd) printErr(obj, field, RWResult.failed("本地信息没有读取完毕就结束了处理"))
     }
 
     /** 写入数据到[IDataWriter] */

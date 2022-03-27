@@ -84,6 +84,11 @@ public final class DataReader implements IDataReader {
 	}
 	
 	@Override
+	public boolean isEnd() {
+		return readIndex == size();
+	}
+	
+	@Override
 	public void setReadIndex(int readIndex) {
 		this.readIndex = readIndex;
 	}
