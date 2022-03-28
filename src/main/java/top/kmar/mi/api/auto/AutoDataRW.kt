@@ -31,6 +31,7 @@ object AutoDataRW {
                 val annotation = field.getAnnotation(AutoSave::class.java) ?: continue
                 val operator = ByteDataOperator()
                 val check = write2Local(operator, field, obj)
+                writer.writeBoolean(check.isSuccessful())
                 if (check.isSuccessful()) {
                     val key = annotation.value(field)
                     writer.writeString(key)
@@ -47,11 +48,12 @@ object AutoDataRW {
      * 该函数会处理输入的对象（包括其父类）中的所有需要处理的数据
      */
     fun read2ObjAll(reader: IDataReader, obj: Any) {
-        val clazz = obj::class.java
+        var clazz = obj::class.java
         val map = Object2ObjectOpenHashMap<String, MutablePair<IDataReader?, Field?>>()
         while (clazz != Any::class.java) {
             for (field in clazz.declaredFields) {
                 val annotation = field.getAnnotation(AutoSave::class.java) ?: continue
+                if (!reader.readBoolean()) continue
                 val localName = reader.readString()
                 val codeName = annotation.value(field)
                 if (map.isNotEmpty() || codeName != localName) {
@@ -59,6 +61,7 @@ object AutoDataRW {
                     map.computeIfAbsent(codeName) { MutablePair(null, null) }.right = field
                 } else read2ObjAndPrintErr(reader.readData(), field, obj)
             }
+            clazz = clazz.superclass
         }
         map.forEach { (_, pair) -> read2ObjAndPrintErr(pair.left!!, pair.right!!, obj) }
     }
