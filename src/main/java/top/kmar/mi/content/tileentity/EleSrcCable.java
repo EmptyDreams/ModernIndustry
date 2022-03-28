@@ -70,7 +70,6 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	/** 电线连接的方块，不包括电线方块 */
 	@AutoSave
 	private final List<BlockPos> linkedBlocks = new ArrayList<BlockPos>(5) {
-		private static final long serialVersionUID = 8683452581122892180L;
 		@Override
 		public boolean add(BlockPos tileEntity) {
 			return super.add(StringUtil.checkNull(tileEntity, "tileEntity"));
