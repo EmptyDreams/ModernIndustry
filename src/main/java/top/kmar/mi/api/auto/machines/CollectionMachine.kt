@@ -32,7 +32,7 @@ object CollectionMachine : IAutoFieldRW, IAutoObjRW<Collection<*>> {
     override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
         val annotation = field.getAnnotation(AutoSave::class.java)!!
         val local = annotation.local(field).java
-        if (Collection::class.java.isAssignableFrom(local))
+        if (!Collection::class.java.isAssignableFrom(local))
             return RWResult.failed("Collection<?>不能转化为${local.name}")
         val value = (field[obj] as Collection<*>?) ?: return RWResult.skipNull()
         if (value.isEmpty()) return RWResult.skipNull()
@@ -59,7 +59,7 @@ object CollectionMachine : IAutoFieldRW, IAutoObjRW<Collection<*>> {
     override fun match(type: KClass<*>) = Collection::class.java.isAssignableFrom(type.java)
 
     override fun write2Local(writer: IDataWriter, value: Collection<*>, local: KClass<*>): RWResult {
-        if (Collection::class.java.isAssignableFrom(local.java))
+        if (!Collection::class.java.isAssignableFrom(local.java))
             return RWResult.failed("${local.qualifiedName}不能转化为Collection<?>")
         return writeHelper(writer, value)
     }
