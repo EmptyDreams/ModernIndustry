@@ -92,13 +92,13 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 		if (maxWorkingTime == 0) {
 			maxWorkingTime = getCookTime(up.getStack());
 			up.decrStackSize(1);
-			workProgress.setMax(maxWorkingTime);
 		}
 		if (++workingTime >= maxWorkingTime) {
 			if (out.getStack().isEmpty()) out.putStack(getResult(up.getStack()));
 			else out.getStack().grow(1);
 			maxWorkingTime = workingTime = 0;
 		}
+		workProgress.setMax(maxWorkingTime);
 		workProgress.setNow(workingTime);
 	}
 	
