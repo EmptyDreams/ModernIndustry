@@ -1,7 +1,8 @@
 package top.kmar.mi.api.auto.registers
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap
-import top.kmar.mi.api.auto.interfaces.IAutoRW
+import top.kmar.mi.api.auto.interfaces.IAutoFieldRW
+import top.kmar.mi.api.auto.interfaces.IAutoObjRW
 import java.lang.reflect.Field
 import kotlin.reflect.KClass
 
@@ -11,15 +12,25 @@ import kotlin.reflect.KClass
  */
 object AutoTypeRegister {
 
-    private val machineList = Int2ObjectRBTreeMap<AutoTypeList>()
+    private val fieldList = Int2ObjectRBTreeMap<FieldAutoTypeList>()
+    private val objList = Int2ObjectRBTreeMap<ObjAutoTypeList>()
 
     /**
      * 注册一个读写器
      * @param machine 读写器对象
      * @param priority 读写器优先级，数字越小优先级越高
      */
-    fun registry(machine: IAutoRW, priority: Int) {
-        machineList.computeIfAbsent(priority) { AutoTypeList() }.registry(machine)
+    fun registry(machine: IAutoFieldRW, priority: Int) {
+        fieldList.computeIfAbsent(priority) { FieldAutoTypeList() }.registry(machine)
+    }
+
+    /**
+     * 注册一个读写器
+     * @param machine 读写器对象
+     * @param priority 读写器优先级，数字越小优先级越高
+     */
+    fun registry(machine: IAutoObjRW<*>, priority: Int) {
+        objList.computeIfAbsent(priority) { ObjAutoTypeList() }.registry(machine)
     }
 
     /**
@@ -27,13 +38,31 @@ object AutoTypeRegister {
      * @param priority 读写器优先级，数字越小优先级越高
      * @param builder 读写器对象构建器
      */
-    fun registry(priority: Int, builder: () -> IAutoRW) {
+    fun registryField(priority: Int, builder: () -> IAutoFieldRW) {
         registry(builder(), priority)
     }
 
-    /** 读写器 */
-    fun match(field: Field): IAutoRW? {
-        for ((_, list) in machineList) return list.match(field) ?: continue
+    /**
+     * 注册一个读写器
+     * @param priority 读写器优先级，数字越小优先级越高
+     * @param builder 读写器对象构建器
+     */
+    fun registryObj(priority: Int, builder: () -> IAutoObjRW<*>) {
+        registry(builder(), priority)
+    }
+
+    /** 匹配读写器，没有匹配的则返回`null` */
+    fun match(field: Field): IAutoFieldRW? {
+        for ((_, list) in fieldList) return list.match(field) ?: continue
+        return null
+    }
+
+    /** 匹配读写器，没有匹配的则返回`null` */
+    fun match(type: KClass<*>): IAutoObjRW<Any>? {
+        for ((_, list) in objList) {
+            @Suppress("UNCHECKED_CAST")
+            return list.match(type) as IAutoObjRW<Any>? ?: continue
+        }
         return null
     }
 
@@ -41,10 +70,16 @@ object AutoTypeRegister {
      * 删除指定的读写器
      * @param value 读写器的`KClass`对象
      */
-    fun deleteValue(value: KClass<out IAutoRW>) {
-        for ((_, list) in machineList) {
-            list.deleteValue(value)
-        }
+    fun deleteFieldValue(value: KClass<out IAutoFieldRW>) {
+        for ((_, list) in fieldList) list.deleteValue(value)
+    }
+
+    /**
+     * 删除指定的读写器
+     * @param value 读写器的`KClass`对象
+     */
+    fun deleteObjValue(value: KClass<out IAutoObjRW<*>>) {
+        for ((_, list) in objList) list.deleteValue(value)
     }
 
 }

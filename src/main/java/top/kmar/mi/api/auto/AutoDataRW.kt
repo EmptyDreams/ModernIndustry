@@ -2,10 +2,7 @@ package top.kmar.mi.api.auto
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import org.apache.commons.lang3.tuple.MutablePair
-import top.kmar.mi.api.auto.interfaces.AutoSave
-import top.kmar.mi.api.auto.interfaces.IAutoRW
-import top.kmar.mi.api.auto.interfaces.RWResult
-import top.kmar.mi.api.auto.interfaces.value
+import top.kmar.mi.api.auto.interfaces.*
 import top.kmar.mi.api.auto.registers.AutoTypeRegister
 import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.dor.interfaces.IDataReader
@@ -13,6 +10,7 @@ import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.utils.MISysInfo
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
+import kotlin.reflect.KClass
 
 /**
  * 自动独写数据
@@ -79,15 +77,29 @@ object AutoDataRW {
         return machine.write2Local(writer, field, obj)
     }
 
+    /** 写入数据到[IDataWriter] */
+    fun write2Local(writer: IDataWriter, data: Any, local: KClass<*> = Any::class): RWResult {
+        val machine = AutoTypeRegister.match(data::class) ?: return RWResult.failedUnsupport()
+        return if (local == Any::class) machine.write2Local(writer, data, data::class)
+                else machine.write2Local(writer, data, local)
+    }
+
     /** 从[IDataReader]读取数据 */
     fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
         val machine = AutoTypeRegister.match(field) ?: return RWResult.failedUnsupport()
         val check = checkField(field, machine)
         if (!check.isSuccessful()) return check
-        return machine.readFromLocal(reader, field, obj)
+        return machine.read2Obj(reader, field, obj)
     }
 
-    private fun checkField(field: Field, machine: IAutoRW): RWResult {
+    /** 从[IDataReader]读取数据 */
+    fun <T> read2Obj(reader: IDataReader, local: KClass<*>, receiver: (T) -> Unit): RWResult {
+        @Suppress("UNCHECKED_CAST")
+        val machine = AutoTypeRegister.match(local) as IAutoObjRW<T>? ?: return RWResult.failedUnsupport()
+        return machine.read2Obj(reader, local, receiver)
+    }
+
+    private fun checkField(field: Field, machine: IAutoFieldRW): RWResult {
         val mode = field.modifiers
         if (Modifier.isStatic(mode)) return RWResult.failedStatic()
         if (Modifier.isFinal(mode) && !machine.allowFinal()) return RWResult.failedFinal()

@@ -24,6 +24,9 @@ class RWResult private constructor(
 
         @JvmStatic fun failed(message: String) = RWResult(Result.FAILED, message)
 
+        @JvmStatic fun failedWithException(message: String, exception: Throwable) =
+            RWResult(Result.FAILED, message, exception)
+
         @JvmStatic fun skip(message: String) = RWResult(Result.SKIP, message)
 
         /** 因为数据类型为`val`(`final`)导致的读写失败 */

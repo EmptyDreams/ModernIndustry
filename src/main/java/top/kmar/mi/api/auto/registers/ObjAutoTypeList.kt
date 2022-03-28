@@ -1,7 +1,6 @@
 package top.kmar.mi.api.auto.registers
 
-import top.kmar.mi.api.auto.interfaces.IAutoRW
-import java.lang.reflect.Field
+import top.kmar.mi.api.auto.interfaces.IAutoObjRW
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -9,21 +8,21 @@ import kotlin.reflect.KClass
  * 读写器列表
  * @author EmptyDreams
  */
-class AutoTypeList {
+class ObjAutoTypeList {
 
-    private val machineList = LinkedList<IAutoRW>()
+    private val machineList = LinkedList<IAutoObjRW<*>>()
 
     /**
      * 尝试匹配一个读写器
      * @return 没有匹配到则返回`null`
      */
-    fun match(field: Field): IAutoRW? {
-        machineList.forEach { if (it.match(field)) return it }
+    fun match(type: KClass<*>): IAutoObjRW<*>? {
+        machineList.forEach { if (it.match(type)) return it }
         return null
     }
 
     /** 注册一个读写器 */
-    fun registry(value: IAutoRW) {
+    fun registry(value: IAutoObjRW<*>) {
         machineList.add(value)
     }
 
@@ -32,7 +31,7 @@ class AutoTypeList {
      *
      * @param value 读写器的`KClass`对象
      */
-    fun deleteValue(value: KClass<out IAutoRW>) {
+    fun deleteValue(value: KClass<out IAutoObjRW<*>>) {
         machineList.removeIf { it::class == value }
     }
 

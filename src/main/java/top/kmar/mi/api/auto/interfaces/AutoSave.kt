@@ -30,3 +30,9 @@ annotation class AutoSave(
 )
 
 fun AutoSave.value(field: Field): String = value.ifEmpty { field.name }
+
+fun AutoSave.source(field: Field): KClass<*> =
+    if (source == Any::class) field.type.kotlin else source
+
+fun AutoSave.local(field: Field): KClass<*> =
+    if (local == Any::class) source(field) else local

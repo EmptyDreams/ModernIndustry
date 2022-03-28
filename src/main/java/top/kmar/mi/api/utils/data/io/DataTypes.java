@@ -37,7 +37,6 @@ import java.util.function.Supplier;
 
 import static top.kmar.mi.api.utils.ExpandFunctionKt.readString;
 import static top.kmar.mi.api.utils.ExpandFunctionKt.writeString;
-import static top.kmar.mi.api.utils.data.io.DataTypeRegister.registry;
 
 /**
  * @author EmptyDreams
@@ -46,36 +45,7 @@ import static top.kmar.mi.api.utils.data.io.DataTypeRegister.registry;
 public final class DataTypes {
 	
 	static {
-		registry(new IntData(),                                 0);
-		registry(new ByteData(),                                0);
-		registry(new BooleanData(),                             0);
-		registry(new LongData(),                                0);
-		registry(new ByteArrayData(),                           0);
-		registry(new IntArrayData(),                            0);
-		registry(new DoubleData(),                              0);
-		registry(new FloatData(),                               0);
-		registry(new ShortData(),                               0);
-		registry(new UuidData(),                                0);
-		registry(new BytePackageArrayData(),                    0);
-		registry(new IntPackageArrayData(),                     0);
-		registry(new ClassData(),                              50);
-		registry(new StringData(),                             50);
-		registry(new CollectionData(),                         50);
-		registry(new PosData(),                                50);
-		registry(new ElementData(),                            50);
-		registry(new MapData(),                                50);
-		registry(new VoltageData(),                            50);
-		registry(new NbtData(),                                50);
-		registry(new FluidStackData(),                         50);
-		registry(new FluidStackArrayData(),                    50);
-		registry(new EnumData(),                               50);
-		registry(new FluidDataData(),                           50);
-		registry(new StringBuilderData(),                     100);
-		registry(new StringBufferData(),                      100);
-		registry(new AllEnumData(),                          1000);
-		registry(new CapabilityData(),                       2000);
-		registry(new DorSerializeData(),                     2000);
-		registry(new SerializableData(),                     3000);
+	
 	}
 	
 	public static final class DorSerializeData implements IDataIO<IDorSerialize> {
