@@ -3,8 +3,10 @@ package top.kmar.mi.api.auto.machines
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.CapabilityManager
 import top.kmar.mi.api.auto.interfaces.*
+import top.kmar.mi.api.auto.registers.AutoTypeRegister
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
+import top.kmar.mi.api.register.others.AutoRWType
 import top.kmar.mi.coremod.other.ICapManagerCheck
 import top.kmar.mi.coremod.other.ICapStorageType
 import java.lang.reflect.Field
@@ -12,9 +14,10 @@ import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
 
 /**
- *
+ * Cap的读写器
  * @author EmptyDreams
  */
+@AutoRWType(AutoTypeRegister.GENERAL_TYPE shr 1)
 class CapabilityMachine : IAutoFieldRW, IAutoObjRW<Any> {
 
     override fun allowFinal() = true

@@ -1,8 +1,10 @@
 package top.kmar.mi.api.auto.machines
 
 import top.kmar.mi.api.auto.interfaces.*
+import top.kmar.mi.api.auto.registers.AutoTypeRegister
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
+import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import java.util.*
 import kotlin.reflect.KClass
@@ -11,6 +13,7 @@ import kotlin.reflect.KClass
  * UUID的读写器
  * @author EmptyDreams
  */
+@AutoRWType(AutoTypeRegister.VALUE_TYPE)
 class UuidMachine : IAutoFieldRW, IAutoObjRW<UUID> {
 
     override fun allowFinal() = false

@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import top.kmar.mi.api.register.machines.AgentRegistryMachine;
 import top.kmar.mi.api.register.machines.AutoLoadMachine;
 import top.kmar.mi.api.register.machines.AutoManagerRegistryMachine;
+import top.kmar.mi.api.register.machines.AutoTypeRegistryMachine;
 import top.kmar.mi.api.register.machines.BlockRegistryMachine;
 import top.kmar.mi.api.register.machines.FluidRegistryMachine;
 import top.kmar.mi.api.register.machines.ItemRegistryMachine;
@@ -78,6 +79,7 @@ public final class AutoRegister {
 		event.registryByClass(MODID, new OreCreateRegistryMachine());
 		event.registryByClass(MODID, new PlayerHandleRegistryMachine());
 		event.registryByClass(MODID, new TileEntityRegistryMachine());
+		event.registryByClass(MODID, new AutoTypeRegistryMachine());
 	}
 	
 	private AutoRegister() { throw new AssertionError("不应该调用的构造函数"); }

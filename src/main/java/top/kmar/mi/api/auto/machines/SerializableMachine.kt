@@ -3,8 +3,10 @@ package top.kmar.mi.api.auto.machines
 import net.minecraft.nbt.NBTBase
 import net.minecraftforge.common.util.INBTSerializable
 import top.kmar.mi.api.auto.interfaces.*
+import top.kmar.mi.api.auto.registers.AutoTypeRegister
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
+import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
@@ -13,6 +15,7 @@ import kotlin.reflect.KClass
  * [INBTSerializable]的读写器
  * @author EmptyDreams
  */
+@AutoRWType(AutoTypeRegister.GENERAL_TYPE)
 class SerializableMachine : IAutoFieldRW, IAutoObjRW<INBTSerializable<*>> {
 
     override fun allowFinal() = true

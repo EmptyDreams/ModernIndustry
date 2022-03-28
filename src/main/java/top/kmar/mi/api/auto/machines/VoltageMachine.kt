@@ -1,9 +1,11 @@
 package top.kmar.mi.api.auto.machines
 
 import top.kmar.mi.api.auto.interfaces.*
+import top.kmar.mi.api.auto.registers.AutoTypeRegister
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.electricity.interfaces.IVoltage
+import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import kotlin.reflect.KClass
 
@@ -11,6 +13,7 @@ import kotlin.reflect.KClass
  * 电压的读写器
  * @author EmptyDreams
  */
+@AutoRWType(AutoTypeRegister.VALUE_TYPE)
 class VoltageMachine : IAutoFieldRW, IAutoObjRW<IVoltage> {
 
     override fun allowFinal() = false

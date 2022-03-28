@@ -1,8 +1,10 @@
 package top.kmar.mi.api.auto.machines
 
 import top.kmar.mi.api.auto.interfaces.*
+import top.kmar.mi.api.auto.registers.AutoTypeRegister
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
+import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
@@ -11,6 +13,7 @@ import kotlin.reflect.KClass
  * Byte数组的读写器
  * @author EmptyDreams
  */
+@AutoRWType(AutoTypeRegister.BASE_ARRAY_TYPE)
 class ByteArrayMachine : IAutoFieldRW, IAutoObjRW<ByteArray> {
 
     override fun allowFinal() = true

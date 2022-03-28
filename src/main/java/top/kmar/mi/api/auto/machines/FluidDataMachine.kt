@@ -3,9 +3,11 @@ package top.kmar.mi.api.auto.machines
 import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidRegistry
 import top.kmar.mi.api.auto.interfaces.*
+import top.kmar.mi.api.auto.registers.AutoTypeRegister
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.fluid.data.FluidData
+import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import kotlin.reflect.KClass
 
@@ -13,6 +15,7 @@ import kotlin.reflect.KClass
  * [FluidData]的读写器
  * @author EmptyDreams
  */
+@AutoRWType(AutoTypeRegister.VALUE_TYPE)
 class FluidDataMachine : IAutoFieldRW, IAutoObjRW<FluidData> {
 
     override fun allowFinal() = true

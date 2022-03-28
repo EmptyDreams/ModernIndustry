@@ -5,6 +5,7 @@ import top.kmar.mi.api.auto.interfaces.*
 import top.kmar.mi.api.auto.registers.AutoTypeRegister
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
+import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
@@ -16,6 +17,7 @@ import kotlin.reflect.KClass
  *
  * @author EmptyDreams
  */
+@AutoRWType(AutoTypeRegister.GENERAL_TYPE shr 1)
 class CollectionMachine : IAutoFieldRW, IAutoObjRW<Collection<*>> {
 
     override fun allowFinal() = true

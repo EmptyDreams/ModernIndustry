@@ -12,6 +12,15 @@ import kotlin.reflect.KClass
  */
 object AutoTypeRegister {
 
+    /** 基本类型的读写器默认优先级 */
+    const val BASE_TYPE = 100
+    /** 基本类型的数组读写器默认优先级 */
+    const val BASE_ARRAY_TYPE = 500
+    /** 一般类型读写器默认优先级 */
+    const val VALUE_TYPE = 2000
+    /** 通用类型的读写器的默认优先级 */
+    const val GENERAL_TYPE = 1000000000
+
     private val fieldList = Int2ObjectRBTreeMap<FieldAutoTypeList>()
     private val objList = Int2ObjectRBTreeMap<ObjAutoTypeList>()
 
