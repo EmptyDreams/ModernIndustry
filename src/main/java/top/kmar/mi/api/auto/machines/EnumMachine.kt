@@ -52,8 +52,8 @@ object EnumMachine : IAutoFieldRW, IAutoObjRW<Enum<*>> {
         val valueName = reader.readString()
         try {
             val enumClass = Class.forName(className)
-            val method = java.lang.Enum::class.java.getMethod("values", Class::class.java, String::class.java)
-            receiver(method(enumClass, valueName) as Enum<*>)
+            val method = java.lang.Enum::class.java.getMethod("valueOf", Class::class.java, String::class.java)
+            receiver(method(null, enumClass, valueName) as Enum<*>)
         } catch (e: Throwable) {
             return RWResult.failedWithException("枚举类读取过程中发生异常", e)
         }
