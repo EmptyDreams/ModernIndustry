@@ -29,7 +29,7 @@ object KClassMachine : IAutoFieldRW, IAutoObjRW<KClass<*>> {
         val value = (field[obj] as KClass<*>?) ?: return RWResult.skipNull()
         if (value.qualifiedName == null) return RWResult.failed("不支持匿名类的读写")
         when (val local = annotation.local(field)) {
-            KClass::class -> writer.writeString(value.qualifiedName)
+            KClass::class -> writer.writeString(value.java.name)
             else -> return RWResult.failed("KClass<*>不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
@@ -48,7 +48,7 @@ object KClassMachine : IAutoFieldRW, IAutoObjRW<KClass<*>> {
 
     override fun write2Local(writer: IDataWriter, value: KClass<*>, local: KClass<*>): RWResult {
         if (local != KClass::class) return RWResult.failed("KClass<*>不能转化为${local.qualifiedName}")
-        writer.writeString(value.qualifiedName)
+        writer.writeString(value.java.name)
         return RWResult.success()
     }
 

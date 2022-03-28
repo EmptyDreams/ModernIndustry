@@ -54,8 +54,8 @@ object MapMachine : IAutoFieldRW, IAutoObjRW<Map<*, *>> {
         if (!Map::class.java.isAssignableFrom(local.java))
             return RWResult.failed("Map<K, V>不能转化为${local.qualifiedName}")
         if (value.isEmpty()) return RWResult.skipNull()
-        writer.writeString(value.keys::class.qualifiedName)
-        writer.writeString(value.values::class.qualifiedName)
+        writer.writeString(value.keys::class.java.name)
+        writer.writeString(value.values::class.java.name)
         val check = AutoDataRW.write2Local(writer, value.keys)
         if (!check.isSuccessful()) return check
         return AutoDataRW.write2Local(writer, value.values)

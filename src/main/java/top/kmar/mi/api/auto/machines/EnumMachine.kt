@@ -42,7 +42,7 @@ object EnumMachine : IAutoFieldRW, IAutoObjRW<Enum<*>> {
     override fun write2Local(writer: IDataWriter, value: Enum<*>, local: KClass<*>): RWResult {
         if (local != value::class)
             return RWResult.failed("Enum不能转化为${local.qualifiedName}")
-        writer.writeString(value::class.qualifiedName)
+        writer.writeString(value::class.java.name)
         writer.writeString(value.name)
         return RWResult.success()
     }
