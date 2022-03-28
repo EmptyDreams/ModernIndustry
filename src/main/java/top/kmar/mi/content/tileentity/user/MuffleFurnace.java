@@ -7,10 +7,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import top.kmar.mi.api.auto.interfaces.AutoSave;
 import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
 import top.kmar.mi.api.tools.BaseTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
-import top.kmar.mi.api.utils.data.io.Storage;
 import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.gui.component.CommonProgress.Front;
 import top.kmar.mi.api.gui.component.CommonProgress.Style;
@@ -26,7 +26,7 @@ import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
 @AutoTileEntity("MuffleFurnace")
 public class MuffleFurnace extends BaseTileEntity implements ITickable {
 	
-	@Storage
+	@AutoSave
     private final ItemStackHandler item = new ItemStackHandler(3);
 	/** 上方放置原料的输入框 */
 	private final SlotItemHandler up = new SlotItemHandler(item, 0, 55, 21) {
@@ -54,10 +54,10 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 		}
 	};
 	
-	@Storage private int maxWorkingTime = 0;
-	@Storage private int workingTime = 0;
-	@Storage private int maxBurningTime = 0;
-	@Storage private int burningTime = 0;
+	@AutoSave private int maxWorkingTime = 0;
+	@AutoSave private int workingTime = 0;
+	@AutoSave private int maxBurningTime = 0;
+	@AutoSave private int burningTime = 0;
 	
 	private final CommonProgress workProgress = new CommonProgress();
 	private final CommonProgress burnProgress = new CommonProgress(Style.FIRE, Front.UP);

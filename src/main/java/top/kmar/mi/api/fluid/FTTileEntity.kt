@@ -13,6 +13,7 @@ import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fluids.IFluidBlock
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
+import top.kmar.mi.api.auto.interfaces.AutoSave
 import top.kmar.mi.api.capabilities.fluid.FluidCapability
 import top.kmar.mi.api.capabilities.fluid.IFluid
 import top.kmar.mi.api.dor.ByteDataOperator
@@ -28,7 +29,6 @@ import top.kmar.mi.api.utils.MathUtil.random
 import top.kmar.mi.api.utils.container.DoubleIndexEnumMap
 import top.kmar.mi.api.utils.data.enums.HorizontalDirectionEnum.LEFT
 import top.kmar.mi.api.utils.data.enums.HorizontalDirectionEnum.RIGHT
-import top.kmar.mi.api.utils.data.io.Storage
 import java.util.*
 import javax.annotation.Nonnull
 
@@ -85,13 +85,13 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
      *
      * 规定：左值用来表示该方向上是否连接方块，右值表示该方块是否为管道
      */
-    @Storage
+    @AutoSave
     protected val linkData = DoubleIndexEnumMap(EnumFacing.values())
     /** 六个方向的管塞数据  */
-    @Storage
+    @AutoSave
     protected val plugData = EnumMap<EnumFacing, ItemStack>(EnumFacing::class.java)
     /** 管道内存储的流体量  */
-    @Storage
+    @AutoSave
     protected var fluidData = FluidData.empty()
     private var lineCode: BlockPos? = null
 

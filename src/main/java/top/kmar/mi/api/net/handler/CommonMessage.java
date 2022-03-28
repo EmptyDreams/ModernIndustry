@@ -9,7 +9,7 @@ import top.kmar.mi.api.dor.ByteDataOperator;
 import top.kmar.mi.api.dor.DataReader;
 import top.kmar.mi.api.dor.interfaces.IDataOperator;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
-import top.kmar.mi.api.utils.data.io.DataSerialize;
+import top.kmar.mi.api.utils.ExpandFunctionKt;
 
 /**
  * 通用信息传输
@@ -40,7 +40,7 @@ public class CommonMessage implements IMessage {
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		this.key = DataSerialize.read(buf, String.class, String.class, null);
+		this.key = ExpandFunctionKt.readString(buf);
 		IDataOperator reader = new ByteDataOperator(50);
 		reader.writeFromByteBuf(buf);
 		this.reader = reader;
@@ -49,7 +49,7 @@ public class CommonMessage implements IMessage {
 	@Override
 	public void toBytes(ByteBuf buf) {
 		if (reader == null) throw new IllegalArgumentException("没有给定需要传输的信息");
-		DataSerialize.write(buf, key, String.class);
+		ExpandFunctionKt.writeString(buf, key);
 		reader.readToByteBuf(buf);
 	}
 	

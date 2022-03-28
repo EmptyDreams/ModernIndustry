@@ -2,10 +2,10 @@ package top.kmar.mi.content.tileentity.pipes;
 
 import com.google.common.collect.Lists;
 import net.minecraft.util.EnumFacing;
+import top.kmar.mi.api.auto.interfaces.AutoSave;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.dor.interfaces.IDataWriter;
 import top.kmar.mi.api.fluid.FTTileEntity;
-import top.kmar.mi.api.utils.data.io.Storage;
 import top.kmar.mi.api.register.others.AutoTileEntity;
 
 import java.util.List;
@@ -20,7 +20,7 @@ import static net.minecraft.util.EnumFacing.*;
 public class ShuntPipeTileEntity extends FTTileEntity {
 	
 	/** 管道侧面面对的方向 */
-	@Storage
+	@AutoSave
     protected Axis side = Axis.Y;
 	
 	@Override

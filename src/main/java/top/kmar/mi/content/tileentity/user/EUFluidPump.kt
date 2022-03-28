@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
+import top.kmar.mi.api.auto.interfaces.AutoSave
 import top.kmar.mi.api.capabilities.fluid.FluidCapability.TRANSFER
 import top.kmar.mi.api.capabilities.fluid.IFluid
 import top.kmar.mi.api.dor.ByteDataOperator
@@ -26,7 +27,6 @@ import top.kmar.mi.api.register.others.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
 import top.kmar.mi.api.utils.*
 import top.kmar.mi.api.utils.container.IndexEnumMap
-import top.kmar.mi.api.utils.data.io.Storage
 import top.kmar.mi.content.blocks.machine.user.FluidPumpBlock
 import top.kmar.mi.data.info.BiggerVoltage
 import top.kmar.mi.data.info.EnumBiggerVoltage
@@ -87,25 +87,25 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     /** 基础电能消耗 */
     var baseLoss = 5
     /** 内部存储的流体 */
-    @Storage private var data = FluidData.empty()
+    @AutoSave private var data = FluidData.empty()
     /** 出口入口是否连接 */
-    @Storage private val linked = IndexEnumMap(EnumFacing.values())
+    @AutoSave private val linked = IndexEnumMap(EnumFacing.values())
     /** 水泵面板方向 */
-    @Storage var panelFacing = EnumFacing.WEST
+    @AutoSave var panelFacing = EnumFacing.WEST
         set(value) {
             field = value
             val list = maySide(value)
             if (!list.contains(side)) side = list[0]
         }
     /** 水泵输出方向 */
-    @Storage var side = EnumFacing.NORTH
+    @AutoSave var side = EnumFacing.NORTH
         set(value) {
             field = value
             val list = mayPanel(value)
             if (!list.contains(panelFacing)) panelFacing = list[0]
         }
     /** 是否工作 */
-    @Storage var start = false
+    @AutoSave var start = false
     /** 是否正在工作 */
     var working = false
         get() = field && start

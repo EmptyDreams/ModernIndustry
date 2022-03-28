@@ -9,23 +9,23 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import top.kmar.mi.api.auto.interfaces.AutoSave;
 import top.kmar.mi.api.craftguide.ItemElement;
+import top.kmar.mi.api.craftguide.sol.ItemSet;
+import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
+import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.gui.component.group.AbstractSlotGroup;
 import top.kmar.mi.api.gui.component.group.SlotGroup;
 import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
+import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.ItemUtil;
 import top.kmar.mi.api.utils.WorldUtil;
-import top.kmar.mi.api.utils.data.io.Storage;
 import top.kmar.mi.content.blocks.CraftList;
 import top.kmar.mi.content.blocks.machine.user.CompressorBlock;
 import top.kmar.mi.data.info.BiggerVoltage;
 import top.kmar.mi.data.info.EnumBiggerVoltage;
 import top.kmar.mi.data.info.EnumVoltage;
-import top.kmar.mi.api.craftguide.sol.ItemSet;
-import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
-import top.kmar.mi.api.gui.component.CommonProgress;
-import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.data.info.properties.MIProperty;
 
 /**
@@ -39,7 +39,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	 * 三个物品框<br>
 	 * 	0-上端，1-下端，2-输出
 	 */
-	@Storage
+	@AutoSave
     private final ItemStackHandler item = new ItemStackHandler(3);
 	private final SlotMI up = new SlotMI(item, 0, 56, 17);
 	private final SlotMI down = new SlotMI(item, 1, 56, 53);
@@ -51,7 +51,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	};
 	private final SlotGroup slotGroup = new AbstractSlotGroup(up, down);
 	/** 已工作时间 */
-	@Storage private int workingTime = 0;
+	@AutoSave private int workingTime = 0;
 	/** 进度条 */
 	private final CommonProgress progressBar = new CommonProgress();
 	/** 每次工作消耗的电能 */

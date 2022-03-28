@@ -7,7 +7,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import top.kmar.mi.data.info.EnumVoltage;
+import top.kmar.mi.api.auto.interfaces.AutoSave;
 import top.kmar.mi.api.capabilities.ele.EleCapability;
 import top.kmar.mi.api.capabilities.ele.EleStateEnum;
 import top.kmar.mi.api.capabilities.ele.IStorage;
@@ -19,7 +19,7 @@ import top.kmar.mi.api.electricity.interfaces.IVoltage;
 import top.kmar.mi.api.event.EnergyEvent;
 import top.kmar.mi.api.tools.BaseTileEntity;
 import top.kmar.mi.api.utils.TickHelper;
-import top.kmar.mi.api.utils.data.io.Storage;
+import top.kmar.mi.data.info.EnumVoltage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,11 +41,11 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	/** 可输入的能量范围 */
 	private final EnergyRange receiveRange = new EnergyRange();
 	/** 当前包含的能量 */
-	@Storage private int nowEnergy;
+	@AutoSave private int nowEnergy;
 	/** 当前输出电压 */
-	@Storage private IVoltage exVoltage;
+	@AutoSave private IVoltage exVoltage;
 	/** 当前输入电压 */
-	@Storage private IVoltage reVoltage;
+	@AutoSave private IVoltage reVoltage;
 	/** 可存储的最大能量 */
 	private int maxEnergy = 0;
 	/** 超载计时器 */
@@ -55,7 +55,7 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	/** 是否可以输出能量 */
 	private boolean isExtract = false;
 	/** 存储已连接的方块 */
-	@Storage
+	@AutoSave
 	private final Set<BlockPos> linkedBlocks = new HashSet<>(3);
 	
 	/**

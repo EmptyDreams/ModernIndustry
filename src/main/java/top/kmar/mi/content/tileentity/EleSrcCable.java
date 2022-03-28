@@ -10,6 +10,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import top.kmar.mi.api.auto.interfaces.AutoSave;
 import top.kmar.mi.api.capabilities.ele.EleCapability;
 import top.kmar.mi.api.capabilities.ele.EleStateEnum;
 import top.kmar.mi.api.capabilities.ele.IStorage;
@@ -24,11 +25,10 @@ import top.kmar.mi.api.electricity.interfaces.IEleTransfer;
 import top.kmar.mi.api.electricity.interfaces.IVoltage;
 import top.kmar.mi.api.net.IAutoNetwork;
 import top.kmar.mi.api.register.others.AutoTileEntity;
+import top.kmar.mi.api.utils.ExpandFunctionKt;
 import top.kmar.mi.api.utils.IOUtil;
 import top.kmar.mi.api.utils.StringUtil;
 import top.kmar.mi.api.utils.WorldUtil;
-import top.kmar.mi.api.utils.data.io.Storage;
-import top.kmar.mi.api.utils.data.io.instance.ObjectData;
 import top.kmar.mi.data.info.BiggerVoltage;
 import top.kmar.mi.data.info.CableCache;
 import top.kmar.mi.data.info.EnumBiggerVoltage;
@@ -66,9 +66,9 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	 * 存储六个方向的连接信息<br>
 	 * 从左到右依次为：上、下、东、南、西、北
 	 */
-	@Storage(byte.class) private int linkInfo = 0b000000;
+	@AutoSave(local = byte.class) private int linkInfo = 0b000000;
 	/** 电线连接的方块，不包括电线方块 */
-	@Storage
+	@AutoSave
 	private final List<BlockPos> linkedBlocks = new ArrayList<BlockPos>(5) {
 		private static final long serialVersionUID = 8683452581122892180L;
 		@Override
@@ -77,9 +77,9 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		}
 	};
 	/** 上一根电线 */
-	@Storage private BlockPos prev = null;
+	@AutoSave private BlockPos prev = null;
 	/** 下一根电线 */
-	@Storage private BlockPos next = null;
+	@AutoSave private BlockPos next = null;
 	/** 最大电流量 */
 	protected int meMax;
 	/** 当前电流量 */
@@ -497,14 +497,14 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		if (!world.isRemote) ObjectData.write(this, compound, ".");
+		if (!world.isRemote) ExpandFunctionKt.writeObject(compound, this, ".");
 		return super.writeToNBT(compound);
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		if (compound.hasKey(".")) ObjectData.read(this, compound, ".");
+		if (compound.hasKey(".")) ExpandFunctionKt.readObject(compound, this, ".");
 	}
 	
 	@Override

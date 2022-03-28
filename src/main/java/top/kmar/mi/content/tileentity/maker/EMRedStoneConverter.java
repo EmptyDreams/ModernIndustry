@@ -8,14 +8,14 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import top.kmar.mi.api.tools.FrontTileEntity;
-import top.kmar.mi.api.utils.WorldUtil;
-import top.kmar.mi.api.utils.data.io.Storage;
-import top.kmar.mi.content.blocks.CommonUtil;
-import top.kmar.mi.data.info.EnumVoltage;
+import top.kmar.mi.api.auto.interfaces.AutoSave;
 import top.kmar.mi.api.electricity.clock.NonCounter;
 import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.register.others.AutoTileEntity;
+import top.kmar.mi.api.tools.FrontTileEntity;
+import top.kmar.mi.api.utils.WorldUtil;
+import top.kmar.mi.content.blocks.CommonUtil;
+import top.kmar.mi.data.info.EnumVoltage;
 import top.kmar.mi.data.info.properties.MIProperty;
 
 import javax.annotation.Nullable;
@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 @AutoTileEntity("red_stone_converter")
 public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 
-	@Storage
+	@AutoSave
     private final ItemStackHandler item = new ItemStackHandler(1);
 	private final SlotItemHandler INPUT = CommonUtil.createInputSlot(item, 0, 79, 20,
 			stack -> stack.getItem() == Items.REDSTONE ||
@@ -36,8 +36,8 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 									CommonProgress.Style.STRIPE, CommonProgress.Front.RIGHT);
 	private final CommonProgress burnPro = new CommonProgress(
 									CommonProgress.Style.ARROW_DOWN, CommonProgress.Front.DOWN);
-	@Storage private int burnTime = 0;
-	@Storage private int maxTime = 0;
+	@AutoSave private int burnTime = 0;
+	@AutoSave private int maxTime = 0;
 
 	public static int getBurnTime(ItemStack stack) {
 		if (stack.getItem() == Items.REDSTONE) return 500;

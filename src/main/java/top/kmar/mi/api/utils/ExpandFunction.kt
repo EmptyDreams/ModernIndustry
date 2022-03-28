@@ -19,6 +19,8 @@ import net.minecraftforge.fluids.capability.wrappers.BlockLiquidWrapper
 import net.minecraftforge.fluids.capability.wrappers.BlockWrapper
 import net.minecraftforge.fluids.capability.wrappers.FluidBlockWrapper
 import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte1.other
+import top.kmar.mi.api.auto.AutoDataRW
+import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.utils.data.math.Point3D
 import top.kmar.mi.api.utils.data.math.Range3D
@@ -71,12 +73,32 @@ fun NBTTagCompound.getBlockPos(key: String): BlockPos {
 }
 
 /**
- * 写入坐标
+ * 从[NBTTagCompound]中读取数据到类中
+ *
+ * @param obj 要处理的类的对象
+ * @param key 数据总体在[NBTTagCompound]中的`key`
+ *
  * @receiver [NBTTagCompound]
  */
-fun NBTTagCompound.setBlockPos(key: String, value: BlockPos) =
-    setIntArray(key, intArrayOf(value.x, value.y, value.z))
+fun NBTTagCompound.readObject(obj: Any, key: String = ".") {
+    val operator = ByteDataOperator()
+    operator.writeFromNBT(this, key)
+    AutoDataRW.read2ObjAll(operator, obj)
+}
 
+/**
+ * 将类中的所有被`AutoSave`注释的属性写入到[NBTTagCompound]中
+ *
+ * @param obj 要处理的类的对象
+ * @param key 数据总体在[NBTTagCompound]中的`key`
+ *
+ * @receiver [NBTTagCompound]
+ */
+fun NBTTagCompound.writeObject(obj: Any, key: String = ".") {
+    val operator = ByteDataOperator()
+    AutoDataRW.write2LocalAll(operator, obj)
+    if (operator.size() != 0) operator.readToNBT(this, key)
+}
 
 /**
  * 读取字符串

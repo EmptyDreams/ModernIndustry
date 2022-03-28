@@ -5,23 +5,23 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import top.kmar.mi.api.auto.interfaces.AutoSave;
 import top.kmar.mi.api.craftguide.ItemElement;
+import top.kmar.mi.api.craftguide.sol.ItemSet;
+import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
+import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.gui.component.group.AbstractSlotGroup;
 import top.kmar.mi.api.gui.component.group.SlotGroup;
 import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
+import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
-import top.kmar.mi.api.utils.data.io.Storage;
-import top.kmar.mi.data.info.properties.MIProperty;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.blocks.CraftList;
 import top.kmar.mi.data.info.BiggerVoltage;
 import top.kmar.mi.data.info.EnumBiggerVoltage;
 import top.kmar.mi.data.info.EnumVoltage;
-import top.kmar.mi.api.craftguide.sol.ItemSet;
-import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
-import top.kmar.mi.api.gui.component.CommonProgress;
-import top.kmar.mi.api.register.others.AutoTileEntity;
+import top.kmar.mi.data.info.properties.MIProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,7 +34,7 @@ import javax.annotation.Nullable;
 public class EUPulverizer extends FrontTileEntity implements ITickable {
 
 	/** 物品栏 */
-	@Storage
+	@AutoSave
     private final ItemStackHandler item = new ItemStackHandler(2);
 	private final SlotItemHandler in = CommonUtil.createInputSlot(item, 0, 52, 32,
 																CraftList.PULVERIZER::haveInput);

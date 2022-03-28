@@ -6,23 +6,23 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import top.kmar.mi.api.auto.interfaces.AutoSave;
 import top.kmar.mi.api.craftguide.ItemElement;
-import top.kmar.mi.api.gui.component.group.SlotGroup;
-import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
-import top.kmar.mi.api.tools.FrontTileEntity;
-import top.kmar.mi.api.utils.ItemUtil;
-import top.kmar.mi.api.utils.WorldUtil;
-import top.kmar.mi.api.utils.data.io.Storage;
-import top.kmar.mi.content.blocks.CraftList;
-import top.kmar.mi.data.info.BiggerVoltage;
-import top.kmar.mi.data.info.EnumBiggerVoltage;
-import top.kmar.mi.data.info.EnumVoltage;
 import top.kmar.mi.api.craftguide.sol.ItemList;
 import top.kmar.mi.api.craftguide.sol.ItemSet;
 import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
 import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.gui.component.MSlot.SlotHandler;
+import top.kmar.mi.api.gui.component.group.SlotGroup;
+import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
 import top.kmar.mi.api.register.others.AutoTileEntity;
+import top.kmar.mi.api.tools.FrontTileEntity;
+import top.kmar.mi.api.utils.ItemUtil;
+import top.kmar.mi.api.utils.WorldUtil;
+import top.kmar.mi.content.blocks.CraftList;
+import top.kmar.mi.data.info.BiggerVoltage;
+import top.kmar.mi.data.info.EnumBiggerVoltage;
+import top.kmar.mi.data.info.EnumVoltage;
 import top.kmar.mi.data.info.properties.MIProperty;
 
 import javax.annotation.Nonnull;
@@ -37,7 +37,7 @@ import java.util.List;
 @AutoTileEntity("electron_synthesizer")
 public class EUElectronSynthesizer extends FrontTileEntity implements ITickable {
 	
-	@Storage
+	@AutoSave
     private final ItemStackHandler HANDLER = new ItemStackHandler(5 * 5 + 4);
 	private final SlotGroup SLOTS = new SlotGroup(5, 5, 18, 0);
 	private final SlotGroup OUTS = new SlotGroup(2, 2, 18, 0);
@@ -45,10 +45,10 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 	private final CommonProgress PROGRESS = new CommonProgress(
 										CommonProgress.Style.ARROW, CommonProgress.Front.RIGHT);
 	/** 工作时间 */
-	@Storage private int workingTime = -10;
-	@Storage private int maxTime = 0;
-	@Storage private final List<ItemElement> OUTPUT = new ArrayList<>(4);
-	@Storage private List<ItemStack> MERGE;
+	@AutoSave private int workingTime = -10;
+	@AutoSave private int maxTime = 0;
+	@AutoSave private final List<ItemElement> OUTPUT = new ArrayList<>(4);
+	@AutoSave private List<ItemStack> MERGE;
 	/** 是否需要重新计算，当输入栏变动时需要将此项设置为true */
 	private volatile boolean refresh = false;
 	

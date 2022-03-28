@@ -1,12 +1,12 @@
 package top.kmar.mi.content.tileentity.pipes;
 
 import net.minecraft.util.EnumFacing;
+import top.kmar.mi.api.auto.interfaces.AutoSave;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.dor.interfaces.IDataWriter;
 import top.kmar.mi.api.fluid.FTTileEntity;
-import top.kmar.mi.api.utils.data.io.Storage;
-import top.kmar.mi.data.info.properties.AngleFacingEnum;
 import top.kmar.mi.api.register.others.AutoTileEntity;
+import top.kmar.mi.data.info.properties.AngleFacingEnum;
 
 import javax.annotation.Nonnull;
 
@@ -20,10 +20,9 @@ import static net.minecraft.util.EnumFacing.*;
 public class AnglePipeTileEntity extends FTTileEntity {
 	
 	/** 正方向 */
-	@Storage
-    protected EnumFacing facing;
+	@AutoSave protected EnumFacing facing;
 	/** 后侧方向 */
-	@Storage protected EnumFacing after;
+	@AutoSave protected EnumFacing after;
 	
 	public AnglePipeTileEntity() {
 		this(NORTH, UP);

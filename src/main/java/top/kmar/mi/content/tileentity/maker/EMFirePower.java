@@ -7,20 +7,20 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import top.kmar.mi.api.auto.interfaces.AutoSave;
 import top.kmar.mi.api.craftguide.ItemElement;
+import top.kmar.mi.api.craftguide.sol.ItemSet;
+import top.kmar.mi.api.electricity.clock.NonCounter;
+import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
+import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.ItemUtil;
 import top.kmar.mi.api.utils.WorldUtil;
-import top.kmar.mi.api.utils.data.io.Storage;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.blocks.CraftList;
 import top.kmar.mi.content.capabilities.nonburn.NonBurnCapability;
 import top.kmar.mi.data.info.EnumVoltage;
-import top.kmar.mi.api.craftguide.sol.ItemSet;
-import top.kmar.mi.api.electricity.clock.NonCounter;
-import top.kmar.mi.api.gui.component.CommonProgress;
-import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.data.info.properties.MIProperty;
 
 /**
@@ -35,7 +35,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	/** 能量进度条 */
 	private final CommonProgress energyPro = new CommonProgress();
 	/** 输入/输出框 */
-	@Storage
+	@AutoSave
     private final ItemStackHandler item = new ItemStackHandler(2);
 	/** 输入框 */
 	private final SlotItemHandler in = CommonUtil.createInputSlot(item, 0, 52, 29,
@@ -44,11 +44,11 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	/** 输出框 */
 	private final SlotItemHandler out = CommonUtil.createOutputSlot(item, 1, 106, 29);
 	/** 已经燃烧的时长 */
-	@Storage private int burningTime = 0;
+	@AutoSave private int burningTime = 0;
 	/** 最大燃烧时长 */
-	@Storage private int maxTime = 0;
+	@AutoSave private int maxTime = 0;
 	/** 正在燃烧的物品 */
-	@Storage private ItemElement burnItem;
+	@AutoSave private ItemElement burnItem;
 
 	public EMFirePower() {
 		setExtractRange(1, 120, EnumVoltage.C, EnumVoltage.E);
