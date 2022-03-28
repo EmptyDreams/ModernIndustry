@@ -13,7 +13,9 @@ import kotlin.reflect.KClass
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.VALUE_TYPE)
-class KClassMachine : IAutoFieldRW, IAutoObjRW<KClass<*>> {
+object KClassMachine : IAutoFieldRW, IAutoObjRW<KClass<*>> {
+
+    @JvmStatic fun instance() = KClassMachine
 
     override fun allowFinal() = false
 

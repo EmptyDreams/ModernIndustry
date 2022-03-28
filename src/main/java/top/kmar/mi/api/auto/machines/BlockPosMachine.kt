@@ -14,7 +14,9 @@ import kotlin.reflect.KClass
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.VALUE_TYPE)
-class BlockPosMachine : IAutoFieldRW, IAutoObjRW<BlockPos> {
+object BlockPosMachine : IAutoFieldRW, IAutoObjRW<BlockPos> {
+
+    @JvmStatic fun instance() = BlockPosMachine
 
     override fun allowFinal() = false
 

@@ -13,7 +13,9 @@ import kotlin.reflect.KClass
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.BASE_TYPE)
-class FloatMachine : IAutoFieldRW, IAutoObjRW<Float> {
+object FloatMachine : IAutoFieldRW, IAutoObjRW<Float> {
+
+    @JvmStatic fun instance() = FloatMachine
 
     override fun allowFinal() = false
 

@@ -13,7 +13,9 @@ import kotlin.reflect.KClass
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.BASE_TYPE)
-class ShortMachine : IAutoFieldRW, IAutoObjRW<Short> {
+object ShortMachine : IAutoFieldRW, IAutoObjRW<Short> {
+
+    @JvmStatic fun instance() = ShortMachine
 
     override fun allowFinal() = false
 

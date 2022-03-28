@@ -15,7 +15,9 @@ import kotlin.reflect.KClass
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.VALUE_TYPE)
-class FluidStackMachine : IAutoFieldRW, IAutoObjRW<FluidStack> {
+object FluidStackMachine : IAutoFieldRW, IAutoObjRW<FluidStack> {
+
+    @JvmStatic fun instance() = FluidStackMachine
 
     override fun allowFinal() = false
 

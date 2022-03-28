@@ -15,7 +15,9 @@ import kotlin.reflect.KClass
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.GENERAL_TYPE)
-class DorSerializeMachine : IAutoFieldRW, IAutoObjRW<IDorSerialize> {
+object DorSerializeMachine : IAutoFieldRW, IAutoObjRW<IDorSerialize> {
+
+    @JvmStatic fun instance() = DorSerializeMachine
 
     override fun allowFinal() = true
 

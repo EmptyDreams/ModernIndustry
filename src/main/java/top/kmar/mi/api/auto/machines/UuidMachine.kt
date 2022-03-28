@@ -14,7 +14,9 @@ import kotlin.reflect.KClass
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.VALUE_TYPE)
-class UuidMachine : IAutoFieldRW, IAutoObjRW<UUID> {
+object UuidMachine : IAutoFieldRW, IAutoObjRW<UUID> {
+
+    @JvmStatic fun instance() = UuidMachine
 
     override fun allowFinal() = false
 

@@ -14,7 +14,9 @@ import kotlin.reflect.KClass
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.VALUE_TYPE)
-class NbtMachine : IAutoFieldRW, IAutoObjRW<NBTBase> {
+object NbtMachine : IAutoFieldRW, IAutoObjRW<NBTBase> {
+
+    @JvmStatic fun instance() = NbtMachine
 
     override fun allowFinal() = false
 

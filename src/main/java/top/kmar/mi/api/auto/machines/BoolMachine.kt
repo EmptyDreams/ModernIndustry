@@ -13,7 +13,9 @@ import kotlin.reflect.KClass
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.BASE_TYPE)
-class BoolMachine : IAutoFieldRW, IAutoObjRW<Boolean> {
+object BoolMachine : IAutoFieldRW, IAutoObjRW<Boolean> {
+
+    @JvmStatic fun instance() = BoolMachine
 
     override fun allowFinal() = false
 

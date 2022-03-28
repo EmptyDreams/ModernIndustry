@@ -14,7 +14,9 @@ import kotlin.reflect.KClass
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.GENERAL_TYPE shr 1)
-class MapMachine : IAutoFieldRW, IAutoObjRW<Map<*, *>> {
+object MapMachine : IAutoFieldRW, IAutoObjRW<Map<*, *>> {
+
+    @JvmStatic fun instance() = MapMachine
 
     override fun allowFinal() = true
 

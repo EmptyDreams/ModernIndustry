@@ -12,7 +12,9 @@ import java.lang.reflect.Field
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.VALUE_TYPE)
-class EnumOptimizedMachine : IAutoFieldRW {
+object EnumOptimizedMachine : IAutoFieldRW {
+
+    @JvmStatic fun instance() = EnumOptimizedMachine
 
     override fun allowFinal() = false
 

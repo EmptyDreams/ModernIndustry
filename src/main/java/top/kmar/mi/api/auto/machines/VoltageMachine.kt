@@ -14,7 +14,9 @@ import kotlin.reflect.KClass
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.VALUE_TYPE)
-class VoltageMachine : IAutoFieldRW, IAutoObjRW<IVoltage> {
+object VoltageMachine : IAutoFieldRW, IAutoObjRW<IVoltage> {
+
+    @JvmStatic fun instance() = VoltageMachine
 
     override fun allowFinal() = false
 

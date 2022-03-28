@@ -14,7 +14,9 @@ import kotlin.reflect.KClass
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.VALUE_TYPE)
-class ElementMachine : IAutoFieldRW, IAutoObjRW<ItemElement> {
+object ElementMachine : IAutoFieldRW, IAutoObjRW<ItemElement> {
+
+    @JvmStatic fun instance() = ElementMachine
 
     override fun allowFinal() = false
 

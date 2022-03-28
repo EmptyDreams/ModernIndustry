@@ -18,7 +18,9 @@ import kotlin.reflect.KClass
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.GENERAL_TYPE shr 1)
-class CapabilityMachine : IAutoFieldRW, IAutoObjRW<Any> {
+object CapabilityMachine : IAutoFieldRW, IAutoObjRW<Any> {
+
+    @JvmStatic fun instance() = CapabilityMachine
 
     override fun allowFinal() = true
 

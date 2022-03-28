@@ -16,7 +16,9 @@ import kotlin.reflect.KClass
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.GENERAL_TYPE)
-class SerializableMachine : IAutoFieldRW, IAutoObjRW<INBTSerializable<*>> {
+object SerializableMachine : IAutoFieldRW, IAutoObjRW<INBTSerializable<*>> {
+
+    @JvmStatic fun instance() = SerializableMachine
 
     override fun allowFinal() = true
 

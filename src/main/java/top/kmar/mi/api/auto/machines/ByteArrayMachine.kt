@@ -14,7 +14,9 @@ import kotlin.reflect.KClass
  * @author EmptyDreams
  */
 @AutoRWType(AutoTypeRegister.BASE_ARRAY_TYPE)
-class ByteArrayMachine : IAutoFieldRW, IAutoObjRW<ByteArray> {
+object ByteArrayMachine : IAutoFieldRW, IAutoObjRW<ByteArray> {
+
+    @JvmStatic fun instance() = ByteArrayMachine
 
     override fun allowFinal() = true
 
