@@ -9,12 +9,14 @@ import top.kmar.mi.api.net.handler.CommonMessage;
 import javax.annotation.Nonnull;
 
 /**
- * 用于处理消息.<br>
- * <b>子类规范：<br>
- * 1.子类的类注释中必须说明该类应当在客户端还是服务端处理<br>
- * 2.子类抛出{@link UnsupportedOperationException}异常时应通过{@link #throwException(Side)}抛出<br></b>
- * 3.该类中没有"@throws"注释的方法不得抛出异常<br>
- * 4.有"@throws"注释的方法不得抛出规定外的异常
+ * <p>用于处理消息.
+ * <p><b>子类规范：</b>
+ * <ol>
+ * <li> 子类的类注释中必须说明该类应当在客户端还是服务端处理
+ * <li> 子类抛出{@link UnsupportedOperationException}异常时应通过{@link #throwException(Side)}抛出
+ * <li> 该类中没有"@throws"注释的方法不得抛出异常
+ * <li> 有"@throws"注释的方法不得抛出规定外的异常
+ * </ol>
  * @author EmptyDreams
  */
 public interface IMessageHandle<T extends IMessageAddition, V extends ParseAddition> {
@@ -78,7 +80,7 @@ public interface IMessageHandle<T extends IMessageAddition, V extends ParseAddit
 	 * 构建一个{@link IMessage}
 	 * @param data 数据信息
 	 * @param addition 附加信息
-	 * @throws NullPointerException 如果data==null||addition==null
+	 * @throws NullPointerException 如果data == null || addition == null
 	 */
 	default IMessage create(IDataReader data, T addition) {
 		return new CommonMessage(packaging(data, addition), getKey());
