@@ -2,7 +2,7 @@ package top.kmar.mi.api.utils.container
 
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
-import top.kmar.mi.api.dor.interfaces.IDorSerialize
+import top.kmar.mi.api.auto.interfaces.IDorSerialize
 
 /**
  * 以Enum为key的布尔映射表，该类仅支持对象数量<=32的枚举类

@@ -4,7 +4,7 @@ import top.kmar.mi.api.auto.interfaces.*
 import top.kmar.mi.api.auto.registers.AutoTypeRegister
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
-import top.kmar.mi.api.dor.interfaces.IDorSerialize
+import top.kmar.mi.api.auto.interfaces.IDorSerialize
 import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier

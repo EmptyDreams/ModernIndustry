@@ -1,4 +1,7 @@
-package top.kmar.mi.api.dor.interfaces;
+package top.kmar.mi.api.auto.interfaces;
+
+import top.kmar.mi.api.dor.interfaces.IDataReader;
+import top.kmar.mi.api.dor.interfaces.IDataWriter;
 
 /**
  * 实现该接口的类可以被自动存储系统所识别
