@@ -56,6 +56,8 @@ public interface IDataWriter {
 	void writeVarIntArray(int[] data);
 	/** 写入一个byte数组 */
 	void writeByteArray(byte[] data);
+	/** 写入一个long数组 */
+	void writeLongArray(long[] data);
 	/** 写入一个BlockPos */
 	void writeBlockPos(BlockPos data);
 	/** 写入一个电压值 */

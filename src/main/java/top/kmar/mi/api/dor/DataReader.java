@@ -17,6 +17,7 @@ import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.NotNull;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.dor.interfaces.IDataWriter;
 import top.kmar.mi.api.electricity.interfaces.IVoltage;
@@ -214,6 +215,17 @@ public final class DataReader implements IDataReader {
 		byte[] result = new byte[size];
 		for (int i = 0; i < size; ++i) {
 			result[i] = readByte();
+		}
+		return result;
+	}
+	
+	@NotNull
+	@Override
+	public long[] readLongArray() {
+		int size = readVarInt();
+		long[] result = new long[size];
+		for (int i = 0; i != size; ++i) {
+			result[i] = readLong();
 		}
 		return result;
 	}

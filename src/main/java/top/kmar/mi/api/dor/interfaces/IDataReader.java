@@ -65,6 +65,8 @@ public interface IDataReader {
 	@Nonnull int[] readVarIntArray();
 	/** 读取一个byte数组 */
 	@Nonnull byte[] readByteArray();
+	/** 读取一个long数组 */
+	@Nonnull long[] readLongArray();
 	/** 读取一个BlockPos */
 	@Nonnull BlockPos readBlockPos();
 	/** 读取一个dor */

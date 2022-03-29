@@ -17,6 +17,7 @@ import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.NotNull;
 import top.kmar.mi.api.dor.interfaces.IDataOperator;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.dor.interfaces.IDataWriter;
@@ -239,6 +240,17 @@ public class ByteDataOperator implements IDataOperator {
 		return result;
 	}
 	
+	@NotNull
+	@Override
+	public long[] readLongArray() {
+		int size = readVarInt();
+		long[] result = new long[size];
+		for (int i = 0; i != size; ++i) {
+			result[i] = readLong();
+		}
+		return result;
+	}
+	
 	@Override
 	public BlockPos readBlockPos() {
 		return new BlockPos(readInt(), readInt(), readInt());
@@ -389,6 +401,14 @@ public class ByteDataOperator implements IDataOperator {
 		writeVarInt(data.length);
 		for (byte b : data) {
 			writeByte(b);
+		}
+	}
+	
+	@Override
+	public void writeLongArray(long[] data) {
+		writeVarInt(data.length);
+		for (long value : data) {
+			writeLong(value);
 		}
 	}
 	
