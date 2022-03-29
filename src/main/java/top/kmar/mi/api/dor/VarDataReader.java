@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
+import net.minecraft.nbt.NBTTagLongArray;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.math.BlockPos;
@@ -248,6 +249,7 @@ public class VarDataReader implements IDataReader {
 			case 8: return new NBTTagString(readString());
 			case 10: return readNBTTagCompound();
 			case 11: return new NBTTagIntArray(readIntArray());
+			case 12: return new NBTTagLongArray(readLongArray());
 			case 9:
 				int size = readVarInt();
 				NBTTagList list = new NBTTagList();

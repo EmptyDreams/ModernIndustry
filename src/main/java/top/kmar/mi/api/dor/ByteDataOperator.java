@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
+import net.minecraft.nbt.NBTTagLongArray;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.math.BlockPos;
@@ -21,8 +22,8 @@ import org.jetbrains.annotations.NotNull;
 import top.kmar.mi.api.dor.interfaces.IDataOperator;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.dor.interfaces.IDataWriter;
-import top.kmar.mi.api.exception.TransferException;
 import top.kmar.mi.api.electricity.interfaces.IVoltage;
+import top.kmar.mi.api.exception.TransferException;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
@@ -285,6 +286,7 @@ public class ByteDataOperator implements IDataOperator {
 			case 8: return new NBTTagString(readString());
 			case 10: return readNBTTagCompound();
 			case 11: return new NBTTagIntArray(readIntArray());
+			case 12: return new NBTTagLongArray(readLongArray());
 			case 9:
 				int size = readVarInt();
 				NBTTagList list = new NBTTagList();
@@ -436,9 +438,19 @@ public class ByteDataOperator implements IDataOperator {
 			case 5: writeFloat(((NBTPrimitive) data).getFloat());              break;
 			case 6: writeDouble(((NBTPrimitive) data).getDouble());            break;
 			case 7: writeByteArray(((NBTTagByteArray) data).getByteArray());   break;
-			case 8: writeString(((NBTTagString) data).getString());                              break;
+			case 8: writeString(((NBTTagString) data).getString());            break;
 			case 10: writeNBTTagCompound((NBTTagCompound) data);               break;
 			case 11: writeIntArray(((NBTTagIntArray) data).getIntArray());     break;
+			case 12:
+				try {
+					Field field = data.getClass().getDeclaredField("data");
+					field.setAccessible(true);
+					long[] value = (long[]) field.get(data);
+					writeLongArray(value);
+				} catch (NoSuchFieldException | IllegalAccessException e) {
+					throw TransferException.instance("读取NBTTagLongArray过程中发生了异常", e);
+				}
+				break;
 			case 9:
 				NBTTagList list = (NBTTagList) data;
 				writeVarInt(list.tagCount());
