@@ -25,12 +25,12 @@ object CollectionMachine : IAutoFieldRW, IAutoObjRW<Collection<*>> {
     override fun allowFinal() = true
 
     override fun match(field: Field): Boolean {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         return Collection::class.java.isAssignableFrom(annotation.source(field).java)
     }
 
     override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         val local = annotation.local(field).java
         if (!Collection::class.java.isAssignableFrom(local))
             return RWResult.failed("Collection<?>不能转化为${local.name}")
@@ -41,7 +41,7 @@ object CollectionMachine : IAutoFieldRW, IAutoObjRW<Collection<*>> {
 
     @Suppress("UNCHECKED_CAST")
     override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         val local = annotation.local(field).java
         var value = field[obj] as MutableCollection<Any>?
         if (value == null) {

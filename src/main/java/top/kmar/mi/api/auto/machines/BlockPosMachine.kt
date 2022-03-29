@@ -21,12 +21,12 @@ object BlockPosMachine : IAutoFieldRW, IAutoObjRW<BlockPos> {
     override fun allowFinal() = false
 
     override fun match(field: Field): Boolean {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         return annotation.source(field) == BlockPos::class
     }
 
     override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         val value = (field[obj] as BlockPos?) ?: return RWResult.skipNull()
         when (val local = annotation.local(field)) {
             BlockPos::class -> writer.writeBlockPos(value)

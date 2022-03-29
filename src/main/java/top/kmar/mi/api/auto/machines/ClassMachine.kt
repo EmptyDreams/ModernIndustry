@@ -20,12 +20,12 @@ object ClassMachine : IAutoFieldRW, IAutoObjRW<Class<*>> {
     override fun allowFinal() = false
 
     override fun match(field: Field): Boolean {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         return annotation.source(field) == Class::class
     }
 
     override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         val value = (field[obj] as Class<*>?) ?: return RWResult.skipNull()
         when (val local = annotation.local(field)) {
             Class::class -> writer.writeString(value.name)

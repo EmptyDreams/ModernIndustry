@@ -20,12 +20,12 @@ object DoubleMachine : IAutoFieldRW, IAutoObjRW<Double> {
     override fun allowFinal() = false
 
     override fun match(field: Field): Boolean {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         return annotation.source(field) == Double::class
     }
 
     override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         val value = field.getDouble(obj)
         when (val local = annotation.local(field)) {
             Double::class -> writer.writeDouble(value)
@@ -36,7 +36,7 @@ object DoubleMachine : IAutoFieldRW, IAutoObjRW<Double> {
     }
 
     override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         when (val local = annotation.local(field)) {
             Double::class -> field.setDouble(obj, reader.readDouble())
             Float::class -> field.setDouble(obj, reader.readFloat().toDouble())

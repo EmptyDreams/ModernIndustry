@@ -20,12 +20,12 @@ object ByteMachine : IAutoFieldRW, IAutoObjRW<Byte> {
     override fun allowFinal() = false
 
     override fun match(field: Field): Boolean {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         return annotation.source(field) == Byte::class
     }
 
     override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         val value = field.getByte(obj)
         when (val local = annotation.local(field)) {
             Byte::class -> writer.writeByte(value)
@@ -36,7 +36,7 @@ object ByteMachine : IAutoFieldRW, IAutoObjRW<Byte> {
     }
 
     override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         when (val local = annotation.local(field)) {
             Byte::class -> field.setByte(obj, reader.readByte())
             Boolean::class -> field.setByte(obj, if (reader.readBoolean()) 1 else 0)

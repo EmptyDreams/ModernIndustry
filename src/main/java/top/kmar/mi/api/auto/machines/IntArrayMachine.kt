@@ -21,18 +21,18 @@ object IntArrayMachine : IAutoFieldRW, IAutoObjRW<IntArray> {
     override fun allowFinal() = true
 
     override fun match(field: Field): Boolean {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         return annotation.source(field) == IntArray::class
     }
 
     override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         val value = (field[obj] as IntArray?) ?: return RWResult.skipNull()
         return write2Local(writer, value, annotation.local(field))
     }
 
     override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
-        val annotation = field.getAnnotation(AutoSave::class.java)!!
+        val annotation = field.getAnnotation(AutoSave::class.java)
         val length = reader.readVarInt()
         var value = field[obj] as IntArray?
         if (value == null || value.size < length) {
