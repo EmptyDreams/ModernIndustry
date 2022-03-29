@@ -49,7 +49,7 @@ object DorSerializeMachine : IAutoFieldRW, IAutoObjRW<IDorSerialize> {
     override fun write2Local(writer: IDataWriter, value: IDorSerialize, local: KClass<*>): RWResult {
         if (!local.java.isAssignableFrom(value::class.java))
             return RWResult.failed("IDorSerialize不能转化为${local.qualifiedName}")
-        writer.writeData(value.serializeDor())
+        value.serializeDor(writer)
         return RWResult.success()
     }
 

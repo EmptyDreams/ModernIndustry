@@ -6,8 +6,11 @@ package top.kmar.mi.api.dor.interfaces;
  */
 public interface IDorSerialize {
     
-    /** 将类中的信息序列化 */
-    IDataReader serializeDor();
+    /**
+     * <p>将类中的信息序列化
+     * <p>类不应当存储传入的{@code writer}
+     */
+    void serializeDor(IDataWriter writer);
     
     /** 解序列化 */
     void deserializedDor(IDataReader reader);

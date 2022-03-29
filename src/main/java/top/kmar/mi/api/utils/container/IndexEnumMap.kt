@@ -1,7 +1,7 @@
 package top.kmar.mi.api.utils.container
 
-import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.dor.interfaces.IDataReader
+import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.dor.interfaces.IDorSerialize
 
 /**
@@ -37,10 +37,8 @@ class IndexEnumMap<T : Enum<*>>(private val keys: Array<T>) :
         this.value = value
     }
 
-    override fun serializeDor(): IDataReader {
-        val operator = ByteDataOperator(5)
-        operator.writeVarInt(value)
-        return operator
+    override fun serializeDor(writer: IDataWriter) {
+        writer.writeVarInt(value)
     }
 
     override fun deserializedDor(reader: IDataReader) {

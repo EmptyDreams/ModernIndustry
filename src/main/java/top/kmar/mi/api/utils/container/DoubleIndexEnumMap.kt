@@ -1,7 +1,7 @@
 package top.kmar.mi.api.utils.container
 
-import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.dor.interfaces.IDataReader
+import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.dor.interfaces.IDorSerialize
 import top.kmar.mi.api.utils.data.enums.HorizontalDirectionEnum
 import top.kmar.mi.api.utils.data.enums.HorizontalDirectionEnum.LEFT
@@ -17,15 +17,10 @@ class DoubleIndexEnumMap<T : Enum<*>>(val values: Array<T>) :
     private var data = 0
 
     /** 获取指定键对应的左值 */
-    fun getLeft(key: T): Boolean {
-        return ((data ushr getOffsetLeft(key)) and 1) == 1
-    }
+    fun getLeft(key: T): Boolean = ((data ushr getOffsetLeft(key)) and 1) == 1
 
     /** 获取指定键对应的右值 */
-    fun getRight(key: T): Boolean {
-        val offset = key.ordinal shl 1
-        return ((data ushr getOffsetRight(key)) and 1) == 1
-    }
+    fun getRight(key: T): Boolean = ((data ushr getOffsetRight(key)) and 1) == 1
 
     /** 设置指定键的左值 */
     fun setLeft(key: T, value: Boolean) {
@@ -75,10 +70,8 @@ class DoubleIndexEnumMap<T : Enum<*>>(val values: Array<T>) :
         return sb.toString()
     }
     
-    override fun serializeDor(): IDataReader {
-        val operator = ByteDataOperator(5)
-        operator.writeVarInt(data)
-        return operator
+    override fun serializeDor(writer: IDataWriter) {
+        writer.writeVarInt(data)
     }
     
     override fun deserializedDor(reader: IDataReader) {

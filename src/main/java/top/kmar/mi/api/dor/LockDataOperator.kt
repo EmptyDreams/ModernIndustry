@@ -15,7 +15,7 @@ class LockDataOperator : ByteDataOperator {
     private var locked = false
 
     /** 构建一个指定大小的`dor`（可扩容） */
-    constructor(size: Int) : super(size)
+    constructor(size: Int = 32) : super(size)
 
     /** 通过数组构建一个`dor` */
     constructor(byte: ByteArray) : super(byte)
