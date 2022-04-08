@@ -1,6 +1,5 @@
 package top.kmar.mi.content.tileentity;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -12,33 +11,28 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import top.kmar.mi.api.auto.interfaces.AutoSave;
 import top.kmar.mi.api.capabilities.ele.EleCapability;
-import top.kmar.mi.api.capabilities.ele.EleStateEnum;
 import top.kmar.mi.api.capabilities.ele.IStorage;
 import top.kmar.mi.api.dor.ByteDataOperator;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.electricity.EleWorker;
 import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
 import top.kmar.mi.api.electricity.clock.OverloadCounter;
+import top.kmar.mi.api.electricity.info.BiggerVoltage;
+import top.kmar.mi.api.electricity.info.CableCache;
 import top.kmar.mi.api.electricity.info.EleEnergy;
-import top.kmar.mi.api.electricity.info.VoltageRange;
+import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
+import top.kmar.mi.api.electricity.info.IETForEach;
 import top.kmar.mi.api.electricity.interfaces.IEleTransfer;
-import top.kmar.mi.api.electricity.interfaces.IVoltage;
 import top.kmar.mi.api.net.IAutoNetwork;
 import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.api.utils.ExpandFunctionKt;
 import top.kmar.mi.api.utils.IOUtil;
 import top.kmar.mi.api.utils.StringUtil;
 import top.kmar.mi.api.utils.WorldUtil;
-import top.kmar.mi.data.info.BiggerVoltage;
-import top.kmar.mi.data.info.CableCache;
-import top.kmar.mi.data.info.EnumBiggerVoltage;
-import top.kmar.mi.data.info.EnumVoltage;
-import top.kmar.mi.data.info.IETForEach;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,12 +45,12 @@ import static top.kmar.mi.api.utils.ExpandFunctionKt.whatFacing;
 @AutoTileEntity("IN_FATHER_ELECTRICITY_TRANSFER")
 public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	
-	//MC反射调用
+	//MC调用
 	@SuppressWarnings("unused")
 	public EleSrcCable() { }
 	
-	public EleSrcCable(int meMax, double loss) {
-		this.meMax = meMax;
+	public EleSrcCable(int maxHeat, int loss) {
+		this.maxHeat = maxHeat;
 		this.loss = loss;
 	}
 	
@@ -79,12 +73,14 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	@AutoSave private BlockPos prev = null;
 	/** 下一根电线 */
 	@AutoSave private BlockPos next = null;
+	/** 热量 */
+	@AutoSave private int heat = 0;
+	/** 热量衰减速率 */
+	private int decaySpeed = 1000;
 	/** 最大电流量 */
-	protected int meMax;
-	/** 当前电流量 */
-	private int me = 0;
+	protected int maxHeat;
 	/** 电力损耗指数，指数越大损耗越多 */
-	protected double loss;
+	protected int loss;
 	/** 所属电路缓存 */
 	CableCache cache = null;
 	/** 过载最长时间 */
@@ -130,6 +126,19 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		}
 		if (next == null) return 1;
 		return 2;
+	}
+	
+	/** 判断指定方向上是否连接方块 */
+	public boolean isLink(EnumFacing facing) {
+		switch (facing) {
+			case DOWN: return getDown();
+			case UP: return getUp();
+			case NORTH: return getNorth();
+			case SOUTH: return getSouth();
+			case WEST: return getWest();
+			case EAST: return getEast();
+		}
+		throw new AssertionError();
 	}
 	
 	/**
@@ -194,7 +203,6 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		updateShowData(next);
 		updateShowData(prev);
 		linkedBlocks.forEach(this::updateShowData);
-		updateTickableState();
 		players.clear();
 		markDirty();
 	}
@@ -227,7 +235,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 			CableCache.calculate(this);
 		} else {
 			linkedBlocks.remove(pos);
-			getCache().removeOuter(this, pos);
+			getCache().removeOuter(pos, pos);
 		}
 		updateLinkShow();
 	}
@@ -246,7 +254,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	}
 	
 	/**
-	 * 向指定方向遍历线路
+	 * 向指定方向遍历线路，包含当前线缆
 	 * @param prev 上一根电线
 	 * @param run 要运行的内容
 	 */
@@ -284,19 +292,19 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	
 	//--------------------常规--------------------//
 	
-	private boolean isRemove = false;
-	
 	private static final CableCache CLIENT_CACHE = new CableCache();
 	@Override
 	public void update() {
-		updateTickableState();
 		if (cache == null) {
 			if (world.isRemote) {
 				cache = CLIENT_CACHE;
+				WorldUtil.removeTickable(this);
+				return;
 			} else {
 				CableCache.calculate(this);
 			}
 		}
+		heat = Math.max(0, heat - decaySpeed);
 		send();
 		for (BlockPos block : linkedBlocks) {
 			TileEntity entity = world.getTileEntity(block);
@@ -315,28 +323,10 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		send();
 	}
 	
-	public void updateTickableState() {
-		if (world.isRemote || linkedBlocks.isEmpty()) {
-			if (isRemove) return;
-			isRemove = true;
-			WorldUtil.removeTickable(this);
-		} else {
-			if (!isRemove) return;
-			isRemove = false;
-			WorldUtil.addTickable(this);
-		}
-	}
-	
 	/** 设置最大电流指数 */
-	public final void setMeMax(int max) { meMax = max; }
+	public final void setMaxHeat(int max) { maxHeat = max; }
 	/** 获取最大电流指数 */
-	public final int getMeMax() { return meMax; }
-	/** 获取当前电流量 */
-	public final int getTransfer() { return me; }
-	/** 通过电流 */
-	public final void transfer(int me) { this.me += me; }
-	/** 电流归零 */
-	public final void clearTransfer() { me = 0; }
+	public final int getMaxHeat() { return maxHeat; }
 	/** 设置线路缓存 */
 	public final void setCache(CableCache info) { this.cache = info; }
 	/** 获取线路缓存 */
@@ -384,19 +374,22 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		else linkInfo &= 0b111110;
 	}
 	/** 获取损耗值 */
-	public final double getLoss(EleEnergy energy) {
-		double loss = energy.calculateLoss();
-		return loss + loss * this.loss;
+	public final int getLoss(EleEnergy energy) {
+		return loss = energy.getCurrent();
 	}
 	/** 设置电力损耗指数 */
-	public final void setLoss(double loss) { this.loss = loss; }
+	public final void setLoss(int loss) { this.loss = loss; }
 	/** 获取上一根电线 */
+	@Nullable
 	public final TileEntity getPrev() { return prev == null ? null : world.getTileEntity(prev); }
 	/** 获取下一根电线 */
+	@Nullable
 	public final TileEntity getNext() { return next == null ? null : world.getTileEntity(next); }
 	/** 获取上一根电线的坐标 */
+	@Nullable
 	public final BlockPos getPrevPos() { return prev; }
 	/** 获取下一根电线的坐标 */
+	@Nullable
 	public final BlockPos getNextPos() { return next; }
 	/** 设置过载最长时间(单位：tick，默认值：50tick)，当设置时间小于0时保持原设置不变 */
 	public void setBiggerMaxTime(int bvt) {
@@ -407,19 +400,11 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	public int getBiggerMaxTime() {
 		return biggerMaxTime;
 	}
-	/** 设置方块类型 */
-	public final void setBlockType(Block block) {
-		blockType = block;
-	}
 	
-	/** 获取连接的方块. 返回的列表可以随意修改 */
-	public final List<TileEntity> getLinkedBlocks() {
-		List<TileEntity> blocks = new ArrayList<>(linkedBlocks.size());
-		//noinspection ForLoopReplaceableByForEach
-		for (int i = 0; i < linkedBlocks.size(); i++) {
-			blocks.add(world.getTileEntity(linkedBlocks.get(i)));
-		}
-		return blocks;
+	/** 运输指定电能 */
+	public void transfer(EleEnergy energy) {
+		heat += getLoss(energy);
+		if (heat > getMaxHeat()) getCounter().plus();
 	}
 	
 	/** 获取计数器 */
@@ -434,10 +419,6 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		}
 		return counter;
 	}
-	/** 设置计数器 */
-	public final void setCounter(OverloadCounter counter) {
-		this.counter = StringUtil.checkNull(counter, "counter");
-	}
 	
 	@Nullable
 	@Override
@@ -448,10 +429,6 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	@Override
 	public NBTTagCompound getUpdateTag() {
 		players.clear();
-		if (isRemove) {
-			isRemove = false;
-			WorldUtil.addTickable(this);
-		}
 		return super.getUpdateTag();
 	}
 
@@ -528,27 +505,19 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		}
 		
 		@Override
-		public int receiveEnergy(EleEnergy energy, boolean simulate) {
-			if (simulate) return energy.getEnergy();
-			me += energy.getEnergy();
-			return energy.getEnergy();
+		public int getEnergyDemand() {
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public EleEnergy receiveEnergy(EleEnergy energy, boolean simulate) {
+			throw new UnsupportedOperationException();
 		}
 		
 		@Nonnull
 		@Override
-		public IVoltage getVoltage(EleStateEnum state, IVoltage voltage) {
-			return voltage;
-		}
-		
-		@Override
-		public VoltageRange getReceiveVoltageRange() {
-			return VoltageRange.ALL;
-		}
-		
-		@Nonnull
-		@Override
-		public EleEnergy extractEnergy(int energy, VoltageRange voltage, boolean simulate) {
-			return new EleEnergy(0, EnumVoltage.NON);
+		public EleEnergy extractEnergy(int energy, boolean simulate) {
+			throw new UnsupportedOperationException();
 		}
 		
 		@Override
@@ -581,16 +550,6 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 		public boolean isLink(BlockPos pos) {
 			if (pos.equals(prev) || pos.equals(next)) return true;
 			return linkedBlocks.contains(pos);
-		}
-		
-		@Nonnull
-		@Override
-		public Collection<BlockPos> getLinks() {
-			List<BlockPos> result = new ArrayList<>(6);
-			result.addAll(linkedBlocks);
-			if (next != null) result.add(next);
-			if (prev != null) result.add(prev);
-			return result;
 		}
 		
 	};

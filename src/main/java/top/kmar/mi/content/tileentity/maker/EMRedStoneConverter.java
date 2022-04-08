@@ -10,13 +10,13 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import top.kmar.mi.api.auto.interfaces.AutoSave;
 import top.kmar.mi.api.electricity.clock.NonCounter;
+import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.content.blocks.CommonUtil;
-import top.kmar.mi.data.info.EnumVoltage;
-import top.kmar.mi.data.info.properties.MIProperty;
+import top.kmar.mi.data.properties.MIProperty;
 
 import javax.annotation.Nullable;
 
@@ -46,7 +46,6 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 	}
 
 	public EMRedStoneConverter() {
-		setExtractRange(1, 120, EnumVoltage.A, EnumVoltage.C);
 		setExtract(true);
 		setReceive(false);
 		setMaxEnergy(5000);
@@ -122,5 +121,10 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 	public boolean isExAllowable(EnumFacing facing) {
 		return true;
 	}
-
+	
+	@Override
+	public int getExVoltage() {
+		return EleEnergy.COMMON;
+	}
+	
 }

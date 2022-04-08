@@ -1,6 +1,5 @@
 package top.kmar.mi.content.tileentity.user;
 
-import top.kmar.mi.data.info.EnumVoltage;
 import top.kmar.mi.api.register.others.AutoTileEntity;
 
 /**
@@ -11,7 +10,6 @@ import top.kmar.mi.api.register.others.AutoTileEntity;
 public class EUMFurnace extends EUFurnace {
 
 	public EUMFurnace() {
-		setReceiveRange(10, 20, EnumVoltage.C, EnumVoltage.D);
 		setMaxEnergy(20);
 	}
 

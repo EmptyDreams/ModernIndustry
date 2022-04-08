@@ -21,7 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.dor.interfaces.IDataWriter;
-import top.kmar.mi.api.electricity.interfaces.IVoltage;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -239,13 +238,6 @@ public final class DataReader implements IDataReader {
 	@Override
 	public IDataReader readData() {
 		return new ByteDataOperator(readByteArray());
-	}
-	
-	@Override
-	public IVoltage readVoltage() {
-		int voltage = readVarInt();
-		double loss = readDouble();
-		return IVoltage.getInstance(voltage, loss);
 	}
 	
 	@Override

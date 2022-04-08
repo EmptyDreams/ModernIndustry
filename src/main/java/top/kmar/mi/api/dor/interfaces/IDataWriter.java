@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
-import top.kmar.mi.api.electricity.interfaces.IVoltage;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -60,8 +59,6 @@ public interface IDataWriter {
 	void writeLongArray(long[] data);
 	/** 写入一个BlockPos */
 	void writeBlockPos(BlockPos data);
-	/** 写入一个电压值 */
-	void writeVoltage(IVoltage data);
 	/** 写入一个NBTBase */
 	void writeTag(NBTBase data);
 	/** 将指定reader写入到当前writer */

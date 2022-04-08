@@ -1,6 +1,7 @@
 package top.kmar.mi.api.electricity.interfaces;
 
 import net.minecraft.tileentity.TileEntity;
+import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.PathInfo;
 
 /**
@@ -26,24 +27,15 @@ public interface IEleTransfer extends IRegister {
 	PathInfo findPath(TileEntity start, TileEntity user, IEleInputer inputer);
 	
 	/**
-	 * 让指定方块运输电能. 该方法中需要处理以下内容：<br>
-	 * <b>
-	 *  1.更新内部数据<br>
-	 *  2.当电缆过载时进行有关操作
-	 * </b>
+	 * <p>让指定方块运输电能. 该方法中需要处理以下内容：
+	 * <ol>
+	 *  <li> 更新内部数据
+	 *  <li> 当电缆过载时进行有关操作
+	 * </ol>
 	 * @param now 指定方块
-	 * @param energy 电能
-	 * @param voltage 电压
-	 * @param info 上一根与当前电线相连的电线返回的信息
-	 * @return 要传递给下一根电线的信息，该信息只会传递给托管支持的线缆
+	 * @param energy 能量
 	 */
-	Object transfer(TileEntity now, int energy, IVoltage voltage, Object info);
-	
-	/**
-	 * 清除指定线缆内部存储的运输电量
-	 * @param now 指定线缆
-	 */
-	void cleanTransfer(TileEntity now);
+	void transfer(TileEntity now, EleEnergy energy);
 	
 	/**
 	 * 连接指定方块.
@@ -75,9 +67,8 @@ public interface IEleTransfer extends IRegister {
 	 * 获取指定电缆的电能损耗值
 	 * @param now 指定线缆
 	 * @param energy 运输的总能量（不包括损耗能量）
-	 * @param voltage 电压
 	 * @return 损耗的能量
 	 */
-	double getEnergyLoss(TileEntity now, int energy, IVoltage voltage);
+	int getEnergyLoss(TileEntity now, EleEnergy energy);
 	
 }

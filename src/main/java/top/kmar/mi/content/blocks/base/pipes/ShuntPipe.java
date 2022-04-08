@@ -13,7 +13,7 @@ import top.kmar.mi.content.tileentity.pipes.ShuntPipeTileEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static top.kmar.mi.data.info.properties.MIProperty.getAXIS;
+import static top.kmar.mi.data.properties.MIProperty.getAXIS;
 
 /**
  * @author EmptyDreams

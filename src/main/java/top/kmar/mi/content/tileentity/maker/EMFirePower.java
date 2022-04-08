@@ -11,6 +11,7 @@ import top.kmar.mi.api.auto.interfaces.AutoSave;
 import top.kmar.mi.api.craftguide.ItemElement;
 import top.kmar.mi.api.craftguide.sol.ItemSet;
 import top.kmar.mi.api.electricity.clock.NonCounter;
+import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
 import top.kmar.mi.api.register.others.AutoTileEntity;
@@ -20,8 +21,7 @@ import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.blocks.CraftList;
 import top.kmar.mi.content.capabilities.nonburn.NonBurnCapability;
-import top.kmar.mi.data.info.EnumVoltage;
-import top.kmar.mi.data.info.properties.MIProperty;
+import top.kmar.mi.data.properties.MIProperty;
 
 /**
  * 火力发电机的TE
@@ -51,7 +51,6 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	@AutoSave private ItemElement burnItem;
 
 	public EMFirePower() {
-		setExtractRange(1, 120, EnumVoltage.C, EnumVoltage.E);
 		setExtract(true);
 		setReceive(false);
 		setMaxEnergy(10000);
@@ -122,6 +121,11 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	@Override
 	public boolean isExAllowable(EnumFacing facing) {
 		return facing != getFront();
+	}
+	
+	@Override
+	public int getExVoltage() {
+		return EleEnergy.COMMON;
 	}
 	
 	@Override

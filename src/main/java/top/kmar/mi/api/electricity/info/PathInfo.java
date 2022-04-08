@@ -6,8 +6,6 @@ import net.minecraft.world.World;
 import top.kmar.mi.api.electricity.EleWorker;
 import top.kmar.mi.api.electricity.interfaces.IEleInputer;
 import top.kmar.mi.api.electricity.interfaces.IEleOutputer;
-import top.kmar.mi.api.electricity.interfaces.IVoltage;
-import top.kmar.mi.data.info.EnumVoltage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,26 +24,25 @@ import java.util.List;
 public class PathInfo implements Comparable<PathInfo> {
 	
 	/** 运输过程损耗的能量 */
-	private int lossEnergy;
-	/** 实际提供的电压 */
-	private IVoltage voltage;
+	private int lossEnergy = -1;
+	/** 实际提供的电流 */
+	private final EleEnergy energy;
 	/** 路径 */
 	private final List<TileEntity> path;
 	/** 输出电能的方块 */
-	private BlockPos outer;
+	private final BlockPos outer;
 	/** 输出电能方块的托管 */
-	private IEleOutputer outputer;
+	private final IEleOutputer outputer;
 	/** 终点 */
-	private BlockPos user;
+	private final BlockPos user;
 	/** 托管 */
-	private IEleInputer inputer;
+	private final IEleInputer inputer;
 	/** 所在世界 */
-	private World world;
+	private final World world;
 	
-	public PathInfo(int lossEnergy, IVoltage voltage, List<? extends TileEntity> path,
+	public PathInfo(EleEnergy energy, List<? extends TileEntity> path,
 	                TileEntity outer, TileEntity user) {
-		this.lossEnergy = lossEnergy;
-		this.voltage = voltage;
+		this.energy = energy;
 		//noinspection unchecked
 		this.path = (List<TileEntity>) path;
 		this.outer = outer.getPos();
@@ -60,36 +57,14 @@ public class PathInfo implements Comparable<PathInfo> {
 	 * @return 返回用电详单
 	 */
 	public final EleEnergy invoke() {
-		EleEnergy real = getEnergy();
-		if (real.getEnergy() <= 0 || real.getVoltage().getVoltage() <= 0) return real;
-		int e = inputer.useEnergy(getUser(), real.getEnergy(), real.getVoltage());
-		if (e <= 0) throw new IllegalArgumentException("线路数据计算错误：energy=" + e);
+		EleEnergy real = inputer.useEnergy(getUser(), getEnergy());
 		TileEntity transfer;
 		for (TileEntity tileEntity : path) {
 			transfer = tileEntity;
 			//noinspection ConstantConditions
-			EleWorker.getTransfer(transfer).transfer(transfer, real.getEnergy(), real.getVoltage(), null);
+			EleWorker.getTransfer(transfer).transfer(transfer, real);
 		}
 		return real;
-	}
-	
-	/**
-	 * 将目标信息合并到当前信息中
-	 * @param info 目标信息
-	 * @return 是否合并成功，当两者信息都有效时无法自动合并
-	 */
-	@SuppressWarnings("unused")
-	public boolean merge(PathInfo info) {
-		lossEnergy += info.lossEnergy;
-		path.addAll(info.path);
-		if (outer == null) {
-			outer = info.outer;
-			outputer = info.outputer;
-			voltage = info.voltage;
-			return true;
-		} else {
-			return info.outer == null;
-		}
 	}
 	
 	/** 获取线路起点的线缆方块的TE */
@@ -107,32 +82,21 @@ public class PathInfo implements Comparable<PathInfo> {
 	
 	/** 获取机器需要的能量（不包括线缆消耗的能量） */
 	public int getMachineEnergy() {
-		TileEntity user = getUser();
-		return Math.min(inputer.getEnergy(user),
-				outputer.output(getOuter(), Integer.MAX_VALUE,
-						inputer.getVoltageRange(user), true).getEnergy());
+		return inputer.getEnergyDemand(getUser());
 	}
 	
 	/** 获取线路需要的能量（包括线缆消耗的能量） */
 	public EleEnergy getEnergy() {
 		int energy = getMachineEnergy();
-		if (energy <= 0) return new EleEnergy(0, EnumVoltage.NON);
+		if (energy <= 0) return new EleEnergy(0, EleEnergy.ZERO);
 		calculateLossEnergy();
-		return outputer.output(getOuter(), energy + lossEnergy,
-				VoltageRange.instance(voltage), false);
+		return outputer.output(getOuter(), energy + lossEnergy, false);
 	}
 	
 	/** 获取线路电压 */
 	@Nonnull
-	public IVoltage getVoltage() {
-		return voltage;
-	}
-	
-	/** 设置线路电压 */
-	@Nonnull
-	public PathInfo setVoltage(IVoltage voltage) {
-		this.voltage = voltage;
-		return this;
+	public int getVoltage() {
+		return energy.getVoltage();
 	}
 	
 	/**
@@ -153,27 +117,6 @@ public class PathInfo implements Comparable<PathInfo> {
 		return outer == null ? null : world.getTileEntity(outer);
 	}
 	
-	/**
-	 * 设置发电机方块.
-	 * 修改时会一同修改outputer和world，不需要手动调用
-	 * {@link #setWorld(World)}
-	 * @param outer 发电机方块的TE
-	 * @return 当前对象
-	 */
-	@SuppressWarnings("unused")
-	@Nonnull
-	public PathInfo setOuter(TileEntity outer) {
-		this.outer = outer.getPos();
-		outputer = EleWorker.getOutputer(outer);
-		world = outer.getWorld();
-		return this;
-	}
-	
-	/** 设置缓存对应的世界 */
-	public void setWorld(World world) {
-		this.world = world;
-	}
-	
 	/** 获取缓存对应的世界 */
 	public World getWorld() {
 		return world;
@@ -188,14 +131,6 @@ public class PathInfo implements Comparable<PathInfo> {
 		return user == null ? null : world.getTileEntity(user);
 	}
 	
-	/** 设置用电器方块的TE */
-	@Nonnull
-	public PathInfo setUser(TileEntity user) {
-		this.user = user.getPos();
-		this.inputer = EleWorker.getInputer(user);
-		return this;
-	}
-	
 	/** 获取用电器方块对应的Inputer */
 	@SuppressWarnings("unused")
 	public IEleInputer getInputer() {
@@ -205,26 +140,24 @@ public class PathInfo implements Comparable<PathInfo> {
 	/** 计算线路能量损耗 */
 	public void calculateLossEnergy() {
 		if (lossEnergy == -1) {
-			int energy = getMachineEnergy();
-			@SuppressWarnings("ConstantConditions")
-			double result = path.stream().mapToDouble(it ->
-					EleWorker.getTransfer(it).getEnergyLoss(it, energy, voltage)).sum();
-			if (result > Integer.MAX_VALUE)
-				throw new IllegalArgumentException("线缆电能损耗量超过极限值[" + result + "]");
-			if (result % 1 != 0) lossEnergy = ((int) result) + 1;
-			else lossEnergy = (int) result;
+			int ans = 0;
+			for (TileEntity value : path) {
+				//noinspection ConstantConditions
+				ans += EleWorker.getTransfer(value).getEnergyLoss(value, energy);
+			}
+			lossEnergy = ans;
 		}
 	}
 	
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof PathInfo)) return false;
+	public boolean equals(Object that) {
+		if (this == that) return true;
+		if (!(that instanceof PathInfo)) return false;
 		
-		PathInfo pathInfo = (PathInfo) o;
+		PathInfo pathInfo = (PathInfo) that;
 		
 		if (lossEnergy != pathInfo.lossEnergy) return false;
-		if (!voltage.equals(pathInfo.voltage)) return false;
+		if (energy != pathInfo.energy) return false;
 		if (!outer.equals(pathInfo.outer)) return false;
 		if (!outputer.equals(pathInfo.outputer)) return false;
 		if (!user.equals(pathInfo.user)) return false;
@@ -240,7 +173,7 @@ public class PathInfo implements Comparable<PathInfo> {
 	@Override
 	public int hashCode() {
 		int result = lossEnergy;
-		result = 31 * result + voltage.hashCode();
+		result = 31 * result + energy.hashCode();
 		result = 31 * result + outer.hashCode();
 		result = 31 * result + outputer.hashCode();
 		result = 31 * result + user.hashCode();
@@ -249,17 +182,16 @@ public class PathInfo implements Comparable<PathInfo> {
 	}
 	
 	@Override
-	public int compareTo(@Nonnull PathInfo o) {
-		if (o.outputer == null) {
+	public int compareTo(@Nonnull PathInfo that) {
+		if (that.outputer == null) {
 			if (outputer == null) return 0;
 			return -1;
 		}
 		if (outputer == null) return 1;
-		if (!user.equals(o.user)) return 0;
-		int i = Integer.compare(o.lossEnergy, lossEnergy);
-		if (i == 0) {
-			i = voltage.compareTo(o.voltage);
-		}
-		return i;
+		if (!user.equals(that.user)) return 0;
+		int result = Integer.compare(that.lossEnergy, lossEnergy);
+		if (result == 0) result = energy.compareTo(that.energy);
+		return result;
 	}
+	
 }

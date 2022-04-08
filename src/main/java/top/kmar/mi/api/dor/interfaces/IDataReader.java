@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.bytes.ByteList;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
-import top.kmar.mi.api.electricity.interfaces.IVoltage;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -71,8 +70,6 @@ public interface IDataReader {
 	@Nonnull BlockPos readBlockPos();
 	/** 读取一个dor */
 	@Nonnull IDataReader readData();
-	/** 读取一个电压值 */
-	@Nonnull IVoltage readVoltage();
 	/** 读取一个NBTBase */
 	@Nonnull NBTBase readTag();
 	/** 读取一个NBTTagCompound */

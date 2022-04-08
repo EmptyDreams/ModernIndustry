@@ -15,13 +15,13 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import top.kmar.mi.ModernIndustry;
 import top.kmar.mi.api.gui.common.GuiLoader;
-import top.kmar.mi.data.info.properties.MIProperty;
+import top.kmar.mi.data.properties.MIProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
-import static top.kmar.mi.data.info.properties.MIProperty.getWORKING;
+import static top.kmar.mi.data.properties.MIProperty.getWORKING;
 
 /**
  * 封装了对于State的常用操作

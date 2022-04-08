@@ -2,18 +2,14 @@ package top.kmar.mi.api.electricity;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.Mod;
-import top.kmar.mi.data.info.EnumVoltage;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.PathInfo;
 import top.kmar.mi.api.electricity.interfaces.IEleInputer;
 import top.kmar.mi.api.electricity.interfaces.IEleOutputer;
 import top.kmar.mi.api.electricity.interfaces.IEleTransfer;
-import top.kmar.mi.api.electricity.interfaces.IVoltage;
-import top.kmar.mi.api.utils.MISysInfo;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -129,7 +125,6 @@ public final class EleWorker {
 				return useEleEnergy(te, inputer);
 			}
 		}
-		MISysInfo.err("[EleWorker]该方块没有找到可用的托管：" + te);
 		return null;
 	}
 	
@@ -140,7 +135,7 @@ public final class EleWorker {
 	 * @return 是否成功
 	 */
 	public static EleEnergy useEleEnergy(TileEntity te, IEleInputer inputer) {
-		if (inputer.getEnergy(te) <= 0) return new EleEnergy(0, EnumVoltage.NON);
+		if (inputer.getEnergyDemand(te) <= 0) return new EleEnergy(0, EleEnergy.ZERO);
 		Map<TileEntity, IEleTransfer> transfers = inputer.getTransferAround(te);
 		if (transfers.isEmpty()) return null;
 		
@@ -154,31 +149,20 @@ public final class EleWorker {
 		
 		if (realPath == null) return null;
 		lineTransfer(realPath.getPath(),
-				realPath.getMachineEnergy() + realPath.getLossEnergy(), realPath.getVoltage());
+				new EleEnergy(realPath.getMachineEnergy() + realPath.getLossEnergy(), realPath.getVoltage()));
 		return realPath.invoke();
 	}
 	
 	/**
 	 * 让指定线路运输电能
 	 * @param line 线路
-	 * @param energy 电能
-	 * @param voltage 电压
+	 * @param energy 能量
 	 * @throws NullPointerException 如果line中的某个电缆没有对应的托管
 	 */
-	public static void lineTransfer(Iterable<TileEntity> line, int energy, IVoltage voltage) {
-		IEleTransfer transfer;
-		Map<IEleTransfer, Object> infos = new HashMap<>(2);
-		try {
-			for (TileEntity entity : line) {
-				transfer = getTransfer(entity);
-				//noinspection ConstantConditions
-				infos.put(transfer, transfer.transfer(
-						entity, energy, voltage, infos.getOrDefault(transfer, null)));
-			}
-		} catch (NullPointerException e) {
-			NullPointerException rte = new NullPointerException("线路中有至少一个电缆方块没有托管！");
-			rte.initCause(e);
-			throw rte;
+	public static void lineTransfer(Iterable<TileEntity> line, EleEnergy energy) {
+		for (TileEntity entity : line) {
+			//noinspection ConstantConditions
+			getTransfer(entity).transfer(entity, energy);
 		}
 	}
 	

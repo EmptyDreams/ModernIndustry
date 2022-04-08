@@ -7,7 +7,6 @@ import top.kmar.mi.ModernIndustry;
 import top.kmar.mi.api.capabilities.ele.EleCapability;
 import top.kmar.mi.api.capabilities.ele.IStorage;
 import top.kmar.mi.api.electricity.info.EleEnergy;
-import top.kmar.mi.api.electricity.info.VoltageRange;
 import top.kmar.mi.api.electricity.interfaces.IEleOutputer;
 import top.kmar.mi.api.register.agent.AutoAgentRegister;
 
@@ -28,10 +27,10 @@ public class EleCapOutputer implements IEleOutputer {
 	public static EleCapOutputer instance() { return INSTANCE; }
 	
 	@Override
-	public EleEnergy output(TileEntity te, int energy, VoltageRange voltage, boolean simulation) {
+	public EleEnergy output(TileEntity te, int energy, boolean simulation) {
 		//noinspection ConstantConditions
 		return te.getCapability(EleCapability.ENERGY, null)
-				           .extractEnergy(energy, voltage, simulation);
+				.extractEnergy(energy, simulation);
 	}
 	
 	@Override

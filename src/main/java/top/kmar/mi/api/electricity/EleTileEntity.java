@@ -1,29 +1,16 @@
 package top.kmar.mi.api.electricity;
 
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import top.kmar.mi.api.auto.interfaces.AutoSave;
 import top.kmar.mi.api.capabilities.ele.EleCapability;
-import top.kmar.mi.api.capabilities.ele.EleStateEnum;
 import top.kmar.mi.api.capabilities.ele.IStorage;
 import top.kmar.mi.api.electricity.clock.OverloadCounter;
 import top.kmar.mi.api.electricity.info.EleEnergy;
-import top.kmar.mi.api.electricity.info.EnergyRange;
-import top.kmar.mi.api.electricity.info.VoltageRange;
-import top.kmar.mi.api.electricity.interfaces.IVoltage;
-import top.kmar.mi.api.event.EnergyEvent;
 import top.kmar.mi.api.tools.BaseTileEntity;
-import top.kmar.mi.api.utils.TickHelper;
-import top.kmar.mi.data.info.EnumVoltage;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,18 +21,10 @@ import java.util.Set;
 public abstract class EleTileEntity extends BaseTileEntity {
 	
 	/** 空的能量 */
-	private static final EleEnergy EMPTY_ENERGY = new EleEnergy(0, EnumVoltage.NON);
+	private static final EleEnergy EMPTY_ENERGY = new EleEnergy(0, EleEnergy.ZERO);
 	
-	/** 可输出的能量范围 */
-	private final EnergyRange extractRange = new EnergyRange();
-	/** 可输入的能量范围 */
-	private final EnergyRange receiveRange = new EnergyRange();
 	/** 当前包含的能量 */
 	@AutoSave private int nowEnergy;
-	/** 当前输出电压 */
-	@AutoSave private IVoltage exVoltage;
-	/** 当前输入电压 */
-	@AutoSave private IVoltage reVoltage;
 	/** 可存储的最大能量 */
 	private int maxEnergy = 0;
 	/** 超载计时器 */
@@ -59,43 +38,15 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	private final Set<BlockPos> linkedBlocks = new HashSet<>(3);
 	
 	/**
-	 * 设定方块可以输出的能量范围
-	 * @param minEnergy 最低能量值
-	 * @param maxEnergy 最高能量值
-	 * @param minVoltage 最低电压
-	 * @param maxVoltage 最高电压
-	 */
-	public void setExtractRange(int minEnergy, int maxEnergy, IVoltage minVoltage, IVoltage maxVoltage) {
-		extractRange.setMinEnergy(minEnergy);
-		extractRange.setMaxEnergy(maxEnergy);
-		extractRange.setMinVoltage(minVoltage);
-		extractRange.setMaxVoltage(maxVoltage);
-	}
-	
-	/**
-	 * 设定方块可以接受的能量范围
-	 * @param minEnergy 最低能量值
-	 * @param maxEnergy 最高能量值
-	 * @param minVoltage 最低电压
-	 * @param maxVoltage 最高电压
-	 */
-	public void setReceiveRange(int minEnergy, int maxEnergy, IVoltage minVoltage, IVoltage maxVoltage) {
-		receiveRange.setMinEnergy(minEnergy);
-		receiveRange.setMaxEnergy(maxEnergy);
-		receiveRange.setMinVoltage(minVoltage);
-		receiveRange.setMaxVoltage(maxVoltage);
-	}
-	
-	/**
-	 * 当电器接收电能时调用，该方法只在客户端调用
+	 * <p>当电器接收电能时调用，该方法只在服务端调用
+	 * <p>该方法还用来处理当接受到超过电器可承受范围的电压时增加计数器的操作
 	 * @param energy 这次接收的能量
 	 * @return 返回false可以阻止此次电能的消耗
 	 */
-	@SuppressWarnings("unused")
 	public boolean onReceive(EleEnergy energy) { return true; }
 	
 	/**
-	 * 当电器输出电能时调用，该方法只在客户端调用
+	 * 当电器输出电能时调用，该方法只在服务端调用
 	 * @param energy 这次输出的能量
 	 * @return 返回false可以组织此次电能的输出
 	 */
@@ -105,6 +56,9 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	public abstract boolean isReAllowable(EnumFacing facing);
 	/** 是否可以从指定方向输出电 */
 	public abstract boolean isExAllowable(EnumFacing facing);
+	
+	/** 获取输出电压 */
+	public abstract int getExVoltage();
 	
 	/** 是否可以连接指定方向的方 */
 	public boolean canLinkEle(EnumFacing facing) {
@@ -146,11 +100,7 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		}
 		return super.getCapability(capability, facing);
 	}
-	
-	/** 获取输出能量范围 */
-	public EnergyRange getExtractRange() { return extractRange.copy(); }
-	/** 获取输入能量范围 */
-	public EnergyRange getReceiveRange() { return receiveRange.copy(); }
+
 	/** 获取现在的能量 */
 	public int getNowEnergy() { return nowEnergy; }
 	/** 设置现在的能量 */
@@ -173,14 +123,6 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		setNowEnergy(value);
 		return true;
 	}
-	/** 获取现在输出的电压 */
-	public IVoltage getExVoltage() { return exVoltage; }
-	/** 设置现在输出的电压 */
-	public void setExVoltage(IVoltage exVoltage) { this.exVoltage = exVoltage; }
-	/** 获取现在接收的电压 */
-	public IVoltage getReVoltage() { return reVoltage; }
-	/** 设置现在就收的电压 */
-	public void setReVoltage(IVoltage reVoltage) { this.reVoltage = reVoltage; }
 	/** 获取计数器 */
 	public OverloadCounter getCounter() { return counter; }
 	/** 设置计数器 */
@@ -196,74 +138,44 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	protected void setExtract(boolean extract) { isExtract = extract; }
 	/** 获取能量接口 */
 	public IStorage getStorage() { return storage; }
-	/** 设置能量接口 */
-	protected void setStorage(IStorage storage) { this.storage = storage; }
 	/** 获取可存储的能量值 */
 	public int getMaxEnergy() { return maxEnergy; }
 	/** 设置可存储的最大能量值 */
 	public void setMaxEnergy(int max) { maxEnergy = max; }
 	
 	/** 能量接口 */
-	private IStorage storage = new IStorage() {
+	private final IStorage storage = new IStorage() {
 		@Override
 		public boolean canReceive() { return isReceive(); }
 		@Override
 		public boolean canExtract() { return isExtract(); }
+		@Override
+		public int getEnergyDemand() {return 0; }
 		
 		@Override
-		public int receiveEnergy(EleEnergy energy, boolean simulate) {
-			if (world.isRemote || !canReceive()) return 0;
-			//若当前储存能量已满则不再接收能量
-			if (nowEnergy >= getMaxEnergy()) return 0;
-			if (simulate) {
-				return receiveRange.getOptimalEnergy(Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy()));
-			}
-			int k = receiveRange.getOptimalEnergy(Math.min(getMaxEnergy() - nowEnergy, energy.getEnergy()));
-			IVoltage voltage = receiveRange.getOptimalVoltage(energy.getVoltage());
-			if (!onReceive(new EleEnergy(k, voltage))) return 0;
-			//若输入电压不在适用电压范围内，则增加计数器
-			if (voltage.getVoltage() != energy.getVoltage().getVoltage()) {
-				getCounter().plus();
-			}
-			nowEnergy += k;
-			if (reVoltage == null) reVoltage = energy.getVoltage().copy();
-			//触发事件
-			MinecraftForge.EVENT_BUS.post(
-					new EnergyEvent.Receive(new EleEnergy(k, voltage), EleTileEntity.this));
-			return k;
+		public EleEnergy receiveEnergy(EleEnergy energy, boolean simulate) {
+			if (world.isRemote || !canReceive()) return EMPTY_ENERGY.copy();
+			EleEnergy real = energy.min(energy.copy(getMaxEnergy() - nowEnergy));
+			if (simulate) return real;
+			if (!onReceive(real)) return EMPTY_ENERGY.copy();
+			nowEnergy += real.getCapacity();
+			return real;
 		}
 		
 		@Override
-		public IVoltage getVoltage(EleStateEnum state, IVoltage voltage) {
-			return state == EleStateEnum.IN ? getReceiveRange().getOptimalVoltage(voltage) :
-					       getExtractRange().getOptimalVoltage(voltage);
-		}
-		
-		@Override
-		public VoltageRange getReceiveVoltageRange() {
-			return new VoltageRange(receiveRange.getMinVoltage(), receiveRange.getMaxVoltage());
-		}
-		
-		@Override
-		public EleEnergy extractEnergy(int energy, VoltageRange voltageRange, boolean simulate) {
+		public EleEnergy extractEnergy(int energy, boolean simulate) {
 			if (world.isRemote) return EMPTY_ENERGY.copy();
 			if (canExtract()) {
 				//若存储能量或需要输出的能量小于等于0则直接返回
 				if (nowEnergy <= 0 || energy <= 0) return EMPTY_ENERGY.copy();
 				
 				//计算应该输出的电能
-				int k = Math.min(nowEnergy, energy);
-				//计算最适电压
-				IVoltage voltage = voltageRange.getOptimalVoltage(extractRange);
+				int real = Math.min(nowEnergy, energy);
 				//若需要输出的电压不在可输出的范围则输出最适电压
-				EleEnergy reEnergy = new EleEnergy(k, voltage);
+				EleEnergy reEnergy = new EleEnergy(real, getExVoltage());
 				if (!simulate) {
-					if (!onExtract(new EleEnergy(k, voltage))) return EMPTY_ENERGY.copy();
-					if (exVoltage == null) exVoltage = voltage.copy();
-					nowEnergy -= k;
-					//触发事件
-					MinecraftForge.EVENT_BUS.post(
-							new EnergyEvent.Extract(reEnergy.copy(), EleTileEntity.this));
+					if (!onExtract(reEnergy)) return EMPTY_ENERGY.copy();
+					nowEnergy -= real;
 				}
 				return reEnergy;
 			}
@@ -290,32 +202,11 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		}
 		@Override
 		public boolean unLink(BlockPos pos) { return EleTileEntity.this.unLink(pos); }
-		@Nonnull
-		@Override
-		public Collection<BlockPos> getLinks() {
-			return new HashSet<>(linkedBlocks);
-		}
 		@Override
 		public boolean isLink(BlockPos pos) {
 			return linkedBlocks.contains(pos);
 		}
 		
 	};
-	
-	static {
-		TickHelper.addServerTask(() -> {
-			World[] worlds = FMLCommonHandler.instance().getMinecraftServerInstance().worlds;
-			EleTileEntity entity;
-			for (World world : worlds) {
-				for (TileEntity te : world.loadedTileEntityList) {
-					if (te instanceof EleTileEntity) {
-						entity = (EleTileEntity) te;
-						entity.reVoltage = entity.exVoltage = null;
-					}
-				}
-			}
-			return false;
-		});
-	}
 	
 }

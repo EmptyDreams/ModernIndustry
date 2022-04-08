@@ -23,10 +23,10 @@ import top.kmar.mi.content.blocks.base.MachineBlock
 import top.kmar.mi.content.gui.FluidPumpFrame
 import top.kmar.mi.content.items.base.ItemBlockExpand
 import top.kmar.mi.content.tileentity.user.EUFluidPump
-import top.kmar.mi.data.info.properties.MIProperty.Companion.WORKING
-import top.kmar.mi.data.info.properties.MIProperty.Companion.createAllDirection
-import top.kmar.mi.data.info.properties.MIProperty.Companion.createRelativeDirection
-import top.kmar.mi.data.info.properties.RelativeDirectionEnum
+import top.kmar.mi.data.properties.MIProperty.Companion.WORKING
+import top.kmar.mi.data.properties.MIProperty.Companion.createAllDirection
+import top.kmar.mi.data.properties.MIProperty.Companion.createRelativeDirection
+import top.kmar.mi.data.properties.RelativeDirectionEnum
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
 @AutoBlockRegister(registryName = FluidPumpBlock.NAME, field = "innerInstance")

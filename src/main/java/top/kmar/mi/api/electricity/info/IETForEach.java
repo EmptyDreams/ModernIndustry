@@ -1,4 +1,4 @@
-package top.kmar.mi.data.info;
+package top.kmar.mi.api.electricity.info;
 
 import net.minecraft.tileentity.TileEntity;
 import top.kmar.mi.content.tileentity.EleSrcCable;

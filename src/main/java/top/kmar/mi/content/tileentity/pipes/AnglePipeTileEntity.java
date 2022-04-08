@@ -6,7 +6,7 @@ import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.dor.interfaces.IDataWriter;
 import top.kmar.mi.api.fluid.FTTileEntity;
 import top.kmar.mi.api.register.others.AutoTileEntity;
-import top.kmar.mi.data.info.properties.AngleFacingEnum;
+import top.kmar.mi.data.properties.AngleFacingEnum;
 
 import javax.annotation.Nonnull;
 

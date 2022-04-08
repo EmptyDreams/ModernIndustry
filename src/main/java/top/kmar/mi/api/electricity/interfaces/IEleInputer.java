@@ -3,8 +3,8 @@ package top.kmar.mi.api.electricity.interfaces;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import top.kmar.mi.api.electricity.EleWorker;
+import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.utils.WorldUtil;
-import top.kmar.mi.api.electricity.info.VoltageRange;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,11 +16,10 @@ import java.util.Map;
 public interface IEleInputer extends IRegister {
 	
 	/**
-	 * 获取方块需要的正常电能
-	 * @param te 对应方块的TE
-	 * @throws ClassCastException 如果不支持输入的TE
+	 * 获取指定方块的能量需求
+	 * @return 能量（单位：VC）
 	 */
-	int getEnergy(TileEntity te);
+	int getEnergyDemand(TileEntity now);
 	
 	/**
 	 * 根据输入的电能判断电器可消耗的电能
@@ -29,29 +28,14 @@ public interface IEleInputer extends IRegister {
 	 * @return 返回值 ≤ energy
 	 * @throws ClassCastException 如果不支持输入的TE
 	 */
-	int getEnergy(TileEntity now, int energy);
+	EleEnergy getEnergy(TileEntity now, EleEnergy energy);
 	
 	/**
 	 * 使方块使用电能
 	 * @param now 当前方块
-	 * @param energy 能量
-	 * @param voltage 电压
+	 * @param energy 输入的能量
 	 */
-	int useEnergy(TileEntity now, int energy, IVoltage voltage);
-	
-	/**
-	 * 获取用电器需要的电压
-	 * @param now 对应方块的TE
-	 * @throws ClassCastException 如果不支持输入的TE
-	 */
-	IVoltage getVoltage(TileEntity now, IVoltage voltage);
-	
-	/**
-	 * 获取用电器可接受的电压范围
-	 * @param now 对应方块的TE
-	 * @throws ClassCastException 如果不支持输入的TE
-	 */
-	VoltageRange getVoltageRange(TileEntity now);
+	EleEnergy useEnergy(TileEntity now, EleEnergy energy);
 	
 	/**
 	 * 判断当前方块能否从指定方向获取电能

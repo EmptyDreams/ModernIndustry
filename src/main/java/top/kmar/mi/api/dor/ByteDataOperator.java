@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import top.kmar.mi.api.dor.interfaces.IDataOperator;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.dor.interfaces.IDataWriter;
-import top.kmar.mi.api.electricity.interfaces.IVoltage;
 import top.kmar.mi.api.exception.TransferException;
 
 import javax.annotation.Nonnull;
@@ -263,13 +262,6 @@ public class ByteDataOperator implements IDataOperator {
 	}
 	
 	@Override
-	public IVoltage readVoltage() {
-		int voltage = readVarInt();
-		double loss = readDouble();
-		return IVoltage.getInstance(voltage, loss);
-	}
-	
-	@Override
 	public NBTBase readTag() {
 		int id = readByte();
 		switch (id) {
@@ -416,12 +408,6 @@ public class ByteDataOperator implements IDataOperator {
 		writeInt(data.getX());
 		writeInt(data.getY());
 		writeInt(data.getZ());
-	}
-	
-	@Override
-	public void writeVoltage(IVoltage data) {
-		writeVarInt(data.getVoltage());
-		writeDouble(data.getLossIndex());
 	}
 	
 	@Override

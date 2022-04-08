@@ -35,11 +35,11 @@ public abstract class OverloadCounter {
 	public void plus(int amount) {
 		if (amount < 0) throw new IllegalArgumentException("amount 应该大于等于 0，而此时为：" + amount);
 		time += amount;
+		if (time > getMaxTime()) overload();
+		clean();
 	}
 	
-	/**
-	 * 计数增加1
-	 */
+	/** 计数增加1 */
 	public void plus() {
 		plus(1);
 	}

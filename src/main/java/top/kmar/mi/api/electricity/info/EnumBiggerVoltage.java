@@ -1,4 +1,4 @@
-package top.kmar.mi.data.info;
+package top.kmar.mi.api.electricity.info;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.init.SoundEvents;

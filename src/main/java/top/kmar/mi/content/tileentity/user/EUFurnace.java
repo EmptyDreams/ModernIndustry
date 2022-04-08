@@ -8,15 +8,15 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import top.kmar.mi.api.auto.interfaces.AutoSave;
 import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
+import top.kmar.mi.api.electricity.info.BiggerVoltage;
+import top.kmar.mi.api.electricity.info.EleEnergy;
+import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
 import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
 import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
-import top.kmar.mi.data.info.BiggerVoltage;
-import top.kmar.mi.data.info.EnumBiggerVoltage;
-import top.kmar.mi.data.info.EnumVoltage;
-import top.kmar.mi.data.info.properties.MIProperty;
+import top.kmar.mi.data.properties.MIProperty;
 
 import javax.annotation.Nullable;
 
@@ -49,7 +49,6 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 	@AutoSave private int workingTime = 0;
 
 	public EUFurnace() {
-		setReceiveRange(5, 10, EnumVoltage.C, EnumVoltage.D);
 		OrdinaryCounter counter = new OrdinaryCounter(100);
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
@@ -109,5 +108,10 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 	public boolean isExAllowable(EnumFacing facing) {
 		return false;
 	}
-
+	
+	@Override
+	public int getExVoltage() {
+		return EleEnergy.COMMON;
+	}
+	
 }

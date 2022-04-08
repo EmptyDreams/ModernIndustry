@@ -28,10 +28,9 @@ import top.kmar.mi.api.tools.FrontTileEntity
 import top.kmar.mi.api.utils.*
 import top.kmar.mi.api.utils.container.IndexEnumMap
 import top.kmar.mi.content.blocks.machine.user.FluidPumpBlock
-import top.kmar.mi.data.info.BiggerVoltage
-import top.kmar.mi.data.info.EnumBiggerVoltage
-import top.kmar.mi.data.info.EnumVoltage
-import top.kmar.mi.data.info.properties.RelativeDirectionEnum
+import top.kmar.mi.api.electricity.info.BiggerVoltage
+import top.kmar.mi.api.electricity.info.EnumBiggerVoltage
+import top.kmar.mi.data.properties.RelativeDirectionEnum
 import java.util.*
 import kotlin.math.min
 
@@ -119,9 +118,11 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     val guiButton = ButtonComponent(19, 30)
 
     init {
-        setReceiveRange(1, 100, EnumVoltage.C, EnumVoltage.D)
         val counter = OrdinaryCounter(100)
-        counter.bigger = BiggerVoltage(2f, EnumBiggerVoltage.BOOM)
+        counter.bigger = BiggerVoltage(
+            2f,
+            EnumBiggerVoltage.BOOM
+        )
         setCounter(counter)
         isReceive = true
         maxEnergy = 100
@@ -139,6 +140,8 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     override fun isReAllowable(facing: EnumFacing) = facing.axis !== side.axis
 
     override fun isExAllowable(facing: EnumFacing?) = false
+
+    override fun getExVoltage() = 0
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?) =
         if (capability == TRANSFER) TRANSFER.cast(this) else super.getCapability(capability, facing)

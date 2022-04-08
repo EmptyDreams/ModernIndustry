@@ -15,7 +15,7 @@ import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.gui.component.CommonProgress.Front;
 import top.kmar.mi.api.gui.component.CommonProgress.Style;
 import top.kmar.mi.api.register.others.AutoTileEntity;
-import top.kmar.mi.data.info.properties.MIProperty;
+import top.kmar.mi.data.properties.MIProperty;
 
 import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
 

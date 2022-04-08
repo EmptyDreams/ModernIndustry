@@ -15,7 +15,7 @@ import top.kmar.mi.content.tileentity.pipes.StraightPipeTileEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static top.kmar.mi.data.info.properties.MIProperty.getALL_FACING;
+import static top.kmar.mi.data.properties.MIProperty.getALL_FACING;
 
 /**
  * <p>直线型管道

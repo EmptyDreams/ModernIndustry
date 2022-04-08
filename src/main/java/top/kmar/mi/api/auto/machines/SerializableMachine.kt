@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
  * [INBTSerializable]的读写器
  * @author EmptyDreams
  */
-@AutoRWType(AutoTypeRegister.GENERAL_TYPE)
+@AutoRWType(AutoTypeRegister.GENERAL_TYPE shr 1)
 object SerializableMachine : IAutoFieldRW, IAutoObjRW<INBTSerializable<*>> {
 
     @JvmStatic fun instance() = SerializableMachine
