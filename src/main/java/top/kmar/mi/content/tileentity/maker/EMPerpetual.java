@@ -12,10 +12,17 @@ import top.kmar.mi.api.register.others.AutoTileEntity;
 @AutoTileEntity("perpetual")
 public class EMPerpetual extends EleTileEntity {
 	
+	public static final int VOLTAGE = EleEnergy.COMMON;
+	
 	public EMPerpetual() {
-		setExtract(true);
 		setMaxEnergy(Integer.MAX_VALUE);
 		setNowEnergy(Integer.MAX_VALUE);
+	}
+	
+	@Override
+	public boolean onReceive(EleEnergy energy) {
+		if (energy.getVoltage() > VOLTAGE) getCounter().plus();
+		return true;
 	}
 	
 	@Override
@@ -25,12 +32,12 @@ public class EMPerpetual extends EleTileEntity {
 	}
 	
 	@Override
-	public boolean isReAllowable(EnumFacing facing) {
+	public boolean isReceiveAllowable(EnumFacing facing) {
 		return false;
 	}
 	
 	@Override
-	public boolean isExAllowable(EnumFacing facing) {
+	public boolean isExtractAllowable(EnumFacing facing) {
 		return true;
 	}
 	

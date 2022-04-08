@@ -27,6 +27,8 @@ import javax.annotation.Nullable;
 @AutoTileEntity("red_stone_converter")
 public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 
+	public static final int VOLTAGE = EleEnergy.COMMON;
+	
 	@AutoSave
     private final ItemStackHandler item = new ItemStackHandler(1);
 	private final SlotItemHandler INPUT = CommonUtil.createInputSlot(item, 0, 79, 20,
@@ -46,8 +48,6 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 	}
 
 	public EMRedStoneConverter() {
-		setExtract(true);
-		setReceive(false);
 		setMaxEnergy(5000);
 		setCounter(NonCounter.getInstance());
 
@@ -111,14 +111,20 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 	public EnumFacing getFront() {
 		return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
 	}
-
+	
 	@Override
-	public boolean isReAllowable(EnumFacing facing) {
+	public boolean onReceive(EleEnergy energy) {
+		if (energy.getVoltage() > VOLTAGE) getCounter().plus();
+		return true;
+	}
+	
+	@Override
+	public boolean isReceiveAllowable(EnumFacing facing) {
 		return false;
 	}
 
 	@Override
-	public boolean isExAllowable(EnumFacing facing) {
+	public boolean isExtractAllowable(EnumFacing facing) {
 		return true;
 	}
 	

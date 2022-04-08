@@ -30,6 +30,8 @@ import top.kmar.mi.data.properties.MIProperty;
 @AutoTileEntity("fire_power")
 public class EMFirePower extends FrontTileEntity implements ITickable {
 
+	public static final int VOLTAGE = EleEnergy.COMMON;
+	
 	/** 工作进度条 */
 	private final CommonProgress progressBar = new CommonProgress();
 	/** 能量进度条 */
@@ -51,8 +53,6 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	@AutoSave private ItemElement burnItem;
 
 	public EMFirePower() {
-		setExtract(true);
-		setReceive(false);
 		setMaxEnergy(10000);
 		setCounter(NonCounter.getInstance());
 		energyPro.setStyle(CommonProgress.Style.STRIPE);
@@ -114,13 +114,19 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	public SlotItemHandler getOutSlot() { return out; }
 	
 	@Override
-	public boolean isReAllowable(EnumFacing facing) {
+	public boolean onReceive(EleEnergy energy) {
+		if (energy.getVoltage() > VOLTAGE) getCounter().plus();
+		return true;
+	}
+	
+	@Override
+	public boolean isReceiveAllowable(EnumFacing facing) {
 		return false;
 	}
 	
 	@Override
-	public boolean isExAllowable(EnumFacing facing) {
-		return facing != getFront();
+	public boolean isExtractAllowable(EnumFacing facing) {
+		return true;
 	}
 	
 	@Override

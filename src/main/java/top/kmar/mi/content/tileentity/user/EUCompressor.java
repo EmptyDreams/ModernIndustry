@@ -35,6 +35,8 @@ import top.kmar.mi.data.properties.MIProperty;
 @AutoTileEntity(CompressorBlock.NAME)
 public class EUCompressor extends FrontTileEntity implements ITickable {
 	
+	public static final int VOLTAGE = EleEnergy.COMMON;
+	
 	/**
 	 * 三个物品框<br>
 	 * 	0-上端，1-下端，2-输出
@@ -61,7 +63,6 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		OrdinaryCounter counter = new OrdinaryCounter(100);
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
-		setReceive(true);
 		setMaxEnergy(20);
 		progressBar.setCraftButton(CraftList.COMPRESSOR, te -> ((EUCompressor) te).slotGroup);
 	}
@@ -198,11 +199,17 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	}
 	
 	@Override
-	public boolean isReAllowable(EnumFacing facing) {
+	public boolean onReceive(EleEnergy energy) {
+		if (energy.getVoltage() > VOLTAGE) getCounter().plus();
+		return true;
+	}
+	
+	@Override
+	public boolean isReceiveAllowable(EnumFacing facing) {
 		return true;
 	}
 	@Override
-	public boolean isExAllowable(EnumFacing facing) {
+	public boolean isExtractAllowable(EnumFacing facing) {
 		return false;
 	}
 	

@@ -13,6 +13,9 @@ import top.kmar.mi.api.capabilities.fluid.IFluid
 import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.electricity.clock.OrdinaryCounter
+import top.kmar.mi.api.electricity.info.BiggerVoltage
+import top.kmar.mi.api.electricity.info.EleEnergy
+import top.kmar.mi.api.electricity.info.EnumBiggerVoltage
 import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.fluid.data.FluidQueue
 import top.kmar.mi.api.fluid.data.TransportReport
@@ -28,8 +31,6 @@ import top.kmar.mi.api.tools.FrontTileEntity
 import top.kmar.mi.api.utils.*
 import top.kmar.mi.api.utils.container.IndexEnumMap
 import top.kmar.mi.content.blocks.machine.user.FluidPumpBlock
-import top.kmar.mi.api.electricity.info.BiggerVoltage
-import top.kmar.mi.api.electricity.info.EnumBiggerVoltage
 import top.kmar.mi.data.properties.RelativeDirectionEnum
 import java.util.*
 import kotlin.math.min
@@ -43,6 +44,8 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
 
     @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
     companion object {
+
+        const val VOLTAGE = EleEnergy.COMMON
 
         private val MAY_SIDE_X = listOf(EnumFacing.NORTH, EnumFacing.SOUTH)
         private val MAY_SIDE_Y = listOf(*EnumFacing.HORIZONTALS)
@@ -124,7 +127,6 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
             EnumBiggerVoltage.BOOM
         )
         setCounter(counter)
-        isReceive = true
         maxEnergy = 100
         guiEnergy.stringShower = DOWN
         guiConsume.stringShower = DOWN
@@ -137,9 +139,9 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         }
     }
 
-    override fun isReAllowable(facing: EnumFacing) = facing.axis !== side.axis
+    override fun isReceiveAllowable(facing: EnumFacing) = facing.axis !== side.axis
 
-    override fun isExAllowable(facing: EnumFacing?) = false
+    override fun isExtractAllowable(facing: EnumFacing?) = false
 
     override fun getExVoltage() = 0
 
@@ -153,6 +155,11 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
 
     override fun isFull() = data.amount == maxCapacity
 
+    override fun onReceive(energy: EleEnergy): Boolean {
+        if (energy.voltage > VOLTAGE) counter.plus()
+        return true
+    }
+
     /** 水泵不支持外部主动送水 */
     override fun insert(
         queue: FluidQueue,
@@ -161,6 +168,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         report: TransportReport
     ): Int = 0
 
+    /** 水泵不支持外部主动抽水 */
     override fun extract(
         amount: Int,
         facing: EnumFacing?,

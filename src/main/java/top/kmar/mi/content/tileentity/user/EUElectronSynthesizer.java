@@ -37,6 +37,8 @@ import java.util.List;
 @AutoTileEntity("electron_synthesizer")
 public class EUElectronSynthesizer extends FrontTileEntity implements ITickable {
 	
+	public static final int VOLTAGE = EleEnergy.COMMON;
+	
 	@AutoSave
     private final ItemStackHandler HANDLER = new ItemStackHandler(5 * 5 + 4);
 	private final SlotGroup SLOTS = new SlotGroup(5, 5, 18, 0);
@@ -56,7 +58,6 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 		OrdinaryCounter counter = new OrdinaryCounter(100);
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
-		setReceive(true);
 		setMaxEnergy(20);
 		SLOTS.writeFromBuilder(0, 25, this::createHandler);
 		OUTS.writeFrom(HANDLER, this, 25, it -> false);
@@ -194,12 +195,18 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 	}
 	
 	@Override
-	public boolean isReAllowable(EnumFacing facing) {
+	public boolean onReceive(EleEnergy energy) {
+		if (energy.getVoltage() > VOLTAGE) getCounter().plus();
 		return true;
 	}
 	
 	@Override
-	public boolean isExAllowable(EnumFacing facing) {
+	public boolean isReceiveAllowable(EnumFacing facing) {
+		return true;
+	}
+	
+	@Override
+	public boolean isExtractAllowable(EnumFacing facing) {
 		return false;
 	}
 	

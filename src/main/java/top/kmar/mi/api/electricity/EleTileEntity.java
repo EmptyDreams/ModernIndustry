@@ -29,10 +29,6 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	private int maxEnergy = 0;
 	/** 超载计时器 */
 	private OverloadCounter counter;
-	/** 是否可以接收能量 */
-	private boolean isReceive = false;
-	/** 是否可以输出能量 */
-	private boolean isExtract = false;
 	/** 存储已连接的方块 */
 	@AutoSave
 	private final Set<BlockPos> linkedBlocks = new HashSet<>(3);
@@ -43,22 +39,39 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	 * @param energy 这次接收的能量
 	 * @return 返回false可以阻止此次电能的消耗
 	 */
-	public boolean onReceive(EleEnergy energy) { return true; }
+	public abstract boolean onReceive(EleEnergy energy);
 	
 	/**
 	 * 当电器输出电能时调用，该方法只在服务端调用
 	 * @param energy 这次输出的能量
 	 * @return 返回false可以组织此次电能的输出
 	 */
-	public boolean onExtract(EleEnergy energy) { return true; }
+	public boolean onExtract(EleEnergy energy) {
+		return true;
+	}
 	
-	/** 是否可以从指定方向输入电能 */
-	public abstract boolean isReAllowable(EnumFacing facing);
-	/** 是否可以从指定方向输出电 */
-	public abstract boolean isExAllowable(EnumFacing facing);
+	/**
+	 * 是否可以从指定方向输入电能
+	 * @param facing 相对当前方块的方向，为null表示任意方向
+	 */
+	public abstract boolean isReceiveAllowable(EnumFacing facing);
 	
-	/** 获取输出电压 */
+	/**
+	 * 是否可以从指定方向输出电
+	 * @param facing 相对当前方块的方向，为null表示任意方向
+	 */
+	public abstract boolean isExtractAllowable(EnumFacing facing);
+	
+	/**
+	 * 获取输出电压
+	 * @return 如果不能输出则返回 0
+	 */
 	public abstract int getExVoltage();
+	
+	/** 获取当前所需能量 */
+	public int getDemandEnergy() {
+		return getMaxEnergy() - getNowEnergy();
+	}
 	
 	/** 是否可以连接指定方向的方 */
 	public boolean canLinkEle(EnumFacing facing) {
@@ -127,17 +140,6 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	public OverloadCounter getCounter() { return counter; }
 	/** 设置计数器 */
 	protected void setCounter(OverloadCounter counter) { this.counter = counter; }
-	/** 是否可以接收能量 */
-	public boolean isReceive() { return isReceive; }
-	/** 设置是否可以接收能量 */
-	protected void setReceive(boolean receive) { isReceive = receive; }
-	/** 是否可以输出能量 */
-	public boolean isExtract() { return isExtract; }
-	/** 设置是否可以输出能量 */
-	@SuppressWarnings("SameParameterValue")
-	protected void setExtract(boolean extract) { isExtract = extract; }
-	/** 获取能量接口 */
-	public IStorage getStorage() { return storage; }
 	/** 获取可存储的能量值 */
 	public int getMaxEnergy() { return maxEnergy; }
 	/** 设置可存储的最大能量值 */
@@ -146,9 +148,13 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	/** 能量接口 */
 	private final IStorage storage = new IStorage() {
 		@Override
-		public boolean canReceive() { return isReceive(); }
+		public boolean canReceive() {
+			return isReceiveAllowable(null);
+		}
 		@Override
-		public boolean canExtract() { return isExtract(); }
+		public boolean canExtract() {
+			return isReceiveAllowable(null);
+		}
 		@Override
 		public int getEnergyDemand() {return 0; }
 		
@@ -184,12 +190,12 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		
 		@Override
 		public boolean isReAllowable(EnumFacing facing) {
-			return EleTileEntity.this.isReAllowable(facing);
+			return EleTileEntity.this.isReceiveAllowable(facing);
 		}
 		
 		@Override
 		public boolean isExAllowable(EnumFacing facing) {
-			return EleTileEntity.this.isExAllowable(facing);
+			return EleTileEntity.this.isExtractAllowable(facing);
 		}
 		
 		@Override

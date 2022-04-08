@@ -33,6 +33,8 @@ import javax.annotation.Nullable;
 @AutoTileEntity("pulverizer")
 public class EUPulverizer extends FrontTileEntity implements ITickable {
 
+	public static final int VOLTAGE = EleEnergy.COMMON;
+	
 	/** 物品栏 */
 	@AutoSave
     private final ItemStackHandler item = new ItemStackHandler(2);
@@ -49,7 +51,6 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 		OrdinaryCounter counter = new OrdinaryCounter(100);
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
-		setReceive(true);
 		setMaxEnergy(20);
 		progressBar.setCraftButton(CraftList.PULVERIZER, te -> ((EUPulverizer) te).slotGroup);
 	}
@@ -141,10 +142,17 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 	public EnumFacing getFront() {
 		return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
 	}
+	
 	@Override
-	public boolean isReAllowable(EnumFacing facing) { return true; }
+	public boolean onReceive(EleEnergy energy) {
+		if (energy.getVoltage() > VOLTAGE) getCounter().plus();
+		return true;
+	}
+	
 	@Override
-	public boolean isExAllowable(EnumFacing facing) { return false; }
+	public boolean isReceiveAllowable(EnumFacing facing) { return true; }
+	@Override
+	public boolean isExtractAllowable(EnumFacing facing) { return false; }
 	
 	@Override
 	public int getExVoltage() {

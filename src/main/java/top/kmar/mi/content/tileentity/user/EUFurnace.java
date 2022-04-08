@@ -27,6 +27,8 @@ import javax.annotation.Nullable;
 @AutoTileEntity("ele_furnace")
 public class EUFurnace extends FrontTileEntity implements ITickable {
 
+	public static final int VOLTAGE = EleEnergy.COMMON;
+	
 	/** 工作进度条 */
 	private final CommonProgress progressBar = new CommonProgress();
 	/** 输入/输出框 */
@@ -52,7 +54,6 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 		OrdinaryCounter counter = new OrdinaryCounter(100);
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
-		setReceive(true);
 		setMaxEnergy(10);
 		progressBar.setMax(getNeedTime());
 	}
@@ -99,13 +100,19 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 	public EnumFacing getFront() {
 		return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
 	}
-
+	
 	@Override
-	public boolean isReAllowable(EnumFacing facing) {
+	public boolean onReceive(EleEnergy energy) {
+		if (energy.getVoltage() > VOLTAGE) getCounter().plus();
+		return true;
+	}
+	
+	@Override
+	public boolean isReceiveAllowable(EnumFacing facing) {
 		return true;
 	}
 	@Override
-	public boolean isExAllowable(EnumFacing facing) {
+	public boolean isExtractAllowable(EnumFacing facing) {
 		return false;
 	}
 	
