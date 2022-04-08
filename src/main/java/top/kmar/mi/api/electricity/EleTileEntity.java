@@ -147,16 +147,21 @@ public abstract class EleTileEntity extends BaseTileEntity {
 	
 	/** 能量接口 */
 	private final IStorage storage = new IStorage() {
+		
 		@Override
 		public boolean canReceive() {
 			return isReceiveAllowable(null);
 		}
+		
 		@Override
 		public boolean canExtract() {
 			return isReceiveAllowable(null);
 		}
+		
 		@Override
-		public int getEnergyDemand() {return 0; }
+		public int getEnergyDemand() {
+			return getDemandEnergy();
+		}
 		
 		@Override
 		public EleEnergy receiveEnergy(EleEnergy energy, boolean simulate) {
