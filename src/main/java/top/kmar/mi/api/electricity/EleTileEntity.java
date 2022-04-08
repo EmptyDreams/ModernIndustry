@@ -155,7 +155,7 @@ public abstract class EleTileEntity extends BaseTileEntity {
 		
 		@Override
 		public boolean canExtract() {
-			return isReceiveAllowable(null);
+			return isExtractAllowable(null);
 		}
 		
 		@Override
