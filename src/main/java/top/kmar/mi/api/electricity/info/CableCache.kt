@@ -100,6 +100,10 @@ class CableCache {
         var outer: TileEntity? = null
         for ((pos, value) in cache) {
             val (te, outputer) = value(world, pos)
+            if (te == null || outputer == null) {
+                cache.remove(pos)
+                continue
+            }
             val energy = outputer.output(te, demand, true)
             if (energy.notEmpty() && (ans == null || energy < ans)) {
                 ans = energy
@@ -112,7 +116,7 @@ class CableCache {
 
     private fun readCache(start: EleSrcCable): Edge {
         val cache = lineCache.computeIfAbsent(start.pos) { Edge() }
-        if (cache.size != getOutputerAmount()) {
+        if (cache.size < getOutputerAmount()) {
             if (start.linkAmount == 0) {
                 fillEdgeInfo(start, null, cache)
             } else {
@@ -147,9 +151,13 @@ private data class EdgeInfo(
     val path: List<TileEntity>
 ) {
 
-    operator fun invoke(world: World, pos: BlockPos): Pair<TileEntity, IEleOutputer> {
-        val te = world.getTileEntity(pos) ?: throw NullPointerException("没有找到TileEntity：$pos")
-        val outputer = EleWorker.getOutputer(te) ?: throw NullPointerException("没有找到EleOutputer：$pos")
+    companion object {
+        private val VOID_PAIR = Pair<TileEntity?, IEleOutputer?>(null, null)
+    }
+
+    operator fun invoke(world: World, pos: BlockPos): Pair<TileEntity?, IEleOutputer?> {
+        val te = world.getTileEntity(pos) ?: return VOID_PAIR
+        val outputer = EleWorker.getOutputer(te)
         return Pair(te, outputer)
     }
 
