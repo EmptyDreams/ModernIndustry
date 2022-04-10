@@ -44,7 +44,7 @@ class CableCache {
      *
      * key -> 电线， value -> 连接的发电机
      */
-    private val outputers = HashMap<BlockPos, MutableList<BlockPos>>()
+    private val outputers = HashMap<BlockPos, MutableSet<BlockPos>>()
 
     /** 获取线路中发电机数量  */
     fun getOutputerAmount() = outputerAmount
@@ -66,7 +66,8 @@ class CableCache {
      * @param outer 发电机
      */
     fun addOutputer(cable: BlockPos, outer: BlockPos) {
-        val wire = outputers.computeIfAbsent(cable) { LinkedList() }
+        val wire = outputers.computeIfAbsent(cable) { TreeSet() }
+        if (wire.contains(outer)) return
         wire.add(outer)
         ++outputerAmount
     }
@@ -119,7 +120,6 @@ class CableCache {
     }
 
     private fun fillEdgeInfo(start: EleSrcCable, prev: BlockPos?, cache: Edge) {
-        if (prev == null) return
         val path = LinkedList<TileEntity>()
         start.forEach(prev) { it, _, _ ->
             run {

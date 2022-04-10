@@ -22,7 +22,6 @@ import top.kmar.mi.api.electricity.info.CableCache;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
 import top.kmar.mi.api.electricity.info.IETForEach;
-import top.kmar.mi.api.electricity.interfaces.IEleTransfer;
 import top.kmar.mi.api.net.IAutoNetwork;
 import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.api.utils.ExpandFunctionKt;
@@ -148,34 +147,32 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	 */
 	public boolean link(BlockPos target) {
 		if (target == null || target.equals(pos) || world.isRemote) return false;
-		if (cache == null) update();
 		TileEntity targetEntity = world.getTileEntity(target);
 		if (targetEntity == null) return false;
-		IEleTransfer et = EleWorker.getTransfer(targetEntity);
-		if (et != null) return linkWire(et, targetEntity);
+		if (targetEntity instanceof EleSrcCable)
+			return linkWire((EleSrcCable) targetEntity);
 		return linkMachine(targetEntity);
 	}
 	
 	/**
 	 * 连接一根电线
-	 * @param target 电线坐标
 	 * @return 是否连接成功
 	 */
-	public boolean linkWire(IEleTransfer transfer, TileEntity target) {
-		if (!transfer.canLink(target, this)) return false;
+	public boolean linkWire(EleSrcCable cable) {
+		if (!canLink(cable)) return false;
 		if (next == null) {
-			if (!target.getPos().equals(prev)) {
-				next = target.getPos();
+			if (!cable.getPos().equals(prev)) {
+				next = cable.getPos();
 				updateLinkShow();
 			}
-			return true;
 		} else if (prev == null) {
-			prev = target.getPos();
+			prev = cable.getPos();
 			updateLinkShow();
-			return true;
 		} else {
-			return prev.equals(target.getPos()) || next.equals(target.getPos());
+			return prev.equals(cable.getPos()) || next.equals(cable.getPos());
 		}
+		if (cable.cache == null) cable.cache = this.cache;
+		return true;
 	}
 	
 	/**
@@ -295,15 +292,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	private static final CableCache CLIENT_CACHE = new CableCache();
 	@Override
 	public void update() {
-		if (cache == null) {
-			if (world.isRemote) {
-				cache = CLIENT_CACHE;
-				WorldUtil.removeTickable(this);
-				return;
-			} else {
-				CableCache.calculate(this);
-			}
-		}
+		if (world.isRemote) WorldUtil.removeTickable(this);
 		heat = Math.max(0, heat - decaySpeed);
 		send();
 		for (BlockPos block : linkedBlocks) {
@@ -330,7 +319,17 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	/** 设置线路缓存 */
 	public final void setCache(CableCache info) { this.cache = info; }
 	/** 获取线路缓存 */
-	public final CableCache getCache() { return cache; }
+	@Nonnull
+	public final CableCache getCache() {
+		if (cache == null) {
+			if (world.isRemote) {
+				cache = CLIENT_CACHE;
+			} else {
+				CableCache.calculate(this);
+			}
+		}
+		return cache;
+	}
 	/** 获取上方是否连接方块 */
 	public final boolean getUp() { return (linkInfo & 0b100000) == 0b100000; }
 	/** 获取下方是否连接方块 */
