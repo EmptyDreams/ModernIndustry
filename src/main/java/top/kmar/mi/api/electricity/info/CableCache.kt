@@ -113,8 +113,12 @@ class CableCache {
     private fun readCache(start: EleSrcCable): Edge {
         val cache = lineCache.computeIfAbsent(start.pos) { Edge() }
         if (cache.size != getOutputerAmount()) {
-            fillEdgeInfo(start, start.prevPos, cache)
-            fillEdgeInfo(start, start.nextPos, cache)
+            if (start.linkAmount == 0) {
+                fillEdgeInfo(start, null, cache)
+            } else {
+                fillEdgeInfo(start, start.prevPos, cache)
+                fillEdgeInfo(start, start.nextPos, cache)
+            }
         }
         return cache
     }
