@@ -8,15 +8,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.registries.IForgeRegistryEntry;
-import top.kmar.mi.api.utils.MISysInfo;
-import top.kmar.mi.api.utils.WorldUtil;
-import top.kmar.mi.content.net.ClassInfoViewerMessage;
 import top.kmar.mi.ModernIndustry;
 import top.kmar.mi.api.dor.ByteDataOperator;
 import top.kmar.mi.api.event.GuiRegistryEvent;
@@ -34,7 +28,10 @@ import top.kmar.mi.api.net.message.player.PlayerAddition;
 import top.kmar.mi.api.net.message.player.PlayerMessage;
 import top.kmar.mi.api.tools.BaseTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
+import top.kmar.mi.api.utils.MISysInfo;
+import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.content.items.debug.DebugDetails;
+import top.kmar.mi.content.net.ClassInfoViewerMessage;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
@@ -149,7 +146,7 @@ public class ClassInfoViewerFrame extends MIFrame {
 			return;
 		}
 		int color = getStringColor(field);
-		String value = getValue(details);
+		String value = String.valueOf(details);
 		addText(nameGroup, valueGroup, nameText, value, color);
 		if (WorldUtil.isServer()) MISysInfo.print(nameText + ":" + value);
 	}
@@ -169,25 +166,6 @@ public class ClassInfoViewerFrame extends MIFrame {
 		boundary.setColor(292325);
 		nameGroup.add(boundary);
 		valueGroup.add(nullComponent);
-	}
-	
-	private static String getValue(Object details) {
-		if (details instanceof FluidStack) {
-			FluidStack stack = (FluidStack) details;
-			return getValue(stack.getFluid()) + ":" + stack.amount;
-		}
-		String text = String.valueOf(details);
-		String hash = '@' + Integer.toHexString(System.identityHashCode(details));
-		if (text.endsWith(hash)) {
-			if (details instanceof IForgeRegistryEntry.Impl) {
-				return ((IForgeRegistryEntry.Impl<?>) details).getRegistryName().toString();
-			}
-			if (details instanceof Fluid) {
-				return I18n.format(((Fluid) details).getBlock().getUnlocalizedName() + ".name");
-			}
-			return "未重写toString()";
-		}
-		return text;
 	}
 	
 	private static boolean isContinue(Class<?> clazz) {
