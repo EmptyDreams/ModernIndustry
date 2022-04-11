@@ -40,7 +40,7 @@ public final class ImageData {
 	
 	/**
 	 * 获取指定名称的图像资源
-	 * @param name 名称（一般存储在{@link xyz.emptydreams.mi.api.gui.component}包中的某个类中）
+	 * @param name 名称（一般存储在{@link top.kmar.mi.api.gui.component}包中的某个类中）
 	 * @param width 目标宽度
 	 * @param height 目标高度
 	 * @throws IllegalArgumentException 如果输入的名称不存在
@@ -57,7 +57,7 @@ public final class ImageData {
 	
 	/**
 	 * 获取指定名称的图像资源，不进行缩放
-	 * @param name 名称（一般存储在{@link xyz.emptydreams.mi.api.gui.component}包中的某个类中）
+	 * @param name 名称（一般存储在{@link top.kmar.mi.api.gui.component}包中的某个类中）
 	 * @throws IllegalArgumentException 如果输入的名称不存在
 	 */
 	@Nonnull
