@@ -38,7 +38,7 @@ object KClassMachine : IAutoFieldRW, IAutoObjRW<KClass<*>> {
     override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
         try {
             field[obj] = Class.forName(reader.readString()).kotlin
-        } catch (e: ClassCastException) {
+        } catch (e: ClassNotFoundException) {
             return RWResult.failedWithException(this, "读取时指定的类不存在", e)
         }
         return RWResult.success()
@@ -57,7 +57,7 @@ object KClassMachine : IAutoFieldRW, IAutoObjRW<KClass<*>> {
         val value: KClass<*>
         try {
             value = Class.forName(reader.readString()).kotlin
-        } catch (e: ClassCastException) {
+        } catch (e: ClassNotFoundException) {
             return RWResult.failedWithException(this, "读取时指定的类不存在", e)
         }
         receiver(value)

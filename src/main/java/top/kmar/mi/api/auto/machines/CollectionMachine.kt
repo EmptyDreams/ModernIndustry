@@ -78,6 +78,7 @@ object CollectionMachine : IAutoFieldRW, IAutoObjRW<Collection<*>> {
     private fun readHelper(reader: IDataReader, value: MutableCollection<in Any>): RWResult {
         val size = reader.readVarInt()
         for (i in 0 until size) {
+            if (!reader.readBoolean()) continue
             var clazz: KClass<*>? = null
             val classCheck = AutoDataRW.read2Obj<KClass<*>>(reader, KClass::class) { clazz = it }
             if (!classCheck.isSuccessful()) return classCheck
