@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
  * [IDorSerialize]的读写器
  * @author EmptyDreams
  */
-@AutoRWType(AutoTypeRegister.GENERAL_TYPE)
+@AutoRWType(AutoTypeRegister.GENERAL_TYPE shr 2)
 object DorSerializeMachine : IAutoFieldRW, IAutoObjRW<IDorSerialize> {
 
     @JvmStatic fun instance() = DorSerializeMachine
