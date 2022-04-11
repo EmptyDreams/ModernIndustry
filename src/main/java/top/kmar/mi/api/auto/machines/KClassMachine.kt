@@ -21,17 +21,17 @@ object KClassMachine : IAutoFieldRW, IAutoObjRW<KClass<*>> {
 
     override fun match(field: Field): Boolean {
         val annotation = field.getAnnotation(AutoSave::class.java)
-        return annotation.source(field) == KClass::class
+        return KClass::class.java.isAssignableFrom(annotation.source(field).java)
     }
 
     override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
         val annotation = field.getAnnotation(AutoSave::class.java)
         val value = (field[obj] as KClass<*>?) ?: return RWResult.skipNull()
         if (value.qualifiedName == null) return RWResult.failed(this, "不支持匿名类的读写")
-        when (val local = annotation.local(field)) {
-            KClass::class -> writer.writeString(value.java.name)
-            else -> return RWResult.failed(this, "KClass<*>不能转化为${local.qualifiedName}")
-        }
+        val local = annotation.local(field)
+        if (!KClass::class.java.isAssignableFrom(local.java))
+            return RWResult.failed(this, "KClass<*>不能转化为${local.qualifiedName}")
+         writer.writeString(value.java.name)
         return RWResult.success()
     }
 
@@ -44,10 +44,10 @@ object KClassMachine : IAutoFieldRW, IAutoObjRW<KClass<*>> {
         return RWResult.success()
     }
 
-    override fun match(type: KClass<*>) = type == KClass::class
+    override fun match(type: KClass<*>) = KClass::class.java.isAssignableFrom(type.java)
 
     override fun write2Local(writer: IDataWriter, value: KClass<*>, local: KClass<*>): RWResult {
-        if (local != KClass::class)
+        if (!KClass::class.java.isAssignableFrom(local.java))
             return RWResult.failed(this, "KClass<*>不能转化为${local.qualifiedName}")
         writer.writeString(value.java.name)
         return RWResult.success()

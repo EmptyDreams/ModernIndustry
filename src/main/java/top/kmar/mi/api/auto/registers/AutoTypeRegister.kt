@@ -70,7 +70,7 @@ object AutoTypeRegister {
     fun match(type: KClass<*>): IAutoObjRW<Any>? {
         for ((_, list) in objList) {
             @Suppress("UNCHECKED_CAST")
-            return list.match(type) as IAutoObjRW<Any>? ?: continue
+             return list.match(type) as IAutoObjRW<Any>? ?: continue
         }
         return null
     }
