@@ -29,7 +29,6 @@ import top.kmar.mi.api.net.message.player.PlayerMessage;
 import top.kmar.mi.api.tools.BaseTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.MISysInfo;
-import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.content.items.debug.DebugDetails;
 import top.kmar.mi.content.net.ClassInfoViewerMessage;
 
@@ -55,7 +54,8 @@ public class ClassInfoViewerFrame extends MIFrame {
 				if (te == null) throw new NullPointerException("指定位置" + pos + "不存在TileEntity");
 				sendToClient(player, te);
 				if (player.world.isRemote) {
-					MIFrame result = new ClassInfoViewerFrame(ClassInfoViewerMessage.getTileEntity(), player);
+					MIFrame result = new ClassInfoViewerFrame(
+							ClassInfoViewerMessage.getTileEntity(), player);
 					ClassInfoViewerMessage.unUpdate();
 					return result;
 				}
@@ -69,7 +69,8 @@ public class ClassInfoViewerFrame extends MIFrame {
 				String name = I18n.format( block.getLocalizedName());
 				String gui = I18n.format(LOCATION_NAME);
 				String title = gui + "@" + name;
-				return new StaticFrameClient(createService(world, player, pos), title);
+				return new StaticFrameClient(
+						createService(world, player, pos), title);
 			}
 		});
 	}
@@ -95,8 +96,8 @@ public class ClassInfoViewerFrame extends MIFrame {
 		RollGroup clientRoll = new RollGroup(RollGroup.HorizontalEnum.UP, RollGroup.VerticalEnum.RIGHT);
 		TileEntity clientTE = player.world.getTileEntity(entity.getPos());
 		//noinspection ConstantConditions
-		init(clientRoll, clientTE);
-		init(serviceRoll, entity);
+		init(clientRoll, clientTE, false);
+		init(serviceRoll, entity, !player.world.isRemote);
 		allGroup.setLocation(0, 20);
 		allGroup.createNewPage("Server Info").add(serviceRoll).setControlPanel(Panels::horizontalUp);
 		allGroup.createNewPage("Client Info").add(clientRoll).setControlPanel(Panels::horizontalUp);
@@ -104,7 +105,7 @@ public class ClassInfoViewerFrame extends MIFrame {
 		if (!player.world.isRemote) MISysInfo.print("---------- end ----------");
 	}
 	
-	private void init(RollGroup rollGroup, TileEntity te) {
+	private void init(RollGroup rollGroup, TileEntity te, boolean print) {
 		rollGroup.setControlPanel(Panels::horizontalUp);
 		rollGroup.setMinDistance(6);
 		rollGroup.setSize(185, 160);
@@ -119,7 +120,7 @@ public class ClassInfoViewerFrame extends MIFrame {
 				clazz = clazz.getSuperclass();
 				if (fields.length == 0) continue;
 				boundary(nameGroup, valueGroup, className);
-				task(nameGroup, valueGroup, fields, te);
+				task(nameGroup, valueGroup, fields, te, print);
 			}
 		} catch (Exception e) {
 			throw TransferException.instance("创建类信息查看GUI时出现异常", e);
@@ -127,14 +128,14 @@ public class ClassInfoViewerFrame extends MIFrame {
 		rollGroup.adds(nameGroup, valueGroup);
 	}
 	
-	private static void task(Group nameGroup, Group valueGroup, Field[] fields, Object obj)
+	private static void task(Group nameGroup, Group valueGroup, Field[] fields, Object obj, boolean print)
 			throws IllegalAccessException {
 		for (Field field : fields) {
-			task(nameGroup, valueGroup, field, obj);
+			task(nameGroup, valueGroup, field, obj, print);
 		}
 	}
 	
-	private static void task(Group nameGroup, Group valueGroup, Field field, Object obj)
+	private static void task(Group nameGroup, Group valueGroup, Field field, Object obj, boolean print)
 			throws IllegalAccessException {
 		String nameText = field.getName();
 		if (nameText.contains("$")) return;
@@ -142,13 +143,14 @@ public class ClassInfoViewerFrame extends MIFrame {
 		Class<?> clazz = field.getType();
 		Object details = field.get(obj);
 		if (clazz.isAnnotationPresent(DebugDetails.class)) {
-			task(nameGroup, valueGroup, clazz.getDeclaredFields(), details);
+			task(nameGroup, valueGroup,
+					clazz.getDeclaredFields(), details, print);
 			return;
 		}
 		int color = getStringColor(field);
 		String value = String.valueOf(details);
 		addText(nameGroup, valueGroup, nameText, value, color);
-		if (WorldUtil.isServer()) MISysInfo.print(nameText + ":" + value);
+		if (print) MISysInfo.print(nameText + ":" + value);
 	}
 	
 	private static void addText(Group nameGroup, Group valueGroup, String name, String value, int color) {
