@@ -36,7 +36,7 @@ object CapabilityMachine : IAutoFieldRW, IAutoObjRW<Any> {
         val annotation = field.getAnnotation(AutoSave::class.java)
         val value = field[obj]
         return if (value == null) {
-            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal()
+            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal(this)
             read2Obj(reader, annotation.local(field)) { field[obj] = it }
         } else {
             val cap = getCap(annotation.local(field).java)
@@ -49,7 +49,8 @@ object CapabilityMachine : IAutoFieldRW, IAutoObjRW<Any> {
 
     override fun write2Local(writer: IDataWriter, value: Any, local: KClass<*>): RWResult {
         if (!local.java.isAssignableFrom(value::class.java))
-            return RWResult.failed("${value::class.qualifiedName}不能转化为${local.qualifiedName}")
+            return RWResult.failed(this,
+                "${value::class.qualifiedName}不能转化为${local.qualifiedName}")
         val cap = getCap(local.java)
         val nbt = cap!!.writeNBT(value, null) ?: return RWResult.skipNull()
         writer.writeTag(nbt)
@@ -60,7 +61,7 @@ object CapabilityMachine : IAutoFieldRW, IAutoObjRW<Any> {
         val value = try {
             local.java.newInstance()
         } catch (e: Throwable) {
-            return RWResult.failedWithException("CapabilityMachine在构造对象时出现了异常", e)
+            return RWResult.failedWithException(this, "CapabilityMachine在构造对象时出现了异常", e)
         }
         val cap = getCap(local.java)
         val nbt = reader.readTag()

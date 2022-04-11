@@ -32,7 +32,7 @@ object LongMachine : IAutoFieldRW, IAutoObjRW<Long> {
             Int::class -> writer.writeInt(value.toInt())
             Short::class -> writer.writeShort(value.toShort())
             Byte::class -> writer.writeByte(value.toByte())
-            else -> return RWResult.failed("long不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "long不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }
@@ -44,7 +44,7 @@ object LongMachine : IAutoFieldRW, IAutoObjRW<Long> {
             Int::class -> field.setLong(obj, reader.readInt().toLong())
             Short::class -> field.setLong(obj, reader.readShort().toLong())
             Byte::class -> field.setLong(obj, reader.readByte().toLong())
-            else -> return RWResult.failed("${local.qualifiedName}不能转化为long")
+            else -> return RWResult.failed(this, "${local.qualifiedName}不能转化为long")
         }
         return RWResult.success()
     }
@@ -57,7 +57,7 @@ object LongMachine : IAutoFieldRW, IAutoObjRW<Long> {
             Int::class -> writer.writeInt(value.toInt())
             Short::class -> writer.writeShort(value.toShort())
             Byte::class -> writer.writeByte(value.toByte())
-            else -> return RWResult.failed("long不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "long不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }
@@ -68,7 +68,7 @@ object LongMachine : IAutoFieldRW, IAutoObjRW<Long> {
             Int::class -> receiver(reader.readInt().toLong())
             Short::class -> receiver(reader.readShort().toLong())
             Byte::class -> receiver(reader.readByte().toLong())
-            else -> return RWResult.failed("long不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "long不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }

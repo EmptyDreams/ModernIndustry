@@ -4,7 +4,6 @@ import top.kmar.mi.api.auto.interfaces.*
 import top.kmar.mi.api.auto.registers.AutoTypeRegister
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
-import top.kmar.mi.api.auto.interfaces.IDorSerialize
 import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
@@ -36,7 +35,7 @@ object DorSerializeMachine : IAutoFieldRW, IAutoObjRW<IDorSerialize> {
         val annotation = field.getAnnotation(AutoSave::class.java)
         val value = field[obj] as IDorSerialize?
         return if (value == null) {
-            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal()
+            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal(this)
             read2Obj(reader, annotation.local(field)) { field[obj] = it }
         } else {
             value.deserializedDor(reader.readData())
@@ -48,7 +47,7 @@ object DorSerializeMachine : IAutoFieldRW, IAutoObjRW<IDorSerialize> {
 
     override fun write2Local(writer: IDataWriter, value: IDorSerialize, local: KClass<*>): RWResult {
         if (!local.java.isAssignableFrom(value::class.java))
-            return RWResult.failed("IDorSerialize不能转化为${local.qualifiedName}")
+            return RWResult.failed(this, "IDorSerialize不能转化为${local.qualifiedName}")
         value.serializeDor(writer)
         return RWResult.success()
     }
@@ -57,7 +56,7 @@ object DorSerializeMachine : IAutoFieldRW, IAutoObjRW<IDorSerialize> {
         val value = try {
             local.java.newInstance() as IDorSerialize
         } catch (e: Throwable) {
-            return RWResult.failedWithException("DorSerializeMachine构建对象过程中发生了异常", e)
+            return RWResult.failedWithException(this, "DorSerializeMachine构建对象过程中发生了异常", e)
         }
         value.deserializedDor(reader.readData())
         receiver(value)

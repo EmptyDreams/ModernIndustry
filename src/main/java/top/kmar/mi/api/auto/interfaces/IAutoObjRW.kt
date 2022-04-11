@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
  *
  * @author EmptyDreams
  */
-interface IAutoObjRW<T> {
+interface IAutoObjRW<T> : IAutoMachine {
 
     /** 判断指定类型是否匹配 */
     fun match(type: KClass<*>): Boolean

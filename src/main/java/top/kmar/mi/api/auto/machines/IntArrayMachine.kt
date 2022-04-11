@@ -36,7 +36,7 @@ object IntArrayMachine : IAutoFieldRW, IAutoObjRW<IntArray> {
         val length = reader.readVarInt()
         var value = field[obj] as IntArray?
         if (value == null || value.size < length) {
-            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal()
+            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal(this)
             value = IntArray(length)
             field.set(obj, value)
         }
@@ -59,7 +59,7 @@ object IntArrayMachine : IAutoFieldRW, IAutoObjRW<IntArray> {
                 writer.writeVarInt(value.size)
                 for (it in value) writer.writeShort(it.toShort())
             }
-            else -> return RWResult.failed("int[]不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "int[]不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }
@@ -78,7 +78,7 @@ object IntArrayMachine : IAutoFieldRW, IAutoObjRW<IntArray> {
             IntArray::class -> for (i in 0 until length) result[i] = reader.readInt()
             ShortArray::class -> for (i in 0 until length) result[i] = reader.readShort().toInt()
             ByteArray::class -> for (i in 0 until  length) result[i] = reader.readByte().toInt()
-            else -> return RWResult.failed("${local.qualifiedName}不能转化为int[]")
+            else -> return RWResult.failed(this, "${local.qualifiedName}不能转化为int[]")
         }
         return RWResult.success()
     }

@@ -11,7 +11,7 @@ import java.lang.reflect.Field
  *
  * @author EmptyDreams
  */
-interface IAutoFieldRW {
+interface IAutoFieldRW : IAutoMachine {
 
     /** 指明该类型的读写器是否允许对不可变类型进行读写 */
     fun allowFinal(): Boolean

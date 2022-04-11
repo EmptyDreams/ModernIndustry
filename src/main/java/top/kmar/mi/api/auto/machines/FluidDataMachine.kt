@@ -50,7 +50,7 @@ object FluidDataMachine : IAutoFieldRW, IAutoObjRW<FluidData> {
 
     override fun write2Local(writer: IDataWriter, value: FluidData, local: KClass<*>): RWResult {
         if (local != FluidData::class)
-            return RWResult.failed("FluidData不能转化为${local.qualifiedName}")
+            return RWResult.failed(this, "FluidData不能转化为${local.qualifiedName}")
         writer.writeBoolean(value.isAir)
         if (!value.isAir) writer.writeString(value.fluid!!.name)
         writer.writeVarInt(value.amount)

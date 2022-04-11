@@ -30,7 +30,7 @@ object UuidMachine : IAutoFieldRW, IAutoObjRW<UUID> {
         val value = (field[obj] as UUID?) ?: return RWResult.skipNull()
         when (val local = annotation.local(field)) {
             UUID::class -> writer.writeUuid(value)
-            else -> return RWResult.failed("UUID不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "UUID不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }
@@ -43,7 +43,8 @@ object UuidMachine : IAutoFieldRW, IAutoObjRW<UUID> {
     override fun match(type: KClass<*>) = type == UUID::class
 
     override fun write2Local(writer: IDataWriter, value: UUID, local: KClass<*>): RWResult {
-        if (local != UUID::class) return RWResult.failed("UUID不能转化为${local.qualifiedName}")
+        if (local != UUID::class)
+            return RWResult.failed(this, "UUID不能转化为${local.qualifiedName}")
         writer.writeUuid(value)
         return RWResult.success()
     }
@@ -52,4 +53,5 @@ object UuidMachine : IAutoFieldRW, IAutoObjRW<UUID> {
         receiver(reader.readUuid())
         return RWResult.success()
     }
+
 }

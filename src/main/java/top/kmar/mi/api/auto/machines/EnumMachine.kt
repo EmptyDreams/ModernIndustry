@@ -41,7 +41,7 @@ object EnumMachine : IAutoFieldRW, IAutoObjRW<Enum<*>> {
 
     override fun write2Local(writer: IDataWriter, value: Enum<*>, local: KClass<*>): RWResult {
         if (local != value::class)
-            return RWResult.failed("Enum不能转化为${local.qualifiedName}")
+            return RWResult.failed(this, "Enum不能转化为${local.qualifiedName}")
         writer.writeString(value::class.java.name)
         writer.writeString(value.name)
         return RWResult.success()
@@ -55,7 +55,7 @@ object EnumMachine : IAutoFieldRW, IAutoObjRW<Enum<*>> {
             val method = java.lang.Enum::class.java.getMethod("valueOf", Class::class.java, String::class.java)
             receiver(method(null, enumClass, valueName) as Enum<*>)
         } catch (e: Throwable) {
-            return RWResult.failedWithException("枚举类读取过程中发生异常", e)
+            return RWResult.failedWithException(this, "枚举类读取过程中发生异常", e)
         }
         return RWResult.success()
     }

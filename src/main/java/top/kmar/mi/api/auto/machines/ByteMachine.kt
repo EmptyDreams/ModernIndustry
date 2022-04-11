@@ -30,7 +30,7 @@ object ByteMachine : IAutoFieldRW, IAutoObjRW<Byte> {
         when (val local = annotation.local(field)) {
             Byte::class -> writer.writeByte(value)
             Boolean::class -> writer.writeBoolean(value.toInt() != 0)
-            else -> return RWResult.failed("byte不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "byte不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }
@@ -40,7 +40,7 @@ object ByteMachine : IAutoFieldRW, IAutoObjRW<Byte> {
         when (val local = annotation.local(field)) {
             Byte::class -> field.setByte(obj, reader.readByte())
             Boolean::class -> field.setByte(obj, if (reader.readBoolean()) 1 else 0)
-            else -> return RWResult.failed("${local.qualifiedName}不能转化为byte")
+            else -> return RWResult.failed(this, "${local.qualifiedName}不能转化为byte")
         }
         return RWResult.success()
     }
@@ -51,7 +51,7 @@ object ByteMachine : IAutoFieldRW, IAutoObjRW<Byte> {
         when (local) {
             Byte::class -> writer.writeByte(value)
             Boolean::class -> writer.writeBoolean(value.toInt() != 0)
-            else -> return RWResult.failed("byte不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "byte不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }
@@ -60,7 +60,7 @@ object ByteMachine : IAutoFieldRW, IAutoObjRW<Byte> {
         when (local) {
             Byte::class -> receiver(reader.readByte())
             Boolean::class -> receiver(if (reader.readBoolean()) 1 else 0)
-            else -> return RWResult.failed("byte不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "byte不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }

@@ -40,7 +40,8 @@ object NbtMachine : IAutoFieldRW, IAutoObjRW<NBTBase> {
 
     override fun write2Local(writer: IDataWriter, value: NBTBase, local: KClass<*>): RWResult {
         if (local != value::class)
-            return RWResult.failed("${value::class.qualifiedName}不能转化为${local.qualifiedName}")
+            return RWResult.failed(this,
+                "${value::class.qualifiedName}不能转化为${local.qualifiedName}")
         writer.writeTag(value)
         return RWResult.success()
     }

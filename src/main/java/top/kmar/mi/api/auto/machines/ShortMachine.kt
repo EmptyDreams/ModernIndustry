@@ -31,7 +31,7 @@ object ShortMachine : IAutoFieldRW, IAutoObjRW<Short> {
             Short::class -> writer.writeShort(value)
             Byte::class -> writer.writeByte(value.toByte())
             Boolean::class -> writer.writeBoolean(value.toInt() != 0)
-            else -> return RWResult.failed("short不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "short不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }
@@ -42,7 +42,7 @@ object ShortMachine : IAutoFieldRW, IAutoObjRW<Short> {
             Short::class -> field.setShort(obj, reader.readShort())
             Byte::class -> field.setShort(obj, reader.readByte().toShort())
             Boolean::class -> field.setShort(obj, if (reader.readBoolean()) 1 else 0)
-            else -> return RWResult.failed("${local.qualifiedName}不能转化为short")
+            else -> return RWResult.failed(this, "${local.qualifiedName}不能转化为short")
         }
         return RWResult.success()
     }
@@ -54,7 +54,7 @@ object ShortMachine : IAutoFieldRW, IAutoObjRW<Short> {
             Short::class -> writer.writeShort(value)
             Byte::class -> writer.writeByte(value.toByte())
             Boolean::class -> writer.writeBoolean(value.toInt() != 0)
-            else -> return RWResult.failed("short不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "short不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }
@@ -64,7 +64,7 @@ object ShortMachine : IAutoFieldRW, IAutoObjRW<Short> {
             Short::class -> receiver(reader.readShort())
             Byte::class -> receiver(reader.readByte().toShort())
             Boolean::class -> receiver(if (reader.readBoolean()) 1 else 0)
-            else -> return RWResult.failed("${local.qualifiedName}不能转化为short")
+            else -> return RWResult.failed(this, "${local.qualifiedName}不能转化为short")
         }
         return RWResult.success()
     }

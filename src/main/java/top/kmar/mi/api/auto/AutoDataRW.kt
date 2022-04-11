@@ -69,7 +69,8 @@ object AutoDataRW {
     private fun read2ObjAndPrintErr(reader: IDataReader, field: Field, obj: Any) {
         val check = read2Obj(reader, field, obj)
         if (check.isFailed()) printErr(obj, field, check)
-        else if (!reader.isEnd) printErr(obj, field, RWResult.failed("本地信息没有读取完毕就结束了处理"))
+        else if (!reader.isEnd)
+            printErr(obj, field, RWResult.failed(message = "本地信息没有读取完毕就结束了处理"))
     }
 
     /** 写入数据到[IDataWriter] */
@@ -104,14 +105,15 @@ object AutoDataRW {
 
     private fun checkField(field: Field, machine: IAutoFieldRW): RWResult {
         val mode = field.modifiers
-        if (Modifier.isStatic(mode)) return RWResult.failedStatic()
-        if (Modifier.isFinal(mode) && !machine.allowFinal()) return RWResult.failedFinal()
+        if (Modifier.isStatic(mode)) return RWResult.failedStatic(machine)
+        if (Modifier.isFinal(mode) && !machine.allowFinal()) return RWResult.failedFinal(machine)
         if (!Modifier.isPublic(mode)) field.isAccessible = true
         return RWResult.success()
     }
 
     private fun printErr(obj: Any, field: Field, result: RWResult) {
         val text = "在进行数据读写时出现了错误：" +
+                "\n\t\t读写器：${result.name?.qualifiedName}" +
                 "\n\t\t类名：${obj::class.qualifiedName}" +
                 "\n\t\t属性：${field.name}" +
                 "\n\t\t信息：${result.message}" +

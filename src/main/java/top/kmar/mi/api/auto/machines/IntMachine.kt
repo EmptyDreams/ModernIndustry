@@ -36,7 +36,7 @@ object IntMachine : IAutoFieldRW, IAutoObjRW<Int> {
             Int::class -> field.setInt(obj, reader.readInt())
             Byte::class -> field.setInt(obj, reader.readByte().toInt())
             Boolean::class -> field.setInt(obj, if (reader.readBoolean()) 1 else 0)
-            else -> return RWResult.failed("${local.qualifiedName}不能转化为int")
+            else -> return RWResult.failed(this, "${local.qualifiedName}不能转化为int")
         }
         return RWResult.success()
     }
@@ -52,7 +52,7 @@ object IntMachine : IAutoFieldRW, IAutoObjRW<Int> {
             Int::class -> receiver(reader.readInt())
             Byte::class -> receiver(reader.readByte().toInt())
             Boolean::class -> receiver(if (reader.readBoolean()) 1 else 0)
-            else -> return RWResult.failed("${local.qualifiedName}不能转化为int")
+            else -> return RWResult.failed(this, "${local.qualifiedName}不能转化为int")
         }
         return RWResult.success()
     }
@@ -63,7 +63,7 @@ object IntMachine : IAutoFieldRW, IAutoObjRW<Int> {
             Byte::class -> writer.writeByte(value.toByte())
             Short::class -> writer.writeShort(value.toShort())
             Boolean::class -> writer.writeBoolean(value != 0)
-            else -> return RWResult.failed("int不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "int不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }

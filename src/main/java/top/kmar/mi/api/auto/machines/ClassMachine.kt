@@ -29,7 +29,7 @@ object ClassMachine : IAutoFieldRW, IAutoObjRW<Class<*>> {
         val value = (field[obj] as Class<*>?) ?: return RWResult.skipNull()
         when (val local = annotation.local(field)) {
             Class::class -> writer.writeString(value.name)
-            else -> return RWResult.failed("Class<?>不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "Class<?>不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }
@@ -38,7 +38,7 @@ object ClassMachine : IAutoFieldRW, IAutoObjRW<Class<*>> {
         try {
             field[obj] = Class.forName(reader.readString())
         } catch (e: ClassNotFoundException) {
-            return RWResult.failedWithException("读取时指定的类不存在", e)
+            return RWResult.failedWithException(this, "读取时指定的类不存在", e)
         }
         return RWResult.success()
     }
@@ -46,7 +46,8 @@ object ClassMachine : IAutoFieldRW, IAutoObjRW<Class<*>> {
     override fun match(type: KClass<*>) = type == Class::class
 
     override fun write2Local(writer: IDataWriter, value: Class<*>, local: KClass<*>): RWResult {
-        if (local != Class::class) return RWResult.failed("Class<?>不能转化为${local.qualifiedName}")
+        if (local != Class::class)
+            return RWResult.failed(this, "Class<?>不能转化为${local.qualifiedName}")
         writer.writeString(value.name)
         return RWResult.success()
     }
@@ -56,7 +57,7 @@ object ClassMachine : IAutoFieldRW, IAutoObjRW<Class<*>> {
         try {
             value = Class.forName(reader.readString())
         } catch (e: ClassCastException) {
-            return RWResult.failedWithException("读取时指定的类不存在", e)
+            return RWResult.failedWithException(this, "读取时指定的类不存在", e)
         }
         receiver(value)
         return RWResult.success()

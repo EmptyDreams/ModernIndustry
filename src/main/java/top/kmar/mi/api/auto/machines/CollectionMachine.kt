@@ -33,7 +33,7 @@ object CollectionMachine : IAutoFieldRW, IAutoObjRW<Collection<*>> {
         val annotation = field.getAnnotation(AutoSave::class.java)
         val local = annotation.local(field).java
         if (!Collection::class.java.isAssignableFrom(local))
-            return RWResult.failed("Collection<?>不能转化为${local.name}")
+            return RWResult.failed(this, "Collection<?>不能转化为${local.name}")
         val value = (field[obj] as Collection<*>?) ?: return RWResult.skipNull()
         if (value.isEmpty()) return RWResult.skipNull()
         return writeHelper(writer, value)
@@ -45,12 +45,12 @@ object CollectionMachine : IAutoFieldRW, IAutoObjRW<Collection<*>> {
         val local = annotation.local(field).java
         var value = field[obj] as MutableCollection<Any>?
         if (value == null) {
-            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal()
+            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal(this)
             try {
                 value = local.newInstance() as MutableCollection<Any>
                 field[obj] = value
             } catch (e: Throwable) {
-                return RWResult.failedWithException("构建容器（Collection）时出现了异常", e)
+                return RWResult.failedWithException(this, "构建容器（Collection）时出现了异常", e)
             }
         }
         return readHelper(reader, value)
@@ -60,7 +60,7 @@ object CollectionMachine : IAutoFieldRW, IAutoObjRW<Collection<*>> {
 
     override fun write2Local(writer: IDataWriter, value: Collection<*>, local: KClass<*>): RWResult {
         if (!Collection::class.java.isAssignableFrom(local.java))
-            return RWResult.failed("${local.qualifiedName}不能转化为Collection<?>")
+            return RWResult.failed(this, "${local.qualifiedName}不能转化为Collection<?>")
         return writeHelper(writer, value)
     }
 
@@ -70,7 +70,7 @@ object CollectionMachine : IAutoFieldRW, IAutoObjRW<Collection<*>> {
         try {
             value = local.java.newInstance() as MutableCollection<Any>
         } catch (e: Throwable) {
-            return RWResult.failedWithException("构建容器过程中出现了异常", e)
+            return RWResult.failedWithException(this, "构建容器过程中出现了异常", e)
         }
         return readHelper(reader, value)
     }
@@ -97,13 +97,13 @@ object CollectionMachine : IAutoFieldRW, IAutoObjRW<Collection<*>> {
                 continue
             }
             if (it::class.qualifiedName == null)
-                return RWResult.failed("CollectionMachine读写器不支持对匿名类进行读写")
+                return RWResult.failed(this, "CollectionMachine读写器不支持对匿名类进行读写")
             writer.writeBoolean(true)
             val classCheck = AutoDataRW.write2Local(writer, it::class)
-            if (!classCheck.isSuccessful()) return RWResult.failed("KClass<*>的读写器丢失")
+            if (!classCheck.isSuccessful()) return RWResult.failed(this, "KClass<*>的读写器丢失")
             @Suppress("UNCHECKED_CAST")
             val machine = AutoTypeRegister.match(it::class) as IAutoObjRW<in Any>? ?:
-            return RWResult.failed("没有找到与${it::class.qualifiedName}匹配的读写器")
+            return RWResult.failed(this, "没有找到与${it::class.qualifiedName}匹配的读写器")
             val check = machine.write2Local(writer, it, it::class)
             if (!check.isSuccessful()) return check
         }

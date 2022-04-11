@@ -30,7 +30,7 @@ object DoubleMachine : IAutoFieldRW, IAutoObjRW<Double> {
         when (val local = annotation.local(field)) {
             Double::class -> writer.writeDouble(value)
             Float::class -> writer.writeFloat(value.toFloat())
-            else -> return RWResult.failed("double不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "double不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }
@@ -40,7 +40,7 @@ object DoubleMachine : IAutoFieldRW, IAutoObjRW<Double> {
         when (val local = annotation.local(field)) {
             Double::class -> field.setDouble(obj, reader.readDouble())
             Float::class -> field.setDouble(obj, reader.readFloat().toDouble())
-            else -> return RWResult.failed("${local.qualifiedName}不能转化为double")
+            else -> return RWResult.failed(this, "${local.qualifiedName}不能转化为double")
         }
         return RWResult.success()
     }
@@ -51,7 +51,7 @@ object DoubleMachine : IAutoFieldRW, IAutoObjRW<Double> {
         when (local) {
             Double::class -> writer.writeDouble(value)
             Float::class -> writer.writeFloat(value.toFloat())
-            else -> return RWResult.failed("double不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "double不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }
@@ -60,7 +60,7 @@ object DoubleMachine : IAutoFieldRW, IAutoObjRW<Double> {
         when (local) {
             Double::class -> receiver(reader.readDouble())
             Float::class -> receiver(reader.readFloat().toDouble())
-            else -> return RWResult.failed("${local.qualifiedName}不能转化为double")
+            else -> return RWResult.failed(this, "${local.qualifiedName}不能转化为double")
         }
         return RWResult.success()
     }

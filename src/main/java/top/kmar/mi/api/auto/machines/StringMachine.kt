@@ -29,7 +29,7 @@ object StringMachine : IAutoFieldRW, IAutoObjRW<String> {
         val value = (field[obj] as String?) ?: return RWResult.skipNull()
         when (val local = annotation.local(field)) {
             String::class -> writer.writeString(value)
-            else -> return RWResult.failed("String不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "String不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }
@@ -42,7 +42,8 @@ object StringMachine : IAutoFieldRW, IAutoObjRW<String> {
     override fun match(type: KClass<*>) = type == String::class
 
     override fun write2Local(writer: IDataWriter, value: String, local: KClass<*>): RWResult {
-        if (local != String::class) return RWResult.failed("String不能转化为${local.qualifiedName}")
+        if (local != String::class)
+            return RWResult.failed(this, "String不能转化为${local.qualifiedName}")
         writer.writeString(value)
         return RWResult.success()
     }

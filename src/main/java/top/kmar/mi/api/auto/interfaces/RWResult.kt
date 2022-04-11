@@ -1,51 +1,84 @@
 package top.kmar.mi.api.auto.interfaces
 
+import kotlin.reflect.KClass
+
 /**
  * 表明读写操作的结果
  * @author EmptyDreams
  */
 class RWResult private constructor(
     private val state: Result,
+    val name: KClass<*>?,
     val message: String = "",
     val exception: Throwable? = null
 ) {
 
     companion object {
 
-        private val SUCCESS = RWResult(Result.SUCCESSFUL)
-        private val FAILED_FINAL = failed("该数据被final修饰，但该数据类型只能在非final的值上进行读写")
-        private val FAILED_STATIC = failed("该数据被static修饰，自动读写不支持对static属性进行读写")
-        private val FAILED_NO_ANNOTATION = failed("该属性没有被`@AutoSave`注释")
-        private val FAILED_UNSUPPORT = failed("未找到支持该属性的读写器")
+        private val SUCCESS = RWResult(Result.SUCCESSFUL, null)
+        private val FAILED_UNSUPPORT = failed(message = "未找到支持该属性的读写器")
         private val SKIP_NULL = skip("该属性为null")
-        private val SKIP_NO_BASE = skip("该属性不为基本类型")
 
         @JvmStatic fun success() = SUCCESS
 
-        @JvmStatic fun failed(message: String) = RWResult(Result.FAILED, message)
+        /**
+         * 构建一个读写发生错误的结果
+         * @param machine 读写器对象
+         * @param message 错误信息
+         */
+        @JvmStatic fun failed(machine: IAutoMachine? = null, message: String = "未知错误") =
+            RWResult(Result.FAILED, if (machine == null) null else machine::class, message)
 
-        @JvmStatic fun failedWithException(message: String, exception: Throwable) =
-            RWResult(Result.FAILED, message, exception)
+        /**
+         * 构建一个读写发生错误的结果
+         * @param name 读写器类型
+         * @param message 错误信息
+         */
+        @JvmStatic fun failed(name: KClass<out IAutoMachine>, message: String) =
+            RWResult(Result.FAILED, name, message)
 
-        @JvmStatic fun skip(message: String) = RWResult(Result.SKIP, message)
+        /**
+         * 构建一个读写发生错误并产生异常的读写器
+         * @param machine 读写器对象
+         * @param message 错误信息
+         * @param exception 产生的异常
+         */
+        @JvmStatic fun failedWithException(machine: IAutoMachine?, message: String, exception: Throwable) =
+            RWResult(Result.FAILED, if (machine == null) null else machine::class, message, exception)
+
+        /**
+         * 构建一个读写发生错误并产生异常的读写器
+         * @param name 读写器类型
+         * @param message 错误信息
+         * @param exception 产生的异常
+         */
+        @JvmStatic fun failedWithException(name: KClass<out IAutoMachine>,
+                                message: String, exception: Throwable) =
+            RWResult(Result.FAILED, name, message, exception)
+
+        @JvmStatic fun skip(message: String) = RWResult(Result.SKIP, null, message)
 
         /** 因为数据类型为`val`(`final`)导致的读写失败 */
-        @JvmStatic fun failedFinal() = FAILED_FINAL
+        @JvmStatic fun failedFinal(machine: IAutoMachine?) =
+            failed(machine, "该数据被final修饰，但该数据类型只能在非final的值上进行读写")
+
+        /** 因为数据类型为`val`(`final`)导致的读写失败 */
+        @JvmStatic fun failedFinal(name: KClass<out IAutoMachine>) =
+            failed(name, "该数据被final修饰，但该数据类型只能在非final的值上进行读写")
 
         /** 因为数据类型为`static`导致的读写失败 */
-        @JvmStatic fun failedStatic() = FAILED_STATIC
+        @JvmStatic fun failedStatic(machine: IAutoMachine?) =
+            failed(machine, "该数据被static修饰，自动读写不支持对static属性进行读写")
 
-        /** 因为属性没有被[AutoSave]注释导致的读写失败 */
-        @JvmStatic fun failedNoAnnotation() = FAILED_NO_ANNOTATION
+        /** 因为数据类型为`static`导致的读写失败 */
+        @JvmStatic fun failedStatic(name: KClass<out IAutoMachine>) =
+            failed(name, "该数据被static修饰，自动读写不支持对static属性进行读写")
 
         /** 因为没有支持该属性的读写器导致的读写失败 */
         @JvmStatic fun failedUnsupport() = FAILED_UNSUPPORT
 
         /** 因为值为`null`而跳过读写 */
         @JvmStatic fun skipNull() = SKIP_NULL
-
-        /** 因为值不为基本类型而跳过读写 */
-        @JvmStatic fun skipNoBase() = SKIP_NO_BASE
 
     }
 
@@ -56,6 +89,8 @@ class RWResult private constructor(
     fun isSkip() = state == Result.SKIP
 
     fun hasException() = exception != null
+
+    fun hasName() = name != null
 
     private enum class Result {
         /** 读写成功 */

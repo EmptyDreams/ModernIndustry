@@ -38,12 +38,12 @@ object SerializableMachine : IAutoFieldRW, IAutoObjRW<INBTSerializable<*>> {
         val annotation = field.getAnnotation(AutoSave::class.java)
         var value = field[obj] as INBTSerializable<NBTBase>?
         if (value == null) {
-            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal()
+            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal(this)
             try {
                 value = annotation.local(field).java.newInstance() as INBTSerializable<NBTBase>
                 field[obj] = value
             } catch (e: Throwable) {
-                return RWResult.failedWithException("构建INBTSerializable<*>对象的过程中发生异常", e)
+                return RWResult.failedWithException(this, "构建INBTSerializable<*>对象的过程中发生异常", e)
             }
         }
         value.deserializeNBT(reader.readTag())
@@ -54,7 +54,7 @@ object SerializableMachine : IAutoFieldRW, IAutoObjRW<INBTSerializable<*>> {
 
     override fun write2Local(writer: IDataWriter, value: INBTSerializable<*>, local: KClass<*>): RWResult {
         if (!local.java.isAssignableFrom(value::class.java))
-            return RWResult.failed("INBTSerializable<*>不能转化为${local.qualifiedName}")
+            return RWResult.failed(this, "INBTSerializable<*>不能转化为${local.qualifiedName}")
         val data = value.serializeNBT()
         writer.writeTag(data)
         return RWResult.success()
@@ -70,7 +70,7 @@ object SerializableMachine : IAutoFieldRW, IAutoObjRW<INBTSerializable<*>> {
         try {
             value = local.java.newInstance() as INBTSerializable<NBTBase>
         } catch (e: Throwable) {
-            return RWResult.failedWithException("构建INBTSerializable<*>对象的过程中发生异常", e)
+            return RWResult.failedWithException(this, "构建INBTSerializable<*>对象的过程中发生异常", e)
         }
         value.deserializeNBT(reader.readTag())
         receiver(value)

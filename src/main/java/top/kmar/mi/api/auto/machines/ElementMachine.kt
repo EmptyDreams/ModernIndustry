@@ -40,7 +40,7 @@ object ElementMachine : IAutoFieldRW, IAutoObjRW<ItemElement> {
 
     override fun write2Local(writer: IDataWriter, value: ItemElement, local: KClass<*>): RWResult {
         if (local != ItemElement::class)
-            return RWResult.failed("ItemElement不能转化为${local.qualifiedName}")
+            return RWResult.failed(this, "ItemElement不能转化为${local.qualifiedName}")
         value.writeToData(writer)
         return RWResult.success()
     }

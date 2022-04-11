@@ -42,7 +42,7 @@ object MapMachine : IAutoFieldRW, IAutoObjRW<Map<*, *>> {
             try {
                 value = local.newInstance() as MutableMap<Any, Any>
             } catch (e: Throwable) {
-                return RWResult.failedWithException("构建Map时发生了异常", e)
+                return RWResult.failedWithException(this, "构建Map时发生了异常", e)
             }
         }
         return readHelper(reader, value)
@@ -52,7 +52,7 @@ object MapMachine : IAutoFieldRW, IAutoObjRW<Map<*, *>> {
 
     override fun write2Local(writer: IDataWriter, value: Map<*, *>, local: KClass<*>): RWResult {
         if (!Map::class.java.isAssignableFrom(local.java))
-            return RWResult.failed("Map<K, V>不能转化为${local.qualifiedName}")
+            return RWResult.failed(this, "Map<K, V>不能转化为${local.qualifiedName}")
         if (value.isEmpty()) return RWResult.skipNull()
         writer.writeString(value.keys::class.java.name)
         writer.writeString(value.values::class.java.name)
@@ -67,7 +67,7 @@ object MapMachine : IAutoFieldRW, IAutoObjRW<Map<*, *>> {
         try {
             value = local.java.newInstance() as MutableMap<Any, Any>
         } catch (e: Throwable) {
-            return RWResult.failedWithException("构建Map时发生了异常", e)
+            return RWResult.failedWithException(this, "构建Map时发生了异常", e)
         }
         val check = readHelper(reader, value)
         if (check.isSuccessful()) receiver(value)
@@ -87,7 +87,7 @@ object MapMachine : IAutoFieldRW, IAutoObjRW<Map<*, *>> {
                 reader, Class.forName(valueName).kotlin) { values = it }
             if (!valueCheck.isSuccessful()) return valueCheck
         } catch (e: ClassNotFoundException) {
-            return RWResult.failedWithException("构建Map时内部Collection类缺失", e)
+            return RWResult.failedWithException(this, "构建Map时内部Collection类缺失", e)
         }
         val keyIter = keys!!.iterator()
         val valueIter = values!!.iterator()

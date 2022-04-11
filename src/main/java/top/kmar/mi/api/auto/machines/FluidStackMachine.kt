@@ -40,7 +40,7 @@ object FluidStackMachine : IAutoFieldRW, IAutoObjRW<FluidStack> {
 
     override fun write2Local(writer: IDataWriter, value: FluidStack, local: KClass<*>): RWResult {
         if (local != FluidStack::class)
-            return RWResult.failed("FluidStack不能转化为${local.qualifiedName}")
+            return RWResult.failed(this, "FluidStack不能转化为${local.qualifiedName}")
         writer.writeVarInt(value.amount)
         writer.writeString(value.fluid.name)
         return RWResult.success()

@@ -29,7 +29,7 @@ object FloatMachine : IAutoFieldRW, IAutoObjRW<Float> {
         val value = field.getFloat(obj)
         when (val local = annotation.local(field)) {
             Float::class -> writer.writeFloat(value)
-            else -> return RWResult.failed("float不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "float不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }
@@ -42,7 +42,8 @@ object FloatMachine : IAutoFieldRW, IAutoObjRW<Float> {
     override fun match(type: KClass<*>) = type == Float::class
 
     override fun write2Local(writer: IDataWriter, value: Float, local: KClass<*>): RWResult {
-        if (local != Float::class) return RWResult.failed("float不能转化为${local.qualifiedName}")
+        if (local != Float::class)
+            return RWResult.failed(this, "float不能转化为${local.qualifiedName}")
         writer.writeFloat(value)
         return RWResult.success()
     }

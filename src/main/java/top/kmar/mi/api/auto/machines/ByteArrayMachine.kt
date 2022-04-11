@@ -33,7 +33,7 @@ object ByteArrayMachine : IAutoFieldRW, IAutoObjRW<ByteArray> {
                 writer.writeVarInt(value.size)
                 for (it in value) writer.writeByte(it)
             }
-            else -> return RWResult.failed("byte[]不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "byte[]不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }
@@ -42,7 +42,7 @@ object ByteArrayMachine : IAutoFieldRW, IAutoObjRW<ByteArray> {
         val length = reader.readVarInt()
         var value = field[obj] as ByteArray?
         if (value == null || value.size < length) {
-            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal()
+            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal(this)
             value = ByteArray(length)
             field.set(obj, value)
         }
@@ -53,7 +53,8 @@ object ByteArrayMachine : IAutoFieldRW, IAutoObjRW<ByteArray> {
     override fun match(type: KClass<*>) = type == ByteArray::class
 
     override fun write2Local(writer: IDataWriter, value: ByteArray, local: KClass<*>): RWResult {
-        if (local != ByteArray::class) return RWResult.failed("byte[]不能转化为${local.qualifiedName}")
+        if (local != ByteArray::class)
+            return RWResult.failed(this, "byte[]不能转化为${local.qualifiedName}")
         writer.writeVarInt(value.size)
         for (it in value) writer.writeByte(it)
         return RWResult.success()

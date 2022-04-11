@@ -30,7 +30,7 @@ object BlockPosMachine : IAutoFieldRW, IAutoObjRW<BlockPos> {
         val value = (field[obj] as BlockPos?) ?: return RWResult.skipNull()
         when (val local = annotation.local(field)) {
             BlockPos::class -> writer.writeBlockPos(value)
-            else -> return RWResult.failed("BlockPos不能转化为${local.qualifiedName}")
+            else -> return RWResult.failed(this, "BlockPos不能转化为${local.qualifiedName}")
         }
         return RWResult.success()
     }
@@ -43,7 +43,7 @@ object BlockPosMachine : IAutoFieldRW, IAutoObjRW<BlockPos> {
     override fun match(type: KClass<*>) = type == BlockPos::class
 
     override fun write2Local(writer: IDataWriter, value: BlockPos, local: KClass<*>): RWResult {
-        if (local != BlockPos::class) return RWResult.failed("BlockPos不能转化为${local.qualifiedName}")
+        if (local != BlockPos::class) return RWResult.failed(this, "BlockPos不能转化为${local.qualifiedName}")
         writer.writeBlockPos(value)
         return RWResult.success()
     }
