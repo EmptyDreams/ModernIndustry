@@ -112,14 +112,8 @@ object AutoDataRW {
     }
 
     private fun printErr(obj: Any, field: Field, result: RWResult) {
-        val text = "在进行数据读写时出现了错误：" +
-                "\n\t\t读写器：${result.name?.qualifiedName}" +
-                "\n\t\t类名：${obj::class.qualifiedName}" +
-                "\n\t\t属性：${field.name}" +
-                "\n\t\t信息：${result.message}" +
-                "\n\t\t异常：${result.hasException()}"
-        if (result.hasException()) MISysInfo.err(text, result.exception)
-        else MISysInfo.err(text)
+        if (result.hasException()) MISysInfo.err(result.buildString(obj, field), result.exception)
+        else MISysInfo.err(result.buildString(obj, field))
     }
 
 }

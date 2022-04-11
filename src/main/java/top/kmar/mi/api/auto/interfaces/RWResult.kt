@@ -1,5 +1,6 @@
 package top.kmar.mi.api.auto.interfaces
 
+import java.lang.reflect.Field
 import kotlin.reflect.KClass
 
 /**
@@ -91,6 +92,14 @@ class RWResult private constructor(
     fun hasException() = exception != null
 
     fun hasName() = name != null
+
+    fun buildString(obj: Any, field: Field): String =
+        "在进行数据读写时出现了错误：" +
+                "\n\t\t读写器：${name?.qualifiedName}" +
+                "\n\t\t类名：${obj::class.qualifiedName}" +
+                "\n\t\t属性：${field.name}" +
+                "\n\t\t信息：$message" +
+                "\n\t\t异常：${hasException()}"
 
     private enum class Result {
         /** 读写成功 */
