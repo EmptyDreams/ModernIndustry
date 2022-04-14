@@ -5,7 +5,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import top.kmar.mi.api.auto.interfaces.AutoSave;
+import top.kmar.mi.api.araw.interfaces.AutoSave;
 import top.kmar.mi.api.craftguide.ItemElement;
 import top.kmar.mi.api.craftguide.sol.ItemSet;
 import top.kmar.mi.api.electricity.clock.OrdinaryCounter;

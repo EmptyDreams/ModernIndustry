@@ -3,7 +3,7 @@ package top.kmar.mi.api.electricity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import top.kmar.mi.api.auto.interfaces.AutoSave;
+import top.kmar.mi.api.araw.interfaces.AutoSave;
 import top.kmar.mi.api.capabilities.ele.EleCapability;
 import top.kmar.mi.api.capabilities.ele.IStorage;
 import top.kmar.mi.api.electricity.clock.OverloadCounter;

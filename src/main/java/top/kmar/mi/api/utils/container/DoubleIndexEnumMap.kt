@@ -2,7 +2,7 @@ package top.kmar.mi.api.utils.container
 
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
-import top.kmar.mi.api.auto.interfaces.IDorSerialize
+import top.kmar.mi.api.araw.interfaces.IDorSerialize
 import top.kmar.mi.api.utils.data.enums.HorizontalDirectionEnum
 import top.kmar.mi.api.utils.data.enums.HorizontalDirectionEnum.LEFT
 

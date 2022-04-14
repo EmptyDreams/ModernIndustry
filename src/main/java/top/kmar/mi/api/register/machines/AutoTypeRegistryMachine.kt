@@ -1,8 +1,8 @@
 package top.kmar.mi.api.register.machines
 
-import top.kmar.mi.api.auto.interfaces.IAutoFieldRW
-import top.kmar.mi.api.auto.interfaces.IAutoObjRW
-import top.kmar.mi.api.auto.registers.AutoTypeRegister
+import top.kmar.mi.api.araw.interfaces.IAutoFieldRW
+import top.kmar.mi.api.araw.interfaces.IAutoObjRW
+import top.kmar.mi.api.araw.registers.AutoTypeRegister
 import top.kmar.mi.api.register.AutoRegisterMachine
 import top.kmar.mi.api.register.others.AutoRWType
 import top.kmar.mi.api.utils.MISysInfo

@@ -19,7 +19,7 @@ import net.minecraftforge.fluids.capability.wrappers.BlockLiquidWrapper
 import net.minecraftforge.fluids.capability.wrappers.BlockWrapper
 import net.minecraftforge.fluids.capability.wrappers.FluidBlockWrapper
 import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte1.other
-import top.kmar.mi.api.auto.AutoDataRW
+import top.kmar.mi.api.araw.AutoDataRW
 import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.utils.data.math.Point3D

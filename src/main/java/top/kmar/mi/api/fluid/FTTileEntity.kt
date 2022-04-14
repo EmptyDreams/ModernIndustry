@@ -13,7 +13,7 @@ import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fluids.IFluidBlock
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.auto.interfaces.AutoSave
+import top.kmar.mi.api.araw.interfaces.AutoSave
 import top.kmar.mi.api.capabilities.fluid.FluidCapability
 import top.kmar.mi.api.capabilities.fluid.IFluid
 import top.kmar.mi.api.dor.ByteDataOperator

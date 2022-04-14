@@ -2,7 +2,7 @@ package top.kmar.mi.api.electricity.info
 
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.util.INBTSerializable
-import top.kmar.mi.api.auto.interfaces.IDorSerialize
+import top.kmar.mi.api.araw.interfaces.IDorSerialize
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
 
