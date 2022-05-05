@@ -1,6 +1,7 @@
-package top.kmar.mi.api.gui.listener.mouse;
+package top.kmar.mi.api.graph.listener.mouse;
 
-import top.kmar.mi.api.gui.listener.MouseData;
+import top.kmar.mi.api.graph.listener.IListenerData;
+import top.kmar.mi.api.graph.listener.MouseData;
 
 /**
  * 鼠标滚轮事件
@@ -15,8 +16,8 @@ public interface IMouseWheelListener extends IMouseListener {
 	void mouseWheel(int wheel);
 	
 	@Override
-	default void active(MouseData data) {
-		mouseWheel(data.wheel);
+	default void invoke(IListenerData data) {
+		mouseWheel(((MouseData) data).getWheel());
 	}
 	
 }

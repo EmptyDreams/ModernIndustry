@@ -1,6 +1,7 @@
-package top.kmar.mi.api.gui.listener.mouse;
+package top.kmar.mi.api.graph.listener.mouse;
 
-import top.kmar.mi.api.gui.listener.MouseData;
+import top.kmar.mi.api.graph.listener.IListenerData;
+import top.kmar.mi.api.graph.listener.MouseData;
 
 /**
  * 在鼠标进入控件时触发的事件
@@ -15,8 +16,9 @@ public interface IMouseEnteredListener extends IMouseListener {
 	void mouseEntered(float mouseX, float mouseY);
 	
 	@Override
-	default void active(MouseData data) {
-		mouseEntered(data.mouseX, data.mouseY);
+	default void invoke(IListenerData data) {
+		MouseData real = (MouseData) data;
+		mouseEntered(real.getMouseX(), real.getMouseY());
 	}
 	
 }

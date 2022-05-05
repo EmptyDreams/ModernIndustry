@@ -2,7 +2,7 @@ package top.kmar.mi.api.gui.component.group;
 
 import net.minecraftforge.items.SlotItemHandler;
 import top.kmar.mi.api.gui.component.interfaces.IComponentManager;
-import top.kmar.mi.api.gui.client.GuiPainter;
+import top.kmar.mi.api.graph.client.GuiPainter;
 import top.kmar.mi.api.gui.client.StaticFrameClient;
 
 /**

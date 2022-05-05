@@ -11,10 +11,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.net.message.gui.GuiAddition;
 import top.kmar.mi.api.net.message.gui.GuiMessage;
-import top.kmar.mi.api.gui.client.GuiPainter;
+import top.kmar.mi.api.graph.client.GuiPainter;
 import top.kmar.mi.api.gui.client.StaticFrameClient;
 import top.kmar.mi.api.gui.common.MIFrame;
-import top.kmar.mi.api.gui.listener.IListener;
+import top.kmar.mi.api.graph.listener.IListener;
 import top.kmar.mi.api.net.handler.MessageSender;
 
 import javax.annotation.Nonnull;

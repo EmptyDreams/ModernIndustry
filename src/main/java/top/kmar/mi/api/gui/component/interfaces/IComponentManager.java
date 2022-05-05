@@ -2,8 +2,8 @@ package top.kmar.mi.api.gui.component.interfaces;
 
 import net.minecraft.inventory.Slot;
 import top.kmar.mi.api.gui.common.MIFrame;
-import top.kmar.mi.api.gui.listener.MouseData;
-import top.kmar.mi.api.gui.listener.mouse.IMouseListener;
+import top.kmar.mi.api.graph.listener.MouseData;
+import top.kmar.mi.api.graph.listener.mouse.IMouseListener;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -105,7 +105,7 @@ public interface IComponentManager {
 				float x = mouseX - it.getX();
 				float y = mouseY - it.getY();
 				it.activateListener(frame, listenerClass,
-						listener -> listener.active(data.create(x, y)));
+						listener -> listener.invoke(data.create(x, y)));
 				if (it instanceof IComponentManager) {
 					((IComponentManager) it).activeMouseListenerNoLog(
 							listenerClass, null, data.create(x, y), optimize, ignore);
@@ -122,7 +122,7 @@ public interface IComponentManager {
 							component == it ? null : component, data.create(x, y), optimize, ignore);
 				}
 				if (it == component) {
-					it.activateListener(frame, listenerClass, listener -> listener.active(data.create(x, y)));
+					it.activateListener(frame, listenerClass, listener -> listener.invoke(data.create(x, y)));
 				}
 				return true;
 			});
@@ -156,7 +156,7 @@ public interface IComponentManager {
 				}
 				if (ignore.contains(it)) return true;
 				it.activateListener(frame, listenerClass,
-						listener -> listener.active(data.create(x, y)));
+						listener -> listener.invoke(data.create(x, y)));
 				return true;
 			});
 		} else {
@@ -173,7 +173,7 @@ public interface IComponentManager {
 					result.add(it);
 					if (!ignore.contains(it)) {
 						it.activateListener(frame,
-								listenerClass, listener -> listener.active(data.create(x, y)));
+								listenerClass, listener -> listener.invoke(data.create(x, y)));
 					}
 				}
 				return true;

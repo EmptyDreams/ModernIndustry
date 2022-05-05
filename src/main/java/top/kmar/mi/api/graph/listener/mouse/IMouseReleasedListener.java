@@ -1,6 +1,7 @@
-package top.kmar.mi.api.gui.listener.mouse;
+package top.kmar.mi.api.graph.listener.mouse;
 
-import top.kmar.mi.api.gui.listener.MouseData;
+import top.kmar.mi.api.graph.listener.IListenerData;
+import top.kmar.mi.api.graph.listener.MouseData;
 
 /**
  * @author EmptyDreams
@@ -15,8 +16,9 @@ public interface IMouseReleasedListener extends IMouseListener {
 	void mouseReleased(float mouseX, float mouseY, float code);
 	
 	@Override
-	default void active(MouseData data) {
-		mouseReleased(data.mouseX, data.mouseY, data.code);
+	default void invoke(IListenerData data) {
+		MouseData real = (MouseData) data;
+		mouseReleased(real.getMouseX(), real.getMouseY(), real.getCode());
 	}
 	
 }

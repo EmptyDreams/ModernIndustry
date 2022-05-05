@@ -16,5 +16,5 @@ public interface IFrame {
 	
 	/** 初始化内部数据 */
 	void init(World world);
-
+	
 }

@@ -1,6 +1,7 @@
-package top.kmar.mi.api.gui.listener.mouse;
+package top.kmar.mi.api.graph.listener.mouse;
 
-import top.kmar.mi.api.gui.listener.MouseData;
+import top.kmar.mi.api.graph.listener.IListenerData;
+import top.kmar.mi.api.graph.listener.MouseData;
 
 /**
  * 鼠标点击事件
@@ -16,8 +17,9 @@ public interface IMouseClickListener extends IMouseListener {
 	void mouseClick(float mouseX, float mouseY, int code);
 	
 	@Override
-	default void active(MouseData data) {
-		mouseClick(data.mouseX, data.mouseY, data.code);
+	default void invoke(IListenerData data) {
+		MouseData real = (MouseData) data;
+		mouseClick(real.getMouseX(), real.getMouseY(), real.getCode());
 	}
 	
 }

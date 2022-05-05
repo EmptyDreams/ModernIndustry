@@ -1,6 +1,6 @@
-package top.kmar.mi.api.gui.listener.mouse;
+package top.kmar.mi.api.graph.listener.mouse;
 
-import top.kmar.mi.api.gui.listener.MouseData;
+import top.kmar.mi.api.graph.listener.IListenerData;
 
 /**
  * 鼠标从控件离开时触发的事件
@@ -11,7 +11,7 @@ public interface IMouseExitedListener extends IMouseListener {
 	void mouseExited();
 	
 	@Override
-	default void active(MouseData data) {
+	default void invoke(IListenerData data) {
 		mouseExited();
 	}
 	

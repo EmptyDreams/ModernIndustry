@@ -3,7 +3,7 @@ package top.kmar.mi.api.gui.component.group;
 import net.minecraft.client.resources.I18n;
 import top.kmar.mi.api.utils.TickHelper;
 import top.kmar.mi.content.gui.ControlPanel;
-import top.kmar.mi.api.gui.client.GuiPainter;
+import top.kmar.mi.api.graph.client.GuiPainter;
 
 import java.util.ArrayList;
 import java.util.List;
