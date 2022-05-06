@@ -1,0 +1,26 @@
+{
+  "arrowRightSrc": {
+    "x": 0, "y": 0,
+    "width": 22, "height": 15
+  },
+  "arrowRightFill": {
+    "x": 0, "y": 15,
+    "width": 22, "height": 15
+  },
+  "arrowDownSrc": {
+    "x": 22, "y": 0,
+    "width": 15, "height": 15
+  },
+  "arrowDownFill": {
+    "x": 37, "y": 0,
+    "width": 15, "height": 15
+  },
+  "fireSrc": {
+    "x": 22, "y": 22,
+    "width": 13, "height": 13
+  },
+  "fireFill": {
+    "x": 35, "y": 22,
+    "width": 13, "height": 13
+  }
+}
