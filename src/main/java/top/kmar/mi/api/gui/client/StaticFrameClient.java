@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import top.kmar.mi.ModernIndustry;
-import top.kmar.mi.api.graph.client.GuiPainter;
+import top.kmar.mi.api.graph.utils.GuiPainter;
 import top.kmar.mi.api.gui.common.IFrame;
 import top.kmar.mi.api.gui.common.MIFrame;
 import top.kmar.mi.api.gui.common.TitleModelEnum;

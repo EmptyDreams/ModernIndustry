@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import top.kmar.mi.api.gui.component.interfaces.IComponent;
 import top.kmar.mi.api.gui.component.interfaces.IComponentManager;
 import top.kmar.mi.api.utils.StringUtil;
-import top.kmar.mi.api.graph.client.GuiPainter;
+import top.kmar.mi.api.graph.utils.GuiPainter;
 import top.kmar.mi.api.gui.component.RollComponent;
 import top.kmar.mi.api.graph.listener.key.IKeyPressedListener;
 import top.kmar.mi.api.graph.listener.key.IKeyReleaseListener;

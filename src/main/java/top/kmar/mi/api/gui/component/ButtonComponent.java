@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import top.kmar.mi.api.utils.StringUtil;
 import top.kmar.mi.api.utils.data.math.Size2D;
-import top.kmar.mi.api.graph.client.GuiPainter;
+import top.kmar.mi.api.graph.utils.GuiPainter;
 import top.kmar.mi.api.gui.client.ImageData;
 import top.kmar.mi.api.gui.client.RuntimeTexture;
 

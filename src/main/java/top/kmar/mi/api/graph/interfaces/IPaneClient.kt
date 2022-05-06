@@ -2,7 +2,7 @@ package top.kmar.mi.api.graph.interfaces
 
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.graph.client.GuiPainter
+import top.kmar.mi.api.graph.utils.GuiPainter
 
 /**
  * 所有控件的客户端接口

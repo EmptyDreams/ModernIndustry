@@ -9,7 +9,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import top.kmar.mi.api.gui.component.interfaces.IComponentManager;
 import top.kmar.mi.api.utils.StringUtil;
-import top.kmar.mi.api.graph.client.GuiPainter;
+import top.kmar.mi.api.graph.utils.GuiPainter;
 import top.kmar.mi.api.gui.client.ImageData;
 import top.kmar.mi.api.gui.client.RuntimeTexture;
 

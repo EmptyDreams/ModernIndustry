@@ -1,8 +1,7 @@
-package top.kmar.mi.api.graph.client
+package top.kmar.mi.api.graph.utils
 
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.graph.common.PanelBuilder
 import top.kmar.mi.api.graph.interfaces.IPaneClient
 import top.kmar.mi.api.graph.interfaces.IPanel
 import top.kmar.mi.api.graph.interfaces.IPanelContainerClient

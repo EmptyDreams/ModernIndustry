@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import top.kmar.mi.api.gui.component.interfaces.IComponent;
 import top.kmar.mi.api.gui.component.interfaces.IComponentManager;
 import top.kmar.mi.api.utils.StringUtil;
-import top.kmar.mi.api.graph.client.GuiPainter;
+import top.kmar.mi.api.graph.utils.GuiPainter;
 import top.kmar.mi.api.gui.client.StaticFrameClient;
 import top.kmar.mi.api.gui.component.MComponent;
 import top.kmar.mi.api.graph.listener.mouse.IMouseLocationListener;

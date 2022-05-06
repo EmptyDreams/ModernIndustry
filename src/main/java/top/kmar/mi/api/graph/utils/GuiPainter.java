@@ -1,4 +1,4 @@
-package top.kmar.mi.api.graph.client;
+package top.kmar.mi.api.graph.utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

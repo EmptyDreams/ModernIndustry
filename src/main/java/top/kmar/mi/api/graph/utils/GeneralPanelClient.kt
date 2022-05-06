@@ -1,16 +1,25 @@
-package top.kmar.mi.api.graph.common
+package top.kmar.mi.api.graph.utils
 
-import top.kmar.mi.api.graph.interfaces.IPanel
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
+import top.kmar.mi.api.graph.interfaces.IPaneClient
 import top.kmar.mi.api.graph.interfaces.IPanelContainer
 import top.kmar.mi.api.graph.listener.IListener
 import top.kmar.mi.api.graph.listener.IListenerData
 
 /**
- * 通用Panel
+ * 客户端通用Panel
  * @author EmptyDreams
  */
-open class GeneralPanel : IPanel {
+@SideOnly(Side.CLIENT)
+abstract class GeneralPanelClient protected constructor(
+    override val x: Int,
+    override val y: Int,
+    override val width: Int,
+    override val height: Int
+) : IPaneClient {
 
+    /** 存储事件列表 */
     private val listenerList = ListenerManager()
 
     override fun onAdd2Container(father: IPanelContainer) {}

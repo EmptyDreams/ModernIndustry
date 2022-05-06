@@ -1,4 +1,4 @@
-package top.kmar.mi.api.graph.common
+package top.kmar.mi.api.graph.utils
 
 import top.kmar.mi.api.graph.interfaces.IPanel
 import top.kmar.mi.api.graph.interfaces.IPanelContainer

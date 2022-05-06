@@ -1,4 +1,4 @@
-package top.kmar.mi.api.graph.common
+package top.kmar.mi.api.graph.utils
 
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
