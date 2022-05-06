@@ -21,6 +21,14 @@ public class RuntimeTexture extends AbstractTexture {
 	
 	private static final Map<String, RuntimeTexture> instances = new Object2ObjectOpenHashMap<>();
 	
+	/** 强制构建一个新的材质，内部无缓存 */
+	@Nonnull
+	public static RuntimeTexture instanceNoCache(BufferedImage image) {
+		RuntimeTexture result = new RuntimeTexture(image);
+		result.loadTexture(null);
+		return result;
+	}
+	
 	/**
 	 * 根据资源名称获取材质资源
 	 * @param name 资源名称
