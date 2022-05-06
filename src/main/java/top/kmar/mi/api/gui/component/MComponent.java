@@ -11,14 +11,14 @@ import top.kmar.mi.api.gui.component.group.SlotGroup;
 import top.kmar.mi.api.gui.component.interfaces.IComponent;
 import top.kmar.mi.api.gui.component.interfaces.IComponentManager;
 import top.kmar.mi.api.gui.craft.CraftShower;
-import top.kmar.mi.api.graph.listener.mouse.IMouseClickListener;
+import top.kmar.mi.api.graph.listeners.mouse.IMouseClickListener;
 import top.kmar.mi.api.utils.MISysInfo;
 import top.kmar.mi.api.utils.StringUtil;
 import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.api.gui.client.StaticFrameClient;
 import top.kmar.mi.api.gui.common.ChildFrame;
 import top.kmar.mi.api.gui.common.MIFrame;
-import top.kmar.mi.api.graph.listener.IListener;
+import top.kmar.mi.api.graph.listeners.IListener;
 
 import java.util.LinkedList;
 import java.util.List;

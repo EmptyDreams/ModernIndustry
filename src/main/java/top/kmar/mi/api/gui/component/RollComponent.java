@@ -2,9 +2,9 @@ package top.kmar.mi.api.gui.component;
 
 import net.minecraft.client.renderer.GlStateManager;
 import top.kmar.mi.api.gui.component.interfaces.IComponentManager;
-import top.kmar.mi.api.graph.listener.mouse.IMouseActionListener;
-import top.kmar.mi.api.graph.listener.mouse.IMouseLocationListener;
-import top.kmar.mi.api.graph.listener.mouse.IMouseReleasedListener;
+import top.kmar.mi.api.graph.listeners.mouse.IMouseActionListener;
+import top.kmar.mi.api.graph.listeners.mouse.IMouseLocationListener;
+import top.kmar.mi.api.graph.listeners.mouse.IMouseReleasedListener;
 import top.kmar.mi.api.graph.utils.GuiPainter;
 import top.kmar.mi.api.gui.client.ImageData;
 import top.kmar.mi.api.gui.client.RuntimeTexture;

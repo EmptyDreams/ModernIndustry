@@ -4,8 +4,8 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graph.interfaces.IPaneClient
 import top.kmar.mi.api.graph.interfaces.IPanelContainer
-import top.kmar.mi.api.graph.listener.IListener
-import top.kmar.mi.api.graph.listener.IListenerData
+import top.kmar.mi.api.graph.listeners.IListener
+import top.kmar.mi.api.graph.listeners.IListenerData
 
 /**
  * 客户端通用Panel

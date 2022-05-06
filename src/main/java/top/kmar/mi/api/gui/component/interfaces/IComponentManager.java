@@ -2,8 +2,8 @@ package top.kmar.mi.api.gui.component.interfaces;
 
 import net.minecraft.inventory.Slot;
 import top.kmar.mi.api.gui.common.MIFrame;
-import top.kmar.mi.api.graph.listener.MouseData;
-import top.kmar.mi.api.graph.listener.mouse.IMouseListener;
+import top.kmar.mi.api.graph.listeners.MouseData;
+import top.kmar.mi.api.graph.listeners.mouse.IMouseListener;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

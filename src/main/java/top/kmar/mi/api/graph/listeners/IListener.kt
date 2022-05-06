@@ -1,4 +1,4 @@
-package top.kmar.mi.api.graph.listener
+package top.kmar.mi.api.graph.listeners
 
 /**
  * 所有GUI事件的接口

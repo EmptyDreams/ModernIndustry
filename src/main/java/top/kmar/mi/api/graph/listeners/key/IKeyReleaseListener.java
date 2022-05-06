@@ -1,8 +1,8 @@
-package top.kmar.mi.api.graph.listener.key;
+package top.kmar.mi.api.graph.listeners.key;
 
 import org.jetbrains.annotations.NotNull;
-import top.kmar.mi.api.graph.listener.IListenerData;
-import top.kmar.mi.api.graph.listener.KeyboardData;
+import top.kmar.mi.api.graph.listeners.IListenerData;
+import top.kmar.mi.api.graph.listeners.KeyboardData;
 
 /**
  * @author EmptyDreams

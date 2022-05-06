@@ -1,6 +1,6 @@
-package top.kmar.mi.api.graph.listener.mouse;
+package top.kmar.mi.api.graph.listeners.mouse;
 
-import top.kmar.mi.api.graph.listener.IListener;
+import top.kmar.mi.api.graph.listeners.IListener;
 
 /**
  * 鼠标事件

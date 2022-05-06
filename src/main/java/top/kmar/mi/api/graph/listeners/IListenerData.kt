@@ -1,4 +1,4 @@
-package top.kmar.mi.api.graph.listener
+package top.kmar.mi.api.graph.listeners
 
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter

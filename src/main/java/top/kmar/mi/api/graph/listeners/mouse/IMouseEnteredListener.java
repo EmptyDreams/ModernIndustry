@@ -1,7 +1,7 @@
-package top.kmar.mi.api.graph.listener.mouse;
+package top.kmar.mi.api.graph.listeners.mouse;
 
-import top.kmar.mi.api.graph.listener.IListenerData;
-import top.kmar.mi.api.graph.listener.MouseData;
+import top.kmar.mi.api.graph.listeners.IListenerData;
+import top.kmar.mi.api.graph.listeners.MouseData;
 
 /**
  * 在鼠标进入控件时触发的事件

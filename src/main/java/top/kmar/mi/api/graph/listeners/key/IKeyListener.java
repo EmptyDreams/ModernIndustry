@@ -1,6 +1,6 @@
-package top.kmar.mi.api.graph.listener.key;
+package top.kmar.mi.api.graph.listeners.key;
 
-import top.kmar.mi.api.graph.listener.IListener;
+import top.kmar.mi.api.graph.listeners.IListener;
 
 /**
  * 键盘事件

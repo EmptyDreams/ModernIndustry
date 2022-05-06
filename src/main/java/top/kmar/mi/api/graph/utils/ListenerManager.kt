@@ -1,7 +1,7 @@
 package top.kmar.mi.api.graph.utils
 
-import top.kmar.mi.api.graph.listener.IListener
-import top.kmar.mi.api.graph.listener.IListenerData
+import top.kmar.mi.api.graph.listeners.IListener
+import top.kmar.mi.api.graph.listeners.IListenerData
 import java.util.*
 
 /**

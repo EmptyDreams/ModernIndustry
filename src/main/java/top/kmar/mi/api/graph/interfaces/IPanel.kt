@@ -1,7 +1,7 @@
 package top.kmar.mi.api.graph.interfaces
 
-import top.kmar.mi.api.graph.listener.IListener
-import top.kmar.mi.api.graph.listener.IListenerData
+import top.kmar.mi.api.graph.listeners.IListener
+import top.kmar.mi.api.graph.listeners.IListenerData
 
 /**
  * 所有控件的接口

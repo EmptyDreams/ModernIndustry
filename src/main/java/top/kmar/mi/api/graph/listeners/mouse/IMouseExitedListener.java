@@ -1,6 +1,6 @@
-package top.kmar.mi.api.graph.listener.mouse;
+package top.kmar.mi.api.graph.listeners.mouse;
 
-import top.kmar.mi.api.graph.listener.IListenerData;
+import top.kmar.mi.api.graph.listeners.IListenerData;
 
 /**
  * 鼠标从控件离开时触发的事件

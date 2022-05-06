@@ -7,9 +7,9 @@ import top.kmar.mi.api.gui.component.interfaces.IComponentManager;
 import top.kmar.mi.api.utils.StringUtil;
 import top.kmar.mi.api.graph.utils.GuiPainter;
 import top.kmar.mi.api.gui.component.RollComponent;
-import top.kmar.mi.api.graph.listener.key.IKeyPressedListener;
-import top.kmar.mi.api.graph.listener.key.IKeyReleaseListener;
-import top.kmar.mi.api.graph.listener.mouse.IMouseWheelListener;
+import top.kmar.mi.api.graph.listeners.key.IKeyPressedListener;
+import top.kmar.mi.api.graph.listeners.key.IKeyReleaseListener;
+import top.kmar.mi.api.graph.listeners.mouse.IMouseWheelListener;
 
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;

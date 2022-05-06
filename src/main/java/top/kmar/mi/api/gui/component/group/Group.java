@@ -11,7 +11,7 @@ import top.kmar.mi.api.utils.StringUtil;
 import top.kmar.mi.api.graph.utils.GuiPainter;
 import top.kmar.mi.api.gui.client.StaticFrameClient;
 import top.kmar.mi.api.gui.component.MComponent;
-import top.kmar.mi.api.graph.listener.mouse.IMouseLocationListener;
+import top.kmar.mi.api.graph.listeners.mouse.IMouseLocationListener;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
