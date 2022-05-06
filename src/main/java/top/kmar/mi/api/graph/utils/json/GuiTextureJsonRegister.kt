@@ -8,13 +8,11 @@ import jdk.internal.util.xml.impl.ReaderUTF8
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ResourceLocation
 import top.kmar.mi.ModernIndustry
-import top.kmar.mi.api.register.others.AutoLoader
 
 /**
  * GUI JSON注册机
  * @author EmptyDreams
  */
-@AutoLoader
 object GuiTextureJsonRegister {
 
     init {
