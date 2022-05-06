@@ -2,6 +2,8 @@ package top.kmar.mi.api.utils
 
 import io.netty.buffer.ByteBuf
 import net.minecraft.block.BlockLiquid
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.texture.ITextureObject
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -27,6 +29,15 @@ import top.kmar.mi.api.utils.data.math.Range3D
 import java.nio.charset.StandardCharsets
 import kotlin.math.abs
 import kotlin.math.sqrt
+
+/**
+ * 装载材质
+ * @receiver [ITextureObject]
+ */
+fun ITextureObject.bindTexture(): ITextureObject {
+    GlStateManager.bindTexture(glTextureId)
+    return this
+}
 
 /** 检查指定位置是否可以放置指定流体方块 */
 fun World.pushFluid(pos: BlockPos, data: FluidData, simulate: Boolean): Int {
