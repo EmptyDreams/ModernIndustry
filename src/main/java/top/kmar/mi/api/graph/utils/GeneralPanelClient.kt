@@ -6,6 +6,7 @@ import top.kmar.mi.api.graph.interfaces.IPanelClient
 import top.kmar.mi.api.graph.interfaces.IPanelContainer
 import top.kmar.mi.api.graph.listeners.IListener
 import top.kmar.mi.api.graph.listeners.IListenerData
+import top.kmar.mi.api.graph.utils.managers.ListenerManager
 
 /**
  * 客户端通用Panel

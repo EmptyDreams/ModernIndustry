@@ -1,7 +1,8 @@
-package top.kmar.mi.api.graph.utils
+package top.kmar.mi.api.graph.utils.managers
 
 import top.kmar.mi.api.graph.interfaces.IPanel
 import top.kmar.mi.api.graph.interfaces.IPanelContainer
+import top.kmar.mi.api.graph.utils.GeneralPanel
 import java.util.*
 
 /**
