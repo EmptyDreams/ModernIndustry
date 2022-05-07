@@ -2,6 +2,7 @@ package top.kmar.mi.api.graph.modules
 
 import net.minecraft.client.renderer.texture.ITextureObject
 import top.kmar.mi.ModernIndustry.MODID
+import top.kmar.mi.api.graph.interfaces.IProgressBarPanel
 import top.kmar.mi.api.graph.utils.GeneralPanelClient
 import top.kmar.mi.api.graph.utils.GuiPainter
 import top.kmar.mi.api.graph.utils.json.GuiTextureJsonRegister
@@ -14,15 +15,12 @@ import kotlin.math.roundToInt
  */
 class FixedProgressBarPanelClient(
     x: Int, y: Int, val style: Style
-) : GeneralPanelClient(x, y, style.width, style.height) {
+) : GeneralPanelClient(x, y, style.width, style.height), IProgressBarPanel {
 
     /** 最大值 */
-    var maxValue: Int = 0
+    override var maxValue: Int = 0
     /** 当前值 */
-    var value: Int = 0
-    /** 进度 */
-    val percent: Double
-        get() = value.toDouble() / maxValue
+    override var value: Int = 0
 
     override fun paint(painter: GuiPainter) = style(this, painter)
 
