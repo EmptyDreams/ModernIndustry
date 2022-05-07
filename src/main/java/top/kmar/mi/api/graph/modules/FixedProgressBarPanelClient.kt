@@ -44,9 +44,7 @@ class FixedProgressBarPanelClient(
         FIRE(
             MODID, "fireSrc", "fireFill",
             FixedProgressBarPanelClient::paintVerticalOppose
-        )
-
-;
+        );
 
         val width: Int
         val height: Int
