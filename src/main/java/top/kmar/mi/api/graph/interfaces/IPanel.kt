@@ -1,5 +1,7 @@
 package top.kmar.mi.api.graph.interfaces
 
+import top.kmar.mi.api.dor.interfaces.IDataReader
+import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.graph.listeners.IListener
 import top.kmar.mi.api.graph.listeners.IListenerData
 
@@ -43,5 +45,21 @@ interface IPanel {
      * @param data 要出发的事件的附加信息
      */
     fun activeListener(clazz: Class<out IListener>, data: IListenerData)
+
+    // ---------- 网络通信 ---------- //
+
+    /**
+     * 向对方端发送数据
+     *
+     * **如果没有写入数据到writer请勿返回true，如果返回false请勿修改writer**
+     *
+     * @param writer 写入器，把要同步的数据写入到写入器中
+     *
+     * @return 是否需要进行同步
+     */
+    fun send(writer: IDataWriter): Boolean = false
+
+    /** 接受来自对方端的数据 */
+    fun receive(reader: IDataReader) {}
 
 }
