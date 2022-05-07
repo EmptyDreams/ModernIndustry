@@ -9,7 +9,7 @@ import top.kmar.mi.api.graph.utils.GuiPainter
  * @author EmptyDreams
  */
 @SideOnly(Side.CLIENT)
-interface IPaneClient : IPanel {
+interface IPanelClient : IPanel {
 
     val x: Int
     val y: Int

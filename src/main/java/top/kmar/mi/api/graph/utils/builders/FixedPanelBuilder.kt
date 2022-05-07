@@ -1,6 +1,6 @@
 package top.kmar.mi.api.graph.utils.builders
 
-import top.kmar.mi.api.graph.interfaces.IPaneClient
+import top.kmar.mi.api.graph.interfaces.IPanelClient
 import top.kmar.mi.api.graph.interfaces.IPanel
 
 /**
@@ -14,7 +14,7 @@ abstract class FixedPanelBuilder<T : IPanel> {
     var y: Int = 0
         private set
 
-    /** 构建对象，客户端调用返回的对象一定从[IPaneClient]派生 */
+    /** 构建对象，客户端调用返回的对象一定从[IPanelClient]派生 */
     abstract fun build(): T
 
     /**

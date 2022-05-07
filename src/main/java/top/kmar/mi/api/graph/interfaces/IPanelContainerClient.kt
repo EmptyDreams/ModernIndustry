@@ -9,7 +9,7 @@ import top.kmar.mi.api.graph.utils.GuiPainter
  * @author EmptyDreams
  */
 @SideOnly(Side.CLIENT)
-interface IPanelContainerClient : IPaneClient, IPanelContainer {
+interface IPanelContainerClient : IPanelClient, IPanelContainer {
 
     override fun isClient(): Boolean = true
 
@@ -17,7 +17,7 @@ interface IPanelContainerClient : IPaneClient, IPanelContainer {
         forEachClient(consumer)
     }
 
-    fun forEachClient(consumer: (IPaneClient) -> Unit)
+    fun forEachClient(consumer: (IPanelClient) -> Unit)
 
     override fun paint(painter: GuiPainter) {
         forEachClient { painter.paintPanel(it) }

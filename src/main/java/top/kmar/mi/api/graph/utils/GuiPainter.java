@@ -7,7 +7,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import top.kmar.mi.api.graph.interfaces.IPaneClient;
+import top.kmar.mi.api.graph.interfaces.IPanelClient;
 import top.kmar.mi.api.gui.client.RuntimeTexture;
 import top.kmar.mi.api.gui.component.interfaces.IComponent;
 
@@ -154,7 +154,7 @@ public class GuiPainter {
 	}
 	
 	/** 绘制一个控件 */
-	public void paintPanel(IPaneClient panel) {
+	public void paintPanel(IPanelClient panel) {
 		panel.paint(createPainterForPanel(panel));
 	}
 	
@@ -164,7 +164,7 @@ public class GuiPainter {
 	}
 	
 	/** 根据控件大小、坐标创建一个子画笔 */
-	public GuiPainter createPainterForPanel(IPaneClient panel) {
+	public GuiPainter createPainterForPanel(IPanelClient panel) {
 		return createPainter(panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight());
 	}
 	

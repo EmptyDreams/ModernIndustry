@@ -2,7 +2,7 @@ package top.kmar.mi.api.graph.utils
 
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.graph.interfaces.IPaneClient
+import top.kmar.mi.api.graph.interfaces.IPanelClient
 import top.kmar.mi.api.graph.interfaces.IPanelContainer
 import top.kmar.mi.api.graph.listeners.IListener
 import top.kmar.mi.api.graph.listeners.IListenerData
@@ -17,7 +17,7 @@ abstract class GeneralPanelClient protected constructor(
     override val y: Int,
     override val width: Int,
     override val height: Int
-) : IPaneClient {
+) : IPanelClient {
 
     /** 存储事件列表 */
     private val listenerList = ListenerManager()
