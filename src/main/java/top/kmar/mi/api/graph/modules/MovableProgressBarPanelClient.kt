@@ -14,13 +14,14 @@ import kotlin.math.roundToInt
  * 尺寸可活动的进度条
  * @author EmptyDreams
  */
-class MovableProgressBarPanelClient(
+open class MovableProgressBarPanelClient(
     x: Int, y: Int, width: Int, height: Int,
     private val painter: (MovableProgressBarPanelClient, GuiPainter) -> Unit
 ) : GeneralPanelClient(x, y, width, height), IProgressBarPanel {
 
     override var maxValue: Int = 0
     override var value: Int = 0
+    override var showText: (IProgressBarPanel, GuiPainter) -> Unit = IProgressBarPanel.Companion::noText
 
     /**
      * 绘制图像
@@ -29,6 +30,7 @@ class MovableProgressBarPanelClient(
     override fun paint(painter: GuiPainter) {
         if (height < 2) throw IllegalArgumentException("控件的高度不应小于 2 [$height]")
         this.painter(this, painter)
+        showText(this, painter)
     }
 
     companion object {
