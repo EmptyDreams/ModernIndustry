@@ -1,10 +1,11 @@
-package top.kmar.mi.api.graph.utils
+package top.kmar.mi.api.graph.utils.managers
 
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.graph.interfaces.IPanelClient
 import top.kmar.mi.api.graph.interfaces.IPanel
+import top.kmar.mi.api.graph.interfaces.IPanelClient
 import top.kmar.mi.api.graph.interfaces.IPanelContainerClient
+import top.kmar.mi.api.graph.utils.GeneralPanelClient
 import java.util.*
 
 /**
@@ -15,8 +16,6 @@ import java.util.*
 open class PanelManagerClient(
     x: Int, y: Int, width: Int, height: Int
 ) : IPanelContainerClient, GeneralPanelClient(x, y, width, height) {
-
-    constructor(builder: PanelBuilder) : this(builder.x, builder.y, builder.width, builder.height)
 
     private val container = LinkedList<IPanelClient>()
 
