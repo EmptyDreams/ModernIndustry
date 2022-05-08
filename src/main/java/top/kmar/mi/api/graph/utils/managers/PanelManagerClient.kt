@@ -5,6 +5,8 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graph.interfaces.IPanel
 import top.kmar.mi.api.graph.interfaces.IPanelClient
 import top.kmar.mi.api.graph.interfaces.IPanelContainerClient
+import top.kmar.mi.api.graph.listeners.IListener
+import top.kmar.mi.api.graph.listeners.IListenerData
 import top.kmar.mi.api.graph.utils.GeneralPanelClient
 import java.util.*
 
@@ -29,6 +31,11 @@ open class PanelManagerClient(
 
     override fun forEachClient(consumer: (IPanelClient) -> Unit) {
         container.forEach { consumer(it) }
+    }
+
+    override fun activeListener(clazz: Class<out IListener>, data: IListenerData) {
+        super<GeneralPanelClient>.activeListener(clazz, data)
+        super<IPanelContainerClient>.activeListener(clazz, data)
     }
 
 }
