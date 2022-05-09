@@ -4,12 +4,11 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graph.utils.GeneralPanelClient
 import top.kmar.mi.api.graph.utils.GuiPainter
+import top.kmar.mi.api.graph.utils.managers.TextureCacheManager
 import top.kmar.mi.api.gui.client.RuntimeTexture
 import top.kmar.mi.api.utils.data.math.Size2D
 import java.awt.Color
 import java.awt.Graphics
-import java.awt.image.BufferedImage
-import java.util.*
 
 /**
  * GUI背景板
@@ -29,7 +28,11 @@ class BackgroundPanelClient(
 
     companion object {
 
-        private val cache = WeakHashMap<Size2D, RuntimeTexture>()
+        private val cache = TextureCacheManager { size, it ->
+            paintBlackBorder(size, it)
+            paintCenter(size, it)
+            paintChunk(size, it)
+        }
 
         fun getTexture(width: Int, height: Int) = getTexture(Size2D(width, height))
 
@@ -43,17 +46,7 @@ class BackgroundPanelClient(
         fun getTexture(size: Size2D): RuntimeTexture {
             if (size.width < 20 || size.height < 20)
                 throw IllegalArgumentException("该函数仅能绘制尺寸大于等于20x20的图像")
-            return cache.computeIfAbsent(size) {
-                run {
-                    val image = BufferedImage(size.width, size.height, 6)
-                    val painter = image.createGraphics()
-                    paintBlackBorder(size, painter)
-                    paintCenter(size, painter)
-                    paintChunk(size, painter)
-                    painter.dispose()
-                    RuntimeTexture.instanceNoCache(image)
-                }
-            }
+            return cache[size]
         }
 
         /** 绘制四周黑色边框 */
