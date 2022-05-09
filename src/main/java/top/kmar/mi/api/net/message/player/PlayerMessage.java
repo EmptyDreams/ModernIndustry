@@ -1,12 +1,11 @@
 package top.kmar.mi.api.net.message.player;
 
 import net.minecraftforge.fml.relauncher.Side;
-import top.kmar.mi.api.dor.ByteDataOperator;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.net.ParseResultEnum;
-import top.kmar.mi.api.utils.MISysInfo;
 import top.kmar.mi.api.net.message.IMessageHandle;
 import top.kmar.mi.api.net.message.ParseAddition;
+import top.kmar.mi.api.utils.MISysInfo;
 
 import javax.annotation.Nonnull;
 
@@ -48,15 +47,6 @@ public class PlayerMessage implements IMessageHandle<PlayerAddition, ParseAdditi
 	@Override
 	public boolean match(@Nonnull Side side) {
 		return true;
-	}
-	
-	@Nonnull
-	@Override
-	public IDataReader packaging(@Nonnull IDataReader data, PlayerAddition addition) {
-		ByteDataOperator operator = new ByteDataOperator(data.size() + 50);
-		addition.writeTo(operator);
-		operator.writeData(data);
-		return operator;
 	}
 	
 }

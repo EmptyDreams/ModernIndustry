@@ -3,6 +3,7 @@ package top.kmar.mi.api.net.message;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import top.kmar.mi.api.dor.ByteDataOperator;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.net.handler.CommonMessage;
 
@@ -66,14 +67,11 @@ public interface IMessageHandle<T extends IMessageAddition, V extends ParseAddit
 	 * @throws NullPointerException 如果data==null||addition==null
 	 */
 	@Nonnull
-	IDataReader packaging(@Nonnull IDataReader data, T addition);
-	
-	/** 抛出一个异常 */
-	static UnsupportedOperationException throwException(Side side) {
-		if (side.isServer()) {
-			return new UnsupportedOperationException("该IMessageHandle不支持在服务端处理信息");
-		}
-		return new UnsupportedOperationException("该IMessageHandle不支持在客户端处理信息");
+	default IDataReader packaging(@Nonnull IDataReader data, T addition) {
+		ByteDataOperator message = new ByteDataOperator(data.size() + 10);
+		addition.writeTo(message);
+		message.writeData(data);
+		return message;
 	}
 	
 	/**

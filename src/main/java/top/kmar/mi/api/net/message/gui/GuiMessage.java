@@ -4,16 +4,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.relauncher.Side;
-import top.kmar.mi.api.dor.ByteDataOperator;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
-import top.kmar.mi.api.net.ParseResultEnum;
-import top.kmar.mi.api.utils.MISysInfo;
 import top.kmar.mi.api.gui.common.MIFrame;
+import top.kmar.mi.api.net.ParseResultEnum;
 import top.kmar.mi.api.net.message.IMessageHandle;
 import top.kmar.mi.api.net.message.ParseAddition;
+import top.kmar.mi.api.utils.MISysInfo;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * GUI网络通信<br>
@@ -65,16 +63,6 @@ public class GuiMessage implements IMessageHandle<GuiAddition, ParseAddition> {
 	@Override
 	public boolean match(@Nonnull Side side) {
 		return true;
-	}
-	
-	@SuppressWarnings("ConstantConditions")
-	@Nonnull
-	@Override
-	public IDataReader packaging(@Nonnull IDataReader data, @Nullable GuiAddition addition) {
-		ByteDataOperator result = new ByteDataOperator(data.size() + 10);
-		addition.writeTo(result);
-		result.writeData(data);
-		return result;
 	}
 	
 }

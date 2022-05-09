@@ -5,16 +5,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import top.kmar.mi.api.dor.ByteDataOperator;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.net.IAutoNetwork;
 import top.kmar.mi.api.net.ParseResultEnum;
-import top.kmar.mi.api.utils.MISysInfo;
 import top.kmar.mi.api.net.message.IMessageHandle;
 import top.kmar.mi.api.net.message.ParseAddition;
+import top.kmar.mi.api.utils.MISysInfo;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * 方块信息处理<br>
@@ -69,16 +67,6 @@ public final class BlockMessage implements IMessageHandle<BlockAddition, ParseAd
 	@Override
 	public boolean match(@Nonnull Side side) {
 		return true;
-	}
-	
-	@Nonnull
-	@Override
-	public IDataReader packaging(@Nonnull IDataReader data, @Nullable BlockAddition addition) {
-		ByteDataOperator operator = new ByteDataOperator(data.size() + 10);
-		//noinspection ConstantConditions
-		addition.writeTo(operator);
-		operator.writeData(data);
-		return operator;
 	}
 	
 }
