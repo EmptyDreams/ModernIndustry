@@ -13,7 +13,7 @@ import kotlin.math.roundToInt
  */
 open class MovableProgressBarPanelClient(
     x: Int, y: Int, width: Int, height: Int,
-    private val painter: (MovableProgressBarPanelClient, GuiPainter) -> Unit
+    private val painter: (MovableProgressBarPanelClient, GuiPainter) -> Unit = Companion::drawRectRight
 ) : GeneralPanelClient(x, y, width, height), IProgressBarPanel {
 
     override var maxValue: Int = 0
