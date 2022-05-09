@@ -2,8 +2,10 @@ package top.kmar.mi.api.graph.utils.managers
 
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
+import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.graph.interfaces.IPanel
 import top.kmar.mi.api.graph.interfaces.IPanelClient
+import top.kmar.mi.api.graph.interfaces.IPanelContainer
 import top.kmar.mi.api.graph.interfaces.IPanelContainerClient
 import top.kmar.mi.api.graph.listeners.IListener
 import top.kmar.mi.api.graph.listeners.IListenerData
@@ -33,9 +35,19 @@ open class PanelManagerClient(
         container.forEach { consumer(it) }
     }
 
-    override fun activeListener(clazz: Class<out IListener>, data: IListenerData) {
-        super<GeneralPanelClient>.activeListener(clazz, data)
-        super<IPanelContainerClient>.activeListener(clazz, data)
+    override fun onAdd2Container(father: IPanelContainer) {
+        super<GeneralPanelClient>.onAdd2Container(father)
+        super<IPanelContainerClient>.onAdd2Container(father)
+    }
+
+    override fun onRemoveFromContainer(father: IPanelContainer) {
+        super<GeneralPanelClient>.onRemoveFromContainer(father)
+        super<IPanelContainerClient>.onRemoveFromContainer(father)
+    }
+
+    override fun activeListener(clazz: Class<out IListener>, data: IListenerData, writer: IDataWriter) {
+        super<GeneralPanelClient>.activeListener(clazz, data, writer)
+        super<IPanelContainerClient>.activeListener(clazz, data, writer)
     }
 
 }

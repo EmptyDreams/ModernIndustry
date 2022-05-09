@@ -25,6 +25,15 @@ public interface IDataReader {
 	void setReadIndex(int index);
 	/** 含有的数据总大小（单位：Bit） */
 	int size();
+	/** 判断是否为空 */
+	default boolean isEmpty() {
+		return size() == 0;
+	}
+	/** 判断是否为非空 */
+	default boolean isNotEmpty() {
+		return size() != 0;
+	}
+	
 	/** 将数据写入到NBT */
 	void readToNBT(NBTTagCompound nbt, String key);
 	

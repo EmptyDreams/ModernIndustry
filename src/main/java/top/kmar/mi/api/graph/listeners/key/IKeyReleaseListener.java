@@ -1,8 +1,11 @@
 package top.kmar.mi.api.graph.listeners.key;
 
 import org.jetbrains.annotations.NotNull;
+import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.graph.listeners.IListenerData;
 import top.kmar.mi.api.graph.listeners.KeyboardData;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author EmptyDreams
@@ -10,9 +13,9 @@ import top.kmar.mi.api.graph.listeners.KeyboardData;
 public interface IKeyReleaseListener extends IKeyListener {
 	
 	@Override
-	default void invoke(@NotNull IListenerData data) {
+	default IDataReader invoke(@NotNull IListenerData data) {
 		KeyboardData real = (KeyboardData) data;
-		release(real.getCode(), real.isFocus());
+		return release(real.getCode(), real.isFocus());
 	}
 	
 	/**
@@ -20,6 +23,7 @@ public interface IKeyReleaseListener extends IKeyListener {
 	 * @param keyCode 被按下的按键
 	 * @param isFocus 该控件是否获得焦点
 	 */
-	void release(int keyCode, boolean isFocus);
+	@Nonnull
+	IDataReader release(int keyCode, boolean isFocus);
 	
 }

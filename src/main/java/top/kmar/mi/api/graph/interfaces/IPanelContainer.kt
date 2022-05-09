@@ -1,5 +1,6 @@
 package top.kmar.mi.api.graph.interfaces
 
+import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.graph.listeners.IListener
@@ -28,8 +29,13 @@ interface IPanelContainer : IPanel {
         forEach { it.onRemoveFromContainer(father) }
     }
 
-    override fun activeListener(clazz: Class<out IListener>, data: IListenerData) {
-        forEach { it.activeListener(clazz, data) }
+    override fun activeListener(clazz: Class<out IListener>, data: IListenerData, writer: IDataWriter) {
+        forEach {
+            val op = ByteDataOperator()
+            it.activeListener(clazz, data, op)
+            writer.writeBoolean(op.isNotEmpty)
+            if (op.isNotEmpty) writer.writeData(op)
+        }
     }
 
     override fun send(writer: IDataWriter): Boolean {

@@ -1,5 +1,6 @@
 package top.kmar.mi.api.graph.utils
 
+import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.graph.interfaces.IPanel
 import top.kmar.mi.api.graph.interfaces.IPanelContainer
 import top.kmar.mi.api.graph.listeners.IListener
@@ -26,8 +27,8 @@ open class GeneralPanel : IPanel {
         listenerList.removeListener(clazz)
     }
 
-    override fun activeListener(clazz: Class<out IListener>, data: IListenerData) {
-        listenerList(clazz, data)
+    override fun activeListener(clazz: Class<out IListener>, data: IListenerData, writer: IDataWriter) {
+        listenerList(clazz, data, writer)
     }
 
 }
