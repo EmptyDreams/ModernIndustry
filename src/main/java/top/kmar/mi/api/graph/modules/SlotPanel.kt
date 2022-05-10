@@ -71,6 +71,9 @@ class SlotPanelClient(
                 color = Color(55, 55, 55)
                 drawLine(0, 0, size.width - 1, 0)
                 drawLine(0, 1, 0, size.height - 2)
+                color = Color.WHITE
+                drawLine(1, size.height - 1, size.width - 1, size.height - 1)
+                drawLine(size.width - 1, 1, size.width - 1, size.height - 2)
             }
         }
 
