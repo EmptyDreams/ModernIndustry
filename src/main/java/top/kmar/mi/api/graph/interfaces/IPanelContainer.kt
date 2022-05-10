@@ -14,7 +14,7 @@ import top.kmar.mi.api.graph.listeners.IListenerData
 interface IPanelContainer : IPanel {
 
     /** 添加一个slot */
-    fun addSlotToContainer(slotIn: Slot): Slot
+    fun addSlot(creater: (Int) -> Slot): Slot
 
     /** 添加一个控件 */
     fun add(pane: IPanel)

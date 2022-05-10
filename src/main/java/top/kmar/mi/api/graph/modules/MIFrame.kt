@@ -21,8 +21,8 @@ open class MIFrame : Container(), IPanelContainer {
 
     override fun canInteractWith(playerIn: EntityPlayer) = true
 
-    override fun addSlotToContainer(slotIn: Slot): Slot {
-        return super.addSlotToContainer(slotIn)
+    override fun addSlot(creater: (Int) -> Slot): Slot {
+        return super.addSlotToContainer(creater(inventorySlots.size))
     }
 
     override fun add(pane: IPanel) = panelsManager.add(pane)

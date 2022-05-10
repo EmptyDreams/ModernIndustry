@@ -2,6 +2,8 @@ package top.kmar.mi.api.graph.utils.managers
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import net.minecraft.client.renderer.texture.TextureUtil
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.gui.client.RuntimeTexture
 import top.kmar.mi.api.utils.data.math.Size2D
 import java.awt.Graphics
@@ -12,6 +14,7 @@ import java.io.Closeable
  * 管理材质缓存
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 class TextureCacheManager(private val builder: (Size2D, Graphics) -> Unit) : Closeable {
 
     private val cacheMap = Object2ObjectOpenHashMap<Size2D, RuntimeTexture>()

@@ -13,14 +13,15 @@ import java.util.*
  * 通用[IPanelContainer]
  * @author EmptyDreams
  */
-open class PanelManager : IPanelContainer, GeneralPanel() {
+open class PanelManager(private var index: Int) : IPanelContainer, GeneralPanel() {
 
     private val container = LinkedList<IPanel>()
     private var slotList: MutableList<Slot>? = LinkedList()
 
-    override fun addSlotToContainer(slotIn: Slot): Slot {
-        slotList!!.add(slotIn)
-        return slotIn
+    override fun addSlot(creater: (Int) -> Slot): Slot {
+        val slot = creater(index++)
+        slotList!!.add(slot)
+        return slot
     }
 
     override fun add(pane: IPanel) {
@@ -38,7 +39,7 @@ open class PanelManager : IPanelContainer, GeneralPanel() {
     override fun onAdd2Container(father: IPanelContainer) {
         super<GeneralPanel>.onAdd2Container(father)
         super<IPanelContainer>.onAdd2Container(father)
-        slotList!!.forEach { father.addSlotToContainer(it) }
+        slotList!!.forEach { slot -> father.addSlot { slot } }
         slotList = null
     }
 
