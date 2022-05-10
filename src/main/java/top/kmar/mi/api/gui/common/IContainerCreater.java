@@ -14,26 +14,26 @@ import javax.annotation.Nonnull;
  * @author EmptyDreams
  */
 public interface IContainerCreater {
-	
-	/**
-	 * 创建一个MIFrame对象
-	 * @param world 所在世界
-	 * @param player 玩家对象
-	 * @param pos 方块坐标
-	 * @return 一个完成创建的完整对象
-	 */
-	@Nonnull
-	MIFrame createService(World world, EntityPlayer player, BlockPos pos);
-	
-	/**
-	 * 创建一个MIFrameClient的客户端对象
-	 * @param world 所在世界
-	 * @param player 玩家对象
-	 * @param pos 方块坐标
-	 * @return 一个完成创建的完整对象
-	 */
-	@Nonnull
-	@SideOnly(Side.CLIENT)
-	StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos);
-	
+    
+    /**
+     * 创建一个MIFrame对象
+     * @param world 所在世界
+     * @param player 玩家对象
+     * @param pos 方块坐标
+     * @return 一个完成创建的完整对象
+     */
+    @Nonnull
+    MIFrame createService(World world, EntityPlayer player, BlockPos pos);
+    
+    /**
+     * 创建一个MIFrameClient的客户端对象
+     * @param world 所在世界
+     * @param player 玩家对象
+     * @param pos 方块坐标
+     * @return 一个完成创建的完整对象
+     */
+    @Nonnull
+    @SideOnly(Side.CLIENT)
+    StaticFrameClient createClient(World world, EntityPlayer player, BlockPos pos);
+    
 }
