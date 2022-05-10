@@ -1,5 +1,6 @@
 package top.kmar.mi.api.graph.interfaces
 
+import net.minecraft.inventory.Slot
 import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
@@ -11,6 +12,9 @@ import top.kmar.mi.api.graph.listeners.IListenerData
  * @author EmptyDreams
  */
 interface IPanelContainer : IPanel {
+
+    /** 添加一个slot */
+    fun addSlotToContainer(slotIn: Slot): Slot
 
     /** 添加一个控件 */
     fun add(pane: IPanel)

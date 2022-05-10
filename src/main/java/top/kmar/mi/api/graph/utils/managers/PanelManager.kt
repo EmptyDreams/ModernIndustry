@@ -1,5 +1,6 @@
 package top.kmar.mi.api.graph.utils.managers
 
+import net.minecraft.inventory.Slot
 import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.graph.interfaces.IPanel
 import top.kmar.mi.api.graph.interfaces.IPanelContainer
@@ -15,6 +16,12 @@ import java.util.*
 open class PanelManager : IPanelContainer, GeneralPanel() {
 
     private val container = LinkedList<IPanel>()
+    private var slotList: MutableList<Slot>? = LinkedList()
+
+    override fun addSlotToContainer(slotIn: Slot): Slot {
+        slotList!!.add(slotIn)
+        return slotIn
+    }
 
     override fun add(pane: IPanel) {
         container.add(pane)
@@ -31,6 +38,8 @@ open class PanelManager : IPanelContainer, GeneralPanel() {
     override fun onAdd2Container(father: IPanelContainer) {
         super<GeneralPanel>.onAdd2Container(father)
         super<IPanelContainer>.onAdd2Container(father)
+        slotList!!.forEach { father.addSlotToContainer(it) }
+        slotList = null
     }
 
     override fun onRemoveFromContainer(father: IPanelContainer) {
