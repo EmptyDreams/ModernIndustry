@@ -10,6 +10,7 @@ import top.kmar.mi.api.graph.utils.GuiPainter
 import top.kmar.mi.api.graph.utils.managers.TextureCacheManager
 import top.kmar.mi.api.utils.data.math.Size2D
 import java.awt.Color
+import java.awt.Graphics
 
 /**
  * 服务端[Slot]控件
@@ -67,8 +68,12 @@ class SlotPanelClient(
         val fillColor = Color(139, 139, 139)
         val lightBorderColor: Color = Color.WHITE
         val darkBorderColor = Color(55, 55, 55)
-        
-        private val cacheManager = TextureCacheManager { size, graphics ->
+
+        private val cacheManager = TextureCacheManager(SlotPanelClient::drawTexture)
+
+        fun createTexture(size: Size2D) = cacheManager[size]
+
+        fun drawTexture(size: Size2D, graphics: Graphics) {
             with(graphics) {
                 color = fillColor
                 fillRect(0, 0, size.width, size.height)
@@ -80,8 +85,6 @@ class SlotPanelClient(
                 drawLine(size.width - 1, 1, size.width - 1, size.height - 2)
             }
         }
-
-        fun createTexture(size: Size2D) = cacheManager[size]
 
     }
 }

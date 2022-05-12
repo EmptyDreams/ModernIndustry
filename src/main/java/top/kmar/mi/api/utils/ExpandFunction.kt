@@ -30,6 +30,21 @@ import java.nio.charset.StandardCharsets
 import kotlin.math.abs
 import kotlin.math.sqrt
 
+/** 拷贝Stack并将拷贝后的Stack的count修改为指定值 */
+fun ItemStack.copy(count: Int): ItemStack {
+    val result = copy()
+    result.count = count
+    return result
+}
+
+/** 判断当前Stack能否和指定的Stack合并 */
+fun ItemStack.checkMerge(that: ItemStack): Boolean {
+    if (isEmpty || that.isEmpty) return true
+    if (!isItemEqualIgnoreDurability(that)) return false
+    if (hasSubtypes && metadata != that.metadata) return false
+    return ItemStack.areItemStackTagsEqual(this, that)
+}
+
 /**
  * 装载材质
  * @receiver [ITextureObject]
