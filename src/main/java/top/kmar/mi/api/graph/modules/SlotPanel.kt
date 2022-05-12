@@ -64,14 +64,18 @@ class SlotPanelClient(
 
     companion object {
 
+        val fillColor = Color(139, 139, 139)
+        val lightBorderColor: Color = Color.WHITE
+        val darkBorderColor = Color(55, 55, 55)
+        
         private val cacheManager = TextureCacheManager { size, graphics ->
             with(graphics) {
-                color = Color(139, 139, 139)
+                color = fillColor
                 fillRect(0, 0, size.width, size.height)
-                color = Color(55, 55, 55)
+                color = darkBorderColor
                 drawLine(0, 0, size.width - 1, 0)
                 drawLine(0, 1, 0, size.height - 2)
-                color = Color.WHITE
+                color = lightBorderColor
                 drawLine(1, size.height - 1, size.width - 1, size.height - 1)
                 drawLine(size.width - 1, 1, size.width - 1, size.height - 2)
             }
