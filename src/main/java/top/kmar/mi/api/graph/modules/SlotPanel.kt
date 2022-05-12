@@ -19,8 +19,7 @@ import java.awt.Graphics
 class SlotPanel(
     val x: Int,
     var y: Int,
-    val width: Int,
-    val height: Int,
+    val length: Int,
     private val slotCreater: (SlotPanel, Int) -> Slot
 ) : GeneralPanel() {
 
@@ -43,9 +42,9 @@ class SlotPanel(
  */
 @SideOnly(Side.CLIENT)
 class SlotPanelClient(
-    x: Int, y: Int, width: Int, height: Int,
+    x: Int, y: Int, length: Int,
     private val slotCreater: (SlotPanelClient, Int) -> Slot
-) : GeneralPanelClient(x, y, width, height) {
+) : GeneralPanelClient(x, y, length, length) {
 
     private var slot: Slot? = null
 

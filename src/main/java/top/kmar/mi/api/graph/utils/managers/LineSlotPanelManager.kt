@@ -100,9 +100,11 @@ class LineSlotPanelManagerClient(
     start: Int, amount: Int, slotCreater: (LineSlotPanelManager, Int) -> Slot,
     override val x: Int,
     override val y: Int,
-    override val width: Int,
-    override val height: Int
+    length: Int
 ) : LineSlotPanelManager(start, amount, slotCreater), IPanelClient {
+
+    override val height = length
+    override val width = length * amount
 
     override fun paint(painter: GuiPainter) {
         val texture = createTexture(size).bindTexture()
