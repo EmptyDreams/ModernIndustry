@@ -28,6 +28,12 @@ class ExpandTextureCacheManager<T>(
         }
     }
 
+    operator fun set(size: Size2D, data: T, texture: RuntimeTexture) {
+        val key = Key(size, data)
+        cacheMap[key]?.deleteGlTexture()
+        cacheMap[key] = texture
+    }
+
     override fun close() {
         for ((_, texture) in cacheMap) {
             texture.deleteGlTexture()

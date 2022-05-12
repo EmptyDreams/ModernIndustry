@@ -28,6 +28,11 @@ class TextureCacheManager(private val builder: (Size2D, Graphics) -> Unit) : Clo
         }
     }
 
+    operator fun set(size: Size2D, texture: RuntimeTexture) {
+        cacheMap[size]?.deleteGlTexture()
+        cacheMap[size] = texture
+    }
+
     override fun close() {
         for ((_, value) in cacheMap) {
             value.deleteGlTexture()
