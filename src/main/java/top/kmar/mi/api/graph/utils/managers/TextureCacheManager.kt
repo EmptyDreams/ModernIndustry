@@ -1,7 +1,6 @@
 package top.kmar.mi.api.graph.utils.managers
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
-import net.minecraft.client.renderer.texture.TextureUtil
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.gui.client.RuntimeTexture
@@ -31,8 +30,9 @@ class TextureCacheManager(private val builder: (Size2D, Graphics) -> Unit) : Clo
 
     override fun close() {
         for ((_, value) in cacheMap) {
-            TextureUtil.deleteTexture(value.glTextureId)
+            value.deleteGlTexture()
         }
+        cacheMap.clear()
     }
 
 }
