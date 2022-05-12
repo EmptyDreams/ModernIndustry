@@ -28,7 +28,7 @@ class BackgroundPanelClient(
 
     companion object {
 
-        private val cache = TextureCacheManager { size, it ->
+        val cache = TextureCacheManager { size, it ->
             paintBlackBorder(size, it)
             paintCenter(size, it)
             paintChunk(size, it)

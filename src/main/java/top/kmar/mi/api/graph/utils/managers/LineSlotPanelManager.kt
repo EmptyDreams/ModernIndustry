@@ -12,6 +12,7 @@ import top.kmar.mi.api.graph.utils.GuiPainter
 import top.kmar.mi.api.utils.checkMerge
 import top.kmar.mi.api.utils.copy
 import top.kmar.mi.api.utils.data.math.Size2D
+import java.awt.Graphics
 import kotlin.math.min
 
 /**
@@ -113,7 +114,11 @@ class LineSlotPanelManagerClient(
 
     companion object {
 
-        private val cacheManager = TextureCacheManager { size, graphics ->
+        val cacheManager = TextureCacheManager(LineSlotPanelManagerClient::drawTexture)
+
+        fun createTexture(size: Size2D) = cacheManager[size]
+
+        fun drawTexture(size: Size2D, graphics: Graphics) {
             val amount = size.width / size.height
             val subSize = Size2D(size.height, size.height)
             for (i in 0 until amount) {
@@ -123,8 +128,6 @@ class LineSlotPanelManagerClient(
                 painter.dispose()
             }
         }
-
-        fun createTexture(size: Size2D) = cacheManager[size]
 
     }
 

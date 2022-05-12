@@ -32,7 +32,7 @@ open class MovableProgressBarPanelClient(
 
     companion object {
 
-        private val srcCacheMap = TextureCacheManager { size, graphics ->
+        val srcCacheMap = TextureCacheManager { size, graphics ->
             with(graphics) {
                 color = Color(139, 139, 139)
                 fillRect(0, 0, size.width, size.height - 1)
@@ -40,7 +40,7 @@ open class MovableProgressBarPanelClient(
                 drawLine(0, size.height - 1, size.width - 1, size.height - 1)
             }
         }
-        private val fillCacheMap = TextureCacheManager { size, graphics ->
+        val fillCacheMap = TextureCacheManager { size, graphics ->
             graphics.color = Color.WHITE
             graphics.fillRect(0, 0, size.width, size.height - 1)
         }

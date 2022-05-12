@@ -68,7 +68,7 @@ class SlotPanelClient(
         val lightBorderColor: Color = Color.WHITE
         val darkBorderColor = Color(55, 55, 55)
 
-        private val cacheManager = TextureCacheManager(SlotPanelClient::drawTexture)
+        val cacheManager = TextureCacheManager(SlotPanelClient::drawTexture)
 
         fun createTexture(size: Size2D) = cacheManager[size]
 
