@@ -27,6 +27,7 @@ class BackgroundPanelClient(
 
     companion object {
 
+        @JvmStatic
         val cacheManager = TextureCacheManager { size, it ->
             paintBlackBorder(size, it)
             paintCenter(size, it)
@@ -34,6 +35,7 @@ class BackgroundPanelClient(
         }
 
         /** 绘制四周黑色边框 */
+        @JvmStatic
         private fun paintBlackBorder(size: Size2D, painter: Graphics) {
             with(painter) {
                 color = Color.BLACK
@@ -51,6 +53,7 @@ class BackgroundPanelClient(
         }
 
         /** 绘制白色和灰色区块 */
+        @JvmStatic
         private fun paintChunk(size: Size2D, painter: Graphics) {
             with(painter) {
                 color = Color.WHITE
@@ -65,6 +68,7 @@ class BackgroundPanelClient(
         }
 
         /** 绘制中央区域 */
+        @JvmStatic
         private fun paintCenter(size: Size2D, painter: Graphics) {
             with(painter) {
                 color = Color(198, 198, 198)

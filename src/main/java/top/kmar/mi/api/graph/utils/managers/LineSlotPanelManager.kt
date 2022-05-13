@@ -107,6 +107,7 @@ class LineSlotPanelManagerClient(
 
     companion object {
 
+        @JvmStatic
         val cacheManager = TextureCacheManager { size, graphics ->
             val amount = size.width / size.height
             val texture = SlotPanelClient.cacheManager[Size2D(size.height, size.height)]

@@ -62,10 +62,17 @@ class SlotPanelClient(
 
     companion object {
 
+        /** 中央填充颜色 */
+        @JvmStatic
         val fillColor = Color(139, 139, 139)
+        /** 左上角边框颜色 */
+        @JvmStatic
         val lightBorderColor: Color = Color.WHITE
+        /** 右下角边框颜色 */
+        @JvmStatic
         val darkBorderColor = Color(55, 55, 55)
 
+        @JvmStatic
         val cacheManager = TextureCacheManager { size, graphics ->
             with(graphics) {
                 color = fillColor
