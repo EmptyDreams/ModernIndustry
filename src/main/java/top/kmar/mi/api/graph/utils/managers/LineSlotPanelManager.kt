@@ -110,9 +110,10 @@ class LineSlotPanelManagerClient(
         @JvmStatic
         val cacheManager = TextureCacheManager { size, graphics ->
             val amount = size.width / size.height
-            val texture = SlotPanelClient.cacheManager[Size2D(size.height, size.height)]
-            for (i in 0 until amount) {
-                texture.drawToGraphics(graphics, i * size.height, 0, 0, 0, size.height, size.height)
+            val length = size.height
+            val texture = SlotPanelClient.cacheManager[Size2D(length, length)]
+            for (x in 0 until amount) {
+                texture.drawToGraphics(graphics, x * length, 0, 0, 0, length, length)
             }
         }
 
