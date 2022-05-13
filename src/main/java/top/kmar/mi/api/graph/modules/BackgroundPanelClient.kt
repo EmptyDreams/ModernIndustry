@@ -5,7 +5,6 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graph.utils.GeneralPanelClient
 import top.kmar.mi.api.graph.utils.GuiPainter
 import top.kmar.mi.api.graph.utils.managers.TextureCacheManager
-import top.kmar.mi.api.gui.client.RuntimeTexture
 import top.kmar.mi.api.utils.data.math.Size2D
 import java.awt.Color
 import java.awt.Graphics
@@ -20,7 +19,7 @@ class BackgroundPanelClient(
 ) : GeneralPanelClient(x, y, width, height) {
 
     override fun paint(painter: GuiPainter) {
-        val texture = getTexture(width, height).bindTexture()
+        val texture = cacheManager[size].bindTexture()
         painter.drawTexture(0, 0, width, height, texture)
     }
 
@@ -28,25 +27,10 @@ class BackgroundPanelClient(
 
     companion object {
 
-        val cache = TextureCacheManager { size, it ->
+        val cacheManager = TextureCacheManager { size, it ->
             paintBlackBorder(size, it)
             paintCenter(size, it)
             paintChunk(size, it)
-        }
-
-        fun getTexture(width: Int, height: Int) = getTexture(Size2D(width, height))
-
-        /**
-         * 绘制GUI背景图像
-         *
-         * @param size 图像尺寸（包含边界），长宽均必须大于等于 20
-         *
-         * @throws IllegalArgumentException 如果传入的尺寸过小
-         */
-        fun getTexture(size: Size2D): RuntimeTexture {
-            if (size.width < 20 || size.height < 20)
-                throw IllegalArgumentException("该函数仅能绘制尺寸大于等于20x20的图像")
-            return cache[size]
         }
 
         /** 绘制四周黑色边框 */

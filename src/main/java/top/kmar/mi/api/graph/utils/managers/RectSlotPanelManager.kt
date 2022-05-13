@@ -131,8 +131,8 @@ class RectSlotPanelManagerClient(
 
         val cacheManager = ExpandTextureCacheManager<Int> { size, length, graphics ->
             val yAmount = size.height / length
+            val image = LineSlotPanelManagerClient.cacheManager[Size2D(size.width, length)]
             for (y in 0 until yAmount) {
-                val image = LineSlotPanelManagerClient.cacheManager[Size2D(size.width, length)]
                 image.drawToGraphics(graphics, 0, y * length, 0, 0, size.width, length)
             }
         }

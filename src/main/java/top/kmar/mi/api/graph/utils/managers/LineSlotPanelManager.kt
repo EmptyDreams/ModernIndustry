@@ -12,7 +12,6 @@ import top.kmar.mi.api.graph.utils.GuiPainter
 import top.kmar.mi.api.utils.copy
 import top.kmar.mi.api.utils.data.math.Size2D
 import top.kmar.mi.api.utils.mergeStack
-import java.awt.Graphics
 import kotlin.math.min
 
 /**
@@ -102,24 +101,17 @@ class LineSlotPanelManagerClient(
     override val width = length * amount
 
     override fun paint(painter: GuiPainter) {
-        val texture = createTexture(size).bindTexture()
+        val texture = cacheManager[size].bindTexture()
         painter.drawTexture(0, 0, width, height, texture)
     }
 
     companion object {
 
-        val cacheManager = TextureCacheManager(LineSlotPanelManagerClient::drawTexture)
-
-        fun createTexture(size: Size2D) = cacheManager[size]
-
-        fun drawTexture(size: Size2D, graphics: Graphics) {
+        val cacheManager = TextureCacheManager { size, graphics ->
             val amount = size.width / size.height
-            val subSize = Size2D(size.height, size.height)
+            val texture = SlotPanelClient.cacheManager[Size2D(size.height, size.height)]
             for (i in 0 until amount) {
-                val x = i * size.height
-                val painter = graphics.create(x, 0, size.height, size.height)
-                SlotPanelClient.drawTexture(subSize, painter)
-                painter.dispose()
+                texture.drawToGraphics(graphics, i * size.height, 0, 0, 0, size.height, size.height)
             }
         }
 
