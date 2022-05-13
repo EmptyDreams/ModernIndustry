@@ -9,9 +9,9 @@ import top.kmar.mi.api.graph.interfaces.IPanelContainer
 import top.kmar.mi.api.graph.modules.SlotPanelClient
 import top.kmar.mi.api.graph.utils.GeneralPanel
 import top.kmar.mi.api.graph.utils.GuiPainter
-import top.kmar.mi.api.utils.checkMerge
 import top.kmar.mi.api.utils.copy
 import top.kmar.mi.api.utils.data.math.Size2D
+import top.kmar.mi.api.utils.mergeStack
 import java.awt.Graphics
 import kotlin.math.min
 
@@ -22,14 +22,16 @@ import kotlin.math.min
 open class LineSlotPanelManager(
     /** 起始ID（包含） */
     private val start: Int,
-    /** [Slot]的数量 */
+    /** Slot的数量 */
     val amount: Int,
-    /**
-     * [Slot]构造器
-     *
-     * 其中第二个参数是为[Slot]分配的ID
-     */
-    private val slotCreater: (LineSlotPanelManager, Int) -> Slot
+    /** 左上角的Slot的X轴坐标 */
+    val x: Int,
+    /** 左上角的Slot的Y轴坐标 */
+    val y: Int,
+    /** 每个Slot的大小 */
+    val length: Int,
+    /** Slot构造器，参数是为Slot分配的ID */
+    private val slotCreater: (Int) -> Slot
 ) : GeneralPanel() {
 
     private val slotList = Array<Slot?>(amount) { null }
@@ -37,16 +39,23 @@ open class LineSlotPanelManager(
     val end = start + amount
 
     override fun onAdd2Container(father: IPanelContainer) {
-        if (slotList[0] != null) throw IllegalArgumentException("[SlotPanelManager]不支持重复初始化")
+        if (slotList[0] != null) throw IllegalArgumentException("[${this::class.simpleName}]不支持重复初始化")
         var index = start
         slotList.forEachIndexed { i, _ ->
-            slotList[i] = father.addSlot { slotCreater(this, index++) }
+            slotList[i] = father.addSlot { slotCreater(index++) }
         }
     }
 
     override fun onRemoveFromContainer(father: IPanelContainer) {
-        throw UnsupportedOperationException("[SlotPanel]不支持移除")
+        throw UnsupportedOperationException("[${this::class.simpleName}]不支持移除")
     }
+
+    /**
+     * 获取指定位置的slot
+     * @param index slot在总列表中的下标（[start] <= index < [end]）
+     * @return 没有经过保护性拷贝的内部值
+     */
+    operator fun get(index: Int): Slot = slotList[index + start]!!
 
     /**
      * 尝试放置指定的物品
@@ -54,18 +63,12 @@ open class LineSlotPanelManager(
      * @return 没有成功放入的物品
      */
     fun putStack(stack: ItemStack): ItemStack {
-        var count = stack.count
+        val cpy = stack.copy()
         for (slot in slotList) {
-            if (count == 0) break
-            val slotStack = slot!!.stack
-            if (!slotStack.checkMerge(stack)) continue
-            val maxCount = min(slotStack.maxStackSize, slot.slotStackLimit) - slotStack.count
-            val extract = min(maxCount, count)
-            if (extract == 0) continue
-            count -= extract
-            slot.putStack(stack.copy(extract))
+            if (cpy.isEmpty) break
+            cpy.count -= slot!!.mergeStack(cpy)
         }
-        return stack.copy(count)
+        return cpy
     }
 
     /**
@@ -83,13 +86,6 @@ open class LineSlotPanelManager(
         return stack.copy(count)
     }
 
-    /**
-     * 获取指定位置的slot
-     * @param index slot在总列表中的下标（[start] <= index < [end]）
-     * @return 没有经过保护性拷贝的内部值
-     */
-    operator fun get(index: Int): Slot = slotList[index + start]!!
-
 }
 
 /**
@@ -98,11 +94,9 @@ open class LineSlotPanelManager(
  */
 @SideOnly(Side.CLIENT)
 class LineSlotPanelManagerClient(
-    start: Int, amount: Int, slotCreater: (LineSlotPanelManager, Int) -> Slot,
-    override val x: Int,
-    override val y: Int,
-    length: Int
-) : LineSlotPanelManager(start, amount, slotCreater), IPanelClient {
+    start: Int, amount: Int, slotCreater: (Int) -> Slot,
+    x: Int, y: Int, length: Int
+) : LineSlotPanelManager(start, amount, x, y, length, slotCreater), IPanelClient {
 
     override val height = length
     override val width = length * amount

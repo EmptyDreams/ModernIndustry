@@ -5,6 +5,7 @@ import net.minecraft.block.BlockLiquid
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.texture.ITextureObject
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.inventory.Slot
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -26,9 +27,27 @@ import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.utils.data.math.Point3D
 import top.kmar.mi.api.utils.data.math.Range3D
+import java.lang.Integer.max
 import java.nio.charset.StandardCharsets
 import kotlin.math.abs
+import kotlin.math.min
 import kotlin.math.sqrt
+
+/**
+ * 尝试将输入的[ItemStack]放入[Slot]中
+ *
+ * 函数不会修改传入的stack
+ *
+ * @return 成功放入的物品数量
+ */
+fun Slot.mergeStack(stack: ItemStack): Int {
+    val slotStack = this.stack
+    if (!slotStack.checkMerge(stack)) return 0
+    val maxCount = min(slotStack.maxStackSize, slotStackLimit) - slotStack.count
+    val extract = max(min(maxCount, stack.count), 0)
+    if (extract != 0) putStack(stack.copy(extract))
+    return extract
+}
 
 /** 拷贝Stack并将拷贝后的Stack的count修改为指定值 */
 fun ItemStack.copy(count: Int): ItemStack {

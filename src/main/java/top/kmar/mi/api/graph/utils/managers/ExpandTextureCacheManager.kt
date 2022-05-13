@@ -8,10 +8,17 @@ import java.awt.image.BufferedImage
 import java.io.Closeable
 
 /**
- *
+ * 带自定义参数的材质缓存管理
  * @author EmptyDreams
  */
 class ExpandTextureCacheManager<T>(
+    /**
+     * 材质绘制器，在第一次加载材质时绘制材质
+     *
+     * 参数列表从左到右依次是：材质大小、自定义参数、画笔
+     *
+     * 其中画笔不需要手动调用[Graphics.dispose]
+     */
     private val painter: (Size2D, T, Graphics) -> Unit
 ) : Closeable {
 

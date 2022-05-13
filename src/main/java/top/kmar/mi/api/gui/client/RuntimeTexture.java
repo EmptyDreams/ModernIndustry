@@ -10,6 +10,7 @@ import top.kmar.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
@@ -141,6 +142,26 @@ public class RuntimeTexture extends AbstractTexture {
     public void drawToFrame(int x, int y, int tX, int tY, int width, int height) {
         Gui.drawModalRectWithCustomSizedTexture(x, y, tX, tY,
                 width, height, getTextureWidth(), getTextureHeight());
+    }
+    
+    /**
+     * 绘制材质到{@link Graphics}
+     * @param graphics 画笔
+     * @param x 绘制区域的X轴坐标
+     * @param y 绘制区域的Y轴坐标
+     * @param u 要绘制的材质的X轴坐标
+     * @param v 要绘制的材质的Y轴坐标
+     * @param width 绘制宽度
+     * @param height 绘制高度
+     */
+    public void drawToGraphics(Graphics graphics,
+                               int x, int y, int u, int v, int width, int height) {
+        if (u == 0 && v == 0 && width == getTextureWidth() && height == getTextureHeight()) {
+            graphics.drawImage(image, x, y, null);
+        } else {
+            Image content = image.getSubimage(u, v, width, height);
+            graphics.drawImage(content, x, y, null);
+        }
     }
     
 }
