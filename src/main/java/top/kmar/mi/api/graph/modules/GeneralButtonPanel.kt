@@ -8,7 +8,7 @@ import top.kmar.mi.api.graph.utils.GeneralPanel
  * 不可见的按钮
  * @author EmptyDreams
  */
-open class GeneralPanel(
+open class GeneralButtonPanel(
     /** 鼠标点击时触发 */
     private var action: (Float, Float) -> Unit
 ) : GeneralPanel() {
