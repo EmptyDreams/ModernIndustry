@@ -2,9 +2,12 @@
   "version": 1,
   "fileList": {
     "FixedProgressBar": {
-      "modid": "mi",
       "image": "textures/gui/panels.png",
       "json": "textures/gui/FixedProgressBar"
+    },
+    "GeneralButton": {
+      "image": "textures/gui/panels.png",
+      "json": "textures/gui/GeneralButton.json"
     }
   }
 }

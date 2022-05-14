@@ -25,7 +25,7 @@ object GuiTextureJsonRegister {
     fun registryJson(key: ResourceLocation) {
         val json = readJson(key)
         when (val version = json.get("version").asInt) {
-            1 -> parseJsonV1(json.getAsJsonObject("fileList"))
+            1 -> TextureParserV1.parse(json["fileList"].asJsonObject, key.resourceDomain, valueMap)
             else -> throw IllegalArgumentException("不支持的Json版本：$version")
         }
     }
@@ -36,14 +36,6 @@ object GuiTextureJsonRegister {
      */
     @JvmStatic
     operator fun get(modid: String, key: String) = valueMap[modid]!![key]
-
-    private fun parseJsonV1(json: JsonObject) {
-        val modid = json.get("modid").asString
-        val image = json.get("image").asString
-        val option = ResourceLocation(modid, json.get("json").asString)
-        val property = readJson(option)
-        TextureParserV1.parse(property, image, valueMap.computeIfAbsent(modid) { TextureInfo(modid) })
-    }
 
     private val parse = JsonParser()
 
