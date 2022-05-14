@@ -1,6 +1,5 @@
 package top.kmar.mi.api.graph.listeners
 
-import top.kmar.mi.api.dor.interfaces.IDataReader
 import javax.annotation.Nonnull
 
 /**
@@ -10,6 +9,6 @@ import javax.annotation.Nonnull
 interface IListener {
 
     @Nonnull
-    operator fun invoke(data: IListenerData): IDataReader
+    operator fun invoke(data: IListenerData): IListenerData
 
 }

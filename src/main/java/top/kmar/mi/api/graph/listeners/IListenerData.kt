@@ -9,6 +9,9 @@ import top.kmar.mi.api.dor.interfaces.IDataWriter
  */
 interface IListenerData {
 
+    /** 是否需要网络同步 */
+    val isNeedSync: Boolean
+
     /** 将数据写入到[IDataWriter] */
     fun wirte(writer: IDataWriter)
 

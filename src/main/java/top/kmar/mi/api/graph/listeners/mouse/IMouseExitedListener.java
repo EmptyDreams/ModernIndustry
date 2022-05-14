@@ -1,7 +1,7 @@
 package top.kmar.mi.api.graph.listeners.mouse;
 
-import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.graph.listeners.IListenerData;
+import top.kmar.mi.api.graph.listeners.MouseData;
 
 import javax.annotation.Nonnull;
 
@@ -12,10 +12,10 @@ import javax.annotation.Nonnull;
 public interface IMouseExitedListener extends IMouseListener {
 	
 	@Nonnull
-	IDataReader mouseExited();
+	MouseData mouseExited();
 	
 	@Override
-	default IDataReader invoke(IListenerData data) {
+	default MouseData invoke(IListenerData data) {
 		return mouseExited();
 	}
 	

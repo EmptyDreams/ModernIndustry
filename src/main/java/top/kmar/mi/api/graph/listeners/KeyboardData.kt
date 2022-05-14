@@ -5,7 +5,8 @@ import top.kmar.mi.api.dor.interfaces.IDataWriter
 
 data class KeyboardData(
     var code: Int,
-    var isFocus: Boolean
+    var isFocus: Boolean,
+    override val isNeedSync: Boolean
 ) : IListenerData {
 
     override fun wirte(writer: IDataWriter) {

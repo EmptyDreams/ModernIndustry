@@ -1,6 +1,7 @@
 package top.kmar.mi.api.dor
 
 import it.unimi.dsi.fastutil.bytes.ByteList
+import top.kmar.mi.api.dor.interfaces.IDataReader
 
 /**
  * 带锁的读写器
@@ -10,6 +11,13 @@ import it.unimi.dsi.fastutil.bytes.ByteList
  * @author EmptyDreams
  */
 class LockDataOperator : ByteDataOperator {
+
+    companion object {
+
+        @JvmStatic
+        val EMPTY_READER: IDataReader = LockDataOperator(0).apply { lock() }
+
+    }
 
     /** 是否上锁 */
     private var locked = false
