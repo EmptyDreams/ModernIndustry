@@ -15,7 +15,7 @@ import top.kmar.mi.api.graph.utils.managers.PanelManager
  * GUI窗体
  * @author EmptyDreams
  */
-open class MIFrame : Container(), IPanelContainer {
+open class FramePanel : Container(), IPanelContainer {
 
     private val panelsManager = PanelManager()
 
