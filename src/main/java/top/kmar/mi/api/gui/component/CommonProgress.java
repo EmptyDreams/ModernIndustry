@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
 import top.kmar.mi.api.utils.StringUtil;
 import top.kmar.mi.api.graph.utils.GuiPainter;
-import top.kmar.mi.api.gui.client.RuntimeTexture;
+import top.kmar.mi.api.graph.utils.textures.RuntimeTexture;
 
 import javax.annotation.Nonnull;
 import java.util.function.BiConsumer;

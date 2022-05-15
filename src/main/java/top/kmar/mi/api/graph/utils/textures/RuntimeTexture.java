@@ -1,4 +1,4 @@
-package top.kmar.mi.api.gui.client;
+package top.kmar.mi.api.graph.utils.textures;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.gui.Gui;
@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
+import top.kmar.mi.api.gui.client.ImageData;
 import top.kmar.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;

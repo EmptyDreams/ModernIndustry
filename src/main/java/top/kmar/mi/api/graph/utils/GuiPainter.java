@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import top.kmar.mi.api.graph.interfaces.IPanelClient;
-import top.kmar.mi.api.gui.client.RuntimeTexture;
+import top.kmar.mi.api.graph.utils.textures.RuntimeTexture;
 import top.kmar.mi.api.gui.component.interfaces.IComponent;
 
 import javax.annotation.Nonnull;

@@ -11,7 +11,7 @@ import top.kmar.mi.api.gui.component.interfaces.IComponentManager;
 import top.kmar.mi.api.utils.StringUtil;
 import top.kmar.mi.api.graph.utils.GuiPainter;
 import top.kmar.mi.api.gui.client.ImageData;
-import top.kmar.mi.api.gui.client.RuntimeTexture;
+import top.kmar.mi.api.graph.utils.textures.RuntimeTexture;
 
 import static top.kmar.mi.api.gui.client.ImageData.SLOT;
 

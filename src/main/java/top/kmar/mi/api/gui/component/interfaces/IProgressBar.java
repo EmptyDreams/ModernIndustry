@@ -1,6 +1,6 @@
 package top.kmar.mi.api.gui.component.interfaces;
 
-import top.kmar.mi.api.gui.client.RuntimeTexture;
+import top.kmar.mi.api.graph.utils.textures.RuntimeTexture;
 
 import static top.kmar.mi.api.gui.client.ImageData.PROGRESS_BAR;
 

@@ -3,7 +3,7 @@ package top.kmar.mi.api.graph.utils.managers
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.gui.client.RuntimeTexture
+import top.kmar.mi.api.graph.utils.textures.RuntimeTexture
 import top.kmar.mi.api.utils.data.math.Size2D
 import java.awt.Graphics
 import java.awt.image.BufferedImage

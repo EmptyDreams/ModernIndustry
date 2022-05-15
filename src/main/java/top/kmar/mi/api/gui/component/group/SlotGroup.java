@@ -9,7 +9,7 @@ import top.kmar.mi.api.craftguide.ItemElement;
 import top.kmar.mi.api.gui.component.interfaces.IComponentManager;
 import top.kmar.mi.api.graph.utils.GuiPainter;
 import top.kmar.mi.api.gui.client.ImageData;
-import top.kmar.mi.api.gui.client.RuntimeTexture;
+import top.kmar.mi.api.graph.utils.textures.RuntimeTexture;
 import top.kmar.mi.api.gui.component.MComponent;
 import top.kmar.mi.api.gui.component.MSlot;
 

@@ -7,6 +7,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import top.kmar.mi.ModernIndustry;
 import top.kmar.mi.api.exception.TransferException;
+import top.kmar.mi.api.graph.utils.textures.RuntimeTexture;
 
 import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;

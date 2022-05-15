@@ -7,7 +7,7 @@ import top.kmar.mi.api.graph.listeners.mouse.IMouseLocationListener;
 import top.kmar.mi.api.graph.listeners.mouse.IMouseReleasedListener;
 import top.kmar.mi.api.graph.utils.GuiPainter;
 import top.kmar.mi.api.gui.client.ImageData;
-import top.kmar.mi.api.gui.client.RuntimeTexture;
+import top.kmar.mi.api.graph.utils.textures.RuntimeTexture;
 
 import javax.annotation.Nonnull;
 
