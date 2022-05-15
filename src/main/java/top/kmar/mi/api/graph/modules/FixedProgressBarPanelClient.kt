@@ -18,22 +18,21 @@ class FixedProgressBarPanelClient(
 }) {
 
     enum class Style(
-        modid: String,
         srcKey: String,
         fillKey: String,
         private val painter: (FixedProgressBarPanelClient, GuiPainter) -> Unit
     ) {
 
         ARROW_RIGHT(
-            MODID, "arrowRightSrc", "arrowRightFill",
+            "arrowRightSrc", "arrowRightFill",
             FixedProgressBarPanelClient::paintHorizontal
         ),
         ARROW_DOWN(
-            MODID, "arrowDownSrc", "arrowDownFill",
+            "arrowDownSrc", "arrowDownFill",
             FixedProgressBarPanelClient::paintVertical
         ),
         FIRE(
-            MODID, "fireSrc", "fireFill",
+            "fireSrc", "fireFill",
             FixedProgressBarPanelClient::paintVerticalOppose
         );
 
@@ -47,8 +46,8 @@ class FixedProgressBarPanelClient(
         val fillTexture: ITextureObject
 
         init {
-            val (srcTexture, srcRect) = GuiTextureJsonRegister[modid, srcKey]
-            val (fillTexture, fillRect) = GuiTextureJsonRegister[modid, fillKey]
+            val (srcTexture, srcRect) = GuiTextureJsonRegister[MODID, srcKey]
+            val (fillTexture, fillRect) = GuiTextureJsonRegister[MODID, fillKey]
             width = srcRect.width
             height = srcRect.height
             srcX = srcRect.x
