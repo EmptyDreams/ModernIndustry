@@ -5,6 +5,7 @@ import top.kmar.mi.api.dor.interfaces.IDataWriter
 
 /**
  * 鼠标事件数据
+ * @author EmptyDreams
  */
 data class MouseData(
     /** X轴坐标，小于`0`表明数据无效 */
@@ -15,7 +16,8 @@ data class MouseData(
     private var code: Int = Int.MIN_VALUE,
     /** 鼠标滚轮滚动，为[Int.MIN_VALUE]表明数据无效 */
     private var wheel: Int = Int.MIN_VALUE,
-    override val isNeedSync: Boolean = true
+    /** 是否需要进行网络同步 */
+    override val isSync: Boolean = true
 ) : IListenerData {
 
     companion object {
@@ -51,7 +53,7 @@ data class MouseData(
     fun hasCode() = code != Int.MIN_VALUE
     fun hasWheel() = wheel != Int.MIN_VALUE
 
-    override fun wirte(writer: IDataWriter) {
+    override fun write(writer: IDataWriter) {
         var flag = 0
         if (hasMouseX()) flag = flag or 1
         if (hasMouseY()) flag = flag or 2
