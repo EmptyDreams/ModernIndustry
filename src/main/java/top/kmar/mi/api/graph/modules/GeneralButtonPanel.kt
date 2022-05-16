@@ -10,6 +10,7 @@ import top.kmar.mi.api.graph.utils.GuiPainter
 import top.kmar.mi.api.graph.utils.json.GuiTextureJsonRegister
 import top.kmar.mi.api.graph.utils.managers.TextureCacheManager
 import top.kmar.mi.api.utils.data.math.Size2D
+import java.awt.Graphics
 
 /**
  * 不可见的按钮
@@ -38,7 +39,10 @@ open class GeneralButtonPanel(
 open class GeneralButtonPanelClient(
     x: Int, y: Int, width: Int, height: Int,
     action: (Float, Float) -> Unit,
-    private val painter: (Size2D, ButtonState, GuiPainter) -> Unit
+    /** 普通材质管理器 */
+    private val generalImage: TextureCacheManager = generalCacheManager,
+    /** 鼠标覆盖时的材质管理器 */
+    private val coveredImage: TextureCacheManager = coveredCacheManager
 ) : InvisibleButtonPanelClient(x, y, width, height, action) {
 
     /** 鼠标是否在按钮上方 */
@@ -57,8 +61,9 @@ open class GeneralButtonPanelClient(
     }
 
     override fun paint(painter: GuiPainter) {
-        val state = if (isMouseIn) ButtonState.COVERED else ButtonState.GENERAL
-        this.painter(size, state, painter)
+        val manager = if (isMouseIn) coveredImage else generalImage
+        val texture = manager[size].bindTexture()
+        painter.drawTexture(0, 0, width, height, texture)
     }
 
     companion object {
@@ -66,20 +71,21 @@ open class GeneralButtonPanelClient(
         private const val GENERAL_KEY = "general"
         private const val COVERED_KEY = "covered"
 
-        val generalCacheManager = TextureCacheManager { size, graphics ->
-            val (srcImage, rect) = GuiTextureJsonRegister[MODID, GENERAL_KEY]
-            TODO("等待补充")
+        val generalCacheManager =
+            TextureCacheManager { size, graphics -> drawTexture(GENERAL_KEY, size, graphics) }
+
+        val coveredCacheManager =
+            TextureCacheManager { size, graphics -> drawTexture(COVERED_KEY, size, graphics) }
+
+        private fun drawTexture(key: String, size: Size2D, graphics: Graphics) {
+            val (srcImage, rect) = GuiTextureJsonRegister[MODID, key]
+            for (x in 0 until size.width step rect.width) {
+                for (y in 0 until size.height step rect.height) {
+                    srcImage.draw(graphics, x, y)
+                }
+            }
         }
 
     }
-
-}
-
-enum class ButtonState {
-
-    /** 被鼠标覆盖 */
-    COVERED,
-    /** 普通情况 */
-    GENERAL
 
 }
