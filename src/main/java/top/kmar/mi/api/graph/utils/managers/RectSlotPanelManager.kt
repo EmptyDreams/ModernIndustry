@@ -9,6 +9,7 @@ import top.kmar.mi.api.graph.utils.GuiPainter
 import top.kmar.mi.api.utils.copy
 import top.kmar.mi.api.utils.data.math.Point2D
 import top.kmar.mi.api.utils.data.math.Size2D
+import top.kmar.mi.api.utils.flipIf
 import top.kmar.mi.api.utils.mergeStack
 import kotlin.math.min
 
@@ -45,9 +46,11 @@ open class RectSlotPanelManager(
     override fun onAdd2Container(father: IPanelContainer) {
         if (slotList[0][0] != null) throw IllegalArgumentException("[${this::class.simpleName}]不支持重复初始化")
         var index = start
-        for (y in slotList.indices) {
-            for (x in slotList[y].indices) {
-                slotList[y][x] = father.addSlot { slotCreater(Point2D(x, y), index++) }
+        for (i in slotList.indices) {
+            for (k in slotList[y].indices) {
+                slotList[y][x] = father.addSlot {
+                    slotCreater(Point2D(x + i * length, y + k * length), index++)
+                }
             }
         }
     }
@@ -77,12 +80,13 @@ open class RectSlotPanelManager(
     /**
      * 尝试放置指定的物品
      * @param stack 要合并的物品（函数内部不会修改该值）
+     * @param flip 是否反向遍历
      * @return 没有成功放入的物品
      */
-    fun putStack(stack: ItemStack): ItemStack {
+    fun putStack(stack: ItemStack, flip: Boolean): ItemStack {
         val cpy = stack.copy()
-        o@ for (list in slotList) {
-            for (slot in list) {
+        o@ for (list in slotList flipIf flip) {
+            for (slot in list flipIf flip) {
                 if (cpy.isEmpty) break@o
                 cpy.count -= slot!!.mergeStack(cpy)
             }

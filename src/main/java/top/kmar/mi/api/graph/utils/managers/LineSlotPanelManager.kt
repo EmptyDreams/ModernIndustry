@@ -10,7 +10,9 @@ import top.kmar.mi.api.graph.modules.SlotPanelClient
 import top.kmar.mi.api.graph.utils.GeneralPanel
 import top.kmar.mi.api.graph.utils.GuiPainter
 import top.kmar.mi.api.utils.copy
+import top.kmar.mi.api.utils.data.math.Point2D
 import top.kmar.mi.api.utils.data.math.Size2D
+import top.kmar.mi.api.utils.flipIf
 import top.kmar.mi.api.utils.mergeStack
 import kotlin.math.min
 
@@ -30,7 +32,7 @@ open class LineSlotPanelManager(
     /** 每个Slot的大小 */
     val length: Int,
     /** Slot构造器，参数是为Slot分配的ID */
-    private val slotCreater: (Int) -> Slot
+    private val slotCreater: (Point2D, Int) -> Slot
 ) : GeneralPanel() {
 
     private val slotList = Array<Slot?>(amount) { null }
@@ -40,8 +42,8 @@ open class LineSlotPanelManager(
     override fun onAdd2Container(father: IPanelContainer) {
         if (slotList[0] != null) throw IllegalArgumentException("[${this::class.simpleName}]不支持重复初始化")
         var index = start
-        slotList.forEachIndexed { i, _ ->
-            slotList[i] = father.addSlot { slotCreater(index++) }
+        for (i in slotList.indices) {
+            slotList[i] = father.addSlot { slotCreater(Point2D(x + i * length, y), index++) }
         }
     }
 
@@ -59,11 +61,12 @@ open class LineSlotPanelManager(
     /**
      * 尝试放置指定的物品
      * @param stack 要合并的物品（函数内部不会修改该值）
+     * @param flip 是否反向遍历
      * @return 没有成功放入的物品
      */
-    fun putStack(stack: ItemStack): ItemStack {
+    fun putStack(stack: ItemStack, flip: Boolean): ItemStack {
         val cpy = stack.copy()
-        for (slot in slotList) {
+        for (slot in slotList flipIf flip) {
             if (cpy.isEmpty) break
             cpy.count -= slot!!.mergeStack(cpy)
         }
@@ -93,7 +96,7 @@ open class LineSlotPanelManager(
  */
 @SideOnly(Side.CLIENT)
 class LineSlotPanelManagerClient(
-    start: Int, amount: Int, slotCreater: (Int) -> Slot,
+    start: Int, amount: Int, slotCreater: (Point2D, Int) -> Slot,
     x: Int, y: Int, length: Int
 ) : LineSlotPanelManager(start, amount, x, y, length, slotCreater), IPanelClient {
 
