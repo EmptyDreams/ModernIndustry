@@ -8,13 +8,13 @@ import top.kmar.mi.api.dor.interfaces.IDataWriter
  */
 data class MouseData(
     /** X轴坐标，小于`0`表明数据无效 */
-    private var mouseX: Float,
+    private var mouseX: Float = -1f,
     /** Y轴坐标，小于`0`表明数据无效 */
-    private var mouseY: Float,
+    private var mouseY: Float = -1f,
     /** 鼠标按键种类，为[Int.MIN_VALUE]表明数据无效] */
-    private var code: Int,
+    private var code: Int = Int.MIN_VALUE,
     /** 鼠标滚轮滚动，为[Int.MIN_VALUE]表明数据无效 */
-    private var wheel: Int,
+    private var wheel: Int = Int.MIN_VALUE,
     override val isNeedSync: Boolean = true
 ) : IListenerData {
 

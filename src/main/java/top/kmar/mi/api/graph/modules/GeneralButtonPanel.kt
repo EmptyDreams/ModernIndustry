@@ -1,3 +1,5 @@
+@file:Suppress("LeakingThis")
+
 package top.kmar.mi.api.graph.modules
 
 import top.kmar.mi.ModernIndustry.MODID
@@ -13,20 +15,22 @@ import top.kmar.mi.api.utils.data.math.Size2D
 import java.awt.Graphics
 
 /**
- * 不可见的按钮
+ * 按钮的通用服务端实现
  * @author EmptyDreams
  */
 open class GeneralButtonPanel(
-    /** 鼠标点击时触发 */
+    /** 鼠标左键点击时触发的任务 */
     private var action: (Float, Float) -> Unit
 ) : GeneralPanel() {
 
     init {
-        @Suppress("LeakingThis")
-        registryListener(IMouseActionListener { x, y ->
-            action(x, y)
+        //保持客户端服务端事件序列一致
+        registryListener(IMouseActionListener { mouseX, mouseY ->
+            action(mouseX, mouseY)
             MouseData.EMPTY_DATA
         })
+        registryListener(IMouseEnteredListener { _, _ -> MouseData.EMPTY_DATA })
+        registryListener(IMouseExitedListener { MouseData.EMPTY_DATA })
     }
 
     fun setAction(action: (Float, Float) -> Unit) {
@@ -35,15 +39,21 @@ open class GeneralButtonPanel(
 
 }
 
-@Suppress("LeakingThis")
+/**
+ * 通用按钮的客户端实现
+ * @author EmptyDreams
+ */
 open class GeneralButtonPanelClient(
     x: Int, y: Int, width: Int, height: Int,
+    /** 鼠标事件是否同步到服务端 */
+    isSync: Boolean,
+    /** 鼠标左键点击时触发的任务 */
     action: (Float, Float) -> Unit,
     /** 普通材质管理器 */
     private val generalImage: TextureCacheManager = generalCacheManager,
     /** 鼠标覆盖时的材质管理器 */
     private val coveredImage: TextureCacheManager = coveredCacheManager
-) : InvisibleButtonPanelClient(x, y, width, height, action) {
+) : InvisibleButtonPanelClient(x, y, width, height, isSync, action) {
 
     /** 鼠标是否在按钮上方 */
     var isMouseIn = false

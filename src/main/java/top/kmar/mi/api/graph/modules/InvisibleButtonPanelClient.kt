@@ -11,6 +11,9 @@ import top.kmar.mi.api.graph.utils.GuiPainter
  */
 open class InvisibleButtonPanelClient(
     x: Int, y: Int, width: Int, height: Int,
+    /** 鼠标事件是否同步到服务端 */
+    private val isSync: Boolean,
+    /** 鼠标左键点击触发的任务 */
     private var action: (Float, Float) -> Unit
 ) : GeneralPanelClient(x, y, width, height) {
 
@@ -18,7 +21,8 @@ open class InvisibleButtonPanelClient(
         @Suppress("LeakingThis")
         registryListener(IMouseActionListener { mouseX, mouseY ->
             action(mouseX, mouseY)
-            MouseData(mouseX, mouseY, Int.MIN_VALUE, Int.MIN_VALUE, true)
+            if (isSync) MouseData(mouseX, mouseY)
+            else MouseData.EMPTY_DATA
         })
     }
 
