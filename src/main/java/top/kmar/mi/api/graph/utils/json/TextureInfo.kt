@@ -1,9 +1,8 @@
 package top.kmar.mi.api.graph.utils.json
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
-import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.texture.ITextureObject
 import net.minecraft.util.ResourceLocation
+import top.kmar.mi.api.graph.utils.textures.SubStaticTexture
 import top.kmar.mi.api.utils.data.math.Rect2D
 
 /**
@@ -12,18 +11,16 @@ import top.kmar.mi.api.utils.data.math.Rect2D
  */
 class TextureInfo(val modid: String) {
 
-    private val textureMap = Object2ObjectOpenHashMap<String, Pair<ITextureObject, Rect2D>>()
+    private val textureMap = Object2ObjectOpenHashMap<String, Pair<SubStaticTexture, Rect2D>>()
 
     fun write(image: String, key: String, value: Rect2D) {
-        textureMap[key] = Pair(getTexture(image), value)
+        val texture = SubStaticTexture(buildLocation(image), value.x, value.y, value.width, value.height)
+        textureMap[key] = Pair(texture, value)
     }
 
-    fun read(key: String): Pair<ITextureObject, Rect2D> = textureMap[key]!!
+    fun read(key: String): Pair<SubStaticTexture, Rect2D> = textureMap[key]!!
 
     operator fun get(key: String) = read(key)
-
-    fun getTexture(image: String): ITextureObject =
-        Minecraft.getMinecraft().textureManager.getTexture(buildLocation(image))
 
     fun buildLocation(path: String) = ResourceLocation(modid, path)
 
