@@ -58,6 +58,9 @@ open class LineSlotPanelManager(
      */
     operator fun get(index: Int): Slot = slotList[index + start]!!
 
+    /** 判断指定下标是否在管理器范围内 */
+    operator fun contains(index: Int) = index in start until end
+
     /**
      * 尝试放置指定的物品
      * @param stack 要合并的物品（函数内部不会修改该值）
@@ -96,8 +99,9 @@ open class LineSlotPanelManager(
  */
 @SideOnly(Side.CLIENT)
 class LineSlotPanelManagerClient(
-    start: Int, amount: Int, slotCreater: (Point2D, Int) -> Slot,
-    x: Int, y: Int, length: Int
+    start: Int, amount: Int,
+    x: Int, y: Int, length: Int,
+    slotCreater: (Point2D, Int) -> Slot,
 ) : LineSlotPanelManager(start, amount, x, y, length, slotCreater), IPanelClient {
 
     override val height = length

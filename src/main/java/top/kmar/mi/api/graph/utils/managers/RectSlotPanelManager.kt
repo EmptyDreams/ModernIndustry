@@ -2,6 +2,8 @@ package top.kmar.mi.api.graph.utils.managers
 
 import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graph.interfaces.IPanelClient
 import top.kmar.mi.api.graph.interfaces.IPanelContainer
 import top.kmar.mi.api.graph.utils.GeneralPanel
@@ -67,7 +69,7 @@ open class RectSlotPanelManager(
     /** 通过坐标获取下标 */
     fun getIndex(x: Int, y: Int) = this[x, y].slotIndex
 
-    /** 通过下标获取坐标 */
+    /** 通过下标（相对于总体）获取坐标 */
     fun getLocation(index: Int): Point2D {
         if (index !in this)
             throw IllegalArgumentException("输入的index[$index]不在当前管理器范围[$start, $end)内")
@@ -117,6 +119,7 @@ open class RectSlotPanelManager(
  * 多行[Slot]组的客户端实现
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 class RectSlotPanelManagerClient(
     start: Int, xAmount: Int, yAmount: Int,
     x: Int, y: Int, length: Int,
