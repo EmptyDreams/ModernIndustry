@@ -43,7 +43,12 @@ open class LineSlotPanelManager(
         if (slotList[0] != null) throw IllegalArgumentException("[${this::class.simpleName}]不支持重复初始化")
         var index = start
         for (i in slotList.indices) {
-            slotList[i] = father.addSlot { slotCreater(Point2D(x + i * length, y), index++) }
+            slotList[i] = father.addSlot {
+                slotCreater(Point2D(x + i * length, y), index++)
+            }.apply {
+                xPos += x
+                yPos += y
+            }
         }
     }
 

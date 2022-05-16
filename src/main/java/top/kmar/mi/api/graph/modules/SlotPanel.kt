@@ -54,6 +54,8 @@ class SlotPanelClient(
     override fun onAdd2Container(father: IPanelContainer) {
         if (slot != null) throw UnsupportedOperationException("[SlotPanelClient]不允许重复初始化")
         slot = father.addSlot { slotCreater(this, it) }
+        slot!!.xPos += x
+        slot!!.yPos += y
     }
 
     override fun onRemoveFromContainer(father: IPanelContainer) {

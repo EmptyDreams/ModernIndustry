@@ -52,6 +52,9 @@ open class RectSlotPanelManager(
             for (k in slotList[y].indices) {
                 slotList[y][x] = father.addSlot {
                     slotCreater(Point2D(x + i * length, y + k * length), index++)
+                }.apply {
+                    xPos += x
+                    yPos += y
                 }
             }
         }

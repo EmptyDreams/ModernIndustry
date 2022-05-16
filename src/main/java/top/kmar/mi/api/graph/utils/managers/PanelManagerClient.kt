@@ -1,5 +1,6 @@
 package top.kmar.mi.api.graph.utils.managers
 
+import net.minecraft.inventory.Slot
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.dor.interfaces.IDataWriter
@@ -18,10 +19,19 @@ import java.util.*
  */
 @SideOnly(Side.CLIENT)
 open class PanelManagerClient(
-    x: Int, y: Int, width: Int, height: Int
+    x: Int, y: Int, width: Int, height: Int, var index: Int
 ) : IPanelContainerClient, GeneralPanelClient(x, y, width, height) {
 
     private val container = LinkedList<IPanelClient>()
+    private var slotList: MutableList<Slot>? = LinkedList()
+
+    override fun addSlot(creater: (Int) -> Slot): Slot {
+        val slot = creater(index++)
+        slot.xPos += x
+        slot.yPos += y
+        slotList!!.add(slot)
+        return slot
+    }
 
     override fun add(pane: IPanel) {
         container.add(pane as IPanelClient)
@@ -38,6 +48,8 @@ open class PanelManagerClient(
     override fun onAdd2Container(father: IPanelContainer) {
         super<GeneralPanelClient>.onAdd2Container(father)
         super<IPanelContainerClient>.onAdd2Container(father)
+        slotList!!.forEach { slot -> father.addSlot { slot } }
+        slotList = null
     }
 
     override fun onRemoveFromContainer(father: IPanelContainer) {
