@@ -26,9 +26,10 @@ open class PanelManagerClient(
     private var slotList: MutableList<Slot>? = LinkedList()
 
     override fun addSlot(creater: (Int) -> Slot): Slot {
-        val slot = creater(index++)
-        slot.xPos += x
-        slot.yPos += y
+        val slot = creater(index++).apply {
+            xPos += x
+            yPos += y
+        }
         slotList!!.add(slot)
         return slot
     }

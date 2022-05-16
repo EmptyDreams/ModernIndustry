@@ -17,7 +17,7 @@ import top.kmar.mi.api.graph.utils.managers.PanelManager
  */
 open class FramePanel : Container(), IPanelContainer {
 
-    private val panelsManager = PanelManager(0)
+    private val panelsManager = PanelManager(0, 0, 0)
 
     override fun canInteractWith(playerIn: EntityPlayer) = true
 

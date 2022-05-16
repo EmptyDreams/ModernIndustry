@@ -13,13 +13,19 @@ import java.util.*
  * 通用[IPanelContainer]
  * @author EmptyDreams
  */
-open class PanelManager(private var index: Int) : IPanelContainer, GeneralPanel() {
+open class PanelManager(
+    val x: Int, val y: Int,
+    private var index: Int
+) : IPanelContainer, GeneralPanel() {
 
     private val container = LinkedList<IPanel>()
     private var slotList: MutableList<Slot>? = LinkedList()
 
     override fun addSlot(creater: (Int) -> Slot): Slot {
-        val slot = creater(index++)
+        val slot = creater(index++).apply {
+            xPos += x
+            yPos += y
+        }
         slotList!!.add(slot)
         return slot
     }
