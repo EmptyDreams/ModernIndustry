@@ -14,6 +14,7 @@ import top.kmar.mi.api.graph.utils.managers.LineSlotPanelManager
 import top.kmar.mi.api.graph.utils.managers.LineSlotPanelManagerClient
 import top.kmar.mi.api.graph.utils.managers.RectSlotPanelManager
 import top.kmar.mi.api.graph.utils.managers.RectSlotPanelManagerClient
+import kotlin.LazyThreadSafetyMode.PUBLICATION
 
 /**
  * 玩家背包控件
@@ -30,14 +31,20 @@ open class PlayerBackpackPanel(
     val length = 18
 
     /** 背包栏起始ID */
-    protected open val backpackSlots = RectSlotPanelManager(
-        slotStartIndex + 9, 9, 3, x, y, length) { pos, id ->
-        SlotHandle(player.inventory, id, pos.x, pos.y, id - 9 - slotStartIndex)
+    protected open val backpackSlots by lazy(PUBLICATION) {
+        RectSlotPanelManager(
+            slotStartIndex + 9, 9, 3, x, y, length
+        ) { pos, id ->
+            SlotHandle(player.inventory, id, pos.x, pos.y, id - 9 - slotStartIndex)
+        }
     }
     /** 快捷栏起始ID */
-    protected open val lnkSlots = LineSlotPanelManager(
-        slotStartIndex, 9, x, 18 * 3 + 5 + y, length) { pos, id ->
-        SlotHandle(player.inventory, id, pos.x, pos.y, id - slotStartIndex)
+    protected open val lnkSlots by lazy(PUBLICATION) {
+        LineSlotPanelManager(
+            slotStartIndex, 9, x, 18 * 3 + 5 + y, length
+        ) { pos, id ->
+            SlotHandle(player.inventory, id, pos.x, pos.y, id - slotStartIndex)
+        }
     }
 
     override fun onAdd2Container(father: IPanelContainer) {
