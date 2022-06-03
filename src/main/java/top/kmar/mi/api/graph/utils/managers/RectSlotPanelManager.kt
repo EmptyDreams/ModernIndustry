@@ -6,6 +6,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graph.interfaces.IPanelClient
 import top.kmar.mi.api.graph.interfaces.IPanelContainer
+import top.kmar.mi.api.graph.interfaces.ISlotPanel
 import top.kmar.mi.api.graph.utils.GeneralPanel
 import top.kmar.mi.api.graph.utils.GuiPainter
 import top.kmar.mi.api.utils.copy
@@ -40,7 +41,7 @@ open class RectSlotPanelManager(
      * 2. [Int] - 为当前Slot分配的ID
      */
     private val slotCreater: (Point2D, Int) -> Slot
-) : GeneralPanel() {
+) : GeneralPanel(), ISlotPanel {
 
     private val slotList = Array<Array<Slot?>>(yAmount) { Array(xAmount) { null } }
     val end = start + xAmount * yAmount
@@ -66,8 +67,10 @@ open class RectSlotPanelManager(
 
     operator fun get(x: Int, y: Int): Slot = slotList[y][x]!!
 
+    operator fun get(pos: Point2D): Slot = this[pos.x, pos.y]
+
     /** 判断指定下标是否在当前管理器的范围内 */
-    operator fun contains(index: Int): Boolean = index in start until end
+    override operator fun contains(index: Int): Boolean = index in start until end
 
     /** 通过坐标获取下标 */
     fun getIndex(x: Int, y: Int) = this[x, y].slotIndex
@@ -88,7 +91,7 @@ open class RectSlotPanelManager(
      * @param flip 是否反向遍历
      * @return 没有成功放入的物品
      */
-    fun putStack(stack: ItemStack, flip: Boolean): ItemStack {
+    override fun putStack(stack: ItemStack, flip: Boolean): ItemStack {
         val cpy = stack.copy()
         o@ for (list in slotList flipIf flip) {
             for (slot in list flipIf flip) {
@@ -99,20 +102,13 @@ open class RectSlotPanelManager(
         return cpy
     }
 
-    /**
-     * 尝试取出指定位置的物品
-     * @return 经过保护性拷贝的结果
-     */
-    fun fetchStack(x: Int, y: Int, maxCount: Int = Int.MAX_VALUE): ItemStack {
-        if (x !in 0 until xAmount)
-            throw IndexOutOfBoundsException("x[$x]超出了指定范围：[0, $xAmount)")
-        if (y !in 0 until yAmount)
-            throw IndexOutOfBoundsException("y[$y]超出了指定范围：[0, $yAmount)")
-        val slot = this[x, y]
+    override fun fetchStack(index: Int, maxCount: Int): ItemStack {
+        if (index !in this) throw IndexOutOfBoundsException("index[$index]超出了指定范围[$start, $end)")
+        val pos = getLocation(index)
+        val slot = this[pos]
         val stack = slot.stack
         val count = min(stack.count, maxCount)
-        if (count != 0)
-            slot.putStack(stack.copy(stack.count - count))
+        if (count != 0) slot.putStack(stack.copy(stack.count - count))
         return stack.copy(count)
     }
 

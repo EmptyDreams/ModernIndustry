@@ -1,14 +1,19 @@
 package top.kmar.mi.api.graph.modules
 
 import net.minecraft.inventory.Slot
+import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graph.interfaces.IPanelContainer
+import top.kmar.mi.api.graph.interfaces.ISlotPanel
 import top.kmar.mi.api.graph.utils.GeneralPanel
 import top.kmar.mi.api.graph.utils.GeneralPanelClient
 import top.kmar.mi.api.graph.utils.GuiPainter
 import top.kmar.mi.api.graph.utils.managers.TextureCacheManager
+import top.kmar.mi.api.utils.copy
+import top.kmar.mi.api.utils.mergeStack
 import java.awt.Color
+import kotlin.math.min
 
 /**
  * 服务端[Slot]控件
@@ -19,7 +24,7 @@ class SlotPanel(
     var y: Int,
     val length: Int,
     private val slotCreater: (SlotPanel, Int) -> Slot
-) : GeneralPanel() {
+) : GeneralPanel(), ISlotPanel {
 
     private var slot: Slot? = null
 
@@ -30,6 +35,17 @@ class SlotPanel(
 
     override fun onRemoveFromContainer(father: IPanelContainer) {
         throw UnsupportedOperationException("[SlotPanel]不支持移除")
+    }
+
+    override operator fun contains(index: Int) = index == slot!!.slotIndex
+
+    override fun putStack(stack: ItemStack, flip: Boolean) = stack.copy(slot!!.mergeStack(stack))
+
+    override fun fetchStack(index: Int, maxCount: Int): ItemStack {
+        val stack = slot!!.stack
+        val count = min(stack.count, maxCount)
+        if (count != 0) slot!!.putStack(stack.copy(stack.count - count))
+        return stack.copy(count)
     }
 
 }

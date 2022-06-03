@@ -8,6 +8,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graph.interfaces.IPanelClient
 import top.kmar.mi.api.graph.interfaces.IPanelContainer
+import top.kmar.mi.api.graph.interfaces.ISlotPanel
 import top.kmar.mi.api.graph.utils.GeneralPanel
 import top.kmar.mi.api.graph.utils.GuiPainter
 import top.kmar.mi.api.graph.utils.managers.LineSlotPanelManager
@@ -26,7 +27,7 @@ open class PlayerBackpackPanel(
     val player: EntityPlayer,
     /** slot起始分配ID */
     val slotStartIndex: Int
-) : GeneralPanel() {
+) : GeneralPanel(), ISlotPanel {
 
     val length = 18
 
@@ -56,13 +57,15 @@ open class PlayerBackpackPanel(
         throw UnsupportedOperationException("[${this::class.simpleName}]不支持移除")
     }
 
+    override operator fun contains(index: Int) = index in 0 until 36
+
     /**
      * 放入物品到玩家背包或快捷操作栏
      * @param stack 要放入的物品（内部不会修改）
      * @param flip 是否反向遍历，为`true`时先从快捷操作栏末端开始，否则从背包起始端开始
      * @return 未成功放入的物品
      */
-    fun putStack(stack: ItemStack, flip: Boolean): ItemStack {
+    override fun putStack(stack: ItemStack, flip: Boolean): ItemStack {
         return if (flip) {
             var surplus = putStack2Lnk(stack, true)
             if (!surplus.isEmpty) surplus = putStack2Backpack(surplus, false)
@@ -80,7 +83,7 @@ open class PlayerBackpackPanel(
      * @param maxCount 最多取出的量
      * @throws IndexOutOfBoundsException 如果输入的下标不在管理器管理范围内
      */
-    fun fetchStack(index: Int, maxCount: Int = Int.MAX_VALUE): ItemStack {
+    override fun fetchStack(index: Int, maxCount: Int): ItemStack {
         if (index in backpackSlots) return fetchStackFromBackpack(index, maxCount)
         if (index in lnkSlots) return fetchStackFromLnk(index, maxCount)
         throw IndexOutOfBoundsException("输入的下标[$index]不在管理器的管理范围内")
@@ -99,21 +102,12 @@ open class PlayerBackpackPanel(
     fun putStack2Lnk(stack: ItemStack, flip: Boolean) = lnkSlots.putStack(stack, flip)
 
     /**
-     * 通过坐标从玩家背包取出物品
-     * @see RectSlotPanelManager.fetchStack
-     */
-    fun fetchStackFromBackpack(x: Int, y: Int, maxCount: Int = Int.MAX_VALUE) =
-        backpackSlots.fetchStack(x, y, maxCount)
-
-    /**
      * 通过下标（相对于总体）从玩家背包取出物品
      * @see RectSlotPanelManager.getLocation
      * @see RectSlotPanelManager.fetchStack
      */
-    fun fetchStackFromBackpack(index: Int, maxCount: Int = Int.MAX_VALUE): ItemStack {
-        val pos = backpackSlots.getLocation(index)
-        return backpackSlots.fetchStack(pos.x, pos.y, maxCount)
-    }
+    fun fetchStackFromBackpack(index: Int, maxCount: Int = Int.MAX_VALUE) =
+        backpackSlots.fetchStack(index, maxCount)
 
     /**
      * 通过下标（相对于总体）从玩家快捷操作栏取出物品
