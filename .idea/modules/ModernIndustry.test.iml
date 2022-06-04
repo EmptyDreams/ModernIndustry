@@ -93,6 +93,7 @@
               </args>
             </stringArg>
             <stringArg name="destination" arg="$MODULE_DIR$/../../build/classes/kotlin/test" />
+            <stringArg name="jvmTarget" arg="1.8" />
             <stringArg name="moduleName" arg="mi" />
             <stringArg name="apiVersion" arg="1.6" />
             <stringArg name="languageVersion" arg="1.6" />
