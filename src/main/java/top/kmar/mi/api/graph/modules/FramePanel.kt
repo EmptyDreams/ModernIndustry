@@ -21,8 +21,7 @@ import java.util.*
 open class FramePanel : Container(), IPanelContainer {
 
     private val panelsManager = PanelManager(0, 0, 0)
-    private val slotPanelList =
-        TreeSet(Comparator<ISlotPanel> { o1, o2 -> o1.compareStartIndexTo(o2) })
+    private val slotPanelList = TreeSet<ISlotPanel> { o1, o2 -> o1.startIndex.compareTo(o2.startIndex) }
 
     override fun canInteractWith(playerIn: EntityPlayer) = true
 

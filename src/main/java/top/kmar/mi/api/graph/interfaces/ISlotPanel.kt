@@ -8,6 +8,8 @@ import net.minecraft.item.ItemStack
  */
 interface ISlotPanel : IPanel {
 
+    val startIndex: Int
+
     /** 判断指定下标是否在当前管理器的范围内 */
     operator fun contains(index: Int): Boolean
 
@@ -26,11 +28,5 @@ interface ISlotPanel : IPanel {
      * @return 成功取出的物品
      */
     fun fetchStack(index: Int, maxCount: Int = Int.MAX_VALUE): ItemStack
-
-    /**
-     * 比较两个[ISlotPanel]的起始下标（0 < 1）
-     * @see Comparable.compareTo
-     */
-    fun compareStartIndexTo(that: ISlotPanel): Int
 
 }

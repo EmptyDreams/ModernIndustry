@@ -27,6 +27,8 @@ class SlotPanel(
 ) : GeneralPanel(), ISlotPanel {
 
     private var slot: Slot? = null
+    override val startIndex: Int
+        get() = slot!!.slotIndex
 
     override fun onAdd2Container(father: IPanelContainer) {
         if (slot != null) throw UnsupportedOperationException("[SlotPanel]不允许重复初始化")

@@ -22,11 +22,11 @@ import kotlin.math.min
  */
 open class RectSlotPanelManager(
     /** ID分配起始位置 */
-    val start: Int,
+    override val startIndex: Int,
     /** X轴方向上Slot的数量 */
     val xAmount: Int,
     /** Y轴方向上Slot的数量 */
-    val yAmount: Int,
+    yAmount: Int,
     /** 左上角的Slot的X轴坐标 */
     val x: Int,
     /** 左上角Slot的Y轴坐标 */
@@ -44,11 +44,12 @@ open class RectSlotPanelManager(
 ) : GeneralPanel(), ISlotPanel {
 
     private val slotList = Array<Array<Slot?>>(yAmount) { Array(xAmount) { null } }
-    val end = start + xAmount * yAmount
+    @Suppress("LeakingThis")
+    val end = startIndex + xAmount * yAmount
 
     override fun onAdd2Container(father: IPanelContainer) {
         if (slotList[0][0] != null) throw IllegalArgumentException("[${this::class.simpleName}]不支持重复初始化")
-        var index = start
+        var index = startIndex
         for (i in slotList.indices) {
             for (k in slotList[y].indices) {
                 slotList[y][x] = father.addSlot {
@@ -70,16 +71,13 @@ open class RectSlotPanelManager(
     operator fun get(pos: Point2D): Slot = this[pos.x, pos.y]
 
     /** 判断指定下标是否在当前管理器的范围内 */
-    override operator fun contains(index: Int): Boolean = index in start until end
-
-    /** 通过坐标获取下标 */
-    fun getIndex(x: Int, y: Int) = this[x, y].slotIndex
+    override operator fun contains(index: Int): Boolean = index in startIndex until end
 
     /** 通过下标（相对于总体）获取坐标 */
     fun getLocation(index: Int): Point2D {
         if (index !in this)
-            throw IllegalArgumentException("输入的index[$index]不在当前管理器范围[$start, $end)内")
-        val innerIndex = index - start
+            throw IllegalArgumentException("输入的index[$index]不在当前管理器范围[$startIndex, $end)内")
+        val innerIndex = index - startIndex
         val x = innerIndex % xAmount
         val y = innerIndex / xAmount
         return Point2D(x, y)
@@ -103,7 +101,7 @@ open class RectSlotPanelManager(
     }
 
     override fun fetchStack(index: Int, maxCount: Int): ItemStack {
-        if (index !in this) throw IndexOutOfBoundsException("index[$index]超出了指定范围[$start, $end)")
+        if (index !in this) throw IndexOutOfBoundsException("index[$index]超出了指定范围[$startIndex, $end)")
         val pos = getLocation(index)
         val slot = this[pos]
         val stack = slot.stack

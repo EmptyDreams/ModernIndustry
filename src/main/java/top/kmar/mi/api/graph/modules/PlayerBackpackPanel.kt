@@ -30,6 +30,7 @@ open class PlayerBackpackPanel(
 ) : GeneralPanel(), ISlotPanel {
 
     val length = 18
+    override val startIndex = 0
 
     /** 背包栏起始ID */
     protected open val backpackSlots by lazy(PUBLICATION) {
