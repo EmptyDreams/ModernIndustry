@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack
  * （可能）含有Slot的控件
  * @author EmptyDreams
  */
-interface ISlotPanel {
+interface ISlotPanel : IPanel {
 
     /** 判断指定下标是否在当前管理器的范围内 */
     operator fun contains(index: Int): Boolean
@@ -26,5 +26,11 @@ interface ISlotPanel {
      * @return 成功取出的物品
      */
     fun fetchStack(index: Int, maxCount: Int = Int.MAX_VALUE): ItemStack
+
+    /**
+     * 比较两个[ISlotPanel]的起始下标（0 < 1）
+     * @see Comparable.compareTo
+     */
+    fun compareStartIndexTo(that: ISlotPanel): Int
 
 }

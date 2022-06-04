@@ -61,6 +61,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
         placer: EntityLivingBase, hand: EnumHand
     ): IBlockState = defaultState
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun getStateFromMeta(meta: Int): IBlockState = defaultState
 
     override fun getMetaFromState(state: IBlockState) = 0
@@ -69,10 +70,13 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
 
     override fun createNewTileEntity(worldIn: World, meta: Int) = EUFluidPump()
 
-    override fun isOpaqueCube(state: IBlockState?) = false
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun isOpaqueCube(state: IBlockState): Boolean = false
 
-    override fun isFullCube(state: IBlockState?) = false
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun isFullCube(state: IBlockState): Boolean = false
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun neighborChanged(
         state: IBlockState, world: World, pos: BlockPos,
         blockIn: Block, fromPos: BlockPos
@@ -102,6 +106,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
         }
     }
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun getActualState(state: IBlockState, worldIn: IBlockAccess, pos: BlockPos): IBlockState {
         val te = worldIn.getTileEntity(pos)
         @Suppress("DEPRECATION")
