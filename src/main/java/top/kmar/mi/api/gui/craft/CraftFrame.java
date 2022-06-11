@@ -34,7 +34,6 @@ import java.util.List;
 
 import static top.kmar.mi.api.gui.component.ButtonComponent.Style.TRIANGLE_LEFT;
 import static top.kmar.mi.api.gui.component.ButtonComponent.Style.TRIANGLE_RIGHT;
-import static top.kmar.mi.api.gui.craft.CraftFrameUtil.removeItemStack;
 import static top.kmar.mi.api.utils.data.enums.OperateResult.FAIL;
 import static top.kmar.mi.api.utils.data.enums.OperateResult.SUCCESS;
 
@@ -152,12 +151,6 @@ public class CraftFrame extends MIFrame {
 		operator.writeVarInt(index);
 		IMessage message = PlayerMessage.instance().create(operator, addition);
 		MessageSender.sendToServer(message);
-	}
-	
-	/** 强制重新初始化缓存 */
-	public void reInit() {
-		index = -1;
-		init();
 	}
 	
 	/** 切换到下一个合成表并刷新显示 */

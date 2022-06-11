@@ -6,6 +6,7 @@ import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.graph.listeners.IListener
 import top.kmar.mi.api.graph.listeners.IListenerData
+import top.kmar.mi.api.net.message.panel.PanelAddition
 
 /**
  * 具有管理控件能力的控件接口
@@ -48,8 +49,8 @@ interface IPanelContainer : IPanel {
         return result
     }
 
-    override fun receive(reader: IDataReader) {
-        forEach { it.receive(reader) }
+    override fun receive(type: PanelAddition.Type, reader: IDataReader) {
+        forEach { it.receive(type, reader) }
     }
 
 }

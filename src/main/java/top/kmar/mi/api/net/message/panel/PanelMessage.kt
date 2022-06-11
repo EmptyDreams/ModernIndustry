@@ -24,7 +24,7 @@ object PanelMessage : IMessageHandle<PanelAddition, ParseAddition> {
         }
         val addition = PanelAddition()
         addition.readFrom(message)
-        gui.receive(message.readData())
+        gui.receive(addition.type!!, message.readData())
         return result.setParseResult(ParseResultEnum.SUCCESS)
     }
 
@@ -37,7 +37,7 @@ object PanelMessage : IMessageHandle<PanelAddition, ParseAddition> {
             MISysInfo.err("玩家[${player.name}]打开的窗体[${gui::class.simpleName}]没有实现[IPanelContainer]")
             return result.setParseResult(ParseResultEnum.THROW)
         }
-        gui.receive(message.readData())
+        gui.receive(addition.type!!, message.readData())
         return result.setParseResult(ParseResultEnum.SUCCESS)
     }
 

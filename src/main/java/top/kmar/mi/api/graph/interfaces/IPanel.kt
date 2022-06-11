@@ -4,6 +4,7 @@ import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.graph.listeners.IListener
 import top.kmar.mi.api.graph.listeners.IListenerData
+import top.kmar.mi.api.net.message.panel.PanelAddition
 
 /**
  * 所有控件的接口
@@ -61,6 +62,6 @@ interface IPanel {
     fun send(writer: IDataWriter): Boolean = false
 
     /** 接受来自对方端的数据 */
-    fun receive(reader: IDataReader) {}
+    fun receive(type: PanelAddition.Type, reader: IDataReader) {}
 
 }

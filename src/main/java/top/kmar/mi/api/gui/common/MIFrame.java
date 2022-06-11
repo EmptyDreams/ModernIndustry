@@ -278,4 +278,5 @@ public class MIFrame extends Container implements IFrame, IComponentManager {
             if (component.update(id, data)) break;
         }
     }
+    
 }

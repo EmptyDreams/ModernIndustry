@@ -1,9 +1,11 @@
 package top.kmar.mi.api.graph.modules
 
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.inventory.Container
 import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
+import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.graph.interfaces.IPanel
@@ -12,13 +14,17 @@ import top.kmar.mi.api.graph.interfaces.ISlotPanel
 import top.kmar.mi.api.graph.listeners.IListener
 import top.kmar.mi.api.graph.listeners.IListenerData
 import top.kmar.mi.api.graph.utils.managers.PanelManager
+import top.kmar.mi.api.net.handler.MessageSender
+import top.kmar.mi.api.net.message.panel.PanelAddition
+import top.kmar.mi.api.net.message.panel.PanelAddition.Type
+import top.kmar.mi.api.net.message.panel.PanelMessage
 import java.util.*
 
 /**
  * GUI窗体
  * @author EmptyDreams
  */
-open class FramePanel : Container(), IPanelContainer {
+open class FramePanel(val player: EntityPlayer) : Container(), IPanelContainer {
 
     private val panelsManager = PanelManager(0, 0, 0)
     private val slotPanelList = TreeSet<ISlotPanel> { o1, o2 -> o1.startIndex.compareTo(o2.startIndex) }
@@ -50,9 +56,22 @@ open class FramePanel : Container(), IPanelContainer {
         panelsManager.activeListener(clazz, data, writer)
     }
 
+    /** 把数据发送到客户端 */
+    private fun send2Client(`data`: IDataReader, type: Type) {
+        val message = PanelMessage.create(`data`, PanelAddition(type, player))
+        MessageSender.sendToClient(player as EntityPlayerMP, message)
+    }
+
     override fun send(writer: IDataWriter) = panelsManager.send(writer)
 
-    override fun receive(reader: IDataReader) = panelsManager.receive(reader)
+    override fun receive(type: Type, reader: IDataReader) = panelsManager.receive(type, reader)
+
+    override fun detectAndSendChanges() {
+        super.detectAndSendChanges()
+        val writer = ByteDataOperator()
+        val flag = send(writer)
+        if (flag) send2Client(writer, Type.TICK)
+    }
 
     override fun transferStackInSlot(playerIn: EntityPlayer, index: Int): ItemStack {
         var distPanel: ISlotPanel? = null
