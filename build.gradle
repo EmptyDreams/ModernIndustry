@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.6.10'
+    ext.kotlin_version = '1.7.0'
     repositories {
         mavenLocal()
         // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
@@ -103,7 +103,6 @@ jar {
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
-
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"

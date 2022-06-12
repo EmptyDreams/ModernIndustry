@@ -25,8 +25,8 @@ class ListenerManager {
         for (value in listenerList) {
             if (clazz == value.javaClass) {
                 val op = value(data)
-                writer.writeBoolean(op.isNotEmpty)
-                if (op.isNotEmpty) writer.writeData(op)
+                writer.writeBoolean(op.isSync)
+                if (op.isSync) op.write(writer)
             }
         }
     }
