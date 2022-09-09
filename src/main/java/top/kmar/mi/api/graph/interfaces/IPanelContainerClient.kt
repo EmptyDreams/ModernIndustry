@@ -13,7 +13,7 @@ interface IPanelContainerClient : IPanelClient, IPanelContainer {
 
     override fun isClient(): Boolean = true
 
-    override fun forEach(consumer: (IPanel) -> Unit) = forEachClient(consumer)
+    override fun forEachPanels(consumer: (IPanel) -> Unit) = forEachClient(consumer)
 
     fun forEachClient(consumer: (IPanelClient) -> Unit)
 

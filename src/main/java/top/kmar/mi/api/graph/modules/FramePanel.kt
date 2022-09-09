@@ -42,7 +42,7 @@ open class FramePanel(val player: EntityPlayer) : Container(), IPanelContainer {
 
     override fun remove(pane: IPanel) = panelsManager.remove(pane)
 
-    override fun forEach(consumer: (IPanel) -> Unit) = panelsManager.forEach(consumer)
+    override fun forEachPanels(consumer: (IPanel) -> Unit) = panelsManager.forEachPanels(consumer)
 
     override fun registryListener(listener: IListener) = panelsManager.registryListener(listener)
 
@@ -52,8 +52,8 @@ open class FramePanel(val player: EntityPlayer) : Container(), IPanelContainer {
 
     override fun onRemoveFromContainer(father: IPanelContainer) = panelsManager.onRemoveFromContainer(father)
 
-    override fun activeListener(clazz: Class<out IListener>, data: IListenerData, writer: IDataWriter) {
-        panelsManager.activeListener(clazz, data, writer)
+    override fun activeListener(clazz: Class<out IListener>, `data`: IListenerData, writer: IDataWriter) {
+        panelsManager.activeListener(clazz, `data`, writer)
     }
 
     /** 把数据发送到客户端 */
@@ -66,6 +66,17 @@ open class FramePanel(val player: EntityPlayer) : Container(), IPanelContainer {
 
     override fun receive(type: Type, reader: IDataReader) = panelsManager.receive(type, reader)
 
+    /**
+     * 触发指定事件并进行网络通信
+     * @see activeListener
+     */
+    fun activeListenerWithSync(clazz: Class<out IListener>, data: IListenerData) {
+        val writer = ByteDataOperator()
+        activeListener(clazz, data, writer)
+        if (writer.isNotEmpty) send2Client(writer, Type.LISTENER)
+    }
+
+    /** 每Tick触发一次同步 */
     override fun detectAndSendChanges() {
         super.detectAndSendChanges()
         val writer = ByteDataOperator()

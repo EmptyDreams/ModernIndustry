@@ -27,8 +27,8 @@ open class GeneralPanel : IPanel {
         listenerList.removeListener(clazz)
     }
 
-    override fun activeListener(clazz: Class<out IListener>, data: IListenerData, writer: IDataWriter) {
-        listenerList(clazz, data, writer)
+    override fun activeListener(clazz: Class<out IListener>, `data`: IListenerData, writer: IDataWriter) {
+        listenerList(clazz, `data`, writer)
     }
 
 }

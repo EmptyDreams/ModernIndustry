@@ -58,9 +58,9 @@ open class PanelManagerClient(
         super<IPanelContainerClient>.onRemoveFromContainer(father)
     }
 
-    override fun activeListener(clazz: Class<out IListener>, data: IListenerData, writer: IDataWriter) {
-        super<GeneralPanelClient>.activeListener(clazz, data, writer)
-        super<IPanelContainerClient>.activeListener(clazz, data, writer)
+    override fun activeListener(clazz: Class<out IListener>, `data`: IListenerData, writer: IDataWriter) {
+        super<GeneralPanelClient>.activeListener(clazz, `data`, writer)
+        super<IPanelContainerClient>.activeListener(clazz, `data`, writer)
     }
 
 }

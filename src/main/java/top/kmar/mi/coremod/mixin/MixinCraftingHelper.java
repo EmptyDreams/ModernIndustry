@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.apache.commons.io.FilenameUtils;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,8 +34,9 @@ import static net.minecraftforge.common.crafting.CraftingHelper.findFiles;
 @Mixin(CraftingHelper.class)
 public class MixinCraftingHelper {
 	
+	@Final
 	@Shadow(remap = false)
-	private static Gson GSON;
+	public static Gson GSON;
 	
 	/**
 	 * @reason 为了实现MI注册表的自动注册

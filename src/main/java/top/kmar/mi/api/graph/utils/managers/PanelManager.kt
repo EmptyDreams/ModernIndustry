@@ -38,7 +38,7 @@ open class PanelManager(
         container.remove(pane)
     }
 
-    override fun forEach(consumer: (IPanel) -> Unit) {
+    override fun forEachPanels(consumer: (IPanel) -> Unit) {
         container.forEach { consumer(it) }
     }
 
@@ -54,9 +54,9 @@ open class PanelManager(
         super<IPanelContainer>.onRemoveFromContainer(father)
     }
 
-    override fun activeListener(clazz: Class<out IListener>, data: IListenerData, writer: IDataWriter) {
-        super<GeneralPanel>.activeListener(clazz, data, writer)
-        super<IPanelContainer>.activeListener(clazz, data, writer)
+    override fun activeListener(clazz: Class<out IListener>, `data`: IListenerData, writer: IDataWriter) {
+        super<GeneralPanel>.activeListener(clazz, `data`, writer)
+        super<IPanelContainer>.activeListener(clazz, `data`, writer)
     }
 
 }

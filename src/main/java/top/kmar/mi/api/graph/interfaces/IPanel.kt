@@ -46,7 +46,7 @@ interface IPanel {
      * @param data 要出发的事件的附加信息
      * @param writer 要发送到对方端的数据
      */
-    fun activeListener(clazz: Class<out IListener>, data: IListenerData, writer: IDataWriter)
+    fun activeListener(clazz: Class<out IListener>, `data`: IListenerData, writer: IDataWriter)
 
     // ---------- 网络通信 ---------- //
 
