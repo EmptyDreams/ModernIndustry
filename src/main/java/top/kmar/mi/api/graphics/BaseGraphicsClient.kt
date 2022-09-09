@@ -2,12 +2,21 @@ package top.kmar.mi.api.graphics
 
 import net.minecraft.client.gui.inventory.GuiContainer
 import org.lwjgl.input.Keyboard
+import top.kmar.mi.api.graphics.components.Cmpt
+import top.kmar.mi.api.graphics.components.CmptClient
+import top.kmar.mi.api.graphics.utils.GraphicsStyle
+import top.kmar.mi.api.graphics.utils.GuiGraphics
+import java.util.*
 
 /**
  *
  * @author EmptyDreams
  */
-class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventorySlots) {
+class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventorySlots), CmptClient {
+
+    /** 控件列表 */
+    private val cmptList = LinkedList<Cmpt>()
+    /** 注册在GUI上的事件 */
 
     /** 鼠标按下时触发 */
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
@@ -44,6 +53,13 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
         drawDefaultBackground()
         super.drawScreen(mouseX, mouseY, partialTicks)
         renderHoveredToolTip(mouseX, mouseY)
+    }
+
+    override val service = inventorySlots.document
+    override val style = GraphicsStyle()
+
+    override fun render(graphics: GuiGraphics) {
+        TODO("Not yet implemented")
     }
 
 }

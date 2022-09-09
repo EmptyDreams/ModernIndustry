@@ -50,7 +50,7 @@ abstract class Cmpt {
      *
      * 该函数不会抛出任何异常
      */
-    open fun dispatchEvent(name: String, message: ListenerData) {
+    fun dispatchEvent(name: String, message: ListenerData) {
         val listeners = eventMap[name] ?: return
         for (listener in listeners) {
             try {
@@ -69,8 +69,13 @@ abstract class Cmpt {
     }
 
     /** 注册事件 */
-    open fun addEventListener(name: String, event: IGraphicsListener<*>) {
-        eventMap.computeIfAbsent(name) { LinkedList() }.add(event)
+    fun addEventListener(name: String, listener: IGraphicsListener<*>) {
+        eventMap.computeIfAbsent(name) { LinkedList() }.add(listener)
+    }
+
+    /** 删除一个事件 */
+    fun removeEventListener(name: String, listener: IGraphicsListener<*>) {
+        eventMap[name]?.remove(listener)
     }
 
     /**
