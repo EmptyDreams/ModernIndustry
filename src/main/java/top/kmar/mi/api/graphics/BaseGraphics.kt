@@ -15,6 +15,7 @@ import top.kmar.mi.api.graphics.listeners.ListenerData
  */
 class BaseGraphics : Container() {
 
+    /** 容器对象 */
     val document = DocumentCmpt()
     @get:SideOnly(Side.CLIENT)
     val client by lazy(LazyThreadSafetyMode.NONE) { document.client }

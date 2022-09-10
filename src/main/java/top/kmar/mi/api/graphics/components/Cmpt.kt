@@ -5,7 +5,6 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
-import top.kmar.mi.api.utils.MISysInfo
 import java.util.*
 
 /**
@@ -29,7 +28,7 @@ abstract class Cmpt {
     abstract fun initClientObj(): CmptClient
 
     /** 向控件添加一个子控件 */
-    fun addChild(cmpt: Cmpt) {
+    open fun addChild(cmpt: Cmpt) {
         childrenList.add(cmpt)
     }
 
@@ -37,34 +36,31 @@ abstract class Cmpt {
      * 从控件中移除一个子控件
      * @return 是否移除成功
      */
-    fun removeChild(cmpt: Cmpt): Boolean = childrenList.remove(cmpt)
+    open fun removeChild(cmpt: Cmpt): Boolean = childrenList.remove(cmpt)
 
     /** 通过ID获取控件，不存在则返回`null` */
     fun getElementByID(id: String): Cmpt? {
         if (id == this.id) return this
-        return forEachChildren { it.getElementByID(id) }
+        return eachChildren { it.getElementByID(id) }
     }
 
     /**
      * 发布事件
      *
-     * 该函数不会抛出任何异常
+     * 如果某一个事件执行过程中发生了异常，则所有事件的执行都将被阻断
      */
     fun dispatchEvent(name: String, message: ListenerData) {
         val listeners = eventMap[name] ?: return
         for (listener in listeners) {
-            try {
-                listener.activeObj(message)
-            } catch (e: Exception) {
-                MISysInfo.err("发布事件时出现异常", e)
-            }
+            listener.activeObj(message)
             if (message.cancel) return
         }
-        if (message.transfer) {
-            forEachChildren {
-                it.dispatchEvent(name, message)
-                if (message.cancel) it else null
-            }
+        val transfer = message.transfer ?: return
+        eachChildren {
+            val newMessage = transfer(it)
+            it.dispatchEvent(name, newMessage)
+            message.cancel = newMessage.cancel
+            if (newMessage.cancel) it else null
         }
     }
 
@@ -83,7 +79,7 @@ abstract class Cmpt {
      * @param function 返回非`null`值时会使循环退出
      * @return 返回`consumer`的结果
      */
-    fun forEachChildren(function: (Cmpt) -> Cmpt?): Cmpt? {
+    fun eachChildren(function: (Cmpt) -> Cmpt?): Cmpt? {
         for (cmpt in childrenList) {
             return function(cmpt) ?: continue
         }
@@ -91,7 +87,7 @@ abstract class Cmpt {
     }
 
     /** 遍历所有子控件 */
-    fun forEachAllChildren(consumer: (Cmpt) -> Unit) = childrenList.forEach(consumer)
+    fun eachAllChildren(consumer: (Cmpt) -> Unit) = childrenList.forEach(consumer)
 
     companion object {
 

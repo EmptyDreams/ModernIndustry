@@ -9,8 +9,8 @@ import top.kmar.mi.api.graphics.components.Cmpt
 open class ListenerData(
     /** 是否可以被阻断 */
     val canCancel: Boolean = true,
-    /** 是否向下传递事件 */
-    val transfer: Boolean = false
+    /** 向下传递事件时更新值，传`null`表示禁止向下传递事件，返回`null`表明单次事件不向下传递 */
+    val transfer: ((ListenerData, Cmpt) -> ListenerData?)? = null
 ) {
 
     /** 触发事件的控件对象 */

@@ -14,6 +14,8 @@ fun interface IGraphicsListener<T : ListenerData> {
         const val mouseRightClick = "rightClick"
         /** 鼠标中键点击 */
         const val mouseMiddleClick = "middleClick"
+        /** 鼠标释放 */
+        const val mouseReleased = "mouseReleased"
         /** 鼠标滚轮滚动 */
         const val mouseScroll = "scroll"
         /** 鼠标进入 */
