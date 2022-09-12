@@ -14,8 +14,9 @@ class KeyboardEvent(
     key: Int,
     /** 是否为按键按下 */
     pressed: Boolean,
-    canCancel: Boolean = true
-) : ListenerData(canCancel, { self, _ -> self }) {
+    canCancel: Boolean = true,
+    reverse: Boolean = false
+) : ListenerData(canCancel, reverse) {
 
     /** 是否为按键释放 */
     val release = !pressed

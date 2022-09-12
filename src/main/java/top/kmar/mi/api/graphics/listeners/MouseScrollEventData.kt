@@ -15,11 +15,9 @@ class MouseScrollEventData(
     val clientX: Int,
     /** 鼠标Y轴绝对坐标 */
     val clientY: Int,
-    canCancel: Boolean = true
-) : ListenerData(canCancel, { _, it ->
-    val style = it.client.style
-    MouseScrollEventData(value, x - style.x, y - style.y, clientX, clientY, canCancel)
-}) {
+    canCancel: Boolean = true,
+    reverse: Boolean = false
+) : ListenerData(canCancel, reverse) {
 
     /** 是否为向上滚动 */
     val up = value > 0

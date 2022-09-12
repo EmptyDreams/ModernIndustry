@@ -5,6 +5,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
+import top.kmar.mi.api.utils.MISysInfo
 import java.util.*
 
 /**
@@ -19,24 +20,29 @@ abstract class Cmpt {
     /** 控件ID，整个GUI中ID不能重复 */
     abstract val id: String
     /** 子控件列表 */
-    protected val childrenList = LinkedList<Cmpt>()
+    private val childrenList = LinkedList<Cmpt>()
     /** 事件列表 */
     protected val eventMap = Object2ObjectRBTreeMap<String, LinkedList<IGraphicsListener<*>>>()
+    /** 父节点 */
+    var parent: Cmpt = EMPTY_CMPT
 
     /** 初始化客户端对象 */
     @SideOnly(Side.CLIENT)
     abstract fun initClientObj(): CmptClient
 
+    fun hasParent(): Boolean = parent != EMPTY_CMPT
+
     /** 向控件添加一个子控件 */
-    open fun addChild(cmpt: Cmpt) {
+    fun addChild(cmpt: Cmpt) {
         childrenList.add(cmpt)
+        cmpt.parent = this
     }
 
-    /**
-     * 从控件中移除一个子控件
-     * @return 是否移除成功
-     */
-    open fun removeChild(cmpt: Cmpt): Boolean = childrenList.remove(cmpt)
+    /** 从控件中移除一个子控件 */
+    fun removeChild(cmpt: Cmpt) {
+        childrenList.remove(cmpt)
+        cmpt.parent = EMPTY_CMPT
+    }
 
     /** 通过ID获取控件，不存在则返回`null` */
     fun getElementByID(id: String): Cmpt? {
@@ -47,21 +53,31 @@ abstract class Cmpt {
     /**
      * 发布事件
      *
-     * 如果某一个事件执行过程中发生了异常，则所有事件的执行都将被阻断
+     * 如果某一个事件执行过程中发生了异常，不会影响其它事件的执行
+     *
+     * 该函数不会抛出异常
      */
     fun dispatchEvent(name: String, message: ListenerData) {
-        val listeners = eventMap[name] ?: return
-        for (listener in listeners) {
-            listener.activeObj(message)
-            if (message.cancel) return
+        message.target = this
+        /** 触发指定控件的事件 */
+        fun activeEvent(it: Cmpt) {
+            try {
+                val listeners = it.eventMap[name] ?: return
+                for (listener in listeners) {
+                    listener.activeObj(message)
+                    if (message.cancel) break
+                }
+            } catch (e: Exception) {
+                MISysInfo.err("触发事件过程中发生异常：\n\tname=$name\n\tmessage=$message\n\tit=$it", e)
+            }
         }
-        val transfer = message.transfer ?: return
-        eachChildren {
-            val newMessage = transfer(it)
-            it.dispatchEvent(name, newMessage)
-            message.cancel = newMessage.cancel
-            if (newMessage.cancel) it else null
+        /** 触发指定事件及其父控件的事件 */
+        fun activeParentEvent(it: Cmpt) {
+            if (!message.reverse) activeEvent(it)
+            if (it.hasParent() && !message.cancel) activeParentEvent(it.parent)
+            if (message.reverse && !message.cancel) activeEvent(it)
         }
+        activeParentEvent(this)
     }
 
     /** 注册事件 */

@@ -1,7 +1,5 @@
 package top.kmar.mi.api.graphics.listeners
 
-import top.kmar.mi.api.utils.data.math.Point2D
-
 /**
  * 鼠标点击事件
  * @author EmptyDreams
@@ -17,15 +15,9 @@ class MouseEventData(
     val clientY: Int,
     /** 按键类型 */
     val state: MouseState = MouseState.NONE,
-    canCancel: Boolean = true
-) : ListenerData(canCancel, { _, it ->
-    val client = it.client
-    if (Point2D(x, y) !in client.style.area) null
-    else {
-        val style = client.style
-        MouseEventData(x - style.x, y - style.y, clientX, clientY, state, canCancel)
-    }
-}) {
+    canCancel: Boolean = true,
+    reverse: Boolean = false
+) : ListenerData(canCancel, reverse) {
 
     companion object {
 
@@ -51,8 +43,14 @@ enum class MouseState {
     /** 没有点击动作 */
     NONE;
 
-    fun build(x: Int, y: Int, clientX: Int, clientY: Int, canCancel: Boolean = true): MouseEventData =
-        MouseEventData(x, y, clientX, clientY, this, canCancel)
+    /**
+     * 构建一个事件对象
+     * @see MouseEventData
+     */
+    fun build(
+        x: Int, y: Int, clientX: Int, clientY: Int,
+        canCancel: Boolean = true, reverse: Boolean = false
+    ): MouseEventData = MouseEventData(x, y, clientX, clientY, this, canCancel, reverse)
 
     val clickEventName: String
         get() = when (this) {

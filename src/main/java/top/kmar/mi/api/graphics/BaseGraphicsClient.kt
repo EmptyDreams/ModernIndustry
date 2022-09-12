@@ -17,7 +17,7 @@ import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.utils.data.math.Point2D
 
 /**
- *
+ * 客户端GUI对象
  * @author EmptyDreams
  */
 class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventorySlots), CmptClient {
@@ -27,7 +27,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
         val state = MouseEventData.getEventName(mouseButton)
         val srcMessage = state.build(mouseX, mouseY, mouseX, mouseY)
         val eventName = if (isClick) state.clickEventName else state.releasedEventName
-        service.dispatchEvent(eventName, srcMessage)
+        searchCmpt(mouseX, mouseY).dispatchEvent(eventName, srcMessage)
     }
 
     /** 鼠标按下时触发 */

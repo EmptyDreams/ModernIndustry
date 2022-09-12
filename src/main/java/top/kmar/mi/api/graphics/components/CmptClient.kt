@@ -17,7 +17,7 @@ interface CmptClient {
     val style: GraphicsStyle
 
     /** 渲染所有子控件 */
-    fun renderChildern(graphics: GuiGraphics) {
+    fun renderChildren(graphics: GuiGraphics) {
         service.eachAllChildren {
             val client = it.client
             val g = graphics.createGraphics(style.x, style.y, style.width, style.height)
@@ -28,21 +28,16 @@ interface CmptClient {
     /** 渲染这个控件及子控件 */
     fun render(graphics: GuiGraphics)
 
-    /**
-     * 遍历在指定位置的控件，当指定位置有多个控件时使用DFS遍历，该函数不会遍历其自身
-     *
-     * @param function 返回非`null`值会使遍历中断
-     * @return 返回`function`的返回值
-     */
-    fun eachChildrenAtPoint(x: Int, y: Int, function: (CmptClient) -> CmptClient?): CmptClient? {
-        val pos = Point2D(x - style.x, y - style.y)
-        return service.eachChildren {
-            it.client.run {
-                if (pos in style.area)
-                    (function(this) ?: eachChildrenAtPoint(x, y, function))?.service
-                else null
-            }
-        }?.client
+    /** 查找鼠标所指的控件（子控件） */
+    fun searchCmpt(x: Int, y: Int): Cmpt {
+        val pos = Point2D(x, y)
+        val result = service.eachChildren {
+            val cl = it.client
+            if (pos in cl) cl.searchCmpt(x, y) else null
+        }
+        return result ?: service
     }
+
+    operator fun contains(pos: Point2D) = pos in style.area
 
 }

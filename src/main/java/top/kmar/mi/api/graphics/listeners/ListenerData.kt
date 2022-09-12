@@ -9,13 +9,15 @@ import top.kmar.mi.api.graphics.components.Cmpt
 open class ListenerData(
     /** 是否可以被阻断 */
     val canCancel: Boolean = true,
-    /** 向下传递事件时更新值，传`null`表示禁止向下传递事件，返回`null`表明单次事件不向下传递 */
-    val transfer: ((ListenerData, Cmpt) -> ListenerData?)? = null
+    /** 是否反转事件执行顺序，默认顺序为先执行子控件的事件，后执行父控件的事件 */
+    val reverse: Boolean = false
 ) {
 
     /** 触发事件的控件对象 */
     var target: Cmpt = Cmpt.EMPTY_CMPT
-        private set
+        set(value) {
+            field = if (field == Cmpt.EMPTY_CMPT) value else field
+        }
 
     /** 是否阻断剩余控件触发该事件 */
     var cancel = false
