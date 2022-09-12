@@ -19,7 +19,6 @@ import top.kmar.mi.ModernIndustry;
 import top.kmar.mi.api.register.block.AutoBlockRegister;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.blocks.base.TEBlockBase;
-import top.kmar.mi.content.gui.MuffleFurnaceFrame;
 import top.kmar.mi.content.tileentity.user.MuffleFurnace;
 import top.kmar.mi.data.properties.MIProperty;
 
@@ -59,7 +58,9 @@ public class MuffleFurnaceBlock extends TEBlockBase {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
-		return CommonUtil.openGui(playerIn, MuffleFurnaceFrame.NAME, worldIn, pos);
+		return false;
+		//TODO
+		//return CommonUtil.openGui(playerIn, MuffleFurnaceFrame.NAME, worldIn, pos);
 	}
 
 	@Nullable

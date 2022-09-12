@@ -6,13 +6,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.event.NetWorkRegistryEvent;
-import top.kmar.mi.api.utils.MISysInfo;
-import top.kmar.mi.api.utils.StringUtil;
 import top.kmar.mi.api.net.message.IMessageHandle;
 import top.kmar.mi.api.net.message.ParseAddition;
 import top.kmar.mi.api.net.message.block.BlockMessage;
-import top.kmar.mi.api.net.message.gui.GuiMessage;
 import top.kmar.mi.api.net.message.player.PlayerMessage;
+import top.kmar.mi.api.utils.MISysInfo;
+import top.kmar.mi.api.utils.StringUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -95,7 +94,7 @@ public final class MessageRegister {
 	
 	@SubscribeEvent
 	public static void registryMessage(NetWorkRegistryEvent event) {
-		event.registry(BlockMessage.instance(), GuiMessage.instance(), PlayerMessage.instance());
+		event.registry(BlockMessage.instance(), PlayerMessage.instance());
 	}
 	
 }

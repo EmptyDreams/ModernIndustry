@@ -2,15 +2,12 @@ package top.kmar.mi.content.items.debug;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import top.kmar.mi.ModernIndustry;
-import top.kmar.mi.content.blocks.CommonUtil;
-import top.kmar.mi.content.gui.ClassInfoViewerFrame;
 import top.kmar.mi.api.register.item.AutoItemRegister;
 
 /**
@@ -27,11 +24,13 @@ public class ClassInfoViewer extends Item {
 	public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos,
 	                                  EnumHand hand, EnumFacing facing,
 	                                  float hitX, float hitY, float hitZ) {
-		TileEntity entity = worldIn.getTileEntity(pos);
+		return EnumActionResult.FAIL;
+		//TODO
+		/*TileEntity entity = worldIn.getTileEntity(pos);
 		if (entity == null) return EnumActionResult.PASS;
 		boolean result = CommonUtil.openGui(player, ClassInfoViewerFrame.NAME, worldIn, pos);
 		if (result) return EnumActionResult.SUCCESS;
-		return EnumActionResult.FAIL;
+		return EnumActionResult.FAIL;*/
 	}
 	
 }

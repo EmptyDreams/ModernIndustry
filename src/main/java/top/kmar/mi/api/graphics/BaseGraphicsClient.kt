@@ -97,6 +97,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
         task(service, mouseX, mouseY)
     }
 
+    /** 触发鼠标滚轮事件 */
     private fun activeMouseScrollEvent(mouseX: Int, mouseY: Int) {
         val scroll = Mouse.getDWheel()
         if (scroll == 0) return
@@ -108,7 +109,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
     override val style = GraphicsStyle()
 
     override fun render(graphics: GuiGraphics) {
-        TODO("Not yet implemented")
+        renderChildren(graphics)
     }
 
 }

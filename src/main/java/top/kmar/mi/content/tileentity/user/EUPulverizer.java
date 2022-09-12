@@ -12,10 +12,6 @@ import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
 import top.kmar.mi.api.electricity.info.BiggerVoltage;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
-import top.kmar.mi.api.gui.component.CommonProgress;
-import top.kmar.mi.api.gui.component.group.AbstractSlotGroup;
-import top.kmar.mi.api.gui.component.group.SlotGroup;
-import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
 import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
@@ -41,18 +37,15 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 	private final SlotItemHandler in = CommonUtil.createInputSlot(item, 0, 52, 32,
 																CraftList.PULVERIZER::haveInput);
 	private final SlotItemHandler out = CommonUtil.createOutputSlot(item, 1, 106, 32);
-	private final SlotGroup slotGroup = new AbstractSlotGroup(in);
+	//private final SlotGroup slotGroup = new AbstractSlotGroup(in);
 	/** 工作时间 */
 	private int workingTime = 0;
-	/** 工作进度条 */
-	private final CommonProgress progressBar = new CommonProgress();
 
 	public EUPulverizer() {
 		OrdinaryCounter counter = new OrdinaryCounter(100);
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
 		setMaxEnergy(20);
-		progressBar.setCraftButton(CraftList.PULVERIZER, te -> ((EUPulverizer) te).slotGroup);
 	}
 
 	@Override
@@ -70,8 +63,6 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 	}
 
 	private void updateShow() {
-		progressBar.setMax(getNeedTime());
-		progressBar.setNow(workingTime);
 		WorldUtil.setBlockState(world, pos,
 				world.getBlockState(pos)
 						.withProperty(MIProperty.getWORKING(), workingTime > 0));
@@ -135,8 +126,6 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
 	public int getNeedEnergy() { return 10; }
 	/** 获取需要工作的时长 */
 	public int getNeedTime() { return 120; }
-	/** 获取进度条 */
-	public IProgressBar getProgress() { return progressBar; }
 	@Nullable
 	@Override
 	public EnumFacing getFront() {

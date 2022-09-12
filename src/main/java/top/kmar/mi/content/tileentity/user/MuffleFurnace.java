@@ -8,13 +8,9 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
-import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
+import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.api.tools.BaseTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
-import top.kmar.mi.api.gui.component.CommonProgress;
-import top.kmar.mi.api.gui.component.CommonProgress.Front;
-import top.kmar.mi.api.gui.component.CommonProgress.Style;
-import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.data.properties.MIProperty;
 
 import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
@@ -59,9 +55,6 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 	@AutoSave private int maxBurningTime = 0;
 	@AutoSave private int burningTime = 0;
 	
-	private final CommonProgress workProgress = new CommonProgress();
-	private final CommonProgress burnProgress = new CommonProgress(Style.FIRE, Front.UP);
-	
 	@Override
 	public void update() {
 		if (world.isRemote) {
@@ -73,12 +66,10 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 			if (result.getCount() < result.getMaxStackSize()) updateWorkingTime();
 		} else {
 			workingTime = maxWorkingTime = 0;
-			workProgress.setNow(workingTime);
 		}
 		
 		if (!up.getHasStack()) {
 			workingTime = maxWorkingTime = 0;
-			workProgress.setNow(workingTime);
 			return;
 		}
 		
@@ -98,8 +89,6 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 			else out.getStack().grow(1);
 			maxWorkingTime = workingTime = 0;
 		}
-		workProgress.setMax(maxWorkingTime);
-		workProgress.setNow(workingTime);
 	}
 	
 	/** 更新燃烧时间 */
@@ -117,8 +106,6 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 				return false;
 			}
 		}
-		burnProgress.setMax(maxBurningTime);
-		burnProgress.setNow(burningTime);
 		return isWorking();
 	}
 	
@@ -129,10 +116,6 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
 		return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
 	}
 	
-	/** 获取工作进度条 */
-	public IProgressBar getWorkProgress() { return workProgress; }
-	/** 获取燃烧进度条 */
-	public IProgressBar getBurnProgress() { return burnProgress; }
 	public SlotItemHandler getUp() { return up; }
 	public SlotItemHandler getDown() { return down; }
 	public SlotItemHandler getOut() { return out; }

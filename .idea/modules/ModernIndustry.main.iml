@@ -132,6 +132,10 @@
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/kotlin" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/generated" isTestSource="false" generated="true" />
+      <excludeFolder url="file://$MODULE_DIR$/../../src/main/java/top/kmar/mi/api/gui" />
+      <excludeFolder url="file://$MODULE_DIR$/../../src/main/java/top/kmar/mi/api/graph" />
+      <excludeFolder url="file://$MODULE_DIR$/../../src/main/java/top/kmar/mi/content/gui" />
+      <excludeFolder url="file://$MODULE_DIR$/../../src/main/java/top/kmar/mi/coremod/mixin/gui" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

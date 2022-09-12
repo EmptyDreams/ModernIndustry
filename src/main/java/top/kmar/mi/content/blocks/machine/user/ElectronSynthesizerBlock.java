@@ -12,16 +12,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import top.kmar.mi.content.blocks.CommonUtil;
-import top.kmar.mi.content.gui.EleSynthesizerFrame;
-import top.kmar.mi.api.gui.component.group.SlotGroup;
 import top.kmar.mi.api.register.block.AutoBlockRegister;
 import top.kmar.mi.content.blocks.base.MachineBlock;
 import top.kmar.mi.content.tileentity.user.EUElectronSynthesizer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,7 +43,9 @@ public class ElectronSynthesizerBlock extends MachineBlock {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
-		return CommonUtil.openGui(playerIn, EleSynthesizerFrame.NAME, worldIn, pos);
+		return false;
+		//TODO
+		//return CommonUtil.openGui(playerIn, EleSynthesizerFrame.NAME, worldIn, pos);
 	}
 	
 	@Nullable
@@ -56,12 +54,13 @@ public class ElectronSynthesizerBlock extends MachineBlock {
 		List<ItemStack> result = new LinkedList<>();
 		EUElectronSynthesizer te = (EUElectronSynthesizer) world.getTileEntity(pos);
 		assert te != null;
-		for (SlotGroup.Node node : te.getInput()) {
+		//TODO
+		/*for (SlotGroup.Node node : te.getInput()) {
 			result.add(node.get().getStack());
 		}
 		for (SlotGroup.Node node : te.getOutput()) {
 			result.add(node.get().getStack());
-		}
+		}*/
 		return result;
 	}
 	

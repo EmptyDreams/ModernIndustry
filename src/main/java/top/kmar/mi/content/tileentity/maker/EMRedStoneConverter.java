@@ -11,7 +11,6 @@ import net.minecraftforge.items.SlotItemHandler;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
 import top.kmar.mi.api.electricity.clock.NonCounter;
 import top.kmar.mi.api.electricity.info.EleEnergy;
-import top.kmar.mi.api.gui.component.CommonProgress;
 import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
@@ -34,10 +33,7 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 	private final SlotItemHandler INPUT = CommonUtil.createInputSlot(item, 0, 79, 20,
 			stack -> stack.getItem() == Items.REDSTONE ||
 					stack.getItem() == Item.getItemFromBlock(Blocks.REDSTONE_BLOCK));
-	private final CommonProgress energyPro = new CommonProgress(
-									CommonProgress.Style.STRIPE, CommonProgress.Front.RIGHT);
-	private final CommonProgress burnPro = new CommonProgress(
-									CommonProgress.Style.ARROW_DOWN, CommonProgress.Front.DOWN);
+	
 	@AutoSave private int burnTime = 0;
 	@AutoSave private int maxTime = 0;
 
@@ -50,11 +46,6 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 	public EMRedStoneConverter() {
 		setMaxEnergy(5000);
 		setCounter(NonCounter.getInstance());
-
-		energyPro.setMax(5000);
-		energyPro.setLocation(44, 68);
-		energyPro.setStringShower(CommonProgress.ProgressStyle.DOWN);
-		burnPro.setLocation(80, 38);
 	}
 
 	@Override
@@ -68,13 +59,8 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 			if (!burnRedStone()) return;
 		}
 		updateData();
-		updateShow();
-	}
-
-	/** 更新显示 */
-	private void updateShow() {
-		energyPro.setNow(getNowEnergy());
-		burnPro.setNow(burnTime);
+		//TODO
+		//updateShow();
 	}
 
 	/** 更新数据 */
@@ -95,16 +81,11 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
 		ItemStack stack = INPUT.getStack();
 		stack.shrink(1);
 		maxTime = getBurnTime(stack);
-		burnPro.setMax(maxTime);
 		return true;
 	}
 
 	/** 获取输入框 */
 	public SlotItemHandler getInput() { return INPUT; }
-	/** 获取能量进度条 */
-	public CommonProgress getEnergyPro() { return energyPro; }
-	/** 获取燃烧进度条 */
-	public CommonProgress getBurnPro() { return burnPro; }
 
 	@Nullable
 	@Override

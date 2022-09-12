@@ -16,10 +16,6 @@ import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
 import top.kmar.mi.api.electricity.info.BiggerVoltage;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
-import top.kmar.mi.api.gui.component.CommonProgress;
-import top.kmar.mi.api.gui.component.group.AbstractSlotGroup;
-import top.kmar.mi.api.gui.component.group.SlotGroup;
-import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
 import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.ItemUtil;
@@ -51,11 +47,10 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 			return false;
 		}
 	};
-	private final SlotGroup slotGroup = new AbstractSlotGroup(up, down);
+	//TODO
+	//private final SlotGroup slotGroup = new AbstractSlotGroup(up, down);
 	/** 已工作时间 */
 	@AutoSave private int workingTime = 0;
-	/** 进度条 */
-	private final CommonProgress progressBar = new CommonProgress();
 	/** 每次工作消耗的电能 */
 	private int needEnergy = 10;
 	
@@ -64,7 +59,6 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
 		setMaxEnergy(20);
-		progressBar.setCraftButton(CraftList.COMPRESSOR, te -> ((EUCompressor) te).slotGroup);
 	}
 
 	/** 设置世界时更新计数器的设置 */
@@ -87,7 +81,6 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 			WorldUtil.removeTickable(this);
 			return;
 		}
-		progressBar.setMax(getNeedTime());
 		
 		//检查输入框是否合法 如果不合法则清零工作时间并结束函数
 		ItemStack outStack = checkInput();
@@ -98,7 +91,6 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		
 		//若配方存在则继续计算
 		boolean isWorking = updateData(outStack);
-		progressBar.setNow(workingTime);
 		updateShow(isWorking);
 		markDirty();
 	}
@@ -163,7 +155,6 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 		//如果不存在，更新方块显示
 		if (isOutputFailed) workingTime = 0;
 		updateShow(false);
-		progressBar.setNow(workingTime);
 		markDirty();
 	}
 	
@@ -183,8 +174,6 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
 	public boolean isEmpty() {
 		return ItemUtil.hasEmpty(up.getStack(), down.getStack(), out.getStack());
 	}
-	/** 获取进度条 */
-	public IProgressBar getProgressBar() { return progressBar; }
 	
 	/**
 	 * @param index 0-上端，1-下端，2-输出

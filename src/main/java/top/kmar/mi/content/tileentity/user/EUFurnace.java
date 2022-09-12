@@ -11,8 +11,6 @@ import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
 import top.kmar.mi.api.electricity.info.BiggerVoltage;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
-import top.kmar.mi.api.gui.component.CommonProgress;
-import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
 import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
@@ -29,8 +27,6 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 
 	public static final int VOLTAGE = EleEnergy.COMMON;
 	
-	/** 工作进度条 */
-	private final CommonProgress progressBar = new CommonProgress();
 	/** 输入/输出框 */
 	@AutoSave
     private final ItemStackHandler item = new ItemStackHandler(2);
@@ -55,14 +51,12 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
 		setMaxEnergy(10);
-		progressBar.setMax(getNeedTime());
 	}
 
 	@Override
 	public void update() {
 		if (world.isRemote) return;
 		updateWorkingTime();
-		progressBar.setNow(workingTime);
 	}
 
 	private void updateWorkingTime() {
@@ -88,8 +82,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
 		IBlockState state = old.withProperty(MIProperty.getWORKING(), workingTime > 0);
 		WorldUtil.setBlockState(world, pos, state);
 	}
-
-	public IProgressBar getProgressBar() { return progressBar; }
+	
 	public SlotItemHandler getInSlot() { return in; }
 	public SlotItemHandler getOutSlot() { return out; }
 	public int getNeedEnergy() { return 5; }

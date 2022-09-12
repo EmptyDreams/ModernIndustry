@@ -5,7 +5,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import top.kmar.mi.api.register.AutoRegister;
-import top.kmar.mi.api.gui.common.GuiLoader;
 import top.kmar.mi.data.json.block.BlockJsonBuilder;
 import top.kmar.mi.data.json.fluid.FluidJsonBuilder;
 import top.kmar.mi.data.json.item.ItemJsonBuilder;
@@ -30,7 +29,7 @@ public class CommonProxy {
 			ItemJsonBuilder.build();
 			FluidJsonBuilder.build();
 		}
-		new GuiLoader();
+		//new GuiLoader();
     }
     
     public void init(FMLInitializationEvent event){ }

@@ -14,12 +14,11 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import top.kmar.mi.ModernIndustry;
-import top.kmar.mi.data.properties.MIProperty;
-import top.kmar.mi.content.blocks.CommonUtil;
-import top.kmar.mi.content.gui.EleFurnaceFrame;
 import top.kmar.mi.api.register.block.AutoBlockRegister;
+import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.blocks.base.MachineBlock;
 import top.kmar.mi.content.tileentity.user.EUFurnace;
+import top.kmar.mi.data.properties.MIProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,7 +48,9 @@ public class EleFurnaceBlock extends MachineBlock {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
-		return CommonUtil.openGui(playerIn, EleFurnaceFrame.NAME, worldIn, pos);
+		return false;
+		//TODO
+		//return CommonUtil.openGui(playerIn, EleFurnaceFrame.NAME, worldIn, pos);
 	}
 
 	@Nullable

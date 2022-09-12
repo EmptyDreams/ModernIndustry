@@ -5,17 +5,7 @@
     "MixinItemStack",
     "MixinUniversalBucket",
     "cap.MixinCapability",
-    "cap.MixinCapabilityManager",
-    "gui.MixinFMLNetworkHandler"
-  ],
-  "client": [
-    "debug.MixinOpenGuiHandler",
-    "gui.MixinEntityRenderer",
-    "gui.MixinFMLClientHandler",
-    "gui.MixinGuiContainer",
-    "gui.MixinGuiScreen",
-    "gui.MixinGuiTextField",
-    "gui.MixinMinecraft"
+    "cap.MixinCapabilityManager"
   ],
   "server": [],
   "compatibilityLevel": "JAVA_8",

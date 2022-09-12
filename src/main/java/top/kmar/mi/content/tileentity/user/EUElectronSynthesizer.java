@@ -5,7 +5,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
 import top.kmar.mi.api.craftguide.ItemElement;
 import top.kmar.mi.api.craftguide.sol.ItemList;
@@ -14,10 +13,6 @@ import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
 import top.kmar.mi.api.electricity.info.BiggerVoltage;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
-import top.kmar.mi.api.gui.component.CommonProgress;
-import top.kmar.mi.api.gui.component.MSlot.SlotHandler;
-import top.kmar.mi.api.gui.component.group.SlotGroup;
-import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
 import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.ItemUtil;
@@ -25,7 +20,6 @@ import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.content.blocks.CraftList;
 import top.kmar.mi.data.properties.MIProperty;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +35,9 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 	
 	@AutoSave
     private final ItemStackHandler HANDLER = new ItemStackHandler(5 * 5 + 4);
-	private final SlotGroup SLOTS = new SlotGroup(5, 5, 18, 0);
-	private final SlotGroup OUTS = new SlotGroup(2, 2, 18, 0);
-	/** 进度条 */
-	private final CommonProgress PROGRESS = new CommonProgress(
-										CommonProgress.Style.ARROW, CommonProgress.Front.RIGHT);
+	//TODO
+	//private final SlotGroup SLOTS = new SlotGroup(5, 5, 18, 0);
+	//private final SlotGroup OUTS = new SlotGroup(2, 2, 18, 0);
 	/** 工作时间 */
 	@AutoSave private int workingTime = -10;
 	@AutoSave private int maxTime = 0;
@@ -59,9 +51,8 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
 		setMaxEnergy(20);
-		SLOTS.writeFromBuilder(0, 25, this::createHandler);
-		OUTS.writeFrom(HANDLER, this, 25, it -> false);
-		PROGRESS.setCraftButton(CraftList.SYNTHESIZER, te -> ((EUElectronSynthesizer) te).SLOTS);
+		//SLOTS.writeFromBuilder(0, 25, this::createHandler);
+		//OUTS.writeFrom(HANDLER, this, 25, it -> false);
 	}
 	
 	@Override
@@ -77,7 +68,6 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 			if (check(output)) {
 				workingTime = Math.max(workingTime, 0);
 				maxTime = getMaxTime(input, output);
-				PROGRESS.setMax(maxTime);
 				IBlockState newState = world.getBlockState(
 						getPos()).withProperty(MIProperty.getWORKING(), true);
 				WorldUtil.setBlockState(world, pos, newState);
@@ -89,7 +79,6 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 			export();
 			clear();
 		}
-		PROGRESS.setNow(workingTime);
 	}
 	
 	/** 清除状态 */
@@ -135,13 +124,14 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 	
 	/** 根据原料列表计算产物 */
 	private ItemList calculateProduction() {
-		ItemList input = new ItemList(5, 5);
+		/*ItemList input = new ItemList(5, 5);
 		for (int y = 0; y < 5; ++y) {
 			for (int x = 0; x < 5; ++x) {
 				input.set(x, y, ItemElement.instance(getInput().getSlot(x, y).getStack()));
 			}
 		}
-		return input;
+		return input;*/
+		return null;
 	}
 	
 	/** 合并产物列表 */
@@ -155,37 +145,10 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 		if (merge.size() < 4) MERGE = merge;
 	}
 	
-	/** 创建一个{@link SlotItemHandler} */
-	private SlotItemHandler createHandler(int index) {
-		return new SlotHandler(HANDLER, this, index) {
-			@Override
-			public void onSlotChanged() {
-				super.onSlotChanged();
-				refresh = true;
-			}
-		};
-	}
-	
 	/** 获取工作需要的时间 */
 	@SuppressWarnings("unused")
 	public int getMaxTime(ItemList input, ItemSet output) {
 		return 100;
-	}
-	
-	/** 获取原料入口 */
-	@Nonnull
-	public SlotGroup getInput() {
-		return SLOTS;
-	}
-	/** 获取产品 */
-	@Nonnull
-	public SlotGroup getOutput() {
-		return OUTS;
-	}
-	/** 获取进度条 */
-	@Nonnull
-	public IProgressBar getProgress() {
-		return PROGRESS;
 	}
 	
 	@Nullable

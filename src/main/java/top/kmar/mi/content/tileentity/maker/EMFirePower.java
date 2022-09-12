@@ -12,8 +12,6 @@ import top.kmar.mi.api.craftguide.ItemElement;
 import top.kmar.mi.api.craftguide.sol.ItemSet;
 import top.kmar.mi.api.electricity.clock.NonCounter;
 import top.kmar.mi.api.electricity.info.EleEnergy;
-import top.kmar.mi.api.gui.component.CommonProgress;
-import top.kmar.mi.api.gui.component.interfaces.IProgressBar;
 import top.kmar.mi.api.register.others.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.ItemUtil;
@@ -27,15 +25,12 @@ import top.kmar.mi.data.properties.MIProperty;
  * 火力发电机的TE
  * @author EmptyDreams
  */
+//TODO
 @AutoTileEntity("fire_power")
 public class EMFirePower extends FrontTileEntity implements ITickable {
 
 	public static final int VOLTAGE = EleEnergy.COMMON;
 	
-	/** 工作进度条 */
-	private final CommonProgress progressBar = new CommonProgress();
-	/** 能量进度条 */
-	private final CommonProgress energyPro = new CommonProgress();
 	/** 输入/输出框 */
 	@AutoSave
     private final ItemStackHandler item = new ItemStackHandler(2);
@@ -55,9 +50,6 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	public EMFirePower() {
 		setMaxEnergy(10000);
 		setCounter(NonCounter.getInstance());
-		energyPro.setStyle(CommonProgress.Style.STRIPE);
-		energyPro.setMax(getMaxEnergy());
-		energyPro.setStringShower(CommonProgress.ProgressStyle.DOWN);
 	}
 
 	@Override
@@ -68,8 +60,6 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 		}
 		if (maxTime <= 0) burnItem();
 		else updateBurningTime();
-		
-		energyPro.setNow(getNowEnergy());
 	}
 
 	/** 燃烧输入框中的物品 */
@@ -87,7 +77,6 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 			state = old.withProperty(MIProperty.getWORKING(), false);
 		}
 		WorldUtil.setBlockState(world, pos, state);
-		progressBar.setMax(maxTime);
 		markDirty();
 	}
 
@@ -102,14 +91,10 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
 	/** 更新燃烧时间 */
 	private void updateBurningTime() {
 		if ((burningTime += 5) >= maxTime) updateProduction();
-		progressBar.setNow(burningTime);
 		setNowEnergy(getNowEnergy() + 30);
 		markDirty();
 	}
-
-	//public StringComponent getStringShower() { return stringShower; }
-	public IProgressBar getEnergyProBar() { return energyPro; }
-	public IProgressBar getProgressBar() { return progressBar; }
+	
 	public SlotItemHandler getInSlot() { return in; }
 	public SlotItemHandler getOutSlot() { return out; }
 	
