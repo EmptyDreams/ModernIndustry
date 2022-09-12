@@ -14,7 +14,7 @@ class MouseEventData(
     /** 鼠标Y轴绝对坐标 */
     val clientY: Int,
     /** 按键类型 */
-    val state: MouseState = MouseState.NONE,
+    val state: MouseState,
     canCancel: Boolean = true,
     reverse: Boolean = false
 ) : ListenerData(canCancel, reverse) {
@@ -39,9 +39,7 @@ enum class MouseState {
     /** 中键 */
     MIDDLE,
     /** 右键 */
-    RIGHT,
-    /** 没有点击动作 */
-    NONE;
+    RIGHT;
 
     /**
      * 构建一个事件对象
@@ -57,7 +55,6 @@ enum class MouseState {
             LEFT -> IGraphicsListener.mouseClick
             MIDDLE -> IGraphicsListener.mouseMiddleClick
             RIGHT -> IGraphicsListener.mouseRightClick
-            NONE -> throw IllegalArgumentException("没有触发点击事件")
         }
 
     val releasedEventName = IGraphicsListener.mouseReleased

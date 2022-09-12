@@ -77,7 +77,8 @@ abstract class Cmpt {
             if (it.hasParent() && !message.cancel) activeParentEvent(it.parent)
             if (message.reverse && !message.cancel) activeEvent(it)
         }
-        activeParentEvent(this)
+        if (message.prohibitTransfer) activeEvent(this)
+        else activeParentEvent(this)
     }
 
     /** 注册事件 */

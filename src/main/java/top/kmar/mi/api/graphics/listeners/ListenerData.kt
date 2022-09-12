@@ -10,7 +10,9 @@ open class ListenerData(
     /** 是否可以被阻断 */
     val canCancel: Boolean = true,
     /** 是否反转事件执行顺序，默认顺序为先执行子控件的事件，后执行父控件的事件 */
-    val reverse: Boolean = false
+    val reverse: Boolean = false,
+    /** 禁止事件向父级控件传递 */
+    val prohibitTransfer: Boolean = false
 ) {
 
     /** 触发事件的控件对象 */

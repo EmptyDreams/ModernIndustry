@@ -6,12 +6,9 @@ import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import top.kmar.mi.api.graphics.components.Cmpt
 import top.kmar.mi.api.graphics.components.CmptClient
-import top.kmar.mi.api.graphics.listeners.IGraphicsListener
+import top.kmar.mi.api.graphics.listeners.*
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardPressed
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardReleased
-import top.kmar.mi.api.graphics.listeners.KeyboardEvent
-import top.kmar.mi.api.graphics.listeners.MouseEventData
-import top.kmar.mi.api.graphics.listeners.MouseScrollEventData
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.utils.data.math.Point2D
@@ -76,7 +73,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
         fun task(cmpt: Cmpt, x: Int, y: Int): Boolean {
             fun helper(it: Cmpt, isEnter: Boolean) {
                 val eventName = if (isEnter) IGraphicsListener.mouseEnter else IGraphicsListener.mouseExit
-                val message = MouseEventData(mouseX - style.x, mouseY - style.y, mouseX, mouseY)
+                val message = MouseMoveEventData(isEnter)
                 it.dispatchEvent(eventName, message)
                 if (message.cancel) {
                     if (isEnter) enter = false
@@ -92,12 +89,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
                 } else {
                     if (it.id !in mouseEnterList) return@eachChildren null
                     mouseEnterList.remove(it.id)
-                    if (exit) {
-                        val message = MouseEventData(mouseX - style.x, mouseY - style.y, mouseX, mouseY)
-                        it.dispatchEvent(IGraphicsListener.mouseExit, message)
-                        if (message.cancel) exit = false
-                        else task(it, x - style.x, y - style.y)
-                    }
+                    helper(it, false)
                 }
                 if (!(enter || exit)) it else null
             }
