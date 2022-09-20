@@ -2,6 +2,7 @@ package top.kmar.mi.api.graphics
 
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Container
+import net.minecraft.util.math.BlockPos
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.Cmpt
@@ -13,7 +14,7 @@ import top.kmar.mi.api.graphics.listeners.ListenerData
  *
  * @author EmptyDreams
  */
-class BaseGraphics : Container() {
+abstract class BaseGraphics : Container() {
 
     /** 容器对象 */
     val document = DocumentCmpt()
@@ -24,6 +25,13 @@ class BaseGraphics : Container() {
     override fun canInteractWith(playerIn: EntityPlayer): Boolean {
         return true
     }
+
+    /**
+     * 初始化GUI
+     * @param player 打开GUI的玩家
+     * @param pos 触发GUI的位置
+     */
+    abstract fun init(player: EntityPlayer, pos: BlockPos)
 
     /** 添加一个控件 */
     fun addChild(cmpt: Cmpt) = document.addChild(cmpt)
