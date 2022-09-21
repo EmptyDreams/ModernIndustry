@@ -120,7 +120,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
         worldIn: World, pos: BlockPos, state: IBlockState,
         playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing,
         hitX: Float, hitY: Float, hitZ: Float
-    ) = CommonUtil.openGui(playerIn, null, worldIn, pos)
+    ) = CommonUtil.openGui(playerIn, 1, worldIn, pos)
 
     private val item: ItemBlock by lazy(PUBLICATION) { ItemBlockExpand(this) }
 

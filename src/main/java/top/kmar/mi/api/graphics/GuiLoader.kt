@@ -7,8 +7,11 @@ import net.minecraft.world.World
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.eventhandler.Event
 import net.minecraftforge.fml.common.network.IGuiHandler
+import net.minecraftforge.fml.common.network.NetworkRegistry
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
+import top.kmar.mi.ModernIndustry
+import top.kmar.mi.api.register.others.AutoLoader
 import java.lang.reflect.Modifier
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -16,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger
  * GUI加载器
  * @author EmptyDreams
  */
+@AutoLoader
 object GuiLoader : IGuiHandler {
 
     /** 存储注册列表 */
@@ -29,7 +33,8 @@ object GuiLoader : IGuiHandler {
         private set
 
     init {
-        MinecraftForge.EVENT_BUS.post(MIGuiRegistryEvent)
+        NetworkRegistry.INSTANCE.registerGuiHandler(ModernIndustry.instance, this)
+        MinecraftForge.EVENT_BUS.post(MIGuiRegistryEvent())
         registryFinish = true
     }
 
@@ -55,7 +60,7 @@ object GuiLoader : IGuiHandler {
                                      x: Int, y: Int, z: Int) =
         BaseGraphicsClient(getServerGuiElement(ID, player, world, x, y, z))
 
-    object MIGuiRegistryEvent : Event() {
+    class MIGuiRegistryEvent : Event() {
 
         /** 检查此时是否可以注册 */
         fun check() = !registryFinish

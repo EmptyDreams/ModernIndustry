@@ -1,6 +1,5 @@
 package top.kmar.mi.content.tileentity.user
 
-import net.minecraft.client.resources.I18n
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ITickable
 import net.minecraft.util.math.BlockPos
@@ -19,12 +18,6 @@ import top.kmar.mi.api.electricity.info.EnumBiggerVoltage
 import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.fluid.data.FluidQueue
 import top.kmar.mi.api.fluid.data.TransportReport
-import top.kmar.mi.api.gui.component.ButtonComponent
-import top.kmar.mi.api.gui.component.CommonProgress
-import top.kmar.mi.api.gui.component.CommonProgress.Front.RIGHT
-import top.kmar.mi.api.gui.component.CommonProgress.ProgressStyle.DOWN
-import top.kmar.mi.api.gui.component.CommonProgress.Style.STRIPE
-import top.kmar.mi.api.gui.component.StringComponent
 import top.kmar.mi.api.net.IAutoNetwork
 import top.kmar.mi.api.register.others.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
@@ -112,13 +105,13 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     var working = false
         get() = field && start
 
-    val guiEnergyText = StringComponent("mi.gui.fluid_pump.energy")
+    /*val guiEnergyText = StringComponent("mi.gui.fluid_pump.energy")
     val guiEnergy = CommonProgress(STRIPE, RIGHT)
     val guiConsumeText = StringComponent("mi.gui.fluid_pump.consume")
     val guiConsume = CommonProgress(STRIPE, RIGHT)
     val guiText = StringComponent()
     val guiFluid = CommonProgress(STRIPE, RIGHT)
-    val guiButton = ButtonComponent(19, 30)
+    val guiButton = ButtonComponent(19, 30)*/
 
     init {
         val counter = OrdinaryCounter(100)
@@ -128,7 +121,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         )
         setCounter(counter)
         maxEnergy = 100
-        guiEnergy.stringShower = DOWN
+        /*guiEnergy.stringShower = DOWN
         guiConsume.stringShower = DOWN
         guiFluid.stringShower = DOWN
         guiButton.setAction { _, _ ->
@@ -136,7 +129,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
                 start = !start
                 send(true)
             }
-        }
+        }*/
     }
 
     override fun isReceiveAllowable(facing: EnumFacing) = facing.axis !== side.axis
@@ -235,7 +228,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     }
 
     private fun updateGUI(consume: Int) {
-        guiEnergy.max = maxEnergy
+        /*guiEnergy.max = maxEnergy
         guiConsume.max = maxEnergy
         guiFluid.max = maxCapacity
 
@@ -243,7 +236,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         guiConsume.now = consume
         guiFluid.now = data.amount
 
-        if (world.isClient()) guiText.string = I18n.format(data.fluid!!.unlocalizedName)
+        if (world.isClient()) guiText.string = I18n.format(data.fluid!!.unlocalizedName)*/
     }
 
     /** 计算出水口在面板的哪一个方向 */
@@ -343,8 +336,8 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         start = reader.readBoolean()
         world.markBlockRangeForRenderUpdate(pos, pos)
         val value = data.fluid?.unlocalizedName ?: "mi.gui.fluid_pump.null"
-        guiText.string = I18n.format("mi.gui.fluid_pump.fluid", I18n.format(value))
-        guiButton.text = I18n.format(if (start) "mi.gui.open" else "mi.gui.close")
+        /*guiText.string = I18n.format("mi.gui.fluid_pump.fluid", I18n.format(value))
+        guiButton.text = I18n.format(if (start) "mi.gui.open" else "mi.gui.close")*/
     }
 
 }
