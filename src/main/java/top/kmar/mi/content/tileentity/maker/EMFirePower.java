@@ -12,7 +12,7 @@ import top.kmar.mi.api.craftguide.ItemElement;
 import top.kmar.mi.api.craftguide.sol.ItemSet;
 import top.kmar.mi.api.electricity.clock.NonCounter;
 import top.kmar.mi.api.electricity.info.EleEnergy;
-import top.kmar.mi.api.register.others.AutoTileEntity;
+import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.ItemUtil;
 import top.kmar.mi.api.utils.WorldUtil;

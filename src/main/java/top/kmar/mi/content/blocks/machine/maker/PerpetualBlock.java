@@ -7,7 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import top.kmar.mi.api.register.block.AutoBlockRegister;
+import top.kmar.mi.api.register.block.annotations.AutoBlockRegister;
 import top.kmar.mi.content.blocks.base.MachineBlock;
 import top.kmar.mi.content.tileentity.maker.EMPerpetual;
 

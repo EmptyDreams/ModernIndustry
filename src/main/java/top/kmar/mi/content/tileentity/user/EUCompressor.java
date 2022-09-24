@@ -16,7 +16,7 @@ import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
 import top.kmar.mi.api.electricity.info.BiggerVoltage;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
-import top.kmar.mi.api.register.others.AutoTileEntity;
+import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.ItemUtil;
 import top.kmar.mi.api.utils.WorldUtil;

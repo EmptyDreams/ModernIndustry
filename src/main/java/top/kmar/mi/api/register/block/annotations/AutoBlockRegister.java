@@ -1,7 +1,8 @@
-package top.kmar.mi.api.register.block;
+package top.kmar.mi.api.register.block.annotations;
 
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import top.kmar.mi.ModernIndustry;
+import top.kmar.mi.api.register.block.BlockRegister;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

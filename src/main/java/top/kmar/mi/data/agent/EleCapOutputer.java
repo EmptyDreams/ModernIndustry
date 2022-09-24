@@ -8,7 +8,7 @@ import top.kmar.mi.api.capabilities.ele.EleCapability;
 import top.kmar.mi.api.capabilities.ele.IStorage;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.interfaces.IEleOutputer;
-import top.kmar.mi.api.register.agent.AutoAgentRegister;
+import top.kmar.mi.api.register.others.AutoAgentRegister;
 
 /**
  * 提供对能力系统的输出支持

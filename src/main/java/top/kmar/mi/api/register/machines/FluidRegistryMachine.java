@@ -15,8 +15,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import top.kmar.mi.api.register.AutoRegisterMachine;
+import top.kmar.mi.api.register.block.annotations.AutoFluid;
 import top.kmar.mi.api.utils.WorldUtil;
-import top.kmar.mi.api.register.others.AutoFluid;
 
 import javax.annotation.Nonnull;
 import java.util.LinkedList;

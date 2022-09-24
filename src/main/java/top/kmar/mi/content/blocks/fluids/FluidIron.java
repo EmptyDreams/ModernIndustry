@@ -5,7 +5,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.Fluid;
 import top.kmar.mi.ModernIndustry;
-import top.kmar.mi.api.register.others.AutoFluid;
+import top.kmar.mi.api.register.block.annotations.AutoFluid;
 
 import javax.annotation.Nonnull;
 

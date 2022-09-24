@@ -14,7 +14,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import top.kmar.mi.ModernIndustry;
-import top.kmar.mi.api.register.block.AutoBlockRegister;
+import top.kmar.mi.api.register.block.annotations.AutoBlockRegister;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.blocks.base.MachineBlock;
 import top.kmar.mi.content.tileentity.user.EUFurnace;

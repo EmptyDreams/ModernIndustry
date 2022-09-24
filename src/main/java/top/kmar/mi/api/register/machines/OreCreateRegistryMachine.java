@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import top.kmar.mi.api.register.AutoRegisterMachine;
 import top.kmar.mi.api.utils.MISysInfo;
-import top.kmar.mi.api.register.block.OreCreate;
+import top.kmar.mi.api.register.block.annotations.OreCreate;
 import top.kmar.mi.api.register.block.WorldCreater;
 
 import javax.annotation.Nonnull;

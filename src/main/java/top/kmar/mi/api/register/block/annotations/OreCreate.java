@@ -1,4 +1,4 @@
-package top.kmar.mi.api.register.block;
+package top.kmar.mi.api.register.block.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

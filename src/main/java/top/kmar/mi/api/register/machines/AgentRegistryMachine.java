@@ -5,7 +5,7 @@ import top.kmar.mi.api.electricity.interfaces.IEleInputer;
 import top.kmar.mi.api.electricity.interfaces.IEleOutputer;
 import top.kmar.mi.api.electricity.interfaces.IEleTransfer;
 import top.kmar.mi.api.register.AutoRegisterMachine;
-import top.kmar.mi.api.register.agent.AutoAgentRegister;
+import top.kmar.mi.api.register.others.AutoAgentRegister;
 
 import javax.annotation.Nonnull;
 

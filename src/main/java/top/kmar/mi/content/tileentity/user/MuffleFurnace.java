@@ -8,7 +8,7 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
-import top.kmar.mi.api.register.others.AutoTileEntity;
+import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.BaseTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.data.properties.MIProperty;

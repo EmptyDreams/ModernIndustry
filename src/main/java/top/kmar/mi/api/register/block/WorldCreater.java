@@ -7,6 +7,7 @@ import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.terraingen.OreGenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import top.kmar.mi.api.register.block.annotations.OreCreate;
 import top.kmar.mi.api.register.machines.BlockRegistryMachine;
 
 import javax.annotation.Nonnull;

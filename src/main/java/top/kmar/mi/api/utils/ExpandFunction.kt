@@ -35,6 +35,12 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.sqrt
 
+/** 在客户端执行一段代码 */
+inline fun <T> T.applyClient(block: T.() -> Unit): T {
+    if (WorldUtil.isClient()) block()
+    return this
+}
+
 /**
  * 将颜色转为Int表达
  *

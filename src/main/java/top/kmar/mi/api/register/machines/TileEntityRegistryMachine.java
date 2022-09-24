@@ -4,7 +4,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import top.kmar.mi.api.register.AutoRegisterMachine;
-import top.kmar.mi.api.register.others.AutoTileEntity;
+import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 
 import javax.annotation.Nonnull;
 

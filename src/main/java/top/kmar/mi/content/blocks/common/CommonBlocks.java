@@ -6,7 +6,7 @@ import top.kmar.mi.ModernIndustry;
 import top.kmar.mi.api.register.OreDicRegister;
 import top.kmar.mi.api.utils.StringUtil;
 import top.kmar.mi.api.register.others.AutoManager;
-import top.kmar.mi.api.register.block.OreCreate;
+import top.kmar.mi.api.register.block.annotations.OreCreate;
 import top.kmar.mi.content.items.common.CommonItems;
 
 import static top.kmar.mi.api.utils.StringUtil.getUnlocalizedName;

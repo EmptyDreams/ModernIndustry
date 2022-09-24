@@ -1,4 +1,4 @@
-package top.kmar.mi.api.register.agent;
+package top.kmar.mi.api.register.others;
 
 import top.kmar.mi.api.electricity.interfaces.IEleInputer;
 import top.kmar.mi.api.electricity.interfaces.IEleOutputer;

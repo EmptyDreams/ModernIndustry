@@ -1,6 +1,6 @@
 package top.kmar.mi.content.tileentity.user;
 
-import top.kmar.mi.api.register.others.AutoTileEntity;
+import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 
 /**
  * 高温火炉的TileEntity

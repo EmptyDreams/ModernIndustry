@@ -5,7 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraftforge.oredict.OreDictionary;
 import top.kmar.mi.api.register.AutoRegisterMachine;
-import top.kmar.mi.api.register.block.AutoBlockRegister;
+import top.kmar.mi.api.register.block.annotations.AutoBlockRegister;
 import top.kmar.mi.api.register.block.WorldCreater;
 import top.kmar.mi.api.register.sorter.BlockSorter;
 

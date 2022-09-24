@@ -10,6 +10,7 @@ import top.kmar.mi.api.register.machines.AutoLoadMachine;
 import top.kmar.mi.api.register.machines.AutoManagerRegistryMachine;
 import top.kmar.mi.api.register.machines.AutoTypeRegistryMachine;
 import top.kmar.mi.api.register.machines.BlockRegistryMachine;
+import top.kmar.mi.api.register.machines.CmptRegistryMachine;
 import top.kmar.mi.api.register.machines.FluidRegistryMachine;
 import top.kmar.mi.api.register.machines.ItemRegistryMachine;
 import top.kmar.mi.api.register.machines.ManagerRegistryMachine;
@@ -60,6 +61,7 @@ public final class AutoRegister {
 	}
 	
 	private static void registry(String key, AutoRegisterMachine register) {
+		if (isInit) throw new AssertionError("不能在初始化后继续注册注册机");
 		StringUtil.checkNull(key, "key");
 		StringUtil.checkNull(register, "register");
 		if (!key.contains(":"))
@@ -79,6 +81,7 @@ public final class AutoRegister {
 		event.registryByClass(MODID, new OreCreateRegistryMachine());
 		event.registryByClass(MODID, new PlayerHandleRegistryMachine());
 		event.registryByClass(MODID, new TileEntityRegistryMachine());
+		event.registryByClass(MODID, CmptRegistryMachine.INSTANCE);
 		event.registryByClass(MODID, new AutoTypeRegistryMachine());
 	}
 	

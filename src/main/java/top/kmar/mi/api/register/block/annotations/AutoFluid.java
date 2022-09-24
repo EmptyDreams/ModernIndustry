@@ -1,4 +1,4 @@
-package top.kmar.mi.api.register.others;
+package top.kmar.mi.api.register.block.annotations;
 
 import net.minecraft.creativetab.CreativeTabs;
 

@@ -19,7 +19,7 @@ import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.fluid.data.FluidQueue
 import top.kmar.mi.api.fluid.data.TransportReport
 import top.kmar.mi.api.net.IAutoNetwork
-import top.kmar.mi.api.register.others.AutoTileEntity
+import top.kmar.mi.api.register.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
 import top.kmar.mi.api.utils.*
 import top.kmar.mi.api.utils.container.IndexEnumMap

@@ -11,7 +11,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
 import top.kmar.mi.api.electricity.clock.NonCounter;
 import top.kmar.mi.api.electricity.info.EleEnergy;
-import top.kmar.mi.api.register.others.AutoTileEntity;
+import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.content.blocks.CommonUtil;
