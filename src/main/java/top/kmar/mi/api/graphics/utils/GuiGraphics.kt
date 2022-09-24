@@ -32,12 +32,48 @@ class GuiGraphics(
     /** 超出控件绘制区域的内容是否裁剪 */
     var overflowHidden = true
 
+    /** 以指定点为中心绘制字符串 */
+    fun drawStringCenter(centerX: Int, centerY: Int, text: String, color: Int) {
+        val render = Minecraft.getMinecraft().fontRenderer
+        val width = render.getStringWidth(text)
+        val height = render.FONT_HEIGHT
+        val x = centerX - (width shr 1)
+        val y = centerY - (height shr 1)
+        drawString(x, y, text, color)
+    }
+
+    /** 绘制一个字符串 */
+    fun drawString(x: Int, y: Int, text: String, color: Int = 0) {
+        scissor()
+        val left = container.guiLeft + this.x + x
+        val top = container.guiTop + this.y + y
+        Minecraft.getMinecraft().fontRenderer.drawString(text, left, top, color)
+        unscissor()
+    }
+
+    /**
+     * 绘制材质
+     * @param x 绘制区域X坐标
+     * @param y 绘制区域Y坐标
+     * @param u 要绘制的内容在材质中的X坐标
+     * @param v 要绘制的内容在材质中的Y坐标
+     * @param width 要绘制的内容的宽度
+     * @param height 要绘制的内容的宽度
+     */
+    fun drawTexture(x: Int, y: Int, u: Int, v: Int, width: Int, height: Int) {
+        if (!scissor()) return
+        val left = container.guiLeft + this.x + x
+        val top = container.guiTop + this.y + y
+        container.drawTexturedModalRect(left, top, u, v, width, height)
+        unscissor()
+    }
+
     /** 按照指定颜色填充矩形 */
     fun fillRect(x: Int, y: Int, width: Int, height: Int, color: Int) {
         val tessellator = Tessellator.getInstance()
         val bufferBuilder = tessellator.buffer
-        val left = (x + container.guiLeft).toDouble()
-        val top = (y + container.guiTop).toDouble()
+        val left = (x + container.guiLeft + this.x).toDouble()
+        val top = (y + container.guiTop + this.y).toDouble()
         val right = left + width
         val bottom = top + height
         enableBlend()
