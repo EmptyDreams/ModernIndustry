@@ -41,8 +41,6 @@ class GraphicsStyle(
     /** 左描边 */
     val borderLeft = BorderStyle()
 
-
-
     /** 定位方法 */
     var position = PositionEnum.RELATIVE
     /** 原始X坐标 */
@@ -89,7 +87,8 @@ class GraphicsStyle(
     val endY: Int
         get() = y + height
 
-    private val parentStyle = cmpt.parent.client.style
+    private val parentStyle: GraphicsStyle
+        get() = cmpt.parent.client.style
 
     /** 返回控件所占区域 */
     val area: Rect2D

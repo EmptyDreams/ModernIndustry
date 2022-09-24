@@ -43,7 +43,11 @@ interface CmptClient {
     }
 
     /** 渲染这个控件及子控件 */
-    fun render(graphics: GuiGraphics)
+    fun render(graphics: GuiGraphics) {
+        renderBackground(graphics)
+        renderBorder(graphics)
+        renderChildren(graphics)
+    }
 
     /** 渲染背景 */
     fun renderBackground(graphics: GuiGraphics) {

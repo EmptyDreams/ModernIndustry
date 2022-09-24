@@ -107,7 +107,10 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
     }
 
     override val service = inventorySlots.document
-    override val style = GraphicsStyle(service)
+    override val style = GraphicsStyle(service).apply {
+        width = this@BaseGraphicsClient.width
+        height = this@BaseGraphicsClient.height
+    }
 
     override fun render(graphics: GuiGraphics) {
         renderChildren(graphics)

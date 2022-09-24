@@ -21,7 +21,7 @@ class BackgroundGraphics(id: String) : Cmpt(id) {
     inner class BackgroundGraphicsClient : CmptClient {
 
         override val service = this@BackgroundGraphics
-        override val style = GraphicsStyle().apply {
+        override val style = GraphicsStyle(service).apply {
             borderTop.color = Color.WHITE
             borderRight.color = Color(85, 85, 85)
             borderBottom.color = borderRight.color
