@@ -28,11 +28,24 @@ import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.utils.data.math.Point3D
 import top.kmar.mi.api.utils.data.math.Range3D
 import top.kmar.mi.api.utils.iterators.ArrayFlipIterator
+import java.awt.Color
 import java.lang.Integer.max
 import java.nio.charset.StandardCharsets
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.sqrt
+
+/**
+ * 将颜色转为Int表达
+ *
+ * 格式：(Alpha Red Green Blue) 每个值占8bit
+ */
+fun Color.toInt(): Int {
+    val red = this.red shl 16
+    val green = this.green shl 8
+    val alpha = this.alpha shl 24
+    return red or green or blue or alpha
+}
 
 /** 如果表达式为真则倒序遍历，否则正序遍历 */
 infix fun <T> Array<T>.flipIf(isFlip: Boolean) =

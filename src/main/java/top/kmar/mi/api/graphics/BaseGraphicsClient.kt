@@ -4,8 +4,8 @@ import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet
 import net.minecraft.client.gui.inventory.GuiContainer
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
-import top.kmar.mi.api.graphics.components.Cmpt
-import top.kmar.mi.api.graphics.components.CmptClient
+import top.kmar.mi.api.graphics.components.interfaces.Cmpt
+import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.listeners.*
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardPressed
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardReleased
@@ -52,7 +52,8 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
     }
 
     override fun drawGuiContainerBackgroundLayer(partialTicks: Float, mouseX: Int, mouseY: Int) {
-
+        val graphics = GuiGraphics(0, 0, width, height, this)
+        render(graphics)
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {

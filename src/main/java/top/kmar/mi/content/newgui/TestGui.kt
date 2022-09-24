@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.GuiLoader
-import top.kmar.mi.api.utils.MISysInfo
+import top.kmar.mi.api.graphics.components.MaskGraphics
 
 /**
  *
@@ -16,7 +16,8 @@ import top.kmar.mi.api.utils.MISysInfo
 class TestGui : BaseGraphics() {
 
     override fun init(player: EntityPlayer, pos: BlockPos) {
-        MISysInfo.print(player)
+        val mask = MaskGraphics("mask")
+        addChild(mask)
     }
 
     companion object {

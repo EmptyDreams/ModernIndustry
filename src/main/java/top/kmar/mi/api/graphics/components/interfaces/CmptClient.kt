@@ -1,4 +1,4 @@
-package top.kmar.mi.api.graphics.components
+package top.kmar.mi.api.graphics.components.interfaces
 
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics

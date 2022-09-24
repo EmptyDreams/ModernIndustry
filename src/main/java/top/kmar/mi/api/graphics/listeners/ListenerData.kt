@@ -1,6 +1,6 @@
 package top.kmar.mi.api.graphics.listeners
 
-import top.kmar.mi.api.graphics.components.Cmpt
+import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 
 /**
  * GUI事件的父类

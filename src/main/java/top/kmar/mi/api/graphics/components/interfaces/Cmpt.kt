@@ -1,4 +1,4 @@
-package top.kmar.mi.api.graphics.components
+package top.kmar.mi.api.graphics.components.interfaces
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectRBTreeMap
 import net.minecraftforge.fml.relauncher.Side

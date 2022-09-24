@@ -1,4 +1,4 @@
-package top.kmar.mi.api.graphics.components
+package top.kmar.mi.api.graphics.components.interfaces
 
 /**
  * 构建控件时用到的额外数据
