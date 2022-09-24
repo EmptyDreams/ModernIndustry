@@ -5,5 +5,5 @@ package top.kmar.mi.api.register.others
 @MustBeDocumented
 annotation class AutoCmpt(
     /** 控件的tag */
-    val tag: String
+    val value: String
 )

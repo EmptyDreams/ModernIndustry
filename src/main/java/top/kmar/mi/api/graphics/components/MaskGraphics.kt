@@ -5,13 +5,15 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
+import top.kmar.mi.api.register.others.AutoCmpt
 import top.kmar.mi.api.utils.toInt
 import java.awt.Color
 
 /**
- *
+ * 蒙版
  * @author EmptyDreams
  */
+@AutoCmpt("mask")
 class MaskGraphics(override val id: String) : Cmpt() {
 
     override fun initClientObj() = MaskClient()

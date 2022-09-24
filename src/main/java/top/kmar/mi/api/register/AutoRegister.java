@@ -41,8 +41,8 @@ public final class AutoRegister {
 	/** 初始化注册机 */
 	public static void init() {
 		if (isInit) return;
-		isInit = true;
 		MinecraftForge.EVENT_BUS.post(new AutoRegisterRegistryEvent());
+		isInit = true;
 		registryAll();
 	}
 	

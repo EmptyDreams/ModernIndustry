@@ -22,7 +22,7 @@ object CmptRegistryMachine : AutoRegisterMachine<AutoCmpt, Any>() {
             return MISysInfo.err("控件类必须从Cmpt类继承")
         }
         @Suppress("UNCHECKED_CAST")
-        CmptRegister.registry(annotation.tag, clazz as Class<Cmpt>)
+        CmptRegister.registry(annotation.value, clazz as Class<Cmpt>)
     }
 
 }
