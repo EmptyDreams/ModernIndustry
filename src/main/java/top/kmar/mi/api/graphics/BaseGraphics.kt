@@ -52,9 +52,7 @@ abstract class BaseGraphics : Container() {
     /** 通过ID获取元素 */
     fun getElementByID(id: String) = document.getElementByID(id)
 
-    inner class DocumentCmpt : Cmpt() {
-
-        override val id = "document"
+    inner class DocumentCmpt : Cmpt("document") {
 
         @SideOnly(Side.CLIENT)
         override fun initClientObj(): CmptClient =

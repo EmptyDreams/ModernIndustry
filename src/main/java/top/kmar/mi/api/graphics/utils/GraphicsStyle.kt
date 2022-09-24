@@ -9,6 +9,12 @@ import java.awt.Color
  */
 class GraphicsStyle {
 
+    companion object {
+
+        val transparent = Color(0, 0, 0, 0)
+
+    }
+
     var x: Int = 0
     var y: Int = 0
     var width: Int = 0
@@ -16,10 +22,27 @@ class GraphicsStyle {
     /** 颜色 */
     var color: Color = Color.BLACK
     /** 背景色 */
-    var backgroundColor: Color = Color(0, 0, 0, 0)
+    var backgroundColor = transparent
+    /** 上描边 */
+    val borderTop = BorderStyle()
+    /** 右描边 */
+    val borderRight = BorderStyle()
+    /** 底描边 */
+    val borderBottom = BorderStyle()
+    /** 左描边 */
+    val borderLeft = BorderStyle()
 
     /** 返回控件所占区域 */
     val area: Rect2D
         get() = Rect2D(x, y, width, height)
+
+    class BorderStyle {
+
+        /** 描边颜色 */
+        var color = transparent
+        /** 描边粗细 */
+        var weight = 1
+
+    }
 
 }

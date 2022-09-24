@@ -1,6 +1,5 @@
 package top.kmar.mi.api.graphics.components
 
-import net.minecraft.client.Minecraft
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
@@ -14,7 +13,7 @@ import java.awt.Color
  * @author EmptyDreams
  */
 @AutoCmpt("mask")
-class MaskGraphics(override val id: String) : Cmpt() {
+class MaskGraphics(id: String) : Cmpt(id) {
 
     override fun initClientObj() = MaskClient()
 
@@ -28,12 +27,12 @@ class MaskGraphics(override val id: String) : Cmpt() {
         override fun render(graphics: GuiGraphics) {
             graphics.overflowHidden = false
             val container = graphics.container
-            val mc = Minecraft.getMinecraft()
             graphics.fillRect(
-                -container.guiLeft, -container.guiTop,
-                mc.displayWidth, mc.displayHeight,
+                0, 0,
+                container.width, container.height,
                 style.backgroundColor.toInt()
             )
+            renderChildren(graphics)
         }
 
     }

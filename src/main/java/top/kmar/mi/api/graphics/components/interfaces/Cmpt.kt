@@ -18,13 +18,14 @@ import java.util.*
  * 控件的服务端接口
  * @author EmptyDreams
  */
-abstract class Cmpt {
+abstract class Cmpt(
+    /** 控件ID，整个GUI中ID不能重复 */
+    val id: String
+) {
 
     /** 客户端对象，一个服务端对象对应且仅对应一个客户端对象 */
     @get:SideOnly(Side.CLIENT)
     val client by lazy(LazyThreadSafetyMode.NONE) { initClientObj() }
-    /** 控件ID，整个GUI中ID不能重复 */
-    abstract val id: String
     /** 子控件列表 */
     private val childrenList = LinkedList<Cmpt>()
     /** 事件列表 */
@@ -124,9 +125,7 @@ abstract class Cmpt {
     companion object {
 
         /** 无效的控件对象 */
-        val EMPTY_CMPT = object : Cmpt() {
-            override val id: String
-                get() = throw UnsupportedOperationException()
+        val EMPTY_CMPT = object : Cmpt("null") {
 
             override fun initClientObj(): CmptClient {
                 throw UnsupportedOperationException()

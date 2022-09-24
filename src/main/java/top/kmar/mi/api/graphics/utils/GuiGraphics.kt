@@ -1,10 +1,8 @@
 package top.kmar.mi.api.graphics.utils
 
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
-import net.minecraft.client.renderer.GlStateManager.*
-import net.minecraft.client.renderer.Tessellator
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.opengl.GL11
@@ -17,9 +15,9 @@ import top.kmar.mi.api.utils.data.math.Rect2D
  */
 @SideOnly(Side.CLIENT)
 class GuiGraphics(
-    /** 绘制区域起始X坐标（相对于GUI） */
+    /** 绘制区域起始X坐标（相对于窗体） */
     val x: Int,
-    /** 绘制区域起始Y坐标（相对于GUI） */
+    /** 绘制区域起始Y坐标（相对于窗体） */
     val y: Int,
     /** 绘制区域宽度 */
     val width: Int,
@@ -33,7 +31,7 @@ class GuiGraphics(
     var overflowHidden = true
 
     /** 以指定点为中心绘制字符串 */
-    fun drawStringCenter(centerX: Int, centerY: Int, text: String, color: Int) {
+    fun drawStringCenter(centerX: Int, centerY: Int, text: String, color: Int = 0) {
         val render = Minecraft.getMinecraft().fontRenderer
         val width = render.getStringWidth(text)
         val height = render.FONT_HEIGHT
@@ -45,8 +43,8 @@ class GuiGraphics(
     /** 绘制一个字符串 */
     fun drawString(x: Int, y: Int, text: String, color: Int = 0) {
         scissor()
-        val left = container.guiLeft + this.x + x
-        val top = container.guiTop + this.y + y
+        val left = this.x + x
+        val top = this.y + y
         Minecraft.getMinecraft().fontRenderer.drawString(text, left, top, color)
         unscissor()
     }
@@ -62,39 +60,19 @@ class GuiGraphics(
      */
     fun drawTexture(x: Int, y: Int, u: Int, v: Int, width: Int, height: Int) {
         if (!scissor()) return
-        val left = container.guiLeft + this.x + x
-        val top = container.guiTop + this.y + y
+        val left = this.x + x
+        val top = this.y + y
         container.drawTexturedModalRect(left, top, u, v, width, height)
         unscissor()
     }
 
     /** 按照指定颜色填充矩形 */
     fun fillRect(x: Int, y: Int, width: Int, height: Int, color: Int) {
-        val tessellator = Tessellator.getInstance()
-        val bufferBuilder = tessellator.buffer
-        val left = (x + container.guiLeft + this.x).toDouble()
-        val top = (y + container.guiTop + this.y).toDouble()
+        val left = x + this.x
+        val top = y + this.y
         val right = left + width
         val bottom = top + height
-        enableBlend()
-        disableTexture2D()
-        scissor()
-        tryBlendFuncSeparate(
-            SourceFactor.SRC_ALPHA,
-            DestFactor.ONE_MINUS_SRC_ALPHA,
-            SourceFactor.ONE,
-            DestFactor.ZERO
-        )
-        initColor(color)
-        bufferBuilder.begin(7, DefaultVertexFormats.POSITION)
-        bufferBuilder.pos(left, right, 0.0).endVertex()
-        bufferBuilder.pos(right, bottom, 0.0).endVertex()
-        bufferBuilder.pos(right, top, 0.0).endVertex()
-        bufferBuilder.pos(left, top, 0.0).endVertex()
-        tessellator.draw()
-        unscissor()
-        enableTexture2D()
-        disableBlend()
+        Gui.drawRect(left, top, right, bottom, color)
     }
 
     /**
@@ -141,14 +119,5 @@ class GuiGraphics(
 
     /** 通知GL结束裁剪 */
     private fun unscissor() = GL11.glDisable(GL11.GL_SCISSOR_TEST)
-
-    /** 初始化画笔颜色 */
-    private fun initColor(color: Int) {
-        val red = (color shr 16 and 255).toFloat() / 255.0F
-        val green = (color shr 8 and 255).toFloat() / 255.0F
-        val blue = (color and 255).toFloat() / 255.0f
-        val alpha = (color shr 24 and 255).toFloat() / 255.0F
-        color(red, green, blue, alpha)
-    }
 
 }
