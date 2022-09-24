@@ -20,7 +20,7 @@ public final class IOUtil {
 	public static void sendBlockMessageIfNotUpdate(
 			TileEntity te, Collection<UUID> players, int r, Supplier<IDataReader> readerSupplier) {
 		Range3D netRange = new Range3D(te.getPos(), r);
-		MessageSender.sendToClientIf(te.getWorld(),  player -> {
+		MessageSender.send2ClientIf(te.getWorld(), player -> {
 			if (players.contains(player.getUniqueID()) || !netRange.isIn(new Point3D(player))) return false;
 			players.add(player.getUniqueID());
 			return true;

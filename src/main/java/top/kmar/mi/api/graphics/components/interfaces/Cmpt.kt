@@ -1,11 +1,16 @@
 package top.kmar.mi.api.graphics.components.interfaces
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectRBTreeMap
+import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
+import top.kmar.mi.api.net.handler.MessageSender
+import top.kmar.mi.api.net.message.graphics.GraphicsAddition
+import top.kmar.mi.api.net.message.graphics.GraphicsMessage
 import top.kmar.mi.api.utils.MISysInfo
 import java.util.*
 
@@ -34,8 +39,10 @@ abstract class Cmpt {
     /** 接收从客户端发送的信息 */
     open fun receive(message: IDataReader) {}
 
-    fun send2Client(message: IDataReader) {
-
+    /** 发送信息到客户端 */
+    fun send2Client(player: EntityPlayer,  message: IDataReader) {
+        val pack = GraphicsMessage.create(message, GraphicsAddition(id))
+        MessageSender.send2Client(player as EntityPlayerMP, pack)
     }
 
     fun hasParent(): Boolean = parent != EMPTY_CMPT

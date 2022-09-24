@@ -3,6 +3,9 @@ package top.kmar.mi.api.graphics.components.interfaces
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
+import top.kmar.mi.api.net.handler.MessageSender
+import top.kmar.mi.api.net.message.graphics.GraphicsAddition
+import top.kmar.mi.api.net.message.graphics.GraphicsMessage
 import top.kmar.mi.api.utils.data.math.Point2D
 
 /**
@@ -19,6 +22,12 @@ interface CmptClient {
 
     /** 接收从服务端发送的信息 */
     fun receive(message: IDataReader) {}
+
+    /** 发送信息到服务端 */
+    fun send2Service(message: IDataReader) {
+        val pack = GraphicsMessage.create(message, GraphicsAddition(service.id))
+        MessageSender.send2Server(pack)
+    }
 
     /** 渲染所有子控件 */
     fun renderChildren(graphics: GuiGraphics) {

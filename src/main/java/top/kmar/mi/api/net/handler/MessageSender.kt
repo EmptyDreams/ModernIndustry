@@ -17,90 +17,88 @@ import java.util.function.Predicate
  * 发送消息的工具类
  * @author EmptyDreams
  */
-class MessageSender {
+object MessageSender {
 
-    companion object {
-        /**
-         * 发送信息到服务端
-         * @param message 消息
-         */
-        @SideOnly(Side.CLIENT)
-        @JvmStatic
-        fun sendToServer(message: IMessage) {
-            NetworkLoader.instance().sendToServer(message)
-        }
+    /**
+     * 发送信息到服务端
+     * @param message 消息
+     */
+    @SideOnly(Side.CLIENT)
+    @JvmStatic
+    fun send2Server(message: IMessage) {
+        NetworkLoader.instance().sendToServer(message)
+    }
 
-        /**
-         * 发送消息到在指定世界指定范围内的所有玩家
-         * @param world 世界
-         * @param range 范围
-         * @param messageSupplier 生成信息内容
-         */
-        @JvmStatic
-        fun sendToClientAround(world: World, range: Range3D, messageSupplier: () -> IMessage) {
-            val message by lazy(LazyThreadSafetyMode.PUBLICATION) { messageSupplier() }
-            world.forEachPlayersAround(range) { sendToClient(it as EntityPlayerMP, message) }
-        }
+    /**
+     * 发送消息到在指定世界指定范围内的所有玩家
+     * @param world 世界
+     * @param range 范围
+     * @param messageSupplier 生成信息内容
+     */
+    @JvmStatic
+    fun send2ClientAround(world: World, range: Range3D, messageSupplier: () -> IMessage) {
+        val message by lazy(LazyThreadSafetyMode.PUBLICATION) { messageSupplier() }
+        world.forEachPlayersAround(range) { send2Client(it as EntityPlayerMP, message) }
+    }
 
-        /**
-         * 发送信息到指定世界中满足条件的所有玩家
-         * @param world 世界对象
-         * @param test 条件表达式
-         * @param messageSupplier 生成信息内容
-         * @throws ClassCastException 如果world中存储的用户对象不是[EntityPlayerMP]
-         */
-        @JvmStatic
-        fun sendToClientIf(world: World, test: (EntityPlayer) -> Boolean, messageSupplier: () -> IMessage) {
-            val message by lazy(LazyThreadSafetyMode.PUBLICATION) { messageSupplier() }
-            world.forEachPlayers {
-                if (test(it)) sendToClient(it as EntityPlayerMP, message)
-            }
+    /**
+     * 发送信息到指定世界中满足条件的所有玩家
+     * @param world 世界对象
+     * @param test 条件表达式
+     * @param messageSupplier 生成信息内容
+     * @throws ClassCastException 如果world中存储的用户对象不是[EntityPlayerMP]
+     */
+    @JvmStatic
+    fun send2ClientIf(world: World, test: (EntityPlayer) -> Boolean, messageSupplier: () -> IMessage) {
+        val message by lazy(LazyThreadSafetyMode.PUBLICATION) { messageSupplier() }
+        world.forEachPlayers {
+            if (test(it)) send2Client(it as EntityPlayerMP, message)
         }
+    }
 
-        /**
-         * 发送信息到指定世界中的所有玩家
-         * @param world 世界对象
-         * @param messageSupplier 生成信息内容
-         * @throws ClassCastException 如果world中存储的用户对象不是[EntityPlayerMP]
-         */
-        @JvmStatic
-        fun sendToClient(world: World, messageSupplier: () -> IMessage) {
-            val message by lazy(LazyThreadSafetyMode.PUBLICATION) { messageSupplier() }
-            world.forEachPlayers { sendToClient(it as EntityPlayerMP, message) }
-        }
+    /**
+     * 发送信息到指定世界中的所有玩家
+     * @param world 世界对象
+     * @param messageSupplier 生成信息内容
+     * @throws ClassCastException 如果world中存储的用户对象不是[EntityPlayerMP]
+     */
+    @JvmStatic
+    fun send2Client(world: World, messageSupplier: () -> IMessage) {
+        val message by lazy(LazyThreadSafetyMode.PUBLICATION) { messageSupplier() }
+        world.forEachPlayers { send2Client(it as EntityPlayerMP, message) }
+    }
 
-        /**
-         * 遍历世界中所有玩家，如果玩家满足指定要求则发送消息给玩家
-         * @param test 条件表达式
-         * @param messageSupplier 生成信息内容
-         * @throws ClassCastException 如果world中存储的用户对象不是[EntityPlayerMP]
-         */
-        @JvmStatic
-        fun sendToClientIf(test: Predicate<EntityPlayer>, messageSupplier: () -> IMessage) {
-            val message by lazy(LazyThreadSafetyMode.PUBLICATION) { messageSupplier() }
-            WorldUtil.forEachPlayers {
-                if (test.test(it)) sendToClient(it as EntityPlayerMP, message)
-            }
+    /**
+     * 遍历世界中所有玩家，如果玩家满足指定要求则发送消息给玩家
+     * @param test 条件表达式
+     * @param messageSupplier 生成信息内容
+     * @throws ClassCastException 如果world中存储的用户对象不是[EntityPlayerMP]
+     */
+    @JvmStatic
+    fun send2ClientIf(test: Predicate<EntityPlayer>, messageSupplier: () -> IMessage) {
+        val message by lazy(LazyThreadSafetyMode.PUBLICATION) { messageSupplier() }
+        WorldUtil.forEachPlayers {
+            if (test.test(it)) send2Client(it as EntityPlayerMP, message)
         }
+    }
 
-        /**
-         * 将消息发送到指定玩家
-         * @param message 信息
-         */
-        @JvmStatic
-        fun sendToClientAll(message: IMessage) {
-            NetworkLoader.instance().sendToAll(message)
-        }
+    /**
+     * 将消息发送到指定玩家
+     * @param message 信息
+     */
+    @JvmStatic
+    fun send2ClientAll(message: IMessage) {
+        NetworkLoader.instance().sendToAll(message)
+    }
 
-        /**
-         * 将消息发送到指定玩家
-         * @param player 玩家对象
-         * @param message 信息
-         */
-        @JvmStatic
-        fun sendToClient(player: EntityPlayerMP, message: IMessage) {
-            NetworkLoader.instance().sendTo(message, player)
-        }
+    /**
+     * 将消息发送到指定玩家
+     * @param player 玩家对象
+     * @param message 信息
+     */
+    @JvmStatic
+    fun send2Client(player: EntityPlayerMP, message: IMessage) {
+        NetworkLoader.instance().sendTo(message, player)
     }
 
 }
