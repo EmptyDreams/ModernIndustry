@@ -9,6 +9,7 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
+import kotlin.LazyThreadSafetyMode.NONE
 
 /**
  *
@@ -19,7 +20,7 @@ abstract class BaseGraphics : Container() {
     /** 容器对象 */
     val document = DocumentCmpt()
     @get:SideOnly(Side.CLIENT)
-    val client by lazy(LazyThreadSafetyMode.NONE) { document.client }
+    val client by lazy(NONE) { document.client as BaseGraphicsClient }
 
     /** 是否可以被指定玩家打开 */
     override fun canInteractWith(playerIn: EntityPlayer): Boolean {

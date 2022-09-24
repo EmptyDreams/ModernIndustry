@@ -77,14 +77,14 @@ class GuiGraphics(
 
     /**
      * 创建一个子画笔并继承当前画笔的设置
-     * @param x 子画笔的X轴坐标（相对于父画笔）
-     * @param y 子画笔的Y轴坐标（相对于父画笔）
+     * @param x 子画笔的X轴坐标（相对于窗体）
+     * @param y 子画笔的Y轴坐标（相对于窗体）
      * @param width 子画笔宽度
      * @param height 子画笔高度
      */
     fun createGraphics(x: Int, y: Int, width: Int, height: Int): GuiGraphics {
         val thisRect = Rect2D(this.x, this.y, this.width, this.height)
-        val thatRect = Rect2D(this.x + x, this.y + y, width, height)
+        val thatRect = Rect2D(x, y, width, height)
         val rect = thisRect.intersect(thatRect)
         return GuiGraphics(rect.x, rect.y, rect.width, rect.height, container).apply {
             overflowHidden = this@GuiGraphics.overflowHidden

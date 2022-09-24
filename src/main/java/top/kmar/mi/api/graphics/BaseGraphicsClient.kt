@@ -79,7 +79,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
                 if (message.cancel) {
                     if (isEnter) enter = false
                     else exit = false
-                } else task(it, x - style.x, y - style.y)
+                } else task(it, x, y)
             }
             return null == cmpt.eachChildren {
                 val style = it.client.style
@@ -107,7 +107,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
     }
 
     override val service = inventorySlots.document
-    override val style = GraphicsStyle()
+    override val style = GraphicsStyle(service)
 
     override fun render(graphics: GuiGraphics) {
         renderChildren(graphics)

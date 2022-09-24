@@ -35,6 +35,16 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.sqrt
 
+/** 比较字符串是否相等（忽略大小写） */
+fun String.equalsIgnoreCase(that: String): Boolean {
+    if (length != that.length) return false
+    for (i in indices) {
+        if (this[i].lowercaseChar() != that[i].lowercaseChar())
+            return false
+    }
+    return true
+}
+
 /** 在客户端执行一段代码 */
 inline fun <T> T.applyClient(block: T.() -> Unit): T {
     if (WorldUtil.isClient()) block()

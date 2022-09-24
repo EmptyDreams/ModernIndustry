@@ -34,7 +34,7 @@ public final class WorldUtil {
 	
 	/** 获取本地玩家对象 */
 	@SideOnly(Side.CLIENT)
-	public static EntityPlayer getPlayerAtClient() {
+	public static EntityPlayer getClientPlayer() {
 		return Minecraft.getMinecraft().player;
 	}
 	
@@ -43,7 +43,7 @@ public final class WorldUtil {
 	 * @return 若玩家不存在则返回null
 	 */
 	public static EntityPlayer getPlayer(UUID uuid) {
-		if (isClient()) return getPlayerAtClient();
+		if (isClient()) return getClientPlayer();
 		return getPlayerAtService(uuid);
 	}
 	
