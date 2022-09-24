@@ -9,6 +9,7 @@ import top.kmar.mi.api.event.NetWorkRegistryEvent;
 import top.kmar.mi.api.net.message.IMessageHandle;
 import top.kmar.mi.api.net.message.ParseAddition;
 import top.kmar.mi.api.net.message.block.BlockMessage;
+import top.kmar.mi.api.net.message.graphics.GraphicsMessage;
 import top.kmar.mi.api.net.message.player.PlayerMessage;
 import top.kmar.mi.api.utils.MISysInfo;
 import top.kmar.mi.api.utils.StringUtil;
@@ -94,7 +95,7 @@ public final class MessageRegister {
 	
 	@SubscribeEvent
 	public static void registryMessage(NetWorkRegistryEvent event) {
-		event.registry(BlockMessage.instance(), PlayerMessage.instance());
+		event.registry(BlockMessage.instance(), PlayerMessage.instance(), GraphicsMessage.INSTANCE);
 	}
 	
 }

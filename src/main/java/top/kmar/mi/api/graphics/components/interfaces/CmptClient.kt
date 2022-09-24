@@ -1,5 +1,6 @@
 package top.kmar.mi.api.graphics.components.interfaces
 
+import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.utils.data.math.Point2D
@@ -15,6 +16,9 @@ interface CmptClient {
 
     /** 样式表 */
     val style: GraphicsStyle
+
+    /** 接收从服务端发送的信息 */
+    fun receive(message: IDataReader) {}
 
     /** 渲染所有子控件 */
     fun renderChildren(graphics: GuiGraphics) {

@@ -3,6 +3,7 @@ package top.kmar.mi.api.graphics.components.interfaces
 import it.unimi.dsi.fastutil.objects.Object2ObjectRBTreeMap
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
+import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
 import top.kmar.mi.api.utils.MISysInfo
@@ -29,6 +30,13 @@ abstract class Cmpt {
     /** 初始化客户端对象 */
     @SideOnly(Side.CLIENT)
     abstract fun initClientObj(): CmptClient
+
+    /** 接收从客户端发送的信息 */
+    open fun receive(message: IDataReader) {}
+
+    fun send2Client(message: IDataReader) {
+
+    }
 
     fun hasParent(): Boolean = parent != EMPTY_CMPT
 
