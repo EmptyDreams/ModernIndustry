@@ -12,13 +12,18 @@ import top.kmar.mi.api.graphics.listeners.ListenerData
 import kotlin.LazyThreadSafetyMode.NONE
 
 /**
- *
+ * 服务端GUI窗体对象
  * @author EmptyDreams
  */
 abstract class BaseGraphics : Container() {
 
     /** 容器对象 */
     val document = DocumentCmpt()
+    /**
+     * 客户端对象
+     *
+     * 保证在第一次尝试获取该对象时客户端GUI已经完成初始化
+     */
     @get:SideOnly(Side.CLIENT)
     val client by lazy(NONE) { document.client as BaseGraphicsClient }
 
@@ -29,6 +34,9 @@ abstract class BaseGraphics : Container() {
 
     /**
      * 初始化GUI
+     *
+     * 调用该方法时，不保证客户端对象已经完成初始化
+     *
      * @param player 打开GUI的玩家
      * @param pos 触发GUI的位置
      */

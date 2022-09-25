@@ -15,9 +15,16 @@ import top.kmar.mi.api.utils.data.math.Point2D
 
 /**
  * 客户端GUI对象
+ *
  * @author EmptyDreams
  */
 class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventorySlots), CmptClient {
+
+    override val service = inventorySlots.document
+    override val style = GraphicsStyle(service).apply {
+        width = this@BaseGraphicsClient.width
+        height = this@BaseGraphicsClient.height
+    }
 
     /** 发布鼠标事件 */
     private fun dispatchMouseEvent(mouseX: Int, mouseY: Int, mouseButton: Int, isClick: Boolean) {
@@ -107,12 +114,6 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
         if (scroll == 0) return
         service.dispatchEvent(IGraphicsListener.mouseScroll,
             MouseScrollEventData(scroll, mouseX, mouseY, mouseX, mouseY))
-    }
-
-    override val service = inventorySlots.document
-    override val style = GraphicsStyle(service).apply {
-        width = this@BaseGraphicsClient.width
-        height = this@BaseGraphicsClient.height
     }
 
     override fun render(graphics: GuiGraphics) {

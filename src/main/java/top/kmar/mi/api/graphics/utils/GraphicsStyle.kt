@@ -1,3 +1,5 @@
+@file:Suppress("DuplicatedCode")
+
 package top.kmar.mi.api.graphics.utils
 
 import net.minecraftforge.fml.relauncher.Side
@@ -41,6 +43,25 @@ class GraphicsStyle(
     /** 左描边 */
     val borderLeft = BorderStyle()
 
+    /** 上边距 */
+    var marginTop = 0
+    /** 右边距 */
+    var marginRight = 0
+    /** 下编剧 */
+    var marginBottom = 0
+    /** 左边距 */
+    var marginLeft = 0
+
+    /** 水平对齐方式 */
+    var alignHorizontal = HorizontalAlignModeEnum.MIDDLE
+
+    /** 控件占用空间宽度 */
+    val spaceWidth: Int
+        get() = width + marginLeft + marginRight
+    /** 控件占用控件高度 */
+    val spaceHeight: Int
+        get() = height + marginTop + marginBottom
+
     /** 定位方法 */
     var position = PositionEnum.RELATIVE
     /** 原始X坐标 */
@@ -58,7 +79,9 @@ class GraphicsStyle(
 
     /** 控件X坐标，相对于窗体 */
     val x: Int
-        get() = when (position) {
+        get() {
+            if (posChange) alignChildren()
+            return when (position) {
                 PositionEnum.RELATIVE ->
                     if (left != 0) srcX + left
                     else srcX - right
@@ -69,18 +92,22 @@ class GraphicsStyle(
                     if (left != 0) left
                     else (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client.width - width - right
             }
+        }
     /** 控件Y坐标，相对于窗体 */
     val y: Int
-        get() = when (position) {
-            PositionEnum.RELATIVE ->
-                if (top != 0) srcY + top
-                else srcY - bottom
-            PositionEnum.ABSOLUTE ->
-                if (top != 0) parentStyle.top + top
-                else parentStyle.endY - height - bottom
-            PositionEnum.FIXED ->
-                if (top != 0) top
-                else (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client.height - height - right
+        get() {
+            if (posChange) alignChildren()
+            return when (position) {
+                PositionEnum.RELATIVE ->
+                    if (top != 0) srcY + top
+                    else srcY - bottom
+                PositionEnum.ABSOLUTE ->
+                    if (top != 0) parentStyle.top + top
+                    else parentStyle.endY - height - bottom
+                PositionEnum.FIXED ->
+                    if (top != 0) top
+                    else (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client.height - height - right
+            }
         }
     val endX: Int
         get() = x + width
@@ -93,5 +120,12 @@ class GraphicsStyle(
     /** 返回控件所占区域 */
     val area: Rect2D
         get() = Rect2D(x, y, width, height)
+
+    private var posChange = true
+
+    private fun alignChildren() {
+        posChange = false
+        alignHorizontal(cmpt.client) { it, x -> it.style.srcX = x }
+    }
 
 }

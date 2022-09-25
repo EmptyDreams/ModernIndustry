@@ -29,9 +29,10 @@ abstract class Cmpt(
     /** 子控件列表 */
     private val childrenList = LinkedList<Cmpt>()
     /** 事件列表 */
-    protected val eventMap = Object2ObjectRBTreeMap<String, LinkedList<IGraphicsListener<*>>>()
+    private val eventMap = Object2ObjectRBTreeMap<String, LinkedList<IGraphicsListener<*>>>()
     /** 父节点 */
     var parent: Cmpt = EMPTY_CMPT
+        private set
 
     /** 初始化客户端对象 */
     @SideOnly(Side.CLIENT)
@@ -106,6 +107,13 @@ abstract class Cmpt(
     fun removeEventListener(name: String, listener: IGraphicsListener<*>) {
         eventMap[name]?.remove(listener)
     }
+
+    /** 获取子控件的迭代器 */
+    fun childrenIterator(reverse: Boolean = false) =
+        if (reverse) childrenList.descendingIterator() else childrenList.iterator()
+
+    /** 包含所有子控件的流 */
+    fun childrenStream() = childrenList.stream()
 
     /**
      * 遍历子控件
