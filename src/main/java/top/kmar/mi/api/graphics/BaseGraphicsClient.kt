@@ -21,6 +21,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
 
     /** 发布鼠标事件 */
     private fun dispatchMouseEvent(mouseX: Int, mouseY: Int, mouseButton: Int, isClick: Boolean) {
+        if (width == 0) return
         val state = MouseEventData.getEventName(mouseButton)
         val srcMessage = state.build(mouseX, mouseY, mouseX, mouseY)
         val eventName = if (isClick) state.clickEventName else state.releasedEventName
@@ -42,6 +43,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
     /** 键盘监听 */
     override fun handleKeyboardInput() {
         super.handleKeyboardInput()
+        if (width == 0) return
         val key = Keyboard.getEventKey()
         // 判断是按键按下还是释放
         if (Keyboard.getEventKeyState()) {
@@ -57,6 +59,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
+        if (width == 0) return
         activeMouseMoveEvent(mouseX, mouseY)
         activeMouseScrollEvent(mouseX, mouseY)
         super.drawScreen(mouseX, mouseY, partialTicks)

@@ -58,7 +58,7 @@ object GuiLoader : IGuiHandler {
     override fun getClientGuiElement(ID: Int,
                                      player: EntityPlayer, world: World,
                                      x: Int, y: Int, z: Int) =
-        BaseGraphicsClient(getServerGuiElement(ID, player, world, x, y, z))
+        getServerGuiElement(ID, player, world, x, y, z).client
 
     class MIGuiRegistryEvent : Event() {
 
