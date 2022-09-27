@@ -109,7 +109,7 @@ abstract class Cmpt(
     }
 
     /** 获取子控件的迭代器 */
-    fun childrenIterator(reverse: Boolean = false) =
+    fun childrenIterator(reverse: Boolean = false): MutableIterator<Cmpt> =
         if (reverse) childrenList.descendingIterator() else childrenList.iterator()
 
     /** 包含所有子控件的流 */

@@ -45,15 +45,41 @@ class GraphicsStyle(
 
     /** 上边距 */
     var marginTop = 0
+        set(value) {
+            field = value
+            posChange = true
+        }
     /** 右边距 */
     var marginRight = 0
+        set(value) {
+            field = value
+            posChange = true
+        }
     /** 下编剧 */
     var marginBottom = 0
+        set(value) {
+            field = value
+            posChange = true
+        }
     /** 左边距 */
     var marginLeft = 0
+        set(value) {
+            field = value
+            posChange = true
+        }
 
     /** 水平对齐方式 */
     var alignHorizontal = HorizontalAlignModeEnum.MIDDLE
+        set(value) {
+            field = value
+            posChange = true
+        }
+    /** 垂直对齐方式 */
+    var alignVertical = VerticalAlignModeEnum.MIDDLE
+        set(value) {
+            field = value
+            posChange = true
+        }
 
     /** 控件占用空间宽度 */
     val spaceWidth: Int
@@ -66,16 +92,40 @@ class GraphicsStyle(
     var position = PositionEnum.RELATIVE
     /** 原始X坐标 */
     private var srcX: Int = 0
+        set(value) {
+            field = value
+            posChange = true
+        }
     /** 原始Y坐标 */
     private var srcY: Int = 0
+        set(value) {
+            field = value
+            posChange = true
+        }
     /** 优先级：`top` > `right` > `bottom` > `left` */
     var top = 0
+        set(value) {
+            field = value
+            posChange = true
+        }
     /** 优先级：`top` > `right` > `bottom` > `left` */
     var right = 0
+        set(value) {
+            field = value
+            posChange = true
+        }
     /** 优先级：`top` > `right` > `bottom` > `left` */
     var bottom = 0
+        set(value) {
+            field = value
+            posChange = true
+        }
     /** 优先级：`top` > `right` > `bottom` > `left` */
     var left = 0
+        set(value) {
+            field = value
+            posChange = true
+        }
 
     /** 控件X坐标，相对于窗体 */
     val x: Int
@@ -126,6 +176,7 @@ class GraphicsStyle(
     private fun alignChildren() {
         posChange = false
         alignHorizontal(cmpt.client) { it, x -> it.style.srcX = x }
+        alignVertical(cmpt.client) {it, y -> it.style.srcY = y}
     }
 
 }

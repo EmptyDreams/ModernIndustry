@@ -37,6 +37,7 @@ interface CmptClient {
     fun renderChildren(graphics: GuiGraphics) {
         service.eachAllChildren {
             val client = it.client
+            val style = client.style
             val g = graphics.createGraphics(style.x, style.y, style.width, style.height)
             client.render(g)
         }
