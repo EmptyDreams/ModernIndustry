@@ -32,7 +32,7 @@ class BackgroundGraphics(id: String) : Cmpt(id) {
 
         override fun render(graphics: GuiGraphics) {
             with(style) {
-                graphics.fillRect(3, 3, width - 6, height - 6, color.toInt())
+                graphics.fillRect(3, 3, width() - 6, height() - 6, color.toInt())
             }
             renderBorder(graphics)
             renderBackground(graphics)
@@ -40,8 +40,8 @@ class BackgroundGraphics(id: String) : Cmpt(id) {
 
         override fun renderBackground(graphics: GuiGraphics) {
             val background = style.backgroundColor.toInt()
-            val width = style.width
-            val height = style.height
+            val width = style.width()
+            val height = style.height()
             with(graphics) {
                 // 上边框
                 fillRect(3, 0, width - 7, 2, background)
@@ -69,8 +69,8 @@ class BackgroundGraphics(id: String) : Cmpt(id) {
             val borderRight = style.borderRight.color.toInt()
             val borderBottom = style.borderBottom.color.toInt()
             val borderLeft = style.borderLeft.color.toInt()
-            val width = style.width
-            val height = style.height
+            val width = style.width()
+            val height = style.height()
             with(graphics) {
                 fillRect(1, 2, width - 5, 3, borderTop)
                 fillRect(width - 4, 5, 3, height - 7, borderRight)

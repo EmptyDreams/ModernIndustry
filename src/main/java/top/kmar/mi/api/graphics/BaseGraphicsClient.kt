@@ -12,6 +12,7 @@ import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardPr
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardReleased
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
+import top.kmar.mi.api.graphics.utils.PercentSizeMode
 import top.kmar.mi.api.utils.data.math.Point2D
 
 /**
@@ -23,8 +24,8 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
 
     override val service = inventorySlots.document
     override val style = GraphicsStyle(service).apply {
-        width = this@BaseGraphicsClient.width
-        height = this@BaseGraphicsClient.height
+        width = PercentSizeMode(1.0, 0) { this@BaseGraphicsClient.width }
+        height = PercentSizeMode(1.0, 0) { this@BaseGraphicsClient.height }
     }
 
     override fun setWorldAndResolution(mc: Minecraft, width: Int, height: Int) {

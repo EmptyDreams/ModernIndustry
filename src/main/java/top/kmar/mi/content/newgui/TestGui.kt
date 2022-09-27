@@ -8,6 +8,7 @@ import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.GuiLoader
 import top.kmar.mi.api.graphics.components.BackgroundGraphics
 import top.kmar.mi.api.graphics.components.MaskGraphics
+import top.kmar.mi.api.graphics.utils.FixedSizeMode
 import top.kmar.mi.api.utils.applyClient
 
 /**
@@ -20,8 +21,8 @@ class TestGui : BaseGraphics() {
     override fun init(player: EntityPlayer, pos: BlockPos) {
         val mask = MaskGraphics("mask")
         val background = BackgroundGraphics("background").applyClient {
-            client.style.width = 230
-            client.style.height = 230
+            client.style.width = FixedSizeMode(230)
+            client.style.height = FixedSizeMode(230)
         }
         mask.addChild(background)
         addChild(mask)

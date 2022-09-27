@@ -17,7 +17,7 @@ enum class HorizontalAlignModeEnum {
     /** 居中对齐 */
     MIDDLE {
         override fun invoke(cmpt: CmptClient, callback: (CmptClient, Int) -> Unit) =
-            sortMiddle(cmpt, cmpt.style.x, { it.spaceWidth }, { it.width }, callback)
+            sortMiddle(cmpt, cmpt.style.x, { it.spaceWidth }, { it.width() }, callback)
     },
     /** 右对齐 */
     RIGHT {
@@ -48,7 +48,7 @@ enum class VerticalAlignModeEnum {
     /** 居中排列 */
     MIDDLE {
         override fun invoke(cmpt: CmptClient, callback: (CmptClient, Int) -> Unit) =
-            sortMiddle(cmpt, cmpt.style.y, { it.spaceHeight }, {it.height}, callback)
+            sortMiddle(cmpt, cmpt.style.y, { it.spaceHeight }, { it.height() }, callback)
     },
     /** 靠下排列 */
     BOTTOM {

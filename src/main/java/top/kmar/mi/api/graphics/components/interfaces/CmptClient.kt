@@ -38,7 +38,7 @@ interface CmptClient {
         service.eachAllChildren {
             val client = it.client
             val style = client.style
-            val g = graphics.createGraphics(style.x, style.y, style.width, style.height)
+            val g = graphics.createGraphics(style.x, style.y, style.width(), style.height())
             client.render(g)
         }
     }
@@ -53,7 +53,7 @@ interface CmptClient {
     /** 渲染背景 */
     fun renderBackground(graphics: GuiGraphics) {
         with(style) {
-            graphics.fillRect(0, 0, width, height, backgroundColor.toInt())
+            graphics.fillRect(0, 0, width(), height(), backgroundColor.toInt())
         }
     }
 

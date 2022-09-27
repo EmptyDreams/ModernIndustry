@@ -26,8 +26,16 @@ class GraphicsStyle(
 
     }
 
-    var width: Int = 0
-    var height: Int = 0
+    var width: ISizeMode = FixedSizeMode.defaultValue
+        set(value) {
+            field = value
+            posChange = true
+        }
+    var height: ISizeMode = FixedSizeMode.defaultValue
+        set(value) {
+            field = value
+            posChange = true
+        }
 
     /** 颜色 */
     var color: Color = Color.BLACK
@@ -83,10 +91,10 @@ class GraphicsStyle(
 
     /** 控件占用空间宽度 */
     val spaceWidth: Int
-        get() = width + marginLeft + marginRight
+        get() = width() + marginLeft + marginRight
     /** 控件占用控件高度 */
     val spaceHeight: Int
-        get() = height + marginTop + marginBottom
+        get() = height() + marginTop + marginBottom
 
     /** 定位方法 */
     var position = PositionEnum.RELATIVE
@@ -137,10 +145,10 @@ class GraphicsStyle(
                     else srcX - right
                 PositionEnum.ABSOLUTE ->
                     if (left != 0) parentStyle.left + left
-                    else parentStyle.endX - width - right
+                    else parentStyle.endX - width() - right
                 PositionEnum.FIXED ->
                     if (left != 0) left
-                    else (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client.width - width - right
+                    else (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client.width - width() - right
             }
         }
     /** 控件Y坐标，相对于窗体 */
@@ -153,23 +161,23 @@ class GraphicsStyle(
                     else srcY - bottom
                 PositionEnum.ABSOLUTE ->
                     if (top != 0) parentStyle.top + top
-                    else parentStyle.endY - height - bottom
+                    else parentStyle.endY - height() - bottom
                 PositionEnum.FIXED ->
                     if (top != 0) top
-                    else (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client.height - height - right
+                    else (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client.height - height() - right
             }
         }
     val endX: Int
-        get() = x + width
+        get() = x + width()
     val endY: Int
-        get() = y + height
+        get() = y + height()
 
     private val parentStyle: GraphicsStyle
         get() = cmpt.parent.client.style
 
     /** 返回控件所占区域 */
     val area: Rect2D
-        get() = Rect2D(x, y, width, height)
+        get() = Rect2D(x, y, width(), height())
 
     var posChange = true
 
