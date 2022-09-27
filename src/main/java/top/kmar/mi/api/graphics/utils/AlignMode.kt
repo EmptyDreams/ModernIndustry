@@ -81,7 +81,10 @@ private fun sortLeftOrTop(
     var pos = base
     cmpt.service.childrenStream()
         .map { it.client }
-        .filter { it.style.position == PositionEnum.RELATIVE }
+        .filter {
+            it.style.posChange = true
+            it.style.position == PositionEnum.RELATIVE
+        }
         .forEachOrdered {
             callback(it, pos)
             pos += sizeGetter(it.style)
@@ -103,6 +106,7 @@ private fun sortMiddle(
     val list = LinkedList<CmptClient>().apply {
         cmpt.service.eachAllChildren {
             val style = it.client.style
+            style.posChange = true
             if (style.position == PositionEnum.RELATIVE) {
                 add(it.client)
                 size += sizeGetter(style)
@@ -131,7 +135,11 @@ private fun sortRightOrBottom(
     val iterator = cmpt.service.childrenIterator(true)
     for (it in iterator) {
         val client = it.client
-        pos -= sizeGetter(client.style)
-        callback(client, pos)
+        val style = client.style
+        style.posChange = true
+        if (style.position == PositionEnum.RELATIVE) {
+            pos -= sizeGetter(style)
+            callback(client, pos)
+        }
     }
 }

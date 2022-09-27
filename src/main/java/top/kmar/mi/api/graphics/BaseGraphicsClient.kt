@@ -1,6 +1,7 @@
 package top.kmar.mi.api.graphics
 
 import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiContainer
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
@@ -24,6 +25,11 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
     override val style = GraphicsStyle(service).apply {
         width = this@BaseGraphicsClient.width
         height = this@BaseGraphicsClient.height
+    }
+
+    override fun setWorldAndResolution(mc: Minecraft, width: Int, height: Int) {
+        if (this.width != width || this.height != height) style.posChange = true
+        super.setWorldAndResolution(mc, width, height)
     }
 
     /** 发布鼠标事件 */
@@ -117,6 +123,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
     }
 
     override fun render(graphics: GuiGraphics) {
+        style.alignChildren()
         renderChildren(graphics)
     }
 

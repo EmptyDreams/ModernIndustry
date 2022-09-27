@@ -130,7 +130,7 @@ class GraphicsStyle(
     /** 控件X坐标，相对于窗体 */
     val x: Int
         get() {
-            if (posChange) alignChildren()
+            alignChildren()
             return when (position) {
                 PositionEnum.RELATIVE ->
                     if (left != 0) srcX + left
@@ -146,7 +146,7 @@ class GraphicsStyle(
     /** 控件Y坐标，相对于窗体 */
     val y: Int
         get() {
-            if (posChange) alignChildren()
+            alignChildren()
             return when (position) {
                 PositionEnum.RELATIVE ->
                     if (top != 0) srcY + top
@@ -171,9 +171,10 @@ class GraphicsStyle(
     val area: Rect2D
         get() = Rect2D(x, y, width, height)
 
-    private var posChange = true
+    var posChange = true
 
-    private fun alignChildren() {
+    fun alignChildren() {
+        if (!posChange) return
         posChange = false
         alignHorizontal(cmpt.client) { it, x -> it.style.srcX = x }
         alignVertical(cmpt.client) {it, y -> it.style.srcY = y}
