@@ -33,6 +33,11 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
         super.setWorldAndResolution(mc, width, height)
     }
 
+    override fun setGuiSize(w: Int, h: Int) {
+        if (this.width != width || this.height != height) style.posChange = true
+        super.setGuiSize(w, h)
+    }
+
     /** 发布鼠标事件 */
     private fun dispatchMouseEvent(mouseX: Int, mouseY: Int, mouseButton: Int, isClick: Boolean) {
         if (width == 0) return

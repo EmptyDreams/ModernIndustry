@@ -32,7 +32,11 @@ abstract class Cmpt(
     private val eventMap = Object2ObjectRBTreeMap<String, LinkedList<IGraphicsListener<*>>>()
     /** 父节点 */
     var parent: Cmpt = EMPTY_CMPT
-        private set
+        private set(value) {
+            if (value == EMPTY_CMPT) uninstallParent(field)
+            else installParent(value)
+            field = value
+        }
 
     /** 初始化客户端对象 */
     @SideOnly(Side.CLIENT)
@@ -47,7 +51,23 @@ abstract class Cmpt(
         MessageSender.send2Client(player as EntityPlayerMP, pack)
     }
 
+    /** 判断该控件是否有父节点 */
     fun hasParent(): Boolean = parent != EMPTY_CMPT
+
+    /** 初始化父节点信息 */
+    protected open fun installParent(parent: Cmpt) {}
+
+    /** 移除父节点信息 */
+    protected open fun uninstallParent(oldParent: Cmpt) {}
+
+    /**
+     * 添加一个Slot
+     * @return Slot在GUI中的下标
+     */
+    protected open fun installSlot(slot: GraphicsSlot): Int = parent.installSlot(slot)
+
+    /** 移除一个Slot */
+    protected open fun uninstallSlot(slot: GraphicsSlot): Unit = parent.uninstallSlot(slot)
 
     /** 向控件添加一个子控件 */
     fun addChild(cmpt: Cmpt) {
@@ -137,6 +157,10 @@ abstract class Cmpt(
 
             override fun initClientObj(): CmptClient {
                 throw UnsupportedOperationException()
+            }
+
+            override fun installSlot(slot: GraphicsSlot): Int {
+                throw NullPointerException("该元素不包含父节点")
             }
 
         }
