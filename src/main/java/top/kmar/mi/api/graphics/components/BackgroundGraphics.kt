@@ -6,6 +6,7 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
+import top.kmar.mi.api.register.others.AutoCmpt
 import top.kmar.mi.api.utils.toInt
 import java.awt.Color
 
@@ -13,6 +14,7 @@ import java.awt.Color
  * GUI背景框
  * @author EmptyDreams
  */
+@AutoCmpt("background")
 class BackgroundGraphics(id: String) : Cmpt(id) {
 
     override fun initClientObj() = BackgroundGraphicsClient()

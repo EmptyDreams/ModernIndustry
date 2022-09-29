@@ -16,6 +16,9 @@ import java.util.*
 
 /**
  * 控件的服务端接口
+ *
+ * 子类必须包含一个共有无参构造函数
+ *
  * @author EmptyDreams
  */
 abstract class Cmpt(
