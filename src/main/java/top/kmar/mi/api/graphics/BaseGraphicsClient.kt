@@ -28,6 +28,12 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
         height = InheritSizeMode { this@BaseGraphicsClient.height }
     }
 
+    override fun initGui() {
+        xSize = width
+        ySize = height
+        super.initGui()
+    }
+
     override fun setWorldAndResolution(mc: Minecraft, width: Int, height: Int) {
         if (this.width != width) style.markXChange()
         if (this.height != height) style.markYChange()

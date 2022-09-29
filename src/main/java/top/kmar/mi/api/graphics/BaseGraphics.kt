@@ -13,7 +13,6 @@ import top.kmar.mi.api.graphics.components.interfaces.GraphicsSlot
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
 import top.kmar.mi.api.utils.copy
-import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
 import kotlin.math.min
 
@@ -39,19 +38,8 @@ abstract class BaseGraphics : Container() {
     }
 
     override fun detectAndSendChanges() {
-        val list = LinkedList<Cmpt>()
-        list.add(document)
-        do {
-            val parent = list.pop()
-            parent.eachAllChildren {
-                if (!it.isInstallParent) {
-                    it.isInstallParent = true
-                    it.installParent(parent)
-                }
-                list.add(it)
-            }
-        } while (list.isNotEmpty())
         super.detectAndSendChanges()
+        inventorySlots[0].xPos = 0
     }
 
     private var _slotCache: List<GraphicsSlot>? = null

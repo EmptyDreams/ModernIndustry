@@ -61,20 +61,17 @@ class SlotCmpt(id: String) : Cmpt(id) {
             borderRight.color = Color.WHITE
         }
 
-        private var preX = Int.MIN_VALUE
-        private var preY = Int.MIN_VALUE
-
         override fun render(graphics: GuiGraphics) {
-            val x = style.x
-            val y = style.y
-            if (preX != x || preY != y) {
+            val x = style.x + 1
+            val y = style.y + 1
+            if (slot.xPos != x || slot.yPos != y) {
                 val message = ByteDataOperator(4).apply {
                     writeVarInt(x)
                     writeVarInt(y)
                 }
                 send2Service(message)
-                preX = x
-                preY = y
+                slot.xPos = x
+                slot.yPos = y
             }
             super.render(graphics)
         }
