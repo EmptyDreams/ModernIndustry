@@ -59,12 +59,16 @@ interface CmptClient {
 
     /** 渲染描边 */
     fun renderBorder(graphics: GuiGraphics) {
-        with(style) { with(graphics) {
-            fillRect(0, 0, width, borderTop.weight, borderTop.color.toInt())
-            fillRect(width - borderRight.weight, 0, borderRight.weight, height, borderRight.color.toInt())
-            fillRect(0, height - borderBottom.weight, width, borderBottom.weight, borderBottom.color.toInt())
-            fillRect(0, 0, borderRight.weight, height, borderRight.color.toInt())
-        } }
+        with(style) {
+            val width = this.width()
+            val height = this.height()
+            with(graphics) {
+                fillRect(0, 0, width, borderTop.weight, borderTop.color.toInt())
+                fillRect(width - borderRight.weight, 0, borderRight.weight, height, borderRight.color.toInt())
+                fillRect(0, height - borderBottom.weight, width, borderBottom.weight, borderBottom.color.toInt())
+                fillRect(0, 0, borderRight.weight, height, borderLeft.color.toInt())
+            }
+        }
 
     }
 
