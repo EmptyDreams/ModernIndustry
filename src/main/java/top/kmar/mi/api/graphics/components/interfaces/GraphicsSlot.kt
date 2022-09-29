@@ -15,11 +15,10 @@ class GraphicsSlot(
     inventoryIn: IInventory, index: Int, xPosition: Int, yPosition: Int
 ) : Slot(inventoryIn, index, xPosition, yPosition), Comparable<GraphicsSlot> {
 
-    /** 排序，返回0时两对象`equals`也一定为`true` */
     override fun compareTo(other: GraphicsSlot): Int {
         val result = priority.compareTo(other.priority)
         if (result != 0) return result
-        return hashCode().compareTo(other.hashCode())
+        return slotNumber.compareTo(other.slotNumber)
     }
 
 }

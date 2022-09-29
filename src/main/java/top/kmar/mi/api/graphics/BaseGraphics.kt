@@ -51,16 +51,16 @@ abstract class BaseGraphics : Container() {
         val stack = slot.stack ?: return ItemStack.EMPTY
         val oldCout = stack.count
         if (stack.isEmpty || !slot.canTakeStack(playerIn)) return stack
-        cache.stream()
-            .filter { it != slot }
-            .filter { it.isEnabled && it.isItemValid(stack) }
-            .forEachOrdered {
-                val itStack = it.stack
-                if (!stack.isEmpty &&
-                    itStack.item == stack.item &&
-                    (!stack.hasSubtypes || stack.metadata == itStack.metadata) &&
-                    ItemStack.areItemStackTagsEqual(stack, itStack)
-                ) {
+        // 尝试将物品放入Slot中
+        val tryPutStack = { init: (GraphicsSlot) -> Boolean ->
+            cache.stream()
+                .filter(init)
+                .filter { it.isEnabled && it.isItemValid(stack) }
+                .filter { stack.item == it.stack.item }
+                .filter { !stack.hasSubtypes || stack.metadata == it.stack.metadata }
+                .filter { ItemStack.areItemStackTagsEqual(stack, it.stack) }
+                .forEachOrdered {
+                    val itStack = it.stack
                     val maxCout = min(itStack.maxStackSize, it.slotStackLimit)
                     val cout = min(stack.count, maxCout - itStack.count)
                     if (cout == 0) return@forEachOrdered
@@ -68,7 +68,9 @@ abstract class BaseGraphics : Container() {
                     itStack.grow(cout)
                     it.onSlotChanged()
                 }
-            }
+        }
+        tryPutStack { it.belong != slot.belong }
+        if (!stack.isEmpty) tryPutStack { it.belong == slot.belong }
         return stack.copy(oldCout - stack.count)
     }
 
