@@ -13,6 +13,7 @@ import top.kmar.mi.api.graphics.components.interfaces.GraphicsSlot
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
 import top.kmar.mi.api.utils.copy
+import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
 import kotlin.math.min
 
@@ -37,6 +38,22 @@ abstract class BaseGraphics : Container() {
         return true
     }
 
+    override fun detectAndSendChanges() {
+        val list = LinkedList<Cmpt>()
+        list.add(document)
+        do {
+            val parent = list.pop()
+            parent.eachAllChildren {
+                if (!it.isInstallParent) {
+                    it.isInstallParent = true
+                    it.installParent(parent)
+                }
+                list.add(it)
+            }
+        } while (list.isNotEmpty())
+        super.detectAndSendChanges()
+    }
+
     private var _slotCache: List<GraphicsSlot>? = null
 
     override fun transferStackInSlot(playerIn: EntityPlayer, index: Int): ItemStack {
@@ -48,7 +65,7 @@ abstract class BaseGraphics : Container() {
             list
         }
         val slot = inventorySlots[index] as GraphicsSlot
-        val stack = slot.stack ?: return ItemStack.EMPTY
+        val stack = slot.stack
         val oldCout = stack.count
         if (stack.isEmpty || !slot.canTakeStack(playerIn)) return stack
         // 尝试将物品放入Slot中

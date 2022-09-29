@@ -4,10 +4,12 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.math.BlockPos
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.items.ItemStackHandler
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.GuiLoader
 import top.kmar.mi.api.graphics.components.BackgroundCmpt
 import top.kmar.mi.api.graphics.components.MaskCmpt
+import top.kmar.mi.api.graphics.components.SlotCmpt
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
 import top.kmar.mi.api.utils.applyClient
 
@@ -24,6 +26,11 @@ class TestGui : BaseGraphics() {
             client.style.width = FixedSizeMode(230)
             client.style.height = FixedSizeMode(230)
         }
+        val slot = SlotCmpt("slot").apply {
+            inventory = ItemStackHandler(1)
+            index = 0
+        }
+        background.addChild(slot)
         mask.addChild(background)
         addChild(mask)
     }

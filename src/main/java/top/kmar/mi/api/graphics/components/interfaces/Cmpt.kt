@@ -17,7 +17,7 @@ import java.util.*
 /**
  * 控件的服务端接口
  *
- * 子类必须包含一个共有无参构造函数
+ * 子类必须包含一个共有的接收一个`String`(id)的构造函数
  *
  * @author EmptyDreams
  */
@@ -36,10 +36,11 @@ abstract class Cmpt(
     /** 父节点 */
     var parent: Cmpt = EMPTY_CMPT
         private set(value) {
-            if (value == EMPTY_CMPT) uninstallParent(field)
-            else installParent(value)
+            if (value != field && isInstallParent) uninstallParent(field)
             field = value
         }
+    /** 是否安装过父节点 */
+    var isInstallParent = false
 
     /** 初始化客户端对象 */
     @SideOnly(Side.CLIENT)
@@ -58,7 +59,7 @@ abstract class Cmpt(
     fun hasParent(): Boolean = parent != EMPTY_CMPT
 
     /** 初始化父节点信息 */
-    protected open fun installParent(parent: Cmpt) {}
+    internal open fun installParent(parent: Cmpt) {}
 
     /** 移除父节点信息 */
     protected open fun uninstallParent(oldParent: Cmpt) {}

@@ -36,25 +36,30 @@ object CmptRegister {
     /**
      * 构建一个控件的服务端对象
      * @param key 控件的`key`值
+     * @param id 控件ID
      * @param T 控件类型
      * @throws NullPointerException 如果`key`没有被注册
+     * @throws NoSuchElementException 如果控件没有包含共有的接收一个`String`的构造函数
      * @throws ClassCastException 如果传入的`T`不是从该控件派生的
      */
-    fun <T : Cmpt> buildServiceCmpt(key: String): T {
+    fun <T : Cmpt> buildServiceCmpt(key: String, id: String): T {
         val clazz = find(key) ?: throw NullPointerException("指定的key[$key]没有被注册")
+        val builder = clazz.getConstructor(String::class.java)
         @Suppress("UNCHECKED_CAST")
-        return clazz.newInstance() as T
+        return builder.newInstance(id) as T
     }
 
     /**
      * 构建一个控件的客户端对象
      * @param key 控件的`key`值
+     * @param id 控件ID
      * @param T 控件类型
      * @throws NullPointerException 如果`key`没有被注册
+     * @throws NoSuchElementException 如果控件没有包含共有的接收一个`String`的构造函数
      * @throws ClassCastException 如果传入的`T`不是从该控件派生的
      */
-    fun <T : CmptClient> buildClientCmpt(key: String): T {
-        val service = buildServiceCmpt<Cmpt>(key)
+    fun <T : CmptClient> buildClientCmpt(key: String, id: String): T {
+        val service = buildServiceCmpt<Cmpt>(key, id)
         @Suppress("UNCHECKED_CAST")
         return service.client as T
     }

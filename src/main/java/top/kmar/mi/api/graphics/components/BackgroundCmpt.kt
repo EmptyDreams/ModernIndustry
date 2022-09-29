@@ -36,8 +36,7 @@ class BackgroundCmpt(id: String) : Cmpt(id) {
             with(style) {
                 graphics.fillRect(3, 3, width() - 6, height() - 6, color.toInt())
             }
-            renderBorder(graphics)
-            renderBackground(graphics)
+            super.render(graphics)
         }
 
         override fun renderBackground(graphics: GuiGraphics) {
