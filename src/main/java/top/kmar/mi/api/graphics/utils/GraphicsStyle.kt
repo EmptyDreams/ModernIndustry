@@ -72,6 +72,9 @@ open class GraphicsStyle(
     /** 优先级：`top` > `right` > `bottom` > `left` */
     var left = 0
 
+    /** 显示方式 */
+    var display = DisplayModeEnum.DEF
+
     /** 控件X坐标，相对于窗体 */
     val x: Int
         get() {

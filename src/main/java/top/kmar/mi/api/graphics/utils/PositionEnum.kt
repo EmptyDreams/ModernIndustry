@@ -33,6 +33,12 @@ enum class PositionEnum {
      */
     FIXED;
 
+    fun isRelative() = this == RELATIVE
+
+    fun isAbs() = this == ABSOLUTE
+
+    fun isFixed() = this == FIXED
+
     companion object {
 
         @JvmStatic

@@ -1,6 +1,7 @@
 package top.kmar.mi.api.graphics.utils
 
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
+import top.kmar.mi.api.graphics.utils.DisplayModeEnum.NONE
 import java.util.*
 
 /**
@@ -12,17 +13,20 @@ enum class HorizontalAlignModeEnum {
     /** 左对齐 */
     LEFT {
         override fun invoke(cmpt: CmptClient, callback: (CmptClient, Int) -> Unit) =
-            sortLeftOrTop(cmpt, cmpt.style.x, { it.spaceWidth }, callback) { it.markXChange() }
+            sortLeftOrTop(cmpt, cmpt.style.x, false, { it.spaceWidth }, callback) { it.markXChange() }
     },
     /** 居中对齐 */
     MIDDLE {
         override fun invoke(cmpt: CmptClient, callback: (CmptClient, Int) -> Unit) =
-            sortMiddle(cmpt, cmpt.style.x, { it.spaceWidth }, { it.width() }, callback) { it.markXChange() }
+            sortMiddle(
+                cmpt, cmpt.style.x, false,
+                { it.spaceWidth }, { it.width() }, callback
+            ) { it.markXChange() }
     },
     /** 右对齐 */
     RIGHT {
         override fun invoke(cmpt: CmptClient, callback: (CmptClient, Int) -> Unit) =
-            sortRightOrBottom(cmpt, cmpt.style.endX, { it.spaceWidth }, callback) { it.markXChange() }
+            sortRightOrBottom(cmpt, cmpt.style.endX, false, { it.spaceWidth }, callback) { it.markXChange() }
     };
 
     /**
@@ -43,17 +47,20 @@ enum class VerticalAlignModeEnum {
     /** 靠上排列 */
     TOP {
         override fun invoke(cmpt: CmptClient, callback: (CmptClient, Int) -> Unit) =
-            sortLeftOrTop(cmpt, cmpt.style.y, { it.spaceHeight }, callback) { it.markYChange() }
+            sortLeftOrTop(cmpt, cmpt.style.y, true, { it.spaceHeight }, callback) { it.markYChange() }
     },
     /** 居中排列 */
     MIDDLE {
         override fun invoke(cmpt: CmptClient, callback: (CmptClient, Int) -> Unit) =
-            sortMiddle(cmpt, cmpt.style.y, { it.spaceHeight }, { it.height() }, callback) { it.markYChange() }
+            sortMiddle(
+                cmpt, cmpt.style.y, true,
+                { it.spaceHeight }, { it.height() }, callback
+            ) { it.markYChange() }
     },
     /** 靠下排列 */
     BOTTOM {
         override fun invoke(cmpt: CmptClient, callback: (CmptClient, Int) -> Unit) =
-            sortRightOrBottom(cmpt, cmpt.style.endY, { it.spaceHeight }, callback) { it.markYChange() }
+            sortRightOrBottom(cmpt, cmpt.style.endY, true, { it.spaceHeight }, callback) { it.markYChange() }
     };
 
     /**
@@ -75,20 +82,27 @@ enum class VerticalAlignModeEnum {
 private fun sortLeftOrTop(
     cmpt: CmptClient,
     base: Int,
+    sort: Boolean,
     sizeGetter: (GraphicsStyle) -> Int,
     callback: (CmptClient, Int) -> Unit,
     mark: (GraphicsStyle) -> Unit
 ) {
     var pos = base
+    var preDis = NONE
     cmpt.service.childrenStream()
         .map { it.client }
+        .filter { it.style.display.isDisplay() }
         .filter {
             mark(it.style)
-            it.style.position == PositionEnum.RELATIVE
+            it.style.position.isRelative()
         }
         .forEachOrdered {
             callback(it, pos)
-            pos += sizeGetter(it.style)
+            val display = it.style.display
+            if (!sort || (preDis != display && preDis.isDisplay())) {
+                preDis = display
+                pos += sizeGetter(it.style)
+            }
         }
 }
 
@@ -99,27 +113,39 @@ private fun sortLeftOrTop(
 private fun sortMiddle(
     cmpt: CmptClient,
     base: Int,
+    sort: Boolean,
     sizeGetter: (GraphicsStyle) -> Int,
     parentSizeGetter: (GraphicsStyle) -> Int,
     callback: (CmptClient, Int) -> Unit,
     mark: (GraphicsStyle) -> Unit
 ) {
     var size = 0
+    var preDis = NONE
     val list = LinkedList<CmptClient>().apply {
         cmpt.service.eachAllChildren {
-            val style = it.client.style
-            mark(style)
-            if (style.position == PositionEnum.RELATIVE) {
-                add(it.client)
-                size += sizeGetter(style)
+            with(it.client.style) {
+                mark(this)
+                if (display.isDisplay() && position.isRelative()) {
+                    add(it.client)
+                    if (!sort || preDis != display) {
+                        preDis = display
+                        size += sizeGetter(this)
+                    }
+                }
             }
         }
     }
+    if (list.isEmpty()) return
     val relative = (parentSizeGetter(cmpt.style) - size) shr 1
     var pos = base + relative
+    preDis = list.first.style.display
     for (it in list) {
         callback(it, pos)
-        pos += sizeGetter(it.style)
+        val display = it.style.display
+        if (!sort || preDis != display) {
+            preDis = display
+            pos += sizeGetter(it.style)
+        }
     }
 }
 
@@ -130,19 +156,24 @@ private fun sortMiddle(
 private fun sortRightOrBottom(
     cmpt: CmptClient,
     base: Int,
+    sort: Boolean,
     sizeGetter: (GraphicsStyle) -> Int,
     callback: (CmptClient, Int) -> Unit,
     mark: (GraphicsStyle) -> Unit
 ) {
     var pos = base
+    var preDis = NONE
     val iterator = cmpt.service.childrenIterator(true)
     for (it in iterator) {
-        val client = it.client
-        val style = client.style
-        mark(style)
-        if (style.position == PositionEnum.RELATIVE) {
-            pos -= sizeGetter(style)
-            callback(client, pos)
+        with(it.client.style) {
+            mark(this)
+            if (display.isDisplay() && position.isRelative()) {
+                if (!sort || preDis != display) {
+                    preDis = display
+                    pos -= sizeGetter(this)
+                }
+                callback(it.client, pos)
+            }
         }
     }
 }

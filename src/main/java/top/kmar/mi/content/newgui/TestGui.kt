@@ -13,6 +13,7 @@ import top.kmar.mi.api.graphics.components.BackgroundCmpt
 import top.kmar.mi.api.graphics.components.MaskCmpt
 import top.kmar.mi.api.graphics.components.SlotCmpt
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
+import top.kmar.mi.api.graphics.utils.DisplayModeEnum
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
 import top.kmar.mi.api.utils.applyClient
 import java.util.*
@@ -27,16 +28,22 @@ class TestGui : BaseGraphics() {
     override fun init(player: EntityPlayer, pos: BlockPos) {
         val mask = MaskCmpt("mask")
         val background = BackgroundCmpt("background").applyClient {
-            client.style.width = FixedSizeMode(230)
-            client.style.height = FixedSizeMode(230)
-        }
-        val slot = SlotCmpt("slot").apply {
-            inventory = ItemStackHandler(1).apply {
-                insertItem(0, ItemStack(Items.APPLE, 1), false)
+            with(client.style) {
+                width = FixedSizeMode(200)
+                height = FixedSizeMode(230)
             }
-            index = 0
         }
-        background.addChild(slot)
+        val slots = Array(5) {
+            SlotCmpt("slot").apply {
+                inventory = ItemStackHandler(1).apply {
+                    insertItem(0, ItemStack(Items.APPLE, it + 1), false)
+                }
+                index = 0
+            }.applyClient {
+                client.style.display = DisplayModeEnum.INLINE
+            }
+        }
+        slots.forEach { background.addChild(it) }
         mask.addChild(background)
         addChild(mask)
 
