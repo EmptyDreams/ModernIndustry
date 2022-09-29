@@ -35,7 +35,7 @@ enum class HorizontalAlignModeEnum {
 }
 
 /**
- *
+ * 垂直对齐方式
  * @author EmptyDreams
  */
 enum class VerticalAlignModeEnum {

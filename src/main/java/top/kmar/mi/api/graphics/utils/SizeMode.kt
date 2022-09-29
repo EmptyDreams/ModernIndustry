@@ -42,3 +42,15 @@ class PercentSizeMode(
     override fun invoke() = (value * parentSize()).toInt() + plus
 
 }
+
+/**
+ * 继承尺寸
+ * @author EmptyDreams
+ */
+class InheritSizeMode(
+    val parentSize: () -> Int
+): ISizeMode {
+
+    override fun invoke() = parentSize()
+
+}
