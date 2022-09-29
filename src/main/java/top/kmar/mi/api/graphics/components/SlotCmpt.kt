@@ -76,7 +76,6 @@ class SlotCmpt(id: String) : Cmpt(id) {
                 preX = x
                 preY = y
             }
-            graphics.overflowHidden = false
             super.render(graphics)
         }
 
