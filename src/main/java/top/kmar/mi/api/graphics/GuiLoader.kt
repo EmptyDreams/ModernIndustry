@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.ModernIndustry
+import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.register.others.AutoLoader
 import java.lang.reflect.Modifier
 import java.util.concurrent.atomic.AtomicInteger
@@ -50,7 +51,10 @@ object GuiLoader : IGuiHandler {
             throw AssertionError("${id.name} 不包含无参构造函数")
         }
         if (!Modifier.isPublic(constructor.modifiers)) constructor.isAccessible = true
-        return constructor.newInstance().apply { init(player, BlockPos(x, y, z)) }
+        return constructor.newInstance().apply {
+            init(player, BlockPos(x, y, z))
+            document.installParent(Cmpt.EMPTY_CMPT)
+        }
     }
 
     /** 构建一个客户端的GUI对象 */

@@ -12,11 +12,9 @@ import top.kmar.mi.api.graphics.GuiLoader
 import top.kmar.mi.api.graphics.components.BackgroundCmpt
 import top.kmar.mi.api.graphics.components.MaskCmpt
 import top.kmar.mi.api.graphics.components.SlotCmpt
-import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.utils.DisplayModeEnum
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
 import top.kmar.mi.api.utils.applyClient
-import java.util.*
 
 /**
  *
@@ -46,19 +44,6 @@ class TestGui : BaseGraphics() {
         slots.forEach { background.addChild(it) }
         mask.addChild(background)
         addChild(mask)
-
-        val list = LinkedList<Cmpt>()
-        list.add(document)
-        do {
-            val parent = list.pop()
-            parent.eachAllChildren {
-                if (!it.isInstallParent) {
-                    it.isInstallParent = true
-                    it.installParent(parent)
-                }
-                list.add(it)
-            }
-        } while (list.isNotEmpty())
     }
 
     companion object {

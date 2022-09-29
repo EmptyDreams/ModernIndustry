@@ -13,6 +13,7 @@ import top.kmar.mi.api.graphics.components.interfaces.GraphicsSlot
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
 import top.kmar.mi.api.utils.copy
+import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
 import kotlin.math.min
 
@@ -119,6 +120,21 @@ abstract class BaseGraphics : Container() {
         @SideOnly(Side.CLIENT)
         override fun initClientObj(): CmptClient =
             BaseGraphicsClient(this@BaseGraphics)
+
+        override fun installParent(parent: Cmpt) {
+            val list = LinkedList<Cmpt>()
+            list.add(document)
+            do {
+                val node = list.pop()
+                node.eachAllChildren {
+                    if (!it.isInstallParent) {
+                        it.isInstallParent = true
+                        it.installParent(node)
+                    }
+                    list.add(it)
+                }
+            } while (list.isNotEmpty())
+        }
 
         override fun installSlot(slot: GraphicsSlot): Int {
             _slotCache = null
