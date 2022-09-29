@@ -62,8 +62,8 @@ class SlotCmpt(id: String) : Cmpt(id) {
         }
 
         override fun render(graphics: GuiGraphics) {
-            val x = style.x + 1
-            val y = style.y + 1
+            val x = style.run { this.x + borderLeft.weight }
+            val y = style.run { this.y + borderTop.weight }
             if (slot.xPos != x || slot.yPos != y) {
                 val message = ByteDataOperator(4).apply {
                     writeVarInt(x)

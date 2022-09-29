@@ -19,13 +19,6 @@ open class GraphicsStyle(
     private val cmpt: Cmpt
 ) {
 
-    companion object {
-
-        /** 透明色 */
-        val transparent = Color(0, 0, 0, 0)
-
-    }
-
     var width: ISizeMode = FixedSizeMode.defaultValue
     var height: ISizeMode = FixedSizeMode.defaultValue
 
@@ -155,6 +148,13 @@ open class GraphicsStyle(
             yPosChange = false
             alignVertical(cmpt.client) { it, y -> it.style.srcY = y}
         }
+    }
+
+    companion object {
+
+        /** 透明色 */
+        val transparent = Color(0, 0, 0, 0)
+
     }
 
 }
