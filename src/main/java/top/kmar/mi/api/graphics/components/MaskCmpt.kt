@@ -15,13 +15,13 @@ import java.awt.Color
  * @author EmptyDreams
  */
 @AutoCmpt("mask")
-class MaskGraphics(id: String) : Cmpt(id) {
+class MaskCmpt(id: String) : Cmpt(id) {
 
     override fun initClientObj() = MaskClient()
 
     inner class MaskClient : CmptClient {
 
-        override val service = this@MaskGraphics
+        override val service = this@MaskCmpt
         override val style = GraphicsStyle(service).apply {
             backgroundColor = Color(0, 0, 0, 120)
             position = PositionEnum.FIXED

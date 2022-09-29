@@ -15,14 +15,14 @@ import java.awt.Color
  * @author EmptyDreams
  */
 @AutoCmpt("background")
-class BackgroundGraphics(id: String) : Cmpt(id) {
+class BackgroundCmpt(id: String) : Cmpt(id) {
 
     override fun initClientObj() = BackgroundGraphicsClient()
 
     @SideOnly(Side.CLIENT)
     inner class BackgroundGraphicsClient : CmptClient {
 
-        override val service = this@BackgroundGraphics
+        override val service = this@BackgroundCmpt
         override val style = GraphicsStyle(service).apply {
             borderTop.color = Color.WHITE
             borderRight.color = Color(85, 85, 85)
