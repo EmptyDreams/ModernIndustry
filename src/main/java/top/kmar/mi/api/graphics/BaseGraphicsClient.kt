@@ -29,12 +29,14 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
     }
 
     override fun setWorldAndResolution(mc: Minecraft, width: Int, height: Int) {
-        if (this.width != width || this.height != height) style.posChange = true
+        if (this.width != width) style.markXChange()
+        if (this.height != height) style.markYChange()
         super.setWorldAndResolution(mc, width, height)
     }
 
     override fun setGuiSize(w: Int, h: Int) {
-        if (this.width != width || this.height != height) style.posChange = true
+        if (this.width != width) style.markXChange()
+        if (this.height != height) style.markYChange()
         super.setGuiSize(w, h)
     }
 

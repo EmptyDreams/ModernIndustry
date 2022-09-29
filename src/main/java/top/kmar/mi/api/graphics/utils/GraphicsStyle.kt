@@ -15,7 +15,7 @@ import java.awt.Color
  * @author EmptyDreams
  */
 @SideOnly(Side.CLIENT)
-class GraphicsStyle(
+open class GraphicsStyle(
     private val cmpt: Cmpt
 ) {
 
@@ -27,15 +27,7 @@ class GraphicsStyle(
     }
 
     var width: ISizeMode = FixedSizeMode.defaultValue
-        set(value) {
-            field = value
-            posChange = true
-        }
     var height: ISizeMode = FixedSizeMode.defaultValue
-        set(value) {
-            field = value
-            posChange = true
-        }
 
     /** 颜色 */
     var color: Color = Color.BLACK
@@ -53,41 +45,17 @@ class GraphicsStyle(
 
     /** 上边距 */
     var marginTop = 0
-        set(value) {
-            field = value
-            posChange = true
-        }
     /** 右边距 */
     var marginRight = 0
-        set(value) {
-            field = value
-            posChange = true
-        }
     /** 下编剧 */
     var marginBottom = 0
-        set(value) {
-            field = value
-            posChange = true
-        }
     /** 左边距 */
     var marginLeft = 0
-        set(value) {
-            field = value
-            posChange = true
-        }
 
     /** 水平对齐方式 */
     var alignHorizontal = HorizontalAlignModeEnum.MIDDLE
-        set(value) {
-            field = value
-            posChange = true
-        }
     /** 垂直对齐方式 */
     var alignVertical = VerticalAlignModeEnum.MIDDLE
-        set(value) {
-            field = value
-            posChange = true
-        }
 
     /** 控件占用空间宽度 */
     val spaceWidth: Int
@@ -100,40 +68,16 @@ class GraphicsStyle(
     var position = PositionEnum.RELATIVE
     /** 原始X坐标 */
     private var srcX: Int = 0
-        set(value) {
-            field = value
-            posChange = true
-        }
     /** 原始Y坐标 */
     private var srcY: Int = 0
-        set(value) {
-            field = value
-            posChange = true
-        }
     /** 优先级：`top` > `right` > `bottom` > `left` */
     var top = 0
-        set(value) {
-            field = value
-            posChange = true
-        }
     /** 优先级：`top` > `right` > `bottom` > `left` */
     var right = 0
-        set(value) {
-            field = value
-            posChange = true
-        }
     /** 优先级：`top` > `right` > `bottom` > `left` */
     var bottom = 0
-        set(value) {
-            field = value
-            posChange = true
-        }
     /** 优先级：`top` > `right` > `bottom` > `left` */
     var left = 0
-        set(value) {
-            field = value
-            posChange = true
-        }
 
     /** 控件X坐标，相对于窗体 */
     val x: Int
@@ -143,9 +87,11 @@ class GraphicsStyle(
                 PositionEnum.RELATIVE ->
                     if (left != 0) srcX + left
                     else srcX - right
+
                 PositionEnum.ABSOLUTE ->
                     if (left != 0) parentStyle.left + left
                     else parentStyle.endX - width() - right
+
                 PositionEnum.FIXED ->
                     if (left != 0) left
                     else (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client.width - width() - right
@@ -159,9 +105,11 @@ class GraphicsStyle(
                 PositionEnum.RELATIVE ->
                     if (top != 0) srcY + top
                     else srcY - bottom
+
                 PositionEnum.ABSOLUTE ->
                     if (top != 0) parentStyle.top + top
                     else parentStyle.endY - height() - bottom
+
                 PositionEnum.FIXED ->
                     if (top != 0) top
                     else (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client.height - height() - right
@@ -179,13 +127,34 @@ class GraphicsStyle(
     val area: Rect2D
         get() = Rect2D(x, y, width(), height())
 
-    var posChange = true
+    private var xPosChange = true
+    private var yPosChange = true
+
+    /** 标记X轴方向坐标变化 */
+    fun markXChange() {
+        xPosChange = true
+    }
+
+    /** 标记Y轴方向坐标变化 */
+    fun markYChange() {
+        yPosChange = true
+    }
+
+    /** 标记X及Y轴方向坐标变化 */
+    fun markPosChange() {
+        markXChange()
+        markYChange()
+    }
 
     fun alignChildren() {
-        if (!posChange) return
-        posChange = false
-        alignHorizontal(cmpt.client) { it, x -> it.style.srcX = x }
-        alignVertical(cmpt.client) {it, y -> it.style.srcY = y}
+        if (xPosChange) {
+            xPosChange = false
+            alignHorizontal(cmpt.client) { it, x -> it.style.srcX = x }
+        }
+        if (yPosChange) {
+            yPosChange = false
+            alignVertical(cmpt.client) { it, y -> it.style.srcY = y}
+        }
     }
 
 }

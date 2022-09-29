@@ -12,17 +12,17 @@ enum class HorizontalAlignModeEnum {
     /** 左对齐 */
     LEFT {
         override fun invoke(cmpt: CmptClient, callback: (CmptClient, Int) -> Unit) =
-            sortLeftOrTop(cmpt, cmpt.style.x, { it.spaceWidth }, callback)
+            sortLeftOrTop(cmpt, cmpt.style.x, { it.spaceWidth }, callback) { it.markXChange() }
     },
     /** 居中对齐 */
     MIDDLE {
         override fun invoke(cmpt: CmptClient, callback: (CmptClient, Int) -> Unit) =
-            sortMiddle(cmpt, cmpt.style.x, { it.spaceWidth }, { it.width() }, callback)
+            sortMiddle(cmpt, cmpt.style.x, { it.spaceWidth }, { it.width() }, callback) { it.markXChange() }
     },
     /** 右对齐 */
     RIGHT {
         override fun invoke(cmpt: CmptClient, callback: (CmptClient, Int) -> Unit) =
-            sortRightOrBottom(cmpt, cmpt.style.endX, { it.spaceWidth }, callback)
+            sortRightOrBottom(cmpt, cmpt.style.endX, { it.spaceWidth }, callback) { it.markXChange() }
     };
 
     /**
@@ -43,17 +43,17 @@ enum class VerticalAlignModeEnum {
     /** 靠上排列 */
     TOP {
         override fun invoke(cmpt: CmptClient, callback: (CmptClient, Int) -> Unit) =
-            sortLeftOrTop(cmpt, cmpt.style.y, { it.spaceHeight }, callback)
+            sortLeftOrTop(cmpt, cmpt.style.y, { it.spaceHeight }, callback) { it.markYChange() }
     },
     /** 居中排列 */
     MIDDLE {
         override fun invoke(cmpt: CmptClient, callback: (CmptClient, Int) -> Unit) =
-            sortMiddle(cmpt, cmpt.style.y, { it.spaceHeight }, { it.height() }, callback)
+            sortMiddle(cmpt, cmpt.style.y, { it.spaceHeight }, { it.height() }, callback) { it.markYChange() }
     },
     /** 靠下排列 */
     BOTTOM {
         override fun invoke(cmpt: CmptClient, callback: (CmptClient, Int) -> Unit) =
-            sortRightOrBottom(cmpt, cmpt.style.endY, { it.spaceHeight }, callback)
+            sortRightOrBottom(cmpt, cmpt.style.endY, { it.spaceHeight }, callback) { it.markYChange() }
     };
 
     /**
@@ -76,13 +76,14 @@ private fun sortLeftOrTop(
     cmpt: CmptClient,
     base: Int,
     sizeGetter: (GraphicsStyle) -> Int,
-    callback: (CmptClient, Int) -> Unit
+    callback: (CmptClient, Int) -> Unit,
+    mark: (GraphicsStyle) -> Unit
 ) {
     var pos = base
     cmpt.service.childrenStream()
         .map { it.client }
         .filter {
-            it.style.posChange = true
+            mark(it.style)
             it.style.position == PositionEnum.RELATIVE
         }
         .forEachOrdered {
@@ -100,13 +101,14 @@ private fun sortMiddle(
     base: Int,
     sizeGetter: (GraphicsStyle) -> Int,
     parentSizeGetter: (GraphicsStyle) -> Int,
-    callback: (CmptClient, Int) -> Unit
+    callback: (CmptClient, Int) -> Unit,
+    mark: (GraphicsStyle) -> Unit
 ) {
     var size = 0
     val list = LinkedList<CmptClient>().apply {
         cmpt.service.eachAllChildren {
             val style = it.client.style
-            style.posChange = true
+            mark(style)
             if (style.position == PositionEnum.RELATIVE) {
                 add(it.client)
                 size += sizeGetter(style)
@@ -129,14 +131,15 @@ private fun sortRightOrBottom(
     cmpt: CmptClient,
     base: Int,
     sizeGetter: (GraphicsStyle) -> Int,
-    callback: (CmptClient, Int) -> Unit
+    callback: (CmptClient, Int) -> Unit,
+    mark: (GraphicsStyle) -> Unit
 ) {
     var pos = base
     val iterator = cmpt.service.childrenIterator(true)
     for (it in iterator) {
         val client = it.client
         val style = client.style
-        style.posChange = true
+        mark(style)
         if (style.position == PositionEnum.RELATIVE) {
             pos -= sizeGetter(style)
             callback(client, pos)
