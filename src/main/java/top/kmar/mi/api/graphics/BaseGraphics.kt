@@ -75,7 +75,8 @@ abstract class BaseGraphics : Container() {
                     val maxCout = min(stack.maxStackSize, it.slotStackLimit)
                     val cout = min(stack.count, maxCout - itStack.count)
                     if (cout == 0) return@forEachOrdered
-                    it.putStack(stack.copy(itStack.count + cout))
+                    if (itStack.isEmpty) it.putStack(stack.copy(itStack.count + cout))
+                    else itStack.grow(cout)
                     stack.shrink(cout)
                 }
         }
