@@ -38,7 +38,7 @@ class TestGui : BaseGraphics() {
                 }
                 index = 0
             }.applyClient {
-                client.style.display = DisplayModeEnum.INLINE
+                if ((it and 1) == 0) client.style.display = DisplayModeEnum.INLINE
             }
         }
         slots.forEach { background.addChild(it) }

@@ -97,12 +97,12 @@ private fun sortLeftOrTop(
             it.style.position.isRelative()
         }
         .forEachOrdered {
-            callback(it, pos)
             val display = it.style.display
             if (!sort || (preDis != display && preDis.isDisplay())) {
-                preDis = display
                 pos += sizeGetter(it.style)
             }
+            callback(it, pos)
+            preDis = display
         }
 }
 
@@ -138,14 +138,14 @@ private fun sortMiddle(
     if (list.isEmpty()) return
     val relative = (parentSizeGetter(cmpt.style) - size) shr 1
     var pos = base + relative
-    preDis = list.first.style.display
+    preDis = NONE
     for (it in list) {
-        callback(it, pos)
         val display = it.style.display
-        if (!sort || preDis != display) {
-            preDis = display
+        if ((!sort ||display != preDis) && preDis.isDisplay()) {
             pos += sizeGetter(it.style)
         }
+        callback(it, pos)
+        preDis = display
     }
 }
 
