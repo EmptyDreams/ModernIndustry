@@ -43,23 +43,15 @@ abstract class BaseGraphics : Container() {
         inventorySlots[0].xPos = 0
     }
 
-    private var _slotCache: List<GraphicsSlot>? = null
-
     override fun transferStackInSlot(playerIn: EntityPlayer, index: Int): ItemStack {
-        val cache = _slotCache ?: run {
-            val list = ArrayList<GraphicsSlot>(inventorySlots.size)
-            inventorySlots.forEach { list.add(it as GraphicsSlot) }
-            list.sort()
-            _slotCache = list
-            list
-        }
         val slot = inventorySlots[index] as GraphicsSlot
         val stack = slot.stack
         val oldCout = stack.count
         if (stack.isEmpty || !slot.canTakeStack(playerIn)) return stack
         // 尝试将物品放入Slot中
         val tryPutStack = { init: (GraphicsSlot) -> Boolean ->
-            cache.stream()
+            inventorySlots.stream()
+                .map { it as GraphicsSlot }
                 .filter(init)
                 .filter { it.isEnabled && it.isItemValid(stack) }
                 .filter {
@@ -69,6 +61,11 @@ abstract class BaseGraphics : Container() {
                                 (!stack.hasSubtypes || stack.metadata == itStack.metadata) &&
                                 ItemStack.areItemStackTagsEqual(stack, itStack)
                             )
+                }
+                .sorted { o1, o2 ->
+                    if (o1.hasStack == o2.hasStack) o1.compareTo(o2)
+                    else if (o1.hasStack) -1
+                    else 1
                 }
                 .forEachOrdered {
                     val itStack = it.stack
@@ -80,8 +77,7 @@ abstract class BaseGraphics : Container() {
                     stack.shrink(cout)
                 }
         }
-        tryPutStack { it.belong != slot.belong && it.hasStack }
-        tryPutStack { it.belong != slot.belong && !it.hasStack }
+        tryPutStack { it.belong != slot.belong }
         if (!stack.isEmpty) tryPutStack { it.belong == slot.belong && it != slot }
         return stack.copy(oldCout - stack.count)
     }
@@ -143,13 +139,11 @@ abstract class BaseGraphics : Container() {
         }
 
         override fun installSlot(slot: GraphicsSlot): Int {
-            _slotCache = null
             addSlotToContainer(slot)
             return inventorySlots.size - 1
         }
 
         override fun uninstallSlot(slot: GraphicsSlot) {
-            _slotCache = null
             val index = inventorySlots.indexOf(slot)
             inventorySlots.removeAt(index)
             inventoryItemStacks.removeAt(index)
