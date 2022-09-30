@@ -2,6 +2,7 @@ package top.kmar.mi.api.graphics.components
 
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
+import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.InheritSizeMode
@@ -15,7 +16,7 @@ import java.awt.Color
  * @author EmptyDreams
  */
 @AutoCmpt("mask")
-class MaskCmpt(id: String) : Cmpt(id) {
+class MaskCmpt(attributes: CmptAttributes) : Cmpt(attributes.id) {
 
     override fun initClientObj() = MaskClient()
 

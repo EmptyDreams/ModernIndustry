@@ -3,6 +3,7 @@ package top.kmar.mi.api.graphics.components
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
+import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
@@ -15,7 +16,7 @@ import java.awt.Color
  * @author EmptyDreams
  */
 @AutoCmpt("background")
-class BackgroundCmpt(id: String) : Cmpt(id) {
+class BackgroundCmpt(attributes: CmptAttributes) : Cmpt(attributes.id) {
 
     override fun initClientObj() = BackgroundGraphicsClient()
 

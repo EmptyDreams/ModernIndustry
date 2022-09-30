@@ -4,6 +4,7 @@ import net.minecraftforge.items.ItemStackHandler
 import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
+import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.GraphicsSlot
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
@@ -18,7 +19,7 @@ import kotlin.LazyThreadSafetyMode.NONE
  * @author EmptyDreams
  */
 @AutoCmpt("slot")
-class SlotCmpt(id: String) : Cmpt(id) {
+class SlotCmpt(private val attribute: CmptAttributes) : Cmpt(attribute.id) {
 
     override fun initClientObj() = SlotCmptClient()
 
@@ -26,13 +27,13 @@ class SlotCmpt(id: String) : Cmpt(id) {
         set(value) {
             if (field == null) field = value
         }
-    var index: Int = -1
-        set(value) {
-            if (index == -1) field = value
-        }
-    var priority: Int = 100
     val slot by lazy(NONE) {
-        GraphicsSlot(this, priority, inventory!!, index)
+        GraphicsSlot(
+            this,
+            attribute["priority", "100"].toInt(),
+            inventory!!,
+            attribute["index", "0"].toInt()
+        )
     }
 
     override fun receive(message: IDataReader) {
