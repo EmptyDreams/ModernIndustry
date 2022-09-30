@@ -80,7 +80,8 @@ abstract class BaseGraphics : Container() {
                     stack.shrink(cout)
                 }
         }
-        tryPutStack { it.belong != slot.belong }
+        tryPutStack { it.belong != slot.belong && it.hasStack }
+        tryPutStack { it.belong != slot.belong && !it.hasStack }
         if (!stack.isEmpty) tryPutStack { it.belong == slot.belong && it != slot }
         return stack.copy(oldCout - stack.count)
     }
