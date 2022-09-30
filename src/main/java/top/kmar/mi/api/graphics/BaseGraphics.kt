@@ -62,17 +62,21 @@ abstract class BaseGraphics : Container() {
             cache.stream()
                 .filter(init)
                 .filter { it.isEnabled && it.isItemValid(stack) }
-                .filter { stack.item == it.stack.item }
-                .filter { !stack.hasSubtypes || stack.metadata == it.stack.metadata }
-                .filter { ItemStack.areItemStackTagsEqual(stack, it.stack) }
+                .filter {
+                    val itStack = it.stack
+                    itStack.isEmpty || (
+                                stack.item == itStack.item &&
+                                (!stack.hasSubtypes || stack.metadata == itStack.metadata) &&
+                                ItemStack.areItemStackTagsEqual(stack, itStack)
+                            )
+                }
                 .forEachOrdered {
                     val itStack = it.stack
-                    val maxCout = min(itStack.maxStackSize, it.slotStackLimit)
+                    val maxCout = min(stack.maxStackSize, it.slotStackLimit)
                     val cout = min(stack.count, maxCout - itStack.count)
                     if (cout == 0) return@forEachOrdered
+                    it.putStack(stack.copy(itStack.count + cout))
                     stack.shrink(cout)
-                    itStack.grow(cout)
-                    it.onSlotChanged()
                 }
         }
         tryPutStack { it.belong != slot.belong }
