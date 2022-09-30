@@ -76,7 +76,7 @@ abstract class BaseGraphics : Container() {
                 }
         }
         tryPutStack { it.belong != slot.belong }
-        if (!stack.isEmpty) tryPutStack { it.belong == slot.belong }
+        if (!stack.isEmpty) tryPutStack { it.belong == slot.belong && it != slot }
         return stack.copy(oldCout - stack.count)
     }
 
