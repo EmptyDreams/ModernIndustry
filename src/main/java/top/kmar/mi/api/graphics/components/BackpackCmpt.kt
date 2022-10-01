@@ -88,28 +88,28 @@ class BackpackCmpt(private val attribute: CmptAttributes) : Cmpt(attribute.id) {
                 }
                 send2Service(message)
             }
-            renderContent(graphics, offsetX, 0)
+            renderContent(graphics, offsetX)
             renderChildren(graphics)
         }
 
-        private fun renderContent(graphics: GuiGraphics, startX: Int, startY: Int) {
+        private fun renderContent(graphics: GuiGraphics, offsetX: Int) {
             val width = 18 * 9
             with (style) {
                 val background = backgroundColor.toInt()
                 // 绘制物品栏背景
-                graphics.fillRect(startX, startY, width, 18 * 3, background)
-                graphics.fillRect(startX, startY + 18 * 3 + 4, width, 18, background)
+                graphics.fillRect(offsetX, 0, width, 18 * 3, background)
+                graphics.fillRect(offsetX, 0 + 18 * 3 + 4, width, 18, background)
                 // 绘制横条
                 for (y in mainSlots.indices) {
                     val pos = y * 18
-                    graphics.fillRect(startX, pos, width, 1, borderTop.color.toInt())
-                    graphics.fillRect(startX, pos + 17, width, 1, borderBottom.color.toInt())
+                    graphics.fillRect(offsetX, pos, width, 1, borderTop.color.toInt())
+                    graphics.fillRect(offsetX, pos + 17, width, 1, borderBottom.color.toInt())
                 }
-                graphics.fillRect(startX, 18 * 3 + 4, width, 1, borderTop.color.toInt())
-                graphics.fillRect(startX, 18 * 3 + 4 + 17, width, 1, borderBottom.color.toInt())
+                graphics.fillRect(offsetX, 18 * 3 + 4, width, 1, borderTop.color.toInt())
+                graphics.fillRect(offsetX, 18 * 3 + 4 + 17, width, 1, borderBottom.color.toInt())
                 // 绘制竖条
                 for (x in 0 until 9) {
-                    val pos = startX + x * 18
+                    val pos = offsetX + x * 18
                     val y = 18 * 3 + 4
                     graphics.fillRect(pos, 0, 1, 18 * 3, borderLeft.color.toInt())
                     graphics.fillRect(pos, y, 1, 18, borderLeft.color.toInt())
@@ -119,14 +119,14 @@ class BackpackCmpt(private val attribute: CmptAttributes) : Cmpt(attribute.id) {
                 // 绘制交叉点
                 for (y in 0 until 3) {
                     for (x in 0 until 9) {
-                        graphics.fillRect(startX + x * 18 + 17, y * 18, 1, 1, background)
-                        graphics.fillRect(startX + x * 18, y * 18 + 17, 1, 1, background)
+                        graphics.fillRect(offsetX + x * 18 + 17, y * 18, 1, 1, background)
+                        graphics.fillRect(offsetX + x * 18, y * 18 + 17, 1, 1, background)
                     }
                 }
                 for (x in 0 until 9) {
                     val y = 18 * 3 + 4
-                    graphics.fillRect(startX + x * 18 + 17, y, 1, 1, background)
-                    graphics.fillRect(startX + x * 18, y + 17, 1, 1, background)
+                    graphics.fillRect(offsetX + x * 18 + 17, y, 1, 1, background)
+                    graphics.fillRect(offsetX + x * 18, y + 17, 1, 1, background)
                 }
             }
         }
