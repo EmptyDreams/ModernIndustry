@@ -1,7 +1,8 @@
-package top.kmar.mi.api.graphics.components.interfaces
+package top.kmar.mi.api.graphics.components.interfaces.slots
 
 import net.minecraftforge.items.IItemHandler
 import net.minecraftforge.items.SlotItemHandler
+import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 
 /**
  * 独立Slot的MI实现
@@ -14,11 +15,5 @@ class ItemSlot(
 ) : IGraphicsSlot {
 
     override val slot = SlotItemHandler(itemHandler, index, 0, 0)
-
-    override fun compareTo(other: IGraphicsSlot): Int {
-        val result = priority.compareTo(other.priority)
-        if (result != 0) return result
-        return slot.slotNumber.compareTo(other.slot.slotNumber)
-    }
 
 }

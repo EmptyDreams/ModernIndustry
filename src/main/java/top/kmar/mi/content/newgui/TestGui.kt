@@ -10,11 +10,12 @@ import net.minecraftforge.items.ItemStackHandler
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.GuiLoader
 import top.kmar.mi.api.graphics.components.BackgroundCmpt
+import top.kmar.mi.api.graphics.components.BackpackCmpt
 import top.kmar.mi.api.graphics.components.MaskCmpt
 import top.kmar.mi.api.graphics.components.SlotCmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes.Companion.valueOfID
-import top.kmar.mi.api.graphics.utils.DisplayModeEnum
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
+import top.kmar.mi.api.graphics.utils.VerticalAlignModeEnum
 import top.kmar.mi.api.utils.applyClient
 
 /**
@@ -30,6 +31,7 @@ class TestGui : BaseGraphics() {
             with(client.style) {
                 width = FixedSizeMode(200)
                 height = FixedSizeMode(230)
+                alignVertical = VerticalAlignModeEnum.TOP
             }
         }
         val slots = Array(5) {
@@ -38,10 +40,14 @@ class TestGui : BaseGraphics() {
                     insertItem(0, ItemStack(Items.APPLE, it + 1), false)
                 }
             }.applyClient {
-                if ((it and 1) == 0) client.style.display = DisplayModeEnum.INLINE
+                client.style.marginTop = 20
             }
         }
+        val backpack = BackpackCmpt(valueOfID("backpack")).apply {
+            this.player = player
+        }
         slots.forEach { background.addChild(it) }
+        background.addChild(backpack)
         mask.addChild(background)
         addChild(mask)
     }

@@ -1,8 +1,9 @@
-package top.kmar.mi.api.graphics.components.interfaces
+package top.kmar.mi.api.graphics.components.interfaces.slots
 
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
+import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.utils.copy
 import kotlin.math.min
 
@@ -63,6 +64,12 @@ interface IGraphicsSlot : Comparable<IGraphicsSlot> {
             return content.count - cout
         }
         return content.count
+    }
+
+    override fun compareTo(other: IGraphicsSlot): Int {
+        val result = priority.compareTo(other.priority)
+        if (result != 0) return result
+        return slot.slotNumber.compareTo(other.slot.slotNumber)
     }
 
 }
