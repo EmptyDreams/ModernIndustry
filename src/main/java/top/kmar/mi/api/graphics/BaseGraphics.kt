@@ -2,20 +2,18 @@ package top.kmar.mi.api.graphics
 
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Container
-import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
 import net.minecraft.util.math.BlockPos
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
-import top.kmar.mi.api.graphics.components.interfaces.GraphicsSlot
+import top.kmar.mi.api.graphics.components.interfaces.IGraphicsSlot
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
 import top.kmar.mi.api.utils.copy
 import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
-import kotlin.math.min
 
 /**
  * 服务端GUI窗体对象
@@ -32,6 +30,7 @@ abstract class BaseGraphics : Container() {
      */
     @get:SideOnly(Side.CLIENT)
     val client by lazy(NONE) { document.client as BaseGraphicsClient }
+    private val graphicsSlots = ArrayList<IGraphicsSlot>(40)
 
     /** 是否可以被指定玩家打开 */
     override fun canInteractWith(playerIn: EntityPlayer): Boolean {
@@ -39,53 +38,30 @@ abstract class BaseGraphics : Container() {
     }
 
     override fun detectAndSendChanges() {
+        if (graphicsSlots.size != inventorySlots.size)
+            throw AssertionError("存在Slot不在API的管理范围内")
         super.detectAndSendChanges()
-        inventorySlots[0].xPos = 0
     }
 
     override fun transferStackInSlot(playerIn: EntityPlayer, index: Int): ItemStack {
-        val slot = inventorySlots[index] as GraphicsSlot
+        val slot = graphicsSlots[index]
         val stack = slot.stack
         val oldCout = stack.count
         if (stack.isEmpty || !slot.canTakeStack(playerIn)) return stack
         // 尝试将物品放入Slot中
-        val tryPutStack = { init: (GraphicsSlot) -> Boolean ->
-            inventorySlots.stream()
-                .map { it as GraphicsSlot }
+        val tryPutStack = { init: (IGraphicsSlot) -> Boolean ->
+            graphicsSlots.stream()
                 .filter(init)
-                .filter { it.isEnabled && it.isItemValid(stack) }
-                .filter {
-                    val itStack = it.stack
-                    itStack.isEmpty || (
-                                stack.item == itStack.item &&
-                                (!stack.hasSubtypes || stack.metadata == itStack.metadata) &&
-                                ItemStack.areItemStackTagsEqual(stack, itStack)
-                            )
-                }
                 .sorted { o1, o2 ->
                     if (o1.hasStack == o2.hasStack) o1.compareTo(o2)
                     else if (o1.hasStack) -1
                     else 1
                 }
-                .forEachOrdered {
-                    val itStack = it.stack
-                    val maxCout = min(stack.maxStackSize, it.slotStackLimit)
-                    val cout = min(stack.count, maxCout - itStack.count)
-                    if (cout == 0) return@forEachOrdered
-                    if (itStack.isEmpty) it.putStack(stack.copy(itStack.count + cout))
-                    else itStack.grow(cout)
-                    stack.shrink(cout)
-                }
+                .forEachOrdered { stack.count = it.putStack(stack) }
         }
         tryPutStack { it.belong != slot.belong }
         if (!stack.isEmpty) tryPutStack { it.belong == slot.belong && it != slot }
         return stack.copy(oldCout - stack.count)
-    }
-
-    override fun addSlotToContainer(slotIn: Slot): Slot {
-        if (slotIn !is GraphicsSlot) throw IllegalArgumentException(
-                "${javaClass.simpleName} 仅支持传入 ${GraphicsSlot::class.java.simpleName} 作为Slot")
-        return super.addSlotToContainer(slotIn)
     }
 
     /**
@@ -138,15 +114,17 @@ abstract class BaseGraphics : Container() {
             } while (list.isNotEmpty())
         }
 
-        override fun installSlot(slot: GraphicsSlot): Int {
-            addSlotToContainer(slot)
+        override fun installSlot(slot: IGraphicsSlot): Int {
+            addSlotToContainer(slot.slot)
+            graphicsSlots.add(slot)
             return inventorySlots.size - 1
         }
 
-        override fun uninstallSlot(slot: GraphicsSlot) {
-            val index = inventorySlots.indexOf(slot)
+        override fun uninstallSlot(slot: IGraphicsSlot) {
+            val index = inventorySlots.indexOf(slot.slot)
             inventorySlots.removeAt(index)
             inventoryItemStacks.removeAt(index)
+            graphicsSlots.removeAt(index)
         }
 
     }

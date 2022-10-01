@@ -6,7 +6,7 @@ import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
-import top.kmar.mi.api.graphics.components.interfaces.GraphicsSlot
+import top.kmar.mi.api.graphics.components.interfaces.ItemSlot
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
@@ -28,7 +28,7 @@ class SlotCmpt(private val attribute: CmptAttributes) : Cmpt(attribute.id) {
             if (field == null) field = value
         }
     val slot by lazy(NONE) {
-        GraphicsSlot(
+        ItemSlot(
             this,
             attribute["priority", "100"].toInt(),
             inventory!!,

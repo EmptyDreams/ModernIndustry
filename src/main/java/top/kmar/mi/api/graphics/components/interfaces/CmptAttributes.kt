@@ -26,6 +26,11 @@ class CmptAttributes {
         map[key] = value
     }
 
+    fun copy(id: String = this.id) = CmptAttributes().apply {
+        map.putAll(this@CmptAttributes.map)
+        this["id"] = id
+    }
+
     companion object {
 
         @JvmStatic

@@ -68,10 +68,10 @@ abstract class Cmpt(
      * 添加一个Slot
      * @return Slot在GUI中的下标
      */
-    protected open fun installSlot(slot: GraphicsSlot): Int = parent.installSlot(slot)
+    protected open fun installSlot(slot: IGraphicsSlot): Int = parent.installSlot(slot)
 
     /** 移除一个Slot */
-    protected open fun uninstallSlot(slot: GraphicsSlot): Unit = parent.uninstallSlot(slot)
+    protected open fun uninstallSlot(slot: IGraphicsSlot): Unit = parent.uninstallSlot(slot)
 
     /** 向控件添加一个子控件 */
     fun addChild(cmpt: Cmpt) {
@@ -163,7 +163,7 @@ abstract class Cmpt(
                 throw UnsupportedOperationException()
             }
 
-            override fun installSlot(slot: GraphicsSlot): Int {
+            override fun installSlot(slot: IGraphicsSlot): Int {
                 throw NullPointerException("该元素不包含父节点")
             }
 
