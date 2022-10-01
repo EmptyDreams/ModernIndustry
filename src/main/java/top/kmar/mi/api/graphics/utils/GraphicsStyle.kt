@@ -145,11 +145,11 @@ open class GraphicsStyle(
     fun alignChildren() {
         if (xPosChange) {
             xPosChange = false
-            alignHorizontal(cmpt.client) { it, x -> it.style.srcX = x }
+            alignHorizontal(cmpt.client) { it, x -> it.style.srcX = x + it.style.marginLeft }
         }
         if (yPosChange) {
             yPosChange = false
-            alignVertical(cmpt.client) { it, y -> it.style.srcY = y}
+            alignVertical(cmpt.client) { it, y -> it.style.srcY = y + it.style.marginTop }
         }
     }
 
