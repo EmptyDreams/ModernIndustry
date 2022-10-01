@@ -32,7 +32,7 @@ class BackpackCmpt(private val attribute: CmptAttributes) : Cmpt(attribute.id) {
     /** 活动的九个物品栏 */
     val activeSlots by lazy(NONE) {
         Array(9) {
-            BackpackSlot(this, attribute["index", "10"].toInt(), player!!, it)
+            BackpackSlot(this, attribute["index", "200"].toInt(), player!!, it)
         }
     }
 
@@ -40,7 +40,7 @@ class BackpackCmpt(private val attribute: CmptAttributes) : Cmpt(attribute.id) {
     val mainSlots by lazy(NONE) {
         Array(3) { y ->
             Array(9) { x ->
-                BackpackSlot(this, attribute["index", "50"].toInt(), player!!, 9 + x + y * 9)
+                BackpackSlot(this, attribute["index", "500"].toInt(), player!!, 9 + x + y * 9)
             }
         }
     }
