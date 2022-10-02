@@ -1,6 +1,7 @@
 package top.kmar.mi.api.graphics.components.interfaces
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectRBTreeMap
+import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraftforge.fml.relauncher.Side
@@ -14,6 +15,7 @@ import top.kmar.mi.api.net.message.graphics.GraphicsAddition
 import top.kmar.mi.api.net.message.graphics.GraphicsMessage
 import top.kmar.mi.api.utils.MISysInfo
 import java.util.*
+import kotlin.LazyThreadSafetyMode.NONE
 
 /**
  * 控件的服务端接口
@@ -29,7 +31,7 @@ abstract class Cmpt(
 
     /** 客户端对象，一个服务端对象对应且仅对应一个客户端对象 */
     @get:SideOnly(Side.CLIENT)
-    val client by lazy(LazyThreadSafetyMode.NONE) { initClientObj() }
+    val client by lazy(NONE) { initClientObj() }
     /** 子控件列表 */
     private val childrenList = LinkedList<Cmpt>()
     /** 事件列表 */
@@ -42,6 +44,8 @@ abstract class Cmpt(
         }
     /** 是否安装过父节点 */
     var isInstallParent = false
+    /** 类名列表，内部元素不重复 */
+    val classList = ObjectRBTreeSet<String>()
 
     /** 初始化客户端对象 */
     @SideOnly(Side.CLIENT)
@@ -90,6 +94,63 @@ abstract class Cmpt(
     fun getElementByID(id: String): Cmpt? {
         if (id == this.id) return this
         return eachChildren { it.getElementByID(id) }
+    }
+
+    /** 通过class名称获取控件列表 */
+    fun getElementsByClass(clazz: String): LinkedList<Cmpt> {
+        val list = LinkedList<Cmpt>()
+        if (clazz in classList) list.add(this)
+        eachAllChildren { list.addAll(it.getElementsByClass(clazz)) }
+        return list
+    }
+
+    /**
+     * 通过匹配表达式获取所有与之匹配的控件
+     *
+     * @param exp 匹配表达式
+     *
+     *   格式：
+     *
+     *   + `#id` - 通过id匹配
+     *   + `.className` - 通过类名匹配
+     *   + `tagName` - 通过标签名匹配
+     *   + `tagName.className1.className2` 匹配同时满足相连条件的控件
+     *   + `.className1 .className2` 匹配在`1`控件内的`2`控件
+     * @param limit 数量限制
+     * @return 所有匹配的控件（按控件出现顺序排序）
+     */
+    fun queryCmptLimit(exp: String, limit: Int): LinkedList<Cmpt> {
+        val list = LinkedList<Cmpt>()
+        if (limit == 0) return list
+        val index = exp.indexOf(" ")
+        val value = if (index == -1) exp else exp.substring(0 until index)
+        val cmptExp = CmptSearchExp(value)
+        val isEnd = index == -1
+        val nextExp by lazy(NONE) { exp.substring(index + 1) }
+        eachAllChildren {
+            if (cmptExp.match(it)) {
+                if (isEnd) list.add(it)
+                else list.addAll(it.queryCmptLimit(nextExp, limit - list.size))
+            }
+            list.addAll(it.queryCmptLimit(exp, limit - list.size))
+        }
+        return list
+    }
+
+    /**
+     * 通过匹配表达式匹配GUI中所有与该表达式相匹配的控件
+     * @see queryCmptLimit
+     */
+    fun queryCmptAll(exp: String): LinkedList<Cmpt> = queryCmptLimit(exp, Int.MAX_VALUE)
+
+    /**
+     * 通过匹配表达式匹配GUI中第一个与该表达式相匹配的控件
+     * @return 未查询到则返回`null`
+     * @see queryCmptLimit
+     */
+    fun queryCmpt(exp: String): Cmpt? {
+        val result = queryCmptLimit(exp, 1)
+        return if (result.isEmpty()) null else result.first
     }
 
     /**

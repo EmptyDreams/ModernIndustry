@@ -92,6 +92,10 @@ abstract class BaseGraphics : Container() {
     fun dispatchEvent(name: String, message: ListenerData) = document.dispatchEvent(name, message)
     /** 通过ID获取元素 */
     fun getElementByID(id: String) = document.getElementByID(id)
+    /** @see Cmpt.queryCmptLimit */
+    fun queryCmptLimit(exp: String, limit: Int) = document.queryCmptLimit(exp, limit)
+    fun queryCmptAll(exp: String) = document.queryCmptAll(exp)
+    fun queryCmpt(exp: String) = document.queryCmpt(exp)
 
     inner class DocumentCmpt : Cmpt("document") {
 
