@@ -9,14 +9,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.items.ItemStackHandler
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.GuiLoader
-import top.kmar.mi.api.graphics.components.BackgroundCmpt
-import top.kmar.mi.api.graphics.components.BackpackCmpt
-import top.kmar.mi.api.graphics.components.MaskCmpt
-import top.kmar.mi.api.graphics.components.SlotCmpt
+import top.kmar.mi.api.graphics.components.*
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes.Companion.valueOfID
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.VerticalAlignModeEnum
 import top.kmar.mi.api.utils.applyClient
+import top.kmar.mi.api.utils.data.enums.Direction2DEnum
 
 /**
  *
@@ -26,6 +24,7 @@ import top.kmar.mi.api.utils.applyClient
 class TestGui : BaseGraphics() {
 
     override fun init(player: EntityPlayer, pos: BlockPos) {
+        super.init(player, pos)
         val mask = MaskCmpt(valueOfID("mask"))
         val background = BackgroundCmpt(valueOfID("background")).applyClient {
             with(client.style) {
@@ -46,8 +45,16 @@ class TestGui : BaseGraphics() {
         val backpack = BackpackCmpt(valueOfID("backpack")).apply {
             this.player = player
         }
-        slots.forEach { background.addChild(it) }
-        background.addChild(backpack)
+        val progress = ProgressBarCmpt(valueOfID("progress")).applyClient {
+            client.style.width = FixedSizeMode(20)
+            client.style.height = FixedSizeMode(4)
+            client.style.progress.direction = Direction2DEnum.UP
+        }
+        progress.maxProgress = 100
+        progress.progress = 20
+        //slots.forEach { background.addChild(it) }
+        //background.addChild(backpack)
+        background.addChild(progress)
         mask.addChild(background)
         addChild(mask)
     }

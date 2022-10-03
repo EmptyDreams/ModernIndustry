@@ -9,6 +9,7 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.data.math.Rect2D
 import java.awt.Color
+import kotlin.LazyThreadSafetyMode.NONE
 
 /**
  * 控件样式表
@@ -74,6 +75,9 @@ open class GraphicsStyle(
 
     /** 显示方式 */
     var display = DisplayModeEnum.DEF
+
+    /** 进度条样式 */
+    val progress by lazy(NONE) { ProgressBarData() }
 
     /** 控件X坐标，相对于窗体 */
     val x: Int
