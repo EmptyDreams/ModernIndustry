@@ -169,12 +169,14 @@ enum class ProgressBarStyle {
                     val ySize = if (height and 1 == 0) 2 else 1
                     val y = height shr 1
                     renderTriangle(
-                        graphics, 0, y, 1, ySize,
+                        graphics,
+                        0, y, 1, ySize,
                         1, -1, 0, 2,
                         darkCout, background
                     )
                     renderTriangle(
-                        graphics, darkCout, lightCout, 1, ySize + darkCout.shl(1),
+                        graphics,
+                        darkCout, y - darkCout, 1, ySize + darkCout.shl(1),
                         1, -1, 0, 2,
                         lightCout, color
                     )
