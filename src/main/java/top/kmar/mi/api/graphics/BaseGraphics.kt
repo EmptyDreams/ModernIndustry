@@ -4,6 +4,9 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Container
 import net.minecraft.item.ItemStack
 import net.minecraft.util.math.BlockPos
+import net.minecraftforge.common.util.FakePlayer
+import net.minecraftforge.common.util.FakePlayerFactory
+import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
@@ -11,6 +14,7 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.slots.IGraphicsSlot
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
+import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.copy
 import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
@@ -19,7 +23,7 @@ import kotlin.LazyThreadSafetyMode.NONE
  * 服务端GUI窗体对象
  * @author EmptyDreams
  */
-abstract class BaseGraphics : Container() {
+open class BaseGraphics : Container() {
 
     /** 容器对象 */
     val document = DocumentCmpt()
@@ -31,6 +35,13 @@ abstract class BaseGraphics : Container() {
     @get:SideOnly(Side.CLIENT)
     val client by lazy(NONE) { document.client as BaseGraphicsClient }
     private val graphicsSlots = ArrayList<IGraphicsSlot>(40)
+    /** 打开该GUI的玩家 */
+    var player: EntityPlayer =
+            FakePlayerFactory.getMinecraft(FMLCommonHandler.instance().minecraftServerInstance.worlds[0])
+        set(value) {
+            if (field is FakePlayer) field = value
+        }
+        get() = if (field !is FakePlayer) field else throw AssertionError("player未初始化")
 
     /** 是否可以被指定玩家打开 */
     override fun canInteractWith(playerIn: EntityPlayer): Boolean {
@@ -41,6 +52,15 @@ abstract class BaseGraphics : Container() {
         if (graphicsSlots.size != inventorySlots.size)
             throw AssertionError("存在Slot不在API的管理范围内")
         super.detectAndSendChanges()
+        if (WorldUtil.isClient()) return
+        val player = this.player
+        fun task(cmpt: Cmpt) {
+            cmpt.eachAllChildren {
+                it.networkEvent(player)
+                task(it)
+            }
+        }
+        task(document)
     }
 
     override fun transferStackInSlot(playerIn: EntityPlayer, index: Int): ItemStack {
@@ -72,7 +92,9 @@ abstract class BaseGraphics : Container() {
      * @param player 打开GUI的玩家
      * @param pos 触发GUI的位置
      */
-    abstract fun init(player: EntityPlayer, pos: BlockPos)
+    open fun init(player: EntityPlayer, pos: BlockPos) {
+        this.player = player
+    }
 
     /** 添加一个控件 */
     fun addChild(cmpt: Cmpt) = document.addChild(cmpt)

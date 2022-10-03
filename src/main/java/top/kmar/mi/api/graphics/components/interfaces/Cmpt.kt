@@ -60,6 +60,9 @@ abstract class Cmpt(
         MessageSender.send2Client(player as EntityPlayerMP, pack)
     }
 
+    /** 网络通信接口，每Tick调用一次 */
+    open fun networkEvent(player: EntityPlayer) {}
+
     /** 判断该控件是否有父节点 */
     fun hasParent(): Boolean = parent != EMPTY_CMPT
 
