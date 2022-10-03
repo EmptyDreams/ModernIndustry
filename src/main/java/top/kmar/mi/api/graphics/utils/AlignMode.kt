@@ -98,7 +98,7 @@ private fun sortLeftOrTop(
         }
         .forEachOrdered {
             val display = it.style.display
-            if (!sort || (preDis != display && preDis.isDisplay())) {
+            if (!sort || ((preDis != display || !display.isInline()) && preDis.isDisplay())) {
                 pos += sizeGetter(it.style)
             }
             callback(it, pos)
@@ -127,7 +127,7 @@ private fun sortMiddle(
                 mark(this)
                 if (display.isDisplay() && position.isRelative()) {
                     add(it.client)
-                    if (!sort || preDis != display) {
+                    if (!sort || preDis != display || !display.isInline()) {
                         preDis = display
                         size += sizeGetter(this)
                     }
@@ -141,7 +141,7 @@ private fun sortMiddle(
     preDis = NONE
     for (it in list) {
         val display = it.style.display
-        if ((!sort ||display != preDis) && preDis.isDisplay()) {
+        if ((!sort ||display != preDis || !display.isInline()) && preDis.isDisplay()) {
             pos += sizeGetter(it.style)
         }
         callback(it, pos)
@@ -168,7 +168,7 @@ private fun sortRightOrBottom(
         with(it.client.style) {
             mark(this)
             if (display.isDisplay() && position.isRelative()) {
-                if (!sort || preDis != display) {
+                if (!sort || (preDis.isDisplay() && (preDis != display || !display.isInline()))) {
                     preDis = display
                     pos -= sizeGetter(this)
                 }

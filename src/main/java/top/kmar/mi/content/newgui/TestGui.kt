@@ -11,6 +11,7 @@ import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.GuiLoader
 import top.kmar.mi.api.graphics.components.*
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes.Companion.valueOfID
+import top.kmar.mi.api.graphics.utils.DisplayModeEnum
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.VerticalAlignModeEnum
 import top.kmar.mi.api.utils.applyClient
@@ -40,6 +41,7 @@ class TestGui : BaseGraphics() {
                 }
             }.applyClient {
                 client.style.marginTop = 20
+                client.style.display = DisplayModeEnum.INLINE
             }
         }
         val backpack = BackpackCmpt(valueOfID("backpack")).apply {
@@ -56,8 +58,8 @@ class TestGui : BaseGraphics() {
         }
         progress.maxProgress = 100
         progress.progress = 50
-        //slots.forEach { background.addChild(it) }
-        //background.addChild(backpack)
+        slots.forEach { background.addChild(it) }
+        background.addChild(backpack)
         background.addChild(progress)
         mask.addChild(background)
         addChild(mask)
