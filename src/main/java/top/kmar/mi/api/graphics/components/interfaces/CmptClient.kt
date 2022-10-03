@@ -38,6 +38,7 @@ interface CmptClient {
         service.eachAllChildren {
             val client = it.client
             val style = client.style
+            if (!style.display.isDisplay()) return@eachAllChildren
             val g = graphics.createGraphics(style.x, style.y, style.width(), style.height())
             client.render(g)
         }
