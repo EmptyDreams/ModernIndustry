@@ -114,8 +114,8 @@ abstract class Cmpt(
      *   + `#id` - 通过id匹配
      *   + `.className` - 通过类名匹配
      *   + `tagName` - 通过标签名匹配
-     *   + `tagName.className1.className2` 匹配同时满足相连条件的控件
-     *   + `.className1 .className2` 匹配在`1`控件内的`2`控件
+     *   + `tagName.className1.className2` - 匹配同时满足相连条件的控件
+     *   + `.className1 .className2` - 匹配在`1`控件内的`2`控件
      * @param limit 数量限制
      * @return 所有匹配的控件（按控件出现顺序排序）
      */

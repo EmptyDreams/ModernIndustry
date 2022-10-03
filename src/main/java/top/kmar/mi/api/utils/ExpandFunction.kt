@@ -5,7 +5,6 @@ import net.minecraft.block.BlockLiquid
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.texture.ITextureObject
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.inventory.Slot
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -29,10 +28,8 @@ import top.kmar.mi.api.utils.data.math.Point3D
 import top.kmar.mi.api.utils.data.math.Range3D
 import top.kmar.mi.api.utils.iterators.ArrayFlipIterator
 import java.awt.Color
-import java.lang.Integer.max
 import java.nio.charset.StandardCharsets
 import kotlin.math.abs
-import kotlin.math.min
 import kotlin.math.sqrt
 
 /** 比较字符串是否相等（忽略大小写） */
@@ -73,35 +70,11 @@ infix fun <T> Array<T>.flip(startIndex: Int) = Iterable { ArrayFlipIterator(this
 /** 获取倒序遍历的迭代器 */
 fun <T> Array<T>.flip() = Iterable { ArrayFlipIterator(this, this.size - 1) }
 
-/**
- * 尝试将输入的[ItemStack]放入[Slot]中
- *
- * 函数不会修改传入的stack
- *
- * @return 成功放入的物品数量
- */
-fun Slot.mergeStack(stack: ItemStack): Int {
-    val slotStack = this.stack
-    if (!slotStack.checkMerge(stack)) return 0
-    val maxCount = min(slotStack.maxStackSize, slotStackLimit) - slotStack.count
-    val extract = max(min(maxCount, stack.count), 0)
-    if (extract != 0) putStack(stack.copy(extract))
-    return extract
-}
-
 /** 拷贝Stack并将拷贝后的Stack的count修改为指定值 */
 fun ItemStack.copy(count: Int): ItemStack {
     val result = copy()
     result.count = count
     return result
-}
-
-/** 判断当前Stack能否和指定的Stack合并 */
-fun ItemStack.checkMerge(that: ItemStack): Boolean {
-    if (isEmpty || that.isEmpty) return true
-    if (!isItemEqualIgnoreDurability(that)) return false
-    if (hasSubtypes && metadata != that.metadata) return false
-    return ItemStack.areItemStackTagsEqual(this, that)
 }
 
 /**
@@ -147,15 +120,6 @@ fun World.getFluidBlockHandler(fluid: Fluid, pos: BlockPos): IFluidHandler =
  * @receiver [Item]
  */
 fun Item.newStack(amount: Int = 1) = ItemStack(this, amount)
-
-/**
- * 读取坐标
- * @receiver [NBTTagCompound]
- */
-fun NBTTagCompound.getBlockPos(key: String): BlockPos {
-    val value = getIntArray(key)
-    return BlockPos(value[0], value[1], value[2])
-}
 
 /**
  * 从[NBTTagCompound]中读取数据到类中
