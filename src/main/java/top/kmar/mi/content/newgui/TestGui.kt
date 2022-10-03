@@ -46,17 +46,27 @@ class TestGui : BaseGraphics() {
             this.player = player
         }
         val progress = ProgressBarCmpt(valueOfID("progress")).applyClient {
-            client.style.width = FixedSizeMode(20)
-            client.style.height = FixedSizeMode(4)
-            client.style.progress.direction = Direction2DEnum.UP
+            with(client.style) {
+                marginTop = 20
+                width = FixedSizeMode(20)
+                height = FixedSizeMode(15)
+                progress.direction = Direction2DEnum.LEFT
+            }
+
         }
         progress.maxProgress = 100
-        progress.progress = 20
+        progress.progress = 50
         //slots.forEach { background.addChild(it) }
         //background.addChild(backpack)
         background.addChild(progress)
         mask.addChild(background)
         addChild(mask)
+    }
+
+    override fun detectAndSendChanges() {
+        super.detectAndSendChanges()
+        val ele = getElementByID("progress") as ProgressBarCmpt
+        if (ele.progress++ == ele.maxProgress) ele.progress = 0
     }
 
     companion object {

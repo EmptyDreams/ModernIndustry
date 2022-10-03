@@ -10,7 +10,6 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
-import top.kmar.mi.api.graphics.utils.ProgressBarStyle
 import java.awt.Color
 
 /**
@@ -49,7 +48,6 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes.id) {
 
         override val service = this@ProgressBarCmpt
         override val style = GraphicsStyle(service).apply {
-            progress.style = ProgressBarStyle.RECT
             backgroundColor = Color(139, 139, 139)
             color = Color.WHITE
             borderBottom.color = Color(104, 104, 104)

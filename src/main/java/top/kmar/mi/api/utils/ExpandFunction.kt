@@ -24,6 +24,7 @@ import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.By
 import top.kmar.mi.api.araw.AutoDataRW
 import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.fluid.data.FluidData
+import top.kmar.mi.api.utils.container.PairIntInt
 import top.kmar.mi.api.utils.data.math.Point3D
 import top.kmar.mi.api.utils.data.math.Range3D
 import top.kmar.mi.api.utils.iterators.ArrayFlipIterator
@@ -31,6 +32,24 @@ import java.awt.Color
 import java.nio.charset.StandardCharsets
 import kotlin.math.abs
 import kotlin.math.sqrt
+
+fun Int.swapIf(other: Int, bool: Boolean): PairIntInt {
+    return if (bool) PairIntInt(other, this) else PairIntInt(this, other)
+}
+
+/** 向上取整的整除2 */
+@Suppress("NOTHING_TO_INLINE")
+inline fun Int.ceilDiv2(): Int {
+    val result = this shr 1
+    return if (this and 1 == 0) result else result + 1
+}
+
+/** 向上取整的整除 */
+@Suppress("NOTHING_TO_INLINE")
+inline infix fun Int.ceilDiv(other: Int): Int {
+    val result = this / other
+    return if (this % other == 0) result else result + 1
+}
 
 /** 比较字符串是否相等（忽略大小写） */
 fun String.equalsIgnoreCase(that: String): Boolean {
