@@ -29,7 +29,7 @@ object GraphicsMessage : IMessageHandle<GraphicsAddition, ParseAddition> {
         if (container !is BaseGraphics) return result.setParseResult(EXCEPTION)
         val addition = GraphicsAddition().apply { readFrom(message) }
         val element = container.getElementByID(addition.id) ?: return result.setParseResult(EXCEPTION)
-        element.receive(message.readData())
+        element.receiveNetworkMessage(message.readData())
         return result.setParseResult(SUCCESS)
     }
 

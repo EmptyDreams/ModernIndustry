@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
+import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.components.interfaces.slots.IGraphicsSlot
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
@@ -14,6 +15,7 @@ import top.kmar.mi.api.net.handler.MessageSender
 import top.kmar.mi.api.net.message.graphics.GraphicsAddition
 import top.kmar.mi.api.net.message.graphics.GraphicsMessage
 import top.kmar.mi.api.utils.MISysInfo
+import top.kmar.mi.api.utils.WorldUtil
 import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -52,12 +54,24 @@ abstract class Cmpt(
     abstract fun initClientObj(): CmptClient
 
     /** 接收从客户端发送的信息 */
-    open fun receive(message: IDataReader) {}
+    protected open fun receive(message: IDataReader) {}
 
-    /** 发送信息到客户端 */
-    fun send2Client(player: EntityPlayer,  message: IDataReader) {
+    /**
+     * 发送信息到客户端
+     * @param player 接收信息的玩家对象
+     * @param message 要传输的信息
+     */
+    fun send2Client(player: EntityPlayer, message: IDataReader) {
         val pack = GraphicsMessage.create(message, GraphicsAddition(id))
         MessageSender.send2Client(player as EntityPlayerMP, pack)
+    }
+
+    /** 接收网络通信 */
+    fun receiveNetworkMessage(message: IDataReader) {
+        val isEvent = message.readBoolean()
+        if (!isEvent) return receive(message.readData())
+        val name = message.readData().readString()
+        eventMap[name]?.forEach { it.active(null) }
     }
 
     /** 网络通信接口，每Tick调用一次 */
@@ -160,18 +174,20 @@ abstract class Cmpt(
      * 发布事件
      *
      * 如果某一个事件执行过程中发生了异常，不会影响其它事件的执行
-     *
-     * 该函数不会抛出异常
      */
     fun dispatchEvent(name: String, message: ListenerData) {
-        message.target = this
         /** 触发指定控件的事件 */
-        fun activeEvent(it: Cmpt) {
+        fun activeEvent(it: Cmpt, network: Boolean) {
             try {
                 val listeners = it.eventMap[name] ?: return
                 for (listener in listeners) {
                     listener.activeObj(message)
                     if (message.cancel) break
+                }
+                if (message.send2Service && network && WorldUtil.isClient()) {
+                    val content = ByteDataOperator()
+                    content.writeString(name)
+                    client.send2Service(content, true)
                 }
             } catch (e: Exception) {
                 MISysInfo.err("触发事件过程中发生异常：\n\tname=$name\n\tmessage=$message\n\tit=$it", e)
@@ -179,11 +195,11 @@ abstract class Cmpt(
         }
         /** 触发指定事件及其父控件的事件 */
         fun activeParentEvent(it: Cmpt) {
-            if (!message.reverse) activeEvent(it)
+            if (!message.reverse) activeEvent(it, this == it)
             if (it.hasParent() && !message.cancel) activeParentEvent(it.parent)
-            if (message.reverse && !message.cancel) activeEvent(it)
+            if (message.reverse && !message.cancel) activeEvent(it, this == it)
         }
-        if (message.prohibitTransfer) activeEvent(this)
+        if (message.prohibitTransfer) activeEvent(this, true)
         else activeParentEvent(this)
     }
 

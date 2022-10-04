@@ -11,9 +11,12 @@ import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.GuiLoader
 import top.kmar.mi.api.graphics.components.*
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes.Companion.valueOfID
+import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.utils.DisplayModeEnum
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.VerticalAlignModeEnum
+import top.kmar.mi.api.utils.MISysInfo
+import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.applyClient
 
 /**
@@ -52,10 +55,14 @@ class TestGui : BaseGraphics() {
                 height = FixedSizeMode(15)
             }
         }
+        button.addEventListener(IGraphicsListener.mouseClick) {
+            it?.send2Service = true
+            MISysInfo.print(WorldUtil.isServer())
+        }
         slots.forEach { background.addChild(it) }
         background.addChild(backpack)
-        background.addChild(button)
-        mask.addChild(background)
+        mask.addChild(button)
+        //mask.addChild(background)
         addChild(mask)
     }
 

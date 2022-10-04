@@ -29,8 +29,12 @@ fun interface IGraphicsListener<T : ListenerData> {
 
     }
 
-    /** 触发事件 */
-    fun active(`data`: T)
+    /**
+     * 触发事件
+     *
+     * @param data 事件信息，**当该事件是在服务端触发时值为`null`**
+     */
+    fun active(`data`: T?)
 
     @Suppress("UNCHECKED_CAST")
     fun activeObj(`data`: ListenerData) = active(`data` as T)
