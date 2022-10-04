@@ -109,19 +109,22 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
                 if (message.cancel) {
                     if (isEnter) enter = false
                     else exit = false
-                } else task(it, x, y)
+                }
             }
             return null == cmpt.eachChildren {
                 val style = it.client.style
                 if (Point2D(mouseX, mouseY) in style.area) {
-                    if (it.id in mouseEnterList) return@eachChildren null
-                    mouseEnterList.add(it.id)
-                    helper(it, true)
+                    if (it.id !in mouseEnterList) {
+                        mouseEnterList.add(it.id)
+                        if (enter) helper(it, true)
+                    }
                 } else {
-                    if (it.id !in mouseEnterList) return@eachChildren null
-                    mouseEnterList.remove(it.id)
-                    helper(it, false)
+                    if (it.id in mouseEnterList) {
+                        mouseEnterList.remove(it.id)
+                        if (exit) helper(it, false)
+                    }
                 }
+                task(it, x, y)
                 if (!(enter || exit)) it else null
             }
         }
