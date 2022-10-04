@@ -102,9 +102,9 @@ enum class ProgressBarStyle {
                     val lightWidth = min(lightSize, rectWidth)
                     val darkWidth = rectWidth - lightWidth
                     val y = (height - minSize).ceilDiv2()
-                    graphics.fillRect(width - rectWidth - 1, y, darkWidth, minSize, background)
+                    graphics.fillRect(width - rectWidth, y, darkWidth, minSize, background)
                     if (lightWidth != 0)
-                        graphics.fillRect(width - lightWidth - 1, y, lightWidth, minSize, color)
+                        graphics.fillRect(width - lightWidth, y, lightWidth, minSize, color)
                 }
                 Direction2DEnum.RIGHT -> {
                     val rectWidth = width - height.ceilDiv2()
