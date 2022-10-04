@@ -10,12 +10,14 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
+import top.kmar.mi.api.register.others.AutoCmpt
 import java.awt.Color
 
 /**
  * 进度条控件
  * @author EmptyDreams
  */
+@AutoCmpt("progress")
 class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes.id) {
 
     /** 当前进度 */
