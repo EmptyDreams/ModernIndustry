@@ -21,7 +21,7 @@ data class Rect2D(
         val y = max(this.y, that.y)
         val endX = min(this.endX, that.endX)
         val endY = min(this.endY, that.endY)
-        return if (x > endX && y > endY)
+        return if (x < endX && y < endY)
             Rect2D(x, y, endX - x, endY - y)
         else Rect2D(x, y, 0, 0)
     }
