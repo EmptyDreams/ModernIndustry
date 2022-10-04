@@ -9,6 +9,7 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.data.math.Rect2D
 import java.awt.Color
+import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
 
 /**
@@ -128,7 +129,7 @@ open class GraphicsStyle(
         get() = Rect2D(x, y, width(), height())
 
     private var xPosChange = true
-    private var yPosChange = true
+    private var groupCache: LinkedList<LinkedList<GraphicsStyle>>? = null
 
     /** 标记X轴方向坐标变化 */
     fun markXChange() {
@@ -137,7 +138,7 @@ open class GraphicsStyle(
 
     /** 标记Y轴方向坐标变化 */
     fun markYChange() {
-        yPosChange = true
+        groupCache = null
     }
 
     /** 标记X及Y轴方向坐标变化 */
@@ -147,13 +148,28 @@ open class GraphicsStyle(
     }
 
     fun alignChildren() {
+        val groupList = groupCache ?: LinkedList<LinkedList<GraphicsStyle>>().apply {
+            var prev = DisplayModeEnum.NONE
+            cmpt.eachAllChildren {
+                with(it.client.style) {
+                    if (!display.isDisplay() || !position.isRelative()) return@eachAllChildren
+                    if (display == prev && display.isInline()) last.addLast(this)
+                    else {
+                        val newList = LinkedList<GraphicsStyle>()
+                        newList.addLast(this)
+                        addLast(newList)
+                        prev = display
+                    }
+                }
+            }
+            groupCache = this
+            alignVertical(this@GraphicsStyle, this) { it, y -> it.srcY = y + it.marginTop }
+        }
         if (xPosChange) {
             xPosChange = false
-            alignHorizontal(cmpt.client) { it, x -> it.style.srcX = x + it.style.marginLeft }
-        }
-        if (yPosChange) {
-            yPosChange = false
-            alignVertical(cmpt.client) { it, y -> it.style.srcY = y + it.style.marginTop }
+            for (group in groupList) {
+                alignHorizontal(this, group) { it, x -> it.srcX = x + it.marginLeft }
+            }
         }
     }
 

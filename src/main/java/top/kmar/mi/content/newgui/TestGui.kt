@@ -13,6 +13,7 @@ import top.kmar.mi.api.graphics.components.*
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes.Companion.valueOfID
 import top.kmar.mi.api.graphics.utils.DisplayModeEnum
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
+import top.kmar.mi.api.graphics.utils.HorizontalAlignModeEnum
 import top.kmar.mi.api.graphics.utils.VerticalAlignModeEnum
 import top.kmar.mi.api.utils.applyClient
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
@@ -32,6 +33,7 @@ class TestGui : BaseGraphics() {
                 width = FixedSizeMode(200)
                 height = FixedSizeMode(230)
                 alignVertical = VerticalAlignModeEnum.TOP
+                alignHorizontal = HorizontalAlignModeEnum.LEFT
             }
         }
         val slots = Array(5) {
