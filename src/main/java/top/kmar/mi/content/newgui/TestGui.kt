@@ -61,8 +61,8 @@ class TestGui : BaseGraphics() {
         }
         slots.forEach { background.addChild(it) }
         background.addChild(backpack)
-        mask.addChild(button)
-        //mask.addChild(background)
+        background.addChild(button)
+        mask.addChild(background)
         addChild(mask)
     }
 

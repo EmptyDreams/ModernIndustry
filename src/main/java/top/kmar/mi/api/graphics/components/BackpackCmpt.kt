@@ -86,8 +86,8 @@ class BackpackCmpt(private val attribute: CmptAttributes) : Cmpt(attribute.id) {
         override fun render(graphics: GuiGraphics) {
             val firstSlot = mainSlots[0][0]
             val offsetX = (style.width() - (18 * 9)) shr 1
-            val startX = offsetX + style.x
-            val startY = style.y
+            val startX = offsetX + style.x + 1
+            val startY = style.y + 1
             if (startX != firstSlot.xPos || startY != firstSlot.yPos) {
                 initSlotsPos(startX, startY)
                 val message = ByteDataOperator().apply {
@@ -104,11 +104,11 @@ class BackpackCmpt(private val attribute: CmptAttributes) : Cmpt(attribute.id) {
     }
 
     private fun initSlotsPos(startX: Int, startY: Int) {
-        var y = startY + 1
+        var y = startY
         for (slots in mainSlots) {
             for ((i, it) in slots.withIndex()) {
                 it.yPos = y
-                it.xPos = startX + 18 * i + 1
+                it.xPos = startX + 18 * i
             }
             y += 18
         }
