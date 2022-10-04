@@ -3,6 +3,8 @@ package top.kmar.mi.api.graphics.utils
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.opengl.GL11
@@ -49,6 +51,11 @@ class GuiGraphics(
         unscissor()
     }
 
+    /** 装载指定材质 */
+    fun bindTexture(location: ResourceLocation) {
+        container.mc.textureManager.bindTexture(location)
+    }
+
     /**
      * 绘制材质
      * @param x 绘制区域X坐标
@@ -59,9 +66,10 @@ class GuiGraphics(
      * @param height 要绘制的内容的宽度
      */
     fun drawTexture(x: Int, y: Int, u: Int, v: Int, width: Int, height: Int) {
-        if (!scissor()) return
+        scissor()
         val left = this.x + x
         val top = this.y + y
+        GlStateManager.color(1f, 1f, 1f, 1f)
         container.drawTexturedModalRect(left, top, u, v, width, height)
         unscissor()
     }

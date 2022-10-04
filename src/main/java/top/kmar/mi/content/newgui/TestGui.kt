@@ -15,7 +15,6 @@ import top.kmar.mi.api.graphics.utils.DisplayModeEnum
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.VerticalAlignModeEnum
 import top.kmar.mi.api.utils.applyClient
-import top.kmar.mi.api.utils.data.enums.Direction2DEnum
 
 /**
  *
@@ -47,28 +46,21 @@ class TestGui : BaseGraphics() {
         val backpack = BackpackCmpt(valueOfID("backpack")).apply {
             this.player = player
         }
-        val progress = ProgressBarCmpt(valueOfID("progress")).applyClient {
+        val button = ButtonCmpt(valueOfID("button")).applyClient {
             with(client.style) {
-                marginTop = 20
                 width = FixedSizeMode(20)
                 height = FixedSizeMode(15)
-                progress.direction = Direction2DEnum.LEFT
             }
-
         }
-        progress.maxProgress = 100
-        progress.progress = 50
         slots.forEach { background.addChild(it) }
         background.addChild(backpack)
-        background.addChild(progress)
+        background.addChild(button)
         mask.addChild(background)
         addChild(mask)
     }
 
     override fun detectAndSendChanges() {
         super.detectAndSendChanges()
-        val ele = getElementByID("progress") as ProgressBarCmpt
-        if (ele.progress++ == ele.maxProgress) ele.progress = 0
     }
 
     companion object {
