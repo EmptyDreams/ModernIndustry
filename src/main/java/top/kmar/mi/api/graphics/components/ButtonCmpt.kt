@@ -55,7 +55,7 @@ class ButtonCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
         override fun render(graphics: GuiGraphics) {
             style.button.render(graphics, mouseOn)
-            renderBorder(graphics)
+            //renderBorder(graphics)
             renderChildren(graphics)
         }
 

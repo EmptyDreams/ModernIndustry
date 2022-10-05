@@ -80,7 +80,9 @@ class GuiGraphics(
         val top = y + this.y
         val right = left + width
         val bottom = top + height
+        scissor()
         Gui.drawRect(left, top, right, bottom, color)
+        unscissor()
     }
 
     /**
