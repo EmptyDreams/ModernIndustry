@@ -1,4 +1,4 @@
-package top.kmar.mi.content.newgui
+package top.kmar.mi.content.gui
 
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.init.Items
