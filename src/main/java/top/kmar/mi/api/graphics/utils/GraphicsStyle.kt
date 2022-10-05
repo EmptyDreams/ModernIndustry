@@ -78,7 +78,9 @@ open class GraphicsStyle(
     var display = DisplayModeEnum.DEF
 
     /** 进度条样式 */
-    val progress by lazy(NONE) { ProgressBarData() }
+    val progress by lazy(NONE) { ProgressBarData(this) }
+    /** 按钮样式 */
+    val button by lazy(NONE) { ButtonStyleData(this) }
 
     /** 控件X坐标，相对于窗体 */
     val x: Int
@@ -129,6 +131,7 @@ open class GraphicsStyle(
         get() = Rect2D(x, y, width(), height())
 
     private var xPosChange = true
+    // Y轴分组数据
     private var groupCache: LinkedList<LinkedList<GraphicsStyle>>? = null
 
     /** 标记X轴方向坐标变化 */
@@ -147,6 +150,7 @@ open class GraphicsStyle(
         markYChange()
     }
 
+    /** 排列子控件 */
     fun alignChildren() {
         val groupList = groupCache ?: LinkedList<LinkedList<GraphicsStyle>>().apply {
             var prev = DisplayModeEnum.NONE

@@ -13,7 +13,7 @@ import kotlin.math.roundToInt
  * 进度条样式数据
  * @author EmptyDreams
  */
-class ProgressBarData {
+class ProgressBarData(private val graphicsStyle: GraphicsStyle) {
 
     /** 进度条方向 */
     var direction = Direction2DEnum.RIGHT
@@ -26,6 +26,8 @@ class ProgressBarData {
 
     /** 最小宽度 */
     var minWidth = 3
+
+    fun render(graphics: GuiGraphics, percent: Float) = style.render(graphics, graphicsStyle, percent)
 
 }
 

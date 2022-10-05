@@ -62,7 +62,7 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
 
         override fun render(graphics: GuiGraphics) {
-            style.progress.style.render(graphics, style, percent)
+            style.progress.render(graphics, percent)
             renderChildren(graphics)
         }
 
