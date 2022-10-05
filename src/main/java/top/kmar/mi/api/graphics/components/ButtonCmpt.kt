@@ -22,7 +22,7 @@ import java.awt.Color
  * @author EmptyDreams
  */
 @AutoCmpt("button")
-class ButtonCmpt(attributes: CmptAttributes) : Cmpt(attributes.id) {
+class ButtonCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     override fun initClientObj() = ButtonCmptClient()
 

@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
+import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.slots.IGraphicsSlot
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
@@ -119,7 +120,7 @@ open class BaseGraphics : Container() {
     fun queryCmptAll(exp: String) = document.queryCmptAll(exp)
     fun queryCmpt(exp: String) = document.queryCmpt(exp)
 
-    inner class DocumentCmpt : Cmpt("document") {
+    inner class DocumentCmpt : Cmpt(CmptAttributes.valueOfID("document")) {
 
         @SideOnly(Side.CLIENT)
         override fun initClientObj(): CmptClient =

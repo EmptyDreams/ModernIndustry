@@ -19,7 +19,7 @@ import kotlin.LazyThreadSafetyMode.NONE
  * @author EmptyDreams
  */
 @AutoCmpt("slot")
-class SlotCmpt(private val attribute: CmptAttributes) : Cmpt(attribute.id) {
+class SlotCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
 
     override fun initClientObj() = SlotCmptClient()
 

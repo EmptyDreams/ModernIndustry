@@ -20,7 +20,7 @@ import kotlin.LazyThreadSafetyMode.NONE
  * @author EmptyDreams
  */
 @AutoCmpt("backpack")
-class BackpackCmpt(private val attribute: CmptAttributes) : Cmpt(attribute.id) {
+class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
 
     override fun initClientObj() = BackpackCmptClient()
 

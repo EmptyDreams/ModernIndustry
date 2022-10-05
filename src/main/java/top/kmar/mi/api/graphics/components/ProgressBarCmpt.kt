@@ -18,7 +18,7 @@ import java.awt.Color
  * @author EmptyDreams
  */
 @AutoCmpt("progress")
-class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes.id) {
+class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     /** 当前进度 */
     var progress: Int = 0

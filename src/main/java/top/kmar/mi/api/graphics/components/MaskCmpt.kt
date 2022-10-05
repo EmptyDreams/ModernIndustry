@@ -16,7 +16,7 @@ import java.awt.Color
  * @author EmptyDreams
  */
 @AutoCmpt("mask")
-class MaskCmpt(attributes: CmptAttributes) : Cmpt(attributes.id) {
+class MaskCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     override fun initClientObj() = MaskClient()
 

@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectRBTreeMap
  * 控件属性
  * @author EmptyDreams
  */
-class CmptAttributes {
+class CmptAttributes : Iterable<Map.Entry<String, String>> {
 
     private val map = Object2ObjectRBTreeMap<String, String>()
 
@@ -41,5 +41,7 @@ class CmptAttributes {
         }
 
     }
+
+    override fun iterator() = map.iterator()
 
 }

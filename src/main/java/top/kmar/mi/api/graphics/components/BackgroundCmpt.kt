@@ -16,7 +16,7 @@ import java.awt.Color
  * @author EmptyDreams
  */
 @AutoCmpt("background")
-class BackgroundCmpt(attributes: CmptAttributes) : Cmpt(attributes.id) {
+class BackgroundCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     override fun initClientObj() = BackgroundGraphicsClient()
 

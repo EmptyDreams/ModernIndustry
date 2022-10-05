@@ -27,13 +27,16 @@ import kotlin.LazyThreadSafetyMode.NONE
  * @author EmptyDreams
  */
 abstract class Cmpt(
-    /** 控件ID，整个GUI中ID不能重复 */
-    val id: String
+    /** 属性列表 */
+    val attributes: CmptAttributes
 ) {
 
     /** 客户端对象，一个服务端对象对应且仅对应一个客户端对象 */
     @get:SideOnly(Side.CLIENT)
     val client by lazy(NONE) { initClientObj() }
+    /** 控件ID，整个GUI中ID不能重复 */
+    val id: String
+        get() = attributes.id
     /** 子控件列表 */
     private val childrenList = LinkedList<Cmpt>()
     /** 事件列表 */
@@ -238,7 +241,7 @@ abstract class Cmpt(
     companion object {
 
         /** 无效的控件对象 */
-        val EMPTY_CMPT = object : Cmpt("null") {
+        val EMPTY_CMPT = object : Cmpt(CmptAttributes.valueOfID("null")) {
 
             override fun initClientObj(): CmptClient {
                 throw UnsupportedOperationException()
