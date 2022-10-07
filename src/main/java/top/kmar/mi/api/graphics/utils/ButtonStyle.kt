@@ -79,6 +79,7 @@ enum class ButtonStyleEnum {
             val right = style.borderRight
             val background = style.backgroundColor.toInt()
             val white = Color.WHITE.toInt()
+            val shadow = Color(0, 0, 0, 135).toInt()
 
             when (style.button.direction) {
                 Direction2DEnum.UP -> {
@@ -123,6 +124,14 @@ enum class ButtonStyleEnum {
                         for (i in 1 until (y * 0.3).roundToInt()) {
                             fillRect(x + i, 1 + i, 1, 1, white)
                         }
+                        // 阴影
+                        val shadowWidth = ((width - left.weight - right.weight) * 0.9).toInt()
+                        fillRect(
+                            width - shadowWidth - 1, height - bottom.weight - 1,
+                            shadowWidth, 1,
+                            shadow
+                        )
+                        fillRect(width - right.weight - 1, y, 1, plusHeight - 1, shadow)
                     }
                 }
                 Direction2DEnum.DOWN -> {
@@ -165,10 +174,16 @@ enum class ButtonStyleEnum {
                         // 高亮
                         fillRect(
                             left.weight, top.weight,
-                            ((width - left.weight - right.weight) * 0.9).toInt(), 1,
+                            ((width - left.weight - right.weight) * 0.8).toInt(), 1,
                             white
                         )
                         if (y > top.weight) fillRect(left.weight, top.weight, 1, y, white)
+                        // 阴影
+                        for (i in 0 until height - y - 3) {
+                            fillRect(x + i, height - 2 - i, 1, 1, shadow)
+                        }
+                        if (y >= top.weight)
+                            fillRect(width - right.weight - 1, top.weight + 1, 1, y, shadow)
                     }
                 }
                 Direction2DEnum.LEFT -> {
@@ -207,6 +222,11 @@ enum class ButtonStyleEnum {
                         for (i in 3 until width - plusWidth) {
                             fillRect(i - 1, y - i + 2, 1, 1, white)
                         }
+                        // 阴影
+                        for (i in 0 until  width - plusWidth - 3) {
+                            fillRect(i + 2, y + i + 1, 1, 1, shadow)
+                        }
+                        fillRect(x, height - bottom.weight - 1, plusWidth, 1, shadow)
                     }
                 }
                 Direction2DEnum.RIGHT -> {
@@ -253,6 +273,12 @@ enum class ButtonStyleEnum {
                         for (i in 4 until width - x) {
                             fillRect(x + i - 2, top.weight - 3 + i, 1, 1, white)
                         }
+                        // 阴影
+                        for (i in 0 until width - x - 2) {
+                            fillRect(width - i - 2, y + i, 1, 1, shadow)
+                        }
+                        if (x >= left.weight)
+                            fillRect(left.weight + 1, height - bottom.weight - 1, x - 1, 1, shadow)
                     }
                 }
             }
