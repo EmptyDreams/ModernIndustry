@@ -9,6 +9,7 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
+import top.kmar.mi.api.graphics.utils.ButtonStyleEnum
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.register.others.AutoCmpt
@@ -56,7 +57,7 @@ class ButtonCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
         override fun render(graphics: GuiGraphics) {
             style.button.render(graphics, mouseOn)
-            //renderBorder(graphics)
+            if (style.button.style == ButtonStyleEnum.RECT) renderBorder(graphics)
             renderChildren(graphics)
         }
 
