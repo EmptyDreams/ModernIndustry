@@ -77,6 +77,7 @@ class GuiGraphics(
 
     /** 按照指定颜色填充矩形 */
     fun fillRect(x: Int, y: Int, width: Int, height: Int, color: Int) {
+        if (width <= 0 || height <= 0) return
         val left = x + this.x
         val top = y + this.y
         val right = left + width

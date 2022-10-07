@@ -53,7 +53,7 @@ class TestGui : BaseGraphics() {
                 width = FixedSizeMode(20)
                 height = FixedSizeMode(15)
                 button.style = ButtonStyleEnum.TRIANGLE
-                button.direction = Direction2DEnum.RIGHT
+                button.direction = Direction2DEnum.UP
             }
         }
         slots.forEach { background.addChild(it) }

@@ -9,6 +9,7 @@ import top.kmar.mi.api.utils.minusIf
 import top.kmar.mi.api.utils.toInt
 import java.awt.Color
 import kotlin.math.absoluteValue
+import kotlin.math.roundToInt
 
 /**
  * 按钮样式数据
@@ -77,6 +78,7 @@ enum class ButtonStyleEnum {
             val left = style.borderLeft
             val right = style.borderRight
             val background = style.backgroundColor.toInt()
+            val white = Color.WHITE.toInt()
 
             when (style.button.direction) {
                 Direction2DEnum.UP -> {
@@ -103,6 +105,10 @@ enum class ButtonStyleEnum {
                         if (plusHeight <= 0) return@with
                         fillRect(0, y, left.weight, height - y - 1, left.color.toInt())
                         fillRect(width - right.weight, y, right.weight, height - y - 1, right.color.toInt())
+
+                    }
+                    with(graphics) {
+                        val plusHeight = height - y - bottom.weight
                         // 填充背景
                         fillTrangle(left.weight + 1, 1, y - 2, Direction2DEnum.UP, background)
                         fillRect(
@@ -110,6 +116,13 @@ enum class ButtonStyleEnum {
                             width - left.weight - right.weight, plusHeight + 1,
                             background
                         )
+                        // 高亮
+                        for (i in 0 until y - 2) {
+                            fillRect(x - i, 1 + i, 1, 1, white)
+                        }
+                        for (i in 1 until (y * 0.3).roundToInt()) {
+                            fillRect(x + i, 1 + i, 1, 1, white)
+                        }
                     }
                 }
                 Direction2DEnum.DOWN -> {
@@ -136,6 +149,8 @@ enum class ButtonStyleEnum {
                         val plusHeight = y
                         fillRect(0, top.weight, left.weight, plusHeight, left.color.toInt())
                         fillRect(width - right.weight, top.weight, right.weight, plusHeight, right.color.toInt())
+                    }
+                    with(graphics) {
                         // 填充背景
                         fillTrangle(
                             left.weight + 1, y + top.weight + 1,
@@ -147,6 +162,13 @@ enum class ButtonStyleEnum {
                             width - left.weight - right.weight, y + 1,
                             background
                         )
+                        // 高亮
+                        fillRect(
+                            left.weight, top.weight,
+                            ((width - left.weight - right.weight) * 0.9).toInt(), 1,
+                            white
+                        )
+                        if (y > top.weight) fillRect(left.weight, top.weight, 1, y, white)
                     }
                 }
                 Direction2DEnum.LEFT -> {
@@ -170,13 +192,21 @@ enum class ButtonStyleEnum {
                         if (plusWidth <= 0) return@with
                         fillRect(x, 0, plusWidth, top.weight, top.color.toInt())
                         fillRect(x, height - bottom.weight, plusWidth, bottom.weight, bottom.color.toInt())
+                    }
+                    with(graphics) {
                         // 填充背景
+                        val plusWidth = width - x - 1
                         fillTrangle(1, top.weight + 1, x - 2, Direction2DEnum.LEFT, background)
                         fillRect(
                             x - 1, top.weight,
                             plusWidth + 1, height - top.weight - bottom.weight,
                             background
                         )
+                        // 高亮
+                        fillRect(x, top.weight, plusWidth, 1, white)
+                        for (i in 3 until width - plusWidth) {
+                            fillRect(i - 1, y - i + 2, 1, 1, white)
+                        }
                     }
                 }
                 Direction2DEnum.RIGHT -> {
@@ -204,6 +234,8 @@ enum class ButtonStyleEnum {
                             plusWidth, bottom.weight,
                             bottom.color.toInt()
                         )
+                    }
+                    with(graphics) {
                         // 填充背景
                         fillTrangle(
                             x + left.weight + 1, top.weight + 1,
@@ -215,6 +247,12 @@ enum class ButtonStyleEnum {
                             x + 1, height - top.weight - bottom.weight,
                             background
                         )
+                        // 高亮
+                        fillRect(left.weight, top.weight, 1, height.floorDiv2(), white)
+                        if (x >= left.weight) fillRect(left.weight + 1, top.weight, x, 1, white)
+                        for (i in 4 until width - x) {
+                            fillRect(x + i - 2, top.weight - 3 + i, 1, 1, white)
+                        }
                     }
                 }
             }
