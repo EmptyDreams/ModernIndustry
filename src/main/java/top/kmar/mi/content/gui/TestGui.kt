@@ -48,6 +48,14 @@ class TestGui : BaseGraphics() {
         val backpack = BackpackCmpt(valueOfID("backpack")).apply {
             this.player = player
         }
+        val progress = ProgressBarCmpt(valueOfID("progress")).applyClient {
+            with(client.style) {
+                width = FixedSizeMode(20)
+                height = FixedSizeMode(15)
+                progress.direction = Direction2DEnum.RIGHT
+            }
+        }
+        progress.maxProgress = 100
         val button = ButtonCmpt(valueOfID("button")).applyClient {
             with(client.style) {
                 width = FixedSizeMode(20)
@@ -58,6 +66,7 @@ class TestGui : BaseGraphics() {
         }
         slots.forEach { background.addChild(it) }
         background.addChild(backpack)
+        background.addChild(progress)
         background.addChild(button)
         mask.addChild(background)
         addChild(mask)
@@ -65,6 +74,8 @@ class TestGui : BaseGraphics() {
 
     override fun detectAndSendChanges() {
         super.detectAndSendChanges()
+        val progress = document.queryCmpt("#progress") as ProgressBarCmpt
+        if (progress.progress++ == progress.maxProgress) progress.progress = 0
     }
 
     companion object {

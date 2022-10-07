@@ -51,25 +51,6 @@ enum class ProgressBarStyle {
             }
         }
 
-        /** 绘制三角形 */
-        private fun renderTriangle(
-            graphics: GuiGraphics, startX: Int, startY: Int, startXSize: Int, startYSize: Int,
-            xStep: Int, yStep: Int, xSizeStep: Int, ySizeStep: Int,
-            cout: Int, color: Int
-        ) {
-            var x = startX
-            var y = startY
-            var xSize = startXSize
-            var ySize = startYSize
-            for (i in 0 until cout) {
-                graphics.fillRect(x, y, xSize, ySize, color)
-                x += xStep
-                y += yStep
-                xSize += xSizeStep
-                ySize += ySizeStep
-            }
-        }
-
         private fun renderHelper(
             graphics: GuiGraphics, percent: Float,
             width: Int, height: Int, minSize: Int,
@@ -133,71 +114,45 @@ enum class ProgressBarStyle {
                 Direction2DEnum.UP -> {
                     val (lightCout, darkCout) = getTriangleCout()
                     val xSize = if (width and 1 == 0) 2 else 1
-                    val x = width shr 1
-                    renderTriangle(
-                        graphics,
-                        x, 0, xSize, 1,
-                        -1, 1, 2, 0,
-                        darkCout, background
-                    )
-                    renderTriangle(
-                        graphics,
-                        x - darkCout, darkCout,
-                        xSize + darkSize.shl(1), 1,
-                        -1, 1, 2, 0,
-                        lightCout, color
+                    graphics.fillTrapezoidal(lightCout, 0, xSize, darkCout, Direction2DEnum.UP, background)
+                    graphics.fillTrapezoidal(
+                        0, darkCout, xSize + darkSize.shl(1),
+                        lightCout, Direction2DEnum.UP, color
                     )
                 }
                 Direction2DEnum.DOWN -> {
                     val (lightCout, darkCout) = getTriangleCout()
                     val xSize = if (width and 1 == 0) 2 else 1
-                    val x = width shr 1
-                    renderTriangle(
-                        graphics,
-                        x, height - 1, xSize, 1,
-                        -1, -1, 2, 0,
-                        darkCout, background
+                    val rectHeight = height - width.ceilDiv2()
+                    graphics.fillTrapezoidal(
+                        lightCout, rectHeight + lightCout, xSize,
+                        darkCout, Direction2DEnum.DOWN, background
                     )
-                    renderTriangle(
-                        graphics,
-                        x - darkCout, height - darkCout - 1,
-                        xSize + darkSize.shl(1), 1,
-                        -1, -1, 2, 0,
-                        lightCout, color
+                    graphics.fillTrapezoidal(
+                        0, rectHeight, xSize + darkSize.shl(1),
+                        lightCout, Direction2DEnum.DOWN, color
                     )
                 }
                 Direction2DEnum.LEFT -> {
                     val (lightCout, darkCout) = getTriangleCout()
                     val ySize = if (height and 1 == 0) 2 else 1
-                    val y = height shr 1
-                    renderTriangle(
-                        graphics,
-                        0, y, 1, ySize,
-                        1, -1, 0, 2,
-                        darkCout, background
-                    )
-                    renderTriangle(
-                        graphics,
-                        darkCout, y - darkCout, 1, ySize + darkCout.shl(1),
-                        1, -1, 0, 2,
-                        lightCout, color
+                    graphics.fillTrapezoidal(0, lightCout, ySize, darkCout, Direction2DEnum.LEFT, background)
+                    graphics.fillTrapezoidal(
+                        darkCout, 0, ySize + darkCout.shl(1),
+                        lightCout, Direction2DEnum.LEFT, color
                     )
                 }
                 Direction2DEnum.RIGHT -> {
                     val (lightCout, darkCout) = getTriangleCout()
                     val ySize = if (height and 1 == 0) 2 else 1
-                    val y = height shr 1
-                    renderTriangle(
-                        graphics, width - 1, y, 1, ySize,
-                        -1, -1, 0, 2,
-                        darkCout, background
+                    val rectWidth = width - height.ceilDiv2()
+                    graphics.fillTrapezoidal(
+                        rectWidth + lightCout, lightCout, ySize,
+                        darkCout, Direction2DEnum.RIGHT, background
                     )
-                    renderTriangle(
-                        graphics,
-                        width - darkCout - 1, y - darkCout,
-                        1, ySize + darkCout.shl(1),
-                        -1, -1, 0, 2,
-                        lightCout, color
+                    graphics.fillTrapezoidal(
+                        rectWidth, 0, ySize + darkCout.shl(1),
+                        lightCout, Direction2DEnum.RIGHT, color
                     )
                 }
             }
