@@ -69,10 +69,6 @@ enum class ButtonStyleEnum {
     },
     TRIANGLE {
         override fun render(graphics: GuiGraphics, style: GraphicsStyle, mouseOn: Boolean) {
-            renderBorder(graphics, style)
-        }
-
-        fun renderBorder(graphics: GuiGraphics, style: GraphicsStyle) {
             val top = style.borderTop
             val bottom = style.borderBottom
             val left = style.borderLeft
