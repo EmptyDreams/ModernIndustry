@@ -74,6 +74,7 @@ enum class ButtonStyleEnum {
             val left = style.borderLeft
             val right = style.borderRight
             val background = style.backgroundColor.toInt()
+            val color = style.color.toInt()
             val white = Color.WHITE.toInt()
             val shadow = Color(0, 0, 0, 135).toInt()
 
@@ -102,7 +103,6 @@ enum class ButtonStyleEnum {
                         if (plusHeight <= 0) return@with
                         fillRect(0, y, left.weight, height - y - 1, left.color.toInt())
                         fillRect(width - right.weight, y, right.weight, height - y - 1, right.color.toInt())
-
                     }
                     with(graphics) {
                         val plusHeight = height - y - bottom.weight
@@ -113,13 +113,6 @@ enum class ButtonStyleEnum {
                             width - left.weight - right.weight, plusHeight + 1,
                             background
                         )
-                        // 高亮
-                        for (i in 0 until y - 2) {
-                            fillRect(x - i, 1 + i, 1, 1, white)
-                        }
-                        for (i in 1 until (y * 0.3).roundToInt()) {
-                            fillRect(x + i, 1 + i, 1, 1, white)
-                        }
                         // 阴影
                         val shadowWidth = ((width - left.weight - right.weight) * 0.9).toInt()
                         fillRect(
@@ -128,6 +121,22 @@ enum class ButtonStyleEnum {
                             shadow
                         )
                         fillRect(width - right.weight - 1, y, 1, plusHeight - 1, shadow)
+                        // 鼠标覆盖
+                        if (mouseOn) {
+                            fillTrangle(left.weight + 1, 1, y - 2, Direction2DEnum.UP, color)
+                            fillRect(
+                                left.weight, y - 1,
+                                width - left.weight - right.weight, plusHeight + 1,
+                                color
+                            )
+                        }
+                        // 高亮
+                        for (i in 0 until y - 2) {
+                            fillRect(x - i, 1 + i, 1, 1, white)
+                        }
+                        for (i in 1 until (y * 0.3).roundToInt()) {
+                            fillRect(x + i, 1 + i, 1, 1, white)
+                        }
                     }
                 }
                 Direction2DEnum.DOWN -> {
@@ -167,6 +176,24 @@ enum class ButtonStyleEnum {
                             width - left.weight - right.weight, y + 1,
                             background
                         )
+                        // 阴影
+                        for (i in 0 until height - y - 3) {
+                            fillRect(x + i, height - 2 - i, 1, 1, shadow)
+                        }
+                        if (y >= top.weight)
+                            fillRect(width - right.weight - 1, top.weight + 1, 1, y, shadow)
+                        if (mouseOn) {
+                            fillTrangle(
+                                left.weight + 1, y + top.weight + 1,
+                                height - y - 2 - top.weight,
+                                Direction2DEnum.DOWN, color
+                            )
+                            fillRect(
+                                left.weight, top.weight,
+                                width - left.weight - right.weight, y + 1,
+                                color
+                            )
+                        }
                         // 高亮
                         fillRect(
                             left.weight, top.weight,
@@ -174,12 +201,6 @@ enum class ButtonStyleEnum {
                             white
                         )
                         if (y > top.weight) fillRect(left.weight, top.weight, 1, y, white)
-                        // 阴影
-                        for (i in 0 until height - y - 3) {
-                            fillRect(x + i, height - 2 - i, 1, 1, shadow)
-                        }
-                        if (y >= top.weight)
-                            fillRect(width - right.weight - 1, top.weight + 1, 1, y, shadow)
                     }
                 }
                 Direction2DEnum.LEFT -> {
@@ -213,16 +234,24 @@ enum class ButtonStyleEnum {
                             plusWidth + 1, height - top.weight - bottom.weight,
                             background
                         )
-                        // 高亮
-                        fillRect(x, top.weight, plusWidth, 1, white)
-                        for (i in 3 until width - plusWidth) {
-                            fillRect(i - 1, y - i + 2, 1, 1, white)
-                        }
                         // 阴影
                         for (i in 0 until  width - plusWidth - 3) {
                             fillRect(i + 2, y + i + 1, 1, 1, shadow)
                         }
                         fillRect(x, height - bottom.weight - 1, plusWidth, 1, shadow)
+                        if (mouseOn) {
+                            fillTrangle(1, top.weight + 1, x - 2, Direction2DEnum.LEFT, color)
+                            fillRect(
+                                x - 1, top.weight,
+                                plusWidth + 1, height - top.weight - bottom.weight,
+                                color
+                            )
+                        }
+                        // 高亮
+                        fillRect(x, top.weight, plusWidth, 1, white)
+                        for (i in 3 until width - plusWidth) {
+                            fillRect(i - 1, y - i + 2, 1, 1, white)
+                        }
                     }
                 }
                 Direction2DEnum.RIGHT -> {
@@ -263,18 +292,30 @@ enum class ButtonStyleEnum {
                             x + 1, height - top.weight - bottom.weight,
                             background
                         )
-                        // 高亮
-                        fillRect(left.weight, top.weight, 1, height.floorDiv2(), white)
-                        if (x >= left.weight) fillRect(left.weight + 1, top.weight, x, 1, white)
-                        for (i in 4 until width - x) {
-                            fillRect(x + i - 2, top.weight - 3 + i, 1, 1, white)
-                        }
                         // 阴影
                         for (i in 0 until width - x - 2) {
                             fillRect(width - i - 2, y + i, 1, 1, shadow)
                         }
                         if (x >= left.weight)
                             fillRect(left.weight + 1, height - bottom.weight - 1, x - 1, 1, shadow)
+                        if (mouseOn) {
+                            fillTrangle(
+                                x + left.weight + 1, top.weight + 1,
+                                width - x - 3,
+                                Direction2DEnum.RIGHT, color
+                            )
+                            fillRect(
+                                left.weight, top.weight,
+                                x + 1, height - top.weight - bottom.weight,
+                                color
+                            )
+                        }
+                        // 高亮
+                        fillRect(left.weight, top.weight, 1, height.floorDiv2(), white)
+                        if (x >= left.weight) fillRect(left.weight + 1, top.weight, x, 1, white)
+                        for (i in 4 until width - x) {
+                            fillRect(x + i - 2, top.weight - 3 + i, 1, 1, white)
+                        }
                     }
                 }
             }
