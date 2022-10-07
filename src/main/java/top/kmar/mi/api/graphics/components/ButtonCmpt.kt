@@ -14,6 +14,8 @@ import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.register.others.AutoCmpt
 import top.kmar.mi.api.utils.applyClient
+import top.kmar.mi.api.utils.floorDiv2
+import top.kmar.mi.api.utils.toInt
 import java.awt.Color
 
 /**
@@ -56,9 +58,18 @@ class ButtonCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
 
         override fun render(graphics: GuiGraphics) {
-            style.button.render(graphics, mouseOn)
-            if (style.button.style == ButtonStyleEnum.RECT) renderBorder(graphics)
-            renderChildren(graphics)
+            with(graphics) {
+                val oldSetting = overflowHidden
+                overflowHidden = true
+                style.button.render(this, mouseOn)
+                if (style.button.style == ButtonStyleEnum.RECT) renderBorder(this)
+                overflowHidden = oldSetting
+                drawStringCenter(
+                    width.floorDiv2(), height.floorDiv2(),
+                    attributes["value", ""], style.fontColor.toInt()
+                )
+                renderChildren(this)
+            }
         }
 
     }

@@ -28,6 +28,8 @@ open class GraphicsStyle(
     var color: Color = Color.BLACK
     /** 背景色 */
     var backgroundColor = transparent
+    /** 文本颜色 */
+    var fontColor: Color = Color.BLACK
 
     /** 上描边 */
     val borderTop = BorderStyle()
