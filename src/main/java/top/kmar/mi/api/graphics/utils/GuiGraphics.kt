@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.opengl.GL11
 import top.kmar.mi.api.graphics.BaseGraphicsClient
+import top.kmar.mi.api.utils.data.enums.Direction2DEnum
 import top.kmar.mi.api.utils.data.math.Rect2D
 
 /**
@@ -83,6 +84,59 @@ class GuiGraphics(
         scissor()
         Gui.drawRect(left, top, right, bottom, color)
         unscissor()
+    }
+
+    /**
+     * 绘制等腰梯形
+     * @param x 绘制区域起始X轴坐标
+     * @param y 绘制区域起始Y轴坐标
+     * @param length 短边长度
+     * @param cout 梯形的高
+     * @param direction 短边方向
+     * @param color 填充色
+     */
+    fun fillTrapezoidal(x: Int, y: Int, length: Int, cout: Int, direction: Direction2DEnum, color: Int) {
+        if (length < 1 || cout < 1) return
+        fun drawHelper(
+            startX: Int, startY: Int, xSize: Int, ySize: Int,
+            xStep: Int, yStep: Int, xSizeStep: Int, ySizeStep: Int
+        ) {
+            var u = startX
+            var v = startY
+            var width = xSize
+            var height = ySize
+            for (i in 0 until cout) {
+                fillRect(u, v, width, height, color)
+                u += xStep
+                v += yStep
+                width += xSizeStep
+                height += ySizeStep
+            }
+        }
+        val startX = x + cout - 1
+        val startY = y + cout - 1
+        when (direction) {
+            Direction2DEnum.UP ->
+                drawHelper(startX, y, length, 1, -1, 1, 2, 0)
+            Direction2DEnum.DOWN ->
+                    drawHelper(startX, startY, length, 1, -1, -1, 2, 0)
+            Direction2DEnum.LEFT ->
+                drawHelper(x, startY, 1, length, 1, -1, 0, 2)
+            Direction2DEnum.RIGHT ->
+                drawHelper(startX, startY, 1, length, -1, -1, 0, 2)
+        }
+    }
+
+    /**
+     * 绘制等腰三角形
+     * @param x 绘制区域起始X坐标
+     * @param y 绘制区域起始Y坐标
+     * @param height 三角形的高
+     * @param direction 三角形朝向
+     * @param color 填充颜色
+     */
+    fun fillTrangle(x: Int, y: Int, height: Int, direction: Direction2DEnum, color: Int) {
+        fillTrapezoidal(x, y, 1, height, direction, color)
     }
 
     /**

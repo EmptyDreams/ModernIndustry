@@ -47,6 +47,7 @@ class ButtonCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         override val service = this@ButtonCmpt
         override val style = GraphicsStyle(service).apply {
             color = Color(0, 127, 255, 75)
+            backgroundColor = Color(139, 139, 139)
             borderTop.color = Color.BLACK
             borderRight.color = Color.BLACK
             borderBottom.color = Color.BLACK
