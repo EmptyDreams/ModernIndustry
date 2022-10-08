@@ -5,11 +5,10 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
+import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.register.others.AutoCmpt
-import top.kmar.mi.api.utils.toInt
-import java.awt.Color
 
 /**
  * GUI背景框
@@ -25,17 +24,17 @@ class BackgroundCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
         override val service = this@BackgroundCmpt
         override val style = GraphicsStyle(service).apply {
-            borderTop.color = Color.WHITE
-            borderRight.color = Color(85, 85, 85)
+            borderTop.color = IntColor.white
+            borderRight.color = IntColor(85, 85, 85)
             borderBottom.color = borderRight.color
             borderLeft.color = borderTop.color
-            backgroundColor = Color.BLACK
-            color = Color(198, 198, 198)
+            backgroundColor = IntColor.black
+            color = IntColor(198, 198, 198)
         }
 
         override fun render(graphics: GuiGraphics) {
             with(style) {
-                graphics.fillRect(3, 3, width() - 6, height() - 6, color.toInt())
+                graphics.fillRect(3, 3, width() - 6, height() - 6, color)
             }
             renderBorder(graphics)
             renderBackground(graphics)
@@ -43,7 +42,7 @@ class BackgroundCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
 
         override fun renderBackground(graphics: GuiGraphics) {
-            val background = style.backgroundColor.toInt()
+            val background = style.backgroundColor
             val width = style.width()
             val height = style.height()
             with(graphics) {
@@ -69,10 +68,10 @@ class BackgroundCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
 
         override fun renderBorder(graphics: GuiGraphics) {
-            val borderTop = style.borderTop.color.toInt()
-            val borderRight = style.borderRight.color.toInt()
-            val borderBottom = style.borderBottom.color.toInt()
-            val borderLeft = style.borderLeft.color.toInt()
+            val borderTop = style.borderTop.color
+            val borderRight = style.borderRight.color
+            val borderBottom = style.borderBottom.color
+            val borderLeft = style.borderLeft.color
             val width = style.width()
             val height = style.height()
             with(graphics) {

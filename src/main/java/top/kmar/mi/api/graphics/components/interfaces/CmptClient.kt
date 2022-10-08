@@ -11,7 +11,6 @@ import top.kmar.mi.api.net.handler.MessageSender
 import top.kmar.mi.api.net.message.graphics.GraphicsAddition
 import top.kmar.mi.api.net.message.graphics.GraphicsMessage
 import top.kmar.mi.api.utils.data.math.Point2D
-import top.kmar.mi.api.utils.toInt
 
 /**
  * 控件的客户端接口
@@ -63,7 +62,7 @@ interface CmptClient {
     /** 渲染背景 */
     fun renderBackground(graphics: GuiGraphics) {
         with(style) {
-            graphics.fillRect(0, 0, width(), height(), backgroundColor.toInt())
+            graphics.fillRect(0, 0, width(), height(), backgroundColor)
         }
     }
 
@@ -73,10 +72,10 @@ interface CmptClient {
             val width = this.width()
             val height = this.height()
             with(graphics) {
-                fillRect(0, 0, width, borderTop.weight, borderTop.color.toInt())
-                fillRect(width - borderRight.weight, 0, borderRight.weight, height, borderRight.color.toInt())
-                fillRect(0, height - borderBottom.weight, width, borderBottom.weight, borderBottom.color.toInt())
-                fillRect(0, 0, borderRight.weight, height, borderLeft.color.toInt())
+                fillRect(0, 0, width, borderTop.weight, borderTop.color)
+                fillRect(width - borderRight.weight, 0, borderRight.weight, height, borderRight.color)
+                fillRect(0, height - borderBottom.weight, width, borderBottom.weight, borderBottom.color)
+                fillRect(0, 0, borderRight.weight, height, borderLeft.color)
             }
         }
 

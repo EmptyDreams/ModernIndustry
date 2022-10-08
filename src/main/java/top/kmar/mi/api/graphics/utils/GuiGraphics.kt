@@ -10,6 +10,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.opengl.GL11
 import top.kmar.mi.api.graphics.BaseGraphicsClient
+import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
 import top.kmar.mi.api.utils.data.math.Rect2D
 
@@ -37,7 +38,7 @@ class GuiGraphics(
     var fontRenderer: FontRenderer = Minecraft.getMinecraft().fontRenderer
 
     /** 以指定点为中心绘制字符串 */
-    fun drawStringCenter(centerX: Int, centerY: Int, text: String, color: Int = 0) {
+    fun drawStringCenter(centerX: Int, centerY: Int, text: String, color: IntColor = IntColor.black) {
         val render = Minecraft.getMinecraft().fontRenderer
         val width = render.getStringWidth(text)
         val height = render.FONT_HEIGHT
@@ -47,11 +48,11 @@ class GuiGraphics(
     }
 
     /** 绘制一个字符串 */
-    fun drawString(x: Int, y: Int, text: String, color: Int = 0) {
+    fun drawString(x: Int, y: Int, text: String, color: IntColor = IntColor.black) {
         scissor()
         val left = this.x + x
         val top = this.y + y
-        fontRenderer.drawString(text, left, top, color)
+        fontRenderer.drawString(text, left, top, color.value)
         unscissor()
     }
 
@@ -79,14 +80,14 @@ class GuiGraphics(
     }
 
     /** 按照指定颜色填充矩形 */
-    fun fillRect(x: Int, y: Int, width: Int, height: Int, color: Int) {
+    fun fillRect(x: Int, y: Int, width: Int, height: Int, color: IntColor) {
         if (width <= 0 || height <= 0) return
         val left = x + this.x
         val top = y + this.y
         val right = left + width
         val bottom = top + height
         scissor()
-        Gui.drawRect(left, top, right, bottom, color)
+        Gui.drawRect(left, top, right, bottom, color.value)
         unscissor()
     }
 
@@ -99,7 +100,7 @@ class GuiGraphics(
      * @param direction 短边方向
      * @param color 填充色
      */
-    fun fillTrapezoidal(x: Int, y: Int, length: Int, cout: Int, direction: Direction2DEnum, color: Int) {
+    fun fillTrapezoidal(x: Int, y: Int, length: Int, cout: Int, direction: Direction2DEnum, color: IntColor) {
         if (length < 1 || cout < 1) return
         fun drawHelper(
             startX: Int, startY: Int, xSize: Int, ySize: Int,
@@ -139,7 +140,7 @@ class GuiGraphics(
      * @param direction 三角形朝向
      * @param color 填充颜色
      */
-    fun fillTriangle(x: Int, y: Int, height: Int, direction: Direction2DEnum, color: Int) {
+    fun fillTriangle(x: Int, y: Int, height: Int, direction: Direction2DEnum, color: IntColor) {
         fillTrapezoidal(x, y, 1, height, direction, color)
     }
 

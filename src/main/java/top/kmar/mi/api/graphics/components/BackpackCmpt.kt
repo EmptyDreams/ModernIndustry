@@ -9,10 +9,10 @@ import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
+import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.components.interfaces.slots.BackpackSlot
 import top.kmar.mi.api.graphics.utils.*
 import top.kmar.mi.api.register.others.AutoCmpt
-import java.awt.Color
 import kotlin.LazyThreadSafetyMode.NONE
 
 /**
@@ -76,11 +76,11 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
             width = InheritSizeMode { service.parent.client.style.width() }
             height = FixedSizeMode(18 * 4 + 4)
             bottom = 7
-            backgroundColor = Color(139, 139, 139)
-            borderTop.color = Color(55, 55, 55)
+            backgroundColor = IntColor.gray
+            borderTop.color = IntColor(55, 55, 55)
             borderLeft.color = borderTop.color
-            borderBottom.color = Color.WHITE
-            borderRight.color = Color.WHITE
+            borderBottom.color = IntColor.white
+            borderRight.color = IntColor.white
         }
 
         override fun render(graphics: GuiGraphics) {

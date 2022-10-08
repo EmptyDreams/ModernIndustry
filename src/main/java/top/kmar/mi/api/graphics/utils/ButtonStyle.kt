@@ -1,13 +1,14 @@
 package top.kmar.mi.api.graphics.utils
 
 import net.minecraft.util.ResourceLocation
+import top.kmar.mi.api.graphics.components.interfaces.IntColor
+import top.kmar.mi.api.graphics.components.interfaces.IntColor.Companion.shadow
+import top.kmar.mi.api.graphics.components.interfaces.IntColor.Companion.white
 import top.kmar.mi.api.utils.container.PairIntInt
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
 import top.kmar.mi.api.utils.floorDiv2
 import top.kmar.mi.api.utils.isEven
 import top.kmar.mi.api.utils.minusIf
-import top.kmar.mi.api.utils.toInt
-import java.awt.Color
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
@@ -54,8 +55,8 @@ enum class ButtonStyleEnum {
                 // 中央区域尺寸
                 val centerWidth = endX - startX
                 val centerHeight = endY - startX
-                val lightColor = Color(255, 255, 255, 60).toInt()
-                val darkColor = Color(0, 0, 0, 60).toInt()
+                val lightColor = IntColor(255, 255, 255, 60)
+                val darkColor = IntColor(0, 0, 0, 60)
                 // 绘制左上角高亮
                 fillRect(startX, startY, centerWidth, 1, lightColor)
                 fillRect(startX, startY + 1, 1, centerHeight - 1, lightColor)
@@ -63,7 +64,7 @@ enum class ButtonStyleEnum {
                 fillRect(startX, endY - 2, centerWidth, 2, darkColor)
                 fillRect(endX - 1, startY, 1, centerHeight - 2, darkColor)
                 // 如果被鼠标覆盖则绘制覆盖图层
-                if (mouseOn) fillRect(startX, startY, centerWidth, centerHeight, style.color.toInt())
+                if (mouseOn) fillRect(startX, startY, centerWidth, centerHeight, style.color)
             }
         }
     },
@@ -73,10 +74,8 @@ enum class ButtonStyleEnum {
             val bottom = style.borderBottom
             val left = style.borderLeft
             val right = style.borderRight
-            val background = style.backgroundColor.toInt()
-            val color = style.color.toInt()
-            val white = Color.WHITE.toInt()
-            val shadow = Color(0, 0, 0, 135).toInt()
+            val background = style.backgroundColor
+            val color = style.color
 
             when (style.button.direction) {
                 Direction2DEnum.UP -> {
@@ -95,14 +94,14 @@ enum class ButtonStyleEnum {
                     )
                     with(graphics) {
                         // 顶点
-                        fillRect(x, 0, 1, 1, right.color.toInt())
+                        fillRect(x, 0, 1, 1, right.color)
                         // 底边
-                        fillRect(0, height - 1, width, bottom.weight, bottom.color.toInt())
+                        fillRect(0, height - 1, width, bottom.weight, bottom.color)
                         // 侧边补充
                         val plusHeight = height - y - bottom.weight
                         if (plusHeight <= 0) return@with
-                        fillRect(0, y, left.weight, height - y - 1, left.color.toInt())
-                        fillRect(width - right.weight, y, right.weight, height - y - 1, right.color.toInt())
+                        fillRect(0, y, left.weight, height - y - 1, left.color)
+                        fillRect(width - right.weight, y, right.weight, height - y - 1, right.color)
                     }
                     with(graphics) {
                         val plusHeight = height - y - bottom.weight
@@ -155,14 +154,14 @@ enum class ButtonStyleEnum {
                     )
                     with(graphics) {
                         // 顶点
-                        fillRect(x, height - 1, 1, 1, right.color.toInt())
+                        fillRect(x, height - 1, 1, 1, right.color)
                         // 底边
-                        fillRect(0, 0, width, top.weight, top.color.toInt())
+                        fillRect(0, 0, width, top.weight, top.color)
                         // 侧边补充
                         if (y < top.weight) return@with
                         val plusHeight = y
-                        fillRect(0, top.weight, left.weight, plusHeight, left.color.toInt())
-                        fillRect(width - right.weight, top.weight, right.weight, plusHeight, right.color.toInt())
+                        fillRect(0, top.weight, left.weight, plusHeight, left.color)
+                        fillRect(width - right.weight, top.weight, right.weight, plusHeight, right.color)
                     }
                     with(graphics) {
                         // 填充背景
@@ -218,12 +217,12 @@ enum class ButtonStyleEnum {
                         1, bottom.weight, bottom.color, width, height
                     )
                     with(graphics) {
-                        fillRect(0, y, 1, 1, top.color.toInt())
-                        fillRect(width - right.weight, 0, right.weight, height, right.color.toInt())
+                        fillRect(0, y, 1, 1, top.color)
+                        fillRect(width - right.weight, 0, right.weight, height, right.color)
                         val plusWidth = width - x - 1
                         if (plusWidth <= 0) return@with
-                        fillRect(x, 0, plusWidth, top.weight, top.color.toInt())
-                        fillRect(x, height - bottom.weight, plusWidth, bottom.weight, bottom.color.toInt())
+                        fillRect(x, 0, plusWidth, top.weight, top.color)
+                        fillRect(x, height - bottom.weight, plusWidth, bottom.weight, bottom.color)
                     }
                     with(graphics) {
                         // 填充背景
@@ -269,15 +268,15 @@ enum class ButtonStyleEnum {
                         -1, bottom.weight, bottom.color, width, height
                     )
                     with(graphics) {
-                        fillRect(width - 1, y, 1, 1, top.color.toInt())
-                        fillRect(0, 0, left.weight, height, left.color.toInt())
+                        fillRect(width - 1, y, 1, 1, top.color)
+                        fillRect(0, 0, left.weight, height, left.color)
                         if (x < left.weight) return@with
                         val plusWidth = x
-                        fillRect(left.weight, 0, plusWidth, top.weight, top.color.toInt())
+                        fillRect(left.weight, 0, plusWidth, top.weight, top.color)
                         fillRect(
                             left.weight, height - bottom.weight,
                             plusWidth, bottom.weight,
-                            bottom.color.toInt()
+                            bottom.color
                         )
                     }
                     with(graphics) {
@@ -324,15 +323,14 @@ enum class ButtonStyleEnum {
         fun renderHelper(
             graphics: GuiGraphics,
             startX: Int, startY: Int, xStep: Int, yStep: Int,
-            color: Color, realWidth: Int, realHeight: Int
+            color: IntColor, realWidth: Int, realHeight: Int
         ): PairIntInt {
             var x = startX
             var y = startY
             var width = xStep.absoluteValue
             var height = yStep.absoluteValue
-            val colour = color.toInt()
             while (true) {
-                graphics.fillRect(x, y, width, height, colour)
+                graphics.fillRect(x, y, width, height, color)
                 x += xStep
                 y += yStep
                 if (x < 0) {

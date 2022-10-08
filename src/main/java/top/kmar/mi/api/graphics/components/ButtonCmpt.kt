@@ -8,6 +8,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
+import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.utils.ButtonStyleEnum
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
@@ -15,8 +16,6 @@ import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.register.others.AutoCmpt
 import top.kmar.mi.api.utils.applyClient
 import top.kmar.mi.api.utils.floorDiv2
-import top.kmar.mi.api.utils.toInt
-import java.awt.Color
 
 /**
  * 按钮控件
@@ -49,12 +48,12 @@ class ButtonCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
         override val service = this@ButtonCmpt
         override val style = GraphicsStyle(service).apply {
-            color = Color(0, 127, 255, 75)
-            backgroundColor = Color(139, 139, 139)
-            borderTop.color = Color.BLACK
-            borderRight.color = Color.BLACK
-            borderBottom.color = Color.BLACK
-            borderLeft.color = Color.BLACK
+            color = IntColor(0, 127, 255, 75)
+            backgroundColor = IntColor.gray
+            borderTop.color = IntColor.black
+            borderRight.color = IntColor.black
+            borderBottom.color = IntColor.black
+            borderLeft.color = IntColor.black
         }
 
         override fun render(graphics: GuiGraphics) {
@@ -66,7 +65,7 @@ class ButtonCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
                 overflowHidden = oldSetting
                 drawStringCenter(
                     width.floorDiv2(), height.floorDiv2(),
-                    attributes["value", ""], style.fontColor.toInt()
+                    attributes["value", ""], style.fontColor
                 )
                 renderChildren(this)
             }

@@ -6,12 +6,12 @@ import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
+import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.components.interfaces.slots.ItemSlot
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.register.others.AutoCmpt
-import java.awt.Color
 import kotlin.LazyThreadSafetyMode.NONE
 
 /**
@@ -55,11 +55,11 @@ class SlotCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
         override val style = GraphicsStyle(service).apply {
             width = FixedSizeMode(18)
             height = width
-            backgroundColor = Color(139, 139, 139)
-            borderTop.color = Color(55, 55, 55)
+            backgroundColor = IntColor.gray
+            borderTop.color = IntColor(55, 55, 55)
             borderLeft.color = borderTop.color
-            borderBottom.color = Color.WHITE
-            borderRight.color = Color.WHITE
+            borderBottom.color = IntColor.white
+            borderRight.color = IntColor.white
         }
 
         override fun render(graphics: GuiGraphics) {

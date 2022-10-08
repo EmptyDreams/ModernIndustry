@@ -6,9 +6,9 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
+import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.data.math.Rect2D
-import java.awt.Color
 import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -25,11 +25,11 @@ open class GraphicsStyle(
     var height: ISizeMode = FixedSizeMode.defaultValue
 
     /** 颜色 */
-    var color: Color = Color.BLACK
+    var color = IntColor.black
     /** 背景色 */
-    var backgroundColor = transparent
+    var backgroundColor = IntColor.transparent
     /** 文本颜色 */
-    var fontColor: Color = Color.BLACK
+    var fontColor = IntColor.black
 
     /** 上描边 */
     val borderTop = BorderStyle()
@@ -177,13 +177,6 @@ open class GraphicsStyle(
                 alignHorizontal(this, group) { it, x -> it.srcX = x + it.marginLeft }
             }
         }
-    }
-
-    companion object {
-
-        /** 透明色 */
-        val transparent = Color(0, 0, 0, 0)
-
     }
 
 }

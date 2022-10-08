@@ -1,11 +1,11 @@
 package top.kmar.mi.api.graphics.utils
 
+import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.utils.ceilDiv2
 import top.kmar.mi.api.utils.container.PairIntInt
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
 import top.kmar.mi.api.utils.data.enums.VerticalDirectionEnum
 import top.kmar.mi.api.utils.swapIf
-import top.kmar.mi.api.utils.toInt
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -43,17 +43,15 @@ enum class ProgressBarStyle {
     ARROW {
         override fun render(graphics: GuiGraphics, style: GraphicsStyle, percent: Float) {
             with(style) {
-                val background = backgroundColor.toInt()
-                val color = this.color.toInt()
                 if (progress.direction.isVertical())
                     renderHelper(
                         graphics, percent, width(), height(), progress.minWidth,
-                        progress.direction, background, color
+                        progress.direction, backgroundColor, color
                     )
                 else
                     renderHelper(
                         graphics, percent, width(), height(), progress.minHeight,
-                        progress.direction, background, color
+                        progress.direction, backgroundColor, color
                     )
             }
         }
@@ -62,7 +60,7 @@ enum class ProgressBarStyle {
             graphics: GuiGraphics, percent: Float,
             width: Int, height: Int, minSize: Int,
             direction: Direction2DEnum,
-            background: Int, color: Int
+            background: IntColor, color: IntColor
         ) {
             val simWidth = if (direction.isVertical()) height else width
             val lightSize = (simWidth * percent).roundToInt()
@@ -172,13 +170,13 @@ enum class ProgressBarStyle {
                     renderHelper(
                         graphics, percent, height(), width(), progress.minWidth,
                         borderRight, progress.direction,
-                        backgroundColor.toInt(), color.toInt()
+                        backgroundColor, color
                     )
                 else
                     renderHelper(
                         graphics, percent, height(), width(), progress.minHeight,
                         borderBottom, progress.direction,
-                        backgroundColor.toInt(), color.toInt()
+                        backgroundColor, color
                     )
             }
         }
@@ -187,7 +185,7 @@ enum class ProgressBarStyle {
             graphics: GuiGraphics, percent: Float,
             width: Int, height: Int, minWidth: Int,
             border: BorderStyle, direction: Direction2DEnum,
-            background: Int, color: Int
+            background: IntColor, color: IntColor
         ) {
             val lightSize = (height * percent).roundToInt() // 填充高度
             val darkSize = height - lightSize   // 空白高度
@@ -209,14 +207,14 @@ enum class ProgressBarStyle {
                 graphics.fillRect(offsetX, lightY, drawWidth - border.weight, lightSize, color)
                 graphics.fillRect(
                     offsetX + drawWidth - border.weight, 0,
-                    border.weight, height, border.color.toInt()
+                    border.weight, height, border.color
                 )
             } else {
                 graphics.fillRect(darkY, offsetX, darkSize, drawWidth - border.weight, background)
                 graphics.fillRect(lightY, offsetX, lightSize, drawWidth - border.weight, color)
                 graphics.fillRect(
                     0, offsetX + drawWidth - border.weight,
-                    height, border.weight, border.color.toInt()
+                    height, border.weight, border.color
                 )
             }
         }

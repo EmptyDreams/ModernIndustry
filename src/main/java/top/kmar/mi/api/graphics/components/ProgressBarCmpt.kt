@@ -8,13 +8,12 @@ import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
+import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.register.others.AutoCmpt
 import top.kmar.mi.api.utils.data.enums.VerticalDirectionEnum
 import top.kmar.mi.api.utils.floorDiv2
-import top.kmar.mi.api.utils.toInt
-import java.awt.Color
 
 /**
  * 进度条控件
@@ -53,9 +52,9 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
         override val service = this@ProgressBarCmpt
         override val style = GraphicsStyle(service).apply {
-            backgroundColor = Color(139, 139, 139)
-            color = Color.WHITE
-            borderBottom.color = Color(104, 104, 104)
+            backgroundColor = IntColor.gray
+            color = IntColor.white
+            borderBottom.color = IntColor(104, 104, 104)
             borderRight.color = borderBottom.color
         }
 
@@ -74,7 +73,7 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
                         VerticalDirectionEnum.CENTER -> y + (graphics.height.floorDiv2())
                     }
                     val textX = x + (graphics.width.floorDiv2())
-                    graphics.drawStringCenter(textX, textY, "$progress / $maxProgress", fontColor.toInt())
+                    graphics.drawStringCenter(textX, textY, "$progress / $maxProgress", fontColor)
                 }
             }
             renderChildren(graphics)
