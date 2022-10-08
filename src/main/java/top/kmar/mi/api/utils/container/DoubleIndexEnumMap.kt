@@ -1,10 +1,8 @@
 package top.kmar.mi.api.utils.container
 
+import top.kmar.mi.api.araw.interfaces.IDorSerialize
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.dor.interfaces.IDataWriter
-import top.kmar.mi.api.araw.interfaces.IDorSerialize
-import top.kmar.mi.api.utils.data.enums.HorizontalDirectionEnum
-import top.kmar.mi.api.utils.data.enums.HorizontalDirectionEnum.LEFT
 
 /**
  * 以Enum为key的布尔映射表，该类仅支持对象数量<=16的枚举类
@@ -34,8 +32,8 @@ class DoubleIndexEnumMap<T : Enum<*>>(val values: Array<T>) :
                 else data and (1 shl getOffsetRight(key)).inv()
     }
 
-    operator fun set(key: T, direction: HorizontalDirectionEnum, value: Boolean) {
-        if (direction === LEFT) setLeft(key, value)
+    operator fun set(key: T, isLeft: Boolean, value: Boolean) {
+        if (isLeft) setLeft(key, value)
         else setRight(key, value)
     }
 
@@ -45,8 +43,8 @@ class DoubleIndexEnumMap<T : Enum<*>>(val values: Array<T>) :
         setRight(key, value)
     }
 
-    operator fun get(key: T, direction: HorizontalDirectionEnum) =
-        if (direction === LEFT) getLeft(key) else getRight(key)
+    operator fun get(key: T, isLeft: Boolean) =
+        if (isLeft) getLeft(key) else getRight(key)
 
     fun isInit() = data == 0
 

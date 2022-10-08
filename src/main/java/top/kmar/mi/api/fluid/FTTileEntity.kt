@@ -27,8 +27,6 @@ import top.kmar.mi.api.tools.BaseTileEntity
 import top.kmar.mi.api.utils.*
 import top.kmar.mi.api.utils.MathUtil.random
 import top.kmar.mi.api.utils.container.DoubleIndexEnumMap
-import top.kmar.mi.api.utils.data.enums.HorizontalDirectionEnum.LEFT
-import top.kmar.mi.api.utils.data.enums.HorizontalDirectionEnum.RIGHT
 import java.util.*
 import javax.annotation.Nonnull
 
@@ -257,7 +255,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
     override fun isFull() = fluidData.amount == getMaxAmount()
 
     override fun unlink(facing: EnumFacing) {
-        val update = linkData[facing, RIGHT]
+        val update = linkData[facing, false]
         linkData[facing] = false
         if (update) updateLinkCode(true)
         updateBlockState(false)
@@ -280,7 +278,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
                     true
                 }
             }
-        } else linkData[facing, LEFT] = true
+        } else linkData[facing, true] = true
         return true
     }
 
@@ -293,7 +291,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
         return if (thatTE.isLinked(facing.opposite)) true else thatTE.lineCode != lineCode
     }
 
-    override fun isLinked(facing: EnumFacing) = linkData[facing, LEFT]
+    override fun isLinked(facing: EnumFacing) = linkData[facing, true]
 
     /**
      * 在指定方向上设置管塞
