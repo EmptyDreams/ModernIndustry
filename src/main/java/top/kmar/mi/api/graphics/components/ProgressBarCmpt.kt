@@ -11,6 +11,9 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.register.others.AutoCmpt
+import top.kmar.mi.api.utils.data.enums.VerticalDirectionEnum
+import top.kmar.mi.api.utils.floorDiv2
+import top.kmar.mi.api.utils.toInt
 import java.awt.Color
 
 /**
@@ -62,7 +65,18 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
 
         override fun render(graphics: GuiGraphics) {
-            style.progress.render(graphics, percent)
+            with(style) {
+                progress.render(graphics, percent)
+                if (progress.showText) {
+                    val textY = when (progress.textLocation) {
+                        VerticalDirectionEnum.UP -> y - graphics.fontRenderer.FONT_HEIGHT - 1
+                        VerticalDirectionEnum.DOWN -> endY + 1
+                        VerticalDirectionEnum.CENTER -> y + (graphics.height.floorDiv2())
+                    }
+                    val textX = x + (graphics.width.floorDiv2())
+                    graphics.drawStringCenter(textX, textY, "$progress / $maxProgress", fontColor.toInt())
+                }
+            }
             renderChildren(graphics)
         }
 

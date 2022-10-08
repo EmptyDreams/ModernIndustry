@@ -3,6 +3,7 @@ package top.kmar.mi.api.graphics.utils
 import top.kmar.mi.api.utils.ceilDiv2
 import top.kmar.mi.api.utils.container.PairIntInt
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
+import top.kmar.mi.api.utils.data.enums.VerticalDirectionEnum
 import top.kmar.mi.api.utils.swapIf
 import top.kmar.mi.api.utils.toInt
 import kotlin.math.max
@@ -20,6 +21,12 @@ class ProgressBarData(private val graphicsStyle: GraphicsStyle) {
 
     /** 进度条样式 */
     var style = ProgressBarStyle.ARROW
+
+    /** 是否显示进度 */
+    var showText = false
+
+    /** 文本位置 */
+    var textLocation = VerticalDirectionEnum.CENTER
 
     /** 最小高度 */
     var minHeight = 3

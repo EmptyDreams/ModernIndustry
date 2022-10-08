@@ -1,6 +1,7 @@
 package top.kmar.mi.api.graphics.utils
 
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
@@ -32,6 +33,8 @@ class GuiGraphics(
 
     /** 超出控件绘制区域的内容是否裁剪 */
     var overflowHidden = true
+    /** 文字渲染器 */
+    var fontRenderer: FontRenderer = Minecraft.getMinecraft().fontRenderer
 
     /** 以指定点为中心绘制字符串 */
     fun drawStringCenter(centerX: Int, centerY: Int, text: String, color: Int = 0) {
@@ -48,7 +51,7 @@ class GuiGraphics(
         scissor()
         val left = this.x + x
         val top = this.y + y
-        Minecraft.getMinecraft().fontRenderer.drawString(text, left, top, color)
+        fontRenderer.drawString(text, left, top, color)
         unscissor()
     }
 
