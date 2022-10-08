@@ -61,6 +61,10 @@ class TestGui : BaseGraphics() {
                 height = FixedSizeMode(15)
             }
         }
+        val title = TextCmpt(valueOfID("title").applyClient { this["value"] = "水泵" }).applyClient {
+            client.style.marginTop = 10
+        }
+        background.addChild(title)
         slots.forEach { background.addChild(it) }
         background.addChild(backpack)
         background.addChild(progress)
