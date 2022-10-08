@@ -139,7 +139,7 @@ class GuiGraphics(
      * @param direction 三角形朝向
      * @param color 填充颜色
      */
-    fun fillTrangle(x: Int, y: Int, height: Int, direction: Direction2DEnum, color: Int) {
+    fun fillTriangle(x: Int, y: Int, height: Int, direction: Direction2DEnum, color: Int) {
         fillTrapezoidal(x, y, 1, height, direction, color)
     }
 

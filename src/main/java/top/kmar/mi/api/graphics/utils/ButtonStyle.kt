@@ -107,7 +107,7 @@ enum class ButtonStyleEnum {
                     with(graphics) {
                         val plusHeight = height - y - bottom.weight
                         // 填充背景
-                        fillTrangle(left.weight + 1, 1, y - 2, Direction2DEnum.UP, background)
+                        fillTriangle(left.weight + 1, 1, y - 2, Direction2DEnum.UP, background)
                         fillRect(
                             left.weight, y - 1,
                             width - left.weight - right.weight, plusHeight + 1,
@@ -123,7 +123,7 @@ enum class ButtonStyleEnum {
                         fillRect(width - right.weight - 1, y, 1, plusHeight - 1, shadow)
                         // 鼠标覆盖
                         if (mouseOn) {
-                            fillTrangle(left.weight + 1, 1, y - 2, Direction2DEnum.UP, color)
+                            fillTriangle(left.weight + 1, 1, y - 2, Direction2DEnum.UP, color)
                             fillRect(
                                 left.weight, y - 1,
                                 width - left.weight - right.weight, plusHeight + 1,
@@ -166,7 +166,7 @@ enum class ButtonStyleEnum {
                     }
                     with(graphics) {
                         // 填充背景
-                        fillTrangle(
+                        fillTriangle(
                             left.weight + 1, y + top.weight + 1,
                             height - y - 2 - top.weight,
                             Direction2DEnum.DOWN, background
@@ -183,7 +183,7 @@ enum class ButtonStyleEnum {
                         if (y >= top.weight)
                             fillRect(width - right.weight - 1, top.weight + 1, 1, y, shadow)
                         if (mouseOn) {
-                            fillTrangle(
+                            fillTriangle(
                                 left.weight + 1, y + top.weight + 1,
                                 height - y - 2 - top.weight,
                                 Direction2DEnum.DOWN, color
@@ -228,7 +228,7 @@ enum class ButtonStyleEnum {
                     with(graphics) {
                         // 填充背景
                         val plusWidth = width - x - 1
-                        fillTrangle(1, top.weight + 1, x - 2, Direction2DEnum.LEFT, background)
+                        fillTriangle(1, top.weight + 1, x - 2, Direction2DEnum.LEFT, background)
                         fillRect(
                             x - 1, top.weight,
                             plusWidth + 1, height - top.weight - bottom.weight,
@@ -240,7 +240,7 @@ enum class ButtonStyleEnum {
                         }
                         fillRect(x, height - bottom.weight - 1, plusWidth, 1, shadow)
                         if (mouseOn) {
-                            fillTrangle(1, top.weight + 1, x - 2, Direction2DEnum.LEFT, color)
+                            fillTriangle(1, top.weight + 1, x - 2, Direction2DEnum.LEFT, color)
                             fillRect(
                                 x - 1, top.weight,
                                 plusWidth + 1, height - top.weight - bottom.weight,
@@ -282,7 +282,7 @@ enum class ButtonStyleEnum {
                     }
                     with(graphics) {
                         // 填充背景
-                        fillTrangle(
+                        fillTriangle(
                             x + left.weight + 1, top.weight + 1,
                             width - x - 3,
                             Direction2DEnum.RIGHT, background
@@ -299,7 +299,7 @@ enum class ButtonStyleEnum {
                         if (x >= left.weight)
                             fillRect(left.weight + 1, height - bottom.weight - 1, x - 1, 1, shadow)
                         if (mouseOn) {
-                            fillTrangle(
+                            fillTriangle(
                                 x + left.weight + 1, top.weight + 1,
                                 width - x - 3,
                                 Direction2DEnum.RIGHT, color
