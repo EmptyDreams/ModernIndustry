@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package top.kmar.mi.api.graphics.utils
 
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
