@@ -1,5 +1,7 @@
 package top.kmar.mi.api.graphics.components
 
+import net.minecraft.client.Minecraft
+import net.minecraft.client.resources.I18n
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.relauncher.Side
@@ -74,7 +76,7 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
         override val style = GraphicsStyle(service).apply {
             position = PositionEnum.ABSOLUTE
             width = InheritSizeMode { service.parent.client.style.width() }
-            height = FixedSizeMode(18 * 4 + 4)
+            height = FixedSizeMode(18 * 4 + 4 + Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 1)
             bottom = 7
             backgroundColor = IntColor.gray
             borderTop.color = IntColor(55, 55, 55)
@@ -86,8 +88,10 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
         override fun render(graphics: GuiGraphics) {
             val firstSlot = mainSlots[0][0]
             val offsetX = (style.width() - (18 * 9)) shr 1
+            val fontHeight = graphics.fontRenderer.FONT_HEIGHT + 1
             val startX = offsetX + style.x + 1
-            val startY = style.y + 1
+            val startY = style.y + 1 + fontHeight
+            // 网络通信
             if (startX != firstSlot.xPos || startY != firstSlot.yPos) {
                 initSlotsPos(startX, startY)
                 val message = ByteDataOperator().apply {
@@ -96,8 +100,11 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
                 }
                 send2Service(message)
             }
-            graphics.bindTexture(textureLib)
-            graphics.drawTexture(offsetX, 0, 8, 53, 162, 76)
+            with(graphics) {
+                drawString(offsetX, 0, I18n.format("key.categories.inventory"))
+                bindTexture(textureLib)
+                drawTexture(offsetX, fontHeight, 8, 53, 162, 76)
+            }
             renderChildren(graphics)
         }
 
@@ -115,7 +122,7 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
         y += 4
         for ((i, it) in activeSlots.withIndex()) {
             it.yPos = y
-            it.xPos = startX + 18 * i + 1
+            it.xPos = startX + 18 * i
         }
     }
 
