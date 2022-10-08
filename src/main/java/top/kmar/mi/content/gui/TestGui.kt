@@ -11,7 +11,6 @@ import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.GuiLoader
 import top.kmar.mi.api.graphics.components.*
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes.Companion.valueOfID
-import top.kmar.mi.api.graphics.utils.ButtonStyleEnum
 import top.kmar.mi.api.graphics.utils.DisplayModeEnum
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.VerticalAlignModeEnum
@@ -60,8 +59,6 @@ class TestGui : BaseGraphics() {
             with(client.style) {
                 width = FixedSizeMode(20)
                 height = FixedSizeMode(15)
-                button.style = ButtonStyleEnum.TRIANGLE
-                button.direction = Direction2DEnum.RIGHT
             }
         }
         slots.forEach { background.addChild(it) }

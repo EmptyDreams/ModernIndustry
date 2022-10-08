@@ -32,8 +32,6 @@ class GuiGraphics(
     val container: BaseGraphicsClient
 ) {
 
-    /** 超出控件绘制区域的内容是否裁剪 */
-    var overflowHidden = true
     /** 文字渲染器 */
     var fontRenderer: FontRenderer = Minecraft.getMinecraft().fontRenderer
 
@@ -49,11 +47,9 @@ class GuiGraphics(
 
     /** 绘制一个字符串 */
     fun drawString(x: Int, y: Int, text: String, color: IntColor = IntColor.black) {
-        scissor()
         val left = this.x + x
         val top = this.y + y
         fontRenderer.drawString(text, left, top, color.value)
-        unscissor()
     }
 
     /** 装载指定材质 */
@@ -71,12 +67,10 @@ class GuiGraphics(
      * @param height 要绘制的内容的宽度
      */
     fun drawTexture(x: Int, y: Int, u: Int, v: Int, width: Int, height: Int) {
-        scissor()
         val left = this.x + x
         val top = this.y + y
         GlStateManager.color(1f, 1f, 1f, 1f)
         container.drawTexturedModalRect(left, top, u, v, width, height)
-        unscissor()
     }
 
     /** 按照指定颜色填充矩形 */
@@ -86,9 +80,7 @@ class GuiGraphics(
         val top = y + this.y
         val right = left + width
         val bottom = top + height
-        scissor()
         Gui.drawRect(left, top, right, bottom, color.value)
-        unscissor()
     }
 
     /**
@@ -155,9 +147,7 @@ class GuiGraphics(
         val thisRect = Rect2D(this.x, this.y, this.width, this.height)
         val thatRect = Rect2D(x, y, width, height)
         val rect = thisRect.intersect(thatRect)
-        return GuiGraphics(rect.x, rect.y, rect.width, rect.height, container).apply {
-            overflowHidden = this@GuiGraphics.overflowHidden
-        }
+        return GuiGraphics(rect.x, rect.y, rect.width, rect.height, container)
     }
 
     /** 裁剪区域 */
@@ -177,16 +167,13 @@ class GuiGraphics(
      * 通知GL开启裁剪
      * @return 是否进行了裁剪
      */
-    private fun scissor(): Boolean {
-        if (!clipRect.isEffective ||
-            clipRect.endX < 0 || clipRect.endY < 0 ||
-            !overflowHidden) return false
+    fun scissor(): Boolean {
         GL11.glEnable(GL11.GL_SCISSOR_TEST)
         GL11.glScissor(clipRect.x, clipRect.y, clipRect.width, clipRect.height)
         return true
     }
 
     /** 通知GL结束裁剪 */
-    private fun unscissor() = GL11.glDisable(GL11.GL_SCISSOR_TEST)
+    fun unscissor() = GL11.glDisable(GL11.GL_SCISSOR_TEST)
 
 }

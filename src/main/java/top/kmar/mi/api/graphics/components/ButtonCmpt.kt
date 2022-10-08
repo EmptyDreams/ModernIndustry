@@ -58,11 +58,8 @@ class ButtonCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
         override fun render(graphics: GuiGraphics) {
             with(graphics) {
-                val oldSetting = overflowHidden
-                overflowHidden = true
                 style.button.render(this, mouseOn)
                 if (style.button.style == ButtonStyleEnum.RECT) renderBorder(this)
-                overflowHidden = oldSetting
                 drawStringCenter(
                     width.floorDiv2(), height.floorDiv2(),
                     attributes["value", ""], style.fontColor

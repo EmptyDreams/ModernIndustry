@@ -40,6 +40,7 @@ enum class ButtonStyleEnum {
         override fun render(graphics: GuiGraphics, style: GraphicsStyle, mouseOn: Boolean) {
             val rectSize = 15
             with(graphics) {
+                if (!style.overflowHidden) scissor()
                 bindTexture(textureLib)
                 // 中央区域坐标
                 val startX = style.borderTop.weight
@@ -52,6 +53,7 @@ enum class ButtonStyleEnum {
                         drawTexture(x, y, 2, 68, rectSize, rectSize)
                     }
                 }
+                if (!style.overflowHidden) graphics.unscissor()
                 // 中央区域尺寸
                 val centerWidth = endX - startX
                 val centerHeight = endY - startX

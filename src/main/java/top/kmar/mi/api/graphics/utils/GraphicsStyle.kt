@@ -78,6 +78,8 @@ open class GraphicsStyle(
 
     /** 显示方式 */
     var display = DisplayModeEnum.DEF
+    /** 是否隐藏超出边界的部分 */
+    var overflowHidden = false
 
     /** 进度条样式 */
     val progress by lazy(NONE) { ProgressBarData(this) }
