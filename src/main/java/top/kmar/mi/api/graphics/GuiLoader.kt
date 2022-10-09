@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.ModernIndustry
+import top.kmar.mi.api.event.PlayerOpenGraphicsEvent
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.register.others.AutoLoader
 import java.lang.reflect.Modifier
@@ -53,16 +54,18 @@ object GuiLoader : IGuiHandler {
         if (!Modifier.isPublic(constructor.modifiers)) constructor.isAccessible = true
         return constructor.newInstance().apply {
             init(player, BlockPos(x, y, z))
+            MinecraftForge.EVENT_BUS.post(PlayerOpenGraphicsEvent(player, this, ID, x, y, z))
             document.installParent(Cmpt.EMPTY_CMPT)
         }
     }
 
     /** 构建一个客户端的GUI对象 */
     @SideOnly(Side.CLIENT)
-    override fun getClientGuiElement(ID: Int,
-                                     player: EntityPlayer, world: World,
-                                     x: Int, y: Int, z: Int) =
-        getServerGuiElement(ID, player, world, x, y, z).client
+    override fun getClientGuiElement(
+        ID: Int,
+        player: EntityPlayer, world: World,
+        x: Int, y: Int, z: Int
+    ) = getServerGuiElement(ID, player, world, x, y, z).client
 
     class MIGuiRegistryEvent : Event() {
 
