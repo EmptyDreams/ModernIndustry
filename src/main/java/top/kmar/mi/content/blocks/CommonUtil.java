@@ -10,10 +10,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import top.kmar.mi.ModernIndustry;
+import top.kmar.mi.api.utils.ExpandFunctionKt;
 import top.kmar.mi.data.properties.MIProperty;
 
 import javax.annotation.Nonnull;
@@ -67,31 +66,14 @@ public final class CommonUtil {
     /**
      * 打开一个GUI
      * @param player 要打开GUI的玩家
-     * @param id GUI的ID
-     * @param world 所在世界
-     * @param pos 方块坐标
-     * @return true
-     */
-    public static boolean openGui(EntityPlayer player, int id, World world, BlockPos pos) {
-        if (world.isRemote) return true;
-        player.openGui(ModernIndustry.instance, id, world, pos.getX(), pos.getY(), pos.getZ());
-        return true;
-    }
-    
-    /**
-     * 打开一个GUI
-     * @param player 要打开GUI的玩家
      * @param key GUI的key
-     * @param world 所在世界
      * @param pos 方块坐标
      * @return true
      */
-    public static boolean openGui(EntityPlayer player, ResourceLocation key, World world, BlockPos pos) {
-        if (world.isRemote) return true;
-        //int id = GuiLoader.getID(key);
-        //return openGui(player, id, world, pos);
-        //TODO
-        return false;
+    public static boolean openGui(EntityPlayer player, ResourceLocation key, BlockPos pos) {
+        if (player.world.isRemote) return true;
+        ExpandFunctionKt.openGui(player, key, pos.getX(), pos.getY(), pos.getZ());
+        return true;
     }
     
     /** 为指定方块生成一个带方向与工作状态的{@link BlockStateContainer} */

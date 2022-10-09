@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.ResourceLocation
 import net.minecraft.util.SoundCategory
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -23,9 +24,11 @@ import net.minecraftforge.fluids.capability.wrappers.BlockLiquidWrapper
 import net.minecraftforge.fluids.capability.wrappers.BlockWrapper
 import net.minecraftforge.fluids.capability.wrappers.FluidBlockWrapper
 import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte1.other
+import top.kmar.mi.ModernIndustry
 import top.kmar.mi.api.araw.AutoDataRW
 import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.fluid.data.FluidData
+import top.kmar.mi.api.graphics.GuiLoader
 import top.kmar.mi.api.utils.container.PairIntInt
 import top.kmar.mi.api.utils.data.math.Point3D
 import top.kmar.mi.api.utils.data.math.Range3D
@@ -33,6 +36,10 @@ import top.kmar.mi.api.utils.iterators.ArrayFlipIterator
 import java.nio.charset.StandardCharsets
 import kotlin.math.abs
 import kotlin.math.sqrt
+
+fun EntityPlayer.openGui(key: ResourceLocation, x: Int, y: Int, z: Int) {
+    openGui(ModernIndustry.instance, GuiLoader.getID(key), world, x, y, z)
+}
 
 /** 判断是否为偶数 */
 inline fun Int.isEven() = this and 1 == 0

@@ -3,10 +3,12 @@ package top.kmar.mi.content.gui
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
+import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.items.ItemStackHandler
+import top.kmar.mi.ModernIndustry
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.GuiLoader
 import top.kmar.mi.api.graphics.components.*
@@ -87,10 +89,12 @@ class TestGui : BaseGraphics() {
 
     companion object {
 
+        val key = ResourceLocation(ModernIndustry.MODID, "test")
+
         @JvmStatic
         @SubscribeEvent
         fun registry(event: GuiLoader.MIGuiRegistryEvent) {
-            event.registry(TestGui::class.java)
+            event.registry(key, TestGui::class.java)
         }
 
     }

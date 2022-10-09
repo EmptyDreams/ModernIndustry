@@ -20,6 +20,7 @@ import top.kmar.mi.api.utils.getPlacingDirection
 import top.kmar.mi.api.utils.whatFacing
 import top.kmar.mi.content.blocks.CommonUtil
 import top.kmar.mi.content.blocks.base.MachineBlock
+import top.kmar.mi.content.gui.TestGui
 import top.kmar.mi.content.items.base.ItemBlockExpand
 import top.kmar.mi.content.tileentity.user.EUFluidPump
 import top.kmar.mi.data.properties.MIProperty.Companion.WORKING
@@ -120,7 +121,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
         worldIn: World, pos: BlockPos, state: IBlockState,
         playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing,
         hitX: Float, hitY: Float, hitZ: Float
-    ) = CommonUtil.openGui(playerIn, 1, worldIn, pos)
+    ) = CommonUtil.openGui(playerIn, TestGui.key, pos)
 
     private val item: ItemBlock by lazy(PUBLICATION) { ItemBlockExpand(this) }
 
