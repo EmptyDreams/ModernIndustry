@@ -12,28 +12,27 @@ import top.kmar.mi.api.graphics.utils.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.register.others.AutoCmpt
-import kotlin.LazyThreadSafetyMode.NONE
 
 /**
- * 通用Slot控件
+ * 仅允许输出的Slot控件
  * @author EmptyDreams
  */
-@AutoCmpt("slot")
-class SlotCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
+@AutoCmpt("output")
+class SlotOutputCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
-    override fun initClientObj() = SlotCmptClient()
+    override fun initClientObj() = SlotOutputCmptClient()
 
     var inventory: ItemStackHandler? = null
         set(value) {
             if (field == null) field = value
         }
-    val slot by lazy(NONE) {
+    val slot by lazy(LazyThreadSafetyMode.NONE) {
         ItemSlot(
             this,
             attributes["priority", "100"].toInt(),
             inventory!!,
             attributes["index", "0"].toInt()
-        )
+        ).apply { canPutIn = false }
     }
 
     override fun receive(message: IDataReader) {
@@ -49,11 +48,11 @@ class SlotCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         uninstallSlot(slot)
     }
 
-    inner class SlotCmptClient : CmptClient {
+    inner class SlotOutputCmptClient : CmptClient {
 
-        override val service = this@SlotCmpt
+        override val service = this@SlotOutputCmpt
         override val style = GraphicsStyle(service).apply {
-            width = FixedSizeMode(18)
+            width = FixedSizeMode(26)
             height = width
             backgroundColor = IntColor.gray
             borderTop.color = IntColor(55, 55, 55)

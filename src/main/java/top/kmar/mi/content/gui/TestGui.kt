@@ -64,11 +64,17 @@ class TestGui : BaseGraphics() {
         val title = TextCmpt(valueOfID("title").applyClient { this["value"] = "水泵" }).applyClient {
             client.style.marginTop = 10
         }
+        val output = SlotOutputCmpt(valueOfID("output")).apply {
+            inventory = ItemStackHandler(1).apply {
+                insertItem(0, ItemStack(Items.BED), false)
+            }
+        }
         background.addChild(title)
         slots.forEach { background.addChild(it) }
         background.addChild(backpack)
         background.addChild(progress)
         background.addChild(button)
+        background.addChild(output)
         mask.addChild(background)
         addChild(mask)
     }

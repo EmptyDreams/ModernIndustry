@@ -1,5 +1,6 @@
 package top.kmar.mi.api.graphics.components.interfaces.slots
 
+import net.minecraft.item.ItemStack
 import net.minecraftforge.items.IItemHandler
 import net.minecraftforge.items.SlotItemHandler
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
@@ -14,6 +15,12 @@ class ItemSlot(
     itemHandler: IItemHandler?, index: Int
 ) : IGraphicsSlot {
 
-    override val slot = SlotItemHandler(itemHandler, index, 0, 0)
+    var canPutIn = true
+
+    override val slot = object : SlotItemHandler(itemHandler, index, 0, 0) {
+        override fun isItemValid(stack: ItemStack): Boolean {
+            return canPutIn && super.isItemValid(stack)
+        }
+    }
 
 }
