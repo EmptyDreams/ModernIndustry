@@ -1,7 +1,6 @@
 package top.kmar.mi.api.graphics.components
 
 import net.minecraftforge.items.ItemStackHandler
-import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
@@ -64,17 +63,7 @@ class SlotCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
         @Suppress("DuplicatedCode")
         override fun render(graphics: GuiGraphics) {
-            val x = style.run { this.x + borderLeft.weight }
-            val y = style.run { this.y + borderTop.weight }
-            if (slot.xPos != x || slot.yPos != y) {
-                val message = ByteDataOperator(4).apply {
-                    writeVarInt(x)
-                    writeVarInt(y)
-                }
-                send2Service(message)
-                slot.xPos = x
-                slot.yPos = y
-            }
+            CmptHelper.updateSlotInfo(this, slot)
             super.render(graphics)
         }
 
