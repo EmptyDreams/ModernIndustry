@@ -37,6 +37,26 @@ import java.nio.charset.StandardCharsets
 import kotlin.math.abs
 import kotlin.math.sqrt
 
+
+
+/**
+ * 计算一个字符串的开头有多少个空格，一个制表符当作4个空格
+ * @return `first` - 第一个非空白符字符的下标，`second` - 空白符长度
+ */
+fun String.countStartSpace(): PairIntInt {
+    var count = 0
+    var index = 0
+    for (c in this) {
+        when (c) {
+            ' ' -> ++count
+            '\t' -> count += 4
+            else -> break
+        }
+        ++index
+    }
+    return PairIntInt(index, count)
+}
+
 fun EntityPlayer.openGui(key: ResourceLocation, x: Int, y: Int, z: Int) {
     openGui(ModernIndustry.instance, GuiLoader.getID(key), world, x, y, z)
 }

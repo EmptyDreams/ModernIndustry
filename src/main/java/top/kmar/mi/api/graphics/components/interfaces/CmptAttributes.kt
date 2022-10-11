@@ -10,7 +10,7 @@ class CmptAttributes : Iterable<Map.Entry<String, String>> {
 
     private val map = Object2ObjectRBTreeMap<String, String>()
 
-    val id: String
+    var id: String
         get() = this["id"]
 
     /** 获取一个值，不存在则返回空的字符串 */

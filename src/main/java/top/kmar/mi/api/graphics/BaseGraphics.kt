@@ -120,7 +120,11 @@ open class BaseGraphics : Container() {
     fun queryCmptAll(exp: String) = document.queryCmptAll(exp)
     fun queryCmpt(exp: String) = document.queryCmpt(exp)
 
-    inner class DocumentCmpt : Cmpt(CmptAttributes.valueOfID("document")) {
+    inner class DocumentCmpt :
+        Cmpt(CmptAttributes().apply {
+            id = "document"
+            this["level"] = "-1"
+        }) {
 
         @SideOnly(Side.CLIENT)
         override fun initClientObj(): CmptClient =
