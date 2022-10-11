@@ -25,6 +25,7 @@ import top.kmar.mi.api.utils.floorDiv2
 class ButtonCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     override fun initClientObj() = ButtonCmptClient()
+    override fun buildNewObj() = ButtonCmpt(attributes.copy())
 
     /** 鼠标是否在按钮上方 */
     var mouseOn = false

@@ -12,6 +12,9 @@ class CmptAttributes : Iterable<Map.Entry<String, String>> {
 
     var id: String
         get() = this["id"]
+        set(value) {
+            this["id"] = value
+        }
 
     /** 获取一个值，不存在则返回空的字符串 */
     operator fun get(key: String) = map[key] ?: ""

@@ -24,10 +24,10 @@ import kotlin.LazyThreadSafetyMode.NONE
  * 服务端GUI窗体对象
  * @author EmptyDreams
  */
-open class BaseGraphics : Container() {
+open class BaseGraphics(root: BaseGraphics.DocumentCmpt?) : Container() {
 
     /** 容器对象 */
-    val document = DocumentCmpt()
+    val document: DocumentCmpt = (root?.copy() ?: DocumentCmpt()) as DocumentCmpt
     /**
      * 客户端对象
      *
@@ -120,11 +120,12 @@ open class BaseGraphics : Container() {
     fun queryCmptAll(exp: String) = document.queryCmptAll(exp)
     fun queryCmpt(exp: String) = document.queryCmpt(exp)
 
-    inner class DocumentCmpt :
-        Cmpt(CmptAttributes().apply {
+    inner class DocumentCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
+
+        constructor() : this(CmptAttributes().apply {
             id = "document"
             this["level"] = "-1"
-        }) {
+        })
 
         @SideOnly(Side.CLIENT)
         override fun initClientObj(): CmptClient =
@@ -157,6 +158,8 @@ open class BaseGraphics : Container() {
             inventoryItemStacks.removeAt(index)
             graphicsSlots.removeAt(index)
         }
+
+        override fun buildNewObj() = DocumentCmpt(attributes.copy())
 
     }
 

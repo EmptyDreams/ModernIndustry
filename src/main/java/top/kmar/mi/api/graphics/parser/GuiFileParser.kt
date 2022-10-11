@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.ModContainer
 import org.apache.commons.io.FilenameUtils
 import top.kmar.mi.api.graphics.BaseGraphics
+import top.kmar.mi.api.graphics.GuiLoader
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptRegister
@@ -21,7 +22,18 @@ import java.nio.file.Path
  */
 object GuiFileParser {
 
+    private var count = 0
+
+    init {
+        Loader.instance().activeModList.forEach { parseFiles(it) }
+    }
+
+    fun printCount() {
+        MISysInfo.print("[GuiFileParser] 注册 $count 个GUI对象")
+    }
+
     fun parseFiles(mod: ModContainer) {
+        val register = GuiLoader.MIGuiRegistryEvent()
         CraftingHelper.findFiles(
             mod, "assets/${mod.modId}/gui", { true },
             { root, file ->
@@ -29,7 +41,7 @@ object GuiFileParser {
                 val relative = root.relativize(file).toString()
                 if ("mig" != FilenameUtils.getExtension(relative)) return@findFiles true
                 try {
-                    parseTargetFile(file)
+                    parseTargetFile(file, register)
                 } catch (e: Exception) {
                     MISysInfo.err("处理目标文件[$relative]时发生异常", e)
                 }
@@ -37,15 +49,17 @@ object GuiFileParser {
             }, true, true)
     }
 
-    private fun parseTargetFile(path: Path) {
+    private fun parseTargetFile(path: Path, register: GuiLoader.MIGuiRegistryEvent) {
         var key: ResourceLocation? = null
-        val gui = BaseGraphics()
-        var preEle: Cmpt = gui.document
+        val root = BaseGraphics(null)
+        var preEle: Cmpt = root.document
         var preLevel = -1
+        var client = false
         Files.lines(path).forEachOrdered { content ->
             if (content.startsWith('@')) {
-                if (key != null) throw IllegalArgumentException("同一个文件中出现了多次@语句")
-                key = ResourceLocation(content.substring(1))
+                if (content == "@client") client = true
+                else if (key != null) throw IllegalArgumentException("同一个文件中出现了多次@语句")
+                else key = ResourceLocation(content.substring(1))
                 return@forEachOrdered
             }
             // 构建Cmpt对象
@@ -71,6 +85,9 @@ object GuiFileParser {
             preEle = cmptObj
             preLevel = level
         }
+        ++count
+        if (client) register.registryClient(key!!, root.document)
+        else register.registry(key!!, root.document)
     }
 
     /** 获取字符串中的Tag */

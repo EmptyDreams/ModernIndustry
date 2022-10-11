@@ -19,6 +19,7 @@ import top.kmar.mi.api.register.others.AutoCmpt
 class TextCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     override fun initClientObj() = TextCmptClient()
+    override fun buildNewObj() = TextCmpt(attributes.copy())
 
     @SideOnly(Side.CLIENT)
     inner class TextCmptClient : CmptClient {

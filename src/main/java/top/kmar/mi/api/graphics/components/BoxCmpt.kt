@@ -15,6 +15,7 @@ import top.kmar.mi.api.register.others.AutoCmpt
 class BoxCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     override fun initClientObj() = BoxCmptClient()
+    override fun buildNewObj() = BoxCmpt(attributes.copy())
 
     inner class BoxCmptClient : CmptClient {
 

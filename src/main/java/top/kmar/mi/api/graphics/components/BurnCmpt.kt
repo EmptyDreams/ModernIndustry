@@ -28,6 +28,7 @@ import kotlin.math.roundToInt
 class BurnCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     override fun initClientObj() = BurnCmptClient()
+    override fun buildNewObj() = BurnCmpt(attributes.copy())
 
     var progress = 0
     var maxProcess = 1

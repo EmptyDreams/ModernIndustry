@@ -18,6 +18,7 @@ import top.kmar.mi.api.register.others.AutoCmpt
 class BackgroundCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     override fun initClientObj() = BackgroundGraphicsClient()
+    override fun buildNewObj() = BackgroundCmpt(attributes.copy())
 
     @SideOnly(Side.CLIENT)
     inner class BackgroundGraphicsClient : CmptClient {

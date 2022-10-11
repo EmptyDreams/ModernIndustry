@@ -21,6 +21,7 @@ import kotlin.LazyThreadSafetyMode.NONE
 class SlotCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     override fun initClientObj() = SlotCmptClient()
+    override fun buildNewObj() = SlotCmpt(attributes.copy())
 
     var inventory: ItemStackHandler? = null
         set(value) {

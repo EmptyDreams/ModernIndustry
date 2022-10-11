@@ -56,6 +56,18 @@ abstract class Cmpt(
     @SideOnly(Side.CLIENT)
     abstract fun initClientObj(): CmptClient
 
+    /** 构建一个新的对象，属性列表拷贝当前属性列表 */
+    abstract fun buildNewObj(): Cmpt
+
+    /** 深度拷贝自身 */
+    fun copy(): Cmpt {
+        val result = buildNewObj()
+        eachAllChildren {
+            result.addChild(it.copy())
+        }
+        return result
+    }
+
     /** 接收从客户端发送的信息 */
     protected open fun receive(message: IDataReader) {}
 
@@ -250,6 +262,8 @@ abstract class Cmpt(
             override fun installSlot(slot: IGraphicsSlot): Int {
                 throw NullPointerException("该元素不包含父节点")
             }
+
+            override fun buildNewObj() = this
 
         }
 

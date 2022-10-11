@@ -19,6 +19,7 @@ import top.kmar.mi.api.utils.WorldUtil
 class MaskCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     override fun initClientObj() = MaskClient()
+    override fun buildNewObj() = MaskCmpt(attributes.copy())
 
     inner class MaskClient : CmptClient {
 

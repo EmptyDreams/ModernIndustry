@@ -20,6 +20,7 @@ import top.kmar.mi.api.register.others.AutoCmpt
 class SlotOutputCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     override fun initClientObj() = SlotOutputCmptClient()
+    override fun buildNewObj() = SlotOutputCmpt(attributes.copy())
 
     var inventory: ItemStackHandler? = null
         set(value) {

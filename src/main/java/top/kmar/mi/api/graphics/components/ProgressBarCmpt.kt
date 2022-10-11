@@ -31,6 +31,7 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         get() = progress.toFloat() / maxProgress
 
     override fun initClientObj() = ProgressBarCmptClient()
+    override fun buildNewObj() = ProgressBarCmpt(attributes.copy())
 
     private var _preProgress = -1
     private var _preMax = -1

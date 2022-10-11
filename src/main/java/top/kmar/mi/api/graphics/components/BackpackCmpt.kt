@@ -25,6 +25,7 @@ import kotlin.LazyThreadSafetyMode.NONE
 class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
 
     override fun initClientObj() = BackpackCmptClient()
+    override fun buildNewObj() = BackpackCmpt(attributes.copy())
 
     var player: EntityPlayer? = null
         set(value) {
