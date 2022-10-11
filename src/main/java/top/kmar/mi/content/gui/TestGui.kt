@@ -22,7 +22,7 @@ import top.kmar.mi.api.utils.data.enums.Direction2DEnum
  * @author EmptyDreams
  */
 @EventBusSubscriber
-class TestGui : BaseGraphics() {
+class TestGui : BaseGraphics(null) {
 
     override fun init(player: EntityPlayer, pos: BlockPos) {
         super.init(player, pos)

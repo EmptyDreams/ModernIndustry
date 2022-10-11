@@ -51,8 +51,8 @@ object GuiFileParser {
 
     private fun parseTargetFile(path: Path, register: GuiLoader.MIGuiRegistryEvent) {
         var key: ResourceLocation? = null
-        val root = BaseGraphics(null)
-        var preEle: Cmpt = root.document
+        val root = BaseGraphics.DocumentCmpt(null)
+        var preEle: Cmpt = root
         var preLevel = -1
         var client = false
         Files.lines(path).forEachOrdered { content ->
@@ -86,8 +86,8 @@ object GuiFileParser {
             preLevel = level
         }
         ++count
-        if (client) register.registryClient(key!!, root.document)
-        else register.registry(key!!, root.document)
+        if (client) register.registryClient(key!!, root)
+        else register.registry(key!!, root)
     }
 
     /** 获取字符串中的Tag */

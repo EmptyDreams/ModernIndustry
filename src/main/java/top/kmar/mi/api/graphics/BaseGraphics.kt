@@ -11,7 +11,6 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
-import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.slots.IGraphicsSlot
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
@@ -24,10 +23,13 @@ import kotlin.LazyThreadSafetyMode.NONE
  * 服务端GUI窗体对象
  * @author EmptyDreams
  */
-open class BaseGraphics(root: BaseGraphics.DocumentCmpt?) : Container() {
+open class BaseGraphics(root: DocumentCmpt?) : Container() {
 
     /** 容器对象 */
-    val document: DocumentCmpt = (root?.copy() ?: DocumentCmpt()) as DocumentCmpt
+    @Suppress("LeakingThis")
+    val document: DocumentCmpt = ((root?.copy() ?: DocumentCmpt(this)) as DocumentCmpt).apply {
+        gui = this@BaseGraphics
+    }
     /**
      * 客户端对象
      *
@@ -120,20 +122,23 @@ open class BaseGraphics(root: BaseGraphics.DocumentCmpt?) : Container() {
     fun queryCmptAll(exp: String) = document.queryCmptAll(exp)
     fun queryCmpt(exp: String) = document.queryCmpt(exp)
 
-    inner class DocumentCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
+    class DocumentCmpt(
+        var gui: BaseGraphics?,
+        attributes: CmptAttributes
+    ) : Cmpt(attributes) {
 
-        constructor() : this(CmptAttributes().apply {
-            id = "document"
-            this["level"] = "-1"
-        })
+        constructor(gui: BaseGraphics?) :
+                this(gui, CmptAttributes().apply {
+                    id = "document"
+                    this["level"] = "-1"
+                })
 
         @SideOnly(Side.CLIENT)
-        override fun initClientObj(): CmptClient =
-            BaseGraphicsClient(this@BaseGraphics)
+        override fun initClientObj() = BaseGraphicsClient(gui!!)
 
         override fun installParent(parent: Cmpt) {
             val list = LinkedList<Cmpt>()
-            list.add(document)
+            list.add(gui!!.document)
             do {
                 val node = list.pop()
                 node.eachAllChildren {
@@ -147,19 +152,21 @@ open class BaseGraphics(root: BaseGraphics.DocumentCmpt?) : Container() {
         }
 
         override fun installSlot(slot: IGraphicsSlot): Int {
-            addSlotToContainer(slot.slot)
-            graphicsSlots.add(slot)
-            return inventorySlots.size - 1
+            gui!!.addSlotToContainer(slot.slot)
+            gui!!.graphicsSlots.add(slot)
+            return gui!!.inventorySlots.size - 1
         }
 
         override fun uninstallSlot(slot: IGraphicsSlot) {
-            val index = inventorySlots.indexOf(slot.slot)
-            inventorySlots.removeAt(index)
-            inventoryItemStacks.removeAt(index)
-            graphicsSlots.removeAt(index)
+            with(gui!!) {
+                val index = inventorySlots.indexOf(slot.slot)
+                inventorySlots.removeAt(index)
+                inventoryItemStacks.removeAt(index)
+                graphicsSlots.removeAt(index)
+            }
         }
 
-        override fun buildNewObj() = DocumentCmpt(attributes.copy())
+        override fun buildNewObj() = DocumentCmpt(gui, attributes.copy())
 
     }
 
