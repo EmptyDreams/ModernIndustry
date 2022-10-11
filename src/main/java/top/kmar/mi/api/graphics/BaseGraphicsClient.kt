@@ -3,6 +3,8 @@ package top.kmar.mi.api.graphics
 import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiContainer
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
@@ -20,6 +22,7 @@ import top.kmar.mi.api.utils.data.math.Point2D
  *
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventorySlots), CmptClient {
 
     override val service = inventorySlots.document
