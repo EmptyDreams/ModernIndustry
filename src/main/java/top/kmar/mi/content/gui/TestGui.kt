@@ -71,12 +71,16 @@ class TestGui : BaseGraphics() {
                 insertItem(0, ItemStack(Items.BED), false)
             }
         }
+        val burn = BurnCmpt(valueOfID("burn")).apply {
+            this.maxProcess = 100
+        }
         background.addChild(title)
         slots.forEach { background.addChild(it) }
         background.addChild(backpack)
         background.addChild(progress)
         background.addChild(button)
         background.addChild(output)
+        background.addChild(burn)
         mask.addChild(background)
         addChild(mask)
     }
@@ -85,6 +89,8 @@ class TestGui : BaseGraphics() {
         super.detectAndSendChanges()
         val progress = document.queryCmpt("#progress") as ProgressBarCmpt
         if (progress.progress++ == progress.maxProgress) progress.progress = 0
+        val burn = document.queryCmpt("#burn") as BurnCmpt
+        if (burn.progress++ == burn.maxProcess) burn.progress = 0
     }
 
     companion object {
