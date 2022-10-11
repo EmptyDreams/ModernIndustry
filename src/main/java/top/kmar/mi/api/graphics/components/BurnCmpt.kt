@@ -42,6 +42,8 @@ class BurnCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             writeVarInt(maxProcess)
         }
         send2Client(player, message)
+        _progressCache = progress
+        _maxCache = maxProcess
     }
 
     @SideOnly(Side.CLIENT)
