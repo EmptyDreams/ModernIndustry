@@ -52,7 +52,7 @@ enum class ButtonStyleEnum {
                 // 绘制中央材质
                 for (y in startX until endY step rectSize) {
                     for (x in startY until endX step rectSize) {
-                        drawTexture(x, y, 2, 68, rectSize, rectSize)
+                        drawTexture256(x, y, 2, 68, rectSize, rectSize)
                     }
                 }
                 if (!style.overflowHidden) graphics.unscissor()

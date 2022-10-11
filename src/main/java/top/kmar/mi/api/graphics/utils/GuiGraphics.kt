@@ -57,20 +57,35 @@ class GuiGraphics(
         container.mc.textureManager.bindTexture(location)
     }
 
+    /** 绘制256*256的材质 */
+    fun drawTexture256(x: Int, y: Int, u: Int, v: Int, width: Int, height: Int) {
+        drawTexture(x, y, u, v, width, height, 256, 256)
+    }
+
+    /** 绘制32*32的材质 */
+    fun drawTexture32(x: Int, y: Int, u: Int, v: Int, width: Int, height: Int) {
+        drawTexture(x, y, u, v, width, height, 32, 32)
+    }
+
     /**
-     * 绘制材质
+     * 绘制自定义尺寸的材质
      * @param x 绘制区域X坐标
      * @param y 绘制区域Y坐标
      * @param u 要绘制的内容在材质中的X坐标
      * @param v 要绘制的内容在材质中的Y坐标
      * @param width 要绘制的内容的宽度
      * @param height 要绘制的内容的宽度
+     * @param textureWidth 材质文件宽度
+     * @param textureHeight 材质文件高度
      */
-    fun drawTexture(x: Int, y: Int, u: Int, v: Int, width: Int, height: Int) {
+    fun drawTexture(x: Int, y: Int, u: Int, v: Int, width: Int, height: Int, textureWidth: Int, textureHeight: Int) {
         val left = this.x + x
         val top = this.y + y
-        GlStateManager.color(1f, 1f, 1f, 1f)
-        container.drawTexturedModalRect(left, top, u, v, width, height)
+        GlStateManager.color(1f, 1f, 1f)
+        Gui.drawModalRectWithCustomSizedTexture(
+            left, top, u.toFloat(), v.toFloat(),
+            width, height, textureWidth.toFloat(), textureHeight.toFloat()
+        )
     }
 
     /** 按照指定颜色填充矩形 */

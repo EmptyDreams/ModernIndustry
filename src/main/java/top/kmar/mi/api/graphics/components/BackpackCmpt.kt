@@ -103,7 +103,7 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
             with(graphics) {
                 drawString(offsetX, 0, I18n.format("key.categories.inventory"))
                 bindTexture(textureLib)
-                drawTexture(offsetX, fontHeight, 8, 53, 162, 76)
+                drawTexture256(offsetX, fontHeight, 8, 53, 162, 76)
             }
             renderChildren(graphics)
         }
