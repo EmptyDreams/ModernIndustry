@@ -67,7 +67,7 @@ class BurnCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
                 drawTexture(0, 0, 0, 0, 13, 13)
                 val percent = (progress.toFloat() / maxProcess * height).roundToInt()
                 if (percent > 0)
-                    drawTexture(0, 13 - percent, 13, 0, 14, 13)
+                    drawTexture(0, 13 - percent, 13, 13 - percent, 14, percent)
             }
             super.render(graphics)
         }
