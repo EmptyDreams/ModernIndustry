@@ -10,9 +10,11 @@ import net.minecraft.item.ItemBlock
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
+import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
+import top.kmar.mi.ModernIndustry
 import top.kmar.mi.api.capabilities.fluid.FluidCapability
 import top.kmar.mi.api.capabilities.fluid.IFluid
 import top.kmar.mi.api.register.block.annotations.AutoBlockRegister
@@ -20,7 +22,6 @@ import top.kmar.mi.api.utils.getPlacingDirection
 import top.kmar.mi.api.utils.whatFacing
 import top.kmar.mi.content.blocks.CommonUtil
 import top.kmar.mi.content.blocks.base.MachineBlock
-import top.kmar.mi.content.gui.TestGui
 import top.kmar.mi.content.items.base.ItemBlockExpand
 import top.kmar.mi.content.tileentity.user.EUFluidPump
 import top.kmar.mi.data.properties.MIProperty.Companion.WORKING
@@ -121,7 +122,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
         worldIn: World, pos: BlockPos, state: IBlockState,
         playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing,
         hitX: Float, hitY: Float, hitZ: Float
-    ) = CommonUtil.openGui(playerIn, TestGui.key, pos)
+    ) = CommonUtil.openGui(playerIn, ResourceLocation(ModernIndustry.MODID, "test"), pos)
 
     private val item: ItemBlock by lazy(PUBLICATION) { ItemBlockExpand(this) }
 
