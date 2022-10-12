@@ -150,6 +150,7 @@ open class BaseGraphics(root: DocumentCmpt?) : Container() {
                     list.add(it)
                 }
             } while (list.isNotEmpty())
+            isInstallParent = true
         }
 
         override fun installSlot(slot: IGraphicsSlot): Int {

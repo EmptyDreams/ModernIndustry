@@ -41,7 +41,6 @@ enum class HorizontalAlignModeEnum {
             for (style in list.descendingIterator()) {
                 pos -= style.spaceWidth
                 callback(style, pos)
-                style.markXChange()
             }
         }
 
@@ -67,7 +66,6 @@ enum class HorizontalAlignModeEnum {
             var pos = base
             for (style in list) {
                 callback(style, pos)
-                style.markXChange()
                 pos += style.spaceWidth
             }
         }

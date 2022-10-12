@@ -160,7 +160,11 @@ open class GraphicsStyle(
             var prev = DisplayModeEnum.NONE
             cmpt.eachAllChildren {
                 with(it.client.style) {
-                    if (!display.isDisplay() || !position.isRelative()) return@eachAllChildren
+                    if (!display.isDisplay()) return@eachAllChildren
+                    if (!position.isRelative()) {
+                        markYChange()
+                        return@eachAllChildren
+                    }
                     if (display == prev && display.isInline()) last.addLast(this)
                     else {
                         val newList = LinkedList<GraphicsStyle>()
@@ -178,6 +182,10 @@ open class GraphicsStyle(
             for (group in groupList) {
                 alignHorizontal(this, group) { it, x -> it.srcX = x + it.marginLeft }
             }
+            cmpt.childrenStream()
+                .map { it.client.style }
+                .filter { it.display.isDisplay() }
+                .forEach { it.markXChange() }
         }
     }
 
