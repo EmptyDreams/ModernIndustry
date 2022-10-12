@@ -5,6 +5,9 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import jdk.internal.util.xml.impl.ReaderUTF8
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ResourceLocation
+import net.minecraftforge.client.event.ModelBakeEvent
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.GuiLoader
@@ -19,6 +22,7 @@ import java.util.*
  * @author EmptyDreams
  */
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(Side.CLIENT)
 object GuiStyleParser {
 
     private var count = 0
@@ -78,5 +82,11 @@ object GuiStyleParser {
     }
 
     data class Node(val exp: ComplexCmptExp, val cache: List<IParserCache>)
+
+    @JvmStatic
+    @SubscribeEvent
+    fun onResourcesBake(event: ModelBakeEvent) {
+        reload()
+    }
 
 }
