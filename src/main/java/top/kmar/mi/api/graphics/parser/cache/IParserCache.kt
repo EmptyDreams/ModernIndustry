@@ -38,6 +38,7 @@ interface IParserCache {
                         key.startsWith("border") -> BorderParserCache(key, value)
                         key.startsWith("margin") -> MarginParserCache(key, value)
                         key.startsWith("align") -> AlignParserCache(key, value)
+                        key.startsWith("progress") -> ProgressParserCache(key, value)
                         else -> throw IllegalArgumentException("未知表达式：$content")
                     }
                 }
