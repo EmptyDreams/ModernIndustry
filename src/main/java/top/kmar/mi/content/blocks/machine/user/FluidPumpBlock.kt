@@ -116,7 +116,6 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
             .withProperty(WORKING, te.working)
     }
 
-    //TODO
     override fun onBlockActivated(
         worldIn: World, pos: BlockPos, state: IBlockState,
         playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing,
