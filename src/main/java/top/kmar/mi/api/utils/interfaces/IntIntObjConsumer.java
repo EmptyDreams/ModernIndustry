@@ -1,4 +1,4 @@
-package top.kmar.mi.api.interfaces;
+package top.kmar.mi.api.utils.interfaces;
 
 /**
  * @see ThConsumer
