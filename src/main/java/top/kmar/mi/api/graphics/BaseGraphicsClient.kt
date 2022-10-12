@@ -31,7 +31,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
         width = InheritSizeMode { this@BaseGraphicsClient.width }
         height = InheritSizeMode { this@BaseGraphicsClient.height }
     }
-    private var taskList: MutableList<() -> Unit>? = LinkedList()
+    private val taskList = LinkedList<() -> Unit>()
 
     override fun initGui() {
         xSize = width
@@ -145,18 +145,14 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
     }
 
     override fun render(graphics: GuiGraphics) {
-        taskList?.apply {
-            taskList = null
-            forEach { it() }
-        }
+        taskList.forEach { it() }
         style.alignChildren()
         renderChildren(graphics)
     }
 
     /** 添加一个初始化任务 */
     fun addInitTask(task: () -> Unit) {
-        if (taskList == null) taskList = LinkedList()
-        taskList!!.add(task)
+        taskList.add(task)
     }
 
 }
