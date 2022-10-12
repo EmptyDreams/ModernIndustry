@@ -20,7 +20,7 @@ interface IParserCache {
         fun build(content: String): IParserCache {
             val (key, value) = content.run {
                 val array = split('=')
-                Pair(array[0].trim(), array[1].trim().lowercase())
+                Pair(array[0].trim(), array[1].trim())
             }
             return when (key) {
                 "width" -> SizeParserCache(value, false)
@@ -30,6 +30,7 @@ interface IParserCache {
                 "right" -> LocationParserCache(Direction2DEnum.RIGHT, value)
                 "bottom" -> LocationParserCache(Direction2DEnum.DOWN, value)
                 "left" -> LocationParserCache(Direction2DEnum.LEFT, value)
+                "display" -> DisplayParserCache(value)
                 else -> {
                     @Suppress("SpellCheckingInspection")
                     when {
