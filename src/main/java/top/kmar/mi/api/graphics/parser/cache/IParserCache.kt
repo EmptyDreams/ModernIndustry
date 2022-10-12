@@ -25,8 +25,11 @@ interface IParserCache {
                 "width" -> SizeParserCache(value, false)
                 "height" -> SizeParserCache(value, true)
                 else -> {
-                    if (key.endsWith("Color")) ColorParserCache(key, value)
-                    else throw IllegalArgumentException("未知表达式：$content")
+                    when {
+                        key.endsWith("Color") -> ColorParserCache(key, value)
+                        key.contains("order") -> BorderParserCache(key, value)
+                        else -> throw IllegalArgumentException("未知表达式：$content")
+                    }
                 }
             }
         }
