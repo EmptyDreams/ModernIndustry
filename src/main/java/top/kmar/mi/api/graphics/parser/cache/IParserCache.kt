@@ -25,8 +25,9 @@ interface IParserCache {
                 "width" -> SizeParserCache(value, false)
                 "height" -> SizeParserCache(value, true)
                 else -> {
+                    @Suppress("SpellCheckingInspection")
                     when {
-                        key.endsWith("Color") -> ColorParserCache(key, value)
+                        key.endsWith("olor") -> ColorParserCache(key, value)
                         key.startsWith("border") -> BorderParserCache(key, value)
                         key.startsWith("margin") -> MarginParserCache(key, value)
                         key.startsWith("align") -> AlignParserCache(key, value)
