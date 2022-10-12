@@ -27,8 +27,9 @@ interface IParserCache {
                 else -> {
                     when {
                         key.endsWith("Color") -> ColorParserCache(key, value)
-                        key.contains("border") -> BorderParserCache(key, value)
-                        key.contains("margin") -> MarginParserCache(key, value)
+                        key.startsWith("border") -> BorderParserCache(key, value)
+                        key.startsWith("margin") -> MarginParserCache(key, value)
+                        key.startsWith("align") -> AlignParserCache(key, value)
                         else -> throw IllegalArgumentException("未知表达式：$content")
                     }
                 }
