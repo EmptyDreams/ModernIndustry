@@ -7,6 +7,24 @@ import top.kmar.mi.api.graphics.utils.GraphicsStyle
 
 /**
  * 颜色表达式
+ *
+ * 支持以下格式
+ *
+ * + `color = color`
+ * + `backgroundColor = color`
+ * + `fontColor = color`
+ *
+ * 其中，颜色表达式支持以下格式：
+ *
+ * + `#RGB`
+ * + `#RGBA`
+ * + `#RrGgBb`
+ * + `#RrGbBbAa`
+ * + `rgb(r,g,b)`
+ * + `rgba(a,g,b,a)`
+ * + `rgb(r g b)`
+ * + `rgba(r g b a)`
+ *
  * @author EmptyDreams
  */
 @SideOnly(Side.CLIENT)

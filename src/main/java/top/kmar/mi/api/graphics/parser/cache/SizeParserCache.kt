@@ -10,6 +10,13 @@ import top.kmar.mi.api.utils.removeAllSpace
 
 /**
  * 尺寸表达式
+ *
+ * 支持以下格式：
+ *
+ * + `[ size ] = num`
+ * + `[ size ] = percent%`
+ * + `[ size ] = calc(percent% +/- num)`
+ *
  * @author EmptyDreams
  */
 @SideOnly(Side.CLIENT)
