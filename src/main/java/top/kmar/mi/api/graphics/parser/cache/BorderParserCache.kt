@@ -15,9 +15,9 @@ import kotlin.streams.toList
  * + `border = topColor rightColor bottomColor leftColor`
  * + `borderWeight = topAndLeftWeight rightAndBottomWeight`
  * + `borderWeight = topWeight rightWeight bottomWeight leftWeight`
- * + `[ direction ]Border = color weight`
- * + `[ direction ]Border = color`
- * + `[ direction ]BorderWeight = weight`
+ * + `border[ Direction ] = color weight`
+ * + `border[ direction ] = color`
+ * + `border[ direction ]Weight = weight`
  *
  * @author EmptyDreams
  */
@@ -64,14 +64,15 @@ class BorderParserCache(key: String, value: String) : IParserCache {
                 }
             }
             else -> {
-                val getBorder = when {
-                    key.startsWith('t') -> { style: GraphicsStyle -> style.borderTop }
-                    key.startsWith('r') -> { style: GraphicsStyle -> style.borderRight }
-                    key.startsWith('b') -> { style: GraphicsStyle -> style.borderBottom }
-                    key.startsWith('l') -> { style: GraphicsStyle -> style.borderLeft }
+                val getBorder = when (key[6]) {
+                    'T' -> { style: GraphicsStyle -> style.borderTop }
+                    'R' -> { style: GraphicsStyle -> style.borderRight }
+                    'B' -> { style: GraphicsStyle -> style.borderBottom }
+                    'L' -> { style: GraphicsStyle -> style.borderLeft }
                     else -> throw IllegalArgumentException("不合法的边框表达式：$key = $value")
                 }
-                if (key.endsWith('r')) {
+                if (key.endsWith("Weight")) return@run { getBorder(it).weight = toInt() }
+                else {
                     val color = IntColor(args[0])
                     if (args.size == 1) return@run { getBorder(it).color = color }
                     else if (args.size == 2) {
@@ -82,7 +83,7 @@ class BorderParserCache(key: String, value: String) : IParserCache {
                             border.weight = weight
                         }
                     }
-                } else if (args.size == 1) return@run { getBorder(it).weight = args[0].toInt() }
+                }
             }
         }
         throw IllegalArgumentException("不合法的边框表达式：$key = $value")
