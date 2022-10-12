@@ -24,6 +24,7 @@ interface IParserCache {
             return when (key) {
                 "width" -> SizeParserCache(value, false)
                 "height" -> SizeParserCache(value, true)
+                "position" -> PositionParserCache(value)
                 else -> {
                     @Suppress("SpellCheckingInspection")
                     when {
