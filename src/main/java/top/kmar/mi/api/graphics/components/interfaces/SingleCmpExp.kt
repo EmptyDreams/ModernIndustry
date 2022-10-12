@@ -1,24 +1,25 @@
 package top.kmar.mi.api.graphics.components.interfaces
 
-import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet
+import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet
+import top.kmar.mi.api.utils.compareTo
 
 /**
- * [Cmpt]匹配表达式
+ * 单个[Cmpt]匹配表达式
  * @author EmptyDreams
  */
-class CmptSearchExp(private val value: String) {
+class SingleCmpExp(exp: String) : Comparable<SingleCmpExp> {
 
-    private val list = ObjectRBTreeSet<Node>().apply {
+    private val list = ObjectAVLTreeSet<Node>().apply {
         var left = 0
-        for (i in 1 until value.length) {
-            val it = value[i]
+        for (i in 1 until exp.length) {
+            val it = exp[i]
             if (it == '.' || it == '#') {
-                add(Node(value.substring(left until i)))
+                add(Node(exp.substring(left until i)))
                 left = i
             }
         }
-        if (left != value.length - 1)
-            add(Node(value.substring(left)))
+        if (left != exp.length - 1)
+            add(Node(exp.substring(left)))
     }
 
     fun match(cmpt: Cmpt): Boolean {
@@ -35,15 +36,18 @@ class CmptSearchExp(private val value: String) {
         return true
     }
 
-    fun match(exp: String) = this == CmptSearchExp(exp)
+    fun match(exp: String) = this == SingleCmpExp(exp)
 
     override fun hashCode() = list.hashCode()
 
+    override fun compareTo(other: SingleCmpExp) = list.compareTo(other.list)
+
     override fun equals(other: Any?): Boolean {
-        if (other !is CmptSearchExp) return false
+        if (other !is SingleCmpExp) return false
         return list == other.list
     }
 
+    override fun toString() = list.joinToString(" ")
 
     private class Node(val content: String): Comparable<Node> {
 
@@ -64,6 +68,8 @@ class CmptSearchExp(private val value: String) {
             if (other !is Node) return false
             return content == other.content
         }
+
+        override fun toString() = content
 
     }
 

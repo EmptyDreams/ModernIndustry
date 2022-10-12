@@ -127,7 +127,7 @@ open class GraphicsStyle(
     val endY: Int
         get() = y + height()
 
-    private val parentStyle: GraphicsStyle
+    val parentStyle: GraphicsStyle
         get() = cmpt.parent.client.style
 
     /** 返回控件所占区域 */

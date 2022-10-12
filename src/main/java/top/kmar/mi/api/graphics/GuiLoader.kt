@@ -1,7 +1,8 @@
 package top.kmar.mi.api.graphics
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap
-import it.unimi.dsi.fastutil.objects.Object2IntRBTreeMap
+import it.unimi.dsi.fastutil.objects.Object2IntAVLTreeMap
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
@@ -16,6 +17,7 @@ import top.kmar.mi.ModernIndustry
 import top.kmar.mi.api.event.PlayerOpenGraphicsEvent
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.parser.GuiFileParser
+import top.kmar.mi.api.graphics.parser.GuiStyleParser
 import top.kmar.mi.api.register.others.AutoLoader
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -29,9 +31,10 @@ object GuiLoader : IGuiHandler {
     /** 存储数字注册列表 */
     private val numRegisters = Int2ObjectRBTreeMap<BaseGraphics.DocumentCmpt>()
     /** 存储通用注册表 */
-    private val registers = Object2IntRBTreeMap<ResourceLocation>().apply {
+    private val registers = Object2IntAVLTreeMap<ResourceLocation>().apply {
         defaultReturnValue(Int.MIN_VALUE)
     }
+    private val oppositeRegisters = Int2ObjectAVLTreeMap<ResourceLocation>()
     /** 注册下标 */
     private val registryIndex = AtomicInteger(0)
     /** 客户端注册下标 */
@@ -66,13 +69,20 @@ object GuiLoader : IGuiHandler {
         ID: Int,
         player: EntityPlayer, world: World,
         x: Int, y: Int, z: Int
-    ) = getServerGuiElement(ID, player, world, x, y, z).client
+    ): BaseGraphicsClient {
+        val client = getServerGuiElement(ID, player, world, x, y, z).client
+        GuiStyleParser.reload()
+        GuiStyleParser.initStyle(oppositeRegisters[ID], client.service)
+        return client
+    }
 
     fun getID(key: ResourceLocation): Int {
         val result = registers.getInt(key)
         if (result == Int.MIN_VALUE) throw IndexOutOfBoundsException("未找到指定key[$key]值")
         return result
     }
+
+    fun keyIterator() = registers.keys.iterator()
 
     class MIGuiRegistryEvent : Event() {
 
@@ -85,6 +95,7 @@ object GuiLoader : IGuiHandler {
             if (key in registers) throw AssertionError("注册的Key[$key]在注册表中已存在")
             val id = registryIndex.incrementAndGet()
             registers[key] = id
+            oppositeRegisters[id] = key
             numRegisters[id] = root
             return id
         }
@@ -95,6 +106,7 @@ object GuiLoader : IGuiHandler {
             if (key in registers) throw AssertionError("注册的Key[$key]在注册表中已存在")
             val id = registryIndexClient.decrementAndGet()
             registers[key] = id
+            oppositeRegisters[id] = key
             numRegisters[id] = root
             return id
         }

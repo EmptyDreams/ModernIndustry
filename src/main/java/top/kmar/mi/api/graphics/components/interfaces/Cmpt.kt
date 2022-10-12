@@ -138,33 +138,20 @@ abstract class Cmpt(
 
     /**
      * 通过匹配表达式获取所有与之匹配的控件
-     *
      * @param exp 匹配表达式
-     *
-     *   格式：
-     *
-     *   + `#id` - 通过id匹配
-     *   + `.className` - 通过类名匹配
-     *   + `tagName` - 通过标签名匹配
-     *   + `tagName.className1.className2` - 匹配同时满足相连条件的控件
-     *   + `.className1 .className2` - 匹配在`1`控件内的`2`控件
      * @param limit 数量限制
      * @return 所有匹配的控件（按控件出现顺序排序）
      */
-    fun queryCmptLimit(exp: String, limit: Int): LinkedList<Cmpt> {
+    fun queryCmptLimit(exp: ComplexCmptExp, limit: Int): LinkedList<Cmpt> {
         val list = LinkedList<Cmpt>()
         if (limit == 0) return list
-        val index = exp.indexOf(" ")
-        val value = if (index == -1) exp else exp.substring(0 until index)
-        val cmptExp = CmptSearchExp(value)
-        val isEnd = index == -1
-        val nextExp by lazy(NONE) { exp.substring(index + 1) }
-        eachAllChildren {
-            if (cmptExp.match(it)) {
-                if (isEnd) list.add(it)
-                else list.addAll(it.queryCmptLimit(nextExp, limit - list.size))
+        eachChildren {
+            if (exp.matchFirst(it)) {
+                if (exp.size == 1) list.add(it)
+                else list.addAll(it.queryCmptLimit(exp.removeFirst(), limit - list.size))
             }
             list.addAll(it.queryCmptLimit(exp, limit - list.size))
+            if (list.size == limit) it else null
         }
         return list
     }
@@ -173,14 +160,14 @@ abstract class Cmpt(
      * 通过匹配表达式匹配GUI中所有与该表达式相匹配的控件
      * @see queryCmptLimit
      */
-    fun queryCmptAll(exp: String): LinkedList<Cmpt> = queryCmptLimit(exp, Int.MAX_VALUE)
+    fun queryCmptAll(exp: ComplexCmptExp): LinkedList<Cmpt> = queryCmptLimit(exp, Int.MAX_VALUE)
 
     /**
      * 通过匹配表达式匹配GUI中第一个与该表达式相匹配的控件
      * @return 未查询到则返回`null`
      * @see queryCmptLimit
      */
-    fun queryCmpt(exp: String): Cmpt? {
+    fun queryCmpt(exp: ComplexCmptExp): Cmpt? {
         val result = queryCmptLimit(exp, 1)
         return if (result.isEmpty()) null else result.first
     }

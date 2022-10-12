@@ -13,6 +13,7 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptRegister
 import top.kmar.mi.api.utils.MISysInfo
 import top.kmar.mi.api.utils.container.PairIntObj
 import top.kmar.mi.api.utils.countStartSpace
+import top.kmar.mi.api.utils.removeAllSpace
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -35,7 +36,7 @@ object GuiFileParser {
     fun parseFiles(mod: ModContainer) {
         val register = GuiLoader.MIGuiRegistryEvent()
         CraftingHelper.findFiles(
-            mod, "assets/${mod.modId}/gui", { true },
+            mod, "assets/${mod.modId}/gui/mig", { true },
             { root, file ->
                 Loader.instance().setActiveModContainer(mod)
                 val relative = root.relativize(file).toString()
@@ -116,7 +117,7 @@ object GuiFileParser {
         val index = lastIndexOf(')')
         val value = substring(start + 1 until index)
         value.split(',').stream()
-            .map { it.replace(Regex("[ \n\t]"), "") }
+            .map { it.removeAllSpace() }
             .forEach {
                 val mid = it.indexOf('=')
                 val key = it.substring(0 until mid)

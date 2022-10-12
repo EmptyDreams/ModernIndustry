@@ -11,6 +11,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
+import top.kmar.mi.api.graphics.components.interfaces.ComplexCmptExp
 import top.kmar.mi.api.graphics.components.interfaces.slots.IGraphicsSlot
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
@@ -118,9 +119,9 @@ open class BaseGraphics(root: DocumentCmpt?) : Container() {
     /** 通过ID获取元素 */
     fun getElementByID(id: String) = document.getElementByID(id)
     /** @see Cmpt.queryCmptLimit */
-    fun queryCmptLimit(exp: String, limit: Int) = document.queryCmptLimit(exp, limit)
-    fun queryCmptAll(exp: String) = document.queryCmptAll(exp)
-    fun queryCmpt(exp: String) = document.queryCmpt(exp)
+    fun queryCmptLimit(exp: ComplexCmptExp, limit: Int) = document.queryCmptLimit(exp, limit)
+    fun queryCmptAll(exp: ComplexCmptExp) = document.queryCmptAll(exp)
+    fun queryCmpt(exp: ComplexCmptExp) = document.queryCmpt(exp)
 
     class DocumentCmpt(
         var gui: BaseGraphics?,

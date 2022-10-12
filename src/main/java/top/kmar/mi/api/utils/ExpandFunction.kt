@@ -37,7 +37,23 @@ import java.nio.charset.StandardCharsets
 import kotlin.math.abs
 import kotlin.math.sqrt
 
+/** 移除所有空格 */
+fun String.removeAllSpace(): String {
+    return replace(Regex("[ \n\t]"), "")
+}
 
+/** 比较两个列表 */
+@Suppress("UNREACHABLE_CODE", "CAST_NEVER_SUCCEEDS")
+fun <T : Comparable<*>> Collection<T>.compareTo(other: Collection<T>): Int {
+    if (size != other.size) return size.compareTo(other.size)
+    val itor0 = iterator()
+    val itor1 = other.iterator()
+    while (itor0.hasNext()) {
+        val res = itor0.next().compareTo(itor1.next() as Nothing)
+        if (res != 0) return res
+    }
+    return 0
+}
 
 /**
  * 计算一个字符串的开头有多少个空格，一个制表符当作4个空格
