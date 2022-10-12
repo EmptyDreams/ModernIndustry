@@ -39,7 +39,7 @@ import kotlin.math.sqrt
 
 /** 移除所有空格 */
 fun String.removeAllSpace(): String {
-    return replace(Regex("[ \n\t]"), "")
+    return replace(Regex("""\s*"""), "")
 }
 
 /** 比较两个列表 */

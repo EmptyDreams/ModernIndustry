@@ -12,7 +12,6 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.ComplexCmptExp
 import top.kmar.mi.api.graphics.parser.cache.IParserCache
 import top.kmar.mi.api.utils.MISysInfo
-import top.kmar.mi.api.utils.removeAllSpace
 import java.util.*
 
 /**
@@ -70,7 +69,7 @@ object GuiStyleParser {
             val exp = ComplexCmptExp(obj["exp"].asString)
             val list = LinkedList<IParserCache>()
             for (tmp in obj.getAsJsonArray("value")) {
-                val ele = tmp.asString.removeAllSpace()
+                val ele = tmp.asString
                 list.add(IParserCache.build(ele))
             }
             expMap.computeIfAbsent(key) { LinkedList() }.add(Node(exp, list))
