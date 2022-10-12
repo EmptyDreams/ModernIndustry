@@ -29,6 +29,7 @@ import top.kmar.mi.api.utils.data.enums.VerticalDirectionEnum
 @SideOnly(Side.CLIENT)
 class ProgressParserCache(key: String, value: String) : IParserCache {
 
+    @Suppress("DuplicatedCode")
     private val task: (GraphicsStyle) -> Unit = when (key.length) {
         8 + 9 -> {  // direction or minHeight
             if (value.endsWith('n')) {
