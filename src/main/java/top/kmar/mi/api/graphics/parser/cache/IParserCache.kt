@@ -3,6 +3,7 @@ package top.kmar.mi.api.graphics.parser.cache
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
+import top.kmar.mi.api.utils.data.enums.Direction2DEnum
 
 /**
  * 解析缓存
@@ -25,6 +26,10 @@ interface IParserCache {
                 "width" -> SizeParserCache(value, false)
                 "height" -> SizeParserCache(value, true)
                 "position" -> PositionParserCache(value)
+                "top" -> LocationParserCache(Direction2DEnum.UP, value)
+                "right" -> LocationParserCache(Direction2DEnum.RIGHT, value)
+                "bottom" -> LocationParserCache(Direction2DEnum.DOWN, value)
+                "left" -> LocationParserCache(Direction2DEnum.LEFT, value)
                 else -> {
                     @Suppress("SpellCheckingInspection")
                     when {
