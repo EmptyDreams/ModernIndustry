@@ -16,6 +16,7 @@ import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.graphics.utils.InheritSizeMode
 import top.kmar.mi.api.utils.data.math.Point2D
+import java.util.*
 
 /**
  * 客户端GUI对象
@@ -30,6 +31,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
         width = InheritSizeMode { this@BaseGraphicsClient.width }
         height = InheritSizeMode { this@BaseGraphicsClient.height }
     }
+    private var taskList: MutableList<() -> Unit>? = LinkedList()
 
     override fun initGui() {
         xSize = width
@@ -143,8 +145,18 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
     }
 
     override fun render(graphics: GuiGraphics) {
+        taskList?.apply {
+            taskList = null
+            forEach { it() }
+        }
         style.alignChildren()
         renderChildren(graphics)
+    }
+
+    /** 添加一个初始化任务 */
+    fun addInitTask(task: () -> Unit) {
+        if (taskList == null) taskList = LinkedList()
+        taskList!!.add(task)
     }
 
 }

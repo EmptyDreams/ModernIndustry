@@ -60,12 +60,10 @@ object GuiStyleParser {
         }
     }
 
-    private val parser = JsonParser()
-
     private fun parseTargetFile(location: ResourceLocation, key: ResourceLocation) {
         val resourceManager = Minecraft.getMinecraft().resourceManager
-        val json =
-            ReaderUTF8(resourceManager.getResource(location).inputStream).use { parser.parse(it) }.asJsonObject
+        val reader = ReaderUTF8(resourceManager.getResource(location).inputStream)
+        val json = reader.use { JsonParser().parse(it) }.asJsonObject
         val style = json.getAsJsonArray("style")
         for (item in style) {
             val obj = item.asJsonObject

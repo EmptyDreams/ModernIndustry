@@ -71,8 +71,7 @@ object GuiLoader : IGuiHandler {
         x: Int, y: Int, z: Int
     ): BaseGraphicsClient {
         val client = getServerGuiElement(ID, player, world, x, y, z).client
-        GuiStyleParser.reload()
-        GuiStyleParser.initStyle(oppositeRegisters[ID], client.service)
+        client.addInitTask { GuiStyleParser.initStyle(oppositeRegisters[ID], client.service) }
         return client
     }
 
