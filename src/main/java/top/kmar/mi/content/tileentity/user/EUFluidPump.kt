@@ -4,6 +4,8 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.ITickable
 import net.minecraft.util.math.BlockPos
 import net.minecraftforge.common.capabilities.Capability
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.araw.interfaces.AutoSave
@@ -15,14 +17,17 @@ import top.kmar.mi.api.electricity.clock.OrdinaryCounter
 import top.kmar.mi.api.electricity.info.BiggerVoltage
 import top.kmar.mi.api.electricity.info.EleEnergy
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage
+import top.kmar.mi.api.event.PlayerOpenGraphicsEvent
 import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.fluid.data.FluidQueue
 import top.kmar.mi.api.fluid.data.TransportReport
+import top.kmar.mi.api.graphics.components.BackpackCmpt
 import top.kmar.mi.api.net.IAutoNetwork
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
 import top.kmar.mi.api.utils.*
 import top.kmar.mi.api.utils.container.IndexEnumMap
+import top.kmar.mi.content.blocks.BlockGuiList
 import top.kmar.mi.content.blocks.machine.user.FluidPumpBlock
 import top.kmar.mi.data.properties.RelativeDirectionEnum
 import java.util.*
@@ -33,6 +38,7 @@ import kotlin.math.min
  * @author EmptyDreams
  */
 @AutoTileEntity(FluidPumpBlock.NAME)
+@EventBusSubscriber
 open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
 
     @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
@@ -71,6 +77,16 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
             EnumFacing.Axis.X -> MAY_PANEL_X
             EnumFacing.Axis.Z -> MAY_PANEL_Z
             EnumFacing.Axis.Y -> MAY_PANEL_Y
+        }
+
+        @JvmStatic
+        @SubscribeEvent
+        fun onOpenGui(event: PlayerOpenGraphicsEvent) {
+            if (event.key != BlockGuiList.fluidPump) return
+            with(event.container) {
+                val backpack = getElementByID("backpack") as BackpackCmpt
+                backpack.player = event.player
+            }
         }
 
     }

@@ -58,7 +58,9 @@ object GuiLoader : IGuiHandler {
         val root = numRegisters[ID] ?: throw IllegalArgumentException("指定ID[$ID]的GUI不存在")
         return BaseGraphics(root).apply {
             init(player, BlockPos(x, y, z))
-            MinecraftForge.EVENT_BUS.post(PlayerOpenGraphicsEvent(player, this, ID, x, y, z))
+            MinecraftForge.EVENT_BUS.post(
+                PlayerOpenGraphicsEvent(player, this, oppositeRegisters[ID] ,ID, x, y, z)
+            )
             document.installParent(Cmpt.EMPTY_CMPT)
         }
     }

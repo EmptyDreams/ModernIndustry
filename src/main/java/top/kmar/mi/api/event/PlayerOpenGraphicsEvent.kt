@@ -1,6 +1,7 @@
 package top.kmar.mi.api.event
 
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.common.eventhandler.Event
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
@@ -15,6 +16,7 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 class PlayerOpenGraphicsEvent(
     val player: EntityPlayer,
     val container: BaseGraphics,
+    val key: ResourceLocation,
     val id: Int,
     val x: Int,
     val y: Int,
