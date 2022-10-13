@@ -10,6 +10,7 @@ bin
 out
 *.iws
 .idea/workspace.xml
+.fleet
 
 # gradle
 build

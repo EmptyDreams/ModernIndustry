@@ -10,6 +10,7 @@
       <excludeFolder url="file://$MODULE_DIR$/../../run" />
       <excludeFolder url="file://$MODULE_DIR$/../../out" />
       <excludeFolder url="file://$MODULE_DIR$/../../logs" />
+      <excludeFolder url="file://$MODULE_DIR$/../../.fleet" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
