@@ -22,7 +22,7 @@ import top.kmar.mi.api.utils.removeAllSpace
 @SideOnly(Side.CLIENT)
 class SizeParserCache(exp: String, isHeight: Boolean) : IParserCache {
 
-    private val task: (ISizeMode) -> ISizeMode = exp.removeAllSpace().run {
+    private val task: ((GraphicsStyle) -> Int) -> ISizeMode = exp.removeAllSpace().run {
         // 通过exp解析出一个生成ISideMode的函数
         // 通过此举避免每次生成ISizeMode时都重新解析一遍字符串
         if (endsWith('%')) {  // 如果字符串格式为“num%”
@@ -45,9 +45,9 @@ class SizeParserCache(exp: String, isHeight: Boolean) : IParserCache {
 
     private val setter: (GraphicsStyle) -> Unit = task.run {
         if (isHeight) {
-            return@run { it.heightCalculator = this(it.parentStyle.heightCalculator) }
+            return@run { it.heightCalculator = this { style -> style.height } }
         } else {
-            return@run { it.widthCalculator = this(it.parentStyle.widthCalculator) }
+            return@run { it.widthCalculator = this { style -> style.width } }
         }
     }
 

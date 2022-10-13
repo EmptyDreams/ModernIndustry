@@ -25,7 +25,7 @@ open class GraphicsStyle(
         get() {
             val parent: Cmpt
             if (widthCalculator.relyOnParent) {
-                var dist = cmpt
+                var dist = cmpt.parent
                 while (dist.client.style.widthCalculator.relyOnChild) {
                     dist = dist.parent
                 }

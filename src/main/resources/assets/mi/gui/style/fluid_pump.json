@@ -4,8 +4,28 @@
       "exp": "background",
       "value": [
         "width=180",
-        "height=210"
+        "height=210",
+        "alignVertical=top"
       ]
+    },
+    {
+      "exp": "progress",
+      "value": [
+        "width=75%",
+        "height=6",
+        "progressStyle=rect"
+      ]
+    },
+    {
+      "exp": "button",
+      "value": [
+        "width=20",
+        "height=13"
+      ]
+    },
+    {
+      "exp": "#show",
+      "value": ["marginTop=20"]
     }
   ]
 }

@@ -2,3 +2,8 @@
 mask
     background
         backpack
+        div#show
+            progress#fluid
+            progress#energy
+            progress#consume
+        button(value="test")
