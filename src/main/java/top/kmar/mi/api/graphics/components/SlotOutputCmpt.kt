@@ -52,8 +52,8 @@ class SlotOutputCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
         override val service = this@SlotOutputCmpt
         override val style = GraphicsStyle(service).apply {
-            width = FixedSizeMode(26)
-            height = width
+            widthCalculator = FixedSizeMode(26)
+            heightCalculator = widthCalculator
             backgroundColor = IntColor.gray
             borderTop.color = IntColor(55, 55, 55)
             borderLeft.color = borderTop.color

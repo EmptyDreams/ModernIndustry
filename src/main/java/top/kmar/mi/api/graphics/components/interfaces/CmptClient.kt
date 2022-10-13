@@ -47,8 +47,8 @@ interface CmptClient {
             val client = it.client
             val style = client.style
             if (!style.display.isDisplay()) return@eachAllChildren
-            val width = style.width()
-            val height = style.height()
+            val width = graphics.width
+            val height = graphics.height
             if (width <= 0 || height <= 0) return@eachAllChildren
             val g = graphics.createGraphics(style.x, style.y, width, height)
             if (style.overflowHidden) g.scissor()
@@ -66,16 +66,14 @@ interface CmptClient {
 
     /** 渲染背景 */
     fun renderBackground(graphics: GuiGraphics) {
-        with(style) {
-            graphics.fillRect(0, 0, width(), height(), backgroundColor)
+        with(graphics) {
+            fillRect(0, 0, width, height, style.backgroundColor)
         }
     }
 
     /** 渲染描边 */
     fun renderBorder(graphics: GuiGraphics) {
         with(style) {
-            val width = this.width()
-            val height = this.height()
             with(graphics) {
                 fillRect(0, 0, width, borderTop.weight, borderTop.color)
                 fillRect(width - borderRight.weight, 0, borderRight.weight, height, borderRight.color)

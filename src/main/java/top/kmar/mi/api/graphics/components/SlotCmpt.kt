@@ -53,8 +53,8 @@ class SlotCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
         override val service = this@SlotCmpt
         override val style = GraphicsStyle(service).apply {
-            width = FixedSizeMode(18)
-            height = width
+            widthCalculator = FixedSizeMode(18)
+            heightCalculator = widthCalculator
             backgroundColor = IntColor.gray
             borderTop.color = IntColor(55, 55, 55)
             borderLeft.color = borderTop.color

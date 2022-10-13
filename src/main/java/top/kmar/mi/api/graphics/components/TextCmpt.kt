@@ -27,8 +27,8 @@ class TextCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         override val service = this@TextCmpt
         override val style = GraphicsStyle(service).apply {
             val fontRenderer = Minecraft.getMinecraft().fontRenderer
-            width = InheritSizeMode { fontRenderer.getStringWidth(text) }
-            height = InheritSizeMode { fontRenderer.FONT_HEIGHT }
+            widthCalculator = InheritSizeMode { fontRenderer.getStringWidth(text) }
+            heightCalculator = InheritSizeMode { fontRenderer.FONT_HEIGHT }
         }
 
         override fun render(graphics: GuiGraphics) {

@@ -28,8 +28,8 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
 
     override val service = inventorySlots.document
     override val style = GraphicsStyle(service).apply {
-        width = InheritSizeMode { this@BaseGraphicsClient.width }
-        height = InheritSizeMode { this@BaseGraphicsClient.height }
+        widthCalculator = InheritSizeMode { this@BaseGraphicsClient.width }
+        heightCalculator = InheritSizeMode { this@BaseGraphicsClient.height }
     }
     private val taskList = LinkedList<() -> Unit>()
 

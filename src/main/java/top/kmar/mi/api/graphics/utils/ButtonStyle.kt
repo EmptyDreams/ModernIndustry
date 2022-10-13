@@ -82,8 +82,8 @@ enum class ButtonStyleEnum {
 
             when (style.button.direction) {
                 Direction2DEnum.UP -> {
-                    val width = style.width().minusIf(1) { isEven() }
-                    val height = style.height()
+                    val width = graphics.width.minusIf(1) { isEven() }
+                    val height = graphics.height
                     val x = width.floorDiv2()   // 中央坐标
                     renderHelper(
                         graphics,
@@ -142,8 +142,8 @@ enum class ButtonStyleEnum {
                     }
                 }
                 Direction2DEnum.DOWN -> {
-                    val width = style.width().minusIf(1) { isEven() }
-                    val height = style.height()
+                    val width = graphics.width.minusIf(1) { isEven() }
+                    val height = graphics.height
                     val x = width.floorDiv2()   // 中央坐标
                     renderHelper(
                         graphics,
@@ -206,8 +206,8 @@ enum class ButtonStyleEnum {
                     }
                 }
                 Direction2DEnum.LEFT -> {
-                    val width = style.width()
-                    val height = style.height().minusIf(1) { isEven() }
+                    val width = graphics.width
+                    val height = graphics.height.minusIf(1) { isEven() }
                     val y = height.floorDiv2()
                     renderHelper(
                         graphics,
@@ -257,8 +257,8 @@ enum class ButtonStyleEnum {
                     }
                 }
                 Direction2DEnum.RIGHT -> {
-                    val width = style.width()
-                    val height = style.height().minusIf(1) { isEven() }
+                    val width = graphics.width
+                    val height = graphics.height.minusIf(1) { isEven() }
                     val y = height.floorDiv2()
                     renderHelper(
                         graphics,

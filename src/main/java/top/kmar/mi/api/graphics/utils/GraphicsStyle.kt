@@ -21,8 +21,33 @@ open class GraphicsStyle(
     private val cmpt: Cmpt
 ) {
 
-    var width: ISizeMode = FixedSizeMode.defaultValue
-    var height: ISizeMode = FixedSizeMode.defaultValue
+    val width: Int
+        get() {
+            val parent: Cmpt
+            if (widthCalculator.relyOnParent) {
+                var dist = cmpt
+                while (dist.client.style.widthCalculator.relyOnChild) {
+                    dist = dist.parent
+                }
+                parent = dist
+            } else parent = cmpt.parent
+            return widthCalculator(parent.client.style)
+        }
+    val height: Int
+        get() {
+            val parent: Cmpt
+            if (heightCalculator.relyOnParent) {
+                var dist = cmpt
+                while (dist.client.style.heightCalculator.relyOnChild) {
+                    dist = dist.parent
+                }
+                parent = dist
+            } else parent = cmpt.parent
+            return heightCalculator(parent.client.style)
+        }
+
+    var widthCalculator: ISizeMode = AutoSizeMode(cmpt) { it.width }
+    var heightCalculator: ISizeMode = AutoSizeMode(cmpt) { it.height }
 
     /** 颜色 */
     var color = IntColor.black
@@ -56,10 +81,10 @@ open class GraphicsStyle(
 
     /** 控件占用空间宽度 */
     val spaceWidth: Int
-        get() = width() + marginLeft + marginRight
+        get() = width + marginLeft + marginRight
     /** 控件占用控件高度 */
     val spaceHeight: Int
-        get() = height() + marginTop + marginBottom
+        get() = height + marginTop + marginBottom
 
     /** 定位方法 */
     var position = PositionEnum.RELATIVE
@@ -94,14 +119,12 @@ open class GraphicsStyle(
                 PositionEnum.RELATIVE ->
                     if (left != 0) srcX + left
                     else srcX - right
-
                 PositionEnum.ABSOLUTE ->
                     if (left != 0) parentStyle.left + left
-                    else parentStyle.endX - width() - right
-
+                    else parentStyle.endX - width - right
                 PositionEnum.FIXED ->
                     if (left != 0) left
-                    else (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client.width - width() - right
+                    else (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client.width - width - right
             }
         }
     /** 控件Y坐标，相对于窗体 */
@@ -112,27 +135,25 @@ open class GraphicsStyle(
                 PositionEnum.RELATIVE ->
                     if (top != 0) srcY + top
                     else srcY - bottom
-
                 PositionEnum.ABSOLUTE ->
                     if (top != 0) parentStyle.top + top
-                    else parentStyle.endY - height() - bottom
-
+                    else parentStyle.endY - height - bottom
                 PositionEnum.FIXED ->
                     if (top != 0) top
-                    else (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client.height - height() - right
+                    else (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client.height - height - right
             }
         }
     val endX: Int
-        get() = x + width()
+        get() = x + width
     val endY: Int
-        get() = y + height()
+        get() = y + height
 
     val parentStyle: GraphicsStyle
         get() = cmpt.parent.client.style
 
     /** 返回控件所占区域 */
     val area: Rect2D
-        get() = Rect2D(x, y, width(), height())
+        get() = Rect2D(x, y, width, height)
 
     private var xPosChange = true
     // Y轴分组数据

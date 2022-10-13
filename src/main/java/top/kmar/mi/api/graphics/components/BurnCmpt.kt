@@ -52,8 +52,8 @@ class BurnCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
         override val service = this@BurnCmpt
         override val style = GraphicsStyle(service).apply {
-            width = FixedSizeMode(14)
-            height = FixedSizeMode(13)
+            widthCalculator = FixedSizeMode(14)
+            heightCalculator = FixedSizeMode(13)
         }
 
         override fun receive(message: IDataReader) {

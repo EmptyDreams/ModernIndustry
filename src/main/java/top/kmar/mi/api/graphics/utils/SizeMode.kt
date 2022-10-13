@@ -2,14 +2,24 @@
 
 package top.kmar.mi.api.graphics.utils
 
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
+import top.kmar.mi.api.graphics.components.interfaces.Cmpt
+
 /**
  * 控件尺寸
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 interface ISizeMode {
 
+    /** 尺寸计算是否依赖父节点 */
+    val relyOnParent: Boolean
+    /** 尺寸计算是否依赖子节点 */
+    val relyOnChild: Boolean
+
     /** 获取尺寸 */
-    operator fun invoke(): Int
+    operator fun invoke(dist: GraphicsStyle): Int
 
 }
 
@@ -17,17 +27,18 @@ interface ISizeMode {
  * 固定尺寸
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 class FixedSizeMode(
     val value: Int
 ) : ISizeMode {
 
-    override fun invoke() = value
+    override val relyOnParent = false
+    override val relyOnChild = false
 
-    companion object {
-
-        val defaultValue = FixedSizeMode(0)
-
-    }
+    /**
+     * @param dist 当前节点的父节点样式表
+     */
+    override fun invoke(dist: GraphicsStyle) = value
 
 }
 
@@ -35,13 +46,17 @@ class FixedSizeMode(
  * 百分比尺寸
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 class PercentSizeMode(
     val value: Double,
     val plus: Int,
-    val parentSize: () -> Int
+    val parentSize: (GraphicsStyle) -> Int
 ): ISizeMode {
 
-    override fun invoke() = (value * parentSize()).toInt() + plus
+    override val relyOnParent = true
+    override val relyOnChild = false
+
+    override fun invoke(dist: GraphicsStyle) = (value * parentSize(dist)).toInt() + plus
 
 }
 
@@ -49,10 +64,32 @@ class PercentSizeMode(
  * 继承尺寸
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 class InheritSizeMode(
-    val parentSize: () -> Int
+    val parentSize: (GraphicsStyle) -> Int
 ): ISizeMode {
 
-    override fun invoke() = parentSize()
+    override val relyOnParent = true
+    override val relyOnChild = false
+
+    override fun invoke(dist: GraphicsStyle) = parentSize(dist)
+
+}
+
+/**
+ * 根据子节点确定该节点尺寸
+ * @author EmptyDreams
+ */
+@SideOnly(Side.CLIENT)
+class AutoSizeMode(
+    val cmpt: Cmpt,
+    val getSize: (GraphicsStyle) -> Int
+) : ISizeMode {
+
+    override val relyOnParent = false
+    override val relyOnChild = true
+
+    override fun invoke(dist: GraphicsStyle) =
+        cmpt.childrenStream().map { it.client.style }.mapToInt { getSize(it) }.sum()
 
 }

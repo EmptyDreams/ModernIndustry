@@ -2,6 +2,7 @@
 
 package top.kmar.mi.api.graphics.utils
 
+import top.kmar.mi.api.utils.floorDiv2
 import java.util.*
 
 /**
@@ -26,7 +27,7 @@ enum class HorizontalAlignModeEnum {
             callback: (GraphicsStyle, Int) -> Unit
         ) {
             val size = list.stream().mapToInt { it.spaceWidth }.sum()
-            val base = parentStyle.x + (parentStyle.width() - size).shr(1)
+            val base = parentStyle.x + (parentStyle.width - size).floorDiv2()
             callbackHelper(base, list, callback)
         }
 
@@ -104,7 +105,7 @@ enum class VerticalAlignModeEnum {
                 style.stream().mapToInt { it.spaceHeight }.max().orElse(0)
             }.toArray()
             val size = heightList.sum()
-            val base = parentStyle.y + (parentStyle.height() - size).shr(1)
+            val base = parentStyle.y + (parentStyle.height - size).floorDiv2()
             callbackHelper(base, list, heightList, callback)
         }
     },

@@ -34,18 +34,18 @@ class BackgroundCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
 
         override fun render(graphics: GuiGraphics) {
-            with(style) {
-                graphics.fillRect(3, 3, width() - 6, height() - 6, color)
+            with(graphics) {
+                fillRect(3, 3, width - 6, height - 6, style.color)
+                renderBorder(this)
+                renderBackground(this)
+                renderChildren(this)
             }
-            renderBorder(graphics)
-            renderBackground(graphics)
-            renderChildren(graphics)
         }
 
         override fun renderBackground(graphics: GuiGraphics) {
             val background = style.backgroundColor
-            val width = style.width()
-            val height = style.height()
+            val width = graphics.width
+            val height = graphics.height
             with(graphics) {
                 // 上边框
                 fillRect(3, 0, width - 7, 2, background)
@@ -73,8 +73,8 @@ class BackgroundCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             val borderRight = style.borderRight.color
             val borderBottom = style.borderBottom.color
             val borderLeft = style.borderLeft.color
-            val width = style.width()
-            val height = style.height()
+            val width = graphics.width
+            val height = graphics.height
             with(graphics) {
                 fillRect(1, 2, width - 5, 3, borderTop)
                 fillRect(width - 4, 5, 3, height - 7, borderRight)

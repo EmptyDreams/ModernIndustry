@@ -76,8 +76,8 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
         override val service = this@BackpackCmpt
         override val style = GraphicsStyle(service).apply {
             position = PositionEnum.ABSOLUTE
-            width = InheritSizeMode { service.parent.client.style.width() }
-            height = FixedSizeMode(18 * 4 + 4 + Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 1)
+            widthCalculator = InheritSizeMode { it.width }
+            heightCalculator = FixedSizeMode(18 * 4 + 4 + Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 1)
             bottom = 7
             backgroundColor = IntColor.gray
             borderTop.color = IntColor(55, 55, 55)
@@ -88,7 +88,7 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
 
         override fun render(graphics: GuiGraphics) {
             val firstSlot = mainSlots[0][0]
-            val offsetX = (style.width() - (18 * 9)) shr 1
+            val offsetX = (graphics.width - (18 * 9)) shr 1
             val fontHeight = graphics.fontRenderer.FONT_HEIGHT + 1
             val startX = offsetX + style.x + 1
             val startY = style.y + 1 + fontHeight

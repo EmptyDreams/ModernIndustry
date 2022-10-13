@@ -28,8 +28,8 @@ class MaskCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             backgroundColor = IntColor(0, 0, 0, 120)
             position = PositionEnum.FIXED
             val container = (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client
-            width = InheritSizeMode { container.width }
-            height = InheritSizeMode { container.height }
+            widthCalculator = InheritSizeMode { container.width }
+            heightCalculator = InheritSizeMode { container.height }
         }
 
     }

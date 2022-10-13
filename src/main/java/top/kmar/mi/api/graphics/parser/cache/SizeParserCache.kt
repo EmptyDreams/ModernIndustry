@@ -27,7 +27,7 @@ class SizeParserCache(exp: String, isHeight: Boolean) : IParserCache {
         // 通过此举避免每次生成ISizeMode时都重新解析一遍字符串
         if (endsWith('%')) {  // 如果字符串格式为“num%”
             val percent = substring(0 until length - 1).toDouble() * 0.01
-            return@run { PercentSizeMode(percent, 0) { it() } }
+            return@run { PercentSizeMode(percent, 0) { style -> it(style) } }
         } else if (this[0].isDigit()) {    // 如果字符串格式为“num”
             return@run { FixedSizeMode(toInt()) }
         } else {    // 如果字符串格式为“calc(num%[+-]num)”
@@ -35,19 +35,19 @@ class SizeParserCache(exp: String, isHeight: Boolean) : IParserCache {
             val mid = substring(5 until length - 1)
             // 如果没有写+-号就直接返回，即格式为：“calc(num%)”
             if (mid.endsWith('%'))
-                return@run { PercentSizeMode(mid.toDouble() * 0.01, 0) { it() } }
+                return@run { PercentSizeMode(mid.toDouble() * 0.01, 0) { style -> it(style) } }
             val index = mid.indexOfFirst { it == '-' || it == '+' }
             val percent = mid.substring(0 until index - 1).toDouble() * 0.01    // 获取百分号左边的数字
             val plus = mid.substring(index).toInt() // 获取百分号右边的数字
-            return@run { PercentSizeMode(percent, plus) { it() } }
+            return@run { PercentSizeMode(percent, plus) { style -> it(style) } }
         }
     }
 
     private val setter: (GraphicsStyle) -> Unit = task.run {
         if (isHeight) {
-            return@run { it.height = this(it.parentStyle.height) }
+            return@run { it.heightCalculator = this(it.parentStyle.heightCalculator) }
         } else {
-            return@run { it.width = this(it.parentStyle.width) }
+            return@run { it.widthCalculator = this(it.parentStyle.widthCalculator) }
         }
     }
 
