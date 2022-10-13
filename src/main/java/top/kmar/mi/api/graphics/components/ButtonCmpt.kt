@@ -2,6 +2,7 @@ package top.kmar.mi.api.graphics.components
 
 import net.minecraft.client.Minecraft
 import net.minecraft.client.audio.PositionedSoundRecord.getMasterRecord
+import net.minecraft.client.resources.I18n
 import net.minecraft.init.SoundEvents
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
@@ -61,9 +62,14 @@ class ButtonCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             with(graphics) {
                 style.button.render(this, mouseOn)
                 if (style.button.style == ButtonStyleEnum.RECT) renderBorder(this)
+                val text = attributes["value", ""].run {
+                    if (startsWith("i18n:", true)) {
+                        I18n.format(substring(5))
+                    } else this
+                }
                 drawStringCenter(
                     width.floorDiv2(), height.floorDiv2(),
-                    attributes["value", ""], style.fontColor
+                    text, style.fontColor
                 )
                 renderChildren(this)
             }
