@@ -5,6 +5,7 @@ import net.minecraftforge.common.crafting.CraftingHelper
 import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.ModContainer
 import org.apache.commons.io.FilenameUtils
+import top.kmar.mi.api.exception.TransferException
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.GuiLoader
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
@@ -56,12 +57,12 @@ object GuiFileParser {
         var preEle: Cmpt = root
         var preLevel = -1
         var client = false
-        Files.lines(path).forEachOrdered { content ->
+        fun parseLine(content: String) {
             if (content.startsWith('@')) {
                 if (content == "@client") client = true
                 else if (key != null) throw IllegalArgumentException("同一个文件中出现了多次@语句")
                 else key = ResourceLocation(content.substring(1))
-                return@forEachOrdered
+                return
             }
             // 构建Cmpt对象
             val (index0, length) = content.countStartSpace()
@@ -86,6 +87,13 @@ object GuiFileParser {
             preEle = cmptObj
             preLevel = level
         }
+        Files.lines(path).forEachOrdered {
+            try {
+                parseLine(it)
+            } catch (e: Exception) {
+                throw TransferException.instance("当前行内容：$it", e)
+            }
+        }
         ++count
         if (client) register.registryClient(key!!, root)
         else register.registry(key!!, root)
@@ -103,7 +111,7 @@ object GuiFileParser {
     /** 获取字符串中的ID */
     private fun String.getID(start: Int, tag: String): PairIntObj<String> {
         if (length == start || this[start] != '#') return PairIntObj(start, tag)
-        for (i in start until length) {
+        for (i in start + 1 until length) {
             if (!this[i].isLetter() && this[i] != '-')
                 return PairIntObj(i, substring(start + 1 until i))
         }
