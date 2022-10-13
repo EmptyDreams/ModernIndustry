@@ -129,7 +129,10 @@ object GuiFileParser {
             .forEach {
                 val mid = it.indexOf('=')
                 val key = it.substring(0 until mid)
-                result[key] = it.substring(mid + 1)
+                val text = if (it[mid + 1] == '"')
+                                it.substring(mid + 2 until it.length - 1)
+                            else it.substring(mid + 1)
+                result[key] = text
             }
         return result
     }
