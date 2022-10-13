@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package top.kmar.mi.api.graphics.utils
 
 import net.minecraft.util.ResourceLocation
@@ -48,6 +46,7 @@ enum class ButtonStyleEnum {
                 val startY = style.borderLeft.weight
                 val endX = graphics.width - style.borderRight.weight
                 val endY = graphics.height - style.borderBottom.weight
+                bindTexture(textureLib)
                 // 绘制中央材质
                 for (y in startX until endY step rectSize) {
                     for (x in startY until endX step rectSize) {
