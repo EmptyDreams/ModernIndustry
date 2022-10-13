@@ -13,6 +13,7 @@ import top.kmar.mi.api.graphics.BaseGraphicsClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
 import top.kmar.mi.api.utils.data.math.Rect2D
+import kotlin.math.max
 
 /**
  * 画笔
@@ -173,8 +174,8 @@ class GuiGraphics(
         val scaleViewY = mc.displayHeight / res.scaledHeight_double
         val realX = ((x + container.guiLeft) * scaleViewX).toInt()
         val realY = (mc.displayHeight - (y + container.guiTop + height) * scaleViewY).toInt()
-        val realWidth = if (width > 0) (width * scaleViewX).toInt() else -1
-        val realHeight = if (height > 0) (height * scaleViewY).toInt() else -1
+        val realWidth = max((width * scaleViewX).toInt(), 0)
+        val realHeight = max((height * scaleViewY).toInt(), 0)
         Rect2D(realX, realY, realWidth, realHeight)
     }
 

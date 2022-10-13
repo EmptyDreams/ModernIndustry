@@ -47,7 +47,10 @@ interface CmptClient {
             val client = it.client
             val style = client.style
             if (!style.display.isDisplay()) return@eachAllChildren
-            val g = graphics.createGraphics(style.x, style.y, style.width(), style.height())
+            val width = style.width()
+            val height = style.height()
+            if (width <= 0 || height <= 0) return@eachAllChildren
+            val g = graphics.createGraphics(style.x, style.y, width, height)
             if (style.overflowHidden) g.scissor()
             client.render(g)
             if (style.overflowHidden) g.unscissor()

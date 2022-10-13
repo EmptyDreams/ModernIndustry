@@ -43,7 +43,6 @@ enum class ButtonStyleEnum {
             val rectSize = 15
             with(graphics) {
                 if (!style.overflowHidden) scissor()
-                bindTexture(textureLib)
                 // 中央区域坐标
                 val startX = style.borderTop.weight
                 val startY = style.borderLeft.weight
