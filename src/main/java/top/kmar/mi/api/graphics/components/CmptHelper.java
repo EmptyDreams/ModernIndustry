@@ -18,8 +18,8 @@ final class CmptHelper {
     @SideOnly(Side.CLIENT)
     static void updateSlotInfo(CmptClient client, IGraphicsSlot slot) {
         GraphicsStyle style = client.getStyle();
-        int x = style.getX() + (style.getWidth().invoke() >> 1) + style.getBorderLeft().getWeight() - 9;
-        int y = style.getY() + (style.getHeight().invoke() >> 1) + style.getBorderTop().getWeight() - 9;
+        int x = style.getX() + (style.getWidth() >> 1) + style.getBorderLeft().getWeight() - 9;
+        int y = style.getY() + (style.getHeight() >> 1) + style.getBorderTop().getWeight() - 9;
         if (x == slot.getXPos() && y == slot.getYPos()) return;
         IDataOperator operator = new ByteDataOperator(4);
         operator.writeVarInt(x);
