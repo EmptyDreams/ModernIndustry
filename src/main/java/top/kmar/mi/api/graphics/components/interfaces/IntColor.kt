@@ -84,7 +84,7 @@ fun IntColor(exp: String): IntColor {
     } else if (exp.startsWith("rgb(")) {
         val rgb = exp
             .substring(4 until exp.length - 1)
-            .split(Regex("""(\s*)|,"""))
+            .split(Regex("""(\s)|,"""))
             .stream()
             .filter { it.isNotBlank() }
             .toList()
@@ -93,7 +93,7 @@ fun IntColor(exp: String): IntColor {
     } else if (exp.startsWith("rgba(")) {
         val rgba = exp
             .substring(4 until exp.length - 1)
-            .split(Regex("""(\s*)|,"""))
+            .split(Regex("""(\s)|,"""))
             .stream()
             .filter { it.isNotBlank() }
             .toList()

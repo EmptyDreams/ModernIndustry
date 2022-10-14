@@ -72,7 +72,7 @@ class ProgressParserCache(key: String, value: String) : IParserCache {
             { it.progress.minWidth = number }
         }
         8 + 3 -> {      // min
-            val args = value.split(Regex("""\s*""")).stream().mapToInt { it.toInt() }.toArray()
+            val args = value.split(Regex("""\s""")).stream().mapToInt { it.toInt() }.toArray()
             if (args.size != 2) throw IllegalArgumentException("不合法的进度条尺寸表达式：$key = $value");
             {
                 it.progress.minWidth = args[0]

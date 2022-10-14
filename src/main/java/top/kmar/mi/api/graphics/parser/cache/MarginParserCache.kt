@@ -23,21 +23,32 @@ class MarginParserCache(key: String, value: String) : IParserCache {
 
     private val task: (GraphicsStyle) -> Unit = value.run {
         if (key == "margin") {
-            val args = value.split(Regex("""\s*"""))
+            val args = value.split(Regex("""\s"""))
                 .stream().filter { it.isNotBlank() }.mapToInt { it.toInt() }.toArray()
-            if (args.size == 4) {
-                return@run {
-                    it.marginTop = args[0]
-                    it.marginRight = args[1]
-                    it.marginBottom = args[2]
-                    it.marginLeft = args[3]
+            when (args.size) {
+                4 -> {
+                    return@run {
+                        it.marginTop = args[0]
+                        it.marginRight = args[1]
+                        it.marginBottom = args[2]
+                        it.marginLeft = args[3]
+                    }
                 }
-            } else if (args.size == 2) {
-                return@run {
-                    it.marginTop = args[0]
-                    it.marginBottom = args[0]
-                    it.marginRight = args[1]
-                    it.marginLeft = args[1]
+                2 -> {
+                    return@run {
+                        it.marginTop = args[0]
+                        it.marginBottom = args[0]
+                        it.marginRight = args[1]
+                        it.marginLeft = args[1]
+                    }
+                }
+                1 -> {
+                    return@run {
+                        it.marginTop = args[0]
+                        it.marginBottom = args[0]
+                        it.marginRight = args[0]
+                        it.marginLeft = args[0]
+                    }
                 }
             }
         } else {

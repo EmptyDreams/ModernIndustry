@@ -25,7 +25,7 @@ import kotlin.streams.toList
 class BorderParserCache(key: String, value: String) : IParserCache {
 
     val task: (GraphicsStyle) -> Unit = value.run {
-        val args = split(Regex("""\s*""")).stream().filter { it.isNotBlank() }.toList()
+        val args = split(Regex("""\s""")).stream().filter { it.isNotBlank() }.toList()
         when (key) {
             "border" -> {
                 val colors = args.map { IntColor(it) }

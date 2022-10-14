@@ -26,7 +26,7 @@ class AlignParserCache(key: String, value: String) : IParserCache {
 
     private val task: (GraphicsStyle) -> Unit = when (key) {
         "align" -> {
-            val args = value.split(Regex("""\s*""")).filter { it.isNotBlank() }
+            val args = value.split(Regex("""\s""")).filter { it.isNotBlank() }
             if (args.size != 2) throw IllegalArgumentException("不合法的排版表达式：$key = $value")
             val vertical = when (args[0]) {
                 "top" -> VerticalAlignModeEnum.TOP
