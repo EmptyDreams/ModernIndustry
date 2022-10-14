@@ -42,7 +42,7 @@ open class GraphicsStyle(
             if (field != -1) return field
             val parent: Cmpt
             if (heightCalculator.relyOnParent) {
-                var dist = cmpt
+                var dist = cmpt.parent
                 while (dist.client.style.heightCalculator.relyOnChild) {
                     dist = dist.parent
                 }
