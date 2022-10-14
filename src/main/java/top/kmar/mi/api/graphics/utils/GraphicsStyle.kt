@@ -22,8 +22,9 @@ open class GraphicsStyle(
     private val cmpt: Cmpt
 ) {
 
-    val width: Int
+    var width: Int = -1
         get() {
+            if (field != -1) return field
             val parent: Cmpt
             if (widthCalculator.relyOnParent) {
                 var dist = cmpt.parent
@@ -32,10 +33,13 @@ open class GraphicsStyle(
                 }
                 parent = dist
             } else parent = cmpt.parent
-            return widthCalculator(parent.client.style)
+            field = widthCalculator(parent.client.style)
+            return field
         }
-    val height: Int
+        private set
+    var height: Int = -1
         get() {
+            if (field != -1) return field
             val parent: Cmpt
             if (heightCalculator.relyOnParent) {
                 var dist = cmpt
@@ -44,19 +48,31 @@ open class GraphicsStyle(
                 }
                 parent = dist
             } else parent = cmpt.parent
-            return heightCalculator(parent.client.style)
+            field = heightCalculator(parent.client.style)
+            return field
         }
+        private set
     /** 子控件的宽度 */
-    val childrenWidth: Int
-        get() = groupCache().stream()
-            .mapToInt { it.stream().mapToInt { style -> style.width }.sum() }
-            .max()
-            .orElse(0)
+    var childrenWidth: Int = -1
+        get() {
+            if (field != -1) return field
+            field = groupCache().stream()
+                .mapToInt { it.stream().mapToInt { style -> style.width }.sum() }
+                .max()
+                .orElse(0)
+            return field
+        }
+        private set
     /** 子控件高度 */
-    val childrenHeight: Int
-        get() = groupCache().stream()
-            .mapToInt { it.stream().mapToInt { style -> style.height }.max().orElse(0) }
-            .sum()
+    var childrenHeight: Int = -1
+        get() {
+            if (field != -1) return field
+            field = groupCache().stream()
+                .mapToInt { it.stream().mapToInt { style -> style.height }.max().orElse(0) }
+                .sum()
+            return field
+        }
+        private set
 
     var widthCalculator: ISizeMode = AutoSizeMode(cmpt, false)
     var heightCalculator: ISizeMode = AutoSizeMode(cmpt, true)
@@ -126,7 +142,6 @@ open class GraphicsStyle(
     /** 控件X坐标，相对于窗体 */
     val x: Int
         get() {
-            alignChildren()
             return when (position) {
                 PositionEnum.RELATIVE ->
                     if (left != 0) srcX + left
@@ -142,7 +157,6 @@ open class GraphicsStyle(
     /** 控件Y坐标，相对于窗体 */
     val y: Int
         get() {
-            alignChildren()
             return when (position) {
                 PositionEnum.RELATIVE ->
                     if (top != 0) srcY + top
@@ -195,12 +209,16 @@ open class GraphicsStyle(
     /** 标记X轴方向坐标变化 */
     fun markXChange() {
         xPosChange = true
+        width = -1
+        childrenWidth = -1
     }
 
     /** 标记Y轴方向坐标变化 */
     fun markYChange() {
-        groupCache.clear()
         yPosChange = true
+        groupCache.clear()
+        height = -1
+        childrenHeight = -1
     }
 
     /** 标记X及Y轴方向坐标变化 */
@@ -225,6 +243,9 @@ open class GraphicsStyle(
                 .map { it.client.style }
                 .filter { it.display.isDisplay() }
                 .forEach { it.markXChange() }
+        }
+        for (it in cmpt.childrenIterator()) {
+            it.client.style.alignChildren()
         }
     }
 

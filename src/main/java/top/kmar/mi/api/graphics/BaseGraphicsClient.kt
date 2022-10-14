@@ -92,9 +92,9 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
         if (width == 0) return
+        super.drawScreen(mouseX, mouseY, partialTicks)
         activeMouseMoveEvent(mouseX, mouseY)
         activeMouseScrollEvent(mouseX, mouseY)
-        super.drawScreen(mouseX, mouseY, partialTicks)
         renderHoveredToolTip(mouseX, mouseY)
     }
 
