@@ -22,9 +22,9 @@ import top.kmar.mi.api.graphics.utils.GraphicsStyle
 class MarginParserCache(key: String, value: String) : IParserCache {
 
     private val task: (GraphicsStyle) -> Unit = value.run {
-        if (this == "margin") {
+        if (key == "margin") {
             val args = value.split(Regex("""\s*"""))
-                .stream().mapToInt { it.toInt() }.toArray()
+                .stream().filter { it.isNotBlank() }.mapToInt { it.toInt() }.toArray()
             if (args.size == 4) {
                 return@run {
                     it.marginTop = args[0]
