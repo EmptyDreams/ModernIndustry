@@ -32,9 +32,8 @@ interface IParserCache {
                 "left" -> LocationParserCache(Direction2DEnum.LEFT, value)
                 "display" -> DisplayParserCache(value)
                 else -> {
-                    @Suppress("SpellCheckingInspection")
                     when {
-                        key.endsWith("olor") -> ColorParserCache(key, value)
+                        key.endsWith("color", true) -> ColorParserCache(key, value)
                         key.startsWith("border") -> BorderParserCache(key, value)
                         key.startsWith("margin") -> MarginParserCache(key, value)
                         key.startsWith("align") -> AlignParserCache(key, value)
