@@ -151,11 +151,12 @@ enum class VerticalAlignModeEnum {
         ) {
             var pos = base
             for ((index, collection) in list.withIndex()) {
+                val height = heightList[index]
                 collection.forEach {
-                    callback(it, pos)
+                    callback(it, pos + (height - it.spaceHeight).floorDiv2())
                     it.markYChange()
                 }
-                pos += heightList[index]
+                pos += height
             }
         }
 
