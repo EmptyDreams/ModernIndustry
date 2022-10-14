@@ -83,13 +83,14 @@ class InheritSizeMode(
 @SideOnly(Side.CLIENT)
 class AutoSizeMode(
     val cmpt: Cmpt,
-    val getSize: (GraphicsStyle) -> Int
+    val isHeight: Boolean
 ) : ISizeMode {
 
     override val relyOnParent = false
     override val relyOnChild = true
 
-    override fun invoke(dist: GraphicsStyle) =
-        cmpt.childrenStream().map { it.client.style }.mapToInt { getSize(it) }.sum()
+    override fun invoke(dist: GraphicsStyle): Int = cmpt.client.style.run {
+        if (isHeight) childrenHeight else childrenWidth
+    }
 
 }

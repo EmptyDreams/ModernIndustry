@@ -26,7 +26,9 @@ enum class HorizontalAlignModeEnum {
             parentStyle: GraphicsStyle, list: LinkedList<GraphicsStyle>,
             callback: (GraphicsStyle, Int) -> Unit
         ) {
-            val size = list.stream().mapToInt { it.spaceWidth }.sum()
+            val size = list.stream().mapToInt {
+                it.spaceWidth
+            }.sum()
             val base = parentStyle.x + (parentStyle.width - size).floorDiv2()
             callbackHelper(base, list, callback)
         }

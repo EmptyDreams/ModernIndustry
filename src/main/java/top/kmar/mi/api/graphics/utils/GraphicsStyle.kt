@@ -8,6 +8,7 @@ import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.utils.WorldUtil
+import top.kmar.mi.api.utils.container.CacheContainer
 import top.kmar.mi.api.utils.data.math.Rect2D
 import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
@@ -45,9 +46,20 @@ open class GraphicsStyle(
             } else parent = cmpt.parent
             return heightCalculator(parent.client.style)
         }
+    /** 子控件的宽度 */
+    val childrenWidth: Int
+        get() = groupCache().stream()
+            .mapToInt { it.stream().mapToInt { style -> style.width }.sum() }
+            .max()
+            .orElse(0)
+    /** 子控件高度 */
+    val childrenHeight: Int
+        get() = groupCache().stream()
+            .mapToInt { it.stream().mapToInt { style -> style.height }.max().orElse(0) }
+            .sum()
 
-    var widthCalculator: ISizeMode = AutoSizeMode(cmpt) { it.width }
-    var heightCalculator: ISizeMode = AutoSizeMode(cmpt) { it.height }
+    var widthCalculator: ISizeMode = AutoSizeMode(cmpt, false)
+    var heightCalculator: ISizeMode = AutoSizeMode(cmpt, true)
 
     /** 颜色 */
     var color = IntColor.black
@@ -156,28 +168,10 @@ open class GraphicsStyle(
         get() = Rect2D(x, y, width, height)
 
     private var xPosChange = true
+    private var yPosChange = true
     // Y轴分组数据
-    private var groupCache: LinkedList<LinkedList<GraphicsStyle>>? = null
-
-    /** 标记X轴方向坐标变化 */
-    fun markXChange() {
-        xPosChange = true
-    }
-
-    /** 标记Y轴方向坐标变化 */
-    fun markYChange() {
-        groupCache = null
-    }
-
-    /** 标记X及Y轴方向坐标变化 */
-    fun markPosChange() {
-        markXChange()
-        markYChange()
-    }
-
-    /** 排列子控件 */
-    fun alignChildren() {
-        val groupList = groupCache ?: LinkedList<LinkedList<GraphicsStyle>>().apply {
+    private val groupCache = CacheContainer {
+        LinkedList<LinkedList<GraphicsStyle>>().apply {
             var prev = DisplayModeEnum.NONE
             cmpt.eachAllChildren {
                 with(it.client.style) {
@@ -195,8 +189,32 @@ open class GraphicsStyle(
                     }
                 }
             }
-            groupCache = this
-            alignVertical(this@GraphicsStyle, this) { it, y -> it.srcY = y + it.marginTop }
+        }
+    }
+
+    /** 标记X轴方向坐标变化 */
+    fun markXChange() {
+        xPosChange = true
+    }
+
+    /** 标记Y轴方向坐标变化 */
+    fun markYChange() {
+        groupCache.clear()
+        yPosChange = true
+    }
+
+    /** 标记X及Y轴方向坐标变化 */
+    fun markPosChange() {
+        markXChange()
+        markYChange()
+    }
+
+    /** 排列子控件 */
+    fun alignChildren() {
+        val groupList = groupCache()
+        if (yPosChange) {
+            yPosChange = false
+            alignVertical(this@GraphicsStyle, groupList) { it, y -> it.srcY = y + it.marginTop }
         }
         if (xPosChange) {
             xPosChange = false
