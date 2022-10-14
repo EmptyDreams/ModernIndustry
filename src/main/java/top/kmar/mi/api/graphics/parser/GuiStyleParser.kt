@@ -65,7 +65,11 @@ object GuiStyleParser {
             val list = LinkedList<IParserCache>()
             for (tmp in obj.getAsJsonArray("value")) {
                 val ele = tmp.asString
-                list.add(IParserCache.build(ele))
+                try {
+                    list.add(IParserCache.build(ele))
+                } catch (e: Exception) {
+                    MISysInfo.err("在处理json文件的该行时遇到错误：$ele", e)
+                }
             }
             result.add(Node(exp, list))
         }
