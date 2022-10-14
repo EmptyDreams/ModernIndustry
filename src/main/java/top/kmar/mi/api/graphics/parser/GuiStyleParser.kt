@@ -4,7 +4,12 @@ import com.google.gson.JsonParser
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import jdk.internal.util.xml.impl.ReaderUTF8
 import net.minecraft.client.Minecraft
+import net.minecraft.command.CommandBase
+import net.minecraft.command.ICommandSender
+import net.minecraft.server.MinecraftServer
 import net.minecraft.util.ResourceLocation
+import net.minecraft.util.text.TextComponentBase
+import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.client.event.ModelBakeEvent
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -78,10 +83,28 @@ object GuiStyleParser {
 
     data class Node(val exp: ComplexCmptExp, val cache: List<IParserCache>)
 
+    // 在切换资源包时清空缓存
     @JvmStatic
     @SubscribeEvent
     fun onResourcesBake(event: ModelBakeEvent) {
         expMap.clear()
+    }
+
+    init {
+        ClientCommandHandler.instance.registerCommand(object : CommandBase() {
+            override fun getName() = "clearMiGraphics"
+
+            override fun getUsage(sender: ICommandSender) = "commands.debug.usage"
+
+            override fun execute(server: MinecraftServer, sender: ICommandSender, args: Array<out String>) {
+                if (args.isEmpty()) expMap.clear()
+                else args.forEach { expMap.remove(ResourceLocation(it)) }
+                sender.sendMessage(object : TextComponentBase() {
+                    override fun getUnformattedComponentText() = "成功清理graphics缓存"
+                    override fun createCopy() = this
+                })
+            }
+        })
     }
 
 }
