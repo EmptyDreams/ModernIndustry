@@ -12,9 +12,9 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.listeners.*
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardPressed
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardReleased
+import top.kmar.mi.api.graphics.utils.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
-import top.kmar.mi.api.graphics.utils.InheritSizeMode
 import top.kmar.mi.api.utils.data.math.Point2D
 import java.util.*
 
@@ -28,8 +28,8 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
 
     override val service = inventorySlots.document
     override val style = GraphicsStyle(service).apply {
-        widthCalculator = InheritSizeMode { this@BaseGraphicsClient.width }
-        heightCalculator = InheritSizeMode { this@BaseGraphicsClient.height }
+        widthCalculator = FixedSizeMode(this@BaseGraphicsClient.width)
+        heightCalculator = FixedSizeMode(this@BaseGraphicsClient.height)
     }
     private val taskList = LinkedList<() -> Unit>()
 

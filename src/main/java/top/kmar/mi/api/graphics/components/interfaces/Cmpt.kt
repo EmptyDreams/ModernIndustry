@@ -11,6 +11,7 @@ import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.components.interfaces.slots.IGraphicsSlot
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
+import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.net.handler.MessageSender
 import top.kmar.mi.api.net.message.graphics.GraphicsAddition
 import top.kmar.mi.api.net.message.graphics.GraphicsMessage
@@ -242,15 +243,20 @@ abstract class Cmpt(
         /** 无效的控件对象 */
         val EMPTY_CMPT = object : Cmpt(CmptAttributes.valueOfID("null")) {
 
-            override fun initClientObj(): CmptClient {
-                throw UnsupportedOperationException()
-            }
+            override fun initClientObj() = EmptyClient(this)
 
             override fun installSlot(slot: IGraphicsSlot): Int {
                 throw NullPointerException("该元素不包含父节点")
             }
 
             override fun buildNewObj() = this
+
+            inner class EmptyClient(cmpt: Cmpt) : CmptClient {
+
+                override val service = cmpt
+                override val style = GraphicsStyle(cmpt)
+
+            }
 
         }
 
