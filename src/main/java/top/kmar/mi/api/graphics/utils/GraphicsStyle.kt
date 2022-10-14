@@ -57,7 +57,7 @@ open class GraphicsStyle(
         get() {
             if (field != -1) return field
             field = groupCache().stream()
-                .mapToInt { it.stream().mapToInt { style -> style.width }.sum() }
+                .mapToInt { it.stream().mapToInt { style -> style.spaceWidth }.sum() }
                 .max()
                 .orElse(0)
             return field
@@ -68,7 +68,7 @@ open class GraphicsStyle(
         get() {
             if (field != -1) return field
             field = groupCache().stream()
-                .mapToInt { it.stream().mapToInt { style -> style.height }.max().orElse(0) }
+                .mapToInt { it.stream().mapToInt { style -> style.spaceHeight }.max().orElse(0) }
                 .sum()
             return field
         }
