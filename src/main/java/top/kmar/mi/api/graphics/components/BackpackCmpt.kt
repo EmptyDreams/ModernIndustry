@@ -88,7 +88,7 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
 
         override fun render(graphics: GuiGraphics) {
             val firstSlot = mainSlots[0][0]
-            val offsetX = (graphics.width - (18 * 9)) shr 1
+            val offsetX = (style.width - (18 * 9)) shr 1
             val fontHeight = graphics.fontRenderer.FONT_HEIGHT + 1
             val startX = offsetX + style.x + 1
             val startY = style.y + 1 + fontHeight

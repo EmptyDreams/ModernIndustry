@@ -47,12 +47,12 @@ enum class ProgressBarStyle {
             with(style) {
                 if (progress.direction.isVertical()) {
                     renderHelper(
-                        graphics, percent, graphics.width, graphics.height, progress.minWidth,
+                        graphics, percent, width, height, progress.minWidth,
                         progress.direction, backgroundColor, color
                     )
                 } else {
                     renderHelper(
-                        graphics, percent, graphics.width, graphics.height, progress.minHeight,
+                        graphics, percent, width, height, progress.minHeight,
                         progress.direction, backgroundColor, color
                     )
                 }
@@ -169,18 +169,19 @@ enum class ProgressBarStyle {
     RECT {
         override fun render(graphics: GuiGraphics, style: GraphicsStyle, percent: Float) {
             with(style) {
-                if (progress.direction.isVertical())
+                if (progress.direction.isVertical()) {
                     renderHelper(
-                        graphics, percent, graphics.height, graphics.width, progress.minWidth,
+                        graphics, percent, height, width, progress.minWidth,
                         borderRight, progress.direction,
                         backgroundColor, color
                     )
-                else
+                } else {
                     renderHelper(
-                        graphics, percent, graphics.height, graphics.width, progress.minHeight,
+                        graphics, percent, height, width, progress.minHeight,
                         borderBottom, progress.direction,
                         backgroundColor, color
                     )
+                }
             }
         }
 

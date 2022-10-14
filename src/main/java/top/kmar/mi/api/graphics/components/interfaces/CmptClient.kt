@@ -67,7 +67,7 @@ interface CmptClient {
     /** 渲染背景 */
     fun renderBackground(graphics: GuiGraphics) {
         with(graphics) {
-            fillRect(0, 0, width, height, style.backgroundColor)
+            fillRect(0, 0, style.width, style.height, style.backgroundColor)
         }
     }
 

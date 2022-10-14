@@ -68,7 +68,7 @@ class ButtonCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
                     } else this
                 }
                 drawStringCenter(
-                    width.floorDiv2(), height.floorDiv2(),
+                    style.width.floorDiv2(), style.height.floorDiv2(),
                     text, style.fontColor
                 )
                 renderChildren(this)

@@ -71,9 +71,9 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
                     val textY = when (progress.textLocation) {
                         VerticalDirectionEnum.UP -> y - graphics.fontRenderer.FONT_HEIGHT - 1
                         VerticalDirectionEnum.DOWN -> endY + 1
-                        VerticalDirectionEnum.CENTER -> y + (graphics.height.floorDiv2())
+                        VerticalDirectionEnum.CENTER -> y + (height.floorDiv2())
                     }
-                    val textX = x + (graphics.width.floorDiv2())
+                    val textX = x + (width.floorDiv2())
                     graphics.drawStringCenter(textX, textY, "$progress / $maxProgress", fontColor)
                 }
             }

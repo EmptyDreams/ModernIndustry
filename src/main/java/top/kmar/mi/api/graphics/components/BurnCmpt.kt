@@ -62,6 +62,8 @@ class BurnCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
 
         override fun render(graphics: GuiGraphics) {
+            val width = style.width
+            val height = style.height
             with(graphics) {
                 if (width != 14 || height != 13) MISysInfo.err("[BurnCmpt] 控件仅支持绘制14*13的尺寸")
                 bindTexture(textureLib)
