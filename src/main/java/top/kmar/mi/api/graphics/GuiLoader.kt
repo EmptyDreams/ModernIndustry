@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.ModernIndustry
+import top.kmar.mi.api.event.GuiRegistryFinishedEvent
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.parser.GuiFileParser
 import top.kmar.mi.api.graphics.parser.GuiStyleParser
@@ -32,6 +33,7 @@ object GuiLoader : IGuiHandler {
         val tmpRegedit = GuiRegedit()
         MinecraftForge.EVENT_BUS.post(MIGuiRegistryEvent(tmpRegedit))
         regedit = tmpRegedit
+        MinecraftForge.EVENT_BUS.post(GuiRegistryFinishedEvent())
     }
 
     /** 构建一个服务端的GUI对象 */
