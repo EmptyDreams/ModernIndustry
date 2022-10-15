@@ -33,10 +33,11 @@ interface IParserCache {
                 "display" -> DisplayParserCache(value)
                 else -> {
                     when {
-                        key.endsWith("color", true) -> ColorParserCache(key, value)
+                        key.endsWith("color") -> ColorParserCache(key, value)
                         key.startsWith("border") -> BorderParserCache(key, value)
                         key.startsWith("margin") -> MarginParserCache(key, value)
                         key.startsWith("align") -> AlignParserCache(key, value)
+                        key.startsWith("padding") -> PaddingParserCache(key, value)
                         key.startsWith("progress") -> ProgressParserCache(key, value)
                         key.startsWith("button") -> ButtonParserCache(key, value)
                         else -> throw IllegalArgumentException("未知表达式：$content")

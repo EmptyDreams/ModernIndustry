@@ -17,7 +17,7 @@ enum class HorizontalAlignModeEnum {
             parentStyle: GraphicsStyle, list: LinkedList<GraphicsStyle>,
             callback: (GraphicsStyle, Int) -> Unit
         ) {
-            callbackHelper(parentStyle.x, list, callback)
+            callbackHelper(parentStyle.x + parentStyle.paddingLeft, list, callback)
         }
     },
     /** 居中对齐 */
@@ -29,7 +29,8 @@ enum class HorizontalAlignModeEnum {
             val size = list.stream().mapToInt {
                 it.spaceWidth
             }.sum()
-            val base = parentStyle.x + (parentStyle.width - size).floorDiv2()
+            val base = parentStyle.x + parentStyle.paddingLeft +
+                            (parentStyle.contentWidth - size).floorDiv2()
             callbackHelper(base, list, callback)
         }
 
@@ -40,7 +41,7 @@ enum class HorizontalAlignModeEnum {
             parentStyle: GraphicsStyle, list: LinkedList<GraphicsStyle>,
             callback: (GraphicsStyle, Int) -> Unit
         ) {
-            var pos = parentStyle.endX
+            var pos = parentStyle.endX - parentStyle.paddingRight
             for (style in list.descendingIterator()) {
                 pos -= style.spaceWidth
                 callback(style, pos)
@@ -93,7 +94,7 @@ enum class VerticalAlignModeEnum {
             val heightList = list.stream().mapToInt { style ->
                 style.stream().mapToInt { it.spaceHeight }.max().orElse(0)
             }.toArray()
-            callbackHelper(parentStyle.y, list, heightList, callback)
+            callbackHelper(parentStyle.y + parentStyle.paddingTop, list, heightList, callback)
         }
     },
     /** 居中排列 */
@@ -107,7 +108,8 @@ enum class VerticalAlignModeEnum {
                 style.stream().mapToInt { it.spaceHeight }.max().orElse(0)
             }.toArray()
             val size = heightList.sum()
-            val base = parentStyle.y + (parentStyle.height - size).floorDiv2()
+            val base = parentStyle.y + parentStyle.paddingTop +
+                            (parentStyle.contentHeight - size).floorDiv2()
             callbackHelper(base, list, heightList, callback)
         }
     },
@@ -118,7 +120,7 @@ enum class VerticalAlignModeEnum {
             list: LinkedList<out Collection<GraphicsStyle>>,
             callback: (GraphicsStyle, Int) -> Unit
         ) {
-            var pos = parentStyle.endY
+            var pos = parentStyle.endY - parentStyle.paddingRight
             for (collection in list.descendingIterator()) {
                 pos -= collection.stream().mapToInt { it.spaceHeight }.max().orElse(0)
                 collection.forEach {

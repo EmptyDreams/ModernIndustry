@@ -22,6 +22,7 @@ open class GraphicsStyle(
     private val cmpt: Cmpt
 ) {
 
+    /** 控件宽度（不包括margin） */
     var width: Int = -1
         get() {
             if (field != -1) return field
@@ -37,6 +38,7 @@ open class GraphicsStyle(
             return field
         }
         private set
+    /** 控件高度（不包括margin） */
     var height: Int = -1
         get() {
             if (field != -1) return field
@@ -52,6 +54,18 @@ open class GraphicsStyle(
             return field
         }
         private set
+    /** 控件占用空间宽度 */
+    val spaceWidth: Int
+        get() = width + marginLeft + marginRight
+    /** 控件占用控件高度 */
+    val spaceHeight: Int
+        get() = height + marginTop + marginBottom
+    /** 控件用于显示子控件的区域的宽度 */
+    val contentWidth: Int
+        get() = width - paddingLeft - paddingRight
+    /** 控件用于显示子控件区域的高度 */
+    val contentHeight: Int
+        get() = height - paddingTop - paddingBottom
     /** 子控件的宽度 */
     val childrenWidth: Int
         get() = groupCache().stream()
@@ -92,17 +106,15 @@ open class GraphicsStyle(
     /** 左边距 */
     var marginLeft = 0
 
+    var paddingTop = 0
+    var paddingRight = 0
+    var paddingBottom = 0
+    var paddingLeft = 0
+
     /** 水平对齐方式 */
     var alignHorizontal = HorizontalAlignModeEnum.MIDDLE
     /** 垂直对齐方式 */
     var alignVertical = VerticalAlignModeEnum.MIDDLE
-
-    /** 控件占用空间宽度 */
-    val spaceWidth: Int
-        get() = width + marginLeft + marginRight
-    /** 控件占用控件高度 */
-    val spaceHeight: Int
-        get() = height + marginTop + marginBottom
 
     /** 定位方法 */
     var position = PositionEnum.RELATIVE
