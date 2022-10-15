@@ -36,7 +36,9 @@ class BackgroundCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         override fun render(graphics: GuiGraphics) {
             with(graphics) {
                 fillRect(3, 3, style.width - 6, style.height - 6, style.color)
-                super.render(this)
+                renderBorder(this)
+                renderBackground(this)
+                renderChildren(this)
             }
         }
 
