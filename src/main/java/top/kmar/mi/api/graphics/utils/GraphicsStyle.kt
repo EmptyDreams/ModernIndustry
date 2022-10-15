@@ -53,26 +53,16 @@ open class GraphicsStyle(
         }
         private set
     /** 子控件的宽度 */
-    var childrenWidth: Int = -1
-        get() {
-            if (field != -1) return field
-            field = groupCache().stream()
+    val childrenWidth: Int
+        get() = groupCache().stream()
                 .mapToInt { it.stream().mapToInt { style -> style.spaceWidth }.sum() }
                 .max()
                 .orElse(0)
-            return field
-        }
-        private set
     /** 子控件高度 */
-    var childrenHeight: Int = -1
-        get() {
-            if (field != -1) return field
-            field = groupCache().stream()
+    val childrenHeight: Int
+        get() = groupCache().stream()
                 .mapToInt { it.stream().mapToInt { style -> style.spaceHeight }.max().orElse(0) }
                 .sum()
-            return field
-        }
-        private set
 
     var widthCalculator: ISizeMode = AutoSizeMode(cmpt, false)
     var heightCalculator: ISizeMode = AutoSizeMode(cmpt, true)
@@ -210,7 +200,6 @@ open class GraphicsStyle(
     fun markXChange() {
         xPosChange = true
         width = -1
-        childrenWidth = -1
     }
 
     /** 标记Y轴方向坐标变化 */
@@ -218,7 +207,6 @@ open class GraphicsStyle(
         yPosChange = true
         groupCache.clear()
         height = -1
-        childrenHeight = -1
     }
 
     /** 标记X及Y轴方向坐标变化 */
