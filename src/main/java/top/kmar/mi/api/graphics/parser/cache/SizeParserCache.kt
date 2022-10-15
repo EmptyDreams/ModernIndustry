@@ -13,6 +13,7 @@ import top.kmar.mi.api.utils.removeAllSpace
  * + `[ size ] = num`
  * + `[ size ] = percent%`
  * + `[ size ] = calc(percent% +/- num)`
+ * + `[ size ] = inherit`
  *
  * @author EmptyDreams
  */

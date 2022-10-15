@@ -13,11 +13,11 @@ import kotlin.streams.toList
  *
  * + `border = topAndLeftColor rightAndBottomColor`
  * + `border = topColor rightColor bottomColor leftColor`
- * + `borderWeight = topAndLeftWeight rightAndBottomWeight`
- * + `borderWeight = topWeight rightWeight bottomWeight leftWeight`
- * + `border[ Direction ] = color weight`
- * + `border[ direction ] = color`
- * + `border[ direction ]Weight = weight`
+ * + `border-weight = topAndLeftWeight rightAndBottomWeight`
+ * + `border-weight = topWeight rightWeight bottomWeight leftWeight`
+ * + `border-[ direction ] = color weight`
+ * + `border-[ direction ] = color`
+ * + `border-[ direction ]-eight = weight`
  *
  * @author EmptyDreams
  */
@@ -45,7 +45,7 @@ class BorderParserCache(key: String, value: String) : IParserCache {
                     }
                 }
             }
-            "borderWeight" -> {
+            "border-weight" -> {
                 val weights = args.map { it.toInt() }
                 if (args.size == 4) {
                     return@run {
@@ -64,14 +64,14 @@ class BorderParserCache(key: String, value: String) : IParserCache {
                 }
             }
             else -> {
-                val getBorder = when (key[6]) {
-                    'T' -> { style: GraphicsStyle -> style.borderTop }
-                    'R' -> { style: GraphicsStyle -> style.borderRight }
-                    'B' -> { style: GraphicsStyle -> style.borderBottom }
-                    'L' -> { style: GraphicsStyle -> style.borderLeft }
+                val getBorder = when (key[7]) {
+                    't' -> { style: GraphicsStyle -> style.borderTop }
+                    'r' -> { style: GraphicsStyle -> style.borderRight }
+                    'b' -> { style: GraphicsStyle -> style.borderBottom }
+                    'l' -> { style: GraphicsStyle -> style.borderLeft }
                     else -> throw IllegalArgumentException("不合法的边框表达式：$key = $value")
                 }
-                if (key.endsWith("Weight")) return@run { getBorder(it).weight = toInt() }
+                if (key.endsWith("weight")) return@run { getBorder(it).weight = toInt() }
                 else {
                     val color = IntColor(args[0])
                     if (args.size == 1) return@run { getBorder(it).color = color }

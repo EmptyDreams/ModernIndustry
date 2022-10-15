@@ -11,8 +11,8 @@ import top.kmar.mi.api.graphics.utils.GraphicsStyle
  * 支持以下格式
  *
  * + `color = color`
- * + `backgroundColor = color`
- * + `fontColor = color`
+ * + `background-color = color`
+ * + `font-color = color`
  *
  * 其中，颜色表达式支持以下格式：
  *
@@ -32,10 +32,13 @@ class ColorParserCache(key: String, value: String) : IParserCache {
 
     private val task: (GraphicsStyle) -> Unit = value.run {
         val color = IntColor(this)
-        when (key) {
-            "color" -> return@run { it.color = color }
-            "backgroundColor" -> return@run { it.backgroundColor = color }
-            "fontColor" -> return@run { it.fontColor = color }
+        when (key.length) {
+            // color
+            5 -> return@run { it.color = color }
+            // background-color
+            16 -> return@run { it.backgroundColor = color }
+            // font-color
+            10 -> return@run { it.fontColor = color }
         }
         throw IllegalArgumentException("不合法的颜色表达式：$this")
     }

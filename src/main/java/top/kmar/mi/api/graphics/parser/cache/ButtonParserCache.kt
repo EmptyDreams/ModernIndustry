@@ -11,8 +11,8 @@ import top.kmar.mi.api.utils.data.enums.Direction2DEnum
  *
  * 支持以下格式：
  *
- * + `buttonStyle = style`
- * + `buttonDirection = direction`
+ * + `button-style = style`
+ * + `button-direction = direction`
  *
  * `style`支持：`rect`、`triangle`
  * `direction`支持：`top/up`、`right`、`bottom/down`、`left`
@@ -24,7 +24,7 @@ class ButtonParserCache(key: String, value: String) : IParserCache {
 
     @Suppress("DuplicatedCode")
     private val task: (GraphicsStyle) -> Unit = when (key.length) {
-        6 + 5 -> {      // style
+        7 + 5 -> {      // style
             val style = when (value.length) {
                 4 -> ButtonStyleEnum.RECT
                 8 -> ButtonStyleEnum.TRIANGLE
@@ -32,7 +32,7 @@ class ButtonParserCache(key: String, value: String) : IParserCache {
             }
             { it.button.style = style }
         }
-        6 + 9 -> {     // direction
+        7 + 9 -> {     // direction
             val direction = when (value) {
                 "top", "up" -> Direction2DEnum.UP
                 "right" -> Direction2DEnum.RIGHT

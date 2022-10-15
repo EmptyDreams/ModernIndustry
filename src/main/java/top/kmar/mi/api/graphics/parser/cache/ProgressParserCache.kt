@@ -12,13 +12,13 @@ import top.kmar.mi.api.utils.data.enums.VerticalDirectionEnum
  *
  * 支持以下格式：
  *
- * + `progressDirection = direction`
- * + `progressStyle = style`
- * + `progressText = bool`
- * + `progressTextLocation = vertical`
- * + `progressMinHeight = num`
- * + `progressMinWidth = num`
- * + `progressMin = width height`
+ * + `progress-direction = direction`
+ * + `progress-style = style`
+ * + `progress-text = bool`
+ * + `progress-text-location = vertical`
+ * + `progress-min-height = num`
+ * + `progress-min-width = num`
+ * + `progress-min = width height`
  *
  * 1. `direction`支持：`top/up`、`right`、`bottom/down`、`left`
  * 2. `style`支持：`arrow`、`rect`
@@ -31,8 +31,8 @@ class ProgressParserCache(key: String, value: String) : IParserCache {
 
     @Suppress("DuplicatedCode")
     private val task: (GraphicsStyle) -> Unit = when (key.length) {
-        8 + 9 -> {  // direction or minHeight
-            if (value.endsWith('n')) {
+        9 + 9 -> {  // direction or min-width
+            if (key.endsWith('n')) {
                 val direction = when (value) {
                     "top", "up" -> Direction2DEnum.UP
                     "right" -> Direction2DEnum.RIGHT
@@ -43,10 +43,10 @@ class ProgressParserCache(key: String, value: String) : IParserCache {
                 { it.progress.direction = direction }
             } else {
                 val number = value.toInt();
-                { it.progress.minHeight = number }
+                { it.progress.minWidth = number }
             }
         }
-        8 + 5 -> {     // style
+        9 + 5 -> {     // style
             val style =  when (value.length) {
                 5 -> ProgressBarStyle.ARROW
                 4 -> ProgressBarStyle.RECT
@@ -54,11 +54,11 @@ class ProgressParserCache(key: String, value: String) : IParserCache {
             }
             { it.progress.style = style }
         }
-        8 + 4 -> {      // text
+        9 + 4 -> {      // text
             val bool = value.toBoolean();
             { it.progress.showText = bool }
         }
-        8 + 12 -> {     // textLocation
+        9 + 13 -> {     // text-location
             val direction = when (value) {
                 "top" -> VerticalDirectionEnum.UP
                 "middle" -> VerticalDirectionEnum.CENTER
@@ -67,11 +67,11 @@ class ProgressParserCache(key: String, value: String) : IParserCache {
             }
             { it.progress.textLocation = direction }
         }
-        8 + 8 -> {      // minWidth
+        9 + 10 -> {     // min-height
             val number = value.toInt();
-            { it.progress.minWidth = number }
+            { it.progress.minHeight = number }
         }
-        8 + 3 -> {      // min
+        9 + 3 -> {      // min
             val args = value.split(Regex("""\s""")).stream().mapToInt { it.toInt() }.toArray()
             if (args.size != 2) throw IllegalArgumentException("不合法的进度条尺寸表达式：$key = $value");
             {

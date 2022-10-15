@@ -12,8 +12,8 @@ import top.kmar.mi.api.graphics.utils.VerticalAlignModeEnum
  * 支持以下格式：
  *
  * + `align = vertical horizontal`
- * + `alignHorizontal = horizontal`
- * + `alignVertical = vertical`
+ * + `align-horizontal = horizontal`
+ * + `align-vertical = vertical`
  *
  * 水平对齐方式支持：`left`、`middle`、`right`
  *
@@ -24,8 +24,8 @@ import top.kmar.mi.api.graphics.utils.VerticalAlignModeEnum
 @SideOnly(Side.CLIENT)
 class AlignParserCache(key: String, value: String) : IParserCache {
 
-    private val task: (GraphicsStyle) -> Unit = when (key) {
-        "align" -> {
+    private val task: (GraphicsStyle) -> Unit = when (key.length) {
+        5 -> {      // align
             val args = value.split(Regex("""\s""")).filter { it.isNotBlank() }
             if (args.size != 2) throw IllegalArgumentException("不合法的排版表达式：$key = $value")
             val vertical = when (args[0]) {
@@ -45,7 +45,7 @@ class AlignParserCache(key: String, value: String) : IParserCache {
                 it.alignHorizontal = horizontal
             }
         }
-        "alignHorizontal" -> {
+        16 -> {     // align-horizontal
             val horizontal = when (value.length) {
                 4 -> HorizontalAlignModeEnum.LEFT
                 6 -> HorizontalAlignModeEnum.MIDDLE
@@ -54,7 +54,7 @@ class AlignParserCache(key: String, value: String) : IParserCache {
             }
             { it.alignHorizontal = horizontal }
         }
-        "alignVertical" -> {
+        14 -> {     // align-vertical
             val vertical = when (value) {
                 "top" -> VerticalAlignModeEnum.TOP
                 "middle" -> VerticalAlignModeEnum.MIDDLE
