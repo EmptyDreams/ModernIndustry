@@ -69,38 +69,43 @@ object GuiStyleParser {
             var preLevel = -1
             val valueList = LinkedList<IParserCache>()
             var prevContent = ""
+
+            fun export(clear: Boolean) {
+                if (valueList.isEmpty()) return
+                val tmp = ArrayList(valueList)
+                builder.toExp { result.add(Node(it, tmp)) }
+                if (clear) valueList.clear()
+            }
+
             reader.lines().filter { it.isNotBlank() }.forEachOrdered {  content ->
                 val (_, length) = content.countStartSpace()
                 val level = length.floorDiv2()
                 // 判断上一条语句是属性还是exp
                 if (!endWithContinue && level <= preLevel) {
                     valueList.add(IParserCache.build(prevContent.trim()))
-                } else {
-                    if (valueList.isNotEmpty()) {
-                        val tmp = ArrayList(valueList)
-                        builder.toExp { result.add(Node(it, tmp)) }
-                        valueList.clear()
+                    if (level != preLevel) {
+                        export(true)
+                        for (i in 0 until preLevel - level)
+                            builder.prev()
                     }
+                } else {
+                    export(true)
                     val text = prevContent.trimEnd()
                     endWithContinue = text.endsWith(',')
                     if (level > preLevel) {
                         for (i in 0 until level - preLevel)
                             builder.next()
-                    } else if (level < preLevel) {
-                        for (i in 0 until preLevel - level)
-                            builder.prev()
                     }
-                    preLevel = level
                     text.split(',')
                         .filter { it.isNotBlank() }
                         .map { ComplexCmptExp(it) }
                         .forEach { builder.addExp(it) }
                 }
+                preLevel = level
                 prevContent = content
             }
             valueList.add(IParserCache.build(prevContent.trim()))
-            val tmp = ArrayList(valueList)
-            builder.toExp { result.add(Node(it, tmp)) }
+            export(false)
         }
         return result
     }
