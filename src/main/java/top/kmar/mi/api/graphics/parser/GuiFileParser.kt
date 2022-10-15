@@ -3,7 +3,8 @@ package top.kmar.mi.api.graphics.parser
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.crafting.CraftingHelper
 import net.minecraftforge.fml.common.Loader
-import net.minecraftforge.fml.common.ModContainer
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.apache.commons.io.FilenameUtils
 import top.kmar.mi.api.exception.TransferException
 import top.kmar.mi.api.graphics.BaseGraphics
@@ -22,33 +23,33 @@ import java.nio.file.Path
  * `mig`文件解析器
  * @author EmptyDreams
  */
+@EventBusSubscriber
 object GuiFileParser {
 
     private var count = 0
-
-    init {
-        Loader.instance().activeModList.forEach { parseFiles(it) }
-    }
 
     fun printCount() {
         MISysInfo.print("[GuiFileParser] 注册 $count 个GUI对象")
     }
 
-    fun parseFiles(mod: ModContainer) {
-        val register = GuiLoader.MIGuiRegistryEvent()
-        CraftingHelper.findFiles(
-            mod, "assets/${mod.modId}/gui/mig", { true },
-            { root, file ->
-                Loader.instance().setActiveModContainer(mod)
-                val relative = root.relativize(file).toString()
-                if ("mig" != FilenameUtils.getExtension(relative)) return@findFiles true
-                try {
-                    parseTargetFile(file, register)
-                } catch (e: Exception) {
-                    MISysInfo.err("处理目标文件[$relative]时发生异常", e)
-                }
-                true
-            }, true, true)
+    @JvmStatic
+    @SubscribeEvent
+    fun registryAll(event: GuiLoader.MIGuiRegistryEvent) {
+        Loader.instance().activeModList.forEach { mod ->
+            CraftingHelper.findFiles(
+                mod, "assets/${mod.modId}/gui/mig", { true },
+                { root, file ->
+                    Loader.instance().setActiveModContainer(mod)
+                    val relative = root.relativize(file).toString()
+                    if ("mig" != FilenameUtils.getExtension(relative)) return@findFiles true
+                    try {
+                        parseTargetFile(file, event)
+                    } catch (e: Exception) {
+                        MISysInfo.err("处理目标文件[$relative]时发生异常", e)
+                    }
+                    true
+                }, true, true)
+        }
     }
 
     private fun parseTargetFile(path: Path, register: GuiLoader.MIGuiRegistryEvent) {

@@ -3,10 +3,7 @@ package top.kmar.mi.api.graphics
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Container
 import net.minecraft.item.ItemStack
-import net.minecraft.util.math.BlockPos
 import net.minecraftforge.common.util.FakePlayer
-import net.minecraftforge.common.util.FakePlayerFactory
-import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
@@ -24,7 +21,10 @@ import kotlin.LazyThreadSafetyMode.NONE
  * 服务端GUI窗体对象
  * @author EmptyDreams
  */
-open class BaseGraphics(root: DocumentCmpt?) : Container() {
+open class BaseGraphics(
+    openPlayer: EntityPlayer,
+    root: DocumentCmpt?
+) : Container() {
 
     /** 容器对象 */
     @Suppress("LeakingThis")
@@ -40,8 +40,7 @@ open class BaseGraphics(root: DocumentCmpt?) : Container() {
     val client by lazy(NONE) { document.client as BaseGraphicsClient }
     private val graphicsSlots = ArrayList<IGraphicsSlot>(40)
     /** 打开该GUI的玩家 */
-    var player: EntityPlayer =
-            FakePlayerFactory.getMinecraft(FMLCommonHandler.instance().minecraftServerInstance.worlds[0])
+    var player: EntityPlayer = openPlayer
         set(value) {
             if (field is FakePlayer) field = value
         }
@@ -86,18 +85,6 @@ open class BaseGraphics(root: DocumentCmpt?) : Container() {
         tryPutStack { it.belong != slot.belong }
         if (!stack.isEmpty) tryPutStack { it.belong == slot.belong && it != slot }
         return stack.copy(oldCout - stack.count)
-    }
-
-    /**
-     * 初始化GUI
-     *
-     * 调用该方法时，不保证客户端对象已经完成初始化
-     *
-     * @param player 打开GUI的玩家
-     * @param pos 触发GUI的位置
-     */
-    open fun init(player: EntityPlayer, pos: BlockPos) {
-        this.player = player
     }
 
     /** 添加一个控件 */
