@@ -62,11 +62,18 @@ object GuiLoader : IGuiHandler {
 
     fun getID(key: ResourceLocation) = regedit.getID(key)
 
+    /** 注册一个客户端GUI */
+    @SideOnly(Side.CLIENT)
+    fun registryClientGui(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
+        regedit.registryClientGui(key, root)
+    }
+
     /** @see GuiRegedit.registryLoopTask */
     fun registryLoopTask(key: ResourceLocation, task: (BaseGraphics) -> Unit) {
         regedit.registryLoopTask(key, task)
     }
 
+    @Suppress("unused")
     class MIGuiRegistryEvent(private val regedit: GuiRegedit?) : Event() {
 
         constructor() : this(null)
