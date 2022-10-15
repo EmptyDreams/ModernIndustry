@@ -1,6 +1,5 @@
 package top.kmar.mi.api.graphics.parser
 
-import com.google.gson.JsonParser
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import jdk.internal.util.xml.impl.ReaderUTF8
 import net.minecraft.client.Minecraft
@@ -19,6 +18,9 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.ComplexCmptExp
 import top.kmar.mi.api.graphics.parser.cache.IParserCache
 import top.kmar.mi.api.utils.MISysInfo
+import top.kmar.mi.api.utils.countStartSpace
+import top.kmar.mi.api.utils.floorDiv2
+import java.io.BufferedReader
 import java.util.*
 
 /**
@@ -35,7 +37,7 @@ object GuiStyleParser {
         if (key in expMap) return expMap[key]
         return try {
             val location = ResourceLocation(
-                key.resourceDomain, "gui/style/${key.resourcePath}.json"
+                key.resourceDomain, "gui/style/${key.resourcePath}.styl"
             )
             parseTargetFile(location, key)
         } catch (e: Exception) {
@@ -60,23 +62,45 @@ object GuiStyleParser {
 
     private fun parseTargetFile(location: ResourceLocation, key: ResourceLocation): List<Node> {
         val resourceManager = Minecraft.getMinecraft().resourceManager
-        val reader = ReaderUTF8(resourceManager.getResource(location).inputStream)
-        val json = reader.use { JsonParser().parse(it) }.asJsonObject
-        val style = json.getAsJsonArray("style")
         val result = expMap.computeIfAbsent(key) { LinkedList() }
-        for (item in style) {
-            val obj = item.asJsonObject
-            val exp = ComplexCmptExp(obj["exp"].asString)
-            val list = LinkedList<IParserCache>()
-            for (tmp in obj.getAsJsonArray("value")) {
-                val ele = tmp.asString
-                try {
-                    list.add(IParserCache.build(ele))
-                } catch (e: Exception) {
-                    MISysInfo.err("在处理json文件的该行时遇到错误：$ele", e)
+        BufferedReader(ReaderUTF8(resourceManager.getResource(location).inputStream)).use { reader ->
+            val builder = CmptExpBuilder()
+            var endWithContinue = false
+            var preLevel = -1
+            val valueList = LinkedList<IParserCache>()
+            var prevContent = ""
+            reader.lines().filter { it.isNotBlank() }.forEachOrdered {  content ->
+                val (_, length) = content.countStartSpace()
+                val level = length.floorDiv2()
+                // 判断上一条语句是属性还是exp
+                if (!endWithContinue && level <= preLevel) {
+                    valueList.add(IParserCache.build(prevContent.trim()))
+                } else {
+                    if (valueList.isNotEmpty()) {
+                        val tmp = ArrayList(valueList)
+                        builder.toExp { result.add(Node(it, tmp)) }
+                        valueList.clear()
+                    }
+                    val text = prevContent.trimEnd()
+                    endWithContinue = text.endsWith(',')
+                    if (level > preLevel) {
+                        for (i in 0 until level - preLevel)
+                            builder.next()
+                    } else if (level < preLevel) {
+                        for (i in 0 until preLevel - level)
+                            builder.prev()
+                    }
+                    preLevel = level
+                    text.split(',')
+                        .filter { it.isNotBlank() }
+                        .map { ComplexCmptExp(it) }
+                        .forEach { builder.addExp(it) }
                 }
+                prevContent = content
             }
-            result.add(Node(exp, list))
+            valueList.add(IParserCache.build(prevContent.trim()))
+            val tmp = ArrayList(valueList)
+            builder.toExp { result.add(Node(it, tmp)) }
         }
         return result
     }

@@ -19,8 +19,8 @@ interface IParserCache {
 
         fun build(content: String): IParserCache {
             val (key, value) = content.run {
-                val array = split('=')
-                Pair(array[0].trim(), array[1].trim())
+                val array = split(' ', limit = 2)
+                Pair(array[0].trimEnd(), array[1].trimStart())
             }
             return when (key) {
                 "width" -> SizeParserCache(value, false)

@@ -15,9 +15,11 @@ import java.util.*
  *   + `tagName.className1.className2` - 匹配同时满足相连条件的控件
  *   + `.className1 .className2` - 匹配在`1`控件内的`2`控件
  *
+ * 注：如果要传入`list`请手动拷贝列表
+ *
  * @author EmptyDreams
  */
-class ComplexCmptExp private constructor(val list: List<SingleCmpExp>) : Comparable<ComplexCmptExp> {
+class ComplexCmptExp constructor(val list: List<SingleCmpExp>) : Comparable<ComplexCmptExp> {
 
     constructor(exp: String) : this(
         Collections.unmodifiableList(

@@ -1,9 +1,12 @@
 @mi:fluid_pump
 mask
     background
-        backpack
-        div#show
-            progress#fluid
-            progress#energy
-            progress#consume
-        button(value="test")
+        div#content
+            div#show
+                p(value="1")
+                progress#fluid
+                p(value="2")
+                progress#energy
+                p(value="3")
+                progress#consume
+            button(value="i18n:mi.gui.open")
