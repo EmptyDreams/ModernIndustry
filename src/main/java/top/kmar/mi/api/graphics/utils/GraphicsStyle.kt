@@ -123,13 +123,13 @@ open class GraphicsStyle(
     /** 原始Y坐标 */
     private var srcY: Int = 0
     /** 优先级：`top` > `right` > `bottom` > `left` */
-    var top = 0
+    var top = -1
     /** 优先级：`top` > `right` > `bottom` > `left` */
-    var right = 0
+    var right = -1
     /** 优先级：`top` > `right` > `bottom` > `left` */
-    var bottom = 0
+    var bottom = -1
     /** 优先级：`top` > `right` > `bottom` > `left` */
-    var left = 0
+    var left = -1
 
     /** 显示方式 */
     var display = DisplayModeEnum.DEF
@@ -142,35 +142,53 @@ open class GraphicsStyle(
     val button by lazy(NONE) { ButtonStyleData(this) }
 
     /** 控件X坐标，相对于窗体 */
-    val x: Int
+    var x: Int = -1
         get() {
-            return when (position) {
+            if (field != -1) return field
+            val src = when (position) {
                 PositionEnum.RELATIVE ->
-                    if (left != 0) srcX + left
-                    else srcX - right
+                    if (left != -1) srcX + left
+                    else if (right != -1) srcX - right
+                    else srcX
                 PositionEnum.ABSOLUTE ->
-                    if (left != 0) parentStyle.left + left
-                    else parentStyle.endX - width - right
+                    if (left != -1) parentStyle.x + left
+                    else if (right != -1) parentStyle.endX - width - right
+                    else parentStyle.x
                 PositionEnum.FIXED ->
-                    if (left != 0) left
-                    else (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client.width - width - right
+                    if (left != -1) left
+                    else if (right != -1)
+                        (WorldUtil.getClientPlayer().openContainer as BaseGraphics)
+                            .client.width - width - right
+                    else 0
             }
+            field = src + marginLeft
+            return field
         }
+        private set
     /** 控件Y坐标，相对于窗体 */
-    val y: Int
+    var y: Int = -1
         get() {
-            return when (position) {
+            if (field != -1) return field
+            val src = when (position) {
                 PositionEnum.RELATIVE ->
-                    if (top != 0) srcY + top
-                    else srcY - bottom
+                    if (top != -1) srcY + top
+                    else if (bottom != -1) srcY - bottom
+                    else srcY
                 PositionEnum.ABSOLUTE ->
-                    if (top != 0) parentStyle.top + top
-                    else parentStyle.endY - height - bottom
+                    if (top != -1) parentStyle.y + top
+                    else if (bottom != -1) parentStyle.endY - height - bottom
+                    else parentStyle.y
                 PositionEnum.FIXED ->
-                    if (top != 0) top
-                    else (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client.height - height - right
+                    if (top != -1) top
+                    else if (bottom != -1)
+                            (WorldUtil.getClientPlayer().openContainer as BaseGraphics)
+                                .client.height - height - right
+                    else 0
             }
+            field = src + marginTop
+            return field
         }
+        private set
     val endX: Int
         get() = x + width
     val endY: Int
@@ -212,6 +230,7 @@ open class GraphicsStyle(
     fun markXChange() {
         xPosChange = true
         width = -1
+        x = -1
     }
 
     /** 标记Y轴方向坐标变化 */
@@ -219,6 +238,7 @@ open class GraphicsStyle(
         yPosChange = true
         groupCache.clear()
         height = -1
+        y = -1
     }
 
     /** 标记X及Y轴方向坐标变化 */
@@ -232,12 +252,12 @@ open class GraphicsStyle(
         val groupList = groupCache()
         if (yPosChange) {
             yPosChange = false
-            alignVertical(this@GraphicsStyle, groupList) { it, y -> it.srcY = y + it.marginTop }
+            alignVertical(this@GraphicsStyle, groupList) { it, y -> it.srcY = y }
         }
         if (xPosChange) {
             xPosChange = false
             for (group in groupList) {
-                alignHorizontal(this, group) { it, x -> it.srcX = x + it.marginLeft }
+                alignHorizontal(this, group) { it, x -> it.srcX = x }
             }
             cmpt.childrenStream()
                 .map { it.client.style }
