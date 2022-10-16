@@ -38,7 +38,7 @@ object DorSerializeMachine : IAutoFieldRW, IAutoObjRW<IDorSerialize> {
             if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal(this)
             read2Obj(reader, annotation.local(field)) { field[obj] = it }
         } else {
-            value.deserializedDor(reader.readData())
+            value.deserializedDor(reader)
             RWResult.success()
         }
     }

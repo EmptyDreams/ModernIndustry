@@ -53,13 +53,18 @@ object AutoDataRW {
         while (clazz != Any::class.java) {
             for (field in clazz.declaredFields) {
                 val annotation = field.getAnnotation(AutoSave::class.java) ?: continue
-                if (!reader.readBoolean()) continue
-                val localName = reader.readString()
-                val codeName = annotation.value(field)
-                if (map.isNotEmpty() || codeName != localName) {
-                    map.computeIfAbsent(localName) { MutablePair(null, null) }.left = reader.readData()
-                    map.computeIfAbsent(codeName) { MutablePair(null, null) }.right = field
-                } else read2ObjAndPrintErr(reader.readData(), field, obj)
+                try {
+                    if (!reader.readBoolean()) continue
+                    val localName = reader.readString()
+                    val codeName = annotation.value(field)
+                    if (map.isNotEmpty() || codeName != localName) {
+                        map.computeIfAbsent(localName) { MutablePair(null, null) }.left = reader.readData()
+                        map.computeIfAbsent(codeName) { MutablePair(null, null) }.right = field
+                    } else read2ObjAndPrintErr(reader.readData(), field, obj)
+                } catch (e: Exception) {
+                    MISysInfo.err("读取存档时发生异常，异常位置：${field.name}", e)
+                    break
+                }
             }
             clazz = clazz.superclass
         }
