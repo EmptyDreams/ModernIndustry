@@ -9,4 +9,4 @@ mask
             progress#energy
             p
             progress#consume
-        button
+        button#switch

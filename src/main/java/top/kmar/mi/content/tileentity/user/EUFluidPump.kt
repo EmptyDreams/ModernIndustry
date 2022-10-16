@@ -92,6 +92,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
                 val pump = player.world.getTileEntity(pos) as EUFluidPump
                 button.addEventListener(IGraphicsListener.mouseClick) {
                     pump.start = !pump.start
+                    pump.markDirty()
                     if (it != null) it.send2Service = true
                 }
             }
@@ -112,8 +113,12 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
                 applyClient {
                     val texts = gui.queryCmptAll(ComplexCmptExp("p"))
                                         .map { it.client as TextCmpt.TextCmptClient }
+                    val fluidText = I18n.format(
+                        if (pump.data.isEmpty) "mi.gui.fluid_pump.null"
+                        else pump.data.fluid!!.unlocalizedName
+                    )
                     texts[0].text = I18n.format("mi.gui.fluid_pump.fluid",
-                        "${fluid.progress}/${fluid.maxProgress}")
+                        "${fluid.progress}/${fluid.maxProgress}", fluidText)
                     texts[1].text = I18n.format("mi.gui.fluid_pump.energy",
                         "${energy.progress}/${energy.maxProgress}")
                     texts[2].text = I18n.format("mi.gui.fluid_pump.consume",
@@ -133,25 +138,26 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     /** 基础电能消耗 */
     var baseLoss = 5
     /** 内部存储的流体 */
-    @AutoSave private var data = FluidData.empty()
+    @field:AutoSave private var data = FluidData.empty()
     /** 出口入口是否连接 */
-    @AutoSave private val linked = IndexEnumMap(EnumFacing.values())
+    @field:AutoSave private val linked = IndexEnumMap(EnumFacing.values())
     /** 水泵面板方向 */
-    @AutoSave var panelFacing = EnumFacing.WEST
+    @field:AutoSave var panelFacing = EnumFacing.WEST
         set(value) {
             field = value
             val list = maySide(value)
             if (!list.contains(side)) side = list[0]
         }
     /** 水泵输出方向 */
-    @AutoSave var side = EnumFacing.NORTH
+    @field:AutoSave var side = EnumFacing.NORTH
         set(value) {
             field = value
             val list = mayPanel(value)
             if (!list.contains(panelFacing)) panelFacing = list[0]
         }
     /** 是否工作 */
-    @AutoSave var start = false
+    @field:AutoSave
+    var start = false
     /** 是否正在工作 */
     var working = false
         get() = field && start

@@ -103,5 +103,5 @@ mi.gui.open=开
 mi.gui.close=关
 mi.gui.fluid_pump.energy=能量存储（%s）
 mi.gui.fluid_pump.consume=瞬时能量消耗（%s）
-mi.gui.fluid_pump.fluid=流体存储（%s）
+mi.gui.fluid_pump.fluid=流体存储（%s）：%s
 mi.gui.fluid_pump.null=空
