@@ -59,7 +59,7 @@ object GuiFileParser {
             // 构建Cmpt对象
             val (index0, length) = content.countStartSpace()
             val (index1, tag) = content.getTag(index0)
-            val (index2, id) = content.getID(index1, tag)
+            val (index2, id) = content.getID(index1)
             val attributes = content.getAttributes(index2)
             val level = length shr 2
             attributes.id = id
@@ -101,8 +101,8 @@ object GuiFileParser {
     }
 
     /** 获取字符串中的ID */
-    private fun String.getID(start: Int, tag: String): PairIntObj<String> {
-        if (length == start || this[start] != '#') return PairIntObj(start, tag)
+    private fun String.getID(start: Int): PairIntObj<String> {
+        if (length == start || this[start] != '#') return PairIntObj(start, "")
         for (i in start + 1 until length) {
             if (!this[i].isLetter() && this[i] != '-')
                 return PairIntObj(i, substring(start + 1 until i))
