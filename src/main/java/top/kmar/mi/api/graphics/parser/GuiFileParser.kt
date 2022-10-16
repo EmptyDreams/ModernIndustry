@@ -41,6 +41,7 @@ object GuiFileParser {
                     true
                 }, true, true)
         }
+        MISysInfo.print("共扫描并注册 $count 个GUI文件")
     }
 
     private fun parseTargetFile(path: Path, register: GuiLoader.MIGuiRegistryEvent) {
