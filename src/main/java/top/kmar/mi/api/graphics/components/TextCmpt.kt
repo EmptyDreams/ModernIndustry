@@ -39,7 +39,9 @@ class TextCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         var text: String
             get() = attributes["value"]
             set(value) {
+                if (attributes["value"] == value) return
                 attributes["value"] = value
+                style.markXChange()
             }
 
     }
