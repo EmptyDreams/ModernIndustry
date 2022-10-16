@@ -25,6 +25,7 @@ class GuiRegedit {
 
     /** 注册一个双端GUI */
     fun registryGui(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
+        if (key in registry) throw IllegalArgumentException("指定key[$key]已经被注册")
         val id = idIndex.incrementAndGet()
         registry[key] = Node(id, root, LinkedList(), LinkedList())
         oppositeRegistry[id] = key
@@ -33,6 +34,7 @@ class GuiRegedit {
     /** 注册一个客户端GUI */
     @SideOnly(Side.CLIENT)
     fun registryClientGui(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
+        if (key in registry) throw IllegalArgumentException("指定key[$key]已经被注册")
         val id = clientIdIndex.decrementAndGet()
         registry[key] = Node(id, root, LinkedList(), LinkedList())
         oppositeRegistry[id] = key
@@ -40,12 +42,14 @@ class GuiRegedit {
 
     /** 为指定GUI注册一个初始化任务，其会在[BaseGraphics]对象创建完成后触发 */
     fun registryInitTask(key: ResourceLocation, task: InitTask) {
-        registry[key]!!.initList.add(task)
+        val node = registry[key] ?: throw NullPointerException("指定key[$key]没有被注册")
+        node.initList.add(task)
     }
 
     /** 为指定GUI注册一个循环任务，其会在[BaseGraphics]每次完成网络任务后触发 */
     fun registryLoopTask(key: ResourceLocation, task: (BaseGraphics) -> Unit) {
-        registry[key]!!.loopList.add(task)
+        val node = registry[key] ?: throw NullPointerException("指定key[$key]没有被注册")
+        node.loopList.add(task)
     }
 
     fun buildGui(key: ResourceLocation, player: EntityPlayer, pos: BlockPos): BaseGraphics {

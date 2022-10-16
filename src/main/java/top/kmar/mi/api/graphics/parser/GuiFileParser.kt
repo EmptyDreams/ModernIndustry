@@ -3,8 +3,6 @@ package top.kmar.mi.api.graphics.parser
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.crafting.CraftingHelper
 import net.minecraftforge.fml.common.Loader
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.apache.commons.io.FilenameUtils
 import top.kmar.mi.api.exception.TransferException
 import top.kmar.mi.api.graphics.BaseGraphics
@@ -23,17 +21,10 @@ import java.nio.file.Path
  * `mig`文件解析器
  * @author EmptyDreams
  */
-@EventBusSubscriber
 object GuiFileParser {
 
     private var count = 0
 
-    fun printCount() {
-        MISysInfo.print("[GuiFileParser] 注册 $count 个GUI对象")
-    }
-
-    @JvmStatic
-    @SubscribeEvent
     fun registryAll(event: GuiLoader.MIGuiRegistryEvent) {
         Loader.instance().activeModList.forEach { mod ->
             CraftingHelper.findFiles(

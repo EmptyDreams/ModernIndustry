@@ -33,7 +33,7 @@ object GuiLoader : IGuiHandler {
         val event = MIGuiRegistryEvent(tmpRegedit)
         GuiFileParser.registryAll(event)
         MinecraftForge.EVENT_BUS.post(event)
-        regedit = tmpRegedit
+        regedit = tmpRegedit.sort()
         MinecraftForge.EVENT_BUS.post(GuiRegistryFinishedEvent())
     }
 
