@@ -25,6 +25,9 @@ import java.util.*
 
 /**
  * GUI的样式表解析器
+ *
+ * [在线文档](https://kmar.top/posts/e0217013/)
+ *
  * @author EmptyDreams
  */
 @SideOnly(Side.CLIENT)

@@ -19,6 +19,9 @@ import java.nio.file.Path
 
 /**
  * `mig`文件解析器
+ *
+ * [在线文档](https://kmar.top/posts/e0217013/)
+ *
  * @author EmptyDreams
  */
 object GuiFileParser {
