@@ -19,7 +19,7 @@ import kotlin.LazyThreadSafetyMode.NONE
  */
 @SideOnly(Side.CLIENT)
 open class GraphicsStyle(
-    private val cmpt: Cmpt
+    val cmpt: Cmpt
 ) {
 
     /** 控件宽度（不包括margin） */
