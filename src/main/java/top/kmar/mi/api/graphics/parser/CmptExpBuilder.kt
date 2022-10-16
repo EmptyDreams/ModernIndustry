@@ -1,7 +1,7 @@
 package top.kmar.mi.api.graphics.parser
 
 import top.kmar.mi.api.graphics.components.interfaces.ComplexCmptExp
-import top.kmar.mi.api.graphics.components.interfaces.SingleCmpExp
+import top.kmar.mi.api.graphics.components.interfaces.SingleCmptExp
 import java.util.*
 
 /**
@@ -25,7 +25,7 @@ class CmptExpBuilder {
     }
 
     fun toExp(consumer: (ComplexCmptExp) -> Unit) {
-        var resultList = LinkedList<LinkedList<SingleCmpExp>>()
+        var resultList = LinkedList<LinkedList<SingleCmptExp>>()
         resultList.add(LinkedList())
         for (external in list) {
             if (external.isEmpty()) continue

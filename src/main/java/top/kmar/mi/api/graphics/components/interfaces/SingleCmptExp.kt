@@ -7,19 +7,20 @@ import top.kmar.mi.api.utils.compareTo
  * 单个[Cmpt]匹配表达式
  * @author EmptyDreams
  */
-class SingleCmpExp(exp: String) : Comparable<SingleCmpExp> {
+class SingleCmptExp(exp: String) : Comparable<SingleCmptExp> {
 
     private val list = ObjectAVLTreeSet<Node>().apply {
-        var left = 0
-        for (i in 1 until exp.length) {
+        var left = -1
+        for (i in exp.indices) {
             val it = exp[i]
-            if (it == '.' || it == '#') {
+            if ((it == '.' || it == '#') && i != 0) {
+                if (left == -1) left = 0
                 add(Node(exp.substring(left until i)))
                 left = i
             }
         }
         if (left != exp.length - 1)
-            add(Node(exp.substring(left)))
+            add(Node(exp.substring(left.coerceAtLeast(0))))
     }
 
     fun match(cmpt: Cmpt): Boolean {
@@ -36,14 +37,14 @@ class SingleCmpExp(exp: String) : Comparable<SingleCmpExp> {
         return true
     }
 
-    fun match(exp: String) = this == SingleCmpExp(exp)
+    fun match(exp: String) = this == SingleCmptExp(exp)
 
     override fun hashCode() = list.hashCode()
 
-    override fun compareTo(other: SingleCmpExp) = list.compareTo(other.list)
+    override fun compareTo(other: SingleCmptExp) = list.compareTo(other.list)
 
     override fun equals(other: Any?): Boolean {
-        if (other !is SingleCmpExp) return false
+        if (other !is SingleCmptExp) return false
         return list == other.list
     }
 

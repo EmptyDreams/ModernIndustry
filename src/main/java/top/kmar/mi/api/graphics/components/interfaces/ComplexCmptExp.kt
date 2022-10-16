@@ -19,14 +19,14 @@ import java.util.*
  *
  * @author EmptyDreams
  */
-class ComplexCmptExp constructor(val list: List<SingleCmpExp>) : Comparable<ComplexCmptExp> {
+class ComplexCmptExp constructor(val list: List<SingleCmptExp>) : Comparable<ComplexCmptExp> {
 
     constructor(exp: String) : this(
         Collections.unmodifiableList(
-            LinkedList<SingleCmpExp>().apply {
-                exp.split(Regex("[ \n\t]")).stream()
+            LinkedList<SingleCmptExp>().apply {
+                exp.split(Regex("""\s""")).stream()
                     .filter { it.isNotBlank() }
-                    .map { SingleCmpExp(it) }
+                    .map { SingleCmptExp(it) }
                     .forEach { add(it) }
             })
     )
