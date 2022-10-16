@@ -3,7 +3,8 @@ package top.kmar.mi.api.graphics
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Container
 import net.minecraft.item.ItemStack
-import net.minecraftforge.common.util.FakePlayer
+import net.minecraft.util.ResourceLocation
+import net.minecraft.util.math.BlockPos
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
@@ -22,7 +23,11 @@ import kotlin.LazyThreadSafetyMode.NONE
  * @author EmptyDreams
  */
 open class BaseGraphics(
-    openPlayer: EntityPlayer,
+    /** 打开GUI的玩家 */
+    val player: EntityPlayer,
+    /** GUI对应的方块坐标 */
+    val pos: BlockPos,
+    val key: ResourceLocation,
     root: DocumentCmpt?
 ) : Container() {
 
@@ -39,12 +44,6 @@ open class BaseGraphics(
     @get:SideOnly(Side.CLIENT)
     val client by lazy(NONE) { document.client as BaseGraphicsClient }
     private val graphicsSlots = ArrayList<IGraphicsSlot>(40)
-    /** 打开该GUI的玩家 */
-    var player: EntityPlayer = openPlayer
-        set(value) {
-            if (field is FakePlayer) field = value
-        }
-        get() = if (field !is FakePlayer) field else throw AssertionError("player未初始化")
 
     /** 是否可以被指定玩家打开 */
     override fun canInteractWith(playerIn: EntityPlayer): Boolean {
@@ -64,6 +63,7 @@ open class BaseGraphics(
             }
         }
         task(document)
+        GuiLoader.invokeLoopTask(key, this)
     }
 
     override fun transferStackInSlot(playerIn: EntityPlayer, index: Int): ItemStack {

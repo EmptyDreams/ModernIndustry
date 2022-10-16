@@ -29,9 +29,10 @@ object GuiLoader : IGuiHandler {
 
     init {
         NetworkRegistry.INSTANCE.registerGuiHandler(ModernIndustry.instance, this)
-        GuiFileParser.printCount()
         val tmpRegedit = GuiRegedit()
-        MinecraftForge.EVENT_BUS.post(MIGuiRegistryEvent(tmpRegedit))
+        val event = MIGuiRegistryEvent(tmpRegedit)
+        GuiFileParser.registryAll(event)
+        MinecraftForge.EVENT_BUS.post(event)
         regedit = tmpRegedit
         MinecraftForge.EVENT_BUS.post(GuiRegistryFinishedEvent())
     }
@@ -42,8 +43,9 @@ object GuiLoader : IGuiHandler {
                                      x: Int, y: Int, z: Int
     ): BaseGraphics {
         val key = regedit.getKey(ID)
-        val gui = regedit.buildGui(key, player)
-        regedit.invokeInitTask(key, gui, player, BlockPos(x, y, z))
+        val pos = BlockPos(x, y, z)
+        val gui = regedit.buildGui(key, player, pos)
+        regedit.invokeInitTask(key, gui, player, pos)
         gui.document.installParent(Cmpt.EMPTY_CMPT)
         return gui
     }
@@ -66,6 +68,11 @@ object GuiLoader : IGuiHandler {
     @SideOnly(Side.CLIENT)
     fun registryClientGui(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
         regedit.registryClientGui(key, root)
+    }
+
+    /** @see GuiRegedit.invokeLoopTask */
+    fun invokeLoopTask(key: ResourceLocation, gui: BaseGraphics) {
+        regedit.invokeLoopTask(key, gui)
     }
 
     /** @see GuiRegedit.registryLoopTask */

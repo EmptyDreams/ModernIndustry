@@ -48,9 +48,9 @@ class GuiRegedit {
         registry[key]!!.loopList.add(task)
     }
 
-    fun buildGui(key: ResourceLocation, player: EntityPlayer): BaseGraphics {
+    fun buildGui(key: ResourceLocation, player: EntityPlayer, pos: BlockPos): BaseGraphics {
         val node = registry[key] ?: throw NullPointerException("对应key[$key]没有被注册")
-        return BaseGraphics(player, node.root)
+        return BaseGraphics(player, pos, key, node.root)
     }
 
     /** 通过key获取内部ID */
