@@ -13,7 +13,7 @@ import kotlin.streams.toList
  *
  * + `border topAndBottomColor leftAndRightColor`
  * + `border topColor rightColor bottomColor leftColor`
- * + `border-weight topAndLeftWeight rightAndBottomWeight`
+ * + `border-weight topAndBottomWeight leftAndRightWeight`
  * + `border-weight topWeight rightWeight bottomWeight leftWeight`
  * + `border-[ direction ] color weight`
  * + `border-[ direction ] color`
@@ -29,6 +29,7 @@ class BorderParserCache(key: String, value: String) : IParserCache {
         when (key) {
             "border" -> {
                 val colors = args.map { IntColor(it) }
+                @Suppress("DuplicatedCode")
                 if (args.size == 4) {
                     return@run {
                         it.borderTop.color = colors[0]
@@ -47,6 +48,7 @@ class BorderParserCache(key: String, value: String) : IParserCache {
             }
             "border-weight" -> {
                 val weights = args.map { it.toInt() }
+                @Suppress("DuplicatedCode")
                 if (args.size == 4) {
                     return@run {
                         it.borderTop.weight = weights[0]
@@ -57,9 +59,9 @@ class BorderParserCache(key: String, value: String) : IParserCache {
                 } else if (args.size == 2) {
                     return@run {
                         it.borderTop.weight = weights[0]
+                        it.borderBottom.weight = weights[0]
                         it.borderLeft.weight = weights[1]
-                        it.borderRight.weight = weights[2]
-                        it.borderBottom.weight = weights[3]
+                        it.borderRight.weight = weights[1]
                     }
                 }
             }
