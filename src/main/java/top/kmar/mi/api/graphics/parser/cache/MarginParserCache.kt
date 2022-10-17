@@ -9,12 +9,12 @@ import top.kmar.mi.api.graphics.utils.GraphicsStyle
  *
  * 支持以下格式：
  *
- * + `margin = top right bottom left`
- * + `margin = topAndBottom rightAndLeft`
- * + `margin-left = left`
- * + `margin-right = right`
- * + `margin-bottom = bottom`
- * + `margin-left = left`
+ * + `margin top right bottom left`
+ * + `margin topAndBottom rightAndLeft`
+ * + `margin-left left`
+ * + `margin-right right`
+ * + `margin-bottom bottom`
+ * + `margin-left left`
  *
  * @author EmptyDreams
  */

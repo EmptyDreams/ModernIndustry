@@ -10,9 +10,9 @@ import top.kmar.mi.api.graphics.utils.GraphicsStyle
  *
  * 支持以下格式
  *
- * + `color = color`
- * + `background-color = color`
- * + `font-color = color`
+ * + `color color`
+ * + `background-color color`
+ * + `font-color color`
  *
  * 其中，颜色表达式支持以下格式：
  *

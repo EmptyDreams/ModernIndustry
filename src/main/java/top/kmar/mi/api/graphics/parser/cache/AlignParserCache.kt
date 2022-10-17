@@ -11,9 +11,9 @@ import top.kmar.mi.api.graphics.utils.VerticalAlignModeEnum
  *
  * 支持以下格式：
  *
- * + `align = vertical horizontal`
- * + `align-horizontal = horizontal`
- * + `align-vertical = vertical`
+ * + `align vertical horizontal`
+ * + `align-horizontal horizontal`
+ * + `align-vertical vertical`
  *
  * 水平对齐方式支持：`left`、`middle`、`right`
  *

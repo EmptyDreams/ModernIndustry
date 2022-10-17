@@ -11,11 +11,11 @@ import top.kmar.mi.api.utils.removeAllSpace
  *
  * 支持以下格式：
  *
- * + `[ size ] = num`
- * + `[ size ] = percent%`
- * + `[ size ] = calc(percent% +/- num)`
- * + `[ size ] = inherit`
- * + `[ size ] = auto`
+ * + `[ size ] num`
+ * + `[ size ] percent%`
+ * + `[ size ] calc(percent% +/- num)`
+ * + `[ size ] inherit`
+ * + `[ size ] auto`
  *
  * @author EmptyDreams
  */

@@ -12,13 +12,13 @@ import top.kmar.mi.api.utils.data.enums.VerticalDirectionEnum
  *
  * 支持以下格式：
  *
- * + `progress-direction = direction`
- * + `progress-style = style`
- * + `progress-text = bool`
- * + `progress-text-location = vertical`
- * + `progress-min-height = num`
- * + `progress-min-width = num`
- * + `progress-min = width height`
+ * + `progress-direction direction`
+ * + `progress-style style`
+ * + `progress-text bool`
+ * + `progress-text-location vertical`
+ * + `progress-min-height num`
+ * + `progress-min-width num`
+ * + `progress-min width height`
  *
  * 1. `direction`支持：`top/up`、`right`、`bottom/down`、`left`
  * 2. `style`支持：`arrow`、`rect`

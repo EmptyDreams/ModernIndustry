@@ -11,8 +11,8 @@ import top.kmar.mi.api.utils.data.enums.Direction2DEnum
  *
  * 支持以下格式：
  *
- * + `button-style = style`
- * + `button-direction = direction`
+ * + `button-style style`
+ * + `button-direction direction`
  *
  * `style`支持：`rect`、`triangle`
  * `direction`支持：`top/up`、`right`、`bottom/down`、`left`
