@@ -97,8 +97,14 @@ fun IntColor(exp: String): IntColor {
             .stream()
             .filter { it.isNotBlank() }
             .toList()
-        if (rgba.size == 4)
-            return IntColor(rgba[0].toInt(), rgba[1].toInt(), rgba[2].toInt(), rgba[3].toInt())
+        if (rgba.size == 4) {
+            return if (rgba[3].contains('.'))
+                IntColor(
+                    rgba[0].toInt(), rgba[1].toInt(), rgba[2].toInt(),
+                    (rgba[3].toFloat() * 255).toInt()
+                )
+            else IntColor(rgba[0].toInt(), rgba[1].toInt(), rgba[2].toInt(), rgba[3].toInt())
+        }
     }
     throw IllegalArgumentException("不合法的颜色表达式：$exp")
 }
