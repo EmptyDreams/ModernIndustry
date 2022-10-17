@@ -11,13 +11,13 @@ import kotlin.streams.toList
  *
  * 支持以下格式：
  *
- * + `border = topAndLeftColor rightAndBottomColor`
- * + `border = topColor rightColor bottomColor leftColor`
- * + `border-weight = topAndLeftWeight rightAndBottomWeight`
- * + `border-weight = topWeight rightWeight bottomWeight leftWeight`
- * + `border-[ direction ] = color weight`
- * + `border-[ direction ] = color`
- * + `border-[ direction ]-eight = weight`
+ * + `border topAndBottomColor leftAndRightColor`
+ * + `border topColor rightColor bottomColor leftColor`
+ * + `border-weight topAndLeftWeight rightAndBottomWeight`
+ * + `border-weight topWeight rightWeight bottomWeight leftWeight`
+ * + `border-[ direction ] color weight`
+ * + `border-[ direction ] color`
+ * + `border-[ direction ]-eight weight`
  *
  * @author EmptyDreams
  */
@@ -39,9 +39,9 @@ class BorderParserCache(key: String, value: String) : IParserCache {
                 } else if (args.size == 2) {
                     return@run {
                         it.borderTop.color = colors[0]
-                        it.borderLeft.color = colors[0]
+                        it.borderBottom.color = colors[0]
+                        it.borderLeft.color = colors[1]
                         it.borderRight.color = colors[1]
-                        it.borderBottom.color = colors[1]
                     }
                 }
             }
