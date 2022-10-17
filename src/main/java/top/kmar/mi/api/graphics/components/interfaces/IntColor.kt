@@ -81,29 +81,33 @@ fun IntColor(exp: String): IntColor {
                 return IntColor((a shl 24) or color)
             }
         }
-    } else if (exp.startsWith("rgb(")) {
-        val rgb = exp
-            .substring(4 until exp.length - 1)
-            .split(Regex("""(\s)|,"""))
-            .stream()
-            .filter { it.isNotBlank() }
-            .toList()
-        if (rgb.size == 3)
-            return IntColor(rgb[0].toInt(), rgb[1].toInt(), rgb[2].toInt())
-    } else if (exp.startsWith("rgba(")) {
-        val rgba = exp
-            .substring(4 until exp.length - 1)
-            .split(Regex("""(\s)|,"""))
-            .stream()
-            .filter { it.isNotBlank() }
-            .toList()
-        if (rgba.size == 4) {
-            return if (rgba[3].contains('.'))
-                IntColor(
-                    rgba[0].toInt(), rgba[1].toInt(), rgba[2].toInt(),
-                    (rgba[3].toFloat() * 255).toInt()
-                )
-            else IntColor(rgba[0].toInt(), rgba[1].toInt(), rgba[2].toInt(), rgba[3].toInt())
+    } else {
+        if (exp.startsWith("rgba")) {
+            val index = exp.indexOf('(', 4)
+            val rgba = exp
+                .substring(index + 1 until exp.length - 1)
+                .split(Regex("""(\s)|,"""))
+                .stream()
+                .filter { it.isNotBlank() }
+                .toList()
+            if (rgba.size == 4) {
+                return if (rgba[3].contains('.'))
+                    IntColor(
+                        rgba[0].toInt(), rgba[1].toInt(), rgba[2].toInt(),
+                        (rgba[3].toFloat() * 255).toInt()
+                    )
+                else IntColor(rgba[0].toInt(), rgba[1].toInt(), rgba[2].toInt(), rgba[3].toInt())
+            }
+        } else if (exp.startsWith("rgb")) {
+            val index = exp.indexOf('(', 3)
+            val rgb = exp
+                .substring(index + 1 until exp.length - 1)
+                .split(Regex("""(\s)|,"""))
+                .stream()
+                .filter { it.isNotBlank() }
+                .toList()
+            if (rgb.size == 3)
+                return IntColor(rgb[0].toInt(), rgb[1].toInt(), rgb[2].toInt())
         }
     }
     throw IllegalArgumentException("不合法的颜色表达式：$exp")
