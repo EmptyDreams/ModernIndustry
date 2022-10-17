@@ -47,6 +47,8 @@ value class IntColor(val value: Int) {
 /**
  * 通过字符串解析出一个颜色值
  *
+ * @param exp 表示颜色的字符串，前后不能有空格
+ *
  * 支持以下格式：
  *
  * + `#RGB`
@@ -59,29 +61,30 @@ value class IntColor(val value: Int) {
  * + `rgba(r g b a)`
  */
 fun IntColor(exp: String): IntColor {
-    if (exp.startsWith('#')) {
+    if (exp.startsWith('#')) {  // #开头说明是16进制颜色
         when (exp.length) {
-            4 -> {
+            4 -> {  // #RGB
                 val r = "${exp[1]}${exp[1]}".toInt(16)
                 val g = "${exp[2]}${exp[2]}".toInt(16)
                 val b = "${exp[3]}${exp[3]}".toInt(16)
                 return IntColor(r, g, b)
             }
-            5 -> {
+            5 -> {  // #RGBA
                 val r = "${exp[1]}${exp[1]}".toInt(16)
                 val g = "${exp[2]}${exp[2]}".toInt(16)
                 val b = "${exp[3]}${exp[3]}".toInt(16)
                 val a = "${exp[4]}${exp[4]}".toInt(16)
                 return IntColor(r, g, b, a)
             }
+            //  #RrGgBb
             7 -> return IntColor(exp.substring(1).toInt(16))
-            9 -> {
+            9 -> {  // #RrGgBbAa
                 val color = exp.substring(1 until 7).toInt(16)
                 val a = exp.substring(7).toInt(16)
                 return IntColor((a shl 24) or color)
             }
         }
-    } else {
+    } else {    // 十进制颜色码
         if (exp.startsWith("rgba")) {
             val index = exp.indexOf('(', 4)
             val rgba = exp
@@ -110,5 +113,12 @@ fun IntColor(exp: String): IntColor {
                 return IntColor(rgb[0].toInt(), rgb[1].toInt(), rgb[2].toInt())
         }
     }
-    throw IllegalArgumentException("不合法的颜色表达式：$exp")
+    return when (exp) {
+        "black" -> IntColor.black
+        "white" -> IntColor.white
+        "gray" -> IntColor.gray
+        "transparent" -> IntColor.transparent
+        "shadow" -> IntColor.shadow
+        else -> throw IllegalArgumentException("不合法的颜色表达式：$exp")
+    }
 }
