@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
+import top.kmar.mi.api.exception.TransferException
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.ComplexCmptExp
 import top.kmar.mi.api.graphics.parser.cache.IParserCache
@@ -68,7 +69,6 @@ object GuiStyleParser {
         val result = expMap.computeIfAbsent(key) { LinkedList() }
         BufferedReader(ReaderUTF8(resourceManager.getResource(location).inputStream)).use { reader ->
             val builder = CmptExpBuilder()
-            var endWithContinue = false
             var preLevel = -1
             val valueList = LinkedList<IParserCache>()
             var prevContent = ""
@@ -77,35 +77,34 @@ object GuiStyleParser {
                 if (valueList.isEmpty()) return
                 val tmp = ArrayList(valueList)
                 builder.toExp { result.add(Node(it, tmp)) }
+                builder.goto(-1)
                 if (clear) valueList.clear()
             }
 
-            reader.lines().filter { it.isNotBlank() }.forEachOrdered {  content ->
+            fun handleContent(content: String) {
                 val (_, length) = content.countStartSpace()
                 val level = length.floorDiv2()
                 // 判断上一条语句是属性还是exp
-                if (!endWithContinue && level <= preLevel) {
-                    valueList.add(IParserCache.build(prevContent.trim()))
-                    if (level != preLevel) {
-                        export(true)
-                        for (i in 0 until preLevel - level)
-                            builder.prev()
-                    }
+                if (!prevContent.endsWith(',') && level <= preLevel) {
+                    valueList.add(IParserCache.build(prevContent))
                 } else {
                     export(true)
-                    val text = prevContent.trimEnd()
-                    endWithContinue = text.endsWith(',')
-                    if (level > preLevel) {
-                        for (i in 0 until level - preLevel)
-                            builder.next()
-                    }
-                    text.split(',')
+                    builder.goto(preLevel)
+                    prevContent.split(',')
                         .filter { it.isNotBlank() }
                         .map { ComplexCmptExp(it) }
                         .forEach { builder.addExp(it) }
                 }
                 preLevel = level
-                prevContent = content
+                prevContent = content.trim()
+            }
+
+            reader.lines().filter { it.isNotBlank() }.forEachOrdered {
+                try {
+                    handleContent(it)
+                } catch (e: Exception) {
+                    throw TransferException.instance("处理字符串[$prevContent]时发生了异常", e)
+                }
             }
             valueList.add(IParserCache.build(prevContent.trim()))
             export(false)

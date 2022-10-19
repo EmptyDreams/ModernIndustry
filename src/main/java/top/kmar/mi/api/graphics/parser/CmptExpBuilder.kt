@@ -12,6 +12,14 @@ class CmptExpBuilder {
 
     private val list = LinkedList<LinkedList<ComplexCmptExp>>()
 
+    fun goto(level: Int) {
+        if (level == -1) list.clear()
+        else {
+            while (level > list.size - 1) next()
+            while (level < list.size - 1) prev()
+        }
+    }
+
     fun next() {
         list.addLast(LinkedList())
     }
@@ -34,9 +42,10 @@ class CmptExpBuilder {
                 val src = resultList
                 resultList = LinkedList()
                 for (exp in external) {
-                    val newList = LinkedList(src)
-                    for (linkedList in newList) {
-                        linkedList.addAll(exp.list)
+                    val newList = LinkedList<LinkedList<SingleCmptExp>>()
+                    for (linkedList in src) {
+                        newList.add(LinkedList(linkedList))
+                        newList.last.addAll(exp.list)
                     }
                     resultList.addAll(newList)
                 }
