@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ModernIndustry.iml" filepath="$PROJECT_DIR$/.idea/modules/ModernIndustry.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ModernIndustry.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ModernIndustry.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ModernIndustry.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ModernIndustry.test.iml" />
     </modules>
   </component>
 </project>
