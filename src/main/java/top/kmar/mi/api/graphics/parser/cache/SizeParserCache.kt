@@ -32,7 +32,7 @@ class SizeParserCache(exp: String, isHeight: Boolean) : IParserCache {
             return@run { _, it -> PercentSizeMode(percent, 0) { style -> it(style) } }
         } else if (this[0].isDigit()) {    // 如果字符串格式为“num”
             return@run { _, _ -> FixedSizeMode(toInt()) }
-        } else if (startsWith('a')) {
+        } else if (startsWith('a')) {   // auto
             return@run { it, _ -> AutoSizeMode(it, isHeight)}
         } else {    // 如果字符串格式为“calc(num%[+-]num)”
             // 截取括号中间的部分

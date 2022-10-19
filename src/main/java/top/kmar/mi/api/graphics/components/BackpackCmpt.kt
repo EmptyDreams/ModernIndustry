@@ -78,7 +78,7 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
             position = PositionEnum.ABSOLUTE
             widthCalculator = InheritSizeMode { it.width }
             heightCalculator = FixedSizeMode(18 * 4 + 4 + Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 1)
-            bottom = 7
+            bottom = 8
             backgroundColor = IntColor.gray
             borderTop.color = IntColor(55, 55, 55)
             borderLeft.color = borderTop.color

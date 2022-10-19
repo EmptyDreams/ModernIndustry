@@ -29,7 +29,7 @@ class TittleCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         override val style = GraphicsStyle(service).apply {
             widthCalculator = InheritSizeMode { it.width }
             heightCalculator = FixedSizeMode(Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT)
-            marginTop = 6
+            marginTop = 8
             position = PositionEnum.ABSOLUTE
         }
 
