@@ -86,28 +86,32 @@ mixin {
 
 // Example for how to get properties into the manifest for reading at runtime.
 jar {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     manifest.attributes([
-            "Specification-Title"        : "examplemod",
-            "Specification-Vendor"       : "examplemodsareus",
-            "Specification-Version"      : "1", // We are version 1 of ourselves
-            "Implementation-Title"       : project.name,
-            "Implementation-Version"     : project.jar.archiveVersion,
-            "Implementation-Vendor"      : "examplemodsareus",
-            "Implementation-Timestamp"   : new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
             "TweakClass"                 : "top.kmar.mi.coremod.boot.MIMixinTweaker",
             "FMLCorePluginContainsFMLMod": true
     ])
+    from {
+        configurations.runtimeClasspath.findAll {
+            it.name.contains("kotlin") || it.name.contains("mixin")
+        }.collect {
+            zipTree(it)
+        }
+    }
 }
 
 //UTF-8
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
+
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = ["-Xuse-k2"]
     }
 }
+
 compileTestKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
