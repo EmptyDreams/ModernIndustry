@@ -2,7 +2,6 @@
   "package": "top.kmar.mi.coremod.mixin",
   "mixins": [
     "MixinCraftingHelper",
-    "MixinItemStack",
     "MixinUniversalBucket",
     "cap.MixinCapability",
     "cap.MixinCapabilityManager"

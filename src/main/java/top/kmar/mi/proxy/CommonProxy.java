@@ -5,12 +5,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import top.kmar.mi.api.register.AutoRegister;
-import top.kmar.mi.data.json.block.BlockJsonBuilder;
-import top.kmar.mi.data.json.fluid.FluidJsonBuilder;
-import top.kmar.mi.data.json.item.ItemJsonBuilder;
 
 import javax.annotation.Nonnull;
-import java.io.File;
 
 public class CommonProxy {
 	
@@ -24,12 +20,11 @@ public class CommonProxy {
 	public void preInit(@Nonnull FMLPreInitializationEvent event){
 		ASM = event.getAsmData();
 		AutoRegister.init();
-		if (!new File(".").getAbsolutePath().endsWith(".jar")) {
+		/*if ("jar".equals(ModernIndustry.class.getResource("").getProtocol())) {
 			BlockJsonBuilder.build();
 			ItemJsonBuilder.build();
 			FluidJsonBuilder.build();
-		}
-		//new GuiLoader();
+		}*/
     }
     
     public void init(FMLInitializationEvent event){ }

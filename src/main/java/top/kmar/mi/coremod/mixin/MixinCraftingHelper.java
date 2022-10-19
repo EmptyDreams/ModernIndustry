@@ -45,7 +45,6 @@ public class MixinCraftingHelper {
 	@Overwrite(remap = false)
 	private static boolean loadRecipes(ModContainer mod) {
 		JsonContext ctx = new JsonContext(mod.getModId());
-		
 		return findFiles(mod, "assets/" + mod.getModId() + "/recipes",
 				root -> {
 					Path fPath = root.resolve("_constants.json");
