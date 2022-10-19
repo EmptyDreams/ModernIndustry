@@ -1,0 +1,10 @@
+@mi:compressor
+mask
+    background
+        title(value="i18n:tile.mi.compressor.name")
+        backpack#player
+        div
+            slot#up
+            slot#down
+        progress#work
+        output#output

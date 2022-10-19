@@ -10,5 +10,6 @@ import top.kmar.mi.ModernIndustry.MODID
 object BlockGuiList {
 
     val fluidPump = ResourceLocation(MODID, "fluid_pump")
+    val compressor = ResourceLocation(MODID, "compressor")
 
 }

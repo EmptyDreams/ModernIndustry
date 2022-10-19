@@ -10,6 +10,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.BaseGraphics
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.function.Consumer
 
 /**
  * GUI注册机
@@ -47,7 +48,7 @@ class GuiRegedit {
     }
 
     /** 为指定GUI注册一个循环任务，其会在[BaseGraphics]每次完成网络任务后触发 */
-    fun registryLoopTask(key: ResourceLocation, task: (BaseGraphics) -> Unit) {
+    fun registryLoopTask(key: ResourceLocation, task: Consumer<BaseGraphics>) {
         val node = registry[key] ?: throw NullPointerException("指定key[$key]没有被注册")
         node.loopList.add(task)
     }
@@ -69,7 +70,7 @@ class GuiRegedit {
 
     /** 触发循环任务 */
     fun invokeLoopTask(key: ResourceLocation, gui: BaseGraphics) {
-        registry[key]!!.loopList.forEach { it(gui) }
+        registry[key]!!.loopList.forEach { it.accept(gui) }
     }
 
     /** 触发初始化任务 */
@@ -92,7 +93,7 @@ class GuiRegedit {
     private data class Node(
         val id: Int,
         val root: BaseGraphics.DocumentCmpt,
-        val loopList: MutableList<(BaseGraphics) -> Unit>,
+        val loopList: MutableList<Consumer<BaseGraphics>>,
         val initList: MutableList<InitTask>
     )
 

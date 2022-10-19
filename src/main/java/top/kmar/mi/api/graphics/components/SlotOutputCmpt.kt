@@ -26,6 +26,11 @@ class SlotOutputCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         set(value) {
             if (field == null) field = value
         }
+    var index: Int
+        get() = attributes["index", "0"].toInt()
+        set(value) {
+            attributes["index"] = value.toString()
+        }
     val slot by lazy(LazyThreadSafetyMode.NONE) {
         ItemSlot(
             this,

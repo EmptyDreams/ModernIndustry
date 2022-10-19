@@ -17,6 +17,7 @@ import top.kmar.mi.api.graphics.parser.GuiFileParser
 import top.kmar.mi.api.graphics.parser.GuiStyleParser
 import top.kmar.mi.api.graphics.utils.GuiRegedit
 import top.kmar.mi.api.register.others.AutoLoader
+import java.util.function.Consumer
 
 /**
  * GUI加载器
@@ -97,7 +98,7 @@ object GuiLoader : IGuiHandler {
         }
 
         /** @see GuiRegedit.registryLoopTask */
-        fun registryLoopTask(key: ResourceLocation, task: (BaseGraphics) -> Unit) {
+        fun registryLoopTask(key: ResourceLocation, task: Consumer<BaseGraphics>) {
             regedit!!.registryLoopTask(key, task)
         }
 
