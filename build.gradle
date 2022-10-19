@@ -86,14 +86,14 @@ mixin {
 
 // Example for how to get properties into the manifest for reading at runtime.
 jar {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest.attributes([
             "TweakClass"                 : "top.kmar.mi.coremod.boot.MIMixinTweaker",
             "FMLCorePluginContainsFMLMod": true
     ])
     from {
         configurations.runtimeClasspath.findAll {
-            it.name.contains("kotlin") || it.name.contains("mixin")
+            it.name.contains("mixin") || (it.name.contains("kotlin") && !it.name.contains("jdk7"))
         }.collect {
             zipTree(it)
         }
