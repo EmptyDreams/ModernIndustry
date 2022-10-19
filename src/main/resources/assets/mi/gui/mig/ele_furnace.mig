@@ -5,4 +5,4 @@ mask
         backpack#player
         slot#input
         progress#work
-        output#output
+        output#output(index=1)

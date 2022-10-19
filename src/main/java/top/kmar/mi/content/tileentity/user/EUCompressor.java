@@ -227,17 +227,14 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
             BackpackCmpt backpack = (BackpackCmpt) gui.queryCmpt(new ComplexCmptExp("backpack"));
             backpack.setPlayer(player);
             // 输入
-            SlotCmpt input = (SlotCmpt) gui.getElementByID("up");
-            input.setInventory(compressor.items);
-            input.setIndex(0);
+            SlotCmpt upInput = (SlotCmpt) gui.getElementByID("up");
+            upInput.setInventory(compressor.items);
             // 燃料
-            SlotCmpt fuel = (SlotCmpt) gui.getElementByID("down");
-            fuel.setInventory(compressor.items);
-            fuel.setIndex(1);
+            SlotCmpt downInput = (SlotCmpt) gui.getElementByID("down");
+            downInput.setInventory(compressor.items);
             // 输出
             SlotOutputCmpt output = (SlotOutputCmpt) gui.getElementByID("output");
             output.setInventory(compressor.items);
-            output.setIndex(2);
         });
         event.registryLoopTask(BlockGuiList.INSTANCE.getCompressor(), gui -> {
             EUCompressor compressor = (EUCompressor) gui.getPlayer().world.getTileEntity(gui.getPos());

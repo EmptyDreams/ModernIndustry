@@ -5,6 +5,6 @@ mask
         backpack#player
         div
             slot#up
-            slot#down
+            slot#down(index=1)
         progress#work
-        output#output
+        output#output(index=2)

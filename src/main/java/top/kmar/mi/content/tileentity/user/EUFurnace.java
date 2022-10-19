@@ -118,10 +118,8 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
             backpack.setPlayer(player);
             SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
             input.setInventory(furnace.items);
-            input.setIndex(0);
             SlotOutputCmpt output = (SlotOutputCmpt) gui.getElementByID("output");
             output.setInventory(furnace.items);
-            output.setIndex(1);
         });
         event.registryLoopTask(BlockGuiList.INSTANCE.getEleFurnace(), gui -> {
             EUFurnace furnace = (EUFurnace) gui.getPlayer().world.getTileEntity(gui.getPos());
