@@ -29,7 +29,7 @@ public final class ModernIndustry {
 	
 	public static final String MODID = "mi";
 	public static final String NAME = "ModernIndustry";
-	public static final String VERSION = "@version@";
+	public static final String VERSION = "1.0";
 	
 	@Mod.Instance(ModernIndustry.MODID)
 	public static ModernIndustry instance;
