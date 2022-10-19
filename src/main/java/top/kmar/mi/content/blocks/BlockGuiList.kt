@@ -11,5 +11,6 @@ object BlockGuiList {
 
     val fluidPump = ResourceLocation(MODID, "fluid_pump")
     val compressor = ResourceLocation(MODID, "compressor")
+    val eleFurnace = ResourceLocation(MODID, "ele_furnace")
 
 }
