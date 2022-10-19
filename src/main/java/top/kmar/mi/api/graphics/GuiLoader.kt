@@ -46,7 +46,7 @@ object GuiLoader : IGuiHandler {
         val key = regedit.getKey(ID)
         val pos = BlockPos(x, y, z)
         val gui = regedit.buildGui(key, player, pos)
-        regedit.invokeInitTask(key, gui, player, pos)
+        regedit.invokeInitTask(key, gui)
         gui.document.installParent(Cmpt.EMPTY_CMPT)
         return gui
     }
@@ -103,7 +103,7 @@ object GuiLoader : IGuiHandler {
         }
 
         /** @see GuiRegedit.registryInitTask */
-        fun registryInitTask(key: ResourceLocation, task: GuiRegedit.InitTask) {
+        fun registryInitTask(key: ResourceLocation, task: Consumer<BaseGraphics>) {
             regedit!!.registryInitTask(key, task)
         }
 

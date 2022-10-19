@@ -221,11 +221,11 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
     @SuppressWarnings("ConstantConditions")
     @SubscribeEvent
     public static void initGui(GuiLoader.MIGuiRegistryEvent event) {
-        event.registryInitTask(BlockGuiList.INSTANCE.getCompressor(), (gui, player, pos) -> {
-            EUCompressor compressor = (EUCompressor) player.world.getTileEntity(pos);
+        event.registryInitTask(BlockGuiList.INSTANCE.getCompressor(), gui -> {
+            EUCompressor compressor = (EUCompressor) gui.getTileEntity();
             // 玩家背包
             BackpackCmpt backpack = (BackpackCmpt) gui.queryCmpt(new ComplexCmptExp("backpack"));
-            backpack.setPlayer(player);
+            backpack.setPlayer(gui.getPlayer());
             // 输入
             SlotCmpt upInput = (SlotCmpt) gui.getElementByID("up");
             upInput.setInventory(compressor.items);
@@ -237,7 +237,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
             output.setInventory(compressor.items);
         });
         event.registryLoopTask(BlockGuiList.INSTANCE.getCompressor(), gui -> {
-            EUCompressor compressor = (EUCompressor) gui.getPlayer().world.getTileEntity(gui.getPos());
+            EUCompressor compressor = (EUCompressor) gui.getTileEntity();
             ProgressBarCmpt progress = (ProgressBarCmpt) gui.getElementByID("work");
             progress.setMaxProgress(compressor.getNeedTime());
             progress.setProgress(compressor.getWorkingTime());

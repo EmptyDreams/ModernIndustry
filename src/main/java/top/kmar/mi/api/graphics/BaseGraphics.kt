@@ -3,6 +3,7 @@ package top.kmar.mi.api.graphics
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Container
 import net.minecraft.item.ItemStack
+import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
 import net.minecraftforge.fml.relauncher.Side
@@ -44,6 +45,9 @@ open class BaseGraphics(
     @get:SideOnly(Side.CLIENT)
     val client by lazy(NONE) { document.client as BaseGraphicsClient }
     private val graphicsSlots = ArrayList<IGraphicsSlot>(40)
+
+    val tileEntity: TileEntity
+        get() = player.world.getTileEntity(pos)!!
 
     /** 是否可以被指定玩家打开 */
     override fun canInteractWith(playerIn: EntityPlayer): Boolean {

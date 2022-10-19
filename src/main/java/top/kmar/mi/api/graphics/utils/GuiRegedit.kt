@@ -42,7 +42,7 @@ class GuiRegedit {
     }
 
     /** 为指定GUI注册一个初始化任务，其会在[BaseGraphics]对象创建完成后触发 */
-    fun registryInitTask(key: ResourceLocation, task: InitTask) {
+    fun registryInitTask(key: ResourceLocation, task: Consumer<BaseGraphics>) {
         val node = registry[key] ?: throw NullPointerException("指定key[$key]没有被注册")
         node.initList.add(task)
     }
@@ -74,8 +74,8 @@ class GuiRegedit {
     }
 
     /** 触发初始化任务 */
-    fun invokeInitTask(key: ResourceLocation, gui: BaseGraphics, player: EntityPlayer, pos: BlockPos) {
-        registry[key]!!.initList.forEach { it.invoke(gui, player, pos) }
+    fun invokeInitTask(key: ResourceLocation, gui: BaseGraphics) {
+        registry[key]!!.initList.forEach { it.accept(gui) }
     }
 
     /** 根据key值顺序重新为GUI分配内部ID，并写入到新的注册机当中 */
@@ -94,13 +94,7 @@ class GuiRegedit {
         val id: Int,
         val root: BaseGraphics.DocumentCmpt,
         val loopList: MutableList<Consumer<BaseGraphics>>,
-        val initList: MutableList<InitTask>
+        val initList: MutableList<Consumer<BaseGraphics>>
     )
-
-    fun interface InitTask {
-
-        fun invoke(gui: BaseGraphics, player: EntityPlayer, pos: BlockPos)
-
-    }
 
 }

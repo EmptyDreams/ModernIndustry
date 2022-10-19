@@ -87,9 +87,9 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         @JvmStatic
         @SubscribeEvent
         fun registryGuiInfo(event: GuiLoader.MIGuiRegistryEvent) {
-            event.registryInitTask(BlockGuiList.fluidPump) { gui, player, pos ->
+            event.registryInitTask(BlockGuiList.fluidPump) { gui ->
                 val button = gui.queryCmpt(ComplexCmptExp("button")) as ButtonCmpt
-                val pump = player.world.getTileEntity(pos) as EUFluidPump
+                val pump = gui.tileEntity as EUFluidPump
                 button.addEventListener(IGraphicsListener.mouseClick) {
                     pump.start = !pump.start
                     pump.markDirty()
@@ -100,7 +100,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
                 val fluid = gui.queryCmpt(ComplexCmptExp("#fluid")) as ProgressBarCmpt
                 val energy = gui.queryCmpt(ComplexCmptExp("#energy")) as ProgressBarCmpt
                 val consume = gui.queryCmpt(ComplexCmptExp("#consume")) as ProgressBarCmpt
-                val pump = gui.player.world.getTileEntity(gui.pos) as EUFluidPump
+                val pump = gui.tileEntity as EUFluidPump
                 // 更新容量进度条数据
                 fluid.maxProgress = pump.maxCapacity
                 fluid.progress = pump.data.amount
