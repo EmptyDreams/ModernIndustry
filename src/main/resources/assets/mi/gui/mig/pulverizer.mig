@@ -1,0 +1,8 @@
+@pulverizer
+mask
+    background
+        title(value="i18n:tile.mi.ele_furnace.name")
+        backpack#player
+        slot#input
+        progress#work
+        output#output(index=1)

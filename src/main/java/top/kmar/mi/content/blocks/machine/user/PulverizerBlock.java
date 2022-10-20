@@ -14,6 +14,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import top.kmar.mi.api.register.block.annotations.AutoBlockRegister;
+import top.kmar.mi.content.blocks.BlockGuiList;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.blocks.base.MachineBlock;
 import top.kmar.mi.content.tileentity.user.EUPulverizer;
@@ -49,9 +50,7 @@ public class PulverizerBlock extends MachineBlock {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
-		return false;
-		//TODO
-		//return CommonUtil.openGui(playerIn, PulverizerFrame.NAME, worldIn, pos);
+		return CommonUtil.openGui(playerIn, BlockGuiList.getPulverizer(), pos);
 	}
 
 	@Nullable
@@ -59,7 +58,7 @@ public class PulverizerBlock extends MachineBlock {
 	public List<ItemStack> dropItems(World world, BlockPos pos) {
 		EUPulverizer pulverizer = (EUPulverizer) world.getTileEntity(pos);
 		//noinspection ConstantConditions
-		return Lists.newArrayList(pulverizer.getInSlot().getStack(), pulverizer.getOutSlot().getStack());
+		return Lists.newArrayList(pulverizer.getInputStack(), pulverizer.getOutputStack());
 	}
 
 	@Nonnull

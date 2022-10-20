@@ -115,7 +115,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
         initGuiHelper(event, BlockGuiList.getEleFurnace());
     }
     
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "DuplicatedCode"})
     public static void initGuiHelper(GuiLoader.MIGuiRegistryEvent event, ResourceLocation key) {
         event.registryInitTask(key, gui -> {
             EUFurnace furnace = (EUFurnace) gui.getTileEntity();
