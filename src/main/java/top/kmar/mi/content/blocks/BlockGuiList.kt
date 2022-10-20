@@ -15,5 +15,7 @@ object BlockGuiList {
     val compressor = ResourceLocation(MODID, "compressor")
     @JvmStatic
     val eleFurnace = ResourceLocation(MODID, "ele_furnace")
+    @JvmStatic
+    val eleHighFurnace = ResourceLocation(MODID, "ele_high_furnace")
 
 }

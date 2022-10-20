@@ -1,0 +1,8 @@
+@ele_high_furnace
+mask
+    background
+        title(value="i18n:tile.mi.ele_mfurnace.name")
+        backpack#player
+        slot#input
+        progress#work
+        output#output(index=1)

@@ -4,6 +4,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.ItemStackHandler;
@@ -109,10 +110,14 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
         return EleEnergy.COMMON;
     }
     
-    @SuppressWarnings("ConstantConditions")
     @SubscribeEvent
     public static void initGui(GuiLoader.MIGuiRegistryEvent event) {
-        event.registryInitTask(BlockGuiList.getEleFurnace(), gui -> {
+        initGuiHelper(event, BlockGuiList.getEleFurnace());
+    }
+    
+    @SuppressWarnings("ConstantConditions")
+    public static void initGuiHelper(GuiLoader.MIGuiRegistryEvent event, ResourceLocation key) {
+        event.registryInitTask(key, gui -> {
             EUFurnace furnace = (EUFurnace) gui.getTileEntity();
             BackpackCmpt backpack = (BackpackCmpt) gui.getElementByID("player");
             backpack.setPlayer(gui.getPlayer());
@@ -121,7 +126,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
             SlotOutputCmpt output = (SlotOutputCmpt) gui.getElementByID("output");
             output.setInventory(furnace.items);
         });
-        event.registryLoopTask(BlockGuiList.getEleFurnace(), gui -> {
+        event.registryLoopTask(key, gui -> {
             EUFurnace furnace = (EUFurnace) gui.getTileEntity();
             ProgressBarCmpt progress = (ProgressBarCmpt) gui.getElementByID("work");
             progress.setMaxProgress(furnace.getNeedTime());

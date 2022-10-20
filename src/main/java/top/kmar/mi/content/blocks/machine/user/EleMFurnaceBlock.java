@@ -14,6 +14,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import top.kmar.mi.api.register.block.annotations.AutoBlockRegister;
+import top.kmar.mi.content.blocks.BlockGuiList;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.blocks.base.MachineBlock;
 import top.kmar.mi.content.tileentity.user.EUMFurnace;
@@ -46,9 +47,7 @@ public class EleMFurnaceBlock extends MachineBlock {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
-		return false;
-		//TODO
-		//return CommonUtil.openGui(playerIn, EleMFurnaceFrame.NAME, worldIn, pos);
+		return CommonUtil.openGui(playerIn, BlockGuiList.getEleHighFurnace(), pos);
 	}
 
 	@Nullable
