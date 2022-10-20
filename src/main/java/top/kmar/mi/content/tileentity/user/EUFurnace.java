@@ -66,11 +66,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
         
         if (++workingTime >= getNeedTime()) {
             workingTime = 0;
-            if (outStack.isEmpty()) {
-                items.insertItem(1, MuffleFurnace.getResult(inputStack), false);
-            } else {
-                outStack.grow(1);
-            }
+            items.insertItem(1, MuffleFurnace.getResult(inputStack), false);
             inputStack.shrink(1);
         }
         

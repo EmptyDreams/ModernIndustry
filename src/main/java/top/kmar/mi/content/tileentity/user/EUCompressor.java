@@ -99,7 +99,6 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
      */
     private boolean updateData(ItemStack outStack) {
         boolean isWorking = false;  //保存是否正在工作
-        ItemStack nowOut = getOutputStack();
         //检查输入物品数目是否足够
         if (items.insertItem(2, outStack, true).isEmpty()) {
             isWorking = true;
@@ -108,7 +107,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
                 workingTime = 0;
                 items.extractItem(0, 1, false);
                 items.extractItem(1, 1, false);
-                nowOut.grow(outStack.getCount());
+                items.insertItem(2, outStack, false);
             }
             shrinkEnergy(getNeedEnergy());
         } else {
