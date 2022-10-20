@@ -14,6 +14,7 @@ import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.register.others.AutoCmpt
 import top.kmar.mi.api.utils.data.enums.VerticalDirectionEnum
 import top.kmar.mi.api.utils.floorDiv2
+import kotlin.math.max
 
 /**
  * 进度条控件
@@ -24,8 +25,14 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     /** 当前进度 */
     var progress: Int = 0
+        set(value) {
+            field = max(0, value)
+        }
     /** 最大进度 */
     var maxProgress: Int = 1
+        set(value) {
+            field = max(1, value)
+        }
     /** 百分比 */
     val percent: Float
         get() = progress.toFloat() / maxProgress
