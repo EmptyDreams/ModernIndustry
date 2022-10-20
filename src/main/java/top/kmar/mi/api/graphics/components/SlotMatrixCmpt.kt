@@ -10,6 +10,7 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.components.interfaces.slots.ItemSlot
+import top.kmar.mi.api.graphics.utils.CodeSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.register.others.AutoCmpt
@@ -30,9 +31,15 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     /** slot的Y轴数量 */
     var yCount: Int by attributes.toIntDelegate()
     /** 优先级 */
-    var priority: Int by attributes.toIntDelegate()
+    var priority: Int by attributes.toIntDelegate(100)
     /** 每个slot的尺寸 */
     var size: Int by attributes.toIntDelegate(18)
+    /** 是否允许输入 */
+    var input: Boolean
+        get() = attributes["input", "true"].toBoolean()
+        set(value) {
+            attributes["input"] = value.toString()
+        }
     /** slot的数量 */
     val count: Int
         get() = xCount * yCount
@@ -43,9 +50,12 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
     val slots by lazy(LazyThreadSafetyMode.NONE) {
         val priority = this.priority
+        val input = this.input
         Array(yCount) { y ->
             Array(xCount) { x ->
-                ItemSlot(this, priority, handler!!, x + yCount * y)
+                ItemSlot(this, priority, handler!!, index + x + yCount * y).apply {
+                    canPutIn = input
+                }
             }
         }
     }
@@ -62,6 +72,18 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         syncPos(x, y)
     }
 
+    override fun installParent(parent: Cmpt) {
+        for (list in slots) {
+            list.forEach { installSlot(it) }
+        }
+    }
+
+    override fun uninstallParent(oldParent: Cmpt) {
+        for (list in slots) {
+            list.forEach { uninstallSlot(it) }
+        }
+    }
+
     @SideOnly(Side.CLIENT)
     inner class SlotMatrixCmptClient : CmptClient {
 
@@ -72,6 +94,8 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             borderLeft.color = IntColor.darkGray
             borderRight.color = IntColor.white
             borderBottom.color = IntColor.white
+            widthCalculator = CodeSizeMode { size * xCount }
+            heightCalculator = CodeSizeMode { size * yCount }
         }
 
         override fun render(graphics: GuiGraphics) {
@@ -148,10 +172,10 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             val size = this.size
             for (i in slots.indices) {
                 val list = slots[i]
-                val yPos = i * size
+                val yPos = i * size + y
                 for (k in list.indices) {
-                    list[x].xPos = k * size
-                    list[y].yPos = yPos
+                    list[k].xPos = k * size + x
+                    list[k].yPos = yPos
                 }
             }
         }

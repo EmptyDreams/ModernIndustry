@@ -5,6 +5,7 @@ package top.kmar.mi.api.graphics.utils
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
+import java.util.function.IntSupplier
 
 /**
  * 控件尺寸
@@ -92,5 +93,17 @@ class AutoSizeMode(
     override fun invoke(dist: GraphicsStyle): Int = cmpt.client.style.run {
         if (isHeight) childrenHeight else childrenWidth
     }
+
+}
+
+/** 由代码计算控件尺寸，不得依赖其它控件的尺寸 */
+class CodeSizeMode(
+    val calculator: IntSupplier
+) : ISizeMode {
+
+    override val relyOnParent = false
+    override val relyOnChild = false
+
+    override fun invoke(dist: GraphicsStyle) = calculator.asInt
 
 }
