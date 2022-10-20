@@ -99,6 +99,13 @@ class GuiGraphics(
         Gui.drawRect(left, top, right, bottom, color.value)
     }
 
+    /** 绘制一个点 */
+    fun drawPoint(x: Int, y: Int, color: IntColor) {
+        GL11.glBegin(GL11.GL_POINT)
+        GL11.glVertex2i(x, y)
+        GL11.glEnd()
+    }
+
     /**
      * 绘制等腰梯形
      * @param x 绘制区域起始X轴坐标
