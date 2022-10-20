@@ -22,6 +22,7 @@ import top.kmar.mi.api.utils.MISysInfo
 import top.kmar.mi.api.utils.countStartSpace
 import top.kmar.mi.api.utils.floorDiv2
 import java.io.BufferedReader
+import java.io.FileNotFoundException
 import java.util.*
 
 /**
@@ -84,6 +85,18 @@ object GuiStyleParser {
             fun handleContent(content: String) {
                 val (_, length) = content.countStartSpace()
                 val level = length.floorDiv2()
+                if (length == 0 && content.startsWith("@import")) {
+                    val startIndex = content.indexOf('"') + 1
+                    val endIndex = content.lastIndexOf('"')
+                    val path = content.substring(startIndex until endIndex)
+                    val splitIndex = path.indexOf(':')
+                    val thatKey = if (splitIndex == -1)
+                                        ResourceLocation(key.resourceDomain, path)
+                                    else ResourceLocation(path)
+                    val thatStyl = load(thatKey) ?: throw FileNotFoundException("指定样式表[$path]不存在")
+                    result.addAll(thatStyl)
+                    return
+                }
                 // 判断上一条语句是属性还是exp
                 if (!prevContent.endsWith(',') && level <= preLevel) {
                     valueList.add(IParserCache.build(prevContent))
