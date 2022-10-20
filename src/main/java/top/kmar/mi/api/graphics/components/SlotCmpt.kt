@@ -27,18 +27,10 @@ class SlotCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         set(value) {
             if (field == null) field = value
         }
-    var index: Int
-        get() = attributes["index", "0"].toInt()
-        set(value) {
-            attributes["index"] = value.toString()
-        }
+    var index: Int by attributes.toIntDelegate()
+    var priority: Int by attributes.toIntDelegate(100)
     val slot by lazy(NONE) {
-        ItemSlot(
-            this,
-            attributes["priority", "100"].toInt(),
-            inventory!!,
-            attributes["index", "0"].toInt()
-        )
+        ItemSlot(this, priority, inventory!!, index)
     }
 
     override fun receive(message: IDataReader) {

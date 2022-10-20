@@ -32,10 +32,12 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
             if (field == null) field = value
         }
 
+    var priority: Int by attribute.toIntDelegate()
+
     /** 活动的九个物品栏 */
     val activeSlots by lazy(NONE) {
         Array(9) {
-            BackpackSlot(this, attribute["index", "200"].toInt(), player!!, it)
+            BackpackSlot(this, priority, player!!, it)
         }
     }
 
@@ -43,7 +45,7 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
     val mainSlots by lazy(NONE) {
         Array(3) { y ->
             Array(9) { x ->
-                BackpackSlot(this, attribute["index", "500"].toInt(), player!!, 9 + x + y * 9)
+                BackpackSlot(this, priority.shl(2), player!!, 9 + x + y * 9)
             }
         }
     }
