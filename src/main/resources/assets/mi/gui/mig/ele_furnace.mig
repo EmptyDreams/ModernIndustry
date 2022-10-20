@@ -1,4 +1,4 @@
-@mi:ele_furnace
+@ele_furnace
 mask
     background
         title(value="i18n:tile.mi.ele_furnace.name")

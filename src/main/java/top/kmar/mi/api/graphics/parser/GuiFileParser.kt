@@ -26,9 +26,8 @@ import java.nio.file.Path
  */
 object GuiFileParser {
 
-    private var count = 0
-
     fun registryAll(event: GuiLoader.MIGuiRegistryEvent) {
+        var count = 0
         Loader.instance().activeModList.forEach { mod ->
             CraftingHelper.findFiles(
                 mod, "assets/${mod.modId}/gui/mig", { true },
@@ -37,17 +36,18 @@ object GuiFileParser {
                     val relative = root.relativize(file).toString()
                     if ("mig" != FilenameUtils.getExtension(relative)) return@findFiles true
                     try {
-                        parseTargetFile(file, event)
+                        parseTargetFile(mod.modId, file, event)
                     } catch (e: Exception) {
                         MISysInfo.err("处理目标文件[$relative]时发生异常", e)
                     }
+                    ++count
                     true
                 }, true, true)
         }
         MISysInfo.print("共扫描并注册 $count 个GUI文件")
     }
 
-    private fun parseTargetFile(path: Path, register: GuiLoader.MIGuiRegistryEvent) {
+    private fun parseTargetFile(modid: String, path: Path, register: GuiLoader.MIGuiRegistryEvent) {
         var key: ResourceLocation? = null
         val root = BaseGraphics.DocumentCmpt(null)
         var preEle: Cmpt = root
@@ -57,7 +57,7 @@ object GuiFileParser {
             if (content.startsWith('@')) {
                 if (content == "@client") client = true
                 else if (key != null) throw IllegalArgumentException("同一个文件中出现了多次@语句")
-                else key = ResourceLocation(content.substring(1))
+                else key = ResourceLocation(modid, content.substring(1))
                 return
             }
             // 构建Cmpt对象
@@ -90,7 +90,6 @@ object GuiFileParser {
                 throw TransferException.instance("当前行内容：$it", e)
             }
         }
-        ++count
         if (client) register.registryClient(key!!, root)
         else register.registry(key!!, root)
     }
