@@ -119,8 +119,10 @@ object GuiStyleParser {
                     throw TransferException.instance("处理字符串[$prevContent]时发生了异常", e)
                 }
             }
-            valueList.add(IParserCache.build(prevContent.trim()))
-            export(false)
+            if (preLevel != -1) {
+                valueList.add(IParserCache.build(prevContent.trim()))
+                export(false)
+            }
         }
         return result
     }
