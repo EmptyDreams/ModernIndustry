@@ -9,8 +9,11 @@ import top.kmar.mi.ModernIndustry.MODID
  */
 object BlockGuiList {
 
+    @JvmStatic
     val fluidPump = ResourceLocation(MODID, "fluid_pump")
+    @JvmStatic
     val compressor = ResourceLocation(MODID, "compressor")
+    @JvmStatic
     val eleFurnace = ResourceLocation(MODID, "ele_furnace")
 
 }

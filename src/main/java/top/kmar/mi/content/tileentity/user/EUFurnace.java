@@ -112,7 +112,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
     @SuppressWarnings("ConstantConditions")
     @SubscribeEvent
     public static void initGui(GuiLoader.MIGuiRegistryEvent event) {
-        event.registryInitTask(BlockGuiList.INSTANCE.getEleFurnace(), gui -> {
+        event.registryInitTask(BlockGuiList.getEleFurnace(), gui -> {
             EUFurnace furnace = (EUFurnace) gui.getTileEntity();
             BackpackCmpt backpack = (BackpackCmpt) gui.getElementByID("player");
             backpack.setPlayer(gui.getPlayer());
@@ -121,7 +121,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
             SlotOutputCmpt output = (SlotOutputCmpt) gui.getElementByID("output");
             output.setInventory(furnace.items);
         });
-        event.registryLoopTask(BlockGuiList.INSTANCE.getEleFurnace(), gui -> {
+        event.registryLoopTask(BlockGuiList.getEleFurnace(), gui -> {
             EUFurnace furnace = (EUFurnace) gui.getTileEntity();
             ProgressBarCmpt progress = (ProgressBarCmpt) gui.getElementByID("work");
             progress.setMaxProgress(furnace.getNeedTime());

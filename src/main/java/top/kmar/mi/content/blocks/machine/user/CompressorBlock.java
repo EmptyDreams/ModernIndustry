@@ -58,7 +58,7 @@ public class CompressorBlock extends MachineBlock {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
                                     EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        return CommonUtil.openGui(playerIn, BlockGuiList.INSTANCE.getCompressor(), pos);
+        return CommonUtil.openGui(playerIn, BlockGuiList.getCompressor(), pos);
     }
     
     @SuppressWarnings("ConstantConditions")

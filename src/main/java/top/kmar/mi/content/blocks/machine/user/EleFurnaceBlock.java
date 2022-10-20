@@ -49,7 +49,7 @@ public class EleFurnaceBlock extends MachineBlock {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
 	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
 	                                float hitX, float hitY, float hitZ) {
-		return CommonUtil.openGui(playerIn, BlockGuiList.INSTANCE.getEleFurnace(), pos);
+		return CommonUtil.openGui(playerIn, BlockGuiList.getEleFurnace(), pos);
 	}
 
 	@Nullable
