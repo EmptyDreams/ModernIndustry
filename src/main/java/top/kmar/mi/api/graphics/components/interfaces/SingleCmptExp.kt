@@ -25,13 +25,14 @@ class SingleCmptExp(exp: String) : Comparable<SingleCmptExp> {
 
     fun match(cmpt: Cmpt): Boolean {
         for (node in list) {
-            if (node.className) {
-                if (node.content !in cmpt.classList) return false
-            } else if (node.id) {
-                if (node.content.length != cmpt.id.length + 1) return false
-                if (!node.content.endsWith(cmpt.id)) return false
-            } else {
-                if (CmptRegister.find(node.content) != cmpt.javaClass) return false
+            when {
+                node.className -> if (node.content !in cmpt.classList) return false
+                node.id -> {
+                    if (node.content.length != cmpt.id.length + 1) return false
+                    if (!node.content.endsWith(cmpt.id)) return false
+                }
+                node.tag -> if (CmptRegister.find(node.content) != cmpt.javaClass) return false
+                else -> return true
             }
         }
         return true
@@ -59,7 +60,7 @@ class SingleCmptExp(exp: String) : Comparable<SingleCmptExp> {
         val id = content[0] == '#'
 
         /** 是否是类型名表达式 */
-        val tag = !className && !id
+        val tag = !className && !id && !content.startsWith('*')
 
         override fun compareTo(other: Node) = content.compareTo(other.content)
 
