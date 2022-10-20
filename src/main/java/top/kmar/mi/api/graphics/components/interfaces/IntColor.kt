@@ -36,6 +36,8 @@ value class IntColor(val value: Int) {
         @JvmStatic
         val gray = IntColor(139, 139, 139)
         @JvmStatic
+        val darkGray = IntColor(55, 55, 55)
+        @JvmStatic
         val shadow = IntColor(0, 0, 0, 135)
         @JvmStatic
         val transparent = IntColor(0)

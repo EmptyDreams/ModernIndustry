@@ -17,7 +17,7 @@ class ItemSlot(
 
     var canPutIn = true
 
-    override val slot = object : SlotItemHandler(itemHandler, index, 0, 0) {
+    override val slot = object : SlotItemHandler(itemHandler, index, -1, -1) {
         override fun isItemValid(stack: ItemStack): Boolean {
             return canPutIn && super.isItemValid(stack)
         }

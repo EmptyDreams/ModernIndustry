@@ -1,6 +1,7 @@
 package top.kmar.mi.api.graphics.components.interfaces
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectRBTreeMap
+import kotlin.reflect.KProperty
 
 /**
  * 控件属性
@@ -10,11 +11,7 @@ class CmptAttributes : Iterable<Map.Entry<String, String>> {
 
     private val map = Object2ObjectRBTreeMap<String, String>()
 
-    var id: String
-        get() = this["id"]
-        set(value) {
-            this["id"] = value
-        }
+    var id: String by map
 
     /** 获取一个值，不存在则返回空的字符串 */
     operator fun get(key: String) = map[key] ?: ""
@@ -34,6 +31,27 @@ class CmptAttributes : Iterable<Map.Entry<String, String>> {
         this["id"] = id
     }
 
+    override fun iterator() = map.iterator()
+
+    operator fun getValue(obj: Any, property: KProperty<*>) = this[property.name]
+
+    operator fun setValue(obj: Any, property: KProperty<*>, value: String) {
+        this[property.name] = value
+    }
+
+    /** 获取一个Int类型的委托类 */
+    fun toIntDelegate(def: Int = 0) = IntDelegate(def.toString())
+
+    inner class IntDelegate(private val def: String) {
+
+        operator fun getValue(obj: Any, property: KProperty<*>): Int = get(property.name, def).toInt()
+
+        operator fun setValue(obj: Any, property: KProperty<*>, value: Int) {
+            set(property.name, value.toString())
+        }
+
+    }
+
     companion object {
 
         @JvmStatic
@@ -45,6 +63,5 @@ class CmptAttributes : Iterable<Map.Entry<String, String>> {
 
     }
 
-    override fun iterator() = map.iterator()
 
 }
