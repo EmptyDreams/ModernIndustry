@@ -19,5 +19,7 @@ object BlockGuiList {
     val eleHighFurnace = ResourceLocation(MODID, "ele_high_furnace")
     @JvmStatic
     val pulverizer = ResourceLocation(MODID, "pulverizer")
+    @JvmStatic
+    val synthesizer = ResourceLocation(MODID, "ele_synthesizer")
 
 }

@@ -4,6 +4,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.ItemStackHandler;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
 import top.kmar.mi.api.craftguide.ItemElement;
@@ -13,10 +15,15 @@ import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
 import top.kmar.mi.api.electricity.info.BiggerVoltage;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
+import top.kmar.mi.api.graphics.GuiLoader;
+import top.kmar.mi.api.graphics.components.BackpackCmpt;
+import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
+import top.kmar.mi.api.graphics.components.SlotMatrixCmpt;
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.ItemUtil;
 import top.kmar.mi.api.utils.WorldUtil;
+import top.kmar.mi.content.blocks.BlockGuiList;
 import top.kmar.mi.content.blocks.CraftList;
 import top.kmar.mi.data.properties.MIProperty;
 
@@ -29,15 +36,13 @@ import java.util.List;
  * @author EmptyDreams
  */
 @AutoTileEntity("electron_synthesizer")
+@Mod.EventBusSubscriber
 public class EUElectronSynthesizer extends FrontTileEntity implements ITickable {
 	
 	public static final int VOLTAGE = EleEnergy.COMMON;
 	
 	@AutoSave
-    private final ItemStackHandler HANDLER = new ItemStackHandler(5 * 5 + 4);
-	//TODO
-	//private final SlotGroup SLOTS = new SlotGroup(5, 5, 18, 0);
-	//private final SlotGroup OUTS = new SlotGroup(2, 2, 18, 0);
+    private final ItemStackHandler items = new ItemStackHandler(5 * 5 + 4);
 	/** 工作时间 */
 	@AutoSave private int workingTime = -10;
 	@AutoSave private int maxTime = 0;
@@ -51,8 +56,6 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 		counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
 		setCounter(counter);
 		setMaxEnergy(20);
-		//SLOTS.writeFromBuilder(0, 25, this::createHandler);
-		//OUTS.writeFrom(HANDLER, this, 25, it -> false);
 	}
 	
 	@Override
@@ -95,13 +98,13 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 	/** 输出产物 */
 	private void export() {
 		for (int i = 0; i < 25; ++i) {
-			HANDLER.getStackInSlot(i).shrink(1);
+			items.getStackInSlot(i).shrink(1);
 		}
 		for (int i = 0; i < 4; ++i) {
 			if (i < MERGE.size()) {
-				HANDLER.setStackInSlot(i + 25, MERGE.get(i));
+				items.setStackInSlot(i + 25, MERGE.get(i));
 			} else {
-				HANDLER.setStackInSlot(i + 25, ItemStack.EMPTY);
+				items.setStackInSlot(i + 25, ItemStack.EMPTY);
 			}
 		}
 	}
@@ -124,14 +127,13 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 	
 	/** 根据原料列表计算产物 */
 	private ItemList calculateProduction() {
-		/*ItemList input = new ItemList(5, 5);
+		ItemList input = new ItemList(5, 5);
 		for (int y = 0; y < 5; ++y) {
 			for (int x = 0; x < 5; ++x) {
-				input.set(x, y, ItemElement.instance(getInput().getSlot(x, y).getStack()));
+				input.set(x, y, ItemElement.instance(items.getStackInSlot(5 * y + x)));
 			}
 		}
-		return input;*/
-		return null;
+		return input;
 	}
 	
 	/** 合并产物列表 */
@@ -139,7 +141,7 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 		ItemStack[] stack = new ItemStack[8];
 		for (int i = 0; i < OUTPUT.size(); i++) {
 			stack[i] = OUTPUT.get(i).getStack();
-			stack[i + 4] = HANDLER.getStackInSlot(i + 25);
+			stack[i + 4] = items.getStackInSlot(i + 25);
 		}
 		List<ItemStack> merge = ItemUtil.merge(stack);
 		if (merge.size() < 4) MERGE = merge;
@@ -176,6 +178,34 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 	@Override
 	public int getExVoltage() {
 		return EleEnergy.COMMON;
+	}
+	
+	public List<ItemStack> getAllStacks() {
+		List<ItemStack> result = new ArrayList<>(29);
+		for (int i = 0; i != 29; ++i) {
+			result.add(items.getStackInSlot(i));
+		}
+		return result;
+	}
+	
+	@SuppressWarnings("ConstantConditions")
+	@SubscribeEvent
+	public static void initGui(GuiLoader.MIGuiRegistryEvent event) {
+		event.registryInitTask(BlockGuiList.getSynthesizer(), gui -> {
+			EUElectronSynthesizer synthesizer = (EUElectronSynthesizer) gui.getTileEntity();
+			BackpackCmpt backpack = (BackpackCmpt) gui.getElementByID("player");
+			backpack.setPlayer(gui.getPlayer());
+			SlotMatrixCmpt input = (SlotMatrixCmpt) gui.getElementByID("input");
+			input.setHandler(synthesizer.items);
+			SlotMatrixCmpt output = (SlotMatrixCmpt) gui.getElementByID("output");
+			output.setHandler(synthesizer.items);
+		});
+		event.registryLoopTask(BlockGuiList.getSynthesizer(), gui -> {
+			EUElectronSynthesizer synthesizer = (EUElectronSynthesizer) gui.getTileEntity();
+			ProgressBarCmpt work = (ProgressBarCmpt) gui.getElementByID("work");
+			work.setMaxProgress(synthesizer.maxTime);
+			work.setProgress(synthesizer.workingTime);
+		});
 	}
 	
 }
