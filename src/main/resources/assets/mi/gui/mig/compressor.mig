@@ -1,10 +1,10 @@
 @compressor
 mask
     background
-        title(value="i18n:tile.mi.compressor.name")
+        title(value = "i18n:tile.mi.compressor.name")
         backpack#player
         div
             slot#up
-            slot#down(index=1)
+            slot#down(index = 1)
         progress#work
-        output#output(index=2)
+        output#output(index = 2)

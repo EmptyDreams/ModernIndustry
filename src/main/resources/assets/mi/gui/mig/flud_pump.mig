@@ -1,7 +1,7 @@
 @fluid_pump
 mask
     background
-        title(value="i18n:tile.mi.fluid_pump.name")
+        title(value = "i18n:tile.mi.fluid_pump.name")
         div#show
             p
             progress#fluid
