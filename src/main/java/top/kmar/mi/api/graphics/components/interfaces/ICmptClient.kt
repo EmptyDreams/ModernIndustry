@@ -17,7 +17,7 @@ import top.kmar.mi.api.utils.data.math.Point2D
  * @author EmptyDreams
  */
 @SideOnly(Side.CLIENT)
-interface CmptClient {
+interface ICmptClient {
 
     /** 服务端对象，一个客户端对象对应且仅对应一个服务端对象 */
     val service: Cmpt

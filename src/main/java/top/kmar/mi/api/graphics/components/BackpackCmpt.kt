@@ -11,7 +11,7 @@ import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
-import top.kmar.mi.api.graphics.components.interfaces.CmptClient
+import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.components.interfaces.slots.BackpackSlot
 import top.kmar.mi.api.graphics.utils.*
@@ -75,7 +75,7 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
     }
 
     @SideOnly(Side.CLIENT)
-    inner class BackpackCmptClient : CmptClient {
+    inner class BackpackCmptClient : ICmptClient {
 
         override val service = this@BackpackCmpt
         override val style = GraphicsStyle(service).apply {

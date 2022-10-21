@@ -7,7 +7,7 @@ import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
-import top.kmar.mi.api.graphics.components.interfaces.CmptClient
+import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.components.interfaces.slots.ItemSlot
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
@@ -55,7 +55,7 @@ class SlotOutputCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     }
 
     @SideOnly(Side.CLIENT)
-    inner class SlotOutputCmptClient : CmptClient {
+    inner class SlotOutputCmptClient : ICmptClient {
 
         override val service = this@SlotOutputCmpt
         override val style = GraphicsStyle(service).apply {

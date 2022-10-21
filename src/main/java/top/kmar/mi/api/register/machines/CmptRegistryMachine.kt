@@ -1,7 +1,7 @@
 package top.kmar.mi.api.register.machines
 
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
-import top.kmar.mi.api.graphics.components.interfaces.CmptClient
+import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
 import top.kmar.mi.api.graphics.components.interfaces.CmptRegister
 import top.kmar.mi.api.register.AutoRegisterMachine
 import top.kmar.mi.api.register.others.AutoCmpt
@@ -17,7 +17,7 @@ object CmptRegistryMachine : AutoRegisterMachine<AutoCmpt, Any>() {
 
     override fun registry(clazz: Class<*>, annotation: AutoCmpt, data: Any?) {
         if (!Cmpt::class.java.isAssignableFrom(clazz)) {
-            if (CmptClient::class.java.isAssignableFrom(clazz))
+            if (ICmptClient::class.java.isAssignableFrom(clazz))
                 return MISysInfo.err("注册控件类时应当注册服务端类而非客户端类")
             return MISysInfo.err("控件类必须从Cmpt类继承")
         }

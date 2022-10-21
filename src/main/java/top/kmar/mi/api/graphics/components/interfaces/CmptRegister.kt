@@ -57,7 +57,7 @@ object CmptRegister {
      * @throws NoSuchElementException 如果控件没有包含共有的接收一个`String`的构造函数
      * @throws ClassCastException 如果传入的`T`不是从该控件派生的
      */
-    fun <T : CmptClient> buildClientCmpt(key: String, attributes: CmptAttributes): T {
+    fun <T : ICmptClient> buildClientCmpt(key: String, attributes: CmptAttributes): T {
         val service = buildServiceCmpt<Cmpt>(key, attributes)
         @Suppress("UNCHECKED_CAST")
         return service.client as T
