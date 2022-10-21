@@ -7,8 +7,8 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
+import top.kmar.mi.api.graphics.utils.CodeSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
-import top.kmar.mi.api.graphics.utils.InheritSizeMode
 import top.kmar.mi.api.graphics.utils.PositionEnum
 import top.kmar.mi.api.register.others.AutoCmpt
 import top.kmar.mi.api.utils.WorldUtil
@@ -31,8 +31,8 @@ class MaskCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             backgroundColor = IntColor(0, 0, 0, 120)
             position = PositionEnum.FIXED
             val container = (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client
-            widthCalculator = InheritSizeMode { container.width }
-            heightCalculator = InheritSizeMode { container.height }
+            widthCalculator = CodeSizeMode { container.width }
+            heightCalculator = CodeSizeMode { container.height }
         }
 
     }
