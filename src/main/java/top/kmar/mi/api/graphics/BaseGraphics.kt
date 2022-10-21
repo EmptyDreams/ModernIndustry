@@ -91,6 +91,13 @@ open class BaseGraphics(
         return stack.copy(oldCout - stack.count)
     }
 
+    override fun onContainerClosed(playerIn: EntityPlayer) {
+        super.onContainerClosed(playerIn)
+        graphicsSlots.stream()
+            .filter { it.drop }
+            .forEach { playerIn.dropItem(it.stack, false) }
+    }
+
     /** 添加一个控件 */
     fun addChild(cmpt: Cmpt) = document.addChild(cmpt)
     /** 移除一个控件 */

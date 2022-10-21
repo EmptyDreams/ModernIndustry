@@ -15,6 +15,11 @@ class BackpackSlot(
     index: Int
 ): IGraphicsSlot {
 
+    @Suppress("UNUSED_PARAMETER")
+    override var drop: Boolean
+        get() = false
+        set(value) {}
+
     override val slot = Slot(player.inventory, index, Int.MIN_VALUE, Int.MIN_VALUE)
 
 }

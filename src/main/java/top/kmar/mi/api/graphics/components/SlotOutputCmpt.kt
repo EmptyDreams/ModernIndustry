@@ -28,8 +28,16 @@ class SlotOutputCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
     var index: Int by attributes.toIntDelegate()
     var priority: Int by attributes.toIntDelegate(100)
+    var drop: Boolean
+        get() = attributes["drop", "false"].toBoolean()
+        set(value) {
+            attributes["drop"] = value.toString()
+        }
     val slot by lazy(LazyThreadSafetyMode.NONE) {
-        ItemSlot(this, priority, inventory!!, index).apply { canPutIn = false }
+        ItemSlot(this, priority, inventory!!, index).apply {
+            canPutIn = false
+            drop = this@SlotOutputCmpt.drop
+        }
     }
 
     override fun receive(message: IDataReader) {

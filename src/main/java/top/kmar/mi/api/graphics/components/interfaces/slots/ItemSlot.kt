@@ -16,6 +16,7 @@ class ItemSlot(
 ) : IGraphicsSlot {
 
     var canPutIn = true
+    override var drop = false
 
     override val slot = object : SlotItemHandler(itemHandler, index, -1, -1) {
         override fun isItemValid(stack: ItemStack): Boolean {

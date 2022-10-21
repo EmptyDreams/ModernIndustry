@@ -40,6 +40,11 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         set(value) {
             attributes["input"] = value.toString()
         }
+    var drop: Boolean
+        get() = attributes["drop", "false"].toBoolean()
+        set(value) {
+            attributes["drop"] = value.toString()
+        }
     /** slot的数量 */
     val count: Int
         get() = xCount * yCount
@@ -55,6 +60,7 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             Array(xCount) { x ->
                 ItemSlot(this, priority, handler!!, index + x + yCount * y).apply {
                     canPutIn = input
+                    drop = this@SlotMatrixCmpt.drop
                 }
             }
         }

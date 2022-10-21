@@ -21,6 +21,9 @@ interface IGraphicsSlot : Comparable<IGraphicsSlot> {
 
     val slot: Slot
 
+    /** gui关闭时是否丢弃物品 */
+    var drop: Boolean
+
     var xPos: Int
         get() = slot.xPos
         set(value) {
