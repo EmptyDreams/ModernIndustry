@@ -148,8 +148,8 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
         taskList.forEach { it() }
         style.alignChildren()
         renderChildren(graphics)
-        val inventorySlots = this.inventorySlots as BaseGraphics
-        GuiLoader.invokeLoopTask(inventorySlots.key, inventorySlots)
+        //val inventorySlots = this.inventorySlots as BaseGraphics
+        //GuiLoader.invokeLoopTask(inventorySlots.key, inventorySlots)
     }
 
     /** 添加一个初始化任务 */

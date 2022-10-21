@@ -127,7 +127,6 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
             input.setInventory(converter.item);
         });
         event.registryLoopTask(BlockGuiList.getRedStoneConverter(), gui -> {
-            if (gui.getPlayer().world.isRemote) return;
             EMRedStoneConverter converter = (EMRedStoneConverter) gui.getTileEntity();
             ProgressBarCmpt work = (ProgressBarCmpt) gui.getElementByID("work");
             work.setMaxProgress(converter.maxTime);
