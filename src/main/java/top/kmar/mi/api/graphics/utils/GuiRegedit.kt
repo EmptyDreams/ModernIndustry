@@ -79,18 +79,18 @@ class GuiRegedit {
         oppositeRegistry[id] ?: throw NullPointerException("无效id：$id")
 
     /** 触发循环任务 */
-    fun invokeLoopTask(key: ResourceLocation, gui: BaseGraphics) {
-        registry[key]!!.loopList.forEach { it.accept(gui) }
+    fun invokeLoopTask(gui: BaseGraphics) {
+        registry[gui.key]!!.loopList.forEach { it.accept(gui) }
     }
 
     @SideOnly(Side.CLIENT)
-    fun invokeClientLoopTask(key: ResourceLocation, gui: BaseGraphics) {
-        registry[key]!!.clientLoopList.forEach { it.accept(gui) }
+    fun invokeClientLoopTask(gui: BaseGraphics) {
+        registry[gui.key]!!.clientLoopList.forEach { it.accept(gui) }
     }
 
     /** 触发初始化任务 */
-    fun invokeInitTask(key: ResourceLocation, gui: BaseGraphics) {
-        registry[key]!!.initList.forEach { it.accept(gui) }
+    fun invokeInitTask(gui: BaseGraphics) {
+        registry[gui.key]!!.initList.forEach { it.accept(gui) }
     }
 
     /** 根据key值顺序重新为GUI分配内部ID，并写入到新的注册机当中 */

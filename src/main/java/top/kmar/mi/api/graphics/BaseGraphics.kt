@@ -64,7 +64,7 @@ open class BaseGraphics(
             }
         }
         task(document)
-        GuiLoader.invokeLoopTask(key, this)
+        GuiLoader.invokeLoopTask(this)
     }
 
     override fun transferStackInSlot(playerIn: EntityPlayer, index: Int): ItemStack {

@@ -45,7 +45,7 @@ object GuiLoader : IGuiHandler {
         val key = regedit.getKey(ID)
         val pos = BlockPos(x, y, z)
         val gui = regedit.buildGui(key, player, pos)
-        regedit.invokeInitTask(key, gui)
+        regedit.invokeInitTask(gui)
         gui.installParent()
         return gui
     }
@@ -71,14 +71,14 @@ object GuiLoader : IGuiHandler {
     }
 
     /** @see GuiRegedit.invokeLoopTask */
-    fun invokeLoopTask(key: ResourceLocation, gui: BaseGraphics) {
-        regedit.invokeLoopTask(key, gui)
+    fun invokeLoopTask(gui: BaseGraphics) {
+        regedit.invokeLoopTask(gui)
     }
 
     /** @see GuiRegedit.invokeClientLoopTask */
     @SideOnly(Side.CLIENT)
-    fun invokeClientLoopTask(key: ResourceLocation, gui: BaseGraphics) {
-        regedit.invokeClientLoopTask(key, gui)
+    fun invokeClientLoopTask(gui: BaseGraphics) {
+        regedit.invokeClientLoopTask(gui)
     }
 
     class MIGuiRegistryEvent(private val regedit: GuiRegedit?) : Event() {
