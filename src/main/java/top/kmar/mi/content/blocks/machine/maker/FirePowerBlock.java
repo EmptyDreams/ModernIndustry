@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import top.kmar.mi.ModernIndustry;
 import top.kmar.mi.api.register.block.annotations.AutoBlockRegister;
+import top.kmar.mi.content.blocks.BlockGuiList;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.blocks.base.MachineBlock;
 import top.kmar.mi.content.blocks.common.CommonBlocks;
@@ -31,68 +32,66 @@ import java.util.List;
  */
 @AutoBlockRegister(registryName = "fire_power", field = "INSTANCE")
 public class FirePowerBlock extends MachineBlock {
-	
-	//该字段通过反射赋值
-	@SuppressWarnings("unused")
-	private static FirePowerBlock INSTANCE;
-	private final Item ITEM;
-	
-	public static FirePowerBlock instance() {
-		return INSTANCE;
-	}
-	
-	public FirePowerBlock() {
-		super(Material.IRON);
-		setHarvestLevel(CommonBlocks.TC_PICKAXE, 2);
-		setDefaultState(blockState.getBaseState()
-				                .withProperty(MIProperty.getHORIZONTAL(), EnumFacing.NORTH)
-				.withProperty(MIProperty.getWORKING(), false));
-		ITEM = new ItemBlock(this).setRegistryName(ModernIndustry.MODID, "fire_power");
-	}
-	
-	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-	                                EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		return false;
-		//TODO
-		//return CommonUtil.openGui(playerIn, FirePowerFrame.NAME, worldIn, pos);
-	}
-	
-	@Nullable
-	@Override
-	public List<ItemStack> dropItems(World world, BlockPos pos) {
-		EMFirePower power = (EMFirePower) world.getTileEntity(pos);
-		//noinspection ConstantConditions
-		return Lists.newArrayList(power.getInSlot().getStack(), power.getOutSlot().getStack());
-	}
-	
-	@Nonnull
-	@Override
-	protected BlockStateContainer createBlockState() {
-		return CommonUtil.createBlockState(this);
-	}
-	
-	@Nonnull
-	@Override
-	public IBlockState getStateFromMeta(int meta) {
-		return CommonUtil.getStateFromMeta(this, meta);
-	}
-	
-	@Override
-	public int getMetaFromState(@Nonnull IBlockState state) {
-		return CommonUtil.getMetaFromState(state);
-	}
-	
-	@Nullable
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new EMFirePower();
-	}
-	
-	@Nonnull
-	@Override
-	public Item getBlockItem() {
-		return ITEM;
-	}
-	
+    
+    //该字段通过反射赋值
+    @SuppressWarnings("unused")
+    private static FirePowerBlock INSTANCE;
+    private final Item ITEM;
+    
+    public static FirePowerBlock instance() {
+        return INSTANCE;
+    }
+    
+    public FirePowerBlock() {
+        super(Material.IRON);
+        setHarvestLevel(CommonBlocks.TC_PICKAXE, 2);
+        setDefaultState(blockState.getBaseState()
+                .withProperty(MIProperty.getHORIZONTAL(), EnumFacing.NORTH)
+                .withProperty(MIProperty.getWORKING(), false));
+        ITEM = new ItemBlock(this).setRegistryName(ModernIndustry.MODID, "fire_power");
+    }
+    
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+                                    EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        return CommonUtil.openGui(playerIn, BlockGuiList.getFirePower(), pos);
+    }
+    
+    @Nullable
+    @Override
+    public List<ItemStack> dropItems(World world, BlockPos pos) {
+        EMFirePower power = (EMFirePower) world.getTileEntity(pos);
+        //noinspection ConstantConditions
+        return Lists.newArrayList(power.getInputStack(), power.getOutputStack());
+    }
+    
+    @Nonnull
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return CommonUtil.createBlockState(this);
+    }
+    
+    @Nonnull
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return CommonUtil.getStateFromMeta(this, meta);
+    }
+    
+    @Override
+    public int getMetaFromState(@Nonnull IBlockState state) {
+        return CommonUtil.getMetaFromState(state);
+    }
+    
+    @Nullable
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        return new EMFirePower();
+    }
+    
+    @Nonnull
+    @Override
+    public Item getBlockItem() {
+        return ITEM;
+    }
+    
 }

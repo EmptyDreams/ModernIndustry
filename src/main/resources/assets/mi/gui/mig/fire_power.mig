@@ -1,0 +1,10 @@
+@fire_power
+mask
+    background
+        title(value = "i18n:tile.mi.fire_power.name")
+        backpack#player
+        div
+            slot#input
+            progress#burn
+            output#output
+        progress#energy(index = 1)
