@@ -125,13 +125,13 @@ object GuiFileParser {
                 if (mid == -1) {
                     result[it] = ""
                 } else {
-                    val key = it.substring(0 until mid).trimEnd()
+                    val key = it.substring(0 until mid).trim()
                     val left = it.indexOf('"')
                     val text = if (left != -1) {
                         val right = it.lastIndexOf('"')
                         it.substring(left + 1 until right)
                     } else {
-                        it.substring(mid + 1).trimStart()
+                        it.substring(mid + 1).trim()
                     }
                     result[key] = text
                 }
