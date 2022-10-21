@@ -75,12 +75,12 @@ object GuiLoader : IGuiHandler {
         regedit.invokeLoopTask(key, gui)
     }
 
-    /** @see GuiRegedit.registryLoopTask */
-    fun registryLoopTask(key: ResourceLocation, task: (BaseGraphics) -> Unit) {
-        regedit.registryLoopTask(key, task)
+    /** @see GuiRegedit.invokeClientLoopTask */
+    @SideOnly(Side.CLIENT)
+    fun invokeClientLoopTask(key: ResourceLocation, gui: BaseGraphics) {
+        regedit.invokeClientLoopTask(key, gui)
     }
 
-    @Suppress("unused")
     class MIGuiRegistryEvent(private val regedit: GuiRegedit?) : Event() {
 
         constructor() : this(null)
@@ -104,6 +104,17 @@ object GuiLoader : IGuiHandler {
         /** @see GuiRegedit.registryInitTask */
         fun registryInitTask(key: ResourceLocation, task: Consumer<BaseGraphics>) {
             regedit!!.registryInitTask(key, task)
+        }
+
+        /** @see GuiRegedit.registryClientLoopTask */
+        fun registryClientLoopTask(key: ResourceLocation, task: Consumer<BaseGraphics>) {
+            regedit!!.registryClientLoopTask(key, task)
+        }
+
+        /** 注册一个双端都会运行的循环任务 */
+        fun registryCommonLoopTask(key: ResourceLocation, task: Consumer<BaseGraphics>) {
+            regedit!!.registryLoopTask(key, task)
+            regedit.registryClientLoopTask(key, task)
         }
 
     }

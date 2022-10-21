@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.BaseGraphics
+import top.kmar.mi.api.utils.WorldUtil
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
@@ -28,7 +29,7 @@ class GuiRegedit {
     fun registryGui(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
         if (key in registry) throw IllegalArgumentException("指定key[$key]已经被注册")
         val id = idIndex.incrementAndGet()
-        registry[key] = Node(id, root, LinkedList(), LinkedList())
+        registry[key] = Node(id, root, LinkedList(), LinkedList(), LinkedList())
         oppositeRegistry[id] = key
     }
 
@@ -37,7 +38,7 @@ class GuiRegedit {
     fun registryClientGui(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
         if (key in registry) throw IllegalArgumentException("指定key[$key]已经被注册")
         val id = clientIdIndex.decrementAndGet()
-        registry[key] = Node(id, root, LinkedList(), LinkedList())
+        registry[key] = Node(id, root, LinkedList(), LinkedList(), LinkedList())
         oppositeRegistry[id] = key
     }
 
@@ -49,10 +50,19 @@ class GuiRegedit {
 
     /** 为指定GUI注册一个循环任务，其会在[BaseGraphics]每次完成网络任务后触发 */
     fun registryLoopTask(key: ResourceLocation, task: Consumer<BaseGraphics>) {
+        if (WorldUtil.isClient()) return
         val node = registry[key] ?: throw NullPointerException("指定key[$key]没有被注册")
         node.loopList.add(task)
     }
 
+    /** 为指定GUI注册一个客户端循环任务 */
+    fun registryClientLoopTask(key: ResourceLocation, task: Consumer<BaseGraphics>) {
+        if (WorldUtil.isServer()) return
+        val node = registry[key] ?: throw NullPointerException("指定key[$key]没有被注册")
+        node.clientLoopList.add(task)
+    }
+
+    /** 构建一个GUI对象 */
     fun buildGui(key: ResourceLocation, player: EntityPlayer, pos: BlockPos): BaseGraphics {
         val node = registry[key] ?: throw NullPointerException("对应key[$key]没有被注册")
         return BaseGraphics(player, pos, key, node.root)
@@ -73,6 +83,11 @@ class GuiRegedit {
         registry[key]!!.loopList.forEach { it.accept(gui) }
     }
 
+    @SideOnly(Side.CLIENT)
+    fun invokeClientLoopTask(key: ResourceLocation, gui: BaseGraphics) {
+        registry[key]!!.clientLoopList.forEach { it.accept(gui) }
+    }
+
     /** 触发初始化任务 */
     fun invokeInitTask(key: ResourceLocation, gui: BaseGraphics) {
         registry[key]!!.initList.forEach { it.accept(gui) }
@@ -82,10 +97,9 @@ class GuiRegedit {
     fun sort(): GuiRegedit {
         val result = GuiRegedit()
         registry.forEach { (key, node) ->
-            if (node.id < 0) result.registryClientGui(key, node.root)
-            else result.registryGui(key, node.root)
-            node.initList.forEach { result.registryInitTask(key, it) }
-            node.loopList.forEach { result.registryLoopTask(key, it) }
+            val newId = if (node.id < 0) clientIdIndex.decrementAndGet() else idIndex.incrementAndGet()
+            result.registry[key] = node.deepCopy(newId)
+            result.oppositeRegistry[newId] = key
         }
         return result
     }
@@ -94,7 +108,17 @@ class GuiRegedit {
         val id: Int,
         val root: BaseGraphics.DocumentCmpt,
         val loopList: MutableList<Consumer<BaseGraphics>>,
-        val initList: MutableList<Consumer<BaseGraphics>>
-    )
+        val initList: MutableList<Consumer<BaseGraphics>>,
+        val clientLoopList: MutableList<Consumer<BaseGraphics>>
+    ) {
+
+        fun deepCopy(id: Int): Node {
+            val newLoopList = ArrayList(loopList)
+            val newInitList = ArrayList(initList)
+            val newClientLoopTask = ArrayList(clientLoopList)
+            return Node(id, root, newLoopList, newInitList, newClientLoopTask)
+        }
+
+    }
 
 }
