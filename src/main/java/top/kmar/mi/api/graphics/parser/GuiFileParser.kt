@@ -13,7 +13,6 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptRegister
 import top.kmar.mi.api.utils.MISysInfo
 import top.kmar.mi.api.utils.container.PairIntObj
 import top.kmar.mi.api.utils.countStartSpace
-import top.kmar.mi.api.utils.removeAllSpace
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -120,14 +119,22 @@ object GuiFileParser {
         val index = lastIndexOf(')')
         val value = substring(start + 1 until index)
         value.split(',').stream()
-            .map { it.removeAllSpace() }
+            .filter { it.isNotBlank() }
             .forEach {
                 val mid = it.indexOf('=')
-                val key = it.substring(0 until mid)
-                val text = if (it[mid + 1] == '"')
-                                it.substring(mid + 2 until it.length - 1)
-                            else it.substring(mid + 1)
-                result[key] = text
+                if (mid == -1) {
+                    result[it] = ""
+                } else {
+                    val key = it.substring(0 until mid).trimEnd()
+                    val left = it.indexOf('"')
+                    val text = if (left != -1) {
+                        val right = it.lastIndexOf('"')
+                        it.substring(left + 1 until right)
+                    } else {
+                        it.substring(mid + 1).trimStart()
+                    }
+                    result[key] = text
+                }
             }
         return result
     }
