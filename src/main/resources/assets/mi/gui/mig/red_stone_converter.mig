@@ -1,0 +1,8 @@
+@red_stone_converter
+mask
+    background
+        title(value = "i18n:tile.mi.red_stone_converter.name")
+        backpack#player
+        slot#input
+        progress#work
+        progress#energy

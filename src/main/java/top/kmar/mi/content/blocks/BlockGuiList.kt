@@ -21,5 +21,7 @@ object BlockGuiList {
     val pulverizer = ResourceLocation(MODID, "pulverizer")
     @JvmStatic
     val synthesizer = ResourceLocation(MODID, "ele_synthesizer")
+    @JvmStatic
+    val redStoneConverter = ResourceLocation(MODID, "red_stone_converter")
 
 }
