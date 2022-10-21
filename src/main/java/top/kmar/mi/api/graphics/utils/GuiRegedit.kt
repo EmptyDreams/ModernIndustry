@@ -8,7 +8,6 @@ import net.minecraft.util.math.BlockPos
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.BaseGraphics
-import top.kmar.mi.api.utils.WorldUtil
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
@@ -22,7 +21,6 @@ class GuiRegedit {
     private val registry = Object2ObjectAVLTreeMap<ResourceLocation, Node>()
     private val oppositeRegistry = Int2ObjectAVLTreeMap<ResourceLocation>()
     private val idIndex = AtomicInteger(0)
-    @SideOnly(Side.CLIENT)
     private val clientIdIndex = AtomicInteger(0)
 
     /** 注册一个双端GUI */
@@ -50,14 +48,12 @@ class GuiRegedit {
 
     /** 为指定GUI注册一个循环任务，其会在[BaseGraphics]每次完成网络任务后触发 */
     fun registryLoopTask(key: ResourceLocation, task: Consumer<BaseGraphics>) {
-        if (WorldUtil.isClient()) return
         val node = registry[key] ?: throw NullPointerException("指定key[$key]没有被注册")
         node.loopList.add(task)
     }
 
     /** 为指定GUI注册一个客户端循环任务 */
     fun registryClientLoopTask(key: ResourceLocation, task: Consumer<BaseGraphics>) {
-        if (WorldUtil.isServer()) return
         val node = registry[key] ?: throw NullPointerException("指定key[$key]没有被注册")
         node.clientLoopList.add(task)
     }

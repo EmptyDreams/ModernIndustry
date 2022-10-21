@@ -90,12 +90,6 @@ object GuiLoader : IGuiHandler {
             regedit!!.registryGui(key, root)
         }
 
-        /** 注册一个客户端的GUI，该函数可在注册事件完毕后继续注册 */
-        @SideOnly(Side.CLIENT)
-        fun registryClient(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
-            regedit!!.registryClientGui(key, root)
-        }
-
         /** @see GuiRegedit.registryLoopTask */
         fun registryLoopTask(key: ResourceLocation, task: Consumer<BaseGraphics>) {
             regedit!!.registryLoopTask(key, task)
