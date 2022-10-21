@@ -35,16 +35,9 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     /** 每个slot的尺寸 */
     var size: Int by attributes.toIntDelegate(18)
     /** 是否允许输入 */
-    var input: Boolean
-        get() = attributes["input", "true"].toBoolean()
-        set(value) {
-            attributes["input"] = value.toString()
-        }
-    var drop: Boolean
-        get() = attributes["drop", "false"].toBoolean()
-        set(value) {
-            attributes["drop"] = value.toString()
-        }
+    var input: Boolean by attributes.toBoolDelegate(true)
+    /** gui关闭后是否丢弃物品 */
+    var drop: Boolean by attributes.toBoolDelegate()
     /** slot的数量 */
     val count: Int
         get() = xCount * yCount

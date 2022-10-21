@@ -42,12 +42,28 @@ class CmptAttributes : Iterable<Map.Entry<String, String>> {
     /** 获取一个Int类型的委托类 */
     fun toIntDelegate(def: Int = 0) = IntDelegate(def.toString())
 
+    /** 获取一个Boolean类型的委托类 */
+    fun toBoolDelegate(def: Boolean = false) = BoolDelegate(def)
+
     inner class IntDelegate(private val def: String) {
 
         operator fun getValue(obj: Any, property: KProperty<*>): Int = get(property.name, def).toInt()
 
         operator fun setValue(obj: Any, property: KProperty<*>, value: Int) {
             set(property.name, value.toString())
+        }
+
+    }
+
+    inner class BoolDelegate(private val def: Boolean) {
+
+        operator fun getValue(obj: Any, property: KProperty<*>): Boolean {
+            return if (property.name in map) !def else def
+        }
+
+        operator fun setValue(obj: Any, property: KProperty<*>, value: Boolean) {
+            if (value == def) map[property.name] = ""
+            else map.remove(property.name)
         }
 
     }

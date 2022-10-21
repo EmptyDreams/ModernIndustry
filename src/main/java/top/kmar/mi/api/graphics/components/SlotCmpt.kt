@@ -29,11 +29,7 @@ class SlotCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
     var index: Int by attributes.toIntDelegate()
     var priority: Int by attributes.toIntDelegate(100)
-    var drop: Boolean
-        get() = attributes["drop", "false"].toBoolean()
-        set(value) {
-            attributes["drop"] = value.toString()
-        }
+    var drop: Boolean by attributes.toBoolDelegate()
     val slot by lazy(NONE) {
         ItemSlot(this, priority, inventory!!, index).apply {
             drop = this@SlotCmpt.drop
