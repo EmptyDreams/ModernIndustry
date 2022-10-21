@@ -6,5 +6,5 @@ mask
         div
             slot#input
             progress#burn
-            output#output
-        progress#energy(index = 1)
+            output#output(index = 1)
+        progress#energy
