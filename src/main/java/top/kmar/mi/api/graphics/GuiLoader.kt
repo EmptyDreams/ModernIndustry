@@ -12,7 +12,6 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.ModernIndustry
 import top.kmar.mi.api.event.GuiRegistryFinishedEvent
-import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.parser.GuiFileParser
 import top.kmar.mi.api.graphics.parser.GuiStyleParser
 import top.kmar.mi.api.graphics.utils.GuiRegedit
@@ -47,7 +46,7 @@ object GuiLoader : IGuiHandler {
         val pos = BlockPos(x, y, z)
         val gui = regedit.buildGui(key, player, pos)
         regedit.invokeInitTask(key, gui)
-        gui.document.installParent(Cmpt.EMPTY_CMPT)
+        gui.installParent()
         return gui
     }
 

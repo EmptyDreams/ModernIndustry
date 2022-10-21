@@ -14,7 +14,6 @@ import top.kmar.mi.api.craftguide.sol.ItemSet;
 import top.kmar.mi.api.electricity.clock.NonCounter;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.graphics.GuiLoader;
-import top.kmar.mi.api.graphics.components.BackpackCmpt;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
 import top.kmar.mi.api.graphics.components.SlotCmpt;
 import top.kmar.mi.api.graphics.components.SlotOutputCmpt;
@@ -137,8 +136,6 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
     public static void initGui(GuiLoader.MIGuiRegistryEvent event) {
         event.registryInitTask(BlockGuiList.getFirePower(), gui -> {
             EMFirePower power = (EMFirePower) gui.getTileEntity();
-            BackpackCmpt backpack = (BackpackCmpt) gui.getElementByID("player");
-            backpack.setPlayer(gui.getPlayer());
             SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
             input.setInventory(power.items);
             SlotOutputCmpt output = (SlotOutputCmpt) gui.getElementByID("output");

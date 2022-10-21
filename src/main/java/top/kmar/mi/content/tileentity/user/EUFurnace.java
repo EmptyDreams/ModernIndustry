@@ -14,7 +14,6 @@ import top.kmar.mi.api.electricity.info.BiggerVoltage;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
 import top.kmar.mi.api.graphics.GuiLoader;
-import top.kmar.mi.api.graphics.components.BackpackCmpt;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
 import top.kmar.mi.api.graphics.components.SlotCmpt;
 import top.kmar.mi.api.graphics.components.SlotOutputCmpt;
@@ -115,8 +114,6 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
     public static void initGuiHelper(GuiLoader.MIGuiRegistryEvent event, ResourceLocation key) {
         event.registryInitTask(key, gui -> {
             EUFurnace furnace = (EUFurnace) gui.getTileEntity();
-            BackpackCmpt backpack = (BackpackCmpt) gui.getElementByID("player");
-            backpack.setPlayer(gui.getPlayer());
             SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
             input.setInventory(furnace.items);
             SlotOutputCmpt output = (SlotOutputCmpt) gui.getElementByID("output");

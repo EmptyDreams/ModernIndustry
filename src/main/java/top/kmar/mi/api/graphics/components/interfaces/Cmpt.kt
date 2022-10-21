@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.graphics.components.interfaces.slots.IGraphicsSlot
+import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
@@ -45,9 +45,12 @@ abstract class Cmpt(
     /** 父节点 */
     var parent: Cmpt = EMPTY_CMPT
         private set(value) {
-            if (value != field && isInstallParent) uninstallParent(field)
+            if (field != EMPTY_CMPT && value != EMPTY_CMPT && field != value)
+                throw AssertionError("不允许在已经添加父节点的情况下重新设置父节点")
             field = value
         }
+    var gui: BaseGraphics? = null
+        private set
     /** 是否安装过父节点 */
     var isInstallParent = false
     /** 类名列表，内部元素不重复 */
@@ -97,19 +100,14 @@ abstract class Cmpt(
     fun hasParent(): Boolean = parent != EMPTY_CMPT
 
     /** 初始化父节点信息 */
-    internal open fun installParent(parent: Cmpt) {}
+    internal open fun installParent(parent: Cmpt, gui: BaseGraphics) {
+        this.gui = gui
+    }
 
     /** 移除父节点信息 */
-    protected open fun uninstallParent(oldParent: Cmpt) {}
-
-    /**
-     * 添加一个Slot
-     * @return Slot在GUI中的下标
-     */
-    protected open fun installSlot(slot: IGraphicsSlot): Int = parent.installSlot(slot)
-
-    /** 移除一个Slot */
-    protected open fun uninstallSlot(slot: IGraphicsSlot): Unit = parent.uninstallSlot(slot)
+    protected open fun uninstallParent(oldParent: Cmpt, gui: BaseGraphics) {
+        this.parent = EMPTY_CMPT
+    }
 
     /** 向控件添加一个子控件 */
     fun addChild(cmpt: Cmpt) {
@@ -120,7 +118,7 @@ abstract class Cmpt(
     /** 从控件中移除一个子控件 */
     fun removeChild(cmpt: Cmpt) {
         childrenList.remove(cmpt)
-        cmpt.parent = EMPTY_CMPT
+        cmpt.uninstallParent(this, gui!!)
     }
 
     /** 通过ID获取控件，不存在则返回`null` */
@@ -244,10 +242,6 @@ abstract class Cmpt(
         val EMPTY_CMPT = object : Cmpt(CmptAttributes.valueOfID("null")) {
 
             override fun initClientObj() = EmptyClient(this)
-
-            override fun installSlot(slot: IGraphicsSlot): Int {
-                throw NullPointerException("该元素不包含父节点")
-            }
 
             override fun buildNewObj() = this
 

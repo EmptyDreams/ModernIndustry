@@ -8,6 +8,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.dor.interfaces.IDataReader
+import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
@@ -28,19 +29,13 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
     override fun buildNewObj() = BackpackCmpt(attributes.copy())
 
     var player: EntityPlayer? = null
-        set(value) {
-            if (field == null) field = value
-        }
-
     var priority: Int by attribute.toIntDelegate()
-
     /** 活动的九个物品栏 */
     val activeSlots by lazy(NONE) {
         Array(9) {
             BackpackSlot(this, priority, player!!, it)
         }
     }
-
     /** 背包栏 */
     val mainSlots by lazy(NONE) {
         Array(3) { y ->
@@ -50,12 +45,19 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
         }
     }
 
-    override fun installParent(parent: Cmpt) {
-        super.installParent(parent)
-        activeSlots.forEach { installSlot(it) }
+    override fun installParent(parent: Cmpt, gui: BaseGraphics) {
+        super.installParent(parent, gui)
+        player = gui.player
+        activeSlots.forEach { gui.installSlot(it) }
         for (slots in mainSlots) {
-            slots.forEach { installSlot(it) }
+            slots.forEach { gui.installSlot(it) }
         }
+    }
+
+    override fun uninstallParent(oldParent: Cmpt, gui: BaseGraphics) {
+        super.uninstallParent(oldParent, gui)
+        val start = activeSlots.first().slot.slotNumber
+        gui.uninstallSlots(start until start + 36)
     }
 
     override fun receive(message: IDataReader) {

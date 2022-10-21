@@ -4,6 +4,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import net.minecraftforge.items.ItemStackHandler
 import top.kmar.mi.api.dor.interfaces.IDataReader
+import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
@@ -43,12 +44,14 @@ class SlotOutputCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         slot.yPos = message.readVarInt()
     }
 
-    override fun installParent(parent: Cmpt) {
-        installSlot(slot)
+    override fun installParent(parent: Cmpt, gui: BaseGraphics) {
+        super.installParent(parent, gui)
+        gui.installSlot(slot)
     }
 
-    override fun uninstallParent(oldParent: Cmpt) {
-        uninstallSlot(slot)
+    override fun uninstallParent(oldParent: Cmpt, gui: BaseGraphics) {
+        super.uninstallParent(oldParent, gui)
+        gui.uninstallSlot(slot)
     }
 
     @SideOnly(Side.CLIENT)

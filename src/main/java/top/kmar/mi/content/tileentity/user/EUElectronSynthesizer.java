@@ -16,7 +16,6 @@ import top.kmar.mi.api.electricity.info.BiggerVoltage;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
 import top.kmar.mi.api.graphics.GuiLoader;
-import top.kmar.mi.api.graphics.components.BackpackCmpt;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
 import top.kmar.mi.api.graphics.components.SlotMatrixCmpt;
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
@@ -193,8 +192,6 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 	public static void initGui(GuiLoader.MIGuiRegistryEvent event) {
 		event.registryInitTask(BlockGuiList.getSynthesizer(), gui -> {
 			EUElectronSynthesizer synthesizer = (EUElectronSynthesizer) gui.getTileEntity();
-			BackpackCmpt backpack = (BackpackCmpt) gui.getElementByID("player");
-			backpack.setPlayer(gui.getPlayer());
 			SlotMatrixCmpt input = (SlotMatrixCmpt) gui.getElementByID("input");
 			input.setHandler(synthesizer.items);
 			SlotMatrixCmpt output = (SlotMatrixCmpt) gui.getElementByID("output");

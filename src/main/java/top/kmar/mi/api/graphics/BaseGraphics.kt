@@ -33,10 +33,7 @@ open class BaseGraphics(
 ) : Container() {
 
     /** 容器对象 */
-    @Suppress("LeakingThis")
-    val document: DocumentCmpt = ((root?.copy() ?: DocumentCmpt(this)) as DocumentCmpt).apply {
-        gui = this@BaseGraphics
-    }
+    val document: DocumentCmpt = ((root?.copy() ?: DocumentCmpt()) as DocumentCmpt)
     /**
      * 客户端对象
      *
@@ -121,29 +118,58 @@ open class BaseGraphics(
     fun queryCmptAll(exp: ComplexCmptExp) = document.queryCmptAll(exp)
     fun queryCmpt(exp: ComplexCmptExp) = document.queryCmpt(exp)
 
-    class DocumentCmpt(
-        var gui: BaseGraphics?,
-        attributes: CmptAttributes
-    ) : Cmpt(attributes) {
+    /** 添加一个slot，并返回其序列号 */
+    fun installSlot(slot: IGraphicsSlot): Int {
+        addSlotToContainer(slot.slot)
+        graphicsSlots.add(slot)
+        return inventorySlots.size - 1
+    }
 
-        constructor(gui: BaseGraphics?) :
-                this(gui, CmptAttributes().apply {
-                    id = "document"
-                    this["level"] = "-1"
-                })
+    /** 移除一个slot */
+    fun uninstallSlot(slot: IGraphicsSlot) {
+        val index = inventorySlots.indexOf(slot.slot)
+        inventorySlots.removeAt(index)
+        inventoryItemStacks.removeAt(index)
+        graphicsSlots.removeAt(index)
+        for (i in index until inventorySlots.size) {
+            inventorySlots[i].slotNumber = i
+        }
+    }
+
+    /** 删除指定下标范围内的 */
+    fun uninstallSlots(range: IntRange) {
+        inventorySlots.removeIf { it.slotNumber in range }
+        graphicsSlots.removeIf { it.slot.slotNumber in range }
+        for (i in range.reversed()) inventoryItemStacks.removeAt(i)
+        for ((index, slot) in inventorySlots.withIndex()) {
+            slot.slotNumber = index
+        }
+    }
+
+    fun installParent() {
+        document.installParent(Cmpt.EMPTY_CMPT, this)
+    }
+
+    class DocumentCmpt(
+        attributes: CmptAttributes = CmptAttributes().apply {
+            id = "document"
+            this["level"] = "-1"
+        }
+    ) : Cmpt(attributes) {
 
         @SideOnly(Side.CLIENT)
         override fun initClientObj() = BaseGraphicsClient(gui!!)
 
-        override fun installParent(parent: Cmpt) {
+        override fun installParent(parent: Cmpt, gui: BaseGraphics) {
+            super.installParent(parent, gui)
             val list = LinkedList<Cmpt>()
-            list.add(gui!!.document)
+            list.add(gui.document)
             do {
                 val node = list.pop()
                 node.eachAllChildren {
                     if (!it.isInstallParent) {
                         it.isInstallParent = true
-                        it.installParent(node)
+                        it.installParent(node, gui)
                     }
                     list.add(it)
                 }
@@ -151,22 +177,7 @@ open class BaseGraphics(
             isInstallParent = true
         }
 
-        override fun installSlot(slot: IGraphicsSlot): Int {
-            gui!!.addSlotToContainer(slot.slot)
-            gui!!.graphicsSlots.add(slot)
-            return gui!!.inventorySlots.size - 1
-        }
-
-        override fun uninstallSlot(slot: IGraphicsSlot) {
-            with(gui!!) {
-                val index = inventorySlots.indexOf(slot.slot)
-                inventorySlots.removeAt(index)
-                inventoryItemStacks.removeAt(index)
-                graphicsSlots.removeAt(index)
-            }
-        }
-
-        override fun buildNewObj() = DocumentCmpt(gui, attributes.copy())
+        override fun buildNewObj() = DocumentCmpt(attributes.copy())
 
     }
 

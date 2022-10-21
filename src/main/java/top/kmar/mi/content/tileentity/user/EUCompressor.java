@@ -17,11 +17,9 @@ import top.kmar.mi.api.electricity.info.BiggerVoltage;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
 import top.kmar.mi.api.graphics.GuiLoader;
-import top.kmar.mi.api.graphics.components.BackpackCmpt;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
 import top.kmar.mi.api.graphics.components.SlotCmpt;
 import top.kmar.mi.api.graphics.components.SlotOutputCmpt;
-import top.kmar.mi.api.graphics.components.interfaces.ComplexCmptExp;
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
@@ -222,9 +220,6 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
     public static void initGui(GuiLoader.MIGuiRegistryEvent event) {
         event.registryInitTask(BlockGuiList.getCompressor(), gui -> {
             EUCompressor compressor = (EUCompressor) gui.getTileEntity();
-            // 玩家背包
-            BackpackCmpt backpack = (BackpackCmpt) gui.queryCmpt(new ComplexCmptExp("backpack"));
-            backpack.setPlayer(gui.getPlayer());
             // 输入
             SlotCmpt upInput = (SlotCmpt) gui.getElementByID("up");
             upInput.setInventory(compressor.items);

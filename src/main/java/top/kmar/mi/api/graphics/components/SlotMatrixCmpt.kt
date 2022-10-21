@@ -5,6 +5,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import net.minecraftforge.items.ItemStackHandler
 import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.dor.interfaces.IDataReader
+import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
@@ -71,16 +72,17 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         syncPos(x, y)
     }
 
-    override fun installParent(parent: Cmpt) {
+    override fun installParent(parent: Cmpt, gui: BaseGraphics) {
+        super.installParent(parent, gui)
         for (list in slots) {
-            list.forEach { installSlot(it) }
+            list.forEach { gui.installSlot(it) }
         }
     }
 
-    override fun uninstallParent(oldParent: Cmpt) {
-        for (list in slots) {
-            list.forEach { uninstallSlot(it) }
-        }
+    override fun uninstallParent(oldParent: Cmpt, gui: BaseGraphics) {
+        super.uninstallParent(oldParent, gui)
+        val start = slots.first().first().slot.slotNumber
+        gui.uninstallSlots(start until start + count)
     }
 
     @SideOnly(Side.CLIENT)

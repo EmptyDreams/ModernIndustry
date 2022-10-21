@@ -48,7 +48,7 @@ object GuiFileParser {
 
     private fun parseTargetFile(modid: String, path: Path, register: GuiLoader.MIGuiRegistryEvent) {
         var key: ResourceLocation? = null
-        val root = BaseGraphics.DocumentCmpt(null)
+        val root = BaseGraphics.DocumentCmpt()
         var preEle: Cmpt = root
         var preLevel = -1
         var client = false
