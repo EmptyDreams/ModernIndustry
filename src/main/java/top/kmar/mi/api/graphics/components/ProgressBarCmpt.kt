@@ -76,12 +76,12 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
                 progress.render(graphics, percent)
                 if (progress.showText) {
                     val textY = when (progress.textLocation) {
-                        VerticalDirectionEnum.UP -> y - graphics.fontRenderer.FONT_HEIGHT - 1
-                        VerticalDirectionEnum.DOWN -> endY + 1
-                        VerticalDirectionEnum.CENTER -> y + (height.floorDiv2())
+                        VerticalDirectionEnum.UP -> - graphics.fontRenderer.FONT_HEIGHT - 1
+                        VerticalDirectionEnum.DOWN -> height + graphics.fontRenderer.FONT_HEIGHT.floorDiv2()
+                        VerticalDirectionEnum.CENTER -> height.floorDiv2()
                     }
-                    val textX = x + (width.floorDiv2())
-                    graphics.drawStringCenter(textX, textY, "$progress / $maxProgress", fontColor)
+                    val textX = width.floorDiv2()
+                    graphics.drawStringCenter(textX, textY, "${service.progress} / $maxProgress", fontColor)
                 }
             }
             renderChildren(graphics)
