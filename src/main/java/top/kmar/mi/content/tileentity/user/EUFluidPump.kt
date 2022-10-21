@@ -97,9 +97,9 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
                 }
             }
             event.registryLoopTask(BlockGuiList.fluidPump) { gui ->
-                val fluid = gui.queryCmpt(ComplexCmptExp("#fluid")) as ProgressBarCmpt
-                val energy = gui.queryCmpt(ComplexCmptExp("#energy")) as ProgressBarCmpt
-                val consume = gui.queryCmpt(ComplexCmptExp("#consume")) as ProgressBarCmpt
+                val fluid = gui.getElementByID("fluid") as ProgressBarCmpt
+                val energy = gui.getElementByID("energy") as ProgressBarCmpt
+                val consume = gui.getElementByID("consume") as ProgressBarCmpt
                 val pump = gui.tileEntity as EUFluidPump
                 // 更新容量进度条数据
                 fluid.maxProgress = pump.maxCapacity
@@ -110,22 +110,26 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
                 // 更新瞬时能量消耗数据
                 consume.maxProgress = pump.maxPower
                 consume.progress = pump.consume
-                applyClient {
-                    val texts = gui.queryCmptAll(ComplexCmptExp("p"))
-                                        .map { it.client as TextCmpt.TextCmptClient }
-                    val fluidText = I18n.format(
-                        if (pump.data.isEmpty) "mi.gui.fluid_pump.null"
-                        else pump.data.fluid!!.unlocalizedName
-                    )
-                    texts[0].text = I18n.format("mi.gui.fluid_pump.fluid",
-                        "${fluid.progress}/${fluid.maxProgress}", fluidText)
-                    texts[1].text = I18n.format("mi.gui.fluid_pump.energy",
-                        "${energy.progress}/${energy.maxProgress}")
-                    texts[2].text = I18n.format("mi.gui.fluid_pump.consume",
-                        "${consume.progress}/${consume.maxProgress}")
-                    val button = gui.queryCmpt(ComplexCmptExp("button"))
-                    button!!.attributes["value"] = I18n.format(if (pump.start) "mi.gui.open" else "mi.gui.close")
-                }
+            }
+            event.registryClientLoopTask(BlockGuiList.fluidPump) { gui ->
+                val fluid = gui.getElementByID("fluid") as ProgressBarCmpt
+                val energy = gui.getElementByID("energy") as ProgressBarCmpt
+                val consume = gui.getElementByID("consume") as ProgressBarCmpt
+                val pump = gui.tileEntity as EUFluidPump
+                val texts = gui.queryCmptAll(ComplexCmptExp("p"))
+                    .map { it.client as TextCmpt.TextCmptClient }
+                val fluidText = I18n.format(
+                    if (pump.data.isEmpty) "mi.gui.fluid_pump.null"
+                    else pump.data.fluid!!.unlocalizedName
+                )
+                texts[0].text = I18n.format("mi.gui.fluid_pump.fluid",
+                    "${fluid.progress}/${fluid.maxProgress}", fluidText)
+                texts[1].text = I18n.format("mi.gui.fluid_pump.energy",
+                    "${energy.progress}/${energy.maxProgress}")
+                texts[2].text = I18n.format("mi.gui.fluid_pump.consume",
+                    "${consume.progress}/${consume.maxProgress}")
+                val button = gui.queryCmpt(ComplexCmptExp("button"))
+                button!!.attributes["value"] = I18n.format(if (pump.start) "mi.gui.open" else "mi.gui.close")
             }
         }
 
