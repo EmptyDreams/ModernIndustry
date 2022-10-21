@@ -1,5 +1,7 @@
 package top.kmar.mi.api.graphics.components
 
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import net.minecraftforge.items.ItemStackHandler
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
@@ -49,6 +51,7 @@ class SlotCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         uninstallSlot(slot)
     }
 
+    @SideOnly(Side.CLIENT)
     inner class SlotCmptClient : CmptClient {
 
         override val service = this@SlotCmpt

@@ -1,5 +1,7 @@
 package top.kmar.mi.api.graphics.components
 
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
@@ -21,6 +23,7 @@ class MaskCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     override fun initClientObj() = MaskClient()
     override fun buildNewObj() = MaskCmpt(attributes.copy())
 
+    @SideOnly(Side.CLIENT)
     inner class MaskClient : CmptClient {
 
         override val service = this@MaskCmpt
