@@ -78,6 +78,14 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDir 'src/generated/resources'
+        }
+    }
+}
+
 mixin {
     // MixinGradle Settings
     add sourceSets.main, 'mixins.mi.refmap.json'
@@ -109,11 +117,5 @@ compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
         freeCompilerArgs = ["-Xuse-k2"]
-    }
-}
-
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
     }
 }
