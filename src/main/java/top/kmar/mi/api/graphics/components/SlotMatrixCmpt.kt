@@ -25,20 +25,13 @@ import top.kmar.mi.api.utils.floorDiv2
 @AutoCmpt("matrix")
 class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
-    /** slot起始下标 */
-    var index: Int by attributes.toIntDelegate()
     /** slot的X轴数量 */
     var xCount: Int by attributes.toIntDelegate()
     /** slot的Y轴数量 */
     var yCount: Int by attributes.toIntDelegate()
-    /** 优先级 */
-    var priority: Int by attributes.toIntDelegate(100)
     /** 每个slot的尺寸 */
     var size: Int by attributes.toIntDelegate(18)
-    /** 是否允许输入 */
-    var input: Boolean by attributes.toBoolDelegate(true)
-    /** gui关闭后是否丢弃物品 */
-    var drop: Boolean by attributes.toBoolDelegate()
+    val slotAttributes = ItemSlot.SlotAttributes(attributes)
     /** slot的数量 */
     val count: Int
         get() = xCount * yCount
@@ -48,13 +41,17 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             if (field == null) field = value
         }
     val slots by lazy(LazyThreadSafetyMode.NONE) {
-        val priority = this.priority
-        val input = this.input
+        val index = slotAttributes.index
+        val priority = slotAttributes.priority
         Array(yCount) { y ->
             Array(xCount) { x ->
                 ItemSlot(this, priority, handler!!, index + x + yCount * y).apply {
-                    canPutIn = input
-                    drop = this@SlotMatrixCmpt.drop
+                    drop = slotAttributes.drop
+                    canPutIn = !slotAttributes.forbidInput
+                    canPutOut = !slotAttributes.forbidOutput
+                    inputChecker = slotAttributes.inputChecker
+                    outputChecker = slotAttributes.outputChecker
+                    onSlotChanged = slotAttributes.onSlotChanged
                 }
             }
         }

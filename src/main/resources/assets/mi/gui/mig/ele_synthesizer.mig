@@ -5,4 +5,4 @@ mask
         backpack#player
         matrix#input(xCount = 5, yCount = 5)
         progress#work
-        matrix#output(index = 25, xCount = 2, yCount = 2, input = false)
+        matrix#output(index = 25, xCount = 2, yCount = 2, forbidInput)
