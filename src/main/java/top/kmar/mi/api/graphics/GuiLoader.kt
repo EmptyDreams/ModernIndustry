@@ -65,7 +65,6 @@ object GuiLoader : IGuiHandler {
     fun getID(key: ResourceLocation) = regedit.getID(key)
 
     /** 注册一个客户端GUI */
-    @SideOnly(Side.CLIENT)
     fun registryClientGui(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
         regedit.registryClientGui(key, root)
     }

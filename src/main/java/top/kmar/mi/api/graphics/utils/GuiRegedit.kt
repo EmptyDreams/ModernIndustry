@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
+import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.BaseGraphics
@@ -32,7 +33,6 @@ class GuiRegedit {
     }
 
     /** 注册一个客户端GUI */
-    @SideOnly(Side.CLIENT)
     fun registryClientGui(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
         if (key in registry) throw IllegalArgumentException("指定key[$key]已经被注册")
         val id = clientIdIndex.decrementAndGet()
@@ -93,6 +93,7 @@ class GuiRegedit {
     fun sort(): GuiRegedit {
         val result = GuiRegedit()
         registry.forEach { (key, node) ->
+            if (node.id < 0 && FMLCommonHandler.instance().side.isServer) return@forEach
             val newId = if (node.id < 0) clientIdIndex.decrementAndGet() else idIndex.incrementAndGet()
             result.registry[key] = node.deepCopy(newId)
             result.oppositeRegistry[newId] = key

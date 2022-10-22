@@ -2,6 +2,7 @@ package top.kmar.mi.api.graphics.parser
 
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.crafting.CraftingHelper
+import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.Loader
 import org.apache.commons.io.FilenameUtils
 import top.kmar.mi.api.exception.TransferException
@@ -89,8 +90,10 @@ object GuiFileParser {
                 throw TransferException.instance("当前行内容：$it", e)
             }
         }
-        if (client) register.registryClient(key!!, root)
-        else register.registry(key!!, root)
+        if (client) {
+            if (!FMLCommonHandler.instance().side.isServer)
+                GuiLoader.registryClientGui(key!!, root)
+        } else register.registry(key!!, root)
     }
 
     /** 获取字符串中的Tag */
