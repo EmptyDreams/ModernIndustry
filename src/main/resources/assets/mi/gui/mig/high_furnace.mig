@@ -1,0 +1,11 @@
+@high_furnace
+mask
+    background
+        title(value = "i18n:tile.mi.muffle_furnace.name")
+        backpack#player
+        div
+            slot#input
+            burn#burn
+            slot#fuel(index = 1)
+        progress#work
+        output#output(index = 2)

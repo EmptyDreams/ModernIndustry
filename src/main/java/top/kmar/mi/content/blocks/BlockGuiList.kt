@@ -25,5 +25,7 @@ object BlockGuiList {
     val redStoneConverter = ResourceLocation(MODID, "red_stone_converter")
     @JvmStatic
     val firePower = ResourceLocation(MODID, "fire_power")
+    @JvmStatic
+    val highFurnace = ResourceLocation(MODID, "high_furnace")
 
 }

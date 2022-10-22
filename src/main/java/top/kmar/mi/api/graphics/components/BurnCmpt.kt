@@ -15,6 +15,7 @@ import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.register.others.AutoCmpt
 import top.kmar.mi.api.utils.MISysInfo
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
@@ -31,7 +32,13 @@ class BurnCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     override fun buildNewObj() = BurnCmpt(attributes.copy())
 
     var progress = 0
+        set(value) {
+            field = max(0, value)
+        }
     var maxProcess = 1
+        set(value) {
+            field = max(1, value)
+        }
 
     private var _progressCache = -1
     private var _maxCache = -1

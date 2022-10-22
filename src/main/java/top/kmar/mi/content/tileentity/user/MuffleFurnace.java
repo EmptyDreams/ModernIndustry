@@ -5,12 +5,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
+import top.kmar.mi.api.graphics.GuiLoader;
+import top.kmar.mi.api.graphics.components.BurnCmpt;
+import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
+import top.kmar.mi.api.graphics.components.SlotCmpt;
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.BaseTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
+import top.kmar.mi.content.blocks.BlockGuiList;
 import top.kmar.mi.data.properties.MIProperty;
 
 import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
@@ -20,114 +26,117 @@ import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
  * @author EmptyDreams
  */
 @AutoTileEntity("MuffleFurnace")
+@Mod.EventBusSubscriber
 public class MuffleFurnace extends BaseTileEntity implements ITickable {
-	
-	@AutoSave
+    
+    @AutoSave
     private final ItemStackHandler item = new ItemStackHandler(3);
-	/** 上方放置原料的输入框 */
-	private final SlotItemHandler up = new SlotItemHandler(item, 0, 55, 21) {
-		@Override
-		public boolean isItemValid(ItemStack stack) {
-			ItemStack result = getResult(stack);
-			if (getHasStack()) return super.isItemValid(stack) &&
-					                          result.getItem() == getResult(getStack()).getItem();
-			else return super.isItemValid(stack) && !result.isEmpty();
-		}
-	};
-	/** 下方放置燃料的输入框 */
-	private final SlotItemHandler down = new SlotItemHandler(item, 1, 55, 57) {
-		@Override
-		public boolean isItemValid(ItemStack stack) {
-			//防止折叠
-			return super.isItemValid(stack) && getItemBurnTime(stack) > 0;
-		}
-	};
-	/** 产品输出 */
-	private final SlotItemHandler out = new SlotItemHandler(item, 2, 111, 38) {
-		@Override
-		public boolean isItemValid(ItemStack stack) {
-			return false;
-		}
-	};
-	
-	@AutoSave private int maxWorkingTime = 0;
-	@AutoSave private int workingTime = 0;
-	@AutoSave private int maxBurningTime = 0;
-	@AutoSave private int burningTime = 0;
-	
-	@Override
-	public void update() {
-		if (world.isRemote) {
-			WorldUtil.removeTickable(this);
-			return;
-		}
-		if (updateBurningTime()) {
-			ItemStack result = out.getStack();
-			if (result.getCount() < result.getMaxStackSize()) updateWorkingTime();
-		} else {
-			workingTime = maxWorkingTime = 0;
-		}
-		
-		if (!up.getHasStack()) {
-			workingTime = maxWorkingTime = 0;
-			return;
-		}
-		
-		IBlockState oldState = world.getBlockState(pos);
-		IBlockState newState = oldState.withProperty(MIProperty.getWORKING(), isWorking());
-		WorldUtil.setBlockState(world, pos, newState);
-	}
-	
-	/** 更新工作时间 */
-	protected void updateWorkingTime() {
-		if (maxWorkingTime == 0) {
-			maxWorkingTime = getCookTime(up.getStack());
-			up.decrStackSize(1);
-		}
-		if (++workingTime >= maxWorkingTime) {
-			if (out.getStack().isEmpty()) out.putStack(getResult(up.getStack()));
-			else out.getStack().grow(1);
-			maxWorkingTime = workingTime = 0;
-		}
-	}
-	
-	/** 更新燃烧时间 */
-	protected boolean updateBurningTime() {
-		if (++burningTime >= maxBurningTime) {
-			burningTime = maxBurningTime = 0;
-		}
-		if (maxBurningTime == 0 && down.getHasStack() && up.getHasStack()) {
-			if (down.getHasStack()) {
-				maxBurningTime = getItemBurnTime(down.getStack());
-				down.getStack().shrink(1);
-				return true;
-			} else {
-				maxBurningTime = 0;
-				return false;
-			}
-		}
-		return isWorking();
-	}
-	
-	/** 是否正在工作 */
-	public boolean isWorking() { return maxBurningTime != 0; }
-	/** 获取正面 */
-	public EnumFacing getFront() {
-		return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
-	}
-	
-	public SlotItemHandler getUp() { return up; }
-	public SlotItemHandler getDown() { return down; }
-	public SlotItemHandler getOut() { return out; }
-	
-	public static ItemStack getResult(ItemStack in) {
-		return FurnaceRecipes.instance().getSmeltingResult(in).copy();
-	}
-	
-	/** 获取工作需要的时间 */
-	@SuppressWarnings("unused")
-	public int getCookTime(ItemStack stack) {
-		return 130;
-	}
-	
+    
+    @AutoSave private int maxWorkingTime = 0;
+    @AutoSave private int workingTime = 0;
+    @AutoSave private int maxBurningTime = 0;
+    @AutoSave private int burningTime = 0;
+    
+    @Override
+    public void update() {
+        if (world.isRemote) {
+            WorldUtil.removeTickable(this);
+            return;
+        }
+        ItemStack output = getOutputStack();
+        if (updateBurningTime()) {
+            if (output.getCount() < output.getMaxStackSize()) updateWorkingTime();
+        } else {
+            workingTime = maxWorkingTime = 0;
+        }
+        
+        if (output.isEmpty()) {
+            workingTime = maxWorkingTime = 0;
+        } else {
+            IBlockState oldState = world.getBlockState(pos);
+            IBlockState newState = oldState.withProperty(MIProperty.getWORKING(), isWorking());
+            WorldUtil.setBlockState(world, pos, newState);
+        }
+    
+        markDirty();
+    }
+    
+    /** 更新工作时间 */
+    protected void updateWorkingTime() {
+        ItemStack input = getInputStack();
+        if (maxWorkingTime == 0) {
+            maxWorkingTime = getCookTime(input);
+            input.shrink(1);
+        }
+        if (++workingTime >= maxWorkingTime) {
+            item.insertItem(2, getResult(input), false);
+            maxWorkingTime = workingTime = 0;
+        }
+    }
+    
+    /** 更新燃烧时间 */
+    protected boolean updateBurningTime() {
+        if (++burningTime >= maxBurningTime) {
+            burningTime = maxBurningTime = 0;
+        }
+        ItemStack fuel = getFuelStack();
+        ItemStack input = getInputStack();
+        if (maxBurningTime == 0 && !fuel.isEmpty() && !input.isEmpty()) {
+            maxBurningTime = getItemBurnTime(fuel);
+            fuel.shrink(1);
+            return true;
+        }
+        return isWorking();
+    }
+    
+    /** 是否正在工作 */
+    public boolean isWorking() { return maxBurningTime != 0; }
+    /** 获取正面 */
+    public EnumFacing getFront() {
+        return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
+    }
+    
+    public ItemStack getInputStack() {
+        return item.getStackInSlot(0);
+    }
+    public ItemStack getFuelStack() {
+        return item.getStackInSlot(1);
+    }
+    public ItemStack getOutputStack() {
+        return item.getStackInSlot(2);
+    }
+    
+    public static ItemStack getResult(ItemStack in) {
+        return FurnaceRecipes.instance().getSmeltingResult(in).copy();
+    }
+    
+    /** 获取工作需要的时间 */
+    @SuppressWarnings("unused")
+    public int getCookTime(ItemStack stack) {
+        return 130;
+    }
+    
+    @SuppressWarnings("ConstantConditions")
+    @SubscribeEvent
+    public static void initGui(GuiLoader.MIGuiRegistryEvent event) {
+        event.registryInitTask(BlockGuiList.getHighFurnace(), gui -> {
+            MuffleFurnace furnace = (MuffleFurnace) gui.getTileEntity();
+            SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
+            SlotCmpt fuel = (SlotCmpt) gui.getElementByID("fuel");
+            SlotCmpt output = (SlotCmpt) gui.getElementByID("output");
+            input.setHandler(furnace.item);
+            fuel.setHandler(furnace.item);
+            output.setHandler(furnace.item);
+        });
+        event.registryLoopTask(BlockGuiList.getHighFurnace(), gui -> {
+            MuffleFurnace furnace = (MuffleFurnace) gui.getTileEntity();
+            ProgressBarCmpt work = (ProgressBarCmpt) gui.getElementByID("work");
+            BurnCmpt burn = (BurnCmpt) gui.getElementByID("burn");
+            work.setMaxProgress(furnace.maxWorkingTime);
+            work.setProgress(furnace.workingTime);
+            burn.setMaxProcess(furnace.maxBurningTime);
+            burn.setProgress(furnace.burningTime);
+        });
+    }
+    
 }
