@@ -11,6 +11,10 @@ import top.kmar.mi.api.register.others.AutoCmpt
 @AutoCmpt("output")
 class SlotOutputCmpt(attributes: CmptAttributes) : SlotCmpt(attributes) {
 
+    init {
+        slotAttributes.forbidInput = true
+    }
+
     override fun initClientObj() = super.initClientObj().apply {
         with(style) {
             widthCalculator = FixedSizeMode(26)
