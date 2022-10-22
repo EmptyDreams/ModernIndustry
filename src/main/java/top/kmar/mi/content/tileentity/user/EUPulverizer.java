@@ -16,8 +16,6 @@ import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
 import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
-import top.kmar.mi.api.graphics.components.SlotCmpt;
-import top.kmar.mi.api.graphics.components.SlotOutputCmpt;
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
@@ -148,16 +146,13 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
         return EleEnergy.COMMON;
     }
     
-    @SuppressWarnings({"DuplicatedCode", "ConstantConditions"})
+    @SuppressWarnings("ConstantConditions")
     @SubscribeEvent
     public static void initGui(GuiLoader.MIGuiRegistryEvent event) {
         ResourceLocation key = BlockGuiList.getPulverizer();
         event.registryInitTask(key, gui -> {
             EUPulverizer furnace = (EUPulverizer) gui.getTileEntity();
-            SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
-            input.setHandler(furnace.items);
-            SlotOutputCmpt output = (SlotOutputCmpt) gui.getElementByID("output");
-            output.setHandler(furnace.items);
+            gui.initItemStackHandler(furnace.items);
         });
         event.registryLoopTask(key, gui -> {
             EUPulverizer furnace = (EUPulverizer) gui.getTileEntity();

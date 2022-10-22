@@ -69,6 +69,10 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         syncPos(x, y)
     }
 
+    override fun initHandler(handler: ItemStackHandler) {
+        this.handler = handler
+    }
+
     override fun installParent(parent: Cmpt, gui: BaseGraphics) {
         super.installParent(parent, gui)
         for (list in slots) {

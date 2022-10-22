@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
+import net.minecraftforge.items.ItemStackHandler
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.ComplexCmptExp
@@ -144,6 +145,15 @@ open class BaseGraphics(
         for ((index, slot) in inventorySlots.withIndex()) {
             slot.slotNumber = index
         }
+    }
+
+    /** 为所有需要设置handler的控件设置handler */
+    fun initItemStackHandler(handler: ItemStackHandler) {
+        fun task(cmpt: Cmpt) {
+            cmpt.initHandler(handler)
+            cmpt.eachAllChildren { task(it) }
+        }
+        task(document)
     }
 
     fun installParent() {

@@ -15,8 +15,6 @@ import top.kmar.mi.api.electricity.clock.NonCounter;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
-import top.kmar.mi.api.graphics.components.SlotCmpt;
-import top.kmar.mi.api.graphics.components.SlotOutputCmpt;
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.ItemUtil;
@@ -131,15 +129,12 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
         return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
     }
     
-    @SuppressWarnings({"ConstantConditions", "DuplicatedCode"})
+    @SuppressWarnings("ConstantConditions")
     @SubscribeEvent
     public static void initGui(GuiLoader.MIGuiRegistryEvent event) {
         event.registryInitTask(BlockGuiList.getFirePower(), gui -> {
             EMFirePower power = (EMFirePower) gui.getTileEntity();
-            SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
-            input.setHandler(power.items);
-            SlotOutputCmpt output = (SlotOutputCmpt) gui.getElementByID("output");
-            output.setHandler(power.items);
+            gui.initItemStackHandler(power.items);
         });
         event.registryLoopTask(BlockGuiList.getFirePower(), gui -> {
             EMFirePower power = (EMFirePower) gui.getTileEntity();

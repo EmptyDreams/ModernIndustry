@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
+import net.minecraftforge.items.ItemStackHandler
 import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.BaseGraphics
@@ -71,6 +72,9 @@ abstract class Cmpt(
         }
         return result
     }
+
+    /** 在给GUI统一设置handler时触发 */
+    internal open fun initHandler(handler: ItemStackHandler) {}
 
     /** 接收从客户端发送的信息 */
     protected open fun receive(message: IDataReader) {}

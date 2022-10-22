@@ -18,8 +18,6 @@ import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
 import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
-import top.kmar.mi.api.graphics.components.SlotCmpt;
-import top.kmar.mi.api.graphics.components.SlotOutputCmpt;
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
@@ -220,15 +218,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
     public static void initGui(GuiLoader.MIGuiRegistryEvent event) {
         event.registryInitTask(BlockGuiList.getCompressor(), gui -> {
             EUCompressor compressor = (EUCompressor) gui.getTileEntity();
-            // 输入
-            SlotCmpt upInput = (SlotCmpt) gui.getElementByID("up");
-            upInput.setHandler(compressor.items);
-            // 燃料
-            SlotCmpt downInput = (SlotCmpt) gui.getElementByID("down");
-            downInput.setHandler(compressor.items);
-            // 输出
-            SlotOutputCmpt output = (SlotOutputCmpt) gui.getElementByID("output");
-            output.setHandler(compressor.items);
+            gui.initItemStackHandler(compressor.items);
         });
         event.registryLoopTask(BlockGuiList.getCompressor(), gui -> {
             EUCompressor compressor = (EUCompressor) gui.getTileEntity();

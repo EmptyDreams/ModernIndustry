@@ -15,8 +15,6 @@ import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
 import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
-import top.kmar.mi.api.graphics.components.SlotCmpt;
-import top.kmar.mi.api.graphics.components.SlotOutputCmpt;
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
@@ -110,14 +108,11 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
         initGuiHelper(event, BlockGuiList.getEleFurnace());
     }
     
-    @SuppressWarnings({"ConstantConditions", "DuplicatedCode"})
+    @SuppressWarnings("ConstantConditions")
     public static void initGuiHelper(GuiLoader.MIGuiRegistryEvent event, ResourceLocation key) {
         event.registryInitTask(key, gui -> {
             EUFurnace furnace = (EUFurnace) gui.getTileEntity();
-            SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
-            input.setHandler(furnace.items);
-            SlotOutputCmpt output = (SlotOutputCmpt) gui.getElementByID("output");
-            output.setHandler(furnace.items);
+            gui.initItemStackHandler(furnace.items);
         });
         event.registryLoopTask(key, gui -> {
             EUFurnace furnace = (EUFurnace) gui.getTileEntity();

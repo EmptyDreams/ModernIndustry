@@ -14,7 +14,6 @@ import top.kmar.mi.api.electricity.clock.NonCounter;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
-import top.kmar.mi.api.graphics.components.SlotCmpt;
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
@@ -120,8 +119,7 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
     public static void initGui(GuiLoader.MIGuiRegistryEvent event) {
         event.registryInitTask(BlockGuiList.getRedStoneConverter(), gui -> {
             EMRedStoneConverter converter = (EMRedStoneConverter) gui.getTileEntity();
-            SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
-            input.setHandler(converter.item);
+            gui.initItemStackHandler(converter.item);
         });
         event.registryLoopTask(BlockGuiList.getRedStoneConverter(), gui -> {
             EMRedStoneConverter converter = (EMRedStoneConverter) gui.getTileEntity();

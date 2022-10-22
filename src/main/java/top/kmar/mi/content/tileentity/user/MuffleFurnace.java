@@ -12,7 +12,6 @@ import top.kmar.mi.api.araw.interfaces.AutoSave;
 import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.BurnCmpt;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
-import top.kmar.mi.api.graphics.components.SlotCmpt;
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.BaseTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
@@ -116,12 +115,7 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
     public static void initGui(GuiLoader.MIGuiRegistryEvent event) {
         event.registryInitTask(BlockGuiList.getHighFurnace(), gui -> {
             MuffleFurnace furnace = (MuffleFurnace) gui.getTileEntity();
-            SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
-            SlotCmpt fuel = (SlotCmpt) gui.getElementByID("fuel");
-            SlotCmpt output = (SlotCmpt) gui.getElementByID("output");
-            input.setHandler(furnace.items);
-            fuel.setHandler(furnace.items);
-            output.setHandler(furnace.items);
+            gui.initItemStackHandler(furnace.items);
         });
         event.registryLoopTask(BlockGuiList.getHighFurnace(), gui -> {
             MuffleFurnace furnace = (MuffleFurnace) gui.getTileEntity();

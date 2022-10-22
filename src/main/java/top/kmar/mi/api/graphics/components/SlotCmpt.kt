@@ -53,6 +53,10 @@ open class SlotCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         slot.yPos = message.readVarInt()
     }
 
+    override fun initHandler(handler: ItemStackHandler) {
+        this.handler = handler
+    }
+
     override fun installParent(parent: Cmpt, gui: BaseGraphics) {
         super.installParent(parent, gui)
         gui.installSlot(slot)
