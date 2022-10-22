@@ -126,7 +126,7 @@ object GuiFileParser {
             .forEach {
                 val mid = it.indexOf('=')
                 if (mid == -1) {
-                    result[it] = ""
+                    result[it.trim()] = ""
                 } else {
                     val key = it.substring(0 until mid).trim()
                     val left = it.indexOf('"')
