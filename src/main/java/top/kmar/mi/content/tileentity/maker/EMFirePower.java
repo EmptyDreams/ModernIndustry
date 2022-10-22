@@ -137,9 +137,9 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
         event.registryInitTask(BlockGuiList.getFirePower(), gui -> {
             EMFirePower power = (EMFirePower) gui.getTileEntity();
             SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
-            input.setInventory(power.items);
+            input.setHandler(power.items);
             SlotOutputCmpt output = (SlotOutputCmpt) gui.getElementByID("output");
-            output.setInventory(power.items);
+            output.setHandler(power.items);
         });
         event.registryLoopTask(BlockGuiList.getFirePower(), gui -> {
             EMFirePower power = (EMFirePower) gui.getTileEntity();

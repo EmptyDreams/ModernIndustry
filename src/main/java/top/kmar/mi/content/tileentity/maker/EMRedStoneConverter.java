@@ -121,7 +121,7 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
         event.registryInitTask(BlockGuiList.getRedStoneConverter(), gui -> {
             EMRedStoneConverter converter = (EMRedStoneConverter) gui.getTileEntity();
             SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
-            input.setInventory(converter.item);
+            input.setHandler(converter.item);
         });
         event.registryLoopTask(BlockGuiList.getRedStoneConverter(), gui -> {
             EMRedStoneConverter converter = (EMRedStoneConverter) gui.getTileEntity();

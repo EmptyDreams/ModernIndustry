@@ -222,13 +222,13 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
             EUCompressor compressor = (EUCompressor) gui.getTileEntity();
             // 输入
             SlotCmpt upInput = (SlotCmpt) gui.getElementByID("up");
-            upInput.setInventory(compressor.items);
+            upInput.setHandler(compressor.items);
             // 燃料
             SlotCmpt downInput = (SlotCmpt) gui.getElementByID("down");
-            downInput.setInventory(compressor.items);
+            downInput.setHandler(compressor.items);
             // 输出
             SlotOutputCmpt output = (SlotOutputCmpt) gui.getElementByID("output");
-            output.setInventory(compressor.items);
+            output.setHandler(compressor.items);
         });
         event.registryLoopTask(BlockGuiList.getCompressor(), gui -> {
             EUCompressor compressor = (EUCompressor) gui.getTileEntity();

@@ -25,7 +25,7 @@ class SlotOutputCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     override fun initClientObj() = SlotOutputCmptClient()
     override fun buildNewObj() = SlotOutputCmpt(attributes.copy())
 
-    var inventory: ItemStackHandler? = null
+    var handler: ItemStackHandler? = null
         set(value) {
             if (field == null) field = value
         }
@@ -33,7 +33,7 @@ class SlotOutputCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     var priority: Int by attributes.toIntDelegate(100)
     var drop: Boolean by attributes.toBoolDelegate()
     val slot by lazy(LazyThreadSafetyMode.NONE) {
-        ItemSlot(this, priority, inventory!!, index).apply {
+        ItemSlot(this, priority, handler!!, index).apply {
             canPutIn = false
             drop = this@SlotOutputCmpt.drop
         }

@@ -115,9 +115,9 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
         event.registryInitTask(key, gui -> {
             EUFurnace furnace = (EUFurnace) gui.getTileEntity();
             SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
-            input.setInventory(furnace.items);
+            input.setHandler(furnace.items);
             SlotOutputCmpt output = (SlotOutputCmpt) gui.getElementByID("output");
-            output.setInventory(furnace.items);
+            output.setHandler(furnace.items);
         });
         event.registryLoopTask(key, gui -> {
             EUFurnace furnace = (EUFurnace) gui.getTileEntity();

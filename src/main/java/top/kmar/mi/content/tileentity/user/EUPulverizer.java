@@ -155,9 +155,9 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
         event.registryInitTask(key, gui -> {
             EUPulverizer furnace = (EUPulverizer) gui.getTileEntity();
             SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
-            input.setInventory(furnace.items);
+            input.setHandler(furnace.items);
             SlotOutputCmpt output = (SlotOutputCmpt) gui.getElementByID("output");
-            output.setInventory(furnace.items);
+            output.setHandler(furnace.items);
         });
         event.registryLoopTask(key, gui -> {
             EUPulverizer furnace = (EUPulverizer) gui.getTileEntity();
