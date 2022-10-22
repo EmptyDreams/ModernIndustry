@@ -30,7 +30,7 @@ import static net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime;
 public class MuffleFurnace extends BaseTileEntity implements ITickable {
     
     @AutoSave
-    private final ItemStackHandler item = new ItemStackHandler(3);
+    private final ItemStackHandler items = new ItemStackHandler(3);
     
     @AutoSave private int maxWorkingTime = 0;
     @AutoSave private int workingTime = 0;
@@ -50,14 +50,9 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
             workingTime = maxWorkingTime = 0;
         }
         
-        if (output.isEmpty()) {
-            workingTime = maxWorkingTime = 0;
-        } else {
-            IBlockState oldState = world.getBlockState(pos);
-            IBlockState newState = oldState.withProperty(MIProperty.getWORKING(), isWorking());
-            WorldUtil.setBlockState(world, pos, newState);
-        }
-    
+        IBlockState oldState = world.getBlockState(pos);
+        IBlockState newState = oldState.withProperty(MIProperty.getWORKING(), isWorking());
+        WorldUtil.setBlockState(world, pos, newState);
         markDirty();
     }
     
@@ -69,7 +64,7 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
             input.shrink(1);
         }
         if (++workingTime >= maxWorkingTime) {
-            item.insertItem(2, getResult(input), false);
+            items.insertItem(2, getResult(input), false);
             maxWorkingTime = workingTime = 0;
         }
     }
@@ -97,13 +92,13 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
     }
     
     public ItemStack getInputStack() {
-        return item.getStackInSlot(0);
+        return items.getStackInSlot(0);
     }
     public ItemStack getFuelStack() {
-        return item.getStackInSlot(1);
+        return items.getStackInSlot(1);
     }
     public ItemStack getOutputStack() {
-        return item.getStackInSlot(2);
+        return items.getStackInSlot(2);
     }
     
     public static ItemStack getResult(ItemStack in) {
@@ -124,9 +119,9 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
             SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
             SlotCmpt fuel = (SlotCmpt) gui.getElementByID("fuel");
             SlotCmpt output = (SlotCmpt) gui.getElementByID("output");
-            input.setHandler(furnace.item);
-            fuel.setHandler(furnace.item);
-            output.setHandler(furnace.item);
+            input.setHandler(furnace.items);
+            fuel.setHandler(furnace.items);
+            output.setHandler(furnace.items);
         });
         event.registryLoopTask(BlockGuiList.getHighFurnace(), gui -> {
             MuffleFurnace furnace = (MuffleFurnace) gui.getTileEntity();
