@@ -102,14 +102,14 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
                 val consume = gui.getElementByID("consume") as ProgressBarCmpt
                 val pump = gui.tileEntity as EUFluidPump
                 // 更新容量进度条数据
-                fluid.maxProgress = pump.maxCapacity
-                fluid.progress = pump.data.amount
+                fluid.max = pump.maxCapacity
+                fluid.value = pump.data.amount
                 // 更新能量进度条数据
-                energy.maxProgress = pump.maxEnergy
-                energy.progress = pump.nowEnergy
+                energy.max = pump.maxEnergy
+                energy.value = pump.nowEnergy
                 // 更新瞬时能量消耗数据
-                consume.maxProgress = pump.maxPower
-                consume.progress = pump.consume
+                consume.max = pump.maxPower
+                consume.value = pump.consume
             }
             event.registryClientLoopTask(BlockGuiList.fluidPump) { gui ->
                 val fluid = gui.getElementByID("fluid") as ProgressBarCmpt
@@ -123,11 +123,11 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
                     else pump.data.fluid!!.unlocalizedName
                 )
                 texts[0].text = I18n.format("mi.gui.fluid_pump.fluid",
-                    "${fluid.progress}/${fluid.maxProgress}", fluidText)
+                    "${fluid.value}/${fluid.max}", fluidText)
                 texts[1].text = I18n.format("mi.gui.fluid_pump.energy",
-                    "${energy.progress}/${energy.maxProgress}")
+                    "${energy.value}/${energy.max}")
                 texts[2].text = I18n.format("mi.gui.fluid_pump.consume",
-                    "${consume.progress}/${consume.maxProgress}")
+                    "${consume.value}/${consume.max}")
                 val button = gui.queryCmpt(ComplexCmptExp("button"))
                 button!!.attributes["value"] = I18n.format(if (pump.start) "mi.gui.open" else "mi.gui.close")
             }

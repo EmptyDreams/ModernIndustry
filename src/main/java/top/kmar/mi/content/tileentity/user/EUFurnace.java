@@ -117,8 +117,8 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
         event.registryLoopTask(key, gui -> {
             EUFurnace furnace = (EUFurnace) gui.getTileEntity();
             ProgressBarCmpt progress = (ProgressBarCmpt) gui.getElementByID("work");
-            progress.setMaxProgress(furnace.getNeedTime());
-            progress.setProgress(furnace.workingTime);
+            progress.setMax(furnace.getNeedTime());
+            progress.setValue(furnace.workingTime);
         });
     }
     

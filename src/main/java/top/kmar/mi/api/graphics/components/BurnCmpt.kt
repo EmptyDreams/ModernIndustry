@@ -15,7 +15,6 @@ import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.register.others.AutoCmpt
 import top.kmar.mi.api.utils.MISysInfo
-import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
@@ -31,27 +30,33 @@ class BurnCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     override fun initClientObj() = BurnCmptClient()
     override fun buildNewObj() = BurnCmpt(attributes.copy())
 
-    var progress = 0
+    var value: Int
+        get() = attributes["value", "0"].toInt()
         set(value) {
-            field = max(0, value)
+            val new = value.coerceAtLeast(0).coerceAtMost(max)
+            attributes["value"] = new.toString()
         }
-    var maxProcess = 1
+    var max: Int
+        get() = attributes["max", "0"].toInt()
         set(value) {
-            field = max(1, value)
+            val new = value.coerceAtLeast(0)
+            attributes["max"] = new.toString()
         }
+    val percent: Float
+        get() = 1 - (value.toFloat() / max.coerceAtLeast(1))
 
     private var _progressCache = -1
     private var _maxCache = -1
 
     override fun networkEvent(player: EntityPlayer) {
-        if (progress == _progressCache && maxProcess == _maxCache) return
+        if (value == _progressCache && max == _maxCache) return
         val message = ByteDataOperator(4).apply {
-            writeVarInt(progress)
-            writeVarInt(maxProcess)
+            writeVarInt(value)
+            writeVarInt(max)
         }
         send2Client(player, message)
-        _progressCache = progress
-        _maxCache = maxProcess
+        _progressCache = value
+        _maxCache = max
     }
 
     @SideOnly(Side.CLIENT)
@@ -64,18 +69,19 @@ class BurnCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
 
         override fun receive(message: IDataReader) {
-            progress = message.readVarInt()
-            maxProcess = message.readVarInt()
+            value = message.readVarInt()
+            max = message.readVarInt()
         }
 
         override fun render(graphics: GuiGraphics) {
             val width = style.width
             val height = style.height
+            if (width != 14 || height != 13)
+                return MISysInfo.err("[BurnCmpt] 控件仅支持绘制14*13的尺寸")
             with(graphics) {
-                if (width != 14 || height != 13) MISysInfo.err("[BurnCmpt] 控件仅支持绘制14*13的尺寸")
                 bindTexture(textureLib)
                 drawTexture32(0, 0, 0, 0, 13, 13)
-                val percent = height - (progress.toFloat() / maxProcess * height).roundToInt()
+                val percent = (percent * height).roundToInt()
                 if (percent > 0)
                     drawTexture32(0, 13 - percent, 13, 13 - percent, 14, percent)
             }

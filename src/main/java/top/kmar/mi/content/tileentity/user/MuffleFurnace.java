@@ -121,10 +121,10 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
             MuffleFurnace furnace = (MuffleFurnace) gui.getTileEntity();
             ProgressBarCmpt work = (ProgressBarCmpt) gui.getElementByID("work");
             BurnCmpt burn = (BurnCmpt) gui.getElementByID("burn");
-            work.setMaxProgress(furnace.maxWorkingTime);
-            work.setProgress(furnace.workingTime);
-            burn.setMaxProcess(furnace.maxBurningTime);
-            burn.setProgress(furnace.burningTime);
+            work.setMax(furnace.maxWorkingTime);
+            work.setValue(furnace.workingTime);
+            burn.setMax(furnace.maxBurningTime);
+            burn.setValue(furnace.burningTime);
         });
     }
     

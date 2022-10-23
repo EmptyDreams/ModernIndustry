@@ -196,8 +196,8 @@ public class EUElectronSynthesizer extends FrontTileEntity implements ITickable 
 		event.registryLoopTask(BlockGuiList.getSynthesizer(), gui -> {
 			EUElectronSynthesizer synthesizer = (EUElectronSynthesizer) gui.getTileEntity();
 			ProgressBarCmpt work = (ProgressBarCmpt) gui.getElementByID("work");
-			work.setMaxProgress(synthesizer.maxTime);
-			work.setProgress(synthesizer.workingTime);
+			work.setMax(synthesizer.maxTime);
+			work.setValue(synthesizer.workingTime);
 		});
 	}
 	

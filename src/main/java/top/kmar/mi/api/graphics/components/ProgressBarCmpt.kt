@@ -14,7 +14,6 @@ import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.register.others.AutoCmpt
 import top.kmar.mi.api.utils.data.enums.VerticalDirectionEnum
 import top.kmar.mi.api.utils.floorDiv2
-import kotlin.math.max
 
 /**
  * 进度条控件
@@ -23,35 +22,36 @@ import kotlin.math.max
 @AutoCmpt("progress")
 class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
-    /** 当前进度 */
-    var progress: Int = 0
-        set(value) {
-            field = max(0, value)
-        }
-    /** 最大进度 */
-    var maxProgress: Int = 1
-        set(value) {
-            field = max(1, value)
-        }
-    /** 百分比 */
-    val percent: Float
-        get() = progress.toFloat() / maxProgress
-
     override fun initClientObj() = ProgressBarCmptClient()
     override fun buildNewObj() = ProgressBarCmpt(attributes.copy())
+
+    var value: Int
+        get() = attributes["value", "0"].toInt()
+        set(value) {
+            val new = value.coerceAtLeast(0).coerceAtMost(max)
+            attributes["value"] = new.toString()
+        }
+    var max: Int
+        get() = attributes["max", "0"].toInt()
+        set(value) {
+            val new = value.coerceAtLeast(0)
+            attributes["max"] = new.toString()
+        }
+    val percent: Float
+        get() = value.toFloat() / max.coerceAtLeast(1)
 
     private var _preProgress = -1
     private var _preMax = -1
 
     override fun networkEvent(player: EntityPlayer) {
-        if (_preProgress != progress || _preMax != maxProgress) {
+        if (_preProgress != value || _preMax != max) {
             val message = ByteDataOperator(5).apply {
-                writeVarInt(progress)
-                writeVarInt(maxProgress)
+                writeVarInt(value)
+                writeVarInt(max)
             }
             send2Client(player, message)
-            _preProgress = progress
-            _preMax = maxProgress
+            _preProgress = value
+            _preMax = max
         }
     }
 
@@ -67,8 +67,8 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
 
         override fun receive(message: IDataReader) {
-            progress = message.readVarInt()
-            maxProgress = message.readVarInt()
+            value = message.readVarInt()
+            max = message.readVarInt()
         }
 
         override fun render(graphics: GuiGraphics) {
@@ -81,7 +81,7 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
                         VerticalDirectionEnum.CENTER -> height.floorDiv2()
                     }
                     val textX = width.floorDiv2()
-                    graphics.drawStringCenter(textX, textY, "${service.progress} / $maxProgress", fontColor)
+                    graphics.drawStringCenter(textX, textY, "${service.value} / $max", fontColor)
                 }
             }
             renderChildren(graphics)

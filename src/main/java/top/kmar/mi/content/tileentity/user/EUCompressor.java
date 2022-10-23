@@ -223,8 +223,8 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
         event.registryLoopTask(BlockGuiList.getCompressor(), gui -> {
             EUCompressor compressor = (EUCompressor) gui.getTileEntity();
             ProgressBarCmpt progress = (ProgressBarCmpt) gui.getElementByID("work");
-            progress.setMaxProgress(compressor.getNeedTime());
-            progress.setProgress(compressor.getWorkingTime());
+            progress.setMax(compressor.getNeedTime());
+            progress.setValue(compressor.getWorkingTime());
         });
     }
     

@@ -139,11 +139,11 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
         event.registryLoopTask(BlockGuiList.getFirePower(), gui -> {
             EMFirePower power = (EMFirePower) gui.getTileEntity();
             ProgressBarCmpt burn = (ProgressBarCmpt) gui.getElementByID("burn");
-            burn.setMaxProgress(power.maxTime);
-            burn.setProgress(power.burningTime);
+            burn.setMax(power.maxTime);
+            burn.setValue(power.burningTime);
             ProgressBarCmpt energy = (ProgressBarCmpt) gui.getElementByID("energy");
-            energy.setMaxProgress(power.getMaxEnergy());
-            energy.setProgress(power.getNowEnergy());
+            energy.setMax(power.getMaxEnergy());
+            energy.setValue(power.getNowEnergy());
         });
     }
     

@@ -124,11 +124,11 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
         event.registryLoopTask(BlockGuiList.getRedStoneConverter(), gui -> {
             EMRedStoneConverter converter = (EMRedStoneConverter) gui.getTileEntity();
             ProgressBarCmpt work = (ProgressBarCmpt) gui.getElementByID("work");
-            work.setMaxProgress(converter.maxTime);
-            work.setProgress(converter.burnTime);
+            work.setMax(converter.maxTime);
+            work.setValue(converter.burnTime);
             ProgressBarCmpt energy = (ProgressBarCmpt) gui.getElementByID("energy");
-            energy.setMaxProgress(converter.getMaxEnergy());
-            energy.setProgress(converter.getNowEnergy());
+            energy.setMax(converter.getMaxEnergy());
+            energy.setValue(converter.getNowEnergy());
         });
     }
     
