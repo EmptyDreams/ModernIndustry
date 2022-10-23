@@ -75,7 +75,7 @@ class BurnCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
                 if (width != 14 || height != 13) MISysInfo.err("[BurnCmpt] 控件仅支持绘制14*13的尺寸")
                 bindTexture(textureLib)
                 drawTexture32(0, 0, 0, 0, 13, 13)
-                val percent = (progress.toFloat() / maxProcess * height).roundToInt()
+                val percent = height - (progress.toFloat() / maxProcess * height).roundToInt()
                 if (percent > 0)
                     drawTexture32(0, 13 - percent, 13, 13 - percent, 14, percent)
             }
