@@ -97,7 +97,7 @@ fun EntityPlayer.openClientGui(key: ResourceLocation, x: Int, y: Int, z: Int) {
     while (Keyboard.next()) { }
     // 打开GUI
     val mc = Minecraft.getMinecraft()
-    if (isOpenClientGui()) mc.currentScreen?.onGuiClosed()
+    if (isOpenClientGui()) mc.currentScreen!!.onGuiClosed()
     else oldGui = mc.currentScreen
     isOpenClientGui = true
     val newGui = GuiLoader.getClientGuiElement(id, this, world, x, y, z)
@@ -109,15 +109,20 @@ fun EntityPlayer.openClientGui(key: ResourceLocation, x: Int, y: Int, z: Int) {
     mc.setIngameNotInFocus()
 }
 
-/** 关闭客户端GUI */
-fun EntityPlayer.closeClientGui() {
-    if (world.isServer()) return
+/**
+ * 关闭客户端GUI
+ * @return 是否成功关闭客户端GUI
+ */
+fun EntityPlayer.closeClientGui(): Boolean {
+    if (world.isServer()) return false
     if (isOpenClientGui) {
         isOpenClientGui = false
         val mc = Minecraft.getMinecraft()
         mc.currentScreen!!.onGuiClosed()
         mc.currentScreen = oldGui
+        return true
     }
+    return false
 }
 
 /** 判断指定玩家是否打开了一个客户端GUI */

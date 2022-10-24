@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 import top.kmar.mi.api.utils.closeClientGui
 
 /**
- *
+ * 提供客户端GUI支持
  * @author EmptyDreams
  */
 @Mixin(Minecraft::class)
@@ -20,12 +20,19 @@ abstract class MixinMinecraft {
     @field:Shadow
     var player: EntityPlayerSP? = null
 
+    /**
+     * 在玩家打开/关闭GUI时先对客户端GUI进行操作，如果关闭了一个客户端GUI则不关闭原本打开的GUI
+     */
     @Inject(
         method = ["displayGuiScreen"],
         at = [At(value = "HEAD")]
     )
     fun displayGuiScreen(guiScreenIn: GuiScreen?, ci: CallbackInfo) {
-        player?.closeClientGui()
+        player?.apply {
+            if (closeClientGui() && guiScreenIn == null && health > 0) {
+                ci.cancel()
+            }
+        }
     }
 
 }
