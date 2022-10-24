@@ -3,6 +3,7 @@
   "mixins": [
     "MixinCraftingHelper",
     "MixinUniversalBucket",
+    "MixinMinecraft",
     "cap.MixinCapability",
     "cap.MixinCapabilityManager"
   ],

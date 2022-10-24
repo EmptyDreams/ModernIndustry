@@ -4,8 +4,12 @@ package top.kmar.mi.api.utils
 
 import io.netty.buffer.ByteBuf
 import net.minecraft.block.BlockLiquid
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiScreen
+import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.texture.ITextureObject
+import net.minecraft.client.settings.KeyBinding
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -23,6 +27,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler
 import net.minecraftforge.fluids.capability.wrappers.BlockLiquidWrapper
 import net.minecraftforge.fluids.capability.wrappers.BlockWrapper
 import net.minecraftforge.fluids.capability.wrappers.FluidBlockWrapper
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte1.other
 import top.kmar.mi.ModernIndustry
 import top.kmar.mi.api.araw.AutoDataRW
@@ -72,6 +78,44 @@ fun String.countStartSpace(): PairIntInt {
     }
     return PairIntInt(index, count)
 }
+
+@field:SideOnly(Side.CLIENT)
+private var oldGui: GuiScreen? = null
+private var isOpenClientGui = false
+
+/** 打开一个客户端GUI */
+fun EntityPlayer.openClientGui(key: ResourceLocation, x: Int, y: Int, z: Int) {
+    if (world.isServer()) return
+    val id = GuiLoader.getID(key)
+    if (id > 0) throw IllegalArgumentException("指定GUI[$key]不是客户端GUI")
+    KeyBinding.unPressAllKeys()
+    oldGui?.onGuiClosed()
+    val mc = Minecraft.getMinecraft()
+    oldGui = mc.currentScreen
+    isOpenClientGui = true
+    val newGui = GuiLoader.getClientGuiElement(id, this, world, x, y, z)
+    val scaled = ScaledResolution(mc)
+    val i = scaled.scaledWidth
+    val j = scaled.scaledHeight
+    newGui.setWorldAndResolution(mc, i, j)
+    mc.currentScreen = newGui
+    mc.setIngameNotInFocus()
+}
+
+/** 关闭客户端GUI */
+fun EntityPlayer.closeClientGui() {
+    if (world.isServer()) return
+    if (isOpenClientGui) {
+        isOpenClientGui = false
+        val mc = Minecraft.getMinecraft()
+        mc.currentScreen!!.onGuiClosed()
+        mc.currentScreen = oldGui
+    }
+}
+
+/** 判断指定玩家是否打开了一个客户端GUI */
+@Suppress("UnusedReceiverParameter")
+fun EntityPlayer.isOpenClientGui(): Boolean = isOpenClientGui
 
 fun EntityPlayer.openGui(key: ResourceLocation, x: Int, y: Int, z: Int) {
     openGui(ModernIndustry.instance, GuiLoader.getID(key), world, x, y, z)

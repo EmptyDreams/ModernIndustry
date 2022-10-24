@@ -92,7 +92,7 @@ object GuiFileParser {
         }
         if (client) {
             if (!FMLCommonHandler.instance().side.isServer)
-                GuiLoader.registryClientGui(key!!, root)
+                register.registryClient(key!!, root)
         } else register.registry(key!!, root)
     }
 
