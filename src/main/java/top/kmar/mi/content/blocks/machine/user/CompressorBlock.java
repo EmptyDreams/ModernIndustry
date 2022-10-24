@@ -11,12 +11,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import top.kmar.mi.ModernIndustry;
 import top.kmar.mi.api.register.block.annotations.AutoBlockRegister;
-import top.kmar.mi.api.utils.ExpandFunctionKt;
+import top.kmar.mi.content.blocks.BlockGuiList;
+import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.blocks.base.MachineBlock;
 import top.kmar.mi.content.tileentity.user.EUCompressor;
 import top.kmar.mi.data.properties.MIProperty;
@@ -59,10 +58,7 @@ public class CompressorBlock extends MachineBlock {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
                                     EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-         ExpandFunctionKt.openClientGui(playerIn,
-                 new ResourceLocation(ModernIndustry.MODID, "test"), pos.getX(), pos.getY(), pos.getZ());
-         return true;
-         //CommonUtil.openGui(playerIn, BlockGuiList.getCompressor(), pos);
+        return CommonUtil.openGui(playerIn, BlockGuiList.getCompressor(), pos);
     }
     
     @SuppressWarnings("ConstantConditions")
