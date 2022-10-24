@@ -1,10 +1,10 @@
 package top.kmar.mi.api.graphics.components
 
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.dor.ByteDataOperator
-import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
@@ -45,9 +45,9 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     override fun networkEvent(player: EntityPlayer) {
         if (_preProgress != value || _preMax != max) {
-            val message = ByteDataOperator(5).apply {
-                writeVarInt(value)
-                writeVarInt(max)
+            val message = NBTTagCompound().apply {
+                setInteger("v", value)
+                setInteger("m", max)
             }
             send2Client(player, message)
             _preProgress = value
@@ -66,9 +66,10 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             borderRight.color = borderBottom.color
         }
 
-        override fun receive(message: IDataReader) {
-            value = message.readVarInt()
-            max = message.readVarInt()
+        override fun receive(message: NBTBase) {
+            val nbt = message as NBTTagCompound
+            value = nbt.getInteger("v")
+            max = nbt.getInteger("m")
         }
 
         override fun render(graphics: GuiGraphics) {

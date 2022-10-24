@@ -1,9 +1,9 @@
 package top.kmar.mi.api.araw.machines
 
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagByte
 import top.kmar.mi.api.araw.interfaces.*
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import kotlin.reflect.KClass
@@ -24,45 +24,39 @@ object ByteMachine : IAutoFieldRW, IAutoObjRW<Byte> {
         return annotation.source(field) == Byte::class
     }
 
-    override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
+    override fun write2Local(field: Field, obj: Any): NBTBase {
         val annotation = field.getAnnotation(AutoSave::class.java)
         val value = field.getByte(obj)
-        when (val local = annotation.local(field)) {
-            Byte::class -> writer.writeByte(value)
-            Boolean::class -> writer.writeBoolean(value.toInt() != 0)
-            else -> return RWResult.failed(this, "byte不能转化为${local.qualifiedName}")
+        return when (val local = annotation.local(field)) {
+            Byte::class, Boolean::class -> NBTTagByte(value)
+            else -> throw ClassCastException("byte不能转化为${local.qualifiedName}")
         }
-        return RWResult.success()
     }
 
-    override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
+    override fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
         val annotation = field.getAnnotation(AutoSave::class.java)
+        val value = (reader as NBTTagByte).byte
         when (val local = annotation.local(field)) {
-            Byte::class -> field.setByte(obj, reader.readByte())
-            Boolean::class -> field.setByte(obj, if (reader.readBoolean()) 1 else 0)
-            else -> return RWResult.failed(this, "${local.qualifiedName}不能转化为byte")
+            Byte::class, Boolean::class -> field.setByte(obj, value)
+            else -> throw ClassCastException("${local.qualifiedName}不能转化为byte")
         }
-        return RWResult.success()
     }
 
     override fun match(type: KClass<*>) = type == Byte::class
 
-    override fun write2Local(writer: IDataWriter, value: Byte, local: KClass<*>): RWResult {
-        when (local) {
-            Byte::class -> writer.writeByte(value)
-            Boolean::class -> writer.writeBoolean(value.toInt() != 0)
-            else -> return RWResult.failed(this, "byte不能转化为${local.qualifiedName}")
+    override fun write2Local(value: Byte, local: KClass<*>): NBTBase {
+        return when (local) {
+            Byte::class, Boolean::class -> NBTTagByte(value)
+            else -> throw ClassCastException("byte不能转化为${local.qualifiedName}")
         }
-        return RWResult.success()
     }
 
-    override fun read2Obj(reader: IDataReader, local: KClass<*>, receiver: (Byte) -> Unit): RWResult {
+    override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (Byte) -> Unit) {
+        val value = (reader as NBTTagByte).byte
         when (local) {
-            Byte::class -> receiver(reader.readByte())
-            Boolean::class -> receiver(if (reader.readBoolean()) 1 else 0)
-            else -> return RWResult.failed(this, "byte不能转化为${local.qualifiedName}")
+            Byte::class, Boolean::class -> receiver(value)
+            else -> throw ClassCastException("byte不能转化为${local.qualifiedName}")
         }
-        return RWResult.success()
     }
 
 

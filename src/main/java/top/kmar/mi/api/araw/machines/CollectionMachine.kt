@@ -1,10 +1,11 @@
 package top.kmar.mi.api.araw.machines
 
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTTagString
 import top.kmar.mi.api.araw.AutoDataRW
 import top.kmar.mi.api.araw.interfaces.*
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
@@ -29,86 +30,67 @@ object CollectionMachine : IAutoFieldRW, IAutoObjRW<Collection<*>> {
         return Collection::class.java.isAssignableFrom(annotation.source(field).java)
     }
 
-    override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
+    override fun write2Local(field: Field, obj: Any): NBTBase? {
         val annotation = field.getAnnotation(AutoSave::class.java)
         val local = annotation.local(field).java
         if (!Collection::class.java.isAssignableFrom(local))
-            return RWResult.failed(this, "Collection<?>不能转化为${local.name}")
-        val value = (field[obj] as Collection<*>?) ?: return RWResult.skipNull()
-        if (value.isEmpty()) return RWResult.skipNull()
-        return writeHelper(writer, value)
+            throw ClassCastException("Collection<?>不能转化为${local.name}")
+        val value = (field[obj] as Collection<*>?) ?: return null
+        if (value.isEmpty()) return null
+        return writeHelper(value)
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
+    override fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
         val annotation = field.getAnnotation(AutoSave::class.java)
         val local = annotation.local(field).java
         var value = field[obj] as MutableCollection<Any>?
         if (value == null) {
-            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal(this)
-            try {
-                value = local.newInstance() as MutableCollection<Any>
-                field[obj] = value
-            } catch (e: Throwable) {
-                return RWResult.failedWithException(this, "构建容器（Collection）时出现了异常", e)
-            }
+            if (Modifier.isFinal(field.modifiers))
+                throw UnsupportedOperationException("不支持对默认值为null且为final的属性进行读写")
+            value = local.newInstance() as MutableCollection<Any>
+            field[obj] = value
         }
-        return readHelper(reader, value)
+        readHelper(reader as NBTTagCompound, value)
     }
 
     override fun match(type: KClass<*>) = Collection::class.java.isAssignableFrom(type.java)
 
-    override fun write2Local(writer: IDataWriter, value: Collection<*>, local: KClass<*>): RWResult {
+    override fun write2Local(value: Collection<*>, local: KClass<*>): NBTBase {
         if (!Collection::class.java.isAssignableFrom(local.java))
-            return RWResult.failed(this, "${local.qualifiedName}不能转化为Collection<?>")
-        return writeHelper(writer, value)
+            throw ClassCastException("${local.qualifiedName}不能转化为Collection<?>")
+        return writeHelper(value)
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun read2Obj(reader: IDataReader, local: KClass<*>, receiver: (Collection<*>) -> Unit): RWResult {
-        val value: MutableCollection<Any>
-        try {
-            value = local.java.newInstance() as MutableCollection<Any>
-        } catch (e: Throwable) {
-            return RWResult.failedWithException(this, "构建容器过程中出现了异常", e)
-        }
-        return readHelper(reader, value)
+    override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (Collection<*>) -> Unit) {
+        val value = local.java.newInstance() as MutableCollection<Any>
+        return readHelper(reader as NBTTagCompound, value)
     }
 
-    private fun readHelper(reader: IDataReader, value: MutableCollection<in Any>): RWResult {
-        val size = reader.readVarInt()
-        for (i in 0 until size) {
-            if (!reader.readBoolean()) continue
-            var clazz: KClass<*>? = null
-            val classCheck = AutoDataRW.read2Obj<KClass<*>>(reader, KClass::class) { clazz = it }
-            if (!classCheck.isSuccessful()) return classCheck
-            var obj: Any? = null
-            val check = AutoDataRW.read2Obj<Any>(reader, clazz!!) { obj = it }
-            if (!check.isSuccessful()) return check
-            value.add(obj!!)
+    private fun readHelper(reader: NBTTagCompound, value: MutableCollection<in Any>) {
+        reader.keySet.forEach { key ->
+            if ("size" == key) return@forEach
+            val tag = reader.getCompoundTag(key)
+            val name = tag.getString("name")
+            val `data` = tag.getTag("value")
+            AutoDataRW.read2Obj<Any>(`data`, Class.forName(name).kotlin) { value.add(it) }
         }
-        return RWResult.success()
     }
 
-    private fun writeHelper(writer: IDataWriter, value: Collection<*>): RWResult {
-        writer.writeVarInt(value.size)
-        for (it in value) {
-            if (it == null) {
-                writer.writeBoolean(false)
-                continue
-            }
-            if (it::class.qualifiedName == null)
-                return RWResult.failed(this, "CollectionMachine读写器不支持对匿名类进行读写")
-            writer.writeBoolean(true)
-            val classCheck = AutoDataRW.write2Local(writer, it::class)
-            if (!classCheck.isSuccessful()) return RWResult.failed(this, "KClass<*>的读写器丢失")
-            @Suppress("UNCHECKED_CAST")
-            val machine = AutoTypeRegister.match(it::class) as IAutoObjRW<in Any>? ?:
-            return RWResult.failed(this, "没有找到与${it::class.qualifiedName}匹配的读写器")
-            val check = machine.write2Local(writer, it, it::class)
-            if (!check.isSuccessful()) return check
+    private fun writeHelper(value: Collection<*>): NBTTagCompound {
+        val result = NBTTagCompound()
+        for ((index, it) in value.withIndex()) {
+            if (it == null) continue
+            val name = it::class.qualifiedName ?:
+                throw UnsupportedOperationException("CollectionMachine读写器不支持对匿名类进行读写")
+            val `data` = AutoDataRW.write2Local(it) ?: continue
+            val tag = NBTTagCompound()
+            tag.setTag("name", NBTTagString(name))
+            tag.setTag("value", `data`)
+            result.setTag(index.toString(), tag)
         }
-        return RWResult.success()
+        return result
     }
 
 }

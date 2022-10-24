@@ -1,7 +1,7 @@
 package top.kmar.mi.api.net.handler;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import top.kmar.mi.api.dor.interfaces.IDataReader;
+import net.minecraft.nbt.NBTTagCompound;
 import top.kmar.mi.api.net.MessageRegister;
 import top.kmar.mi.api.net.message.ParseAddition;
 import top.kmar.mi.api.utils.TickHelper;
@@ -20,7 +20,7 @@ public class ServiceRawQueue {
 	private static boolean isAdd = false;
 	
 	/** 将一个任务添加到队列中，方法内部自动解析Key值 */
-	public static void add(IDataReader data, String key, EntityPlayerMP player) {
+	public static void add(NBTTagCompound data, String key, EntityPlayerMP player) {
 		synchronized (queue) {
 			queue.add(new Node(data, key, player));
 		}
@@ -37,14 +37,9 @@ public class ServiceRawQueue {
 				Node node;
 				while (it.hasNext()) {
 					node = it.next();
-					int start = node.reader.nowReadIndex();
-					ParseAddition result = MessageRegister.parseServer(node.reader, node.key, node.addition);
-					if (result.isRetry()) {
-						node.reader.setReadIndex(start);
-						node.addition = result;
-					} else {
-						it.remove();
-					}
+					ParseAddition result = MessageRegister.parseServer(node.data, node.key, node.addition);
+					if (result.isRetry()) node.addition = result;
+					else it.remove();
 				}
 				if (queue.isEmpty()) isAdd = false;
 			}
@@ -54,12 +49,12 @@ public class ServiceRawQueue {
 	
 	static final class Node {
 		
-		final IDataReader reader;
+		final NBTTagCompound data;
 		final String key;
 		ParseAddition addition;
 		
-		Node(IDataReader reader, String key, EntityPlayerMP player) {
-			this.reader = reader;
+		Node(NBTTagCompound data, String key, EntityPlayerMP player) {
+			this.data = data;
 			this.key = key;
 			addition = new ParseAddition(player);
 		}

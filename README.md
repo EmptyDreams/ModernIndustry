@@ -25,7 +25,6 @@
 + `araw` - 实现`TileEntity`内容的自动化存储
 + `capabalities` - 各个模块用到的`cap`
 + `craftguide` - 独立于MC外的合成表
-+ `dor` - 二进制数据读写
 + `electricity` - 电力系统
 + `event` - 各个模块用到的事件，部分事件是直接写在模块里面的
 + `exception` - 自定义异常

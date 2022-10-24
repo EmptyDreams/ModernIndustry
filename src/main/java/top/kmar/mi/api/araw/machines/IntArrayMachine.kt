@@ -1,9 +1,11 @@
 package top.kmar.mi.api.araw.machines
 
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagByte
+import net.minecraft.nbt.NBTTagByteArray
+import net.minecraft.nbt.NBTTagIntArray
 import top.kmar.mi.api.araw.interfaces.*
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
@@ -25,62 +27,49 @@ object IntArrayMachine : IAutoFieldRW, IAutoObjRW<IntArray> {
         return annotation.source(field) == IntArray::class
     }
 
-    override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
+    override fun write2Local(field: Field, obj: Any): NBTBase {
         val annotation = field.getAnnotation(AutoSave::class.java)
-        val value = (field[obj] as IntArray?) ?: return RWResult.skipNull()
-        return write2Local(writer, value, annotation.local(field))
+        val value = (field[obj] as IntArray?) ?: return NBTTagByte(0)
+        return write2Local(value, annotation.local(field))
     }
 
-    override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
+    override fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
         val annotation = field.getAnnotation(AutoSave::class.java)
-        val length = reader.readVarInt()
-        var value = field[obj] as IntArray?
-        if (value == null || value.size < length) {
-            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal(this)
-            value = IntArray(length)
-            field.set(obj, value)
+        if (reader is NBTTagByte) field[obj] = null
+        else {
+            val array = readHelper(reader, annotation.local(field))
+            if (Modifier.isFinal(field.modifiers)) {
+                val value = field[obj] as IntArray?
+                if (value == null || value.size < array.size)
+                    throw UnsupportedOperationException("不支持对值为空或长度过小且为final的属性进行读写")
+                System.arraycopy(array, 0, value, 0, array.size)
+            } else field[obj] = array
         }
-        return readHelper(reader, annotation.local(field), length, value)
     }
 
     override fun match(type: KClass<*>) = type == IntArray::class
 
-    override fun write2Local(writer: IDataWriter, value: IntArray, local: KClass<*>): RWResult {
-        when (local) {
-            IntArray::class -> {
-                writer.writeVarInt(value.size)
-                for (it in value) writer.writeInt(it)
-            }
+    override fun write2Local(value: IntArray, local: KClass<*>): NBTBase {
+        return when (local) {
+            IntArray::class -> NBTTagIntArray(value)
+            ByteArray::class -> NBTTagByteArray(ByteArray(value.size) { value[it].toByte() })
+            else -> throw ClassCastException("int[]不能转化为${local.qualifiedName}")
+        }
+    }
+
+    override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (IntArray) -> Unit) {
+        receiver(readHelper(reader, local))
+    }
+
+    private fun readHelper(reader: NBTBase, local: KClass<*>): IntArray {
+        return when (local) {
+            IntArray::class -> (reader as NBTTagIntArray).intArray
             ByteArray::class -> {
-                writer.writeVarInt(value.size)
-                for (it in value) writer.writeByte(it.toByte())
+                val array = (reader as NBTTagByteArray).byteArray
+                return IntArray(array.size) { array[it].toInt() }
             }
-            ShortArray::class -> {
-                writer.writeVarInt(value.size)
-                for (it in value) writer.writeShort(it.toShort())
-            }
-            else -> return RWResult.failed(this, "int[]不能转化为${local.qualifiedName}")
+            else -> throw ClassCastException("${local.qualifiedName}不能转化为int[]")
         }
-        return RWResult.success()
-    }
-
-    override fun read2Obj(reader: IDataReader, local: KClass<*>, receiver: (IntArray) -> Unit): RWResult {
-        val length = reader.readVarInt()
-        val result = IntArray(length)
-        val check = readHelper(reader, local, length, result)
-        if (check.isFailed()) return check
-        receiver(result)
-        return RWResult.success()
-    }
-
-    private fun readHelper(reader: IDataReader, local: KClass<*>, length: Int, result: IntArray): RWResult {
-        when (local) {
-            IntArray::class -> for (i in 0 until length) result[i] = reader.readInt()
-            ShortArray::class -> for (i in 0 until length) result[i] = reader.readShort().toInt()
-            ByteArray::class -> for (i in 0 until  length) result[i] = reader.readByte().toInt()
-            else -> return RWResult.failed(this, "${local.qualifiedName}不能转化为int[]")
-        }
-        return RWResult.success()
     }
 
 }

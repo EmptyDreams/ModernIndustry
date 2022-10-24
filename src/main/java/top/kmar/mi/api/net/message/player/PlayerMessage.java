@@ -1,7 +1,7 @@
 package top.kmar.mi.api.net.message.player;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
-import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.net.ParseResultEnum;
 import top.kmar.mi.api.net.message.IMessageHandle;
 import top.kmar.mi.api.net.message.ParseAddition;
@@ -25,20 +25,20 @@ public class PlayerMessage implements IMessageHandle<PlayerAddition, ParseAdditi
 	private PlayerMessage() { }
 	
 	@Override
-	public ParseAddition parseOnClient(@Nonnull IDataReader message, ParseAddition result) {
-		PlayerAddition addition = PlayerAddition.instance(message);
+	public ParseAddition parseOnClient(@Nonnull NBTTagCompound message, ParseAddition result) {
+		PlayerAddition addition = PlayerAddition.instance(message.getTag("add"));
 		boolean applyResult = PlayerHandleRegistry.apply(
-				addition.getKey(), null, message.readData());
+				addition.getKey(), null, message.getTag("data"));
 		if (applyResult) return result.setParseResult(ParseResultEnum.SUCCESS);
 		MISysInfo.err("没有找到可以处理该信息的Handle");
 		return result.setParseResult(ParseResultEnum.EXCEPTION);
 	}
 	
 	@Override
-	public ParseAddition parseOnServer(@Nonnull IDataReader message, ParseAddition result) {
-		PlayerAddition addition = PlayerAddition.instance(message);
+	public ParseAddition parseOnServer(@Nonnull NBTTagCompound message, ParseAddition result) {
+		PlayerAddition addition = PlayerAddition.instance(message.getTag("add"));
 		boolean applyResult = PlayerHandleRegistry.apply(
-				addition.getKey(), result.getServicePlayer(), message.readData());
+				addition.getKey(), result.getServicePlayer(), message.getTag("data"));
 		if (applyResult) return result.setParseResult(ParseResultEnum.SUCCESS);
 		MISysInfo.err("没有找到可以处理该信息的Handle");
 		return result.setParseResult(ParseResultEnum.EXCEPTION);

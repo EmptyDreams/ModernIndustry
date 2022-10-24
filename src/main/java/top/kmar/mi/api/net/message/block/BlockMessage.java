@@ -1,11 +1,11 @@
 package top.kmar.mi.api.net.message.block;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.net.IAutoNetwork;
 import top.kmar.mi.api.net.ParseResultEnum;
 import top.kmar.mi.api.net.message.IMessageHandle;
@@ -33,9 +33,9 @@ public final class BlockMessage implements IMessageHandle<BlockAddition, ParseAd
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ParseAddition parseOnClient(@Nonnull IDataReader message, ParseAddition result) {
+	public ParseAddition parseOnClient(@Nonnull NBTTagCompound message, ParseAddition result) {
 		BlockAddition addition = new BlockAddition();
-		addition.readFrom(message);
+		addition.readFrom(message.getTag("add"));
 		World world = addition.getWorld();
 		BlockPos pos = addition.getPos();
 		if (!world.isBlockLoaded(pos)) {
@@ -47,20 +47,20 @@ public final class BlockMessage implements IMessageHandle<BlockAddition, ParseAd
 			MISysInfo.err("目标方块" + pos + "的TE没有实现IAutoNetwork接口");
 			return result.setParseResult(ParseResultEnum.THROW);
 		}
-		((IAutoNetwork) te).receive(message.readData());
+		((IAutoNetwork) te).receive(message.getTag("data"));
 		return result.setParseResult(ParseResultEnum.SUCCESS);
 	}
 	
 	@Override
-	public ParseAddition parseOnServer(@Nonnull IDataReader message, ParseAddition result) {
+	public ParseAddition parseOnServer(@Nonnull NBTTagCompound message, ParseAddition result) {
 		BlockAddition addition = new BlockAddition();
-		addition.readFrom(message);
+		addition.readFrom(message.getTag("add"));
 		TileEntity te = addition.getWorld().getTileEntity(addition.getPos());
 		if (!(te instanceof IAutoNetwork)) {
 			MISysInfo.err("目标方块" + addition.getPos() + "的TE没有实现IAutoNetwork接口");
 			return result.setParseResult(ParseResultEnum.THROW);
 		}
-		((IAutoNetwork) te).receive(message.readData());
+		((IAutoNetwork) te).receive(message.getTag("data"));
 		return result.setParseResult(ParseResultEnum.SUCCESS);
 	}
 	

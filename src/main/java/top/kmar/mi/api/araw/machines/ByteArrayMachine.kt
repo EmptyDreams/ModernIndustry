@@ -1,9 +1,9 @@
 package top.kmar.mi.api.araw.machines
 
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagByteArray
 import top.kmar.mi.api.araw.interfaces.*
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
@@ -25,46 +25,37 @@ object ByteArrayMachine : IAutoFieldRW, IAutoObjRW<ByteArray> {
         return annotation.source(field) == ByteArray::class
     }
 
-    override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
+    override fun write2Local(field: Field, obj: Any): NBTBase? {
         val annotation = field.getAnnotation(AutoSave::class.java)
-        val value = (field[obj] as ByteArray?) ?: return RWResult.skipNull()
-        when (val local = annotation.local(field)) {
-            ByteArray::class -> {
-                writer.writeVarInt(value.size)
-                for (it in value) writer.writeByte(it)
-            }
-            else -> return RWResult.failed(this, "byte[]不能转化为${local.qualifiedName}")
+        val value = (field[obj] as ByteArray?) ?: return null
+        return when (val local = annotation.local(field)) {
+            ByteArray::class -> NBTTagByteArray(value)
+            else -> throw ClassCastException("byte[]不能转化为${local.qualifiedName}")
         }
-        return RWResult.success()
     }
 
-    override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
-        val length = reader.readVarInt()
-        var value = field[obj] as ByteArray?
-        if (value == null || value.size < length) {
-            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal(this)
-            value = ByteArray(length)
-            field.set(obj, value)
+    override fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
+        val array = (reader as NBTTagByteArray).byteArray
+        val value = field[obj] as ByteArray?
+        if (value == null || value.size < array.size) {
+            if (Modifier.isFinal(field.modifiers))
+                throw UnsupportedOperationException("不支持对值为空或长度不足且为final的属性进行读写")
+            field.set(obj, array)
+        } else {
+            System.arraycopy(array, 0, value, 0, array.size)
         }
-        for (i in 0 until length) value[i] = reader.readByte()
-        return RWResult.success()
     }
 
     override fun match(type: KClass<*>) = type == ByteArray::class
 
-    override fun write2Local(writer: IDataWriter, value: ByteArray, local: KClass<*>): RWResult {
+    override fun write2Local(value: ByteArray, local: KClass<*>): NBTBase {
         if (local != ByteArray::class)
-            return RWResult.failed(this, "byte[]不能转化为${local.qualifiedName}")
-        writer.writeVarInt(value.size)
-        for (it in value) writer.writeByte(it)
-        return RWResult.success()
+            throw ClassCastException("byte[]不能转化为${local.qualifiedName}")
+        return NBTTagByteArray(value)
     }
 
-    override fun read2Obj(reader: IDataReader, local: KClass<*>, receiver: (ByteArray) -> Unit): RWResult {
-        val length = reader.readVarInt()
-        val result = ByteArray(length)
-        for (i in 0 until length) result[i] = reader.readByte()
-        receiver(result)
-        return RWResult.success()
+    override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (ByteArray) -> Unit) {
+        val array = (reader as NBTTagByteArray).byteArray
+        receiver(array)
     }
 }

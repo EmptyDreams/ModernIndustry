@@ -3,11 +3,11 @@ package top.kmar.mi.api.graphics.components
 import net.minecraft.client.Minecraft
 import net.minecraft.client.resources.I18n
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.dor.ByteDataOperator
-import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
@@ -60,9 +60,10 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
         gui.uninstallSlots(start until start + 36)
     }
 
-    override fun receive(message: IDataReader) {
-        val x = message.readVarInt()
-        val y = message.readVarInt()
+    override fun receive(message: NBTBase) {
+        val nbt = message as NBTTagCompound
+        val x = nbt.getInteger("x")
+        val y = nbt.getInteger("y")
         initSlotsPos(x, y)
     }
 
@@ -99,9 +100,9 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
             // 网络通信
             if (startX != firstSlot.xPos || startY != firstSlot.yPos) {
                 initSlotsPos(startX, startY)
-                val message = ByteDataOperator().apply {
-                    writeVarInt(startX)
-                    writeVarInt(startY)
+                val message = NBTTagCompound().apply {
+                    setInteger("x", startX)
+                    setInteger("y", startY)
                 }
                 send2Service(message)
             }

@@ -12,6 +12,7 @@ annotation class AutoSave(
      * 存储源类型，默认为属性声明类型
      *
      * 例如：
+     *
      * ```kotlin
      *  @AutoSave var intTest = 10;
      *  @AutoSave var listTest: List<Int> = new ArrayList();

@@ -1,10 +1,10 @@
 package top.kmar.mi.api.net;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.event.NetWorkRegistryEvent;
 import top.kmar.mi.api.net.message.IMessageHandle;
 import top.kmar.mi.api.net.message.ParseAddition;
@@ -55,7 +55,7 @@ public final class MessageRegister {
 	 * @return 是否解析成功
 	 */
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	public static ParseAddition parseServer(IDataReader message, String key, ParseAddition parseAddition) {
+	public static ParseAddition parseServer(NBTTagCompound message, String key, ParseAddition parseAddition) {
 		for (IMessageHandle it : INSTANCES) {
 			if (key.hashCode() == it.getKey().hashCode() &&
 					key.equals(it.getKey())) {
@@ -79,7 +79,7 @@ public final class MessageRegister {
 	 */
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	@SideOnly(Side.CLIENT)
-	public static ParseAddition parseClient(IDataReader message, String key, ParseAddition parseAddition) {
+	public static ParseAddition parseClient(NBTTagCompound message, String key, ParseAddition parseAddition) {
 		for (IMessageHandle it : INSTANCES) {
 			if (key.hashCode() == it.getKey().hashCode() &&
 					key.equals(it.getKey())) {

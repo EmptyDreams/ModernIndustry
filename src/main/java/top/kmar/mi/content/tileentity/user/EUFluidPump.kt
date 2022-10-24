@@ -1,6 +1,8 @@
 package top.kmar.mi.content.tileentity.user
 
 import net.minecraft.client.resources.I18n
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ITickable
 import net.minecraft.util.math.BlockPos
@@ -12,8 +14,6 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.araw.interfaces.AutoSave
 import top.kmar.mi.api.capabilities.fluid.FluidCapability.TRANSFER
 import top.kmar.mi.api.capabilities.fluid.IFluid
-import top.kmar.mi.api.dor.ByteDataOperator
-import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.electricity.clock.OrdinaryCounter
 import top.kmar.mi.api.electricity.info.BiggerVoltage
 import top.kmar.mi.api.electricity.info.EleEnergy
@@ -352,21 +352,22 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     private fun send(refresh: Boolean = false) {
         if (refresh) networkRecord.clear()
         IOUtil.sendBlockMessageIfNotUpdate(this, networkRecord, 128) {
-            val operator = ByteDataOperator()
-            operator.writeByte(side.ordinal.toByte())
-            operator.writeByte(panelFacing.ordinal.toByte())
-            operator.writeBoolean(working)
-            operator.writeBoolean(start)
-            operator
+            NBTTagCompound().apply {
+                setByte("side", side.ordinal.toByte())
+                setByte("fac", panelFacing.ordinal.toByte())
+                setBoolean("work", working)
+                setBoolean("start", start)
+            }
         }
     }
 
     @SideOnly(Side.CLIENT)
-    override fun receive(reader: IDataReader) {
-        side = EnumFacing.values()[reader.readByte().toInt()]
-        panelFacing = EnumFacing.values()[reader.readByte().toInt()]
-        working = reader.readBoolean()
-        start = reader.readBoolean()
+    override fun receive(reader: NBTBase) {
+        val nbt = reader as NBTTagCompound
+        side = EnumFacing.values()[nbt.getByte("side").toInt()]
+        panelFacing = EnumFacing.values()[nbt.getByte("fac").toInt()]
+        working = nbt.getBoolean("work")
+        start = nbt.getBoolean("start")
         world.markBlockRangeForRenderUpdate(pos, pos)
     }
 

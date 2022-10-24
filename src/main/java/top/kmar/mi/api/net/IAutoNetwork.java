@@ -1,6 +1,6 @@
 package top.kmar.mi.api.net;
 
-import top.kmar.mi.api.dor.interfaces.IDataReader;
+import net.minecraft.nbt.NBTBase;
 
 import javax.annotation.Nonnull;
 
@@ -13,6 +13,6 @@ public interface IAutoNetwork {
 	/**
 	 * 处理接收的信息
 	 */
-	void receive(@Nonnull IDataReader reader);
+	void receive(@Nonnull NBTBase reader);
 	
 }

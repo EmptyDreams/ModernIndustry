@@ -1,10 +1,11 @@
 package top.kmar.mi.api.araw.machines
 
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagByte
+import net.minecraft.nbt.NBTTagCompound
 import top.kmar.mi.api.araw.AutoDataRW
 import top.kmar.mi.api.araw.interfaces.*
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import kotlin.reflect.KClass
@@ -13,6 +14,7 @@ import kotlin.reflect.KClass
  * Map的读写器
  * @author EmptyDreams
  */
+@Suppress("UNCHECKED_CAST")
 @AutoRWType(AutoTypeRegister.GENERAL_TYPE shr 1)
 object MapMachine : IAutoFieldRW, IAutoObjRW<Map<*, *>> {
 
@@ -25,74 +27,70 @@ object MapMachine : IAutoFieldRW, IAutoObjRW<Map<*, *>> {
         return Map::class.java.isAssignableFrom(annotation.source(field).java)
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
+    override fun write2Local(field: Field, obj: Any): NBTBase {
         val annotation = field.getAnnotation(AutoSave::class.java)
         val local = annotation.local(field)
-        val value = field[obj] as Map<Any, Any>? ?: return RWResult.skipNull()
-        return write2Local(writer, value, local)
+        val value = field[obj] as Map<Any?, Any?>? ?: return NBTTagByte(0)
+        return write2Local(value, local)
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
+    override fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
         val annotation = field.getAnnotation(AutoSave::class.java)
         val local = annotation.local(field).java
-        var value = field[obj] as MutableMap<Any, Any>?
-        if (value == null) {
-            try {
-                value = local.newInstance() as MutableMap<Any, Any>
-            } catch (e: Throwable) {
-                return RWResult.failedWithException(this, "构建Map时发生了异常", e)
-            }
-        }
-        return readHelper(reader, value)
+        val value = (field[obj] ?: local.newInstance()) as MutableMap<Any?, Any?>
+        readHelper(reader, value)
     }
 
     override fun match(type: KClass<*>) = Map::class.java.isAssignableFrom(type.java)
 
-    override fun write2Local(writer: IDataWriter, value: Map<*, *>, local: KClass<*>): RWResult {
+    override fun write2Local(value: Map<*, *>, local: KClass<*>): NBTBase {
         if (!Map::class.java.isAssignableFrom(local.java))
-            return RWResult.failed(this, "Map<K, V>不能转化为${local.qualifiedName}")
-        if (value.isEmpty()) return RWResult.skipNull()
-        writer.writeString(value.keys::class.java.name)
-        writer.writeString(value.values::class.java.name)
-        val check = AutoDataRW.write2Local(writer, value.keys)
-        if (!check.isSuccessful()) return check
-        return AutoDataRW.write2Local(writer, value.values)
+            throw ClassCastException("Map<K, V>不能转化为${local.qualifiedName}")
+        if (value.isEmpty()) return NBTTagByte(0)
+        val result = NBTTagCompound()
+        var index = 0
+        value.forEach { (key, value) ->
+            val tag = NBTTagCompound()
+            if (key != null) {
+                tag.setString("kn", key.javaClass.name)
+                val data = AutoDataRW.write2Local(key, key::class)
+                if (data != null) tag.setTag("k", data)
+            }
+            if (value != null) {
+                tag.setString("vn", value.javaClass.name)
+                val data = AutoDataRW.write2Local(value, value::class)
+                if (data != null) tag.setTag("v", data)
+            }
+            result.setTag(index.toString(), tag)
+            ++index
+        }
+        return result
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun read2Obj(reader: IDataReader, local: KClass<*>, receiver: (Map<*, *>) -> Unit): RWResult {
-        val value: MutableMap<Any, Any>
-        try {
-            value = local.java.newInstance() as MutableMap<Any, Any>
-        } catch (e: Throwable) {
-            return RWResult.failedWithException(this, "构建Map时发生了异常", e)
-        }
-        val check = readHelper(reader, value)
-        if (check.isSuccessful()) receiver(value)
-        return check
+    override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (Map<*, *>) -> Unit) {
+        val value = local.java.newInstance() as MutableMap<Any?, Any?>
+        readHelper(reader, value)
     }
 
-    private fun readHelper(reader: IDataReader, value: MutableMap<Any, Any>): RWResult {
-        val keyName = reader.readString()
-        val valueName = reader.readString()
-        var keys: Collection<Any>? = null
-        var values: Collection<Any>? = null
-        try {
-            val keyCheck = AutoDataRW.read2Obj<Collection<Any>>(
-                reader, Class.forName(keyName).kotlin) { keys = it }
-            if (!keyCheck.isSuccessful()) return keyCheck
-            val valueCheck = AutoDataRW.read2Obj<Collection<Any>>(
-                reader, Class.forName(valueName).kotlin) { values = it }
-            if (!valueCheck.isSuccessful()) return valueCheck
-        } catch (e: ClassNotFoundException) {
-            return RWResult.failedWithException(this, "构建Map时内部Collection类缺失", e)
+    private fun readHelper(reader: NBTBase, value: MutableMap<Any?, Any?>) {
+        fun read(nbt: NBTTagCompound, key: String): Any? {
+            val name = key + 'n'
+            return if (nbt.hasKey(name)) {
+                val clazz = Class.forName(nbt.getString(name)).kotlin
+                var data: Any? = null
+                if (nbt.hasKey(key)) AutoDataRW.read2Obj<Any>(nbt.getTag(key), clazz) { data = it }
+                data
+            } else null
         }
-        val keyIter = keys!!.iterator()
-        val valueIter = values!!.iterator()
-        while (keyIter.hasNext()) value[keyIter.next()] = valueIter.next()
-        return RWResult.success()
+
+        if (reader is NBTTagByte) return
+        val list = reader as NBTTagCompound
+        list.keySet.forEach { key ->
+            val tag = reader.getCompoundTag(key)
+            val left = read(tag, "k")
+            val right = read(tag, "v")
+            value[left] = right
+        }
     }
 
 }

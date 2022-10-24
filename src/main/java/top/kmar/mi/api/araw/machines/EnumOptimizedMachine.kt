@@ -1,9 +1,12 @@
 package top.kmar.mi.api.araw.machines
 
-import top.kmar.mi.api.araw.interfaces.*
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagInt
+import top.kmar.mi.api.araw.interfaces.AutoSave
+import top.kmar.mi.api.araw.interfaces.IAutoFieldRW
+import top.kmar.mi.api.araw.interfaces.local
+import top.kmar.mi.api.araw.interfaces.source
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 
@@ -25,17 +28,15 @@ object EnumOptimizedMachine : IAutoFieldRW {
                 Enum::class.java.isAssignableFrom(source)
     }
 
-    override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
-        val value = field[obj] as Enum<*>? ?: return RWResult.skipNull()
-        writer.writeVarInt(value.ordinal)
-        return RWResult.success()
+    override fun write2Local(field: Field, obj: Any): NBTBase? {
+        val value = field[obj] as Enum<*>? ?: return null
+        return NBTTagInt(value.ordinal)
     }
 
-    override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
+    override fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
         val annotation = field.getAnnotation(AutoSave::class.java)
-        val index = reader.readVarInt()
+        val index = (reader as NBTTagInt).int
         field[obj] = (annotation.source(field).java.getDeclaredField("values")[null] as Array<*>)[index]
-        return RWResult.success()
     }
 
 }

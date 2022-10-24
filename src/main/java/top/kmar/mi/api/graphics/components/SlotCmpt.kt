@@ -1,11 +1,10 @@
 package top.kmar.mi.api.graphics.components
 
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import net.minecraftforge.items.ItemStackHandler
-import top.kmar.mi.api.dor.ByteDataOperator
-import top.kmar.mi.api.dor.interfaces.IDataOperator
-import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
@@ -48,9 +47,10 @@ open class SlotCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
     }
 
-    override fun receive(message: IDataReader) {
-        slot.xPos = message.readVarInt()
-        slot.yPos = message.readVarInt()
+    override fun receive(message: NBTBase) {
+        val nbt = message as NBTTagCompound
+        slot.xPos = nbt.getInteger("x")
+        slot.yPos = nbt.getInteger("y")
     }
 
     override fun initHandler(handler: ItemStackHandler) {
@@ -86,10 +86,11 @@ open class SlotCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             val x = style.x + style.width.floorDiv2() + style.borderLeft.weight - 9
             val y = style.y + style.height.floorDiv2() + style.borderTop.weight - 9
             if (x != slot.xPos && y != slot.yPos) {
-                val operator: IDataOperator = ByteDataOperator(4)
-                operator.writeVarInt(x)
-                operator.writeVarInt(y)
-                client.send2Service(operator, false)
+                val message = NBTTagCompound().apply {
+                    setInteger("x", x)
+                    setInteger("y", y)
+                }
+                client.send2Service(message)
                 slot.xPos = x
                 slot.yPos = y
             }

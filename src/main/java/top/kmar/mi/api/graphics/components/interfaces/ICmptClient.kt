@@ -1,10 +1,10 @@
 package top.kmar.mi.api.graphics.components.interfaces
 
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTTagString
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.dor.ByteDataOperator
-import top.kmar.mi.api.dor.interfaces.IDataOperator
-import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.net.handler.MessageSender
@@ -26,17 +26,19 @@ interface ICmptClient {
     val style: GraphicsStyle
 
     /** 接收从服务端发送的信息 */
-    fun receive(message: IDataReader) {}
+    fun receive(message: NBTBase) {}
 
     /**
      * 发送信息到服务端
      * @param message 要发送的内容
      * @param isEvent 是否为事件通信
      */
-    fun send2Service(message: IDataOperator, isEvent: Boolean = false) {
-        val content = ByteDataOperator(message.size() + 1)
-        content.writeBoolean(isEvent)
-        content.writeData(message)
+    fun send2Service(message: NBTBase, isEvent: Boolean = false) {
+        if (isEvent && message !is NBTTagString)
+            throw IllegalArgumentException("当进行事件通信时message应当为NBTTagString")
+        val content = NBTTagCompound()
+        content.setBoolean("event", isEvent)
+        content.setTag("data", message)
         val pack = GraphicsMessage.create(content, GraphicsAddition(service.id))
         MessageSender.send2Server(pack)
     }

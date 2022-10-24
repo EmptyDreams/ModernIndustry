@@ -1,11 +1,10 @@
 package top.kmar.mi.api.araw.machines
 
 import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagByte
 import net.minecraftforge.common.util.INBTSerializable
 import top.kmar.mi.api.araw.interfaces.*
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
@@ -27,54 +26,38 @@ object SerializableMachine : IAutoFieldRW, IAutoObjRW<INBTSerializable<*>> {
         return INBTSerializable::class.java.isAssignableFrom(annotation.source(field).java)
     }
 
-    override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
+    override fun write2Local(field: Field, obj: Any): NBTBase {
         val annotation = field.getAnnotation(AutoSave::class.java)
-        val value = field[obj] as INBTSerializable<*>? ?: return RWResult.skipNull()
-        return write2Local(writer, value, annotation.local(field))
+        val value = field[obj] as INBTSerializable<*>? ?: return NBTTagByte(0)
+        return write2Local(value, annotation.local(field))
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
+    override fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
         val annotation = field.getAnnotation(AutoSave::class.java)
         var value = field[obj] as INBTSerializable<NBTBase>?
         if (value == null) {
-            if (Modifier.isFinal(field.modifiers)) return RWResult.failedFinal(this)
-            try {
-                value = annotation.local(field).java.newInstance() as INBTSerializable<NBTBase>
-                field[obj] = value
-            } catch (e: Throwable) {
-                return RWResult.failedWithException(this, "构建INBTSerializable<*>对象的过程中发生异常", e)
-            }
+            if (Modifier.isFinal(field.modifiers))
+                throw UnsupportedOperationException("不支持对默认值为null且为final的属性进行读写")
+            value = annotation.local(field).java.newInstance() as INBTSerializable<NBTBase>
+            field[obj] = value
         }
-        value.deserializeNBT(reader.readTag())
-        return RWResult.success()
+        value.deserializeNBT(reader)
     }
 
     override fun match(type: KClass<*>) = INBTSerializable::class.java.isAssignableFrom(type.java)
 
-    override fun write2Local(writer: IDataWriter, value: INBTSerializable<*>, local: KClass<*>): RWResult {
+    override fun write2Local(value: INBTSerializable<*>, local: KClass<*>): NBTBase {
         if (!local.java.isAssignableFrom(value::class.java))
-            return RWResult.failed(this, "INBTSerializable<*>不能转化为${local.qualifiedName}")
-        val data = value.serializeNBT()
-        writer.writeTag(data)
-        return RWResult.success()
+            throw ClassCastException("INBTSerializable<*>不能转化为${local.qualifiedName}")
+        return value.serializeNBT()
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun read2Obj(
-        reader: IDataReader,
-        local: KClass<*>,
-        receiver: (INBTSerializable<*>) -> Unit
-    ): RWResult {
-        val value: INBTSerializable<NBTBase>?
-        try {
-            value = local.java.newInstance() as INBTSerializable<NBTBase>
-        } catch (e: Throwable) {
-            return RWResult.failedWithException(this, "构建INBTSerializable<*>对象的过程中发生异常", e)
-        }
-        value.deserializeNBT(reader.readTag())
+    override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (INBTSerializable<*>) -> Unit) {
+        val value = local.java.newInstance() as INBTSerializable<NBTBase>
+        value.deserializeNBT(reader)
         receiver(value)
-        return RWResult.success()
     }
 
 }

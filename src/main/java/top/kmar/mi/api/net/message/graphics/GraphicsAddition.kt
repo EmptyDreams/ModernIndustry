@@ -1,7 +1,7 @@
 package top.kmar.mi.api.net.message.graphics
 
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagString
 import top.kmar.mi.api.net.message.IMessageAddition
 
 /**
@@ -13,12 +13,10 @@ class GraphicsAddition(
     var id: String = ""
 ) : IMessageAddition {
 
-    override fun writeTo(writer: IDataWriter) {
-        writer.writeString(id)
-    }
+    override fun writeTo() = NBTTagString(id)
 
-    override fun readFrom(reader: IDataReader) {
-        id = reader.readString()
+    override fun readFrom(nbt: NBTBase) {
+        id = (nbt as NBTTagString).string
     }
 
 }

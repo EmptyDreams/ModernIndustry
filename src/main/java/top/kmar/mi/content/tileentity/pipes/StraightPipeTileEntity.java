@@ -1,9 +1,9 @@
 package top.kmar.mi.content.tileentity.pipes;
 
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.util.EnumFacing;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
-import top.kmar.mi.api.dor.interfaces.IDataReader;
-import top.kmar.mi.api.dor.interfaces.IDataWriter;
 import top.kmar.mi.api.fluid.FTTileEntity;
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 
@@ -28,13 +28,13 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	}
 	
 	@Override
-	protected void sync(IDataWriter writer) {
-		writer.writeByte((byte) facing.ordinal());
+	protected NBTBase sync() {
+		return new NBTTagByte((byte) facing.ordinal());
 	}
 	
 	@Override
-	public void syncClient(@Nonnull IDataReader reader) {
-		facing = EnumFacing.values()[reader.readByte()];
+	public void syncClient(@Nonnull NBTBase reader) {
+		facing = EnumFacing.values()[((NBTTagByte) reader).getInt()];
 	}
 	
 	@Override

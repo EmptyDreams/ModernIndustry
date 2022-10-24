@@ -1,9 +1,9 @@
 package top.kmar.mi.api.araw.machines
 
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagByte
 import top.kmar.mi.api.araw.interfaces.*
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import kotlin.reflect.KClass
@@ -24,31 +24,29 @@ object BoolMachine : IAutoFieldRW, IAutoObjRW<Boolean> {
         return annotation.source(field) == Boolean::class
     }
 
-    override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
+    override fun write2Local(field: Field, obj: Any): NBTBase {
         val annotation = field.getAnnotation(AutoSave::class.java)
         val value = field.getBoolean(obj)
-        when (val local = annotation.local(field)) {
-            Boolean::class -> writer.writeBoolean(value)
-            else -> return RWResult.failed(this, "boolean不能转化为${local.qualifiedName}")
+        return when (val local = annotation.local(field)) {
+            Boolean::class -> NBTTagByte(if (value) 1 else 0)
+            else -> throw ClassCastException("boolean不能转化为${local.qualifiedName}")
         }
-        return RWResult.success()
     }
 
-    override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
-        field.setBoolean(obj, reader.readBoolean())
-        return RWResult.success()
+    override fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
+        val value = (reader as NBTTagByte).int
+        field.setBoolean(obj, value != 0)
     }
 
     override fun match(type: KClass<*>) = type == Boolean::class
 
-    override fun write2Local(writer: IDataWriter, value: Boolean, local: KClass<*>): RWResult {
-        if (local != Boolean::class) return RWResult.failed(this, "boolean不能转化为${local.qualifiedName}")
-        writer.writeBoolean(value)
-        return RWResult.success()
+    override fun write2Local(value: Boolean, local: KClass<*>): NBTBase {
+        if (local != Boolean::class) throw ClassCastException("boolean不能转化为${local.qualifiedName}")
+        return NBTTagByte(if (value) 1 else 0)
     }
 
-    override fun read2Obj(reader: IDataReader, local: KClass<*>, receiver: (Boolean) -> Unit): RWResult {
-        receiver(reader.readBoolean())
-        return RWResult.success()
+    override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (Boolean) -> Unit) {
+        val value = (reader as NBTTagByte).int
+        receiver(value != 0)
     }
 }

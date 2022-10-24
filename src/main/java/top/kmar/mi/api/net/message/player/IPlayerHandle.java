@@ -1,7 +1,7 @@
 package top.kmar.mi.api.net.message.player;
 
 import net.minecraft.entity.player.EntityPlayer;
-import top.kmar.mi.api.dor.interfaces.IDataReader;
+import net.minecraft.nbt.NBTBase;
 
 /**
  * 用于在服务端/客户端接收到玩家信息时处理相关内容
@@ -14,6 +14,6 @@ public interface IPlayerHandle {
 	 * @param player 发送（接收）消息的玩家
 	 * @param data 数据内容
 	 */
-	void apply(EntityPlayer player, IDataReader data);
+	void apply(EntityPlayer player, NBTBase data);
 	
 }

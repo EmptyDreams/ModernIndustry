@@ -1,9 +1,8 @@
 package top.kmar.mi.api.araw.machines
 
+import net.minecraft.nbt.*
 import top.kmar.mi.api.araw.interfaces.*
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import kotlin.reflect.KClass
@@ -24,52 +23,50 @@ object LongMachine : IAutoFieldRW, IAutoObjRW<Long> {
         return annotation.source(field) == Long::class
     }
 
-    override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
+    override fun write2Local(field: Field, obj: Any): NBTBase {
         val annotation = field.getAnnotation(AutoSave::class.java)
         val value = field.getLong(obj)
-        when (val local = annotation.local(field)) {
-            Long::class -> writer.writeLong(value)
-            Int::class -> writer.writeInt(value.toInt())
-            Short::class -> writer.writeShort(value.toShort())
-            Byte::class -> writer.writeByte(value.toByte())
-            else -> return RWResult.failed(this, "long不能转化为${local.qualifiedName}")
+        return when (val local = annotation.local(field)) {
+            Long::class -> NBTTagLong(value)
+            Int::class -> NBTTagInt(value.toInt())
+            Short::class -> NBTTagShort(value.toShort())
+            Byte::class -> NBTTagByte(value.toByte())
+            else -> throw ClassCastException("long不能转化为${local.qualifiedName}")
         }
-        return RWResult.success()
     }
 
-    override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
+    override fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
         val annotation = field.getAnnotation(AutoSave::class.java)
-        when (val local = annotation.local(field)) {
-            Long::class -> field.setLong(obj, reader.readLong())
-            Int::class -> field.setLong(obj, reader.readInt().toLong())
-            Short::class -> field.setLong(obj, reader.readShort().toLong())
-            Byte::class -> field.setLong(obj, reader.readByte().toLong())
-            else -> return RWResult.failed(this, "${local.qualifiedName}不能转化为long")
+        val value = when (val local = annotation.local(field)) {
+            Long::class -> (reader as NBTTagLong).long
+            Int::class -> (reader as NBTTagInt).long
+            Short::class -> (reader as NBTTagShort).long
+            Byte::class -> (reader as NBTTagByte).long
+            else -> throw ClassCastException("${local.qualifiedName}不能转化为long")
         }
-        return RWResult.success()
+        field.setLong(obj, value)
     }
 
     override fun match(type: KClass<*>) = type == Long::class
 
-    override fun write2Local(writer: IDataWriter, value: Long, local: KClass<*>): RWResult {
-        when (local) {
-            Long::class -> writer.writeLong(value)
-            Int::class -> writer.writeInt(value.toInt())
-            Short::class -> writer.writeShort(value.toShort())
-            Byte::class -> writer.writeByte(value.toByte())
-            else -> return RWResult.failed(this, "long不能转化为${local.qualifiedName}")
+    override fun write2Local(value: Long, local: KClass<*>): NBTBase {
+        return when (local) {
+            Long::class -> NBTTagLong(value)
+            Int::class -> NBTTagInt(value.toInt())
+            Short::class -> NBTTagShort(value.toShort())
+            Byte::class -> NBTTagByte(value.toByte())
+            else -> throw ClassCastException("long不能转化为${local.qualifiedName}")
         }
-        return RWResult.success()
     }
 
-    override fun read2Obj(reader: IDataReader, local: KClass<*>, receiver: (Long) -> Unit): RWResult {
-        when (local) {
-            Long::class -> receiver(reader.readLong())
-            Int::class -> receiver(reader.readInt().toLong())
-            Short::class -> receiver(reader.readShort().toLong())
-            Byte::class -> receiver(reader.readByte().toLong())
-            else -> return RWResult.failed(this, "long不能转化为${local.qualifiedName}")
+    override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (Long) -> Unit) {
+        val value = when (local) {
+            Long::class -> (reader as NBTTagLong).long
+            Int::class -> (reader as NBTTagInt).long
+            Short::class -> (reader as NBTTagShort).long
+            Byte::class -> (reader as NBTTagByte).long
+            else -> throw ClassCastException("${local.qualifiedName}不能转化为long")
         }
-        return RWResult.success()
+        receiver(value)
     }
 }

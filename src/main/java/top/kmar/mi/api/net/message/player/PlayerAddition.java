@@ -1,11 +1,11 @@
 package top.kmar.mi.api.net.message.player;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ResourceLocation;
-import top.kmar.mi.api.dor.interfaces.IDataReader;
-import top.kmar.mi.api.dor.interfaces.IDataWriter;
-import top.kmar.mi.api.utils.StringUtil;
 import top.kmar.mi.api.net.message.IMessageAddition;
+import top.kmar.mi.api.utils.StringUtil;
 
 import javax.annotation.Nonnull;
 
@@ -17,7 +17,7 @@ public class PlayerAddition implements IMessageAddition {
 	
 	/** 获取一个PlayerAddition对象 */
 	@Nonnull
-	public static PlayerAddition instance(IDataReader message) {
+	public static PlayerAddition instance(NBTBase message) {
 		PlayerAddition result = new PlayerAddition();
 		result.readFrom(message);
 		return result;
@@ -43,16 +43,13 @@ public class PlayerAddition implements IMessageAddition {
 	}
 	
 	@Override
-	public void writeTo(IDataWriter writer) {
-		writer.writeString(KEY.getResourceDomain());
-		writer.writeString(KEY.getResourcePath());
+	public NBTBase writeTo() {
+		return new NBTTagString(KEY.toString());
 	}
 	
 	@Override
-	public void readFrom(IDataReader reader) {
-		String modid = reader.readString();
-		String name = reader.readString();
-		KEY = new ResourceLocation(modid, name);
+	public void readFrom(NBTBase reader) {
+		KEY = new ResourceLocation(((NBTTagString) reader).getString());
 	}
 	
 }

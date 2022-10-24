@@ -4,6 +4,8 @@ import net.minecraft.block.Block
 import net.minecraft.block.BlockLiquid
 import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumFacing.HORIZONTALS
 import net.minecraft.util.ITickable
@@ -16,9 +18,6 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.araw.interfaces.AutoSave
 import top.kmar.mi.api.capabilities.fluid.FluidCapability
 import top.kmar.mi.api.capabilities.fluid.IFluid
-import top.kmar.mi.api.dor.ByteDataOperator
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.fluid.data.FluidQueue
 import top.kmar.mi.api.fluid.data.TransportReport
@@ -337,9 +336,10 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
     /** 判断指定方向上是否可以设置管塞  */
     open fun canSetPlug(facing: EnumFacing) = !(hasPlug(facing) || isLinked(facing))
 
-    override fun receive(@Nonnull reader: IDataReader) {
-        linkData.setValue(reader.readByte().toInt())
-        syncClient(reader)
+    override fun receive(@Nonnull reader: NBTBase) {
+        val nbt = reader as NBTTagCompound
+        linkData.setValue(nbt.getByte("data").toInt())
+        syncClient(nbt.getTag("sync"))
         updateBlockState(true)
     }
 
@@ -353,21 +353,21 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
     private val players: MutableList<UUID> = ArrayList()
 
     /** 用于服务端写入需要同步的数据，写入的数据会发送给客户端  */
-    protected abstract fun sync(writer: IDataWriter)
+    protected abstract fun sync(): NBTBase
 
     /** 用于客户端同步数据  */
     @SideOnly(Side.CLIENT)
-    protected abstract fun syncClient(reader: IDataReader)
+    protected abstract fun syncClient(reader: NBTBase)
 
     /** 向客户端发送服务端存储的信息并更新显示  */
     fun send() {
         if (world.isClient()) return
         if (players.size == world.playerEntities.size) return
         IOUtil.sendBlockMessageIfNotUpdate(this, players, 128) {
-            val operator = ByteDataOperator(1)
-            operator.writeByte(linkData.getValue().toByte())
-            sync(operator)
-            operator
+            val data = NBTTagCompound()
+            data.setByte("data", linkData.getValue().toByte())
+            data.setTag("sync", sync())
+            data
         }
     }
 

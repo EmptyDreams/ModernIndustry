@@ -1,12 +1,12 @@
 package top.kmar.mi.api.net.message.block;
 
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import top.kmar.mi.api.dor.interfaces.IDataReader;
-import top.kmar.mi.api.dor.interfaces.IDataWriter;
-import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.api.net.message.IMessageAddition;
+import top.kmar.mi.api.utils.WorldUtil;
 
 
 /**
@@ -33,15 +33,19 @@ public class BlockAddition implements IMessageAddition {
 	public BlockPos getPos() { return pos; }
 	
 	@Override
-	public void writeTo(IDataWriter writer) {
-		writer.writeVarInt(world.provider.getDimension());
-		writer.writeBlockPos(pos);
+	public NBTBase writeTo() {
+		NBTTagCompound result = new NBTTagCompound();
+		result.setInteger("dim", world.provider.getDimension());
+		result.setIntArray("pos", new int[]{pos.getX(), pos.getY(), pos.getZ()});
+		return result;
 	}
 	
 	@Override
-	public void readFrom(IDataReader reader) {
-		world = WorldUtil.getWorld(reader.readVarInt());
-		pos = reader.readBlockPos();
+	public void readFrom(NBTBase reader) {
+		NBTTagCompound nbt = (NBTTagCompound) reader;
+		world = WorldUtil.getWorld(nbt.getInteger("dim"));
+		int[] array = nbt.getIntArray("pos");
+		pos = new BlockPos(array[0], array[1], array[2]);
 	}
 	
 	@Override

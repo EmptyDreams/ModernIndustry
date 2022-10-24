@@ -1,15 +1,14 @@
 package top.kmar.mi.api.utils.container
 
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
-import top.kmar.mi.api.araw.interfaces.IDorSerialize
+import net.minecraft.nbt.NBTTagInt
+import net.minecraftforge.common.util.INBTSerializable
 
 /**
  * 以Enum为key的布尔映射表，该类仅支持对象数量<=32的枚举类
  * @author EmptyDreams
  */
 class IndexEnumMap<T : Enum<*>>(private val keys: Array<T>) :
-        IDorSerialize, Iterable<IndexEnumMap<T>.Entry> {
+        Iterable<IndexEnumMap<T>.Entry>, INBTSerializable<NBTTagInt> {
 
     /** 布尔值  */
     private var value = 0
@@ -37,15 +36,13 @@ class IndexEnumMap<T : Enum<*>>(private val keys: Array<T>) :
         this.value = value
     }
 
-    override fun serializeDor(writer: IDataWriter) {
-        writer.writeVarInt(value)
-    }
-
-    override fun deserializedDor(reader: IDataReader) {
-        value = reader.readVarInt()
-    }
-
     override fun toString(): String = Integer.toBinaryString(getValue())
+
+    override fun serializeNBT() = NBTTagInt(value)
+
+    override fun deserializeNBT(nbt: NBTTagInt) {
+        value = nbt.int
+    }
 
     override fun iterator() = EnumIterator(0)
 

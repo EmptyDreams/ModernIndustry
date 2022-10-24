@@ -1,9 +1,9 @@
 package top.kmar.mi.content.tileentity.pipes;
 
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
-import top.kmar.mi.api.dor.interfaces.IDataReader;
-import top.kmar.mi.api.dor.interfaces.IDataWriter;
 import top.kmar.mi.api.fluid.FTTileEntity;
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.data.properties.AngleFacingEnum;
@@ -33,19 +33,21 @@ public class AnglePipeTileEntity extends FTTileEntity {
 			throw new IllegalArgumentException("最大容量[" + getMaxAmount() + "]应当能被2整除");
 		this.facing = facing;
 		this.after = after;
-		int max = getMaxAmount() / 2;
 	}
 	
 	@Override
-	protected void sync(IDataWriter writer) {
-		writer.writeByte((byte) facing.ordinal());
-		writer.writeByte((byte) after.ordinal());
+	protected NBTBase sync() {
+		NBTTagCompound result = new NBTTagCompound();
+		result.setByte("fac", (byte) facing.ordinal());
+		result.setByte("aft", (byte) facing.ordinal());
+		return result;
 	}
 	
 	@Override
-	public void syncClient(@Nonnull IDataReader reader) {
-		facing = EnumFacing.values()[reader.readByte()];
-		after = EnumFacing.values()[reader.readByte()];
+	public void syncClient(@Nonnull NBTBase reader) {
+		NBTTagCompound nbt = (NBTTagCompound) reader;
+		facing = EnumFacing.values()[nbt.getByte("fac")];
+		after = EnumFacing.values()[nbt.getByte("aft")];
 	}
 	
 	@Override

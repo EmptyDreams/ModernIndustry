@@ -1,10 +1,10 @@
 package top.kmar.mi.content.tileentity.pipes;
 
 import com.google.common.collect.Lists;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.util.EnumFacing;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
-import top.kmar.mi.api.dor.interfaces.IDataReader;
-import top.kmar.mi.api.dor.interfaces.IDataWriter;
 import top.kmar.mi.api.fluid.FTTileEntity;
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 
@@ -24,13 +24,13 @@ public class ShuntPipeTileEntity extends FTTileEntity {
     protected Axis side = Axis.Y;
 	
 	@Override
-	protected void sync(IDataWriter writer) {
-		writer.writeByte((byte) side.ordinal());
+	protected NBTBase sync() {
+		return new NBTTagByte((byte) side.ordinal());
 	}
 	
 	@Override
-	protected void syncClient(IDataReader reader) {
-		side = Axis.values()[reader.readByte()];
+	protected void syncClient(NBTBase reader) {
+		side = Axis.values()[((NBTTagByte) reader).getInt()];
 	}
 	
 	@Override
@@ -72,15 +72,6 @@ public class ShuntPipeTileEntity extends FTTileEntity {
 	
 	public Axis getSide() {
 		return side;
-	}
-	
-	protected EnumFacing[] getFacing() {
-		switch (side) {
-			case Y: return HORIZONTALS;
-			case Z: return new EnumFacing[] { UP, DOWN, WEST, EAST };
-			case X: return new EnumFacing[] { UP, DOWN, NORTH, SOUTH };
-			default: throw new IllegalArgumentException("未知的方向：" + side);
-		}
 	}
 	
 }

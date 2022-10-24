@@ -1,9 +1,9 @@
 package top.kmar.mi.api.araw.machines
 
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagFloat
 import top.kmar.mi.api.araw.interfaces.*
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import kotlin.reflect.KClass
@@ -24,32 +24,29 @@ object FloatMachine : IAutoFieldRW, IAutoObjRW<Float> {
         return annotation.source(field) == Float::class
     }
 
-    override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
+    override fun write2Local(field: Field, obj: Any): NBTBase {
         val annotation = field.getAnnotation(AutoSave::class.java)
         val value = field.getFloat(obj)
-        when (val local = annotation.local(field)) {
-            Float::class -> writer.writeFloat(value)
-            else -> return RWResult.failed(this, "float不能转化为${local.qualifiedName}")
+        return when (val local = annotation.local(field)) {
+            Float::class -> NBTTagFloat(value)
+            else -> throw ClassCastException("float不能转化为${local.qualifiedName}")
         }
-        return RWResult.success()
     }
 
-    override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
-        field.setFloat(obj, reader.readFloat())
-        return RWResult.success()
+    override fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
+        val value = (reader as NBTTagFloat).float
+        field.setFloat(obj, value)
     }
 
     override fun match(type: KClass<*>) = type == Float::class
 
-    override fun write2Local(writer: IDataWriter, value: Float, local: KClass<*>): RWResult {
-        if (local != Float::class)
-            return RWResult.failed(this, "float不能转化为${local.qualifiedName}")
-        writer.writeFloat(value)
-        return RWResult.success()
+    override fun write2Local(value: Float, local: KClass<*>): NBTBase {
+        if (local != Float::class) throw ClassCastException("float不能转化为${local.qualifiedName}")
+        return NBTTagFloat(value)
     }
 
-    override fun read2Obj(reader: IDataReader, local: KClass<*>, receiver: (Float) -> Unit): RWResult {
-        receiver(reader.readFloat())
-        return RWResult.success()
+    override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (Float) -> Unit) {
+        val value = (reader as NBTTagFloat).float
+        receiver(value)
     }
 }

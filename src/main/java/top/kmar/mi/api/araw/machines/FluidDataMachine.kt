@@ -1,14 +1,15 @@
 package top.kmar.mi.api.araw.machines
 
-import net.minecraftforge.fluids.Fluid
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagByte
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.fluids.FluidRegistry
 import top.kmar.mi.api.araw.interfaces.*
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
 
 /**
@@ -27,44 +28,47 @@ object FluidDataMachine : IAutoFieldRW, IAutoObjRW<FluidData> {
         return annotation.source(field) == FluidData::class
     }
 
-    override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
+    override fun write2Local(field: Field, obj: Any): NBTBase? {
         val annotation = field.getAnnotation(AutoSave::class.java)
-        val value = field[obj] as FluidData? ?: return RWResult.skipNull()
-        return write2Local(writer, value, annotation.local(field))
+        val value = field[obj] as FluidData? ?: return null
+        return write2Local(value, annotation.local(field))
     }
 
-    override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
+    override fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
         var data: FluidData? = null
-        val check = read2Obj(reader, FluidData::class) { data = it }
-        if (!check.isSuccessful()) return check
-        val value = field[obj] as FluidData?
-        if (value == null) field[obj] = data
-        else {
-            value.setEmpty()
-            value.plus(data)
+        read2Obj(reader, FluidData::class) { data = it }
+        when (val value = field[obj] as FluidData?) {
+            null -> {
+                if (Modifier.isFinal(field.modifiers))
+                    throw UnsupportedOperationException("不支持对默认值为null且为final的属性进行读写")
+                field[obj] = data
+            }
+            else -> {
+                value.setEmpty()
+                value.plus(data)
+            }
         }
-        return check
     }
 
     override fun match(type: KClass<*>) = type == FluidData::class
 
-    override fun write2Local(writer: IDataWriter, value: FluidData, local: KClass<*>): RWResult {
-        if (local != FluidData::class)
-            return RWResult.failed(this, "FluidData不能转化为${local.qualifiedName}")
-        writer.writeBoolean(value.isAir)
-        if (!value.isAir) writer.writeString(value.fluid!!.name)
-        writer.writeVarInt(value.amount)
-        return RWResult.success()
+    override fun write2Local(value: FluidData, local: KClass<*>): NBTBase {
+        if (local != FluidData::class) throw ClassCastException("FluidData不能转化为${local.qualifiedName}")
+        if (value.isAir) return NBTTagByte(0)
+        val result = NBTTagCompound()
+        result.setInteger("amount", value.amount)
+        result.setString("name", value.fluid!!.name)
+        return result
     }
 
-    override fun read2Obj(reader: IDataReader, local: KClass<*>, receiver: (FluidData) -> Unit): RWResult {
-        val fluid: Fluid? = if (reader.readBoolean()) null else {
-            val name = reader.readString()
-            FluidRegistry.getFluid(name)
+    override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (FluidData) -> Unit) {
+        if (reader is NBTTagByte) receiver(FluidData.empty())
+        else if (reader is NBTTagCompound) {
+            val fluid = FluidRegistry.getFluid(reader.getString("name"))
+            val amount = reader.getInteger("amount")
+            receiver(FluidData(fluid, amount))
         }
-        val amount = reader.readVarInt()
-        receiver(FluidData(fluid, amount))
-        return RWResult.success()
+        throw AssertionError()
     }
 
 }

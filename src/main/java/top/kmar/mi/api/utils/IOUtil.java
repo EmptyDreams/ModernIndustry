@@ -1,7 +1,7 @@
 package top.kmar.mi.api.utils;
 
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.tileentity.TileEntity;
-import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.net.handler.MessageSender;
 import top.kmar.mi.api.net.message.block.BlockAddition;
 import top.kmar.mi.api.net.message.block.BlockMessage;
@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 public final class IOUtil {
 	
 	public static void sendBlockMessageIfNotUpdate(
-			TileEntity te, Collection<UUID> players, int r, Supplier<IDataReader> readerSupplier) {
+			TileEntity te, Collection<UUID> players, int r, Supplier<NBTBase> readerSupplier) {
 		Range3D netRange = new Range3D(te.getPos(), r);
 		MessageSender.send2ClientIf(te.getWorld(), player -> {
 			if (players.contains(player.getUniqueID()) || !netRange.isIn(new Point3D(player))) return false;

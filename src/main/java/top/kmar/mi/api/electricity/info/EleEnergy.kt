@@ -2,16 +2,13 @@ package top.kmar.mi.api.electricity.info
 
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.util.INBTSerializable
-import top.kmar.mi.api.araw.interfaces.IDorSerialize
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
 
 /**
  * 存储一个能量的具体值
  * @author EmptyDreams
  */
 class EleEnergy(var current: Int, var voltage: Int) :
-    INBTSerializable<NBTTagCompound>, IDorSerialize, Comparable<EleEnergy?> {
+    INBTSerializable<NBTTagCompound>, Comparable<EleEnergy?> {
 
     /**
      *
@@ -70,16 +67,6 @@ class EleEnergy(var current: Int, var voltage: Int) :
     override fun deserializeNBT(nbt: NBTTagCompound) {
         voltage = nbt.getInteger("v")
         current = nbt.getInteger("c")
-    }
-
-    override fun serializeDor(writer: IDataWriter) {
-        writer.writeVarInt(voltage)
-        writer.writeVarInt(current)
-    }
-
-    override fun deserializedDor(reader: IDataReader) {
-        voltage = reader.readVarInt()
-        current = reader.readVarInt()
     }
 
     override operator fun compareTo(other: EleEnergy?): Int {

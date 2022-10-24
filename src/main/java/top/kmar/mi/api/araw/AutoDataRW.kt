@@ -1,12 +1,9 @@
 package top.kmar.mi.api.araw
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
-import org.apache.commons.lang3.tuple.MutablePair
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagCompound
 import top.kmar.mi.api.araw.interfaces.*
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.dor.ByteDataOperator
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.utils.MISysInfo
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
@@ -24,22 +21,19 @@ object AutoDataRW {
      *
      * 该函数会处理输入的对象（包括其父类）中的所有需要处理的数据
      */
-    fun write2LocalAll(writer: IDataWriter, obj: Any) {
+    fun writeAll(obj: Any): NBTTagCompound {
         var clazz = obj::class.java
+        val result = NBTTagCompound()
         while (clazz != Any::class.java) {
             for (field in clazz.declaredFields) {
                 val annotation = field.getAnnotation(AutoSave::class.java) ?: continue
-                val operator = ByteDataOperator()
-                val check = write2Local(operator, field, obj)
-                writer.writeBoolean(check.isSuccessful())
-                if (check.isSuccessful()) {
-                    val key = annotation.value(field)
-                    writer.writeString(key)
-                    writer.writeData(operator)
-                } else if (check.isFailed()) printErr(obj, field, check)
+                val `data` = write2Local(field, obj) ?: continue
+                val key = annotation.value(field)
+                result.setTag(key, `data`)
             }
             clazz = clazz.superclass
         }
+        return result
     }
 
     /**
@@ -47,20 +41,15 @@ object AutoDataRW {
      *
      * 该函数会处理输入的对象（包括其父类）中的所有需要处理的数据
      */
-    fun read2ObjAll(reader: IDataReader, obj: Any) {
+    fun read2ObjAll(reader: NBTTagCompound, obj: Any) {
         var clazz = obj::class.java
-        val map = Object2ObjectOpenHashMap<String, MutablePair<IDataReader?, Field?>>()
         while (clazz != Any::class.java) {
             for (field in clazz.declaredFields) {
                 val annotation = field.getAnnotation(AutoSave::class.java) ?: continue
                 try {
-                    if (!reader.readBoolean()) continue
-                    val localName = reader.readString()
-                    val codeName = annotation.value(field)
-                    if (map.isNotEmpty() || codeName != localName) {
-                        map.computeIfAbsent(localName) { MutablePair(null, null) }.left = reader.readData()
-                        map.computeIfAbsent(codeName) { MutablePair(null, null) }.right = field
-                    } else read2ObjAndPrintErr(reader.readData(), field, obj)
+                    val localName = annotation.value(field)
+                    val value = reader.getTag(localName) ?: continue
+                    read2Obj(value, field, obj)
                 } catch (e: Exception) {
                     MISysInfo.err("读取存档时发生异常，异常位置：${field.name}", e)
                     break
@@ -68,57 +57,42 @@ object AutoDataRW {
             }
             clazz = clazz.superclass
         }
-        map.forEach { (_, pair) -> read2ObjAndPrintErr(pair.left!!, pair.right!!, obj) }
     }
 
-    private fun read2ObjAndPrintErr(reader: IDataReader, field: Field, obj: Any) {
-        val check = read2Obj(reader, field, obj)
-        if (check.isFailed()) printErr(obj, field, check)
-        else if (!reader.isEnd)
-            printErr(obj, field, RWResult.failed(message = "本地信息没有读取完毕就结束了处理"))
+    /** 写入数据到[NBTTagCompound] */
+    fun write2Local(field: Field, obj: Any): NBTBase? {
+        val machine = AutoTypeRegister.match(field)
+        checkField(field, machine)
+        return machine.write2Local(field, obj)
     }
 
-    /** 写入数据到[IDataWriter] */
-    fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
-        val machine = AutoTypeRegister.match(field) ?: return RWResult.failedUnsupport()
-        val check = checkField(field, machine)
-        if (!check.isSuccessful()) return check
-        return machine.write2Local(writer, field, obj)
+    /** 写入数据到[NBTTagCompound] */
+    fun write2Local(data: Any, local: KClass<*> = Any::class): NBTBase? {
+        val machine = AutoTypeRegister.match(data::class)
+        return if (local == Any::class) machine.write2Local(data, data::class)
+            else machine.write2Local(data, local)
     }
 
-    /** 写入数据到[IDataWriter] */
-    fun write2Local(writer: IDataWriter, data: Any, local: KClass<*> = Any::class): RWResult {
-        val machine = AutoTypeRegister.match(data::class) ?: return RWResult.failedUnsupport()
-        return if (local == Any::class) machine.write2Local(writer, data, data::class)
-                else machine.write2Local(writer, data, local)
+    /** 从[NBTTagCompound]读取数据 */
+    fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
+        val machine = AutoTypeRegister.match(field)
+        checkField(field, machine)
+        machine.read2Obj(reader, field, obj)
     }
 
-    /** 从[IDataReader]读取数据 */
-    fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
-        val machine = AutoTypeRegister.match(field) ?: return RWResult.failedUnsupport()
-        val check = checkField(field, machine)
-        if (!check.isSuccessful()) return check
-        return machine.read2Obj(reader, field, obj)
-    }
-
-    /** 从[IDataReader]读取数据 */
-    fun <T> read2Obj(reader: IDataReader, local: KClass<*>, receiver: (T) -> Unit): RWResult {
+    /** 从[NBTTagCompound]读取数据 */
+    fun <T> read2Obj(reader: NBTBase, local: KClass<*>, receiver: (T) -> Unit) {
         @Suppress("UNCHECKED_CAST")
-        val machine = AutoTypeRegister.match(local) as IAutoObjRW<T>? ?: return RWResult.failedUnsupport()
-        return machine.read2Obj(reader, local, receiver)
+        val machine = AutoTypeRegister.match(local) as IAutoObjRW<T>
+        machine.read2Obj(reader, local, receiver)
     }
 
-    private fun checkField(field: Field, machine: IAutoFieldRW): RWResult {
+    private fun checkField(field: Field, machine: IAutoFieldRW) {
         val mode = field.modifiers
-        if (Modifier.isStatic(mode)) return RWResult.failedStatic(machine)
-        if (Modifier.isFinal(mode) && !machine.allowFinal()) return RWResult.failedFinal(machine)
+        if (Modifier.isStatic(mode)) throw UnsupportedOperationException("不支持静态类型的读写")
+        if (Modifier.isFinal(mode) && !machine.allowFinal())
+            throw UnsupportedOperationException("指定类型[${field.type}]不支持对final对象进行读写")
         if (!Modifier.isPublic(mode)) field.isAccessible = true
-        return RWResult.success()
-    }
-
-    private fun printErr(obj: Any, field: Field, result: RWResult) {
-        if (result.hasException()) MISysInfo.err(result.buildString(obj, field), result.exception)
-        else MISysInfo.err(result.buildString(obj, field))
     }
 
 }

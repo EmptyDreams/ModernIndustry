@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap
 import top.kmar.mi.api.araw.interfaces.IAutoFieldRW
 import top.kmar.mi.api.araw.interfaces.IAutoObjRW
 import java.lang.reflect.Field
+import javax.activation.UnsupportedDataTypeException
 import kotlin.reflect.KClass
 
 /**
@@ -61,18 +62,18 @@ object AutoTypeRegister {
     }
 
     /** 匹配读写器，没有匹配的则返回`null` */
-    fun match(field: Field): IAutoFieldRW? {
+    fun match(field: Field): IAutoFieldRW {
         for ((_, list) in fieldList) return list.match(field) ?: continue
-        return null
+        throw UnsupportedDataTypeException("不支持指定类型[${field.type}]的读写")
     }
 
     /** 匹配读写器，没有匹配的则返回`null` */
-    fun match(type: KClass<*>): IAutoObjRW<Any>? {
+    fun match(type: KClass<*>): IAutoObjRW<Any> {
         for ((_, list) in objList) {
             @Suppress("UNCHECKED_CAST")
              return list.match(type) as IAutoObjRW<Any>? ?: continue
         }
-        return null
+        throw UnsupportedDataTypeException("不支持指定类型[$type]的读写")
     }
 
     /**

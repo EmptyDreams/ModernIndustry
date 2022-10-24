@@ -4,11 +4,12 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectRBTreeMap
 import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTTagString
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import net.minecraftforge.items.ItemStackHandler
-import top.kmar.mi.api.dor.ByteDataOperator
-import top.kmar.mi.api.dor.interfaces.IDataReader
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
@@ -77,23 +78,23 @@ abstract class Cmpt(
     internal open fun initHandler(handler: ItemStackHandler) {}
 
     /** 接收从客户端发送的信息 */
-    protected open fun receive(message: IDataReader) {}
+    protected open fun receive(message: NBTBase) {}
 
     /**
      * 发送信息到客户端
      * @param player 接收信息的玩家对象
      * @param message 要传输的信息
      */
-    fun send2Client(player: EntityPlayer, message: IDataReader) {
+    fun send2Client(player: EntityPlayer, message: NBTBase) {
         val pack = GraphicsMessage.create(message, GraphicsAddition(id))
         MessageSender.send2Client(player as EntityPlayerMP, pack)
     }
 
     /** 接收网络通信 */
-    fun receiveNetworkMessage(message: IDataReader) {
-        val isEvent = message.readBoolean()
-        if (!isEvent) return receive(message.readData())
-        val name = message.readData().readString()
+    fun receiveNetworkMessage(message: NBTTagCompound) {
+        val isEvent = message.getBoolean("event")
+        if (!isEvent) return receive(message.getTag("data"))
+        val name = message.getString("data")
         eventMap[name]?.forEach { it.active(null) }
     }
 
@@ -206,9 +207,7 @@ abstract class Cmpt(
                     if (message.cancel) break
                 }
                 if (message.send2Service && network && WorldUtil.isClient()) {
-                    val content = ByteDataOperator()
-                    content.writeString(name)
-                    client.send2Service(content, true)
+                    client.send2Service(NBTTagString(name), true)
                 }
             } catch (e: Exception) {
                 MISysInfo.err("触发事件过程中发生异常：\n\tname=$name\n\tmessage=$message\n\tit=$it", e)

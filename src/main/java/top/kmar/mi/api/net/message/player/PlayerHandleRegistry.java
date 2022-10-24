@@ -2,8 +2,8 @@ package top.kmar.mi.api.net.message.player;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.ResourceLocation;
-import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.utils.StringUtil;
 
 import java.util.Map;
@@ -34,7 +34,7 @@ public final class PlayerHandleRegistry {
 	 * @param reader 数据
 	 * @return 是否处理成功
 	 */
-	public static boolean apply(ResourceLocation key, EntityPlayer player, IDataReader reader) {
+	public static boolean apply(ResourceLocation key, EntityPlayer player, NBTBase reader) {
 		IPlayerHandle handle = INSTANCES.getOrDefault(key, null);
 		if (handle == null) {
 			return false;

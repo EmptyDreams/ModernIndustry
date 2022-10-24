@@ -34,7 +34,6 @@ import org.lwjgl.input.Mouse
 import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte1.other
 import top.kmar.mi.ModernIndustry
 import top.kmar.mi.api.araw.AutoDataRW
-import top.kmar.mi.api.dor.ByteDataOperator
 import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.graphics.GuiLoader
 import top.kmar.mi.api.utils.container.PairIntInt
@@ -248,9 +247,7 @@ fun Item.newStack(amount: Int = 1) = ItemStack(this, amount)
  * @receiver [NBTTagCompound]
  */
 fun NBTTagCompound.readObject(obj: Any, key: String = ".") {
-    val operator = ByteDataOperator()
-    operator.writeFromNBT(this, key)
-    AutoDataRW.read2ObjAll(operator, obj)
+    AutoDataRW.read2ObjAll(getCompoundTag(key), obj)
 }
 
 /**
@@ -262,9 +259,8 @@ fun NBTTagCompound.readObject(obj: Any, key: String = ".") {
  * @receiver [NBTTagCompound]
  */
 fun NBTTagCompound.writeObject(obj: Any, key: String = ".") {
-    val operator = ByteDataOperator()
-    AutoDataRW.write2LocalAll(operator, obj)
-    if (operator.size() != 0) operator.readToNBT(this, key)
+    val nbt = AutoDataRW.writeAll(obj)
+    setTag(key, nbt)
 }
 
 /**

@@ -1,6 +1,8 @@
 package top.kmar.mi.content.tileentity;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -12,8 +14,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
 import top.kmar.mi.api.capabilities.ele.EleCapability;
 import top.kmar.mi.api.capabilities.ele.IStorage;
-import top.kmar.mi.api.dor.ByteDataOperator;
-import top.kmar.mi.api.dor.interfaces.IDataReader;
 import top.kmar.mi.api.electricity.EleWorker;
 import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
 import top.kmar.mi.api.electricity.clock.OverloadCounter;
@@ -432,8 +432,8 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	}
 
 	@Override
-	public void receive(@Nonnull IDataReader reader) {
-		linkInfo = reader.readByte();
+	public void receive(@Nonnull NBTBase reader) {
+		linkInfo = ((NBTTagByte) reader).getInt();
 		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
@@ -451,11 +451,10 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	public void send() {
 		if (world.isRemote) return;
 		if (players.size() == world.playerEntities.size()) return;
-		IOUtil.sendBlockMessageIfNotUpdate(this, players, 128, () -> {
-			ByteDataOperator operator = new ByteDataOperator(1);
-			operator.writeByte((byte) linkInfo);
-			return operator;
-		});
+		IOUtil.sendBlockMessageIfNotUpdate(
+				this, players, 128,
+				() -> new NBTTagByte((byte) linkInfo)
+		);
 	}
 	
 	@Override

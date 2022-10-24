@@ -1,7 +1,6 @@
 package top.kmar.mi.api.araw.interfaces
 
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
+import net.minecraft.nbt.NBTBase
 import kotlin.reflect.KClass
 
 /**
@@ -17,22 +16,21 @@ interface IAutoObjRW<T> : IAutoMachine {
     fun match(type: KClass<*>): Boolean
 
     /**
-     * 将指定对象写入到[IDataWriter]中
+     * 将指定对象写入到[NBTBase]中
      *
      * 条例：
      * 1. 调用该函数前请在外部通过[match]检查是否满足读写条件
      * 2. 该函数不应抛出异常（但可以抛出由于用户错误修改注解参数导致的类型转换异常）
      *
-     * @param writer 承载数据的`writer`
      * @param value 要写入的数据
      * @param local 数据在本地存在的类型
      *
-     * @return 写入的结果，当写入过程发生异常时应当将异常包含在[RWResult]中而非直接抛出
+     * @return 需要存储的数据，返回`null`表示跳过存储
      */
-    fun write2Local(writer: IDataWriter, value: T, local: KClass<*>): RWResult
+    fun write2Local(value: T, local: KClass<*>): NBTBase?
 
     /**
-     * 从[IDataReader]中读取指定类型的数据
+     * 从[NBTBase]中读取指定类型的数据
      *
      * 条例：
      * 1. 调用该函数前请在外部通过[match]检查是否满足读写条件
@@ -41,9 +39,7 @@ interface IAutoObjRW<T> : IAutoMachine {
      * @param reader 承载数据的`reader`
      * @param local 数据在本地存在的类型
      * @param receiver 数据接收器
-     *
-     * @return 读取的结果，当写入过程发生异常时应当将异常包含在[RWResult]中而非直接抛出
      */
-    fun read2Obj(reader: IDataReader, local: KClass<*>, receiver: (T) -> Unit): RWResult
+    fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (T) -> Unit)
 
 }

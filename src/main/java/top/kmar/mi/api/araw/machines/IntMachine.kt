@@ -1,9 +1,11 @@
 package top.kmar.mi.api.araw.machines
 
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagByte
+import net.minecraft.nbt.NBTTagInt
+import net.minecraft.nbt.NBTTagShort
 import top.kmar.mi.api.araw.interfaces.*
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.dor.interfaces.IDataReader
-import top.kmar.mi.api.dor.interfaces.IDataWriter
 import top.kmar.mi.api.register.others.AutoRWType
 import java.lang.reflect.Field
 import kotlin.reflect.KClass
@@ -24,48 +26,44 @@ object IntMachine : IAutoFieldRW, IAutoObjRW<Int> {
         return annotation.source(field) == Int::class
     }
 
-    override fun write2Local(writer: IDataWriter, field: Field, obj: Any): RWResult {
+    override fun write2Local(field: Field, obj: Any): NBTBase {
         val annotation = field.getAnnotation(AutoSave::class.java)
         val value = field.getInt(obj)
-        return writeHelper(writer, value, annotation.local(field))
+        return writeHelper(value, annotation.local(field))
     }
 
-    override fun read2Obj(reader: IDataReader, field: Field, obj: Any): RWResult {
+    override fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
         val annotation = field.getAnnotation(AutoSave::class.java)
         when (val local = annotation.local(field)) {
-            Int::class -> field.setInt(obj, reader.readInt())
-            Byte::class -> field.setInt(obj, reader.readByte().toInt())
-            Boolean::class -> field.setInt(obj, if (reader.readBoolean()) 1 else 0)
-            else -> return RWResult.failed(this, "${local.qualifiedName}不能转化为int")
+            Int::class -> field.setInt(obj, (reader as NBTTagInt).int)
+            Byte::class, Boolean::class -> field.setInt(obj, (reader as NBTTagByte).int)
+            Short::class -> field.setInt(obj, (reader as NBTTagShort).int)
+            else -> throw ClassCastException("${local.qualifiedName}不能转化为int")
         }
-        return RWResult.success()
     }
 
     override fun match(type: KClass<*>) = type == Int::class
 
-    override fun write2Local(writer: IDataWriter, value: Int, local: KClass<*>): RWResult {
-        return writeHelper(writer, value, local)
+    override fun write2Local(value: Int, local: KClass<*>): NBTBase {
+        return writeHelper(value, local)
     }
 
-    override fun read2Obj(reader: IDataReader, local: KClass<*>, receiver: (Int) -> Unit): RWResult {
+    override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (Int) -> Unit) {
         when (local) {
-            Int::class -> receiver(reader.readInt())
-            Byte::class -> receiver(reader.readByte().toInt())
-            Boolean::class -> receiver(if (reader.readBoolean()) 1 else 0)
-            else -> return RWResult.failed(this, "${local.qualifiedName}不能转化为int")
+            Int::class -> receiver((reader as NBTTagInt).int)
+            Byte::class, Boolean::class -> receiver((reader as NBTTagByte).int)
+            Short::class -> receiver((reader as NBTTagShort).int)
+            else -> throw ClassCastException("${local.qualifiedName}不能转化为int")
         }
-        return RWResult.success()
     }
 
-    private fun writeHelper(writer: IDataWriter, value: Int, local: KClass<*>): RWResult {
-        when (local) {
-            Int::class -> writer.writeInt(value)
-            Byte::class -> writer.writeByte(value.toByte())
-            Short::class -> writer.writeShort(value.toShort())
-            Boolean::class -> writer.writeBoolean(value != 0)
-            else -> return RWResult.failed(this, "int不能转化为${local.qualifiedName}")
+    private fun writeHelper(value: Int, local: KClass<*>): NBTBase {
+        return when (local) {
+            Int::class -> NBTTagInt(value)
+            Byte::class, Boolean::class -> NBTTagByte(value.toByte())
+            Short::class -> NBTTagShort(value.toShort())
+            else -> throw ClassCastException("int不能转化为${local.qualifiedName}")
         }
-        return RWResult.success()
     }
 
 }
