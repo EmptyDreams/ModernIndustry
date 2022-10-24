@@ -25,7 +25,8 @@ abstract class MixinMinecraft {
      */
     @Inject(
         method = ["displayGuiScreen"],
-        at = [At(value = "HEAD")]
+        at = [At(value = "HEAD")],
+        cancellable = true
     )
     fun displayGuiScreen(guiScreenIn: GuiScreen?, ci: CallbackInfo) {
         player?.apply {
