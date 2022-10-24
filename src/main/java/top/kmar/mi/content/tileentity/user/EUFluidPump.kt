@@ -25,7 +25,6 @@ import top.kmar.mi.api.graphics.GuiLoader
 import top.kmar.mi.api.graphics.components.ButtonCmpt
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt
 import top.kmar.mi.api.graphics.components.TextCmpt
-import top.kmar.mi.api.graphics.components.interfaces.ComplexCmptExp
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.net.IAutoNetwork
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity
@@ -88,7 +87,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         @SubscribeEvent
         fun registryGuiInfo(event: GuiLoader.MIGuiRegistryEvent) {
             event.registryInitTask(BlockGuiList.fluidPump) { gui ->
-                val button = gui.queryCmpt(ComplexCmptExp("button")) as ButtonCmpt
+                val button = gui.queryCmpt("button") as ButtonCmpt
                 val pump = gui.tileEntity as EUFluidPump
                 button.addEventListener(IGraphicsListener.mouseClick) {
                     pump.start = !pump.start
@@ -116,7 +115,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
                 val energy = gui.getElementByID("energy") as ProgressBarCmpt
                 val consume = gui.getElementByID("consume") as ProgressBarCmpt
                 val pump = gui.tileEntity as EUFluidPump
-                val texts = gui.queryCmptAll(ComplexCmptExp("p"))
+                val texts = gui.queryCmptAll("p")
                     .map { it.client as TextCmpt.TextCmptClient }
                 val fluidText = I18n.format(
                     if (pump.data.isEmpty) "mi.gui.fluid_pump.null"
@@ -128,7 +127,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
                     "${energy.value}/${energy.max}")
                 texts[2].text = I18n.format("mi.gui.fluid_pump.consume",
                     "${consume.value}/${consume.max}")
-                val button = gui.queryCmpt(ComplexCmptExp("button"))
+                val button = gui.queryCmpt("button")
                 button!!.attributes["value"] = I18n.format(if (pump.start) "mi.gui.open" else "mi.gui.close")
             }
         }

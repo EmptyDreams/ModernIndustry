@@ -166,6 +166,12 @@ abstract class Cmpt(
     fun queryCmptAll(exp: ComplexCmptExp): LinkedList<Cmpt> = queryCmptLimit(exp, Int.MAX_VALUE)
 
     /**
+     * 通过匹配表达式匹配GUI中所有与该表达式相匹配的控件
+     * @see queryCmptLimit
+     */
+    fun queryCmptAll(exp: String) = queryCmptAll(ComplexCmptExp(exp))
+
+    /**
      * 通过匹配表达式匹配GUI中第一个与该表达式相匹配的控件
      * @return 未查询到则返回`null`
      * @see queryCmptLimit
@@ -174,6 +180,13 @@ abstract class Cmpt(
         val result = queryCmptLimit(exp, 1)
         return if (result.isEmpty()) null else result.first
     }
+
+    /**
+     * 通过匹配表达式匹配GUI中第一个与该表达式相匹配的控件
+     * @return 未查询到则返回`null`
+     * @see queryCmptLimit
+     */
+    fun queryCmpt(exp: String) = queryCmpt(ComplexCmptExp(exp))
 
     /**
      * 发布事件

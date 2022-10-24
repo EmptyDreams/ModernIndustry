@@ -118,8 +118,10 @@ open class BaseGraphics(
     fun getElementByID(id: String) = document.getElementByID(id)
     /** @see Cmpt.queryCmptLimit */
     fun queryCmptLimit(exp: ComplexCmptExp, limit: Int) = document.queryCmptLimit(exp, limit)
-    fun queryCmptAll(exp: ComplexCmptExp) = document.queryCmptAll(exp)
-    fun queryCmpt(exp: ComplexCmptExp) = document.queryCmpt(exp)
+    /** @see Cmpt.queryCmptAll */
+    fun queryCmptAll(exp: String) = document.queryCmptAll(exp)
+    /** @see Cmpt.queryCmpt */
+    fun queryCmpt(exp: String) = document.queryCmpt(exp)
 
     /** 更新控件样式 */
     fun updateStyle() {
