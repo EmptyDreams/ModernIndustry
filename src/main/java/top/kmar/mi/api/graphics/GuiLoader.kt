@@ -13,7 +13,6 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.ModernIndustry
 import top.kmar.mi.api.event.GuiRegistryFinishedEvent
 import top.kmar.mi.api.graphics.parser.GuiFileParser
-import top.kmar.mi.api.graphics.parser.GuiStyleParser
 import top.kmar.mi.api.graphics.utils.GuiRegedit
 import top.kmar.mi.api.register.others.AutoLoader
 import java.util.function.Consumer
@@ -58,7 +57,7 @@ object GuiLoader : IGuiHandler {
         x: Int, y: Int, z: Int
     ): BaseGraphicsClient {
         val client = getServerGuiElement(ID, player, world, x, y, z).client
-        client.addInitTask { GuiStyleParser.initStyle(regedit.getKey(ID), client.service) }
+        client.addInitTask { client.updateStyle() }
         return client
     }
 

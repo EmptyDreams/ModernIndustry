@@ -179,6 +179,9 @@ abstract class Cmpt(
      * 发布事件
      *
      * 如果某一个事件执行过程中发生了异常，不会影响其它事件的执行
+     *
+     * @param name 事件名称
+     * @param message 触发事件传送的数据
      */
     fun dispatchEvent(name: String, message: ListenerData) {
         /** 触发指定控件的事件 */
@@ -208,7 +211,11 @@ abstract class Cmpt(
         else activeParentEvent(this)
     }
 
-    /** 注册事件 */
+    /**
+     * 注册事件
+     * @param name 事件的名称
+     * @param listener 事件对象
+     */
     fun addEventListener(name: String, listener: IGraphicsListener<*>) {
         eventMap.computeIfAbsent(name) { LinkedList() }.add(listener)
     }

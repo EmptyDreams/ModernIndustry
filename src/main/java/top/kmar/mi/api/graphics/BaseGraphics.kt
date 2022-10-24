@@ -15,7 +15,9 @@ import top.kmar.mi.api.graphics.components.interfaces.ComplexCmptExp
 import top.kmar.mi.api.graphics.components.interfaces.slots.IGraphicsSlot
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
+import top.kmar.mi.api.graphics.parser.GuiStyleParser
 import top.kmar.mi.api.utils.WorldUtil
+import top.kmar.mi.api.utils.applyClient
 import top.kmar.mi.api.utils.copy
 import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
@@ -118,6 +120,13 @@ open class BaseGraphics(
     fun queryCmptLimit(exp: ComplexCmptExp, limit: Int) = document.queryCmptLimit(exp, limit)
     fun queryCmptAll(exp: ComplexCmptExp) = document.queryCmptAll(exp)
     fun queryCmpt(exp: ComplexCmptExp) = document.queryCmpt(exp)
+
+    /** 更新控件样式 */
+    fun updateStyle() {
+        applyClient {
+            GuiStyleParser.initStyle(key, document)
+        }
+    }
 
     /** 添加一个slot，并返回其序列号 */
     fun installSlot(slot: IGraphicsSlot): Int {

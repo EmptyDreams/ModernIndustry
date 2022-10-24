@@ -12,6 +12,7 @@ import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
 import top.kmar.mi.api.graphics.listeners.*
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardPressed
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardReleased
+import top.kmar.mi.api.graphics.parser.GuiStyleParser
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
@@ -155,6 +156,12 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
     /** 添加一个初始化任务 */
     fun addInitTask(task: () -> Unit) {
         taskList.add(task)
+    }
+
+    /** 更新样式表 */
+    fun updateStyle() {
+        val inventorySlots = this.inventorySlots as BaseGraphics
+        GuiStyleParser.initStyle(inventorySlots.key, service)
     }
 
 }
