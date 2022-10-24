@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "mi:items/class_info_viewer"
+    "layer0": "mi:items/debug/class_info_viewer"
   }
 }
