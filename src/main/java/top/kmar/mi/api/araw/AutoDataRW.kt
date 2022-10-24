@@ -26,10 +26,15 @@ object AutoDataRW {
         val result = NBTTagCompound()
         while (clazz != Any::class.java) {
             for (field in clazz.declaredFields) {
-                val annotation = field.getAnnotation(AutoSave::class.java) ?: continue
-                val `data` = write2Local(field, obj) ?: continue
-                val key = annotation.value(field)
-                result.setTag(key, `data`)
+                try {
+                    val annotation = field.getAnnotation(AutoSave::class.java) ?: continue
+                    val `data` = write2Local(field, obj) ?: continue
+                    val key = annotation.value(field)
+                    result.setTag(key, `data`)
+                } catch (e: Exception) {
+                    MISysInfo.err("在写入信息时发生异常\n\t异常对象：$obj" +
+                            "\n\t异常位置：${clazz.name}, ${field.name}", e)
+                }
             }
             clazz = clazz.superclass
         }
@@ -51,8 +56,8 @@ object AutoDataRW {
                     val value = reader.getTag(localName) ?: continue
                     read2Obj(value, field, obj)
                 } catch (e: Exception) {
-                    MISysInfo.err("读取存档时发生异常，异常位置：${field.name}", e)
-                    break
+                    MISysInfo.err("在读取信息时发生异常\n\t异常对象：$obj" +
+                            "\n\t异常位置：${clazz.name}#${field.name}", e)
                 }
             }
             clazz = clazz.superclass
