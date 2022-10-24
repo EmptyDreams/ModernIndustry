@@ -29,6 +29,8 @@ import net.minecraftforge.fluids.capability.wrappers.BlockWrapper
 import net.minecraftforge.fluids.capability.wrappers.FluidBlockWrapper
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
+import org.lwjgl.input.Keyboard
+import org.lwjgl.input.Mouse
 import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte1.other
 import top.kmar.mi.ModernIndustry
 import top.kmar.mi.api.araw.AutoDataRW
@@ -84,14 +86,19 @@ private var oldGui: GuiScreen? = null
 private var isOpenClientGui = false
 
 /** 打开一个客户端GUI */
+@Suppress("ControlFlowWithEmptyBody")
 fun EntityPlayer.openClientGui(key: ResourceLocation, x: Int, y: Int, z: Int) {
     if (world.isServer()) return
     val id = GuiLoader.getID(key)
     if (id > 0) throw IllegalArgumentException("指定GUI[$key]不是客户端GUI")
+    // 清除键盘和鼠标输入
     KeyBinding.unPressAllKeys()
-    oldGui?.onGuiClosed()
+    while (Mouse.next()) { }
+    while (Keyboard.next()) { }
+    // 打开GUI
     val mc = Minecraft.getMinecraft()
-    oldGui = mc.currentScreen
+    if (isOpenClientGui()) mc.currentScreen?.onGuiClosed()
+    else oldGui = mc.currentScreen
     isOpenClientGui = true
     val newGui = GuiLoader.getClientGuiElement(id, this, world, x, y, z)
     val scaled = ScaledResolution(mc)
