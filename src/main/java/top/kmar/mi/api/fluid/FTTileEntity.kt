@@ -312,7 +312,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
     open fun hasPlug(facing: EnumFacing) = plugData[facing] != null
 
     /** 统计管道出口数量  */
-    open fun getLinkedAmount() = Arrays.stream(EnumFacing.values()).filter { facing: EnumFacing ->
+    open fun getLinkedAmount() = EnumFacing.values().stream().filter { facing: EnumFacing ->
         isLinked(facing)
     }.count().toInt()
 

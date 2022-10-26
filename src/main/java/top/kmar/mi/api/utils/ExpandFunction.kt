@@ -7,8 +7,6 @@ import net.minecraft.block.BlockLiquid
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.gui.ScaledResolution
-import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.texture.ITextureObject
 import net.minecraft.client.settings.KeyBinding
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.Item
@@ -41,8 +39,20 @@ import top.kmar.mi.api.utils.data.math.Point3D
 import top.kmar.mi.api.utils.data.math.Range3D
 import top.kmar.mi.api.utils.iterators.ArrayFlipIterator
 import java.nio.charset.StandardCharsets
+import java.util.*
+import java.util.stream.Stream
 import kotlin.math.abs
 import kotlin.math.sqrt
+
+inline fun <T> Array<T>.stream(): Stream<T> = Arrays.stream(this)
+
+/** 判断两个stack能否合并 */
+fun ItemStack.match(stack: ItemStack) =
+    isEmpty || stack.isEmpty || (
+                    (!hasSubtypes || metadata == stack.metadata) &&
+                    isItemEqual(stack) &&
+                    ItemStack.areItemStackTagsEqual(this, stack)
+            )
 
 /** 移除所有空格 */
 fun String.removeAllSpace(): String {
@@ -50,13 +60,12 @@ fun String.removeAllSpace(): String {
 }
 
 /** 比较两个列表 */
-@Suppress("UNREACHABLE_CODE", "CAST_NEVER_SUCCEEDS")
-fun <T : Comparable<*>> Collection<T>.compareTo(other: Collection<T>): Int {
+fun <T : Comparable<T>> Collection<T>.compareTo(other: Collection<T>): Int {
     if (size != other.size) return size.compareTo(other.size)
     val itor0 = iterator()
     val itor1 = other.iterator()
     while (itor0.hasNext()) {
-        val res = itor0.next().compareTo(itor1.next() as Nothing)
+        val res = itor0.next().compareTo(itor1.next())
         if (res != 0) return res
     }
     return 0
@@ -192,15 +201,6 @@ fun ItemStack.copy(count: Int): ItemStack {
     val result = copy()
     result.count = count
     return result
-}
-
-/**
- * 装载材质
- * @receiver [ITextureObject]
- */
-fun ITextureObject.bindTexture(): ITextureObject {
-    GlStateManager.bindTexture(glTextureId)
-    return this
 }
 
 /** 检查指定位置是否可以放置指定流体方块 */

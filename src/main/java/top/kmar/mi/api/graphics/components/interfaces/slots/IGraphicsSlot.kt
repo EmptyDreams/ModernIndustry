@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
+import top.kmar.mi.api.utils.match
 import top.kmar.mi.api.utils.copy
 import kotlin.math.min
 
@@ -50,12 +51,7 @@ interface IGraphicsSlot : Comparable<IGraphicsSlot> {
      */
     fun putStack(content: ItemStack): Int {
         if (content.isEmpty || !slot.isEnabled || !slot.isItemValid(content)) return content.count
-        if (stack.isEmpty || (
-                    stack.item == content.item &&
-                    (!stack.hasSubtypes || stack.metadata == content.metadata) &&
-                    ItemStack.areItemStackTagsEqual(stack, content)
-               )
-        ) {
+        if (stack.match(content)) {
             val maxCout = min(stack.maxStackSize, slot.slotStackLimit)
             val cout = min(content.count, maxCout - stack.count)
             if (cout == 0) return content.count
