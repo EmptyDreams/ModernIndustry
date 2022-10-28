@@ -177,7 +177,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
         maxEnergy = 100
     }
 
-    override fun isReceiveAllowable(facing: EnumFacing) = facing.axis !== side.axis
+    override fun isReceiveAllowable(facing: EnumFacing?) = facing?.axis !== side.axis
 
     override fun isExtractAllowable(facing: EnumFacing?) = false
 
