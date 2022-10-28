@@ -119,14 +119,14 @@ class ElementList(
         private var y = 0
         private var x = 0
 
-        override fun hasNext() = x != width || y != height
+        override fun hasNext() = x != width || y != height - 1
 
         override fun next(): ItemStack {
             if (x == width) {
                 x = 0
                 ++y
             }
-            return get(x, y)
+            return get(x++, y)
         }
 
     }

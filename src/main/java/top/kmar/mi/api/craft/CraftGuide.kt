@@ -12,6 +12,7 @@ import top.kmar.mi.api.craft.shapes.IShape
  */
 object CraftGuide {
 
+    @JvmStatic
     private val regeditMap = Object2ObjectOpenHashMap<String, CraftRegedit>()
 
     /**
