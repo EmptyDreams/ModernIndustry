@@ -42,7 +42,7 @@ object GuiStyleParser {
         if (key in expMap) return expMap[key]
         return try {
             val location = ResourceLocation(
-                key.resourceDomain, "gui/mi_files/style/${key.resourcePath}.styl"
+                key.resourceDomain, "mi_files/gui/style/${key.resourcePath}.styl"
             )
             parseTargetFile(location, key)
         } catch (e: Exception) {
