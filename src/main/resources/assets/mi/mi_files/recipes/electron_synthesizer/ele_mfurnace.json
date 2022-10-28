@@ -1,10 +1,7 @@
 {
-  "type": "mi:orderly_shape",
-  "group": "mi:electron_synthesizer",
-  "result": {
-    "pattern": "*"
-  },
-  "pattern": [
+  "group": "mi:synthesizer",
+  "result": "*",
+  "input": [
     "#===#",
     "#   #",
     "#   #",

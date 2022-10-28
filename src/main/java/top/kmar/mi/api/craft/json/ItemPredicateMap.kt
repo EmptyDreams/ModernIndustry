@@ -3,6 +3,7 @@ package top.kmar.mi.api.craft.json
 import com.google.gson.JsonObject
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap
 import net.minecraft.item.ItemStack
+import net.minecraft.item.crafting.Ingredient
 import net.minecraftforge.common.crafting.CraftingHelper
 import net.minecraftforge.common.crafting.JsonContext
 import net.minecraftforge.fml.common.Loader
@@ -19,12 +20,16 @@ class ItemPredicateMap {
     private val map = Char2ObjectOpenHashMap<LazyNode>()
 
     /** 获取指定`key`对应的`predicate` */
-    fun getPredicate(key: Char) =
-        map.get(key)?.predicate ?: throw IllegalArgumentException("指定的值[$key]没有找到对应的key")
+    fun getPredicate(key: Char): Predicate<ItemStack> {
+        if (key == ' ') return Ingredient.EMPTY
+        return map.get(key)?.predicate ?: throw IllegalArgumentException("指定的值[$key]没有找到对应的key")
+    }
 
     /** 获取指定`key`对应的`stack` */
-    fun getStack(key: Char) =
-        map.get(key)?.stack ?: throw IllegalArgumentException("指定的值[$key]没有找到对应的key")
+    fun getStack(key: Char): ItemStack {
+        if (key == ' ') ItemStack.EMPTY
+        return map.get(key)?.stack ?: throw IllegalArgumentException("指定的值[$key]没有找到对应的key")
+    }
 
     operator fun set(key: Char, json: JsonObject) {
         map.put(key, LazyNode(json))

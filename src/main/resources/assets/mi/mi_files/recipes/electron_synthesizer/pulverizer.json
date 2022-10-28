@@ -1,10 +1,7 @@
 {
-  "type": "mi:orderly_shape",
-  "group": "mi:electron_synthesizer",
-  "result": {
-    "pattern": "*"
-  },
-  "pattern": [
+  "group": "mi:synthesizer",
+  "result": "*",
+  "input": [
     "#%%%#",
     "#^^^#",
     "=---=",
@@ -15,7 +12,7 @@
     "#": { "item": "mi:machine_shell" },
     "^": { "item": "mi:blade" },
     "=": { "item": "mi:electromagnet" },
-    "-": { "item": "mi:iron_rod" },
+    "-": { "item": "mi:iron_stick" },
     "%": { "item": "mi:circuit" },
     "*": { "item": "mi:pulverizer" }
   }

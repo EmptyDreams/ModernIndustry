@@ -5,13 +5,13 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.crafting.CraftingHelper
 import net.minecraftforge.fml.common.Loader
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import org.apache.commons.io.FilenameUtils
 import top.kmar.mi.api.craft.CraftGuide
 import top.kmar.mi.api.craft.elements.CraftOutput
 import top.kmar.mi.api.craft.shapes.DisorderlyShape
 import top.kmar.mi.api.craft.shapes.IShape
 import top.kmar.mi.api.craft.shapes.OrderlyShape
-import top.kmar.mi.api.register.others.AutoLoader
 import top.kmar.mi.api.utils.MISysInfo
 import java.nio.file.Files
 import java.util.*
@@ -20,15 +20,11 @@ import java.util.*
  * JSON解析器注册机
  * @author EmptyDreams
  */
-@AutoLoader
+@EventBusSubscriber
 object CraftJsonRegedit {
 
-    init {
-        parserAll()
-    }
-
     /** 解析所有JSON */
-    private fun parserAll() {
+    fun parserAll() {
         val gson = JsonParser()
         Loader.instance().activeModList.forEach { mod ->
             CraftingHelper.findFiles(
@@ -40,9 +36,10 @@ object CraftJsonRegedit {
                     try {
                         @Suppress("BlockingMethodInNonBlockingContext")
                         val json = Files.newBufferedReader(file).use { gson.parse(it) }.asJsonObject
-                        parserTarget(json)
+                        parserTarget(json, FilenameUtils.getBaseName(relative))
                     } catch (e: Exception) {
-                        MISysInfo.err("在解析指定JSON文件[$file]时遇到异常")
+                        MISysInfo.err("在解析指定JSON文件[$file]时遇到异常", e)
+                        return@findFiles false
                     }
                     return@findFiles true
                 }, true, true
@@ -51,12 +48,12 @@ object CraftJsonRegedit {
     }
 
     /** 解析指定JSON对象并将结果传递到注册机中 */
-    private fun parserTarget(json: JsonObject) {
+    private fun parserTarget(json: JsonObject, defID: String) {
         val group = json["group"].asString
-        val id = ResourceLocation(json["id"].asString)
+        val id = ResourceLocation(json["id"]?.asString ?: defID)
         val keyMap = getKeyMap(json)
         val shape = getShape(json["input"], keyMap)
-        val output = getOutput(json.getAsJsonObject("result"), keyMap)
+        val output = getOutput(json["result"], keyMap)
         CraftGuide.registry(group, id, shape, output)
     }
 
@@ -105,29 +102,37 @@ object CraftJsonRegedit {
     }
 
     /** 获取合成表的输出 */
-    private fun getOutput(json: JsonObject, keyMap: ItemPredicateMap): CraftOutput {
+    private fun getOutput(json: JsonElement, keyMap: ItemPredicateMap): CraftOutput {
         val output = CraftOutput()
-        json.entrySet().forEach { (key, value) ->
-            when (key) {
-                "stacks" -> {
-                    val list = LinkedList<ItemStack>()
-                    if (value.isJsonObject) {
-                        list.add(ItemPredicateMap.parserStack(value.asJsonObject))
-                    } else if (value.isJsonArray) {
-                        value as JsonArray
-                        value.forEach { list.add(ItemPredicateMap.parserStack(it.asJsonObject)) }
-                    } else {
-                        val string = value.asString
-                        string.forEach { list.add(keyMap.getStack(it)) }
+        if (json.isJsonObject) {
+            json as JsonObject
+            json.entrySet().forEach { (key, value) ->
+                when (key) {
+                    "stacks" -> {
+                        val list = LinkedList<ItemStack>()
+                        if (value.isJsonObject) {
+                            list.add(ItemPredicateMap.parserStack(value.asJsonObject))
+                        } else if (value.isJsonArray) {
+                            value as JsonArray
+                            value.forEach { list.add(ItemPredicateMap.parserStack(it.asJsonObject)) }
+                        } else {
+                            val string = value.asString
+                            string.forEach { list.add(keyMap.getStack(it)) }
+                        }
+                        output.stacks = list
                     }
-                    output.stacks = list
-                }
-                else -> {
-                    value as JsonPrimitive
-                    if (value.isNumber) output.setInt(key, value.asInt)
-                    else output.setString(key, value.asString)
+                    else -> {
+                        value as JsonPrimitive
+                        if (value.isNumber) output.setInt(key, value.asInt)
+                        else output.setString(key, value.asString)
+                    }
                 }
             }
+        } else {
+            val string = json.asString
+            val list = LinkedList<ItemStack>()
+            string.forEach { list.add(keyMap.getStack(it)) }
+            output.stacks = list
         }
         return output
     }
