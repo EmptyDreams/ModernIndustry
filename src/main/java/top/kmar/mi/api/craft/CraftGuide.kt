@@ -3,6 +3,7 @@ package top.kmar.mi.api.craft
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import net.minecraft.util.ResourceLocation
 import top.kmar.mi.api.craft.elements.CraftOutput
+import top.kmar.mi.api.craft.elements.ElementList
 import top.kmar.mi.api.craft.shapes.IShape
 
 /**
@@ -21,8 +22,28 @@ object CraftGuide {
      * @param output 合成表输出
      * @throws IllegalArgumentException 如果 ID 重复
      */
+    @JvmStatic
     fun registry(group: String, id: ResourceLocation, shape: IShape, output: CraftOutput) {
         regeditMap.computeIfAbsent(group) { CraftRegedit() }.registry(id, shape, output)
     }
+
+    /** 获取一个注册机 */
+    @JvmStatic
+    fun getRegedit(group: String) =
+        regeditMap[group] ?: throw IllegalArgumentException("指定分组[$group]不存在")
+
+    /** 获取指定合成表的输出 */
+    @JvmStatic
+    fun findOutput(group: String, id: ResourceLocation) =
+        getRegedit(group).findOutput(id)
+
+    /** 通过输入获取合成表输出 */
+    @JvmStatic
+    fun findOutput(group: String, input: ElementList) =
+        getRegedit(group).findOutput(input)
+
+    /** 判断是否存在与指定输入相匹配的合成表 */
+    @JvmStatic
+    fun has(group: String, input: ElementList) = regeditMap[group]?.findOutput(input) != null
 
 }

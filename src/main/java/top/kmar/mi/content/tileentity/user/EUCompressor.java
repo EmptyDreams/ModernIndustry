@@ -10,8 +10,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.ItemStackHandler;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
-import top.kmar.mi.api.craftguide.ItemElement;
-import top.kmar.mi.api.craftguide.sol.ItemSet;
+import top.kmar.mi.api.craft.CraftGuide;
+import top.kmar.mi.api.craft.elements.CraftOutput;
+import top.kmar.mi.api.craft.elements.ElementList;
 import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
 import top.kmar.mi.api.electricity.info.BiggerVoltage;
 import top.kmar.mi.api.electricity.info.EleEnergy;
@@ -22,7 +23,7 @@ import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.content.blocks.BlockGuiList;
-import top.kmar.mi.content.blocks.CraftList;
+import top.kmar.mi.data.CraftList;
 import top.kmar.mi.content.blocks.machine.user.CompressorBlock;
 import top.kmar.mi.data.properties.MIProperty;
 
@@ -74,14 +75,12 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
             WorldUtil.removeTickable(this);
             return;
         }
-        
         //检查输入框是否合法 如果不合法则清零工作时间并结束函数
         ItemStack outStack = checkInput();
         if (outStack == null || getNowEnergy() < getNeedEnergy()) {
             whenFailed(outStack == null);
             return;
         }
-        
         //若配方存在则继续计算
         boolean isWorking = updateData(outStack);
         updateShow(isWorking);
@@ -129,12 +128,10 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
      */
     private ItemStack checkInput() {
         if (!isEmptyForInput()) {
-            ItemSet set = new ItemSet();
-            set.add(ItemElement.instance(getInputUpStack()));
-            set.add(ItemElement.instance(getInputDownStack()));
-            ItemElement craft = CraftList.COMPRESSOR.apply(set);
-            if (craft == null) return null;
-            return craft.getStack();
+            ElementList list = ElementList.build(getInputUpStack(), getInputDownStack());
+            CraftOutput output = CraftGuide.findOutput(CraftList.compressor, list);
+            if (output == null) return null;
+            return output.getFirstStack();
         }
         return null;
     }

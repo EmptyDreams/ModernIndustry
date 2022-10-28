@@ -62,7 +62,7 @@ class ItemSlot(
         /** 检查能否取出物品 */
         var outputChecker: (ItemStack, EntityPlayer) -> Boolean = { _, _ -> true }
         /** 当物品内容变化时触发 */
-        var onSlotChanged: () -> Unit = { }
+        var onSlotChanged: () -> Unit = {  }
 
     }
 

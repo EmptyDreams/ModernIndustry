@@ -2,6 +2,7 @@ package top.kmar.mi.api.craft.elements
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import net.minecraft.item.ItemStack
+import top.kmar.mi.api.utils.deepClone
 
 /**
  * 合成表输出
@@ -18,6 +19,11 @@ class CraftOutput {
         set(value) {
             attributes["stacks"] = value.deepClone()
         }
+
+    /** 获取主物品列表中的第一个元素 */
+    @Suppress("UNCHECKED_CAST")
+    val firstStack: ItemStack
+        get() = (attributes["stacks"] as List<ItemStack>).first().copy()
 
     /** 将指定物品放入主物品列表（会覆盖原有值） */
     fun setStacks(vararg stacks: ItemStack) {
@@ -58,13 +64,6 @@ class CraftOutput {
         val stacks = attributes["stacks"] as List<*>?
         if (stacks != null) result.attributes["stacks"] = ArrayList(stacks)
         return result
-    }
-
-    /** 深度复制列表 */
-    private fun List<ItemStack>.deepClone(): List<ItemStack> {
-        val list = ArrayList<ItemStack>(size)
-        forEach { list.add(it.copy()) }
-        return list
     }
 
 }

@@ -9,8 +9,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.ItemStackHandler;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
-import top.kmar.mi.api.craftguide.ItemElement;
-import top.kmar.mi.api.craftguide.sol.ItemSet;
+import top.kmar.mi.api.craft.CraftGuide;
+import top.kmar.mi.api.craft.elements.CraftOutput;
+import top.kmar.mi.api.craft.elements.ElementList;
 import top.kmar.mi.api.electricity.clock.NonCounter;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.graphics.GuiLoader;
@@ -20,7 +21,7 @@ import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.ItemUtil;
 import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.content.blocks.BlockGuiList;
-import top.kmar.mi.content.blocks.CraftList;
+import top.kmar.mi.data.CraftList;
 import top.kmar.mi.data.properties.MIProperty;
 
 /**
@@ -41,7 +42,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
     /** 最大燃烧时长 */
     @AutoSave private int maxTime = 0;
     /** 正在燃烧的物品 */
-    @AutoSave private ItemElement burnItem;
+    @AutoSave private ItemStack burnItem;
     
     public EMFirePower() {
         setMaxEnergy(10000);
@@ -69,7 +70,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
         IBlockState state;
         if (!stack.isEmpty() && getNowEnergy() < getMaxEnergy() / 10 * 5) {
             maxTime = TileEntityFurnace.getItemBurnTime(stack);
-            burnItem = ItemElement.instance(stack.getItem(), 1);
+            burnItem = stack.copy();
             stack.shrink(1);
             state = old.withProperty(MIProperty.getWORKING(), true);
         } else {
@@ -83,9 +84,10 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
     /** 更新输出 */
     private void updateProduction() {
         maxTime = burningTime = 0;
-        ItemElement element = CraftList.FIRE_POWER.apply(new ItemSet(burnItem));
-        if (element == null) return;
-        ItemUtil.putItemTo(getOutputStack(), element.getStack(), false);
+        CraftOutput output = CraftGuide.findOutput(
+                CraftList.firePower, ElementList.build(burnItem));
+        if (output == null) return;
+        ItemUtil.putItemTo(getOutputStack(), output.getFirstStack(), false);
     }
     
     /** 更新燃烧时间 */

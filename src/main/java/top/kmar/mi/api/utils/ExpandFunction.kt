@@ -3,7 +3,6 @@
 package top.kmar.mi.api.utils
 
 import io.netty.buffer.ByteBuf
-import it.unimi.dsi.fastutil.chars.Char2ObjectFunction
 import net.minecraft.block.BlockLiquid
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
@@ -44,6 +43,13 @@ import java.util.*
 import java.util.stream.Stream
 import kotlin.math.abs
 import kotlin.math.sqrt
+
+/** 深度复制列表 */
+fun List<ItemStack>.deepClone(): MutableList<ItemStack> {
+    val list = ArrayList<ItemStack>(size)
+    forEach { list.add(it.copy()) }
+    return list
+}
 
 inline fun <T> Array<T>.stream(): Stream<T> = Arrays.stream(this)
 

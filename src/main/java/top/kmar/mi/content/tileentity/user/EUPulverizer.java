@@ -8,8 +8,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.ItemStackHandler;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
-import top.kmar.mi.api.craftguide.ItemElement;
-import top.kmar.mi.api.craftguide.sol.ItemSet;
+import top.kmar.mi.api.craft.CraftGuide;
+import top.kmar.mi.api.craft.elements.CraftOutput;
+import top.kmar.mi.api.craft.elements.ElementList;
 import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
 import top.kmar.mi.api.electricity.info.BiggerVoltage;
 import top.kmar.mi.api.electricity.info.EleEnergy;
@@ -18,9 +19,10 @@ import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
 import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
+import top.kmar.mi.api.utils.ExpandFunctionKt;
 import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.content.blocks.BlockGuiList;
-import top.kmar.mi.content.blocks.CraftList;
+import top.kmar.mi.data.CraftList;
 import top.kmar.mi.data.properties.MIProperty;
 
 import javax.annotation.Nonnull;
@@ -70,12 +72,13 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
     }
     
     /** 更新内部数据 */
-    @SuppressWarnings("ConstantConditions")
     private void updateData() {
         if (++workingTime >= getNeedTime()) {
             ItemStack input = getInputStack();
-            items.insertItem(1, CraftList.PULVERIZER.apply(
-                    new ItemSet(ItemElement.instance(input))).getStack(), false);
+            CraftOutput output = CraftGuide.findOutput(
+                    CraftList.pulverizer, ElementList.build(input));
+            //noinspection ConstantConditions
+            items.insertItem(1, output.getFirstStack(), false);
             input.shrink(1);
             workingTime = 0;
         }
@@ -98,10 +101,10 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
         }
         ItemStack output = getOutputStack();
         if (!output.isEmpty()) {
-            //noinspection ConstantConditions
-            if (output.getCount() >= output.getMaxStackSize() ||
-                    !CraftList.PULVERIZER.apply(new ItemSet(
-                            ItemElement.instance(input))).contain(output)) {
+            CraftOutput craft = CraftGuide.findOutput(
+                    CraftList.pulverizer, ElementList.build(input));
+            if (craft == null || output.getCount() >= output.getMaxStackSize()||
+                    !ExpandFunctionKt.match(craft.getFirstStack(), output)) {
                 //如果输出框不为空但物品数量达到上限则不能正常运行
                 //               或产品与输出框不相符则不能正常运行
                 if (workingTime != 0) {

@@ -137,7 +137,7 @@ class ElementList(
         val empty: ElementList = ElementList(0, 0)
 
         @JvmStatic
-        fun buildStackList(vararg stacks: ItemStack): ElementList {
+        fun build(vararg stacks: ItemStack): ElementList {
             val result = ElementList(stacks.size, 1)
             for ((index, it) in stacks.withIndex()) {
                 result[index] = it
@@ -146,7 +146,7 @@ class ElementList(
         }
 
         @JvmStatic
-        fun buildStackList(length: Int): ElementList = ElementList(length, 1)
+        fun build(length: Int): ElementList = ElementList(length, 1)
 
     }
 
