@@ -39,6 +39,7 @@ object GuiFileParser {
                         parseTargetFile(mod.modId, file, event)
                     } catch (e: Exception) {
                         MISysInfo.err("处理目标文件[$relative]时发生异常", e)
+                        return@findFiles false
                     }
                     ++count
                     true
