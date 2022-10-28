@@ -30,7 +30,7 @@ object GuiFileParser {
         var count = 0
         Loader.instance().activeModList.forEach { mod ->
             CraftingHelper.findFiles(
-                mod, "assets/${mod.modId}/gui/mig", { true },
+                mod, "assets/mi_files/${mod.modId}/gui/mig", { true },
                 { root, file ->
                     Loader.instance().setActiveModContainer(mod)
                     val relative = root.relativize(file).toString()
