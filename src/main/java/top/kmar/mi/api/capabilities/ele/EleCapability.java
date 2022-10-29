@@ -8,7 +8,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import org.jetbrains.annotations.NotNull;
 import top.kmar.mi.api.electricity.info.EleEnergy;
-import top.kmar.mi.api.register.others.AutoLoader;
+import top.kmar.mi.api.regedits.others.AutoLoader;
 
 import javax.annotation.Nullable;
 

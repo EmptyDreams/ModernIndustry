@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import top.kmar.mi.api.register.block.BlockItemHelper;
+import top.kmar.mi.api.regedits.block.BlockItemHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

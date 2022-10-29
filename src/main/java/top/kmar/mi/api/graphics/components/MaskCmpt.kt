@@ -10,7 +10,7 @@ import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.utils.CodeSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.PositionEnum
-import top.kmar.mi.api.register.others.AutoCmpt
+import top.kmar.mi.api.regedits.others.AutoCmpt
 import top.kmar.mi.api.utils.WorldUtil
 
 /**

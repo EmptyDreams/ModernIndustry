@@ -18,7 +18,7 @@ import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.GuiLoader.MIGuiRegistryEvent
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt
 import top.kmar.mi.api.graphics.components.SlotMatrixCmpt
-import top.kmar.mi.api.register.block.annotations.AutoTileEntity
+import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
 import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.isClient

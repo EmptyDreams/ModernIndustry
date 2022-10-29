@@ -5,7 +5,7 @@ import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.CapabilityManager
 import top.kmar.mi.api.araw.interfaces.*
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.register.others.AutoRWType
+import top.kmar.mi.api.regedits.others.AutoRWType
 import top.kmar.mi.coremod.other.ICapManagerCheck
 import top.kmar.mi.coremod.other.ICapStorageType
 import java.lang.reflect.Field

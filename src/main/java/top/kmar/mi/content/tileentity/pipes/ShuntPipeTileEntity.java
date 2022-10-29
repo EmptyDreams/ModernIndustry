@@ -6,7 +6,7 @@ import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.util.EnumFacing;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
 import top.kmar.mi.api.fluid.FTTileEntity;
-import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
+import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 
 import java.util.List;
 

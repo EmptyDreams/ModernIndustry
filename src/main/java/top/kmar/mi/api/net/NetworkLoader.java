@@ -9,7 +9,7 @@ import top.kmar.mi.ModernIndustry;
 import top.kmar.mi.api.net.handler.ClientHandler;
 import top.kmar.mi.api.net.handler.CommonMessage;
 import top.kmar.mi.api.net.handler.ServerHandler;
-import top.kmar.mi.api.register.others.AutoLoader;
+import top.kmar.mi.api.regedits.others.AutoLoader;
 
 import static net.minecraftforge.fml.relauncher.Side.CLIENT;
 import static net.minecraftforge.fml.relauncher.Side.SERVER;

@@ -16,7 +16,7 @@ import top.kmar.mi.api.electricity.clock.NonCounter;
 import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
-import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
+import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.ItemUtil;
 import top.kmar.mi.api.utils.WorldUtil;

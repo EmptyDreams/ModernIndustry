@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import top.kmar.mi.ModernIndustry;
 import top.kmar.mi.api.craft.json.CraftJsonRegedit;
-import top.kmar.mi.api.register.AutoRegister;
+import top.kmar.mi.api.regedits.AutoRegister;
 import top.kmar.mi.data.json.block.BlockJsonBuilder;
 import top.kmar.mi.data.json.fluid.FluidJsonBuilder;
 import top.kmar.mi.data.json.item.ItemJsonBuilder;

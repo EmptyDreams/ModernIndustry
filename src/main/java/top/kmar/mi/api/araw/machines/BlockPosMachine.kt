@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagIntArray
 import net.minecraft.util.math.BlockPos
 import top.kmar.mi.api.araw.interfaces.*
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.register.others.AutoRWType
+import top.kmar.mi.api.regedits.others.AutoRWType
 import java.lang.reflect.Field
 import kotlin.reflect.KClass
 

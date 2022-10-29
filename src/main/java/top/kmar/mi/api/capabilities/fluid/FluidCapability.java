@@ -6,7 +6,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import top.kmar.mi.api.fluid.data.FluidQueue;
 import top.kmar.mi.api.fluid.data.TransportReport;
-import top.kmar.mi.api.register.others.AutoLoader;
+import top.kmar.mi.api.regedits.others.AutoLoader;
 
 import javax.annotation.Nonnull;
 

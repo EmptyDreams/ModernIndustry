@@ -6,7 +6,7 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
-import top.kmar.mi.api.register.others.AutoCmpt
+import top.kmar.mi.api.regedits.others.AutoCmpt
 
 /**
  * 空的控件

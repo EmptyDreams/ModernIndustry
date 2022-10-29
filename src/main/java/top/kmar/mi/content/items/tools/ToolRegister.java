@@ -2,8 +2,8 @@ package top.kmar.mi.content.items.tools;
 
 import net.minecraft.item.Item;
 import top.kmar.mi.ModernIndustry;
-import top.kmar.mi.api.register.others.AutoManager;
-import top.kmar.mi.api.register.item.RecipeRegister;
+import top.kmar.mi.api.regedits.others.AutoManager;
+import top.kmar.mi.api.regedits.item.RecipeRegister;
 import top.kmar.mi.api.tools.item.IToolMaterial;
 import top.kmar.mi.api.tools.item.MIArmor;
 import top.kmar.mi.api.tools.item.MIAxe;

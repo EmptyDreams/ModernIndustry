@@ -26,7 +26,7 @@ import top.kmar.mi.ModernIndustry;
 import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.content.blocks.base.MachineBlock;
 import top.kmar.mi.content.blocks.machine.user.MuffleFurnaceBlock;
-import top.kmar.mi.api.register.item.AutoItemRegister;
+import top.kmar.mi.api.regedits.item.AutoItemRegister;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -14,7 +14,7 @@ import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.utils.ButtonStyleEnum
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
-import top.kmar.mi.api.register.others.AutoCmpt
+import top.kmar.mi.api.regedits.others.AutoCmpt
 import top.kmar.mi.api.utils.applyClient
 import top.kmar.mi.api.utils.floorDiv2
 

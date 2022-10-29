@@ -6,7 +6,7 @@ import net.minecraft.nbt.NBTTagByteArray
 import net.minecraft.nbt.NBTTagIntArray
 import top.kmar.mi.api.araw.interfaces.*
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.register.others.AutoRWType
+import top.kmar.mi.api.regedits.others.AutoRWType
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass

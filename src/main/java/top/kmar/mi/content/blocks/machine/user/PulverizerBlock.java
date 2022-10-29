@@ -13,7 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import top.kmar.mi.api.register.block.annotations.AutoBlockRegister;
+import top.kmar.mi.api.regedits.block.annotations.AutoBlockRegister;
 import top.kmar.mi.content.blocks.BlockGuiList;
 import top.kmar.mi.content.blocks.CommonUtil;
 import top.kmar.mi.content.blocks.base.MachineBlock;

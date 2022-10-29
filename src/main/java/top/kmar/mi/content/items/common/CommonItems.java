@@ -5,10 +5,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.Mod;
 import top.kmar.mi.ModernIndustry;
-import top.kmar.mi.api.register.OreDicRegister;
+import top.kmar.mi.api.regedits.OreDicRegister;
 import top.kmar.mi.api.utils.StringUtil;
 import top.kmar.mi.content.capabilities.nonburn.NonBurnProvider;
-import top.kmar.mi.api.register.others.AutoManager;
+import top.kmar.mi.api.regedits.others.AutoManager;
 
 import java.util.function.Supplier;
 

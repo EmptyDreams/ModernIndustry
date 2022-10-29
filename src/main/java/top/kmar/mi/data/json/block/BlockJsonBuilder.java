@@ -10,7 +10,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import top.kmar.mi.api.utils.MISysInfo;
 import top.kmar.mi.data.json.KeyList;
-import top.kmar.mi.api.register.machines.BlockRegistryMachine;
+import top.kmar.mi.api.regedits.machines.BlockRegistryMachine;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

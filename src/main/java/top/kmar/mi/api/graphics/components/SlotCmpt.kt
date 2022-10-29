@@ -14,7 +14,7 @@ import top.kmar.mi.api.graphics.components.interfaces.slots.ItemSlot
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
-import top.kmar.mi.api.register.others.AutoCmpt
+import top.kmar.mi.api.regedits.others.AutoCmpt
 import top.kmar.mi.api.utils.floorDiv2
 import kotlin.LazyThreadSafetyMode.NONE
 

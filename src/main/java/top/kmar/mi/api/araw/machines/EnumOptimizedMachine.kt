@@ -7,7 +7,7 @@ import top.kmar.mi.api.araw.interfaces.IAutoFieldRW
 import top.kmar.mi.api.araw.interfaces.local
 import top.kmar.mi.api.araw.interfaces.source
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.register.others.AutoRWType
+import top.kmar.mi.api.regedits.others.AutoRWType
 import java.lang.reflect.Field
 
 /**

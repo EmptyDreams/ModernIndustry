@@ -7,7 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import top.kmar.mi.api.register.block.BlockItemHelper;
+import top.kmar.mi.api.regedits.block.BlockItemHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

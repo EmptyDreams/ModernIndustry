@@ -9,7 +9,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import top.kmar.mi.ModernIndustry;
-import top.kmar.mi.api.register.item.AutoItemRegister;
+import top.kmar.mi.api.regedits.item.AutoItemRegister;
 import top.kmar.mi.api.utils.MISysInfo;
 
 import java.lang.reflect.Field;

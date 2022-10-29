@@ -12,7 +12,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import top.kmar.mi.api.register.block.BlockItemHelper;
+import top.kmar.mi.api.regedits.block.BlockItemHelper;
 
 /**
  * 物品方块的拓展类

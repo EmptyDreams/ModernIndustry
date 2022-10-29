@@ -4,7 +4,7 @@ import net.minecraftforge.fluids.Fluid;
 import top.kmar.mi.api.exception.TransferException;
 import top.kmar.mi.api.utils.MISysInfo;
 import top.kmar.mi.data.json.KeyList;
-import top.kmar.mi.api.register.machines.FluidRegistryMachine;
+import top.kmar.mi.api.regedits.machines.FluidRegistryMachine;
 import top.kmar.mi.data.json.block.BlockJsonBuilder;
 
 import java.io.BufferedReader;

@@ -3,7 +3,7 @@ package top.kmar.mi.content.tileentity.maker;
 import net.minecraft.util.EnumFacing;
 import top.kmar.mi.api.electricity.EleTileEntity;
 import top.kmar.mi.api.electricity.info.EleEnergy;
-import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
+import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 
 /**
  * 永恒发电机

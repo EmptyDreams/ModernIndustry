@@ -23,7 +23,7 @@ import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
 import top.kmar.mi.api.electricity.info.IETForEach;
 import top.kmar.mi.api.net.IAutoNetwork;
-import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
+import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.utils.ExpandFunctionKt;
 import top.kmar.mi.api.utils.IOUtil;
 import top.kmar.mi.api.utils.StringUtil;

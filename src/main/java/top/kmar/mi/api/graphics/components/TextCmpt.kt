@@ -9,7 +9,7 @@ import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.graphics.utils.InheritSizeMode
-import top.kmar.mi.api.register.others.AutoCmpt
+import top.kmar.mi.api.regedits.others.AutoCmpt
 
 /**
  * 文本控件

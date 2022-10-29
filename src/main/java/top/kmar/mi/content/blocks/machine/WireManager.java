@@ -2,7 +2,7 @@ package top.kmar.mi.content.blocks.machine;
 
 import net.minecraft.world.World;
 import top.kmar.mi.content.tileentity.EleSrcCable;
-import top.kmar.mi.api.register.others.AutoManager;
+import top.kmar.mi.api.regedits.others.AutoManager;
 import top.kmar.mi.content.blocks.base.EleTransferBlock;
 
 /**

@@ -8,7 +8,7 @@ import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.PathInfo;
 import top.kmar.mi.api.electricity.interfaces.IEleInputer;
 import top.kmar.mi.api.electricity.interfaces.IEleTransfer;
-import top.kmar.mi.api.register.others.AutoAgentRegister;
+import top.kmar.mi.api.regedits.others.AutoAgentRegister;
 import top.kmar.mi.api.utils.ExpandFunctionKt;
 import top.kmar.mi.content.tileentity.EleSrcCable;
 

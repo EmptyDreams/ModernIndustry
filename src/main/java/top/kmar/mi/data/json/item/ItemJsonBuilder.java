@@ -11,7 +11,7 @@ import top.kmar.mi.api.exception.TransferException;
 import top.kmar.mi.api.utils.MISysInfo;
 import top.kmar.mi.data.json.KeyList;
 import top.kmar.mi.data.json.block.BlockJsonBuilder;
-import top.kmar.mi.api.register.machines.ItemRegistryMachine;
+import top.kmar.mi.api.regedits.machines.ItemRegistryMachine;
 import top.kmar.mi.api.tools.item.IToolMaterial;
 
 import java.io.BufferedReader;

@@ -18,7 +18,7 @@ import top.kmar.mi.ModernIndustry;
 import top.kmar.mi.api.capabilities.fluid.FluidCapability;
 import top.kmar.mi.api.capabilities.fluid.IFluid;
 import top.kmar.mi.api.fluid.FTTileEntity;
-import top.kmar.mi.api.register.OreDicRegister;
+import top.kmar.mi.api.regedits.OreDicRegister;
 import top.kmar.mi.api.utils.ExpandFunctionKt;
 import top.kmar.mi.api.utils.StringUtil;
 import top.kmar.mi.content.blocks.base.TEBlockBase;

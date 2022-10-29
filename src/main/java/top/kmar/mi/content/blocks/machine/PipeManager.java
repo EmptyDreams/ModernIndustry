@@ -3,7 +3,7 @@ package top.kmar.mi.content.blocks.machine;
 import top.kmar.mi.content.blocks.base.pipes.AnglePipe;
 import top.kmar.mi.content.blocks.base.pipes.ShuntPipe;
 import top.kmar.mi.content.blocks.base.pipes.StraightPipe;
-import top.kmar.mi.api.register.others.AutoManager;
+import top.kmar.mi.api.regedits.others.AutoManager;
 
 /**
  * 包含大部分流体管道

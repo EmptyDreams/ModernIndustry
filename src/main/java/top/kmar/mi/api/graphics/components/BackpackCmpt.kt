@@ -15,7 +15,7 @@ import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.components.interfaces.slots.BackpackSlot
 import top.kmar.mi.api.graphics.utils.*
-import top.kmar.mi.api.register.others.AutoCmpt
+import top.kmar.mi.api.regedits.others.AutoCmpt
 import kotlin.LazyThreadSafetyMode.NONE
 
 /**

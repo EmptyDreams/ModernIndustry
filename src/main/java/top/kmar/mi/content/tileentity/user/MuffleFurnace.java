@@ -12,7 +12,7 @@ import top.kmar.mi.api.araw.interfaces.AutoSave;
 import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.BurnCmpt;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
-import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
+import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.BaseTileEntity;
 import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.content.blocks.BlockGuiList;

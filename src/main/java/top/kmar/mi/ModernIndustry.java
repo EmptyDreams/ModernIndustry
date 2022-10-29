@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
-import top.kmar.mi.api.register.others.AutoManager;
+import top.kmar.mi.api.regedits.others.AutoManager;
 import top.kmar.mi.api.utils.MISysInfo;
 import top.kmar.mi.content.blocks.common.CommonBlocks;
 import top.kmar.mi.content.blocks.machine.WireManager;

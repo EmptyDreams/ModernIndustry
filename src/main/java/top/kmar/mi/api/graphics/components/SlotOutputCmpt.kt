@@ -2,7 +2,7 @@ package top.kmar.mi.api.graphics.components
 
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.utils.FixedSizeMode
-import top.kmar.mi.api.register.others.AutoCmpt
+import top.kmar.mi.api.regedits.others.AutoCmpt
 
 /**
  * 仅允许输出的Slot控件

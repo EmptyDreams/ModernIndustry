@@ -27,7 +27,7 @@ import top.kmar.mi.api.graphics.components.ProgressBarCmpt
 import top.kmar.mi.api.graphics.components.TextCmpt
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.net.IAutoNetwork
-import top.kmar.mi.api.register.block.annotations.AutoTileEntity
+import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
 import top.kmar.mi.api.utils.*
 import top.kmar.mi.api.utils.container.IndexEnumMap

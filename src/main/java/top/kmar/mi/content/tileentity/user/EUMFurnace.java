@@ -3,7 +3,7 @@ package top.kmar.mi.content.tileentity.user;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import top.kmar.mi.api.graphics.GuiLoader;
-import top.kmar.mi.api.register.block.annotations.AutoTileEntity;
+import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 import top.kmar.mi.content.blocks.BlockGuiList;
 
 /**
