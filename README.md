@@ -22,15 +22,14 @@
 
 &emsp;&emsp;这里简单说明一下`api`包中的各个分类的作用：
 
-+ `araw` - 实现`TileEntity`内容的自动化存储
-+ `capabalities` - 各个模块用到的`cap`
-+ `craftguide` - 独立于MC外的合成表
-+ `electricity` - 电力系统
-+ `event` - 各个模块用到的事件，部分事件是直接写在模块里面的
-+ `exception` - 自定义异常
-+ `fluid` - 流体管道
-+ `graphics` - 实现运行期自动绘制`gui`
-+ `net` - 自动化网络通信
-+ `register` - 注解式注册机
-+ `tools` - 各种工具
-+ `utils` - 模组用到的各种操作的封装
+| 包名             | 作用                     | 文档                                       |
+|----------------|------------------------|------------------------------------------|
+| `araw`         | 实现`TileEntity`内容的自动化存储 |                                          |
+| `capabilities` | 各个模块用到的`cap`           |                                          |
+| `craft`        | 独立于MC外的合成表             |                                          |
+| `electricity`  | 电力系统                   |                                          |
+| `fluid`        | 流体管道                   |                                          |
+| `graphics`     | 实现运行期自动绘制`gui`         | [在线文档](https://kmar.top/posts/e0217013/) |
+| `net`          | 自动化网络通信                |                                          |
+| `regedits`     | 注解式注册机                 |                                          |
+| `utils`        | 模组用到的各种操作的封装           |                                          |
