@@ -4,7 +4,6 @@ import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.crafting.CraftingHelper
 import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.Loader
-import org.apache.commons.io.FilenameUtils
 import top.kmar.mi.api.exception.TransferException
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.GuiLoader
@@ -16,6 +15,8 @@ import top.kmar.mi.api.utils.container.PairIntObj
 import top.kmar.mi.api.utils.countStartSpace
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.extension
+import kotlin.io.path.nameWithoutExtension
 
 /**
  * `mig`文件解析器
@@ -27,40 +28,48 @@ import java.nio.file.Path
 object GuiFileParser {
 
     fun registryAll(event: GuiLoader.MIGuiRegistryEvent) {
-        var count = 0
-        Loader.instance().activeModList.forEach { mod ->
-            CraftingHelper.findFiles(
-                mod, "assets/${mod.modId}/mi_files/gui/mig", { true },
-                { root, file ->
-                    Loader.instance().setActiveModContainer(mod)
-                    val relative = root.relativize(file).toString()
-                    if ("mig" != FilenameUtils.getExtension(relative)) return@findFiles true
-                    try {
-                        parseTargetFile(mod.modId, file, event)
-                    } catch (e: Exception) {
-                        MISysInfo.err("处理目标文件[$relative]时发生异常", e)
-                        return@findFiles false
-                    }
-                    ++count
-                    true
-                }, true, true)
-        }
+        var count = eachAllFiles("gui/pugs/common", false, event)
+        if (FMLCommonHandler.instance().side.isClient)
+            count += eachAllFiles("gui/pugs/client", true, event)
         MISysInfo.print("共扫描并注册 $count 个GUI文件")
     }
 
-    private fun parseTargetFile(modid: String, path: Path, register: GuiLoader.MIGuiRegistryEvent) {
-        var key: ResourceLocation? = null
+    private fun eachAllFiles(base: String, isClient: Boolean, event: GuiLoader.MIGuiRegistryEvent): Int {
+        var count = 0
+        Loader.instance().activeModList.forEach { mod ->
+            CraftingHelper.findFiles(mod, "assets/${mod.modId}/mi_files/$base", { true },
+                { _, file ->
+                    Loader.instance().setActiveModContainer(mod)
+                    try {
+                        registryTarget(mod.modId, file, isClient, event)
+                        ++count
+                        true
+                    } catch (e: Throwable) {
+                        MISysInfo.err("注册指定GUI[$file]时出现异常", e)
+                        false
+                    }
+                }, true, true)
+        }
+        return count
+    }
+
+    /** 解析并注册一个文件代表的GUI */
+    private fun registryTarget(
+        modid: String, path: Path, isClient: Boolean,
+        event: GuiLoader.MIGuiRegistryEvent
+    ) {
+        if ("pug" != path.extension) return
+        val key = ResourceLocation(modid, path.nameWithoutExtension)
+        val root = parseTargetFile(path)
+        if (isClient) event.registryClient(key, root)
+        else event.registry(key, root)
+    }
+
+    private fun parseTargetFile(path: Path): BaseGraphics.DocumentCmpt {
         val root = BaseGraphics.DocumentCmpt()
         var preEle: Cmpt = root
         var preLevel = -1
-        var client = false
         fun parseLine(content: String) {
-            if (content.startsWith('@')) {
-                if (content == "@client") client = true
-                else if (key != null) throw IllegalArgumentException("同一个文件中出现了多次@语句")
-                else key = ResourceLocation(modid, content.substring(1))
-                return
-            }
             // 构建Cmpt对象
             val (index0, length) = content.countStartSpace()
             val (index1, tag) = content.getTag(index0)
@@ -91,10 +100,7 @@ object GuiFileParser {
                 throw TransferException.instance("当前行内容：$it", e)
             }
         }
-        if (client) {
-            if (!FMLCommonHandler.instance().side.isServer)
-                register.registryClient(key!!, root)
-        } else register.registry(key!!, root)
+        return root
     }
 
     /** 获取字符串中的Tag */

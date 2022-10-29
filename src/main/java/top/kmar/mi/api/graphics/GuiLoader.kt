@@ -15,6 +15,7 @@ import top.kmar.mi.api.event.GuiRegistryFinishedEvent
 import top.kmar.mi.api.graphics.parser.GuiFileParser
 import top.kmar.mi.api.graphics.utils.GuiRegedit
 import top.kmar.mi.api.regedits.others.AutoLoader
+import top.kmar.mi.api.utils.MISysInfo
 import java.util.function.Consumer
 
 /**
@@ -31,9 +32,17 @@ object GuiLoader : IGuiHandler {
         val tmpRegedit = GuiRegedit()
         val event = MIGuiRegistryEvent(tmpRegedit)
         GuiFileParser.registryAll(event)
-        MinecraftForge.EVENT_BUS.post(event)
+        try {
+            MinecraftForge.EVENT_BUS.post(event)
+        } catch (e: Throwable) {
+            MISysInfo.err("注册GUI时发生了意料之外的错误", e)
+        }
         regedit = tmpRegedit.sort()
-        MinecraftForge.EVENT_BUS.post(GuiRegistryFinishedEvent())
+        try {
+            MinecraftForge.EVENT_BUS.post(GuiRegistryFinishedEvent())
+        } catch (e: Throwable) {
+            MISysInfo.err("GUI注册完成阶段发生了意料之外的错误", e)
+        }
     }
 
     /** 构建一个服务端的GUI对象 */
