@@ -1,9 +1,0 @@
-{
-  "group": "mi:synthesizer",
-  "result": "*",
-  "input": "#",
-  "key": {
-    "*": { "item": "mi:circuit" },
-    "#": { "item": "mi:machine_shell" }
-  }
-}
