@@ -53,7 +53,7 @@ object CraftJsonRegedit {
         val id = ResourceLocation(json["id"]?.asString ?: defID)
         val keyMap = getKeyMap(json)
         val shape = getShape(json["input"], keyMap)
-        val output = getOutput(json["result"], keyMap)
+        val output = getOutput(json["output"], keyMap)
         CraftGuide.registry(group, id, shape, output)
     }
 
@@ -72,17 +72,9 @@ object CraftJsonRegedit {
     /** 获取一个合成表的输入规则 */
     private fun getShape(json: JsonElement, keyMap: ItemPredicateMap): IShape {
         return if (json.isJsonPrimitive) {    // 无序
-            val str = json.asString
-            if (str.startsWith('>')) {  // 无序
-                val builder = DisorderlyShape.Builder()
-                for (i in 1 until str.length)
-                    builder.add(keyMap.getPredicate(str[i]))
-                builder.build()
-            } else {    // 有序
-                val builder = OrderlyShape.Builder().newLine()
-                str.forEach { builder.insert(keyMap.getPredicate(it)) }
-                builder.build()
-            }
+            val builder = DisorderlyShape.Builder()
+            json.asString.forEach { builder.add(keyMap.getPredicate(it)) }
+            builder.build()
         } else {
             json as JsonArray
             if (json[0].isJsonObject) {   // 无序

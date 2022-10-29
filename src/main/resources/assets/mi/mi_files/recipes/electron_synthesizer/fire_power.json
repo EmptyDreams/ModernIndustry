@@ -1,6 +1,6 @@
 {
   "group": "mi:synthesizer",
-  "result": "&",
+  "output": "&",
   "input": [
     "#% %#",
     "#@$@#",
