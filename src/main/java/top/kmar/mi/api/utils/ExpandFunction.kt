@@ -98,6 +98,7 @@ fun String.countStartSpace(): PairIntInt {
 
 @field:SideOnly(Side.CLIENT)
 private var oldGui: GuiScreen? = null
+@field:SideOnly(Side.CLIENT)
 private var isOpenClientGui = false
 
 /** 打开一个客户端GUI */
