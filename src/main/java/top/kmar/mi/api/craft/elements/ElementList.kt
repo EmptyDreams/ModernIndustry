@@ -47,7 +47,7 @@ class ElementList(
     /** 裁剪掉四周的空白区域，并返回一个新的列表（不修改当前对象但两个列表共享[ItemStack]对象） */
     fun clipSpace(): ElementList {
         var left = 0
-        var top = 0
+        var top = -1
         var right = width - 1
         var bottom = height - 1
         // 查找第一个包含非空元素的行
@@ -58,8 +58,8 @@ class ElementList(
                     break@o
                 }
             }
-            return empty
         }
+        if (top == -1) return empty
         // 查找最后一个包含非空元素的行
         o@for (y in bottom downTo top) {
             for (x in 0 .. right) {
