@@ -47,7 +47,7 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
     private var output: CraftOutput? = null
     /** 获取工作需要的时间 */
     val maxTime: Int
-        get() = output!!.getInt("time")
+        get() = output!!.getInt("time", 100)
 
     init {
         val counter = OrdinaryCounter(100)

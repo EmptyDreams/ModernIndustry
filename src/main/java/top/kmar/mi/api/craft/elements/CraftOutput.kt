@@ -41,19 +41,27 @@ class CraftOutput {
         attributes[key] = value.deepClone()
     }
 
-    /** 获取一个值并强转为整型 */
     fun getInt(key: String) = attributes[key] as Int
 
-    /** 设置一个值 */
+    fun getInt(key: String, def: Int) = (attributes[key] as Int?) ?: def
+
     fun setInt(key: String, value: Int) {
         attributes[key] = value
     }
 
-    /** 获取一个值并强转为字符串 */
     fun getString(key: String) = attributes[key] as String
 
-    /** 设置一个值 */
+    fun getString(key: String, def: String) = (attributes[key] as String?) ?: def
+
     fun setString(key: String, value: String) {
+        attributes[key] = value
+    }
+
+    fun getBoolean(key: String) = attributes[key] as Boolean
+
+    fun getBoolean(key: String, def: Boolean) = (attributes[key] as Boolean?) ?: def
+
+    fun setBoolean(key: String, value: Boolean) {
         attributes[key] = value
     }
 

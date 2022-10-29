@@ -123,8 +123,11 @@ object CraftJsonRegedit {
                     }
                     else -> {
                         value as JsonPrimitive
-                        if (value.isNumber) output.setInt(key, value.asInt)
-                        else output.setString(key, value.asString)
+                        when {
+                            value.isNumber -> output.setInt(key, value.asInt)
+                            value.isBoolean -> output.setBoolean(key, value.asBoolean)
+                            else -> output.setString(key, value.asString)
+                        }
                     }
                 }
             }
