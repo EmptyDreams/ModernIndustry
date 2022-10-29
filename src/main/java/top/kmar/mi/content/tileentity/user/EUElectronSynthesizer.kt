@@ -42,10 +42,10 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
     @field:AutoSave
     private var workingTime = 0
     /** 下一次的输出 */
-    private var output: CraftOutput? = null
+    private var output: CraftOutput = emptyOutput
     /** 获取工作需要的时间 */
     val maxTime: Int
-        get() = output!!.getInt("time", 100)
+        get() = output.getInt("time", 100)
 
     init {
         val counter = OrdinaryCounter(100)
@@ -56,17 +56,23 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
 
     override fun update() {
         if (world.isClient()) return removeTickable()
-        if (output == null) {
-            val input = calculateProduction()
-            val output = CraftGuide.findOutput(CraftList.synthesizer, input) ?: return clear(true)
-            this.output = output
+        if (output == emptyOutput) {
+            this.output = calculateOutput()
             if (!putOutput(true)) return clear(true)
         }
-        if (output == emptyOutput || !shrinkEnergy(1)) return
+        if (!shrinkEnergy(1)) return
         if (++workingTime >= maxTime) {
             if (!putOutput(false)) throw AssertionError()
             clear(false)
         } else updateBlockState()
+    }
+
+    fun calculateOutput(): CraftOutput {
+        val input = calculateProduction()
+        val output = CraftGuide.findOutput(CraftList.synthesizer, input)
+        if (output != null) return output
+        clear(true)
+        return emptyOutput
     }
 
     /**
@@ -75,7 +81,8 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
      * @return 是否成功放入
      */
     fun putOutput(simulation: Boolean): Boolean {
-        val output = this.output?.stacks ?: return false
+        if (output == emptyOutput) return false
+        val output = this.output.stacks
         val itor = output.iterator()
         var value: ItemStack = ItemStack.EMPTY
         for (i in 25 until 29) {
@@ -110,10 +117,8 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
     /** 清楚工作状态和进度 */
     fun clear(updateState: Boolean) {
         workingTime = 0
-        if (updateState) {
-            output = emptyOutput
-            updateBlockState()
-        } else output = null
+        output = emptyOutput
+        if (updateState) updateBlockState()
     }
 
     /** 更新方块显示状态 */
@@ -162,12 +167,12 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
                     gui.tileEntity as EUElectronSynthesizer
                 gui.initItemStackHandler(synthesizer.items)
                 val input = gui.getElementByID("input") as SlotMatrixCmpt
-                input.slotAttributes.onSlotChanged = { synthesizer.output = null }
+                input.slotAttributes.onSlotChanged = { synthesizer.output = synthesizer.calculateOutput() }
             }
             event.registryLoopTask(synthesizer) { gui: BaseGraphics ->
                 val synthesizer = gui.tileEntity as EUElectronSynthesizer
                 val work = gui.getElementByID("work") as ProgressBarCmpt
-                if (synthesizer.output == null) {
+                if (synthesizer.output == emptyOutput) {
                     work.value = 0
                     work.max = 0
                 } else {
