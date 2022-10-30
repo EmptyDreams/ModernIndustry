@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="EntryPointsManager">
-    <list size="11">
+    <list size="12">
       <item index="0" class="java.lang.String" itemvalue="net.minecraftforge.eventbus.api.SubscribeEvent" />
       <item index="1" class="java.lang.String" itemvalue="net.minecraftforge.fml.common.Mod" />
       <item index="2" class="java.lang.String" itemvalue="net.minecraftforge.fml.common.Mod.EventBusSubscriber" />
       <item index="3" class="java.lang.String" itemvalue="net.minecraftforge.fml.common.Mod.EventHandler" />
       <item index="4" class="java.lang.String" itemvalue="net.minecraftforge.fml.common.eventhandler.SubscribeEvent" />
-      <item index="5" class="java.lang.String" itemvalue="top.kmar.mi.api.register.block.annotations.AutoBlockRegister" />
-      <item index="6" class="java.lang.String" itemvalue="top.kmar.mi.api.register.item.AutoItemRegister" />
-      <item index="7" class="java.lang.String" itemvalue="top.kmar.mi.api.register.others.AutoAgentRegister" />
-      <item index="8" class="java.lang.String" itemvalue="top.kmar.mi.api.register.others.AutoCmpt" />
-      <item index="9" class="java.lang.String" itemvalue="top.kmar.mi.api.register.others.AutoLoader" />
-      <item index="10" class="java.lang.String" itemvalue="top.kmar.mi.api.register.others.AutoRWType" />
+      <item index="5" class="java.lang.String" itemvalue="top.kmar.mi.api.regedits.others.AutoRWType" />
+      <item index="6" class="java.lang.String" itemvalue="top.kmar.mi.api.register.block.annotations.AutoBlockRegister" />
+      <item index="7" class="java.lang.String" itemvalue="top.kmar.mi.api.register.item.AutoItemRegister" />
+      <item index="8" class="java.lang.String" itemvalue="top.kmar.mi.api.register.others.AutoAgentRegister" />
+      <item index="9" class="java.lang.String" itemvalue="top.kmar.mi.api.register.others.AutoCmpt" />
+      <item index="10" class="java.lang.String" itemvalue="top.kmar.mi.api.register.others.AutoLoader" />
+      <item index="11" class="java.lang.String" itemvalue="top.kmar.mi.api.register.others.AutoRWType" />
     </list>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
