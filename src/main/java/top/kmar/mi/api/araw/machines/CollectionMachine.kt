@@ -65,12 +65,12 @@ object CollectionMachine : IAutoFieldRW, IAutoObjRW<Collection<*>> {
     @Suppress("UNCHECKED_CAST")
     override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (Collection<*>) -> Unit) {
         val value = local.java.newInstance() as MutableCollection<Any>
-        return readHelper(reader as NBTTagCompound, value)
+        readHelper(reader as NBTTagCompound, value)
+        receiver(value)
     }
 
     private fun readHelper(reader: NBTTagCompound, value: MutableCollection<in Any>) {
         reader.keySet.forEach { key ->
-            if ("size" == key) return@forEach
             val tag = reader.getCompoundTag(key)
             val name = tag.getString("name")
             val `data` = tag.getTag("value")

@@ -49,13 +49,15 @@ object FluidStackMachine : IAutoFieldRW, IAutoObjRW<FluidStack?> {
     }
 
     override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (FluidStack?) -> Unit) {
-        if (reader is NBTTagByte) receiver(null)
-        else if (reader is NBTTagCompound) {
-            val amount = reader.getInteger("amount")
-            val name = reader.getString("name")
-            receiver(FluidStack(FluidRegistry.getFluid(name), amount))
+        when (reader) {
+            is NBTTagByte -> receiver(null)
+            is NBTTagCompound -> {
+                val amount = reader.getInteger("amount")
+                val name = reader.getString("name")
+                receiver(FluidStack(FluidRegistry.getFluid(name), amount))
+            }
+            else -> throw AssertionError()
         }
-        throw AssertionError()
     }
 
 }

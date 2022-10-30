@@ -70,6 +70,7 @@ object MapMachine : IAutoFieldRW, IAutoObjRW<Map<*, *>> {
     override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (Map<*, *>) -> Unit) {
         val value = local.java.newInstance() as MutableMap<Any?, Any?>
         readHelper(reader, value)
+        receiver(value)
     }
 
     private fun readHelper(reader: NBTBase, value: MutableMap<Any?, Any?>) {

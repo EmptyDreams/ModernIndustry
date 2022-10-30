@@ -49,6 +49,5 @@ object ClassMachine : IAutoFieldRW, IAutoObjRW<Class<*>> {
     override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (Class<*>) -> Unit) {
         val name = (reader as NBTTagString).string
         receiver(Class.forName(name))
-
     }
 }

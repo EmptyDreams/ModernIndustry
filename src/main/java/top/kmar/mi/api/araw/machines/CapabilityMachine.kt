@@ -57,6 +57,7 @@ object CapabilityMachine : IAutoFieldRW, IAutoObjRW<Any> {
         val value = local.java.newInstance()
         val cap = getCap(local.java)
         cap!!.readNBT(value, null, reader)
+        receiver(value)
     }
 
     private fun getCap(type: Class<*>): Capability<Any>? {
