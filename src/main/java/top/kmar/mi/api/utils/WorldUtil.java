@@ -22,7 +22,6 @@ import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -36,27 +35,6 @@ public final class WorldUtil {
     @SideOnly(Side.CLIENT)
     public static EntityPlayer getClientPlayer() {
         return Minecraft.getMinecraft().player;
-    }
-    
-    /**
-     * 获取所有世界中指定UUID的玩家的对象
-     * @return 若玩家不存在则返回null
-     */
-    public static EntityPlayer getPlayer(UUID uuid) {
-        if (isClient()) return getClientPlayer();
-        return getPlayerAtService(uuid);
-    }
-    
-    /**
-     * 获取所有世界中指定UUID的玩家的对象
-     * @return 若玩家不存在则返回null
-     */
-    public static EntityPlayer getPlayerAtService(UUID uuid) {
-        for (WorldServer world : FMLCommonHandler.instance().getMinecraftServerInstance().worlds) {
-            EntityPlayer player = world.getPlayerEntityByUUID(uuid);
-            if (player != null) return player;
-        }
-        return null;
     }
     
     /**
