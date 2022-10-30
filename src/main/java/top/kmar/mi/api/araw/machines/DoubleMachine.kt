@@ -16,8 +16,6 @@ import kotlin.reflect.KClass
 @AutoRWType(AutoTypeRegister.BASE_TYPE)
 object DoubleMachine : IAutoFieldRW, IAutoObjRW<Double> {
 
-    @JvmStatic fun instance() = this
-
     override fun allowFinal() = false
 
     override fun match(field: Field): Boolean {

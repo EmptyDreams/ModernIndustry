@@ -16,8 +16,6 @@ import kotlin.reflect.KClass
 @AutoRWType(AutoTypeRegister.VALUE_TYPE)
 object BlockPosMachine : IAutoFieldRW, IAutoObjRW<BlockPos> {
 
-    @JvmStatic fun instance() = this
-
     override fun allowFinal() = false
 
     override fun match(field: Field): Boolean {

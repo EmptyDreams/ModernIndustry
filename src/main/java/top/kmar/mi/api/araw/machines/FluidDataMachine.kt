@@ -19,8 +19,6 @@ import kotlin.reflect.KClass
 @AutoRWType(AutoTypeRegister.VALUE_TYPE)
 object FluidDataMachine : IAutoFieldRW, IAutoObjRW<FluidData> {
 
-    @JvmStatic fun instance() = this
-
     override fun allowFinal() = true
 
     override fun match(field: Field): Boolean {

@@ -46,5 +46,5 @@ annotation class AutoRWType(
      * }
      * ```
      */
-    val name: String = "instance"
+    val name: String = "INSTANCE"
 )

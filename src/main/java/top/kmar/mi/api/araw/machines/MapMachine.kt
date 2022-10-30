@@ -18,8 +18,6 @@ import kotlin.reflect.KClass
 @AutoRWType(AutoTypeRegister.GENERAL_TYPE shr 1)
 object MapMachine : IAutoFieldRW, IAutoObjRW<Map<*, *>> {
 
-    @JvmStatic fun instance() = MapMachine
-
     override fun allowFinal() = true
 
     override fun match(field: Field): Boolean {

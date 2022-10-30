@@ -17,7 +17,8 @@ class AutoTypeRegistryMachine : AutoRegisterMachine<AutoRWType, Any>() {
 
     override fun registry(clazz: Class<*>, annotation: AutoRWType, data: Any?) {
         val value = try {
-            clazz.getMethod(annotation.name)(null)
+            clazz.kotlin.isCompanion
+            clazz.getField(annotation.name)[null]
         } catch (e: Throwable) {
             return MISysInfo.err("构造读写器对象时发生异常", e)
         }

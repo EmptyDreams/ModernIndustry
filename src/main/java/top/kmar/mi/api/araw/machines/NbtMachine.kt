@@ -14,8 +14,6 @@ import kotlin.reflect.KClass
 @AutoRWType(AutoTypeRegister.VALUE_TYPE)
 object NbtMachine : IAutoFieldRW, IAutoObjRW<NBTBase> {
 
-    @JvmStatic fun instance() = NbtMachine
-
     override fun allowFinal() = false
 
     override fun match(field: Field): Boolean {

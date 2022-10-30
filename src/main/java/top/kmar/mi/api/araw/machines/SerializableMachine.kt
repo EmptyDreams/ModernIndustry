@@ -17,8 +17,6 @@ import kotlin.reflect.KClass
 @AutoRWType(AutoTypeRegister.GENERAL_TYPE)
 object SerializableMachine : IAutoFieldRW, IAutoObjRW<INBTSerializable<*>> {
 
-    @JvmStatic fun instance() = SerializableMachine
-
     override fun allowFinal() = true
 
     override fun match(field: Field): Boolean {

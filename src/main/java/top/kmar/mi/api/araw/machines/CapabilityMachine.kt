@@ -19,8 +19,6 @@ import kotlin.reflect.KClass
 @AutoRWType(AutoTypeRegister.GENERAL_TYPE shr 1)
 object CapabilityMachine : IAutoFieldRW, IAutoObjRW<Any> {
 
-    @JvmStatic fun instance() = this
-
     override fun allowFinal() = true
 
     override fun match(field: Field) = getCap(field.type) != null

@@ -14,8 +14,6 @@ import kotlin.reflect.KClass
 @AutoRWType(AutoTypeRegister.BASE_TYPE)
 object LongMachine : IAutoFieldRW, IAutoObjRW<Long> {
 
-    @JvmStatic fun instance() = LongMachine
-
     override fun allowFinal() = false
 
     override fun match(field: Field): Boolean {

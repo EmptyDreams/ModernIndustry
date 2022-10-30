@@ -18,8 +18,6 @@ import kotlin.reflect.KClass
 @AutoRWType(AutoTypeRegister.VALUE_TYPE)
 object ItemStackMachine : IAutoFieldRW, IAutoObjRW<ItemStack> {
 
-    @JvmStatic fun instance() = this
-
     override fun allowFinal() = false
 
     override fun match(field: Field): Boolean =

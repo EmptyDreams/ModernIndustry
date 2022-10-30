@@ -17,8 +17,6 @@ import kotlin.reflect.KClass
 @AutoRWType(AutoTypeRegister.BASE_TYPE)
 object IntMachine : IAutoFieldRW, IAutoObjRW<Int> {
 
-    @JvmStatic fun instance() = IntMachine
-
     override fun allowFinal() = false
 
     override fun match(field: Field): Boolean {

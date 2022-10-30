@@ -18,8 +18,6 @@ import kotlin.reflect.KClass
 @AutoRWType(AutoTypeRegister.BASE_ARRAY_TYPE)
 object IntArrayMachine : IAutoFieldRW, IAutoObjRW<IntArray> {
 
-    @JvmStatic fun instance() = IntArrayMachine
-
     override fun allowFinal() = true
 
     override fun match(field: Field): Boolean {
