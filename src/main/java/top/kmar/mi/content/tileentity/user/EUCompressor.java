@@ -19,12 +19,14 @@ import top.kmar.mi.api.electricity.info.EleEnergy;
 import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
 import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
+import top.kmar.mi.api.graphics.components.SlotCmpt;
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
+import top.kmar.mi.api.utils.ExpandFunctionKt;
 import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.content.blocks.BlockGuiList;
-import top.kmar.mi.data.CraftList;
 import top.kmar.mi.content.blocks.machine.user.CompressorBlock;
+import top.kmar.mi.data.CraftList;
 import top.kmar.mi.data.properties.MIProperty;
 
 /**
@@ -47,6 +49,9 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
     @AutoSave private int workingTime = 0;
     /** 每次工作消耗的电能 */
     private int needEnergy = 10;
+    /** 正在进行的任务 */
+    @AutoSave
+    private CraftOutput output = null;
     
     public EUCompressor() {
         OrdinaryCounter counter = new OrdinaryCounter(100);
@@ -75,40 +80,23 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
             WorldUtil.removeTickable(this);
             return;
         }
-        //检查输入框是否合法 如果不合法则清零工作时间并结束函数
-        ItemStack outStack = checkInput();
-        if (outStack == null || getNowEnergy() < getNeedEnergy()) {
-            whenFailed(outStack == null);
+        markDirty();
+        if (output == null) {
+            workingTime = 0;
+            ExpandFunctionKt.removeTickable(this);
             return;
         }
-        //若配方存在则继续计算
-        boolean isWorking = updateData(outStack);
-        updateShow(isWorking);
-        markDirty();
-    }
-    
-    /**
-     * 更新内部数据
-     * @param outStack 产品
-     * @return 是否正在工作
-     */
-    private boolean updateData(ItemStack outStack) {
-        boolean isWorking = false;  //保存是否正在工作
-        //检查输入物品数目是否足够
-        if (items.insertItem(2, outStack, true).isEmpty()) {
-            isWorking = true;
-            ++workingTime;
-            if (workingTime >= getNeedTime()) {
-                workingTime = 0;
-                items.extractItem(0, 1, false);
-                items.extractItem(1, 1, false);
-                items.insertItem(2, outStack, false);
-            }
-            shrinkEnergy(getNeedEnergy());
-        } else {
-            workingTime = 0;
+        ItemStack outStack = output.getFirstStack();
+        if (!shrinkEnergy(getNeedEnergy())) {
+            updateShow(false);
+            return;
         }
-        return isWorking;
+        if (++workingTime >= getNeedTime()) {
+            workingTime = 0;
+            items.insertItem(2, outStack, false);
+            output = findOutput(getInputUpStack(), getOutputStack());
+        }
+        updateShow(true);
     }
     
     /**
@@ -120,31 +108,6 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
         IBlockState state = old.withProperty(MIProperty.getEMPTY(), isEmpty())
                 .withProperty(MIProperty.getWORKING(), isWorking);
         WorldUtil.setBlockState(world, pos, state);
-    }
-    
-    /**
-     * 检查输入内容并获取输出
-     * @return 返回产品，若输入不合法则返回null
-     */
-    private ItemStack checkInput() {
-        if (!isEmptyForInput()) {
-            ElementList list = ElementList.build(getInputUpStack(), getInputDownStack());
-            CraftOutput output = CraftGuide.findOutput(CraftList.compressor, list);
-            if (output == null) return null;
-            return output.getFirstStack();
-        }
-        return null;
-    }
-    
-    /**
-     * 当工作失败时执行替换方块的操作
-     * @param isOutputFailed 是否是因为合成表不存在导致的失败
-     */
-    private void whenFailed(boolean isOutputFailed) {
-        //如果不存在，更新方块显示
-        if (isOutputFailed) workingTime = 0;
-        updateShow(false);
-        markDirty();
     }
     
     public ItemStack getInputUpStack() {
@@ -216,6 +179,14 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
         event.registryInitTask(BlockGuiList.getCompressor(), gui -> {
             EUCompressor compressor = (EUCompressor) gui.getTileEntity();
             gui.initItemStackHandler(compressor.items);
+            SlotCmpt up = (SlotCmpt) gui.getElementByID("up");
+            SlotCmpt down = (SlotCmpt) gui.getElementByID("down");
+            up.getSlotAttributes().setInputChecker(
+                    it -> compressor.inputChecker(it, down.getSlot().getStack())
+            );
+            down.getSlotAttributes().setInputChecker(
+                    it -> compressor.inputChecker(it, up.getSlot().getStack())
+            );
         });
         event.registryLoopTask(BlockGuiList.getCompressor(), gui -> {
             EUCompressor compressor = (EUCompressor) gui.getTileEntity();
@@ -223,6 +194,19 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
             progress.setMax(compressor.getNeedTime());
             progress.setValue(compressor.getWorkingTime());
         });
+    }
+    
+    public CraftOutput findOutput(ItemStack arg0, ItemStack arg1) {
+        ElementList list = ElementList.build(arg0.copy(), arg1.copy());
+        return CraftGuide.findOutput(CraftList.compressor, list);
+    }
+    
+    private boolean inputChecker(ItemStack input, ItemStack other) {
+        if (other.isEmpty()) return true;
+        output = findOutput(input, other);
+        if (output == null) return false;
+        ExpandFunctionKt.addTickable(this);
+        return true;
     }
     
 }
