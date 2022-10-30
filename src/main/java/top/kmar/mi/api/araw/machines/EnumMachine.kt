@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
 @AutoRWType(AutoTypeRegister.VALUE_TYPE shl 1)
 object EnumMachine : IAutoFieldRW, IAutoObjRW<Enum<*>> {
 
-    @JvmStatic fun instance() = EnumMachine
+    @JvmStatic fun instance() = this
 
     override fun allowFinal() = false
 

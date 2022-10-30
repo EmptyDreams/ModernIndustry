@@ -34,12 +34,13 @@ object IntMachine : IAutoFieldRW, IAutoObjRW<Int> {
 
     override fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
         val annotation = field.getAnnotation(AutoSave::class.java)
-        when (val local = annotation.local(field)) {
-            Int::class -> field.setInt(obj, (reader as NBTTagInt).int)
-            Byte::class, Boolean::class -> field.setInt(obj, (reader as NBTTagByte).int)
-            Short::class -> field.setInt(obj, (reader as NBTTagShort).int)
+        val value = when (val local = annotation.local(field)) {
+            Int::class -> (reader as NBTTagInt).int
+            Byte::class, Boolean::class -> (reader as NBTTagByte).int
+            Short::class -> (reader as NBTTagShort).int
             else -> throw ClassCastException("${local.qualifiedName}不能转化为int")
         }
+        field.setInt(obj, value)
     }
 
     override fun match(type: KClass<*>) = type == Int::class
@@ -49,12 +50,13 @@ object IntMachine : IAutoFieldRW, IAutoObjRW<Int> {
     }
 
     override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (Int) -> Unit) {
-        when (local) {
-            Int::class -> receiver((reader as NBTTagInt).int)
-            Byte::class, Boolean::class -> receiver((reader as NBTTagByte).int)
-            Short::class -> receiver((reader as NBTTagShort).int)
+        val value = when (local) {
+            Int::class -> (reader as NBTTagInt).int
+            Byte::class, Boolean::class -> (reader as NBTTagByte).int
+            Short::class -> (reader as NBTTagShort).int
             else -> throw ClassCastException("${local.qualifiedName}不能转化为int")
         }
+        receiver(value)
     }
 
     private fun writeHelper(value: Int, local: KClass<*>): NBTBase {

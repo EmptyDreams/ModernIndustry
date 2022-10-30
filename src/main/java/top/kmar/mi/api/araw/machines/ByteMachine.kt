@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
 @AutoRWType(AutoTypeRegister.BASE_TYPE)
 object ByteMachine : IAutoFieldRW, IAutoObjRW<Byte> {
 
-    @JvmStatic fun instance() = ByteMachine
+    @JvmStatic fun instance() = this
 
     override fun allowFinal() = false
 

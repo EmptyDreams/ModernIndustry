@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
 @AutoRWType(AutoTypeRegister.VALUE_TYPE)
 object FluidDataMachine : IAutoFieldRW, IAutoObjRW<FluidData> {
 
-    @JvmStatic fun instance() = FluidDataMachine
+    @JvmStatic fun instance() = this
 
     override fun allowFinal() = true
 
@@ -62,15 +62,16 @@ object FluidDataMachine : IAutoFieldRW, IAutoObjRW<FluidData> {
     }
 
     override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (FluidData) -> Unit) {
-        when (reader) {
-            is NBTTagByte -> receiver(FluidData.empty())
+        val value = when (reader) {
+            is NBTTagByte -> FluidData.empty()
             is NBTTagCompound -> {
                 val fluid = FluidRegistry.getFluid(reader.getString("name"))
                 val amount = reader.getInteger("amount")
-                receiver(FluidData(fluid, amount))
+                FluidData(fluid, amount)
             }
             else -> throw AssertionError()
         }
+        receiver(value)
     }
 
 }

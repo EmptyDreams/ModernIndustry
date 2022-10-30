@@ -17,7 +17,7 @@ import java.lang.reflect.Field
 @AutoRWType(AutoTypeRegister.VALUE_TYPE)
 object EnumOptimizedMachine : IAutoFieldRW {
 
-    @JvmStatic fun instance() = EnumOptimizedMachine
+    @JvmStatic fun instance() = this
 
     override fun allowFinal() = false
 

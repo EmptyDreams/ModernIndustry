@@ -16,7 +16,7 @@ import kotlin.reflect.KClass
 @AutoRWType(AutoTypeRegister.BASE_TYPE)
 object DoubleMachine : IAutoFieldRW, IAutoObjRW<Double> {
 
-    @JvmStatic fun instance() = DoubleMachine
+    @JvmStatic fun instance() = this
 
     override fun allowFinal() = false
 
@@ -37,11 +37,12 @@ object DoubleMachine : IAutoFieldRW, IAutoObjRW<Double> {
 
     override fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
         val annotation = field.getAnnotation(AutoSave::class.java)
-        when (val local = annotation.local(field)) {
-            Double::class -> field.setDouble(obj, (reader as NBTTagDouble).double)
-            Float::class -> field.setDouble(obj, (reader as NBTTagFloat).double)
+        val value = when (val local = annotation.local(field)) {
+            Double::class -> (reader as NBTTagDouble).double
+            Float::class -> (reader as NBTTagFloat).double
             else -> throw ClassCastException("${local.qualifiedName}不能转化为double")
         }
+        field.setDouble(obj, value)
     }
 
     override fun match(type: KClass<*>) = type == Double::class
@@ -55,10 +56,11 @@ object DoubleMachine : IAutoFieldRW, IAutoObjRW<Double> {
     }
 
     override fun read2Obj(reader: NBTBase, local: KClass<*>, receiver: (Double) -> Unit) {
-        when (local) {
-            Double::class -> receiver((reader as NBTTagDouble).double)
-            Float::class -> receiver((reader as NBTTagFloat).double)
+        val value = when (local) {
+            Double::class -> (reader as NBTTagDouble).double
+            Float::class -> (reader as NBTTagFloat).double
             else -> throw ClassCastException("${local.qualifiedName}不能转化为double")
         }
+        receiver(value)
     }
 }
