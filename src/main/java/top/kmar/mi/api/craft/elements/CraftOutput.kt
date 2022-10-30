@@ -2,13 +2,16 @@ package top.kmar.mi.api.craft.elements
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import net.minecraft.item.ItemStack
+import net.minecraft.nbt.NBTBase
+import net.minecraftforge.common.util.INBTSerializable
+import top.kmar.mi.api.araw.registers.AutoTypeRegister
 import top.kmar.mi.api.utils.deepClone
 
 /**
  * 合成表输出
  * @author EmptyDreams
  */
-class CraftOutput {
+class CraftOutput : INBTSerializable<NBTBase> {
 
     private val attributes = Object2ObjectOpenHashMap<String, Any>()
 
@@ -72,6 +75,19 @@ class CraftOutput {
         val stacks = attributes["stacks"] as List<*>?
         if (stacks != null) result.attributes["stacks"] = ArrayList(stacks)
         return result
+    }
+
+    override fun serializeNBT(): NBTBase {
+        val machine = AutoTypeRegister.match(attributes::class)
+        return machine.write2Local(attributes, attributes::class)!!
+    }
+
+    override fun deserializeNBT(nbt: NBTBase) {
+        val machine = AutoTypeRegister.match(attributes::class)
+        machine.read2Obj(nbt, attributes::class) { map ->
+            @Suppress("UNCHECKED_CAST")
+            attributes.putAll(map as Map<String, Any>)
+        }
     }
 
 }
