@@ -61,13 +61,13 @@ object AutoTypeRegister {
         registry(builder(), priority)
     }
 
-    /** 匹配读写器，没有匹配的则返回`null` */
+    /** 匹配读写器 */
     fun match(field: Field): IAutoFieldRW {
         for ((_, list) in fieldList) return list.match(field) ?: continue
         throw UnsupportedDataTypeException("不支持指定类型[${field.type}]的读写")
     }
 
-    /** 匹配读写器，没有匹配的则返回`null` */
+    /** 匹配读写器 */
     fun match(type: KClass<*>): IAutoObjRW<Any> {
         for ((_, list) in objList) {
             @Suppress("UNCHECKED_CAST")
