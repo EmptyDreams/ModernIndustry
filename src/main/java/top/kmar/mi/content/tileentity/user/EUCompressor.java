@@ -80,9 +80,11 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
             WorldUtil.removeTickable(this);
             return;
         }
-        markDirty();
         if (output == null) {
-            workingTime = 0;
+            if (workingTime != 0) {
+                workingTime = 0;
+                markDirty();
+            }
             ExpandFunctionKt.removeTickable(this);
             return;
         }
@@ -94,9 +96,10 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
         if (++workingTime >= getNeedTime()) {
             workingTime = 0;
             items.insertItem(2, outStack, false);
-            output = findOutput(getInputUpStack(), getOutputStack());
+            output = findOutput(getInputUpStack(), getInputDownStack());
         }
         updateShow(true);
+        markDirty();
     }
     
     /**
