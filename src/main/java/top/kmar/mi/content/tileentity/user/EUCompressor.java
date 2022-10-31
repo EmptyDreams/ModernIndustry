@@ -47,8 +47,6 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
     private final ItemStackHandler items = new ItemStackHandler(3);
     /** 已工作时间 */
     @AutoSave private int workingTime = 0;
-    /** 每次工作消耗的电能 */
-    private int needEnergy = 10;
     /** 正在进行的任务 */
     @AutoSave
     private CraftOutput output = null;
@@ -125,7 +123,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
     
     /** 获取需要的工作时间 */
     public int getNeedTime() {
-        return 100;
+        return output == null ? 0 : output.getInt("time", 100);
     }
     /** 获取已工作时间 */
     public int getWorkingTime() {
@@ -133,15 +131,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
     }
     /** 获取每Tick需要的能量 */
     public int getNeedEnergy() {
-        return needEnergy;
-    }
-    /** 设置每Tick需要的能量 */
-    public void setNeedEnergy(int needEnergy) {
-        this.needEnergy = needEnergy;
-    }
-    /** 判断输入是否为空 */
-    public boolean isEmptyForInput() {
-        return getInputUpStack().isEmpty() && getInputDownStack().isEmpty();
+        return output == null ? 0 : output.getInt("energy", 10);
     }
     /** 判断是否为空 */
     public boolean isEmpty() {
