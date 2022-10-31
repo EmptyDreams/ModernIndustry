@@ -20,9 +20,8 @@ import top.kmar.mi.api.graphics.components.ProgressBarCmpt
 import top.kmar.mi.api.graphics.components.SlotMatrixCmpt
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
-import top.kmar.mi.api.utils.WorldUtil
-import top.kmar.mi.api.utils.isClient
-import top.kmar.mi.api.utils.removeTickable
+import top.kmar.mi.api.utils.*
+import top.kmar.mi.api.utils.expands.insertItems
 import top.kmar.mi.content.blocks.BlockGuiList.synthesizer
 import top.kmar.mi.data.CraftList
 import top.kmar.mi.data.properties.MIProperty.Companion.WORKING
@@ -42,10 +41,10 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
     @field:AutoSave
     private var workingTime = 0
     /** 下一次的输出 */
-    private var output: CraftOutput = emptyOutput
+    private var output: CraftOutput? = null
     /** 获取工作需要的时间 */
     val maxTime: Int
-        get() = output.getInt("time", 100)
+        get() = output!!.getInt("time", 200)
 
     init {
         val counter = OrdinaryCounter(100)
@@ -56,9 +55,12 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
 
     override fun update() {
         if (world.isClient()) return removeTickable()
-        if (output == emptyOutput) {
+        if (output == null) {
             this.output = calculateOutput()
-            if (!putOutput(true)) return clear(true)
+            if (!putOutput(true)) {
+                removeTickable()
+                return clear(true)
+            }
         }
         if (!shrinkEnergy(1)) return
         if (++workingTime >= maxTime) {
@@ -67,12 +69,18 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
         } else updateBlockState()
     }
 
-    fun calculateOutput(): CraftOutput {
+    /** 计算输出，返回`null`表示无输出 */
+    fun calculateOutput(): CraftOutput? {
+        val existing = getOutputStacks()
+        if (existing.all { it.count >= it.maxStackSize }) return null
         val input = calculateProduction()
         val output = CraftGuide.findOutput(CraftList.synthesizer, input)
-        if (output != null) return output
-        clear(true)
-        return emptyOutput
+        if (output == null) clear(true)
+        else {
+            val surplus = items.insertItems(25 until 29, output.stacks, true)
+            if (surplus.isNotEmpty()) return null
+        }
+        return output
     }
 
     /**
@@ -81,8 +89,7 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
      * @return 是否成功放入
      */
     fun putOutput(simulation: Boolean): Boolean {
-        if (output == emptyOutput) return false
-        val output = this.output.stacks
+        val output = this.output?.stacks ?: return false
         val itor = output.iterator()
         var value: ItemStack = ItemStack.EMPTY
         for (i in 25 until 29) {
@@ -117,7 +124,7 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
     /** 清楚工作状态和进度 */
     fun clear(updateState: Boolean) {
         workingTime = 0
-        output = emptyOutput
+        output = null
         if (updateState) updateBlockState()
     }
 
@@ -156,8 +163,6 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
 
         /** 电器可以承受的最大电压 */
         const val maxVoltage = EleEnergy.COMMON
-        /** 空的输出 */
-        private val emptyOutput = CraftOutput()
 
         @SubscribeEvent
         @JvmStatic
@@ -167,12 +172,19 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
                     gui.tileEntity as EUElectronSynthesizer
                 gui.initItemStackHandler(synthesizer.items)
                 val input = gui.getElementByID("input") as SlotMatrixCmpt
-                input.slotAttributes.onSlotChanged = { synthesizer.output = synthesizer.calculateOutput() }
+                input.slotAttributes.onSlotChanged = {
+                    with(synthesizer) {
+                        output = calculateOutput()
+                        addTickable()
+                    }
+                }
+                val output = gui.getElementByID("output") as SlotMatrixCmpt
+                output.slotAttributes.onSlotChanged = { synthesizer.addTickable() }
             }
             event.registryLoopTask(synthesizer) { gui: BaseGraphics ->
                 val synthesizer = gui.tileEntity as EUElectronSynthesizer
                 val work = gui.getElementByID("work") as ProgressBarCmpt
-                if (synthesizer.output == emptyOutput) {
+                if (synthesizer.output == null) {
                     work.value = 0
                     work.max = 0
                 } else {
