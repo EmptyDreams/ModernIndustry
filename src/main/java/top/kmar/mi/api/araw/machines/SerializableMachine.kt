@@ -32,6 +32,10 @@ object SerializableMachine : IAutoFieldRW, IAutoObjRW<INBTSerializable<*>> {
 
     @Suppress("UNCHECKED_CAST")
     override fun read2Obj(reader: NBTBase, field: Field, obj: Any) {
+        if (reader is NBTTagByte) {
+            field[obj] = null
+            return
+        }
         val annotation = field.getAnnotation(AutoSave::class.java)
         var value = field[obj] as INBTSerializable<NBTBase>?
         if (value == null) {
