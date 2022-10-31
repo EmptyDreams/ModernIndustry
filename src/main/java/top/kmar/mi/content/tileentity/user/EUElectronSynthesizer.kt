@@ -115,7 +115,7 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
         val input = ElementList(5, 5)
         for (y in 0..4) {
             for (x in 0..4) {
-                input[x, y] = items.getStackInSlot(5 * y + x)
+                input[x, y] = items.getStackInSlot(5 * y + x).copy()
             }
         }
         return input
