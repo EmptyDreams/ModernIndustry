@@ -18,7 +18,6 @@ import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
-import top.kmar.mi.api.utils.ItemUtil;
 import top.kmar.mi.api.utils.WorldUtil;
 import top.kmar.mi.content.blocks.BlockGuiList;
 import top.kmar.mi.data.CraftList;
@@ -87,7 +86,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
         CraftOutput output = CraftGuide.findOutput(
                 CraftList.firePower, ElementList.build(burnItem));
         if (output == null) return;
-        ItemUtil.putItemTo(getOutputStack(), output.getFirstStack(), false);
+        putItemTo(getOutputStack(), output.getFirstStack(), false);
     }
     
     /** 更新燃烧时间 */
@@ -147,6 +146,23 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
             energy.setMax(power.getMaxEnergy());
             energy.setValue(power.getNowEnergy());
         });
+    }
+    
+    /**
+     * 将指定的Stack传入到指定的Stack中.<br>
+     * 若stack可以完全容纳下input，则正常计算，否则放弃计算，
+     * 即若{@code input.getCount() + stack.getCount() > stack.getMaxStackSize()}则该方法不会有任何作用。
+     * @param stack 接受传入的Stack
+     * @param input 需要传入的Stack
+     * @param modifyInput 是否修改需要传入的Stack
+     */
+    public static void putItemTo(ItemStack stack, ItemStack input, boolean modifyInput) {
+        if (stack.getItem() == input.getItem() && stack.getMetadata() == input.getMetadata()) {
+            int value = input.getCount() + stack.getCount();
+            if (value > stack.getMaxStackSize()) return;
+            stack.setCount(value);
+            if (modifyInput) input.setCount(0);
+        }
     }
     
 }
