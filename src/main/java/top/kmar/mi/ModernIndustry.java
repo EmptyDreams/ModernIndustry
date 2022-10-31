@@ -21,7 +21,7 @@ import top.kmar.mi.proxy.CommonProxy;
 
 import javax.annotation.Nonnull;
 
-import static top.kmar.mi.api.utils.ExpandFunctionKt.newStack;
+import static top.kmar.mi.api.utils.expands.ItemExpandsKt.newStack;
 
 @Mod(modid = ModernIndustry.MODID, name = ModernIndustry.NAME, version = ModernIndustry.VERSION)
 @AutoManager(item = true)

@@ -31,6 +31,10 @@ import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
 import top.kmar.mi.api.utils.*
 import top.kmar.mi.api.utils.container.IndexEnumMap
+import top.kmar.mi.api.utils.expands.isClient
+import top.kmar.mi.api.utils.expands.removeTickable
+import top.kmar.mi.api.utils.expands.sendBlockMessageIfNotUpdate
+import top.kmar.mi.api.utils.expands.whatFacing
 import top.kmar.mi.content.blocks.BlockGuiList
 import top.kmar.mi.content.blocks.machine.user.FluidPumpBlock
 import top.kmar.mi.data.properties.RelativeDirectionEnum
@@ -351,7 +355,7 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
 
     private fun send(refresh: Boolean = false) {
         if (refresh) networkRecord.clear()
-        IOUtil.sendBlockMessageIfNotUpdate(this, networkRecord, 128) {
+        sendBlockMessageIfNotUpdate(networkRecord, 128) {
             NBTTagCompound().apply {
                 setByte("side", side.ordinal.toByte())
                 setByte("fac", panelFacing.ordinal.toByte())

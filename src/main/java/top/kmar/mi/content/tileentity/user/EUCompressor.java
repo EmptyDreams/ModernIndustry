@@ -22,8 +22,7 @@ import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
 import top.kmar.mi.api.graphics.components.SlotCmpt;
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
-import top.kmar.mi.api.utils.ExpandFunctionKt;
-import top.kmar.mi.api.utils.WorldUtil;
+import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 import top.kmar.mi.content.blocks.BlockGuiList;
 import top.kmar.mi.content.blocks.machine.user.CompressorBlock;
 import top.kmar.mi.data.CraftList;
@@ -75,7 +74,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
     @Override
     public void update() {
         if (world.isRemote) {
-            WorldUtil.removeTickable(this);
+            WorldExpandsKt.removeTickable(this);
             return;
         }
         if (output == null) {
@@ -83,7 +82,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
                 workingTime = 0;
                 markDirty();
             }
-            ExpandFunctionKt.removeTickable(this);
+            WorldExpandsKt.removeTickable(this);
             updateShow(false);
             return;
         }
@@ -115,7 +114,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
         IBlockState old = world.getBlockState(pos);
         IBlockState state = old.withProperty(MIProperty.getEMPTY(), isEmpty())
                 .withProperty(MIProperty.getWORKING(), isWorking);
-        WorldUtil.setBlockState(world, pos, state);
+        WorldExpandsKt.setBlockWithMark(world, pos, state);
     }
     
     public ItemStack getInputUpStack() {
@@ -210,7 +209,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
         if (other.isEmpty()) return true;
         output = findOutput(input, other);
         if (output == null) return false;
-        ExpandFunctionKt.addTickable(this);
+        WorldExpandsKt.addTickable(this);
         return true;
     }
     

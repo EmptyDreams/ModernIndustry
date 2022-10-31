@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import top.kmar.mi.api.utils.ExpandFunctionKt;
+import top.kmar.mi.api.utils.expands.PlayerExpandsKt;
 import top.kmar.mi.data.properties.MIProperty;
 
 import javax.annotation.Nonnull;
@@ -72,7 +72,7 @@ public final class CommonUtil {
      */
     public static boolean openGui(EntityPlayer player, ResourceLocation key, BlockPos pos) {
         if (player.world.isRemote) return true;
-        ExpandFunctionKt.openGui(player, key, pos.getX(), pos.getY(), pos.getZ());
+        PlayerExpandsKt.openGui(player, key, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
     

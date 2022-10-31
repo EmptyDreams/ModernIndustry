@@ -4,7 +4,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import top.kmar.mi.api.utils.ExpandFunctionKt;
+import top.kmar.mi.api.utils.expands.IOExpandsKt;
 
 import javax.annotation.Nullable;
 
@@ -18,7 +18,7 @@ public class FluidStore implements Capability.IStorage<IFluid> {
 	@Override
 	public NBTBase writeNBT(Capability<IFluid> capability, IFluid instance, EnumFacing side) {
 		NBTTagCompound result = new NBTTagCompound();
-		ExpandFunctionKt.writeObject(result, instance, ".");
+		IOExpandsKt.writeObject(result, instance, ".");
 		return result;
 	}
 	
@@ -26,7 +26,7 @@ public class FluidStore implements Capability.IStorage<IFluid> {
 	public void readNBT(Capability<IFluid> capability,
 	                    IFluid instance, EnumFacing side, NBTBase nbt) {
 		if (nbt == null) return;
-		ExpandFunctionKt.readObject((NBTTagCompound) nbt, instance, ".");
+		IOExpandsKt.readObject((NBTTagCompound) nbt, instance, ".");
 	}
 	
 }

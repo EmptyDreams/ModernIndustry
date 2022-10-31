@@ -19,8 +19,8 @@ import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
-import top.kmar.mi.api.utils.ExpandFunctionKt;
-import top.kmar.mi.api.utils.WorldUtil;
+import top.kmar.mi.api.utils.expands.ItemExpandsKt;
+import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 import top.kmar.mi.content.blocks.BlockGuiList;
 import top.kmar.mi.data.CraftList;
 import top.kmar.mi.data.properties.MIProperty;
@@ -54,7 +54,7 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
     @Override
     public void update() {
         if (world.isRemote) {
-            WorldUtil.removeTickable(this);
+            WorldExpandsKt.removeTickable(this);
             return;
         }
         if (checkInputAndOutput() || !shrinkEnergy(getNeedEnergy())) {
@@ -66,7 +66,7 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
     }
     
     private void updateShow() {
-        WorldUtil.setBlockState(world, pos,
+        WorldExpandsKt.setBlockWithMark(world, pos,
                 world.getBlockState(pos)
                         .withProperty(MIProperty.getWORKING(), workingTime > 0));
     }
@@ -104,7 +104,7 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
             CraftOutput craft = CraftGuide.findOutput(
                     CraftList.pulverizer, ElementList.build(input));
             if (craft == null || output.getCount() >= output.getMaxStackSize()||
-                    !ExpandFunctionKt.match(craft.getFirstStack(), output)) {
+                    !ItemExpandsKt.match(craft.getFirstStack(), output)) {
                 //如果输出框不为空但物品数量达到上限则不能正常运行
                 //               或产品与输出框不相符则不能正常运行
                 if (workingTime != 0) {

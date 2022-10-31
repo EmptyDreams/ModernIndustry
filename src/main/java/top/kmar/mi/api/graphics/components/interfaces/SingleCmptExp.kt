@@ -1,7 +1,7 @@
 package top.kmar.mi.api.graphics.components.interfaces
 
 import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet
-import top.kmar.mi.api.utils.compareTo
+import top.kmar.mi.api.utils.expands.compareTo
 
 /**
  * 单个[Cmpt]匹配表达式

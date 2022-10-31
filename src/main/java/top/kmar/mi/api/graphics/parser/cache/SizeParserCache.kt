@@ -4,7 +4,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.utils.*
-import top.kmar.mi.api.utils.removeAllSpace
+import top.kmar.mi.api.utils.expands.removeAllSpace
 
 /**
  * 尺寸表达式

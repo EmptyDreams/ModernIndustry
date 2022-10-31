@@ -3,11 +3,11 @@
 package top.kmar.mi.api.graphics.utils
 
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
-import top.kmar.mi.api.utils.ceilDiv2
+import top.kmar.mi.api.utils.expands.ceilDiv2
 import top.kmar.mi.api.utils.container.PairIntInt
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
 import top.kmar.mi.api.utils.data.enums.VerticalDirectionEnum
-import top.kmar.mi.api.utils.swapIf
+import top.kmar.mi.api.utils.expands.swapIf
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt

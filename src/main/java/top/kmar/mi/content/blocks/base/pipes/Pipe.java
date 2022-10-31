@@ -19,8 +19,8 @@ import top.kmar.mi.api.capabilities.fluid.FluidCapability;
 import top.kmar.mi.api.capabilities.fluid.IFluid;
 import top.kmar.mi.api.fluid.FTTileEntity;
 import top.kmar.mi.api.regedits.OreDicRegister;
-import top.kmar.mi.api.utils.ExpandFunctionKt;
 import top.kmar.mi.api.utils.StringUtil;
+import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 import top.kmar.mi.content.blocks.base.TEBlockBase;
 
 import javax.annotation.Nonnull;
@@ -53,7 +53,7 @@ abstract public class Pipe extends TEBlockBase {
 	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
 		TileEntity fromEntity = worldIn.getTileEntity(fromPos);
 		FTTileEntity nowEntity = (FTTileEntity) worldIn.getTileEntity(pos);
-		EnumFacing facing = ExpandFunctionKt.whatFacing(pos, fromPos);
+		EnumFacing facing = WorldExpandsKt.whatFacing(pos, fromPos);
 		if (!linkBoth(nowEntity, fromEntity, facing)) nowEntity.unlink(facing);
 		nowEntity.markDirty();
 	}

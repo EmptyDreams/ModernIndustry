@@ -1,6 +1,6 @@
 package top.kmar.mi.api.graphics.components.interfaces
 
-import top.kmar.mi.api.utils.compareTo
+import top.kmar.mi.api.utils.expands.compareTo
 import java.lang.ref.WeakReference
 import java.util.*
 

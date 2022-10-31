@@ -1,7 +1,7 @@
 package top.kmar.mi.api.craft.elements
 
 import net.minecraft.item.ItemStack
-import top.kmar.mi.api.utils.match
+import top.kmar.mi.api.utils.expands.match
 import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
 

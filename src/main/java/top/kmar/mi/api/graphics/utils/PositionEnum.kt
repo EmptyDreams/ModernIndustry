@@ -1,6 +1,6 @@
 package top.kmar.mi.api.graphics.utils
 
-import top.kmar.mi.api.utils.equalsIgnoreCase
+import top.kmar.mi.api.utils.expands.equalsIgnoreCase
 
 /**
  * 控件定位方法

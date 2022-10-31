@@ -4,7 +4,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import top.kmar.mi.api.electricity.EleWorker;
 import top.kmar.mi.api.electricity.info.EleEnergy;
-import top.kmar.mi.api.utils.WorldUtil;
+import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,10 +51,12 @@ public interface IEleInputer extends IRegister {
 	 */
 	default Map<TileEntity, IEleTransfer> getTransferAround(TileEntity now) {
 		Map<TileEntity, IEleTransfer> list = new HashMap<>(4);
-		WorldUtil.forEachAroundTE(now.getWorld(), now.getPos(), (te, facing) -> {
-			IEleTransfer et = EleWorker.getTransfer(te);
-			if (et != null && et.isLink(te, now)) list.put(te,et);
-		});
+		WorldExpandsKt.forEachAroundTileEntity(
+				now.getWorld(), now.getPos(),
+				(te, facing) -> {
+					IEleTransfer et = EleWorker.getTransfer(te);
+					if (et != null && et.isLink(te, now)) list.put(te, et);
+				});
 		return list;
 	}
 	

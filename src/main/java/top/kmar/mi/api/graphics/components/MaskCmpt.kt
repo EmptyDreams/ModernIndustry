@@ -11,7 +11,7 @@ import top.kmar.mi.api.graphics.utils.CodeSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.PositionEnum
 import top.kmar.mi.api.regedits.others.AutoCmpt
-import top.kmar.mi.api.utils.WorldUtil
+import top.kmar.mi.api.utils.expands.clientPlayer
 
 /**
  * 蒙版
@@ -30,7 +30,7 @@ class MaskCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         override val style = GraphicsStyle(service).apply {
             backgroundColor = IntColor(0, 0, 0, 120)
             position = PositionEnum.FIXED
-            val container = (WorldUtil.getClientPlayer().openContainer as BaseGraphics).client
+            val container = (clientPlayer.openContainer as BaseGraphics).client
             widthCalculator = CodeSizeMode { container.width }
             heightCalculator = CodeSizeMode { container.height }
         }

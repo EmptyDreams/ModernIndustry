@@ -12,8 +12,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -23,10 +25,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import top.kmar.mi.ModernIndustry;
-import top.kmar.mi.api.utils.WorldUtil;
+import top.kmar.mi.api.regedits.item.AutoItemRegister;
+import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 import top.kmar.mi.content.blocks.base.MachineBlock;
 import top.kmar.mi.content.blocks.machine.user.MuffleFurnaceBlock;
-import top.kmar.mi.api.regedits.item.AutoItemRegister;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -79,7 +81,9 @@ public class SpannerItem extends Item {
 		EnumFacing decide = decideFacing(facing, hitX, hitY, hitZ);
 		PropertyDirection property = getPropertyDirection(worldIn, pos, state);
 		if (property == null || !property.getAllowedValues().contains(decide)) return EnumActionResult.PASS;
-		WorldUtil.setBlockState(worldIn, pos, state.withProperty(property, decide));
+		WorldExpandsKt.setBlockWithMark(
+				worldIn, pos, state.withProperty(property, decide)
+		);
 
 		return EnumActionResult.SUCCESS;
 	}
@@ -96,13 +100,28 @@ public class SpannerItem extends Item {
 	 */
 	@Nullable
 	public static PropertyDirection getPropertyDirection(World world, BlockPos pos, IBlockState state) {
-		if (!WorldUtil.isFullBlock(world, pos)) return null;
+		if (!isFullBlock(world, pos)) return null;
 		for (IProperty<?> property : state.getProperties().keySet()) {
 			if (property instanceof PropertyDirection) return (PropertyDirection) property;
 		}
 		return null;
 	}
-
+	
+	/**
+	 * 判断指定方块是否为完整方块或接近于完整方块
+	 * @param access 所在世界
+	 * @param pos 方块坐标
+	 */
+	public static boolean isFullBlock(IBlockAccess access, BlockPos pos) {
+		IBlockState state = access.getBlockState(pos);
+		if (state.isFullBlock() && state.isFullCube()) return true;
+		AxisAlignedBB box = state.getBoundingBox(access, pos);
+		double width = box.maxX - box.minX;
+		double height = box.maxY - box.minY;
+		double length = box.maxZ - box.minZ;
+		return (width * height * length) >= 0.75;
+	}
+	
 	/**
 	 * 根据信息计算旋转后的朝向
 	 * @param facing 右键的方向

@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import top.kmar.mi.api.utils.ExpandFunctionKt;
+import top.kmar.mi.api.utils.expands.IOExpandsKt;
 
 /**
  * 基础TE，提供了一些默认的功能
@@ -29,7 +29,7 @@ public class BaseTileEntity extends TileEntity {
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		if (!world.isRemote) {
-			ExpandFunctionKt.writeObject(compound, this, ".");
+			IOExpandsKt.writeObject(compound, this, ".");
 		}
 		return super.writeToNBT(compound);
 	}
@@ -38,7 +38,7 @@ public class BaseTileEntity extends TileEntity {
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
 		if (compound.hasKey(".")) {
-			ExpandFunctionKt.readObject(compound, this, ".");
+			IOExpandsKt.readObject(compound, this, ".");
 		}
 	}
 	

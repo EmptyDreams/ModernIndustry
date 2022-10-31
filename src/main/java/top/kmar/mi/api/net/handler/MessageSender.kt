@@ -7,11 +7,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.net.NetworkLoader
-import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.data.math.Range3D
-import top.kmar.mi.api.utils.forEachPlayers
-import top.kmar.mi.api.utils.forEachPlayersAround
-import java.util.function.Predicate
+import top.kmar.mi.api.utils.expands.forEachPlayers
+import top.kmar.mi.api.utils.expands.forEachPlayersAround
 
 /**
  * 发送消息的工具类
@@ -33,7 +31,7 @@ object MessageSender {
      * 发送消息到在指定世界指定范围内的所有玩家
      * @param world 世界
      * @param range 范围
-     * @param messageSupplier 生成信息内容
+     * @param messageSupplier 生成信息内容，最多调用一次
      */
     @JvmStatic
     fun send2ClientAround(world: World, range: Range3D, messageSupplier: () -> IMessage) {
@@ -45,7 +43,7 @@ object MessageSender {
      * 发送信息到指定世界中满足条件的所有玩家
      * @param world 世界对象
      * @param test 条件表达式
-     * @param messageSupplier 生成信息内容
+     * @param messageSupplier 生成信息内容，最多调用一次
      * @throws ClassCastException 如果world中存储的用户对象不是[EntityPlayerMP]
      */
     @JvmStatic
@@ -59,7 +57,7 @@ object MessageSender {
     /**
      * 发送信息到指定世界中的所有玩家
      * @param world 世界对象
-     * @param messageSupplier 生成信息内容
+     * @param messageSupplier 生成信息内容，最多调用一次
      * @throws ClassCastException 如果world中存储的用户对象不是[EntityPlayerMP]
      */
     @JvmStatic
@@ -69,21 +67,7 @@ object MessageSender {
     }
 
     /**
-     * 遍历世界中所有玩家，如果玩家满足指定要求则发送消息给玩家
-     * @param test 条件表达式
-     * @param messageSupplier 生成信息内容
-     * @throws ClassCastException 如果world中存储的用户对象不是[EntityPlayerMP]
-     */
-    @JvmStatic
-    fun send2ClientIf(test: Predicate<EntityPlayer>, messageSupplier: () -> IMessage) {
-        val message by lazy(LazyThreadSafetyMode.PUBLICATION) { messageSupplier() }
-        WorldUtil.forEachPlayers {
-            if (test.test(it)) send2Client(it as EntityPlayerMP, message)
-        }
-    }
-
-    /**
-     * 将消息发送到指定玩家
+     * 将消息发送到所有玩家
      * @param message 信息
      */
     @JvmStatic

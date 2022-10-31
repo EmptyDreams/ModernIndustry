@@ -16,8 +16,8 @@ import net.minecraft.world.World
 import top.kmar.mi.api.capabilities.fluid.FluidCapability
 import top.kmar.mi.api.capabilities.fluid.IFluid
 import top.kmar.mi.api.regedits.block.annotations.AutoBlockRegister
-import top.kmar.mi.api.utils.getPlacingDirection
-import top.kmar.mi.api.utils.whatFacing
+import top.kmar.mi.api.utils.expands.getPlacingDirection
+import top.kmar.mi.api.utils.expands.whatFacing
 import top.kmar.mi.content.blocks.BlockGuiList
 import top.kmar.mi.content.blocks.CommonUtil
 import top.kmar.mi.content.blocks.base.MachineBlock

@@ -15,8 +15,8 @@ import top.kmar.mi.api.graphics.utils.CodeSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.regedits.others.AutoCmpt
-import top.kmar.mi.api.utils.WorldUtil
-import top.kmar.mi.api.utils.floorDiv2
+import top.kmar.mi.api.utils.expands.floorDiv2
+import top.kmar.mi.api.utils.expands.isClient
 
 /**
  * 多个Slot组成的矩阵
@@ -165,7 +165,7 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     private fun syncPos(x: Int, y: Int) {
         if (this[0, 0].xPos != x || this[0, 0].yPos != y) {
-            if (WorldUtil.isClient()) {
+            if (isClient()) {
                 val message = NBTTagCompound().apply {
                     setInteger("x", x)
                     setInteger("y", y)

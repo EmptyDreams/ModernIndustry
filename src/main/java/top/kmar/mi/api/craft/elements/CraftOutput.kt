@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTBase
 import net.minecraftforge.common.util.INBTSerializable
 import top.kmar.mi.api.araw.registers.AutoTypeRegister
-import top.kmar.mi.api.utils.deepClone
+import top.kmar.mi.api.utils.expands.deepClone
 
 /**
  * 合成表输出

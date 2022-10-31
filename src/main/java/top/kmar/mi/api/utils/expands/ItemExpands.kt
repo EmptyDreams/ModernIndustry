@@ -1,5 +1,7 @@
+/** 与物品有管的操作的封装 */
 package top.kmar.mi.api.utils.expands
 
+import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraftforge.items.ItemStackHandler
 
@@ -50,3 +52,27 @@ private fun ItemStackHandler.insertItems(
         .forEach { result += it }
     return result
 }
+/** 深度复制列表 */
+fun List<ItemStack>.deepClone(): MutableList<ItemStack> {
+    val list = java.util.ArrayList<ItemStack>(size)
+    forEach { list.add(it.copy()) }
+    return list
+}
+/** 判断两个stack能否合并 */
+fun ItemStack.match(stack: ItemStack) =
+    isEmpty || stack.isEmpty || (
+                    (!hasSubtypes || metadata == stack.metadata) &&
+                    isItemEqual(stack) &&
+                            ItemStack.areItemStackTagsEqual(this, stack)
+            )
+/** 拷贝Stack并将拷贝后的Stack的count修改为指定值 */
+fun ItemStack.copy(count: Int): ItemStack {
+    val result = copy()
+    result.count = count
+    return result
+}
+/**
+ * 创建一个新的ItemStack
+ * @receiver [Item]
+ */
+fun Item.newStack(amount: Int = 1) = ItemStack(this, amount)

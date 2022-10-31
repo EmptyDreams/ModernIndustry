@@ -12,7 +12,7 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptRegister
 import top.kmar.mi.api.utils.MISysInfo
 import top.kmar.mi.api.utils.container.PairIntObj
-import top.kmar.mi.api.utils.countStartSpace
+import top.kmar.mi.api.utils.expands.countStartSpace
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.extension

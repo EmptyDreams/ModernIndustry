@@ -15,8 +15,8 @@ import top.kmar.mi.api.graphics.utils.ButtonStyleEnum
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.regedits.others.AutoCmpt
-import top.kmar.mi.api.utils.applyClient
-import top.kmar.mi.api.utils.floorDiv2
+import top.kmar.mi.api.utils.expands.applyClient
+import top.kmar.mi.api.utils.expands.floorDiv2
 
 /**
  * 按钮控件

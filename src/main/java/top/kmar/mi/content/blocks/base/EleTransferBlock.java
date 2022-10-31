@@ -23,8 +23,8 @@ import top.kmar.mi.ModernIndustry;
 import top.kmar.mi.api.capabilities.ele.EleCapability;
 import top.kmar.mi.api.capabilities.ele.IStorage;
 import top.kmar.mi.api.regedits.OreDicRegister;
-import top.kmar.mi.api.utils.ExpandFunctionKt;
 import top.kmar.mi.api.utils.StringUtil;
+import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 import top.kmar.mi.content.items.base.ItemBlockExpand;
 import top.kmar.mi.content.tileentity.EleSrcCable;
 
@@ -152,7 +152,7 @@ abstract public class EleTransferBlock extends TEBlockBase {
 	
 	@SuppressWarnings("ConstantConditions")
 	public static void neighborChangedHelper(World worldIn, BlockPos pos, BlockPos fromPos) {
-		EnumFacing facing = ExpandFunctionKt.whatFacing(pos, fromPos);
+		EnumFacing facing = WorldExpandsKt.whatFacing(pos, fromPos);
 		TileEntity nowTe = worldIn.getTileEntity(pos);
 		IStorage nowStorage = nowTe.getCapability(EleCapability.ENERGY, facing);
 		if (nowStorage == null) return;

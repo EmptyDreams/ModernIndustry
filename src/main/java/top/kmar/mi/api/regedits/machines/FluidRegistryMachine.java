@@ -16,13 +16,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import top.kmar.mi.api.regedits.AutoRegisterMachine;
 import top.kmar.mi.api.regedits.block.annotations.AutoFluid;
-import top.kmar.mi.api.utils.WorldUtil;
+import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 
 import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.List;
 
-import static top.kmar.mi.api.regedits.machines.RegisterHelp.*;
+import static top.kmar.mi.api.regedits.machines.RegisterHelp.invokeStaticMethod;
 
 /**
  * 流体的注册机
@@ -71,7 +71,7 @@ public class FluidRegistryMachine extends AutoRegisterMachine<AutoFluid, Object>
 	
 	/** 注册桶和方块的渲染 */
 	private static void registryFluidRender(Block block) {
-		if (WorldUtil.isServer()) return;
+		if (WorldExpandsKt.isServer()) return;
 		//ModelBakery.registerItemVariants(item);
 		String location = block.getRegistryName().toString();
 		ModelResourceLocation resourceLocation = new ModelResourceLocation(location, "fluid");

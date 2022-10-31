@@ -7,9 +7,9 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
-import top.kmar.mi.api.utils.WorldUtil
 import top.kmar.mi.api.utils.container.CacheContainer
 import top.kmar.mi.api.utils.data.math.Rect2D
+import top.kmar.mi.api.utils.expands.clientPlayer
 import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -157,8 +157,7 @@ open class GraphicsStyle(
                 PositionEnum.FIXED ->
                     if (left != -1) left
                     else if (right != -1)
-                        (WorldUtil.getClientPlayer().openContainer as BaseGraphics)
-                            .client.width - width - right
+                        (clientPlayer.openContainer as BaseGraphics).client.width - width - right
                     else 0
             }
             field = src + marginLeft
@@ -181,8 +180,7 @@ open class GraphicsStyle(
                 PositionEnum.FIXED ->
                     if (top != -1) top
                     else if (bottom != -1)
-                            (WorldUtil.getClientPlayer().openContainer as BaseGraphics)
-                                .client.height - height - right
+                            (clientPlayer.openContainer as BaseGraphics).client.height - height - right
                     else 0
             }
             field = src + marginTop

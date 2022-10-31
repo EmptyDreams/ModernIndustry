@@ -14,7 +14,7 @@ import top.kmar.mi.api.graphics.components.BurnCmpt;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.BaseTileEntity;
-import top.kmar.mi.api.utils.WorldUtil;
+import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 import top.kmar.mi.content.blocks.BlockGuiList;
 import top.kmar.mi.data.properties.MIProperty;
 
@@ -39,7 +39,7 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
     @Override
     public void update() {
         if (world.isRemote) {
-            WorldUtil.removeTickable(this);
+            WorldExpandsKt.removeTickable(this);
             return;
         }
         ItemStack output = getOutputStack();
@@ -51,7 +51,7 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
         
         IBlockState oldState = world.getBlockState(pos);
         IBlockState newState = oldState.withProperty(MIProperty.getWORKING(), isWorking());
-        WorldUtil.setBlockState(world, pos, newState);
+        WorldExpandsKt.setBlockWithMark(world, pos, newState);
         markDirty();
     }
     

@@ -9,7 +9,7 @@ import top.kmar.mi.api.electricity.info.PathInfo;
 import top.kmar.mi.api.electricity.interfaces.IEleInputer;
 import top.kmar.mi.api.electricity.interfaces.IEleTransfer;
 import top.kmar.mi.api.regedits.others.AutoAgentRegister;
-import top.kmar.mi.api.utils.ExpandFunctionKt;
+import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 import top.kmar.mi.content.tileentity.EleSrcCable;
 
 /**
@@ -47,7 +47,7 @@ public class EleSrcTransfer implements IEleTransfer {
 		EleSrcCable cable = (EleSrcCable) now;
 		if (target.equals(cable.getNext()) ||
 				target.equals(cable.getPrev())) return true;
-		EnumFacing facing = ExpandFunctionKt.whatFacing(now.getPos(), target.getPos());
+		EnumFacing facing = WorldExpandsKt.whatFacing(now.getPos(), target.getPos());
 		return cable.isLink(facing);
 	}
 	

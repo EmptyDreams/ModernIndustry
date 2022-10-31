@@ -6,9 +6,9 @@ import top.kmar.mi.api.graphics.components.interfaces.IntColor.Companion.shadow
 import top.kmar.mi.api.graphics.components.interfaces.IntColor.Companion.white
 import top.kmar.mi.api.utils.container.PairIntInt
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
-import top.kmar.mi.api.utils.floorDiv2
-import top.kmar.mi.api.utils.isEven
-import top.kmar.mi.api.utils.minusIf
+import top.kmar.mi.api.utils.expands.floorDiv2
+import top.kmar.mi.api.utils.expands.isEven
+import top.kmar.mi.api.utils.expands.minusIf
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 

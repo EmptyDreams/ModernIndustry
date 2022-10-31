@@ -24,8 +24,8 @@ import top.kmar.mi.api.fluid.data.TransportReport
 import top.kmar.mi.api.net.IAutoNetwork
 import top.kmar.mi.api.tools.BaseTileEntity
 import top.kmar.mi.api.utils.*
-import top.kmar.mi.api.utils.MathUtil.random
 import top.kmar.mi.api.utils.container.DoubleIndexEnumMap
+import top.kmar.mi.api.utils.expands.*
 import java.util.*
 import javax.annotation.Nonnull
 
@@ -54,7 +54,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
         private val HOR_LIST = ArrayList<Array<EnumFacing>>(24)
 
         @JvmStatic
-        fun randomHorizontals() = HOR_LIST[random().nextInt(HOR_LIST.size)]
+        fun randomHorizontals() = HOR_LIST[random.nextInt(HOR_LIST.size)]
 
         init {
             val record = BooleanArray(HORIZONTALS.size) {false}
@@ -363,7 +363,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
     fun send() {
         if (world.isClient()) return
         if (players.size == world.playerEntities.size) return
-        IOUtil.sendBlockMessageIfNotUpdate(this, players, 128) {
+        sendBlockMessageIfNotUpdate(players, 128) {
             val data = NBTTagCompound()
             data.setByte("data", linkData.getValue().toByte())
             data.setTag("sync", sync())
@@ -424,7 +424,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
         }
         val oldState = world.getBlockState(pos)
         val newState = oldState.getActualState(world, pos)
-        WorldUtil.setBlockState(world, pos, newState)
+        world.setBlockWithMark(pos, newState)
     }
 
     /** 方法内包含管道正常运行的方法，重写时务必使用`super.update()`调用 */

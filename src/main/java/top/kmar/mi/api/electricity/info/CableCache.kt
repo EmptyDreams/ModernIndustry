@@ -5,7 +5,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import top.kmar.mi.api.electricity.EleWorker
 import top.kmar.mi.api.electricity.interfaces.IEleOutputer
-import top.kmar.mi.api.utils.WorldUtil
+import top.kmar.mi.api.utils.expands.forEachAroundTileEntity
 import top.kmar.mi.content.tileentity.EleSrcCable
 import java.util.*
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap as HashMap
@@ -27,7 +27,7 @@ class CableCache {
             val cache = CableCache()
             cable.forEachAll { it, _, _ ->
                 val pos = it.pos
-                WorldUtil.forEachAroundTE(cable.world, it.pos) { te, _ ->
+                cable.world.forEachAroundTileEntity(it.pos) { te, _ ->
                     if (EleWorker.isOutputer(te))
                         cache.addOutputer(pos, te.pos)
                 }

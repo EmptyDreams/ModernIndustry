@@ -14,7 +14,7 @@ import top.kmar.mi.content.blocks.common.OreBlock;
 import java.util.HashMap;
 import java.util.Map;
 
-import static top.kmar.mi.api.utils.ExpandFunctionKt.newStack;
+import static top.kmar.mi.api.utils.expands.ItemExpandsKt.newStack;
 
 /**
  * 用于自动注册矿物词典

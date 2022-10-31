@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import top.kmar.mi.api.utils.ExpandFunctionKt;
+import top.kmar.mi.api.utils.expands.IOExpandsKt;
 
 /**
  * 通用信息传输
@@ -38,14 +38,14 @@ public class CommonMessage implements IMessage {
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		this.key = ExpandFunctionKt.readString(buf);
+		this.key = IOExpandsKt.readString(buf);
 		data = ByteBufUtils.readTag(buf);
 	}
 	
 	@Override
 	public void toBytes(ByteBuf buf) {
 		if (data == null) throw new IllegalArgumentException("没有给定需要传输的信息");
-		ExpandFunctionKt.writeString(buf, key);
+		IOExpandsKt.writeString(buf, key);
 		ByteBufUtils.writeTag(buf, data);
 	}
 	

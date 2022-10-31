@@ -6,7 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import top.kmar.mi.api.net.message.IMessageAddition;
-import top.kmar.mi.api.utils.WorldUtil;
+import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 
 
 /**
@@ -43,7 +43,7 @@ public class BlockAddition implements IMessageAddition {
 	@Override
 	public void readFrom(NBTBase reader) {
 		NBTTagCompound nbt = (NBTTagCompound) reader;
-		world = WorldUtil.getWorld(nbt.getInteger("dim"));
+		world = WorldExpandsKt.getWorld(nbt.getInteger("dim"));
 		int[] array = nbt.getIntArray("pos");
 		pos = new BlockPos(array[0], array[1], array[2]);
 	}

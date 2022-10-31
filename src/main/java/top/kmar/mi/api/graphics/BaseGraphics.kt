@@ -16,9 +16,9 @@ import top.kmar.mi.api.graphics.components.interfaces.slots.IGraphicsSlot
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
 import top.kmar.mi.api.graphics.parser.GuiStyleParser
-import top.kmar.mi.api.utils.WorldUtil
-import top.kmar.mi.api.utils.applyClient
-import top.kmar.mi.api.utils.copy
+import top.kmar.mi.api.utils.expands.applyClient
+import top.kmar.mi.api.utils.expands.copy
+import top.kmar.mi.api.utils.expands.isClient
 import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -58,7 +58,7 @@ open class BaseGraphics(
         if (graphicsSlots.size != inventorySlots.size)
             throw AssertionError("存在Slot不在API的管理范围内")
         super.detectAndSendChanges()
-        if (WorldUtil.isClient()) return
+        if (isClient()) return
         val player = this.player
         fun task(cmpt: Cmpt) {
             cmpt.eachAllChildren {

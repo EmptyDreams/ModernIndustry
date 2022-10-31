@@ -19,8 +19,8 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.ComplexCmptExp
 import top.kmar.mi.api.graphics.parser.cache.IParserCache
 import top.kmar.mi.api.utils.MISysInfo
-import top.kmar.mi.api.utils.countStartSpace
-import top.kmar.mi.api.utils.floorDiv2
+import top.kmar.mi.api.utils.expands.countStartSpace
+import top.kmar.mi.api.utils.expands.floorDiv2
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.util.*

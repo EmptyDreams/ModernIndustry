@@ -18,7 +18,7 @@ import top.kmar.mi.api.net.handler.MessageSender
 import top.kmar.mi.api.net.message.graphics.GraphicsAddition
 import top.kmar.mi.api.net.message.graphics.GraphicsMessage
 import top.kmar.mi.api.utils.MISysInfo
-import top.kmar.mi.api.utils.WorldUtil
+import top.kmar.mi.api.utils.expands.isClient
 import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -206,7 +206,7 @@ abstract class Cmpt(
                     listener.activeObj(message)
                     if (message.cancel) break
                 }
-                if (message.send2Service && network && WorldUtil.isClient()) {
+                if (message.send2Service && network && isClient()) {
                     client.send2Service(NBTTagString(name), true)
                 }
             } catch (e: Exception) {

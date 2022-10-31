@@ -24,10 +24,9 @@ import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
 import top.kmar.mi.api.electricity.info.IETForEach;
 import top.kmar.mi.api.net.IAutoNetwork;
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
-import top.kmar.mi.api.utils.ExpandFunctionKt;
-import top.kmar.mi.api.utils.IOUtil;
 import top.kmar.mi.api.utils.StringUtil;
-import top.kmar.mi.api.utils.WorldUtil;
+import top.kmar.mi.api.utils.expands.IOExpandsKt;
+import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static top.kmar.mi.api.utils.ExpandFunctionKt.whatFacing;
+import static top.kmar.mi.api.utils.expands.WorldExpandsKt.whatFacing;
 
 /**
  * 默认电线
@@ -292,7 +291,10 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	private static final CableCache CLIENT_CACHE = new CableCache();
 	@Override
 	public void update() {
-		if (world.isRemote) WorldUtil.removeTickable(this);
+		if (world.isRemote) {
+			WorldExpandsKt.removeTickable(this);
+			return;
+		}
 		heat = Math.max(0, heat - decaySpeed);
 		send();
 		for (BlockPos block : linkedBlocks) {
@@ -451,7 +453,7 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	public void send() {
 		if (world.isRemote) return;
 		if (players.size() == world.playerEntities.size()) return;
-		IOUtil.sendBlockMessageIfNotUpdate(
+		IOExpandsKt.sendBlockMessageIfNotUpdate(
 				this, players, 128,
 				() -> new NBTTagByte((byte) linkInfo)
 		);
@@ -471,14 +473,14 @@ public class EleSrcCable extends TileEntity implements IAutoNetwork, ITickable {
 	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		if (!world.isRemote) ExpandFunctionKt.writeObject(compound, this, ".");
+		if (!world.isRemote) IOExpandsKt.writeObject(compound, this, ".");
 		return super.writeToNBT(compound);
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		if (compound.hasKey(".")) ExpandFunctionKt.readObject(compound, this, ".");
+		if (compound.hasKey(".")) IOExpandsKt.readObject(compound, this, ".");
 	}
 	
 	@Override

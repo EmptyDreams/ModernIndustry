@@ -2,7 +2,7 @@
 
 package top.kmar.mi.api.graphics.utils
 
-import top.kmar.mi.api.utils.floorDiv2
+import top.kmar.mi.api.utils.expands.floorDiv2
 import java.util.*
 
 /**

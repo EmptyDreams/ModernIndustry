@@ -21,7 +21,7 @@ import top.kmar.mi.api.graphics.components.SlotMatrixCmpt
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
 import top.kmar.mi.api.utils.*
-import top.kmar.mi.api.utils.expands.insertItems
+import top.kmar.mi.api.utils.expands.*
 import top.kmar.mi.content.blocks.BlockGuiList.synthesizer
 import top.kmar.mi.data.CraftList
 import top.kmar.mi.data.properties.MIProperty.Companion.WORKING
@@ -131,7 +131,7 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
     /** 更新方块显示状态 */
     fun updateBlockState() {
         val newState = world.getBlockState(getPos()).withProperty(WORKING, workingTime > 0)
-        WorldUtil.setBlockState(world, pos, newState)
+        world.setBlockWithMark(pos, newState)
     }
 
     override fun isReceiveAllowable(facing: EnumFacing?) = true

@@ -4,8 +4,8 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
-import top.kmar.mi.api.utils.match
-import top.kmar.mi.api.utils.copy
+import top.kmar.mi.api.utils.expands.match
+import top.kmar.mi.api.utils.expands.copy
 import kotlin.math.min
 
 /**

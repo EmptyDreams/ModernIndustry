@@ -3,6 +3,7 @@ package top.kmar.mi.api.utils;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -47,7 +48,7 @@ public final class TickHelper {
 	 * @param task 任务内容，返回值为执行后是否删除任务
 	 */
 	public static void addAutoTask(BooleanSupplier task) {
-		if (WorldUtil.isServer()) addServerTask(task);
+		if (WorldExpandsKt.isServer()) addServerTask(task);
 		else addClientTask(task);
 	}
 	
