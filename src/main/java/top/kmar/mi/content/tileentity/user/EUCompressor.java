@@ -200,8 +200,13 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
     }
     
     public CraftOutput findOutput(ItemStack arg0, ItemStack arg1) {
+        ItemStack existing = getOutputStack();
+        if (existing.getCount() >= existing.getMaxStackSize()) return null;
         ElementList list = ElementList.build(arg0.copy(), arg1.copy());
-        return CraftGuide.findOutput(CraftList.compressor, list);
+        CraftOutput output = CraftGuide.findOutput(CraftList.compressor, list);
+        if (output == null ||
+                !items.insertItem(2, output.getFirstStack(), true).isEmpty()) return null;
+        else return output;
     }
     
     private boolean inputChecker(ItemStack input, ItemStack other) {
