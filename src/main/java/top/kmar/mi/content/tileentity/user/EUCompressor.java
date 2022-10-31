@@ -84,6 +84,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
                 markDirty();
             }
             ExpandFunctionKt.removeTickable(this);
+            updateShow(false);
             return;
         }
         ItemStack outStack = output.getFirstStack();
