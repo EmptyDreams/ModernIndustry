@@ -14,18 +14,20 @@ class DisorderlyShape private constructor(
 ): IShape {
 
     override fun match(input: ElementList): Boolean {
-        val list = input.disorderly
+        val list = input.flat
         if (list.size != content.size) return false
-        for (element in content) {
-            val itor = list.iterator()
+        val content = LinkedList(content)
+        list.forEach {
+            val itor = content.iterator()
             while (itor.hasNext()) {
-                if (element.test(itor.next())) {
+                if (itor.next().test(it)) {
                     itor.remove()
-                    break
+                    return@forEach
                 }
             }
+            return false
         }
-        return list.isEmpty()
+        return true
     }
 
     class Builder {

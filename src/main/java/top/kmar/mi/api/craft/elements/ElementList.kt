@@ -1,7 +1,6 @@
 package top.kmar.mi.api.craft.elements
 
 import net.minecraft.item.ItemStack
-import top.kmar.mi.api.utils.expands.match
 import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -17,10 +16,8 @@ class ElementList(
     private val values = Array(height) { Array(width) { ItemStack.EMPTY } }
 
     val size = width * height
-    /** 最小化的列表 */
     val minimum by lazy(NONE) { clipSpace() }
-    /** 无序化的列表 */
-    val disorderly by lazy(NONE) { merge() }
+    val flat by lazy(NONE) { toList() }
 
     /** 通过下标获取值，仅在`height == 1`时可用 */
     operator fun get(index: Int): ItemStack {
@@ -87,6 +84,7 @@ class ElementList(
                 }
             }
         }
+        if (top == 0 && left == 0 && right == width - 1 && bottom == height - 1) return this
         val result = ElementList(right - left + 1, bottom - top + 1)
         for (y in top .. bottom) {
             for (x in left .. right)
@@ -95,21 +93,11 @@ class ElementList(
         return result
     }
 
-    /** 合并列表中所有可合并的物品，并返回一个新的列表（不修改当前对象但两个列表共享[ItemStack]对象） */
-    fun merge(): MutableList<ItemStack> {
-        val result = LinkedList<ItemStack>()
-        asSequence()
-            .filter { !it.isEmpty }
-            .forEach {
-                for (output in result) {
-                    if (output.match(it)) {
-                        output.grow(it.count)
-                        return@forEach
-                    }
-                }
-                result.add(it)
-            }
-        return result
+    /** 将列表转化为列表 */
+    fun toList(): List<ItemStack> {
+        val result = ArrayList<ItemStack>(size)
+        forEach { if (!it.isEmpty) result.add(it) }
+        return Collections.unmodifiableList(result)
     }
 
     override fun iterator(): Iterator<ItemStack> = ArrayIterator()

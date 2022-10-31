@@ -30,18 +30,22 @@ object CraftGuide {
 
     /** 获取一个注册机 */
     @JvmStatic
-    fun getRegedit(group: String) =
-        regeditMap[group] ?: throw IllegalArgumentException("指定分组[$group]不存在")
+    fun getRegedit(group: String) = regeditMap[group]
 
     /** 获取指定合成表的输出 */
     @JvmStatic
     fun findOutput(group: String, id: ResourceLocation) =
-        getRegedit(group).findOutput(id)
+        getRegedit(group)?.findOutput(id)
 
     /** 通过输入获取合成表输出 */
     @JvmStatic
     fun findOutput(group: String, input: ElementList) =
-        getRegedit(group).findOutput(input)
+        getRegedit(group)?.findOutput(input)
+
+    /** 通过输出查询无序合成表的输出 */
+    @JvmStatic
+    fun findDisorderlyOutput(group: String, input: ElementList) =
+        getRegedit(group)?.findDisorderlyOutput(input)
 
     /** 判断是否存在与指定输入相匹配的合成表 */
     @JvmStatic
