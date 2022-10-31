@@ -91,10 +91,16 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
             updateShow(false);
             return;
         }
+        ItemStack up = getInputUpStack();
+        ItemStack down = getInputDownStack();
+        if (workingTime == 0) {
+            up.shrink(1);
+            down.shrink(1);
+        }
         if (++workingTime >= getNeedTime()) {
             workingTime = 0;
             items.insertItem(2, outStack, false);
-            output = findOutput(getInputUpStack(), getInputDownStack());
+            output = findOutput(up, down);
         }
         updateShow(true);
         markDirty();
