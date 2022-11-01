@@ -23,7 +23,10 @@ version = '1.0'
 group = 'top.kmar.mi' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'mi'
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+sourceCompatibility = targetCompatibility = '1.8'
+
+/** 是否为调试 */
+ext.debug = true
 
 minecraft {
     mappings channel: 'snapshot', version: '20171003-1.12'
@@ -89,10 +92,12 @@ mixin {
 // Example for how to get properties into the manifest for reading at runtime.
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
     manifest.attributes([
             "TweakClass"                 : "top.kmar.mi.coremod.boot.MIMixinTweaker",
             "FMLCorePluginContainsFMLMod": true
     ])
+
     from {
         configurations.runtimeClasspath.findAll {
             it.name.contains("mixin") || (it.name.contains("kotlin") && !it.name.contains("jdk7"))
@@ -107,17 +112,16 @@ jar {
     }
 }
 
-//UTF-8
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
+compileJava {
+    options.encoding 'UTF-8'
+    sourceCompatibility '1.8'
+    targetCompatibility '1.8'
 }
 
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs = [
-                "-Xuse-k2",
-                "-Xlambdas=indy"
-        ]
+        freeCompilerArgs += "-Xuse-k2"
+        if (!debug) freeCompilerArgs += "-Xlambdas=indy"
     }
 }
