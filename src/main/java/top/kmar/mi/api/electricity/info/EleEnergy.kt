@@ -2,6 +2,7 @@ package top.kmar.mi.api.electricity.info
 
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.util.INBTSerializable
+import top.kmar.mi.api.utils.expands.floorDiv2
 
 /**
  * 存储一个能量的具体值
@@ -28,6 +29,16 @@ class EleEnergy(var current: Int, var voltage: Int) :
     /** 将当前能量和输入的能量相比，并返回能量小的一方  */
     fun min(that: EleEnergy): EleEnergy {
         return if (capacity < that.capacity) this else that
+    }
+
+    /** 合并两个能量，电压取平均 */
+    fun merge(that: EleEnergy): EleEnergy {
+        if (voltage == 0) return that
+        if (that.voltage == 0) return this
+        val energy = capacity + that.capacity
+        val newVoltage = (voltage + that.voltage).floorDiv2()
+        val newCurrent = energy / newVoltage
+        return EleEnergy(newCurrent, newVoltage)
     }
 
     /** 拷贝当前对象  */
@@ -78,6 +89,8 @@ class EleEnergy(var current: Int, var voltage: Int) :
 
         const val ZERO = 0
         const val COMMON = 200
+
+        val empty = EleEnergy(0, 0)
 
     }
 }

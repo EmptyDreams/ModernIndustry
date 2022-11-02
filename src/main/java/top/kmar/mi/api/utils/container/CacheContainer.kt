@@ -25,4 +25,8 @@ class CacheContainer<T>(private val supplier: () -> T) {
         value = null
     }
 
+    fun reset() {
+        value = supplier()
+    }
+
 }

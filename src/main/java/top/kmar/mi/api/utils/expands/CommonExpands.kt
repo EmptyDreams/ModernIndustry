@@ -1,14 +1,7 @@
 /** 通用拓展及其它拓展 */
-@file:Suppress("NOTHING_TO_INLINE")
-
 package top.kmar.mi.api.utils.expands
 
 import top.kmar.mi.api.utils.container.PairIntInt
-import top.kmar.mi.api.utils.iterators.ArrayFlipIterator
-import java.util.*
-import java.util.stream.Stream
-
-inline fun <T> Array<T>.stream(): Stream<T> = Arrays.stream(this)
 
 /** 移除所有空格 */
 fun String.removeAllSpace(): String {
@@ -60,15 +53,3 @@ inline fun <T> T.applyClient(block: T.() -> Unit): T {
     if (isClient()) block()
     return this
 }
-
-/** 如果表达式为真则倒序遍历，否则正序遍历 */
-infix fun <T> Array<T>.flipIf(isFlip: Boolean) =
-    if (isFlip) flip() else this.asIterable()
-
-/** 指定起始遍历位置的倒序迭代器 */
-infix fun <T> Array<T>.flip(startIndex: Int) =
-    Iterable { ArrayFlipIterator(this, startIndex) }
-
-/** 获取倒序遍历的迭代器 */
-fun <T> Array<T>.flip() =
-    Iterable { ArrayFlipIterator(this, this.size - 1) }
