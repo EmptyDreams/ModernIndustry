@@ -9,7 +9,9 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import top.kmar.mi.api.araw.interfaces.AutoSave
 import top.kmar.mi.api.electricity.caps.ElectricityCapability.capObj
+import top.kmar.mi.api.electricity.info.CableCache
 import top.kmar.mi.api.electricity.info.EleEnergy
+import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.BaseTileEntity
 import top.kmar.mi.api.utils.container.CacheContainer
 import top.kmar.mi.api.utils.container.IndexEnumMap
@@ -17,9 +19,10 @@ import top.kmar.mi.api.utils.expands.clipAt
 import kotlin.math.absoluteValue
 
 /**
- *
+ * 导线的TE
  * @author EmptyDreams
  */
+@AutoTileEntity("cable")
 class EleCableEntity : BaseTileEntity() {
 
     /** 存储指定方向是否连接的有方块 */
@@ -170,12 +173,12 @@ class EleCableEntity : BaseTileEntity() {
         if (!isLink(facing)) return
         linkData[facing] = false
         val targetPos = pos.offset(facing)
-        if (facing == prevCable) {
+        if (facing === prevCable) {
             val that = world.getTileEntity(targetPos) as EleCableEntity
             prevCable = null
             that.nextCable = null
             cache.clipAt(this)
-        } else if (facing == nextCable) {
+        } else if (facing === nextCable) {
             val that = world.getTileEntity(targetPos) as EleCableEntity
             nextCable = null
             that.prevCable = null
@@ -185,8 +188,17 @@ class EleCableEntity : BaseTileEntity() {
 
     /** 连接指定方向上的方块 */
     fun linkBlock(facing: EnumFacing) {
+        if (!isLink(facing)) return
         linkData[facing] = true
         cache.update(this)
+    }
+
+    /** 更新指定方向上的连接数据 */
+    fun updateLinkData(facing: EnumFacing) {
+        val thatEntity = world.getTileEntity(pos.offset(facing)) ?: return unlink(facing)
+        if (thatEntity is EleCableEntity) linkCable(facing, thatEntity)
+        else if (thatEntity.getCapability(capObj, facing.opposite) == null) unlink(facing)
+        else linkBlock(facing)
     }
 
     /** 判断当前节点是否为端点 */
