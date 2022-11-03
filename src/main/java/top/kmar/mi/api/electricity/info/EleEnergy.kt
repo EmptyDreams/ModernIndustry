@@ -2,6 +2,7 @@ package top.kmar.mi.api.electricity.info
 
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.util.INBTSerializable
+import top.kmar.mi.api.utils.expands.floorDiv
 import top.kmar.mi.api.utils.expands.floorDiv2
 
 /**
@@ -31,13 +32,17 @@ class EleEnergy(var current: Int, var voltage: Int) :
         return if (capacity < that.capacity) this else that
     }
 
-    /** 合并两个能量，电压取平均 */
+    /**
+     * 合并两个能量，电压取平均
+     *
+     * 该方法合并能量时可能出现 [capacity] 的些微损失，保证返回值的 `cap` 小于等于两者 `cap` 的和
+     */
     fun merge(that: EleEnergy): EleEnergy {
         if (voltage == 0) return that
         if (that.voltage == 0) return this
         val energy = capacity + that.capacity
         val newVoltage = (voltage + that.voltage).floorDiv2()
-        val newCurrent = energy / newVoltage
+        val newCurrent = energy.floorDiv(newVoltage)
         return EleEnergy(newCurrent, newVoltage)
     }
 

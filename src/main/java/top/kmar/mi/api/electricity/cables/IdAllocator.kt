@@ -2,6 +2,7 @@ package top.kmar.mi.api.electricity.cables
 
 import it.unimi.dsi.fastutil.ints.IntAVLTreeSet
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.world.World
 import net.minecraft.world.storage.WorldSavedData
 import top.kmar.mi.api.utils.expands.random
 import java.util.concurrent.atomic.AtomicInteger
@@ -49,3 +50,14 @@ class IdAllocator(name: String) : WorldSavedData(name) {
     }
 
 }
+
+/** 当前世界的线缆 ID 分配器 */
+val World.cableCacheIdAllocator: IdAllocator
+    get() {
+        var allocator = perWorldStorage.getOrLoadData(IdAllocator::class.java, EleCableEntity.storageKey)
+        if (allocator == null) {
+            allocator = IdAllocator(EleCableEntity.storageKey)
+            perWorldStorage.setData(EleCableEntity.storageKey, allocator)
+        } else allocator as IdAllocator
+        return allocator
+    }

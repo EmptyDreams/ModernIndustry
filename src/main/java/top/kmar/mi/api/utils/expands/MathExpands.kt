@@ -26,6 +26,13 @@ inline fun Int.swapIf(other: Int, bool: Boolean): PairIntInt {
 /** 除2，向下取整 */
 inline fun Int.floorDiv2() = this shr 1
 
+/** 向下取整的除 */
+inline infix fun Int.floorDiv(other: Int): Int {
+    if (this % other == 0) return this / other
+    val tmp = toFloat() / other
+    return tmp.toInt()
+}
+
 /** 向上取整的整除2 */
 inline fun Int.ceilDiv2(): Int {
     val result = this shr 1

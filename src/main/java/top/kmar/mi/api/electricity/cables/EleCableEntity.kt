@@ -38,7 +38,7 @@ class EleCableEntity : BaseTileEntity() {
     @field:AutoSave private var code: Int = 0
     /** 线路缓存的 code */
     @field:AutoSave
-    private var cacheCode: Int = 0
+    private var cacheId: Int = 0
         set(value) {
             if (field == value) return
             field = value
@@ -46,27 +46,28 @@ class EleCableEntity : BaseTileEntity() {
         }
     /** 线路缓存 */
     private val cache: CableCache
-        get() = _cache.get()
-
+        get() {
+            val allocator = world.cableCacheIdAllocator
+            if (cacheId !in allocator) {
+                var realId: Int = cacheId
+                val invalid = world.invalidCacheData
+                do {
+                    realId = invalid.update(realId, code)
+                } while (realId !in allocator)
+                cacheId = realId
+            }
+            return _cache.get()
+        }
+    /** 电损指数 */
     val lossIndex = 0.0
 
-    // ---------- 内部缓存值 start ---------- //
-
     private var _cache = CacheContainer {
-        if (cacheCode == 0) cacheCode = getIdAllocator().next()
+        if (cacheId == 0) cacheId = world.cableCacheIdAllocator.next()
         val map = cacheMap.computeIfAbsent(world) { Int2ObjectAVLTreeMap() }
-        map.computeIfAbsent(cacheCode) { CableCache() }.apply {
-            insert(this@EleCableEntity)
+        map.computeIfAbsent(cacheId) { CableCache() }.apply {
+            update(this@EleCableEntity)
         }
     }
-
-    /** 获取当前世界的线缆ID分配器 */
-    private fun getIdAllocator(): IdAllocator = (
-            world.perWorldStorage.getOrLoadData(IdAllocator::class.java, "CableId")
-                ?: IdAllocator("CableId")
-            ) as IdAllocator
-
-    // ---------- 内部缓存值 end ------------ //
 
     /**
      * 向导线请求能量
@@ -80,8 +81,8 @@ class EleCableEntity : BaseTileEntity() {
         var energy = maxEnergy
         cache.eachBlock(this) {
             val output = it.requestEnergyOnly(code, energy)
-            energy -= output.capacity
             result = result.merge(output)
+            energy = maxEnergy - result.capacity
             energy != 0
         }
         return result
@@ -144,7 +145,7 @@ class EleCableEntity : BaseTileEntity() {
     fun linkCable(facing: EnumFacing, target: EleCableEntity): Boolean {
         if (isLink(facing)) return true
         // 检查两个导线是否在同一个线路中，是则禁止连接
-        if (cacheCode == target.cacheCode && cacheCode != 0) return false
+        if (cacheId == target.cacheId && cacheId != 0) return false
         val opposite = facing.opposite
         if (prevCable == null) {    // 尝试将目标连接到 `prev` 方向
             if (target.nextCable == null) {
@@ -159,7 +160,7 @@ class EleCableEntity : BaseTileEntity() {
         } else return facing === prevCable || facing === nextCable
         linkData[facing] = true
         target.linkData[opposite] = true
-        if (cacheCode != 0) cache.syncCache(this, target)
+        if (cacheId != 0) cache.syncCache(this, target)
         else target.cache.syncCache(target, this)
         return true
     }
@@ -179,7 +180,7 @@ class EleCableEntity : BaseTileEntity() {
             nextCable = null
             that.prevCable = null
             cache.clipAt(that)
-        }
+        } else cache.update(this)
     }
 
     /** 连接指定方向上的方块 */
@@ -188,22 +189,10 @@ class EleCableEntity : BaseTileEntity() {
         cache.update(this)
     }
 
-    /** 计算两个导线之间的路径长度 */
-    fun distance(that: EleCableEntity): Int {
-        assert(cache == that.cache) { "两个导线($pos and ${that.pos})不再同一条线路中" }
-        return (code - that.code).absoluteValue
-    }
-
     /** 判断当前节点是否为端点 */
     fun isEndpoint(): Boolean =
         (nextCable == null && prevCable == null) ||
                 (nextCable != null && prevCable == null) || nextCable == null
-
-    override fun onLoad() {
-        if (cacheCode != 0 && cacheCode !in getIdAllocator()) {
-            cacheCode = 0
-        }
-    }
 
     /**
      * 从当前位置开始遍历线路，必须保证当前导线为线路端点
@@ -262,7 +251,10 @@ class EleCableEntity : BaseTileEntity() {
 
     companion object {
 
+        @JvmStatic
         private val cacheMap = Object2ObjectArrayMap<World, Int2ObjectMap<CableCache>>()
+
+        const val storageKey = "CableCacheId"
 
     }
 
@@ -278,99 +270,74 @@ class EleCableEntity : BaseTileEntity() {
          */
         private val blockDeque = ArrayDeque<CacheNode>(initialCapacity)
 
-        /** 插入一个导线，该函数不会同步导线的缓存 */
-        fun insert(entity: EleCableEntity) {
-            val index = -blockDeque.binarySearch { it.code.compareTo(entity.code) } - 1
-            assert(index >= 0) { "重复插入元素[${entity.pos}]" }
-            blockDeque.add(index, CacheNode(entity))
-        }
-
-        /** 更新一个导线的状态 */
+        /** 更新数据，该函数不会同步导线的缓存 */
         fun update(entity: EleCableEntity) {
             val index = blockDeque.binarySearch { it.code.compareTo(entity.code) }
             if (index < 0) {
-                val insert = -index - 1
-                blockDeque.add(insert, CacheNode(entity))
-            } else blockDeque[index].block = entity.hasLinkedBlock()
+                if (entity.hasLinkedBlock())
+                    blockDeque.add(-index - 1, CacheNode(entity))
+            } else {
+                if (!entity.hasLinkedBlock())
+                    blockDeque.removeAt(index)
+            }
         }
 
         /** 同步两个导线的 code，该方法需要在导线已经完成连接后调用 */
         fun syncCache(thisEntity: EleCableEntity, thatEntity: EleCableEntity) {
             val plus =
                 if (thisEntity.prevCable?.let { thisEntity.pos.offset(it) != thatEntity.pos } == false) 1 else -1
-            if (thatEntity.cacheCode == 0) {    // 如果另一个方块还未分配缓存则直接将其归并到当前缓存
-                thatEntity.cacheCode = thisEntity.cacheCode
+            if (thatEntity.cacheId == 0) {    // 如果另一个方块还未分配缓存则直接将其归并到当前缓存
                 thatEntity.code = thisEntity.code + plus
-                return insert(thatEntity)
+                thatEntity.cacheId = thisEntity.cacheId
+                update(thatEntity)
+                return
             }
             val that = thatEntity.cache
-            var code = thisEntity.code
+            val world = thisEntity.world
             val deleteCode: Int
             if (count > that.count) {   // 如果当前缓存大小大于另一个，则将其归并到当前缓存中
-                deleteCode = thatEntity.cacheCode
-                thisEntity.startEach(thatEntity) {
-                    code += plus
-                    it.cacheCode = thisEntity.cacheCode
-                    it.code = code
-                }
+                deleteCode = thatEntity.cacheId
+                world.invalidCacheData.markInvalid(deleteCode, that.count, thisEntity.cacheId)
                 if (plus == 1) blockDeque.addAll(that.blockDeque)
                 else blockDeque.addAll(0, that.blockDeque)
             } else {    // 如果另一个缓存的大小大于等于当前缓存的大小，则将当前缓存归并到另一个缓存中
-                deleteCode = thisEntity.cacheCode
-                thatEntity.startEach(thisEntity) {
-                    code -= plus
-                    it.cacheCode = thatEntity.cacheCode
-                    it.code = code
-                }
+                deleteCode = thisEntity.cacheId
+                world.invalidCacheData.markInvalid(deleteCode, count, thatEntity.cacheId)
                 if (plus == 1) that.blockDeque.addAll(0, blockDeque)
                 else that.blockDeque.addAll(blockDeque)
             }
             cacheMap[thisEntity.world]!!.remove(deleteCode)
-            thisEntity.getIdAllocator().delete(deleteCode)
+            world.cableCacheIdAllocator.delete(deleteCode)
         }
 
         /**
-         * 将缓存从指定位置切开分为两份，并为线路中的导线设置新的 [cacheCode]
+         * 将缓存从指定位置切开分为两份，并为线路中的导线设置新的 [cacheId]
          *
          * 该操作会将 [entity] 分配到 [nextCable] 方向
          */
         fun clipAt(entity: EleCableEntity) {
             val world = entity.world
             val index = blockDeque.binarySearch { it.code.compareTo(entity.code) }
-            assert(index >= 0) { "剪切部位[$entity]不在线路中" }
             // 判断被移除的导线是否在端点，是端点的话就无需创建新的缓存
             if (index == 0 || index == blockDeque.lastIndex) {
                 blockDeque.removeAt(index)
+                entity.cacheId = 0
             } else {
-                val newCache = CableCache(count - index + 10)
-                blockDeque.clipAt(newCache.blockDeque, index, true)
-                val allocator = entity.getIdAllocator()
-                allocator.delete(entity.cacheCode)
+                val middle = if (index < 0) -index - 1 else index
+                val newCache = CableCache(count - middle + 10)
+                blockDeque.clipAt(newCache.blockDeque, middle, true)
+                val allocator = world.cableCacheIdAllocator
+                allocator.delete(entity.cacheId)
                 val leftCode = allocator.next()
                 val rightCode = allocator.next()
                 with(cacheMap[world]!!) {
-                    remove(entity.cacheCode)
+                    remove(entity.cacheId)
                     put(leftCode, this@CableCache)
                     put(rightCode, newCache)
                 }
                 // 为方块更新 ID
-                blockDeque.forEach {
-                    it.code = leftCode
-                    if (world.isBlockLoaded(it.pos)) {
-                        val te = world.getTileEntity(it.pos) as EleCableEntity
-                        te.cacheCode = leftCode
-                    }
-                }
-                newCache.blockDeque.forEach {
-                    it.code = rightCode
-                    if (world.isBlockLoaded(it.pos)) {
-                        val te = world.getTileEntity(it.pos) as EleCableEntity
-                        te.cacheCode = rightCode
-                        te._cache.set(newCache)
-                    }
-                }
+                world.invalidCacheData.markInvalid(entity.cacheId, count, entity.code, leftCode, rightCode)
             }
-            entity.cacheCode = 0
         }
 
         /**
@@ -380,28 +347,44 @@ class EleCableEntity : BaseTileEntity() {
          */
         fun eachBlock(entity: EleCableEntity, breakConsumer: (EleCableEntity) -> Boolean) {
             val world = entity.world
-            blockDeque[entity.code].let {
-                if (it.block) {
-                    if (!breakConsumer(entity)) return
-                }
-            }
             fun invoke(pos: BlockPos): Boolean {
                 if (!world.isBlockLoaded(pos)) return false
                 val te = world.getTileEntity(pos) as EleCableEntity
                 return !breakConsumer(te)
             }
-            var left = entity.code - 1
-            var right = entity.code + 1
-            var isLeft = true
+            val startIndex = blockDeque.binarySearch { it.code.compareTo(entity.code) }
+            var left: Int
+            var right: Int
+            if (startIndex < 0) {
+                left = -startIndex - 2
+                right = -startIndex - 1
+            } else {
+                if (!breakConsumer(entity)) return
+                left = startIndex - 1
+                right = startIndex + 1
+            }
+            val middle = entity.code
             while (left != -1 || right != blockDeque.size) {
-                if (isLeft && left != -1) {
-                    isLeft = false
-                    if (invoke(blockDeque[left].pos)) break
-                    --left
-                } else if (right != blockDeque.size) {
-                    isLeft = true
+                if (left == -1) {
                     if (invoke(blockDeque[right].pos)) break
                     ++right
+                } else if (right == blockDeque.size) {
+                    if (invoke(blockDeque[left].pos)) break
+                    --left
+                } else {
+                    val leftBlock = blockDeque[left]
+                    val rightBlock = blockDeque[right]
+                    val leftLength = middle - leftBlock.code
+                    val rightLength = rightBlock.code - middle
+                    val block: CacheNode
+                    if (leftLength < rightLength) {
+                        block = leftBlock
+                        --left
+                    } else {
+                        block = rightBlock
+                        ++right
+                    }
+                    if (invoke(block.pos)) break
                 }
             }
         }
@@ -410,11 +393,10 @@ class EleCableEntity : BaseTileEntity() {
 
     private data class CacheNode(
         var code: Int,
-        val pos: BlockPos,
-        var block: Boolean
+        val pos: BlockPos
     ) {
 
-        constructor(entity: EleCableEntity) : this(entity.code, entity.pos, entity.hasLinkedBlock())
+        constructor(entity: EleCableEntity) : this(entity.code, entity.pos)
 
     }
 
