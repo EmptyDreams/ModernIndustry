@@ -121,7 +121,10 @@ compileJava {
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs += "-Xuse-k2"
+        freeCompilerArgs += [
+                "-Xuse-k2",             // k2
+                "-Xjvm-default=all"     // 接口 default 方法
+        ]
         if (!debug) freeCompilerArgs += "-Xlambdas=indy"
     }
 }
