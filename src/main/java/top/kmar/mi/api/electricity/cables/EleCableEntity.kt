@@ -15,7 +15,10 @@ import top.kmar.mi.api.tools.BaseTileEntity
 import top.kmar.mi.api.utils.container.CacheContainer
 import top.kmar.mi.api.utils.container.IndexEnumMap
 import top.kmar.mi.api.utils.expands.clipAt
+import top.kmar.mi.api.utils.expands.whatFacing
 import kotlin.math.absoluteValue
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * 导线的TE
@@ -174,15 +177,15 @@ class EleCableEntity : BaseTileEntity() {
         linkData[facing] = false
         val targetPos = pos.offset(facing)
         if (facing === prevCable) {
-            val that = world.getTileEntity(targetPos) as EleCableEntity
+            val that = world.getTileEntity(targetPos) as EleCableEntity?
             prevCable = null
-            that.nextCable = null
-            cache.clipAt(this)
+            that?.nextCable = null
+            cache.clipBefore(this)
         } else if (facing === nextCable) {
-            val that = world.getTileEntity(targetPos) as EleCableEntity
+            val that = world.getTileEntity(targetPos) as EleCableEntity?
             nextCable = null
-            that.prevCable = null
-            cache.clipAt(that)
+            that?.prevCable = null
+            cache.clipAfter(this)
         } else cache.update(this)
     }
 
@@ -274,13 +277,16 @@ class EleCableEntity : BaseTileEntity() {
 
         /** 存储线路中线缆的数量 */
         val count: Int
-            get() = blockDeque.last().code - blockDeque.first().code + 1
+            get() = maxCode - minCode + 1
         /**
          * 存储线路中连接有方块的电线的坐标
          *
          * 队列的 `head` 方向为 [prevCable] 方向，`tail` 方向为 [nextCable] 方向
          */
         private val blockDeque = ArrayDeque<CacheNode>(initialCapacity)
+
+        private var minCode = Int.MAX_VALUE
+        private var maxCode = Int.MIN_VALUE
 
         /** 更新数据，该函数不会同步导线的缓存 */
         fun update(entity: EleCableEntity) {
@@ -296,60 +302,58 @@ class EleCableEntity : BaseTileEntity() {
 
         /** 同步两个导线的 code，该方法需要在导线已经完成连接后调用 */
         fun syncCache(thisEntity: EleCableEntity, thatEntity: EleCableEntity) {
-            val plus =
-                if (thisEntity.prevCable?.let { thisEntity.pos.offset(it) != thatEntity.pos } == false) 1 else -1
+            val facing = thisEntity.pos.whatFacing(thatEntity.pos)
+            val isNext = facing === thisEntity.nextCable
             if (thatEntity.cacheId == 0) {    // 如果另一个方块还未分配缓存则直接将其归并到当前缓存
-                thatEntity.code = thisEntity.code + plus
+                thatEntity.code = thisEntity.code + if (isNext) 1 else -1
                 thatEntity.cacheId = thisEntity.cacheId
                 update(thatEntity)
+                minCode = min(thisEntity.code, thatEntity.code)
+                maxCode = max(thisEntity.code, thatEntity.code)
                 return
             }
             val that = thatEntity.cache
             val world = thisEntity.world
-            val deleteCode: Int
+            val deleteCache: EleCableEntity
+            val newCache: EleCableEntity
             if (count > that.count) {   // 如果当前缓存大小大于另一个，则将其归并到当前缓存中
-                deleteCode = thatEntity.cacheId
-                world.invalidCacheData.markInvalid(deleteCode, that.count, thisEntity.cacheId)
-                if (plus == 1) blockDeque.addAll(that.blockDeque)
+                deleteCache = thatEntity
+                newCache = thisEntity
+                if (isNext) blockDeque.addAll(that.blockDeque)
                 else blockDeque.addAll(0, that.blockDeque)
             } else {    // 如果另一个缓存的大小大于等于当前缓存的大小，则将当前缓存归并到另一个缓存中
-                deleteCode = thisEntity.cacheId
-                world.invalidCacheData.markInvalid(deleteCode, count, thatEntity.cacheId)
-                if (plus == 1) that.blockDeque.addAll(0, blockDeque)
+                deleteCache = thisEntity
+                newCache = thatEntity
+                if (isNext) that.blockDeque.addAll(0, blockDeque)
                 else that.blockDeque.addAll(blockDeque)
             }
-            cacheMap[thisEntity.world]!!.remove(deleteCode)
-            world.cableCacheIdAllocator.delete(deleteCode)
+            newCache.cache.apply {
+                minCode = min(minCode, deleteCache.cache.minCode)
+                maxCode = max(maxCode, deleteCache.cache.maxCode)
+            }
+            world.invalidCacheData.markInvalid(deleteCache.cacheId, deleteCache.cache.count, newCache.cacheId)
+            cacheMap[thisEntity.world]!!.remove(deleteCache.cacheId)
+            world.cableCacheIdAllocator.delete(deleteCache.cacheId)
+        }
+
+        /**
+         * 将缓存从指定位置切分为两份，并为线路中的导线设置新的 [cacheId]
+         *
+         * 该操作会将 [entity] 分配到 [prevCable] 方向，
+         * 将 [entity] 的 [nextCable] 方向的导线全部划分到 [nextCable] 方向
+         */
+        fun clipAfter(entity: EleCableEntity) {
+            clip(entity.world, entity.code + 1, entity.cacheId)
         }
 
         /**
          * 将缓存从指定位置切开分为两份，并为线路中的导线设置新的 [cacheId]
          *
-         * 该操作会将 [entity] 分配到 [nextCable] 方向
+         * 该操作会将 [entity] 分配到 [nextCable] 方向，
+         * 将 [entity] 的 [prevCable] 方向的导线全部划分到 [prevCable] 方向
          */
-        fun clipAt(entity: EleCableEntity) {
-            val world = entity.world
-            val index = blockDeque.binarySearch { it.code.compareTo(entity.code) }
-            // 判断被移除的导线是否在端点，是端点的话就无需创建新的缓存
-            if (index == 0 || index == blockDeque.lastIndex) {
-                blockDeque.removeAt(index)
-                entity.cacheId = 0
-            } else {
-                val middle = if (index < 0) -index - 1 else index
-                val newCache = CableCache(count - middle + 10)
-                blockDeque.clipAt(newCache.blockDeque, middle, true)
-                val allocator = world.cableCacheIdAllocator
-                allocator.delete(entity.cacheId)
-                val leftCode = allocator.next()
-                val rightCode = allocator.next()
-                with(cacheMap[world]!!) {
-                    remove(entity.cacheId)
-                    put(leftCode, this@CableCache)
-                    put(rightCode, newCache)
-                }
-                // 为方块更新 ID
-                world.invalidCacheData.markInvalid(entity.cacheId, count, entity.code, leftCode, rightCode)
-            }
+        fun clipBefore(entity: EleCableEntity) {
+            clip(entity.world, entity.code - 1, entity.cacheId)
         }
 
         /**
@@ -398,6 +402,37 @@ class EleCableEntity : BaseTileEntity() {
                     }
                     if (invoke(block.pos)) break
                 }
+            }
+        }
+
+        /**
+         * 从指定位置切开缓存
+         * @param world 当前世界
+         * @param code 分界点（该点分配到 [nextCable] 方向）
+         * @param cacheId 缓存 ID
+         */
+        private fun clip(world: World, code: Int, cacheId: Int) {
+            val index = blockDeque.binarySearch { it.code.compareTo(code) }
+            // 判断被移除的导线是否在端点，是端点的话就无需创建新的缓存
+            if (code == minCode || code == maxCode) {
+                if (index >= 0) blockDeque.removeAt(index)
+                if (code == minCode) ++minCode
+                else --maxCode
+            } else {
+                val middle = if (index < 0) -index - 1 else index
+                val newCache = CableCache(count - middle + 10)
+                blockDeque.clipAt(newCache.blockDeque, middle, true)
+                val allocator = world.cableCacheIdAllocator
+                allocator.delete(cacheId)
+                val leftCode = allocator.next()
+                val rightCode = allocator.next()
+                with(cacheMap[world]!!) {
+                    remove(cacheId)
+                    put(leftCode, this@CableCache)
+                    put(rightCode, newCache)
+                }
+                // 为方块更新 ID
+                world.invalidCacheData.markInvalid(cacheId, count, code, leftCode, rightCode)
             }
         }
 
