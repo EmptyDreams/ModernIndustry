@@ -125,6 +125,11 @@ compileKotlin {
                 "-Xuse-k2",             // k2
                 "-Xjvm-default=all"     // 接口 default 方法
         ]
-        if (!debug) freeCompilerArgs += "-Xlambdas=indy"
+        if (!debug) freeCompilerArgs += [
+                "-Xlambdas=indy",               // indy
+                "-Xassertions=always-disable",  // 禁用断言
+                "-Xsam-conversions=indy",
+                "-Xvalidate-bytecode"           // 优化
+        ]
     }
 }
