@@ -43,7 +43,7 @@ class InvalidCacheManager : WorldSavedData(cacheKey) {
         if (node.count == 1) dataMap.remove(invalidId)
         else --node.count
         markDirty()
-        return if (invalidId < node.splitCode) node.leftNewId else node.rightNewId
+        return if (code < node.splitCode) node.leftNewId else node.rightNewId
     }
 
     override fun readFromNBT(nbt: NBTTagCompound) {

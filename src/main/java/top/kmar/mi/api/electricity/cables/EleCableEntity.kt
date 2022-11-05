@@ -8,8 +8,8 @@ import net.minecraft.util.EnumFacing.values
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import top.kmar.mi.api.araw.interfaces.AutoSave
-import top.kmar.mi.api.electricity.caps.ElectricityCapability.capObj
 import top.kmar.mi.api.electricity.EleEnergy
+import top.kmar.mi.api.electricity.caps.ElectricityCapability.capObj
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.BaseTileEntity
 import top.kmar.mi.api.utils.container.CacheContainer
@@ -50,7 +50,8 @@ class EleCableEntity : BaseTileEntity() {
     private val cache: CableCache
         get() {
             val allocator = world.cableCacheIdAllocator
-            if (cacheId !in allocator) {
+            if (cacheId == 0) cacheId = allocator.next()
+            else if (cacheId !in allocator) {
                 var realId: Int = cacheId
                 val invalid = world.invalidCacheData
                 do {

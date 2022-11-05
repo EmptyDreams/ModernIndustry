@@ -24,6 +24,7 @@ class IdAllocator(name: String) : WorldSavedData(name) {
         while (index == 0 || index in loadedId) {
             index = flag.addAndGet(random.nextInt(8) + 1)
         }
+        loadedId += index
         markDirty()
         return index
     }
