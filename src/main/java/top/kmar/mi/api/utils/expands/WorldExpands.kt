@@ -8,7 +8,6 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.client.multiplayer.WorldClient
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.init.Blocks
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ITickable
@@ -29,7 +28,6 @@ import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.utils.TickHelper
 import top.kmar.mi.api.utils.data.math.Point3D
 import top.kmar.mi.api.utils.data.math.Range3D
-import top.kmar.mi.content.blocks.base.EleTransferBlock
 import java.util.*
 import java.util.function.BiConsumer
 
@@ -165,19 +163,6 @@ fun World.forEachAroundTileEntity(center: BlockPos, consumer: BiConsumer<TileEnt
 }
 
 /**
- * 使指定位置着火
- * @param pos 坐标
- */
-fun World.setFire(pos: BlockPos) {
-    val state: IBlockState = getBlockState(pos)
-    if (state.block.isReplaceable(this, pos) ||
-        state.block is EleTransferBlock || state.block === Blocks.AIR
-    ) {
-        setBlockState(pos, Blocks.FIRE.defaultState)
-    }
-}
-
-/**
  * 判断指定坐标在当前坐标的哪一个相邻方向
  * @receiver [BlockPos]
  * @throws IllegalArgumentException 如果传入的参数和当前坐标不相邻
@@ -191,7 +176,6 @@ fun BlockPos.whatFacing(pos: BlockPos): EnumFacing {
 
 //---------------------私有内容---------------------//
 
-//---------------------私有内容---------------------//
 /** 客户端移除列表  */
 private val CLIENT_REMOVES: MutableMap<World, MutableList<TileEntity>> = Object2ObjectArrayMap(3)
 /** 服务端移除列表  */

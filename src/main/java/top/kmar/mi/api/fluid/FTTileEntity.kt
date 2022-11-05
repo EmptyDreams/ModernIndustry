@@ -270,7 +270,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
         val thatTE = world.getTileEntity(pos.offset(facing))
         if (thatTE is FTTileEntity) {
             linkData[facing] = true
-            if (!thatTE.isLinked(facing.opposite)) {
+            if (!thatTE.isLink(facing.opposite)) {
                 thatTE.lineCode = lineCode
                 thatTE.forEachLine(facing.opposite) {
                     it.lineCode = lineCode
@@ -287,10 +287,10 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
     override fun canLinkFluid(facing: EnumFacing): Boolean {
         val thatTE = world.getTileEntity(pos.offset(facing))
         if (thatTE !is FTTileEntity) return true
-        return if (thatTE.isLinked(facing.opposite)) true else thatTE.lineCode != lineCode
+        return if (thatTE.isLink(facing.opposite)) true else thatTE.lineCode != lineCode
     }
 
-    override fun isLinked(facing: EnumFacing) = linkData[facing, true]
+    override fun isLink(facing: EnumFacing) = linkData[facing, true]
 
     /**
      * 在指定方向上设置管塞
@@ -313,7 +313,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
 
     /** 统计管道出口数量  */
     open fun getLinkedAmount() = EnumFacing.values().stream().filter { facing: EnumFacing ->
-        isLinked(facing)
+        isLink(facing)
     }.count().toInt()
 
     /**
@@ -321,7 +321,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
      * @return 如果指定方向上没有连接方块则返回null
      */
     protected fun getFluidDirect(facing: EnumFacing): IFluid? {
-        if (!isLinked(facing)) return null
+        if (!isLink(facing)) return null
         val target = pos.offset(facing)
         val te = world.getTileEntity(target)
         return te!!.getCapability(FluidCapability.TRANSFER, facing.opposite)
@@ -334,7 +334,7 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
     open fun isOpen(facing: EnumFacing) = hasAperture(facing) && !hasPlug(facing)
 
     /** 判断指定方向上是否可以设置管塞  */
-    open fun canSetPlug(facing: EnumFacing) = !(hasPlug(facing) || isLinked(facing))
+    open fun canSetPlug(facing: EnumFacing) = !(hasPlug(facing) || isLink(facing))
 
     override fun receive(@Nonnull reader: NBTBase) {
         val nbt = reader as NBTTagCompound

@@ -14,10 +14,6 @@ import top.kmar.mi.content.blocks.BlockGuiList;
 @Mod.EventBusSubscriber
 public class EUMFurnace extends EUFurnace {
     
-    public EUMFurnace() {
-        setMaxEnergy(20);
-    }
-    
     @Override
     public int getNeedEnergy() {
         return 10;

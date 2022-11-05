@@ -9,15 +9,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.ItemStackHandler;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
-import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
-import top.kmar.mi.api.electricity.info.BiggerVoltage;
-import top.kmar.mi.api.electricity.info.EleEnergy;
-import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
+import top.kmar.mi.api.electricity.EleEnergy;
 import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.expands.WorldExpandsKt;
+import top.kmar.mi.api.utils.interfaces.JvmNoneFunction;
 import top.kmar.mi.content.blocks.BlockGuiList;
 import top.kmar.mi.data.properties.MIProperty;
 
@@ -31,19 +29,13 @@ import javax.annotation.Nullable;
 @Mod.EventBusSubscriber
 public class EUFurnace extends FrontTileEntity implements ITickable {
     
-    public static final int VOLTAGE = EleEnergy.COMMON;
+    public static final int MAX_VOLTAGE = EleEnergy.COMMON + 80;
+    public static final int MIN_VOLTAGE = EleEnergy.COMMON - 40;
     
     /** 输入/输出框 */
     @AutoSave
     private final ItemStackHandler items = new ItemStackHandler(2);
     @AutoSave private int workingTime = 0;
-    
-    public EUFurnace() {
-        OrdinaryCounter counter = new OrdinaryCounter(100);
-        counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
-        setCounter(counter);
-        setMaxEnergy(10);
-    }
     
     @Override
     public void update() {
@@ -59,16 +51,27 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
             workingTime = 0;
             return;
         }
-        if (!shrinkEnergy(getNeedEnergy())) return;
-        
-        if (++workingTime >= getNeedTime()) {
+        EleEnergy energy = requestEnergy(getNeedEnergy());
+        boolean check = checkEnergy(
+                energy, MIN_VOLTAGE, MAX_VOLTAGE,
+                (JvmNoneFunction) () -> updateShow(false),
+                (JvmNoneFunction) () -> updateShow(true),
+                (JvmNoneFunction) () -> explode(1, true)
+        );
+        if (!check) return;
+        workingTime += energy.getCapacity();
+        if (workingTime >= getNeedTime()) {
             workingTime = 0;
             items.insertItem(1, MuffleFurnace.getResult(inputStack), false);
             inputStack.shrink(1);
-        }
-        
+        } else updateShow(true);
+        markDirty();
+    }
+    
+    private void updateShow(boolean isWorking) {
         IBlockState old = world.getBlockState(pos);
-        IBlockState state = old.withProperty(MIProperty.getWORKING(), workingTime > 0);
+        if (old.getValue(MIProperty.getWORKING()) == isWorking) return;
+        IBlockState state = old.withProperty(MIProperty.getWORKING(), isWorking);
         WorldExpandsKt.setBlockWithMark(world, pos, state);
     }
     
@@ -81,26 +84,6 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
     @Override
     public EnumFacing getFront() {
         return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
-    }
-    
-    @Override
-    public boolean onReceive(EleEnergy energy) {
-        if (energy.getVoltage() > VOLTAGE) getCounter().plus();
-        return true;
-    }
-    
-    @Override
-    public boolean isReceiveAllowable(EnumFacing facing) {
-        return true;
-    }
-    @Override
-    public boolean isExtractAllowable(EnumFacing facing) {
-        return false;
-    }
-    
-    @Override
-    public int getExVoltage() {
-        return EleEnergy.COMMON;
     }
     
     @SubscribeEvent

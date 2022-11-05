@@ -1,6 +1,6 @@
 package top.kmar.mi.api.electricity.caps
 
-import top.kmar.mi.api.electricity.info.EleEnergy
+import top.kmar.mi.api.electricity.EleEnergy
 
 /**
  * 不输出能量的`cap`
@@ -8,8 +8,10 @@ import top.kmar.mi.api.electricity.info.EleEnergy
  */
 object EmptyElectricityCap : IElectricityCap {
 
-    override fun extract(maxEnergy: Int): EleEnergy {
-        return EleEnergy.empty
-    }
+    override fun extract(maxEnergy: Int, loss: (EleEnergy) -> Int) = EleEnergy.empty
+
+    override fun consumeEnergy(energy: Int) { }
+
+    override fun checkEnergy(energy: Int, loss: (EleEnergy) -> Int) = EleEnergy.empty
 
 }

@@ -5,7 +5,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import top.kmar.mi.api.regedits.machines.AgentRegistryMachine;
 import top.kmar.mi.api.regedits.machines.AutoLoadMachine;
 import top.kmar.mi.api.regedits.machines.AutoManagerRegistryMachine;
 import top.kmar.mi.api.regedits.machines.AutoTypeRegistryMachine;
@@ -71,7 +70,6 @@ public final class AutoRegister {
 	
 	@SubscribeEvent
 	public static void registryAllMachine(AutoRegisterRegistryEvent event) {
-		event.registryByClass(MODID, new AgentRegistryMachine());
 		event.registryByClass(MODID, new AutoLoadMachine());
 		event.registryByClass(MODID, new AutoManagerRegistryMachine());
 		event.registryByClass(MODID, new BlockRegistryMachine());

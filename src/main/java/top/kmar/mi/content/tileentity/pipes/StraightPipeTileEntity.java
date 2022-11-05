@@ -44,7 +44,7 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	
 	@Override
 	public boolean canLinkFluid(EnumFacing facing) {
-		return isLinked(facing) ||
+		return isLink(facing) ||
 				(super.canLinkFluid(facing) && (hasAperture(facing) || getLinkData().isInit()));
 	}
 	
@@ -58,8 +58,8 @@ public class StraightPipeTileEntity extends FTTileEntity {
 	
 	@Override
 	public int getLinkedAmount() {
-		if (isLinked(getFacing().getOpposite())) return isLinked(getFacing()) ? 2 : 1;
-		else return isLinked(getFacing()) ? 1 : 0;
+		if (isLink(getFacing().getOpposite())) return isLink(getFacing()) ? 2 : 1;
+		else return isLink(getFacing()) ? 1 : 0;
 	}
 	
 	/** 设置管道正方向 */

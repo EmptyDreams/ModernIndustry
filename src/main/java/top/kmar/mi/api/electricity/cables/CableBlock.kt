@@ -7,10 +7,12 @@ import net.minecraft.block.BlockContainer
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyBool
+import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.init.Items
+import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumBlockRenderType
 import net.minecraft.util.EnumFacing
@@ -33,7 +35,7 @@ import java.util.*
  */
 class CableBlock(name: String) : BlockContainer(Material.CIRCUITS), BlockItemHelper {
 
-    private val item = ItemBlockExpand(this)
+    private val item: Item
 
     init {
         unlocalizedName = StringUtil.getUnlocalizedName(name)
@@ -47,6 +49,7 @@ class CableBlock(name: String) : BlockContainer(Material.CIRCUITS), BlockItemHel
             .withProperty(EAST, false)
             .withProperty(NORTH, false)
             .withProperty(SOUTH, false)
+        item = ItemBlockExpand(this)
     }
 
     // 根据 TE 数据获取 `state`
@@ -123,6 +126,9 @@ class CableBlock(name: String) : BlockContainer(Material.CIRCUITS), BlockItemHel
         putBlock(world, pos, defaultState, entity, player, stack)
         return true
     }
+
+    override fun createBlockState(): BlockStateContainer =
+        BlockStateContainer(this, UP, DOWN, SOUTH, NORTH, WEST, EAST)
 
     override fun getItemDropped(state: IBlockState, rand: Random, fortune: Int) = item
 

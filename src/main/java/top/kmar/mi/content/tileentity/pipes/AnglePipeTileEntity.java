@@ -57,12 +57,12 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	
 	@Override
 	public boolean canLinkFluid(EnumFacing facing) {
-		if (isLinked(facing)) return true;
+		if (isLink(facing)) return true;
 		if (!super.canLinkFluid(facing)) return false;
 		if (hasAperture(facing)) return true;
 		if (getLinkData().isInit()) return true;
-		if (isLinked(this.facing)) {
-			if (isLinked(after)) return false;
+		if (isLink(this.facing)) {
+			if (isLink(after)) return false;
 			return AngleFacingEnum.match(this.facing, facing);
 		}
 		return AngleFacingEnum.match(after, facing);
@@ -72,10 +72,10 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	public boolean linkFluid(EnumFacing facing) {
 		if (!super.linkFluid(facing)) return false;
 		if (!hasAperture(facing)) {
-			if (isLinked(this.facing)) {
+			if (isLink(this.facing)) {
 				after = facing;
 			} else if (facing.getAxis() == Axis.Y) {
-				assert isLinked(after);
+				assert isLink(after);
 				after = facing;
 			} else this.facing = facing;
 			updateBlockState(false);
@@ -85,8 +85,8 @@ public class AnglePipeTileEntity extends FTTileEntity {
 	
 	@Override
 	public int getLinkedAmount() {
-		if (isLinked(getFacing())) return isLinked(getAfter()) ? 2 : 1;
-		else return isLinked(getAfter()) ? 1 : 0;
+		if (isLink(getFacing())) return isLink(getAfter()) ? 2 : 1;
+		else return isLink(getAfter()) ? 1 : 0;
 	}
 	
 	public EnumFacing getFacing() {

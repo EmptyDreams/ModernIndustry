@@ -9,8 +9,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import top.kmar.mi.api.araw.interfaces.AutoSave
 import top.kmar.mi.api.electricity.caps.ElectricityCapability.capObj
-import top.kmar.mi.api.electricity.info.CableCache
-import top.kmar.mi.api.electricity.info.EleEnergy
+import top.kmar.mi.api.electricity.EleEnergy
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.BaseTileEntity
 import top.kmar.mi.api.utils.container.CacheContainer

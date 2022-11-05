@@ -1,5 +1,6 @@
 package top.kmar.mi.content.tileentity.maker;
 
+import kotlin.jvm.functions.Function1;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -8,12 +9,13 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
 import top.kmar.mi.api.craft.CraftGuide;
 import top.kmar.mi.api.craft.elements.CraftOutput;
 import top.kmar.mi.api.craft.elements.ElementList;
-import top.kmar.mi.api.electricity.clock.NonCounter;
-import top.kmar.mi.api.electricity.info.EleEnergy;
+import top.kmar.mi.api.electricity.EleEnergy;
+import top.kmar.mi.api.electricity.caps.IElectricityCap;
 import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
@@ -31,11 +33,16 @@ import top.kmar.mi.data.properties.MIProperty;
 @Mod.EventBusSubscriber
 public class EMFirePower extends FrontTileEntity implements ITickable {
     
+    /** 输出电压 */
     public static final int VOLTAGE = EleEnergy.COMMON;
+    /** 最大能量值 */
+    public static final int maxContainer = 500000;
     
     /** 输入/输出框 */
     @AutoSave
     private final ItemStackHandler items = new ItemStackHandler(2);
+    /** 存储的能量 */
+    @AutoSave private int container = 0;
     /** 已经燃烧的时长 */
     @AutoSave private int burningTime = 0;
     /** 最大燃烧时长 */
@@ -44,8 +51,6 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
     @AutoSave private ItemStack burnItem;
     
     public EMFirePower() {
-        setMaxEnergy(10000);
-        setCounter(NonCounter.getInstance());
 		/*
 		stack -> TileEntityFurnace.getItemBurnTime(stack) > 0 &&
 													!stack.hasCapability(NonBurnCapability.NON_BURN, null)
@@ -67,7 +72,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
         ItemStack stack = getInputStack();
         IBlockState old = world.getBlockState(pos);
         IBlockState state;
-        if (!stack.isEmpty() && getNowEnergy() < getMaxEnergy() / 10 * 5) {
+        if (!stack.isEmpty() && container < maxContainer / 10 * 5) {
             maxTime = TileEntityFurnace.getItemBurnTime(stack);
             burnItem = stack.copy();
             stack.shrink(1);
@@ -92,7 +97,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
     /** 更新燃烧时间 */
     private void updateBurningTime() {
         if ((burningTime += 5) >= maxTime) updateProduction();
-        setNowEnergy(getNowEnergy() + 30);
+        container += 100;
         markDirty();
     }
     
@@ -105,29 +110,35 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
     }
     
     @Override
-    public boolean onReceive(EleEnergy energy) {
-        if (energy.getVoltage() > VOLTAGE) getCounter().plus();
-        return true;
-    }
-    
-    @Override
-    public boolean isReceiveAllowable(EnumFacing facing) {
-        return false;
-    }
-    
-    @Override
-    public boolean isExtractAllowable(EnumFacing facing) {
-        return true;
-    }
-    
-    @Override
-    public int getExVoltage() {
-        return EleEnergy.COMMON;
-    }
-    
-    @Override
     public EnumFacing getFront() {
         return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
+    }
+    
+    private IElectricityCap _cap = null;
+    
+    @NotNull
+    @Override
+    protected IElectricityCap buildCap(@NotNull EnumFacing facing) {
+        if (_cap == null) {
+            _cap = new IElectricityCap() {
+                @Override
+                public void consumeEnergy(int energy) {
+                    container -= energy;
+                }
+    
+                @NotNull
+                @Override
+                public EleEnergy checkEnergy(int energy, @NotNull Function1<? super EleEnergy, Integer> loss) {
+                    if (energy > container) return EleEnergy.getEmpty();
+                    int plus = loss.invoke(new EleEnergy(energy, VOLTAGE));
+                    int sum = energy + plus;
+                    if (sum > container) return EleEnergy.getEmpty();
+                    container -= sum;
+                    return new EleEnergy(sum, VOLTAGE);
+                }
+            };
+        }
+        return _cap;
     }
     
     @SuppressWarnings("ConstantConditions")
@@ -143,8 +154,8 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
             burn.setMax(power.maxTime);
             burn.setValue(power.burningTime);
             ProgressBarCmpt energy = (ProgressBarCmpt) gui.getElementByID("energy");
-            energy.setMax(power.getMaxEnergy());
-            energy.setValue(power.getNowEnergy());
+            energy.setMax(maxContainer);
+            energy.setValue(power.container);
         });
     }
     

@@ -4,8 +4,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.ItemStackHandler;
@@ -13,10 +11,7 @@ import top.kmar.mi.api.araw.interfaces.AutoSave;
 import top.kmar.mi.api.craft.CraftGuide;
 import top.kmar.mi.api.craft.elements.CraftOutput;
 import top.kmar.mi.api.craft.elements.ElementList;
-import top.kmar.mi.api.electricity.clock.OrdinaryCounter;
-import top.kmar.mi.api.electricity.info.BiggerVoltage;
-import top.kmar.mi.api.electricity.info.EleEnergy;
-import top.kmar.mi.api.electricity.info.EnumBiggerVoltage;
+import top.kmar.mi.api.electricity.EleEnergy;
 import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
 import top.kmar.mi.api.graphics.components.SlotCmpt;
@@ -36,7 +31,8 @@ import top.kmar.mi.data.properties.MIProperty;
 @Mod.EventBusSubscriber
 public class EUCompressor extends FrontTileEntity implements ITickable {
     
-    public static final int VOLTAGE = EleEnergy.COMMON;
+    public static final int MAX_VOLTAGE = EleEnergy.COMMON + 100;
+    public static final int MIN_VOLTAGE = EleEnergy.COMMON - 50;
     
     /**
      * 三个物品框<br>
@@ -49,27 +45,6 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
     /** 正在进行的任务 */
     @AutoSave
     private CraftOutput output = null;
-    
-    public EUCompressor() {
-        OrdinaryCounter counter = new OrdinaryCounter(100);
-        counter.setBigger(new BiggerVoltage(2F, EnumBiggerVoltage.BOOM));
-        setCounter(counter);
-        setMaxEnergy(20);
-    }
-    
-    /** 设置世界时更新计数器的设置 */
-    @Override
-    public void setWorld(World worldIn) {
-        super.setWorld(worldIn);
-        ((OrdinaryCounter) getCounter()).setWorld(worldIn);
-    }
-    
-    /** 设置坐标时更新计数器的设置 */
-    @Override
-    public void setPos(BlockPos posIn) {
-        super.setPos(posIn);
-        ((OrdinaryCounter) getCounter()).setPos(posIn);
-    }
     
     @Override
     public void update() {
@@ -87,8 +62,18 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
             return;
         }
         ItemStack outStack = output.getFirstStack();
-        if (!shrinkEnergy(getNeedEnergy())) {
+        int maxEnergy = getNeedEnergy();
+        EleEnergy energy = requestEnergy(Math.min(50, maxEnergy - workingTime));
+        if (energy.isEmpty()) {
             updateShow(false);
+            return;
+        }
+        if (energy.getVoltage() > MAX_VOLTAGE) {
+            explode(1, true);
+            return;
+        }
+        if (energy.getVoltage() < MIN_VOLTAGE) {
+            updateShow(true);
             return;
         }
         ItemStack up = getInputUpStack();
@@ -97,7 +82,8 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
             up.shrink(1);
             down.shrink(1);
         }
-        if (++workingTime >= getNeedTime()) {
+        workingTime += energy.getCapacity();
+        if (workingTime >= getNeedTime()) {
             workingTime = 0;
             items.insertItem(2, outStack, false);
             output = findOutput(up, down);
@@ -129,7 +115,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
     
     /** 获取需要的工作时间 */
     public int getNeedTime() {
-        return output == null ? 0 : output.getInt("time", 100);
+        return output == null ? 0 : output.getInt("time", 5000);
     }
     /** 获取已工作时间 */
     public int getWorkingTime() {
@@ -145,26 +131,6 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
             if (!items.getStackInSlot(i).isEmpty()) return false;
         }
         return true;
-    }
-    
-    @Override
-    public boolean onReceive(EleEnergy energy) {
-        if (energy.getVoltage() > VOLTAGE) getCounter().plus();
-        return true;
-    }
-    
-    @Override
-    public boolean isReceiveAllowable(EnumFacing facing) {
-        return true;
-    }
-    @Override
-    public boolean isExtractAllowable(EnumFacing facing) {
-        return false;
-    }
-    
-    @Override
-    public int getExVoltage() {
-        return EleEnergy.COMMON;
     }
     
     @Override

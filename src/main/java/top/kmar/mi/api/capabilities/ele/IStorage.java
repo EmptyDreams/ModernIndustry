@@ -2,7 +2,7 @@ package top.kmar.mi.api.capabilities.ele;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import top.kmar.mi.api.electricity.info.EleEnergy;
+import top.kmar.mi.api.electricity.EleEnergy;
 
 import javax.annotation.Nonnull;
 

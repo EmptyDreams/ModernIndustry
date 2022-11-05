@@ -100,7 +100,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
     }
 
     protected fun linkBoth(pump: EUFluidPump, from: IFluid, facing: EnumFacing) {
-        if (pump.isLinked(facing)) return
+        if (pump.isLink(facing)) return
         if (pump.linkFluid(facing)) {
             if (!from.linkFluid(facing.opposite)) pump.unlink(facing)
         }

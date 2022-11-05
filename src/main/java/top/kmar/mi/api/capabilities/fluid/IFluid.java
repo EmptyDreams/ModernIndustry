@@ -65,6 +65,6 @@ public interface IFluid {
 	void unlink(EnumFacing facing);
 	
 	/** 是否连接指定方向 */
-	boolean isLinked(EnumFacing facing);
+	boolean isLink(EnumFacing facing);
 	
 }

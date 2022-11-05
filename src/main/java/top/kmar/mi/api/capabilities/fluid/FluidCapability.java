@@ -61,7 +61,7 @@ public class FluidCapability {
                     }
                     
                     @Override
-                    public boolean isLinked(EnumFacing facing) {
+                    public boolean isLink(EnumFacing facing) {
                         return false;
                     }
                 });

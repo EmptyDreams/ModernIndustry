@@ -10,10 +10,7 @@ import top.kmar.mi.api.araw.interfaces.AutoSave
 import top.kmar.mi.api.craft.CraftGuide
 import top.kmar.mi.api.craft.elements.CraftOutput
 import top.kmar.mi.api.craft.elements.ElementList
-import top.kmar.mi.api.electricity.clock.OrdinaryCounter
-import top.kmar.mi.api.electricity.info.BiggerVoltage
-import top.kmar.mi.api.electricity.info.EleEnergy
-import top.kmar.mi.api.electricity.info.EnumBiggerVoltage
+import top.kmar.mi.api.electricity.EleEnergy
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.GuiLoader.MIGuiRegistryEvent
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt
@@ -25,6 +22,7 @@ import top.kmar.mi.api.utils.expands.*
 import top.kmar.mi.content.blocks.BlockGuiList.synthesizer
 import top.kmar.mi.data.CraftList
 import top.kmar.mi.data.properties.MIProperty.Companion.WORKING
+import kotlin.math.min
 
 /**
  * 电子工作台
@@ -39,19 +37,12 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
     private val items = ItemStackHandler(5 * 5 + 4)
     /** 工作时间 */
     @field:AutoSave
-    private var workingTime = 0
+    private var workProgress = 0
     /** 下一次的输出 */
     private var output: CraftOutput? = null
-    /** 获取工作需要的时间 */
-    val maxTime: Int
-        get() = output!!.getInt("time", 200)
-
-    init {
-        val counter = OrdinaryCounter(100)
-        counter.bigger = BiggerVoltage(2F, EnumBiggerVoltage.BOOM)
-        this.counter = counter
-        maxEnergy = 20
-    }
+    /** 获取一个部件加工完成所需的能量 */
+    val needEnergy: Int
+        get() = output!!.getInt("energy", 20000)
 
     override fun update() {
         if (world.isClient()) return removeTickable()
@@ -59,14 +50,20 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
             this.output = calculateOutput()
             if (!putOutput(true)) {
                 removeTickable()
-                return clear(true)
+                return clear(false)
             }
         }
-        if (!shrinkEnergy(1)) return
-        if (++workingTime >= maxTime) {
-            if (!putOutput(false)) throw AssertionError()
+        val need = needEnergy
+        val energy = requestEnergy(min(100, need))
+        if (energy.isEmpty) return updateBlockState(false)
+        if (energy.voltage < minVoltage) return updateBlockState(true)
+        if (energy.voltage > maxVoltage) return explode(3.5F, true)
+        workProgress += energy.capacity
+        if (workProgress >= need) {
+            !putOutput(false)
             clear(false)
-        } else updateBlockState()
+        } else updateBlockState(true)
+        markDirty()
     }
 
     /** 计算输出，返回`null`表示无输出 */
@@ -123,29 +120,20 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
 
     /** 清楚工作状态和进度 */
     fun clear(updateState: Boolean) {
-        workingTime = 0
+        workProgress = 0
         output = null
-        if (updateState) updateBlockState()
+        if (updateState) updateBlockState(false)
     }
 
     /** 更新方块显示状态 */
-    fun updateBlockState() {
-        val newState = world.getBlockState(getPos()).withProperty(WORKING, workingTime > 0)
+    fun updateBlockState(isWorking: Boolean) {
+        val old = world.getBlockState(pos)
+        if (old.getValue(WORKING) == isWorking) return
+        val newState = old.withProperty(WORKING, isWorking)
         world.setBlockWithMark(pos, newState)
     }
 
-    override fun isReceiveAllowable(facing: EnumFacing?) = true
-
-    override fun isExtractAllowable(facing: EnumFacing?) = false
-
-    override fun onReceive(energy: EleEnergy): Boolean {
-        if (energy.voltage > maxVoltage) counter.plus()
-        return true
-    }
-
     override fun getFront() = EnumFacing.UP
-
-    override fun getExVoltage(): Int = maxVoltage
 
     /** 获取所有输出框的stack */
     fun getOutputStacks() = Array(4) { items.getStackInSlot(25 + it) }
@@ -162,7 +150,9 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
     companion object {
 
         /** 电器可以承受的最大电压 */
-        const val maxVoltage = EleEnergy.COMMON
+        const val maxVoltage = EleEnergy.COMMON + 50
+        /** 电器可承受的最小电压 */
+        const val minVoltage = EleEnergy.COMMON - 50
 
         @SubscribeEvent
         @JvmStatic
@@ -188,8 +178,8 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
                     work.value = 0
                     work.max = 0
                 } else {
-                    work.max = synthesizer.maxTime
-                    work.value = synthesizer.workingTime
+                    work.max = synthesizer.needEnergy
+                    work.value = synthesizer.workProgress
                 }
             }
         }
