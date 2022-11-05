@@ -58,6 +58,12 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
         if (energy.isEmpty) return updateBlockState(false)
         if (energy.voltage < minVoltage) return updateBlockState(true)
         if (energy.voltage > maxVoltage) return explode(3.5F, true)
+        checkEnergy(
+            energy, minVoltage, maxVoltage,
+            { return updateBlockState(false) },
+            { return updateBlockState(true) },
+            { return explode(3.5F, true) }
+        )
         workProgress += energy.capacity
         if (workProgress >= need) {
             !putOutput(false)

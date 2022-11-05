@@ -18,6 +18,7 @@ import top.kmar.mi.api.graphics.components.SlotCmpt;
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.expands.WorldExpandsKt;
+import top.kmar.mi.api.utils.interfaces.JvmNoneFunction;
 import top.kmar.mi.content.blocks.BlockGuiList;
 import top.kmar.mi.content.blocks.machine.user.CompressorBlock;
 import top.kmar.mi.data.CraftList;
@@ -64,18 +65,13 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
         ItemStack outStack = output.getFirstStack();
         int maxEnergy = getNeedEnergy();
         EleEnergy energy = requestEnergy(Math.min(50, maxEnergy - workingTime));
-        if (energy.isEmpty()) {
-            updateShow(false);
-            return;
-        }
-        if (energy.getVoltage() > MAX_VOLTAGE) {
-            explode(1, true);
-            return;
-        }
-        if (energy.getVoltage() < MIN_VOLTAGE) {
-            updateShow(true);
-            return;
-        }
+        boolean check = checkEnergy(
+                energy, MIN_VOLTAGE, maxEnergy,
+                (JvmNoneFunction) () -> updateShow(false),
+                (JvmNoneFunction) () -> updateShow(true),
+                (JvmNoneFunction) () -> explode(1, true)
+        );
+        if (!check) return;
         ItemStack up = getInputUpStack();
         ItemStack down = getInputDownStack();
         if (workingTime == 0) {

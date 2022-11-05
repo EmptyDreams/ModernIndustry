@@ -53,7 +53,8 @@ abstract class EleTileEntity : BaseTileEntity() {
         input: EleEnergy, minVoltage: Int, maxVoltage: Int,
         empty: () -> Unit, under: () -> Unit, over: () -> Unit
     ): Boolean {
-        if (input.voltage > maxVoltage) over()
+        if (input.isEmpty) empty()
+        else if (input.voltage > maxVoltage) over()
         else if (input.voltage < minVoltage) under()
         else return true
         return false
