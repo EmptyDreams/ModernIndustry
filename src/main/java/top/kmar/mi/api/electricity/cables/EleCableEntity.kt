@@ -59,6 +59,13 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
     /** 线路缓存的 code */
     @field:AutoSave
     var cacheId: Int = 0
+        get() {
+            if (field == 0) return 0
+            val allocator = world.cableCacheIdAllocator
+            if (field !in allocator)
+                field = world.invalidCacheData.update(field, code)
+            return field
+        }
         private set(value) {
             if (field == value) return
             field = value
@@ -66,15 +73,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         }
     /** 线路缓存 */
     private val cache: CableCache
-        get() {
-            val allocator = world.cableCacheIdAllocator
-            if (cacheId == 0) cacheId = allocator.next()
-            else if (cacheId !in allocator) {
-                cacheId = world.invalidCacheData.update(cacheId, code)
-                if (cacheId == 0) cacheId = allocator.next()
-            }
-            return _cache.get()
-        }
+        get() = _cache.get()
     /** 电损指数 */
     val lossIndex = 0.0
 
@@ -193,13 +192,13 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
             val that = world.getTileEntity(targetPos) as EleCableEntity?
             prevCable = null
             that?.nextCable = null
-            cache.clipBefore(this)
+            if (cacheId != 0) cache.clipBefore(this)
         } else if (facing === nextCable) {
             val that = world.getTileEntity(targetPos) as EleCableEntity?
             nextCable = null
             that?.prevCable = null
-            cache.clipAfter(this)
-        } else cache.update(this)
+            if (cacheId != 0) cache.clipAfter(this)
+        } else if (cacheId != 0) cache.update(this)
         sendToPlayers()
     }
 
@@ -443,12 +442,12 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 // 为缓存分配新的 ID，并移除老的缓存
                 val allocator = world.cableCacheIdAllocator
                 allocator.delete(cacheId)
-                val leftCode = allocator.next()
-                val rightCode = allocator.next()
+                val leftCode = if (count == 1) 0 else allocator.next()
+                val rightCode = if (newCache.count == 1) 0 else allocator.next()
                 with(cacheMap[world]!!) {
                     remove(cacheId)
-                    put(leftCode, this@CableCache)
-                    put(rightCode, newCache)
+                    if (leftCode != 0) put(leftCode, this@CableCache)
+                    if (rightCode != 0) put(rightCode, newCache)
                 }
                 // 为方块更新 ID
                 if (minCode < newCache.minCode)
