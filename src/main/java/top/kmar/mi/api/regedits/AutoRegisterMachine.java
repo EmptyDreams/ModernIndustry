@@ -80,6 +80,7 @@ public abstract class AutoRegisterMachine<V extends Annotation, T>
     public boolean isDependency(AutoRegisterMachine<?, ?> register) {
         for (String key : getDependency()) {
             AutoRegisterMachine<?, ?> dependency = AutoRegister.getInstance(key);
+            if (dependency == null) continue;
             if (dependency.equals(register)) return true;
             boolean test = dependency.isDependency(register);
             if (test) return true;

@@ -69,7 +69,7 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
 
     companion object {
 
-        @SideOnly(Side.CLIENT)
+        @get:SideOnly(Side.CLIENT)
         @JvmStatic
         val textureLib = ResourceLocation("textures/gui/container/creative_inventory/tab_inventory.png")
 

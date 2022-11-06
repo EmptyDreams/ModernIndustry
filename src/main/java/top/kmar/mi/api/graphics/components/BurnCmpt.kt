@@ -93,7 +93,7 @@ class BurnCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
     companion object {
 
-        @SideOnly(Side.CLIENT)
+        @get:SideOnly(Side.CLIENT)
         @JvmStatic
         val textureLib = ResourceLocation(ModernIndustry.MODID, "textures/gui/graph.png")
 
