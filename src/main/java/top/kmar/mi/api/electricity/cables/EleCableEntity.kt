@@ -70,7 +70,10 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         }
     /** 线路缓存 */
     private val cache: CableCache
-        get() = _cache.get()
+        get() {
+            cacheId
+            return _cache.get()
+        }
     private val _cache = CacheContainer {
         if (cacheId == 0) cacheId = world.cableCacheIdAllocator.next()
         world.cableCacheIdAllocator[cacheId, { CableCache() }]
@@ -340,6 +343,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 if (code == minCode) ++minCode
                 else --maxCode
             } else {    // 从中间断开
+                val oldCount = count
                 val middle = if (index < 0) -index - 1 else index
                 val leftIsNew = middle < blockDeque.size    // 左半部分是否存储的是新数据
                 // 将一半的数据转移到新缓存中
@@ -364,9 +368,9 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 if (rightCode != 0) allocator[rightCode, { newCache }]
                 // 为方块更新 ID
                 if (minCode < newCache.minCode)
-                    world.invalidCacheData.markInvalid(cacheId, count shl 1, code, leftCode, rightCode)
+                    world.invalidCacheData.markInvalid(cacheId, oldCount - 1, code, leftCode, rightCode)
                 else
-                    world.invalidCacheData.markInvalid(cacheId, count shl 1, code, rightCode, leftCode)
+                    world.invalidCacheData.markInvalid(cacheId, oldCount - 1, code, rightCode, leftCode)
             }
         }
 
