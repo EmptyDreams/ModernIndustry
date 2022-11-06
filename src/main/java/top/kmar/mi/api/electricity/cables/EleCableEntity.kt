@@ -17,6 +17,7 @@ import top.kmar.mi.api.net.message.block.BlockMessage
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.BaseTileEntity
 import top.kmar.mi.api.utils.TickHelper
+import top.kmar.mi.api.utils.container.CacheContainer
 import top.kmar.mi.api.utils.container.IndexEnumMap
 import top.kmar.mi.api.utils.data.math.Range3D
 import top.kmar.mi.api.utils.expands.clipAt
@@ -65,15 +66,16 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         private set(value) {
             if (field == value) return
             field = value
+            _cache.clear()
         }
     /** 线路缓存 */
     private val cache: CableCache
-        get() {
-            if (cacheId == 0) cacheId = world.cableCacheIdAllocator.next()
-            return world.cableCacheIdAllocator[cacheId, {
-                CableCache().apply { update(this@EleCableEntity) }
-            }]
-        }
+        get() = _cache.get()
+    private val _cache = CacheContainer {
+        if (cacheId == 0) cacheId = world.cableCacheIdAllocator.next()
+        world.cableCacheIdAllocator[cacheId, { CableCache() }]
+            .apply { update(this@EleCableEntity) }
+    }
     /** 电损指数 */
     val lossIndex = 0.0
 
