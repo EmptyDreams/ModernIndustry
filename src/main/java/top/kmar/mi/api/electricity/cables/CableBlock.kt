@@ -122,8 +122,8 @@ class CableBlock(name: String) : BlockContainer(Material.CIRCUITS), BlockItemHel
         val thatEntity = world.getTileEntity(pos.offset(facing))
         if (thatEntity !is EleCableEntity) return false
         val entity = EleCableEntity()
-        entity.linkCable(facing, thatEntity)
         putBlock(world, pos, defaultState, entity, player, stack)
+        entity.linkCable(facing, thatEntity)
         return true
     }
 
