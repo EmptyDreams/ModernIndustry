@@ -408,6 +408,54 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         }
 
         /**
+         * 从指定位置切开缓存
+         * @param world 当前世界
+         * @param code 分界点（该点会从缓存中移除）
+         * @param cacheId 缓存 ID
+         */
+        private fun clip(world: World, code: Int, cacheId: Int) {
+            if (code < minCode || code > maxCode) return
+            val index = blockDeque.binarySearch { it.code.compareTo(code) }
+            if (count == 2) {   // 如果线长为 2 则删除缓存
+                cacheMap[world]!!.remove(cacheId)
+                world.cableCacheIdAllocator.delete(cacheId)
+                world.invalidCacheData.markInvalid(cacheId, 1)
+            } else if (code == minCode || code == maxCode) { // 判断被移除的导线是否在端点，是端点的话就无需创建新的缓存
+                if (index >= 0) blockDeque.removeAt(index)
+                if (code == minCode) ++minCode
+                else --maxCode
+            } else {    // 从中间断开
+                val middle = if (index < 0) -index - 1 else index
+                val leftIsNew = middle < blockDeque.size    // 左半部分是否存储的是新数据
+                // 将一半的数据转移到新缓存中
+                val newCache = CableCache(count - middle + 10)
+                blockDeque.clipAt(newCache.blockDeque, middle, index < 0)
+                // 更新缓存中的 code
+                if (leftIsNew) {
+                    newCache.minCode = minCode
+                    newCache.maxCode = code - 1
+                    minCode = code + 1
+                } else {
+                    newCache.minCode = code + 1
+                    newCache.maxCode = maxCode
+                    maxCode = code - 1
+                }
+                // 为缓存分配新的 ID，并移除老的缓存
+                val allocator = world.cableCacheIdAllocator
+                allocator.delete(cacheId)
+                val leftCode = allocator.next()
+                val rightCode = allocator.next()
+                with(cacheMap[world]!!) {
+                    remove(cacheId)
+                    put(leftCode, this@CableCache)
+                    put(rightCode, newCache)
+                }
+                // 为方块更新 ID
+                world.invalidCacheData.markInvalid(cacheId, count shl 1, code, leftCode, rightCode)
+            }
+        }
+
+        /**
          * 从指定位置开始按照距离远近遍历已连接方块的导线
          * @param entity 开始遍历的位点
          * @param breakConsumer 要执行的任务，返回 `false` 表示终止遍历
@@ -453,41 +501,6 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                     }
                     if (invoke(block.pos)) break
                 }
-            }
-        }
-
-        /**
-         * 从指定位置切开缓存
-         * @param world 当前世界
-         * @param code 分界点（该点分配到 [nextCable] 方向）
-         * @param cacheId 缓存 ID
-         */
-        private fun clip(world: World, code: Int, cacheId: Int) {
-            if (code < minCode || code > maxCode) return
-            val index = blockDeque.binarySearch { it.code.compareTo(code) }
-            if (count == 2) {   // 如果线长为 2 则删除缓存
-                cacheMap[world]!!.remove(cacheId)
-                world.cableCacheIdAllocator.delete(cacheId)
-                world.invalidCacheData.markInvalid(cacheId, 1)
-            } else if (code == minCode || code == maxCode) { // 判断被移除的导线是否在端点，是端点的话就无需创建新的缓存
-                if (index >= 0) blockDeque.removeAt(index)
-                if (code == minCode) ++minCode
-                else --maxCode
-            } else {
-                val middle = if (index < 0) -index - 1 else index
-                val newCache = CableCache(count - middle + 10)
-                blockDeque.clipAt(newCache.blockDeque, middle, index < 0)
-                val allocator = world.cableCacheIdAllocator
-                allocator.delete(cacheId)
-                val leftCode = allocator.next()
-                val rightCode = allocator.next()
-                with(cacheMap[world]!!) {
-                    remove(cacheId)
-                    put(leftCode, this@CableCache)
-                    put(rightCode, newCache)
-                }
-                // 为方块更新 ID
-                world.invalidCacheData.markInvalid(cacheId, count - 1, code, leftCode, rightCode)
             }
         }
 

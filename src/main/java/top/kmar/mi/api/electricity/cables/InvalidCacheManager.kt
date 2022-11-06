@@ -48,7 +48,7 @@ class InvalidCacheManager(name: String) : WorldSavedData(cacheKey) {
 
     /** 通过废弃的 ID 查找新的 ID，未查找到返回 `0` */
     fun update(invalidId: Int, code: Int): Int {
-        var node: Node? = dataMap.get(invalidId)
+        var node = dataMap.get(invalidId)
         var new = 0
         while (node != null) {
             if (node.count == 1) dataMap.remove(invalidId)
@@ -81,7 +81,7 @@ class InvalidCacheManager(name: String) : WorldSavedData(cacheKey) {
 
     }
 
-    private class Node(
+    private data class Node(
         var count: Int,
         val splitCode: Int,
         val leftNewId: Int,

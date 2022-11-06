@@ -71,6 +71,7 @@ class CableBlock(name: String) : BlockContainer(Material.CIRCUITS), BlockItemHel
         return AxisAlignedBB(0.25, 0.25, 0.25, 0.75, 0.75, 0.75)
     }
 
+    @Suppress("DEPRECATION")
     override fun addCollisionBoxToList(
         state: IBlockState,
         worldIn: World, pos: BlockPos,
