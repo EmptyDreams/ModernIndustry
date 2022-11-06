@@ -10,7 +10,11 @@ import top.kmar.mi.api.electricity.cables.InvalidCacheManager.Companion.cacheKey
  * 废弃 ID 管理器
  * @author EmptyDreams
  */
-class InvalidCacheManager : WorldSavedData(cacheKey) {
+class InvalidCacheManager(name: String) : WorldSavedData(cacheKey) {
+
+    init {
+        assert(name == cacheKey)
+    }
 
     private val dataMap = Int2ObjectRBTreeMap<Node>()
 
@@ -92,7 +96,7 @@ val World.invalidCacheData: InvalidCacheManager
         var saved = perWorldStorage.getOrLoadData(InvalidCacheManager::class.java, cacheKey)
         if (saved != null) saved as InvalidCacheManager
         else {
-            saved = InvalidCacheManager()
+            saved = InvalidCacheManager(cacheKey)
             perWorldStorage.setData(cacheKey, saved)
         }
         return saved
