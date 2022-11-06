@@ -3,6 +3,7 @@ package top.kmar.mi.api.electricity.cables
 import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumFacing.values
 import net.minecraft.util.math.BlockPos
@@ -208,6 +209,17 @@ class EleCableEntity : BaseTileEntity() {
     fun isEndpoint(): Boolean =
         (nextCable == null && prevCable == null) ||
                 (nextCable != null && prevCable == null) || nextCable == null
+
+    override fun getUpdateTag(): NBTTagCompound {
+        val nbt = super.getUpdateTag()
+        nbt.setByte("link", linkData.getValue().toByte())
+        return nbt
+    }
+
+    override fun handleUpdateTag(tag: NBTTagCompound) {
+        super.handleUpdateTag(tag)
+        linkData.setValue(tag.getByte("link").toInt())
+    }
 
     /**
      * 从当前位置开始遍历线路，必须保证当前导线为线路端点
