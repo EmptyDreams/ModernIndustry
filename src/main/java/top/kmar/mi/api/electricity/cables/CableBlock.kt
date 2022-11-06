@@ -127,6 +127,12 @@ class CableBlock(name: String) : BlockContainer(Material.CIRCUITS), BlockItemHel
         return true
     }
 
+    override fun breakBlock(worldIn: World, pos: BlockPos, state: IBlockState) {
+        val cable = worldIn.getTileEntity(pos) as EleCableEntity
+        worldIn.invalidCacheData.update(cable.cacheId, cable.code)
+        super.breakBlock(worldIn, pos, state)
+    }
+
     override fun createBlockState(): BlockStateContainer =
         BlockStateContainer(this, UP, DOWN, SOUTH, NORTH, WEST, EAST)
 

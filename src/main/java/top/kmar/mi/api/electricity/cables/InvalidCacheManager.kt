@@ -44,11 +44,16 @@ class InvalidCacheManager : WorldSavedData(cacheKey) {
 
     /** 通过废弃的 ID 查找新的 ID，未查找到返回 `0` */
     fun update(invalidId: Int, code: Int): Int {
-        val node = dataMap.get(invalidId) ?: return 0
-        if (node.count == 1) dataMap.remove(invalidId)
-        else --node.count
+        var node: Node? = dataMap.get(invalidId)
+        var new = 0
+        while (node != null) {
+            if (node.count == 1) dataMap.remove(invalidId)
+            else --node.count
+            new = if (code < node.splitCode) node.leftNewId else node.rightNewId
+            node = dataMap.get(new)
+        }
         markDirty()
-        return if (code < node.splitCode) node.leftNewId else node.rightNewId
+        return new
     }
 
     override fun readFromNBT(nbt: NBTTagCompound) {

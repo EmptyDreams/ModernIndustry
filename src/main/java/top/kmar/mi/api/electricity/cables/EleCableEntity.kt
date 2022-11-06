@@ -70,16 +70,8 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
             val allocator = world.cableCacheIdAllocator
             if (cacheId == 0) cacheId = allocator.next()
             else if (cacheId !in allocator) {
-                var realId: Int = cacheId
-                val invalid = world.invalidCacheData
-                do {
-                    realId = invalid.update(realId, code)
-                    if (realId == 0) {
-                        realId = allocator.next()
-                        break
-                    }
-                } while (realId !in allocator)
-                cacheId = realId
+                cacheId = world.invalidCacheData.update(cacheId, code)
+                if (cacheId == 0) cacheId = allocator.next()
             }
             return _cache.get()
         }
