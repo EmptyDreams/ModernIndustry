@@ -53,11 +53,13 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
      *
      * 编号沿 [nextCable] 方向严格递增，沿 [prevCable] 方向严格递减
      */
-    @field:AutoSave private var code: Int = 0
+    @field:AutoSave
+    var code: Int = 0
+        private set
     /** 线路缓存的 code */
     @field:AutoSave
-    private var cacheId: Int = 0
-        set(value) {
+    var cacheId: Int = 0
+        private set(value) {
             if (field == value) return
             field = value
             _cache.clear()
@@ -72,6 +74,10 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 val invalid = world.invalidCacheData
                 do {
                     realId = invalid.update(realId, code)
+                    if (realId == 0) {
+                        realId = allocator.next()
+                        break
+                    }
                 } while (realId !in allocator)
                 cacheId = realId
             }
@@ -466,8 +472,11 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
          */
         private fun clip(world: World, code: Int, cacheId: Int) {
             val index = blockDeque.binarySearch { it.code.compareTo(code) }
-            // 判断被移除的导线是否在端点，是端点的话就无需创建新的缓存
-            if (code == minCode || code == maxCode) {
+            if (count == 2) {   // 如果线长为 2 则删除缓存
+                cacheMap[world]!!.remove(cacheId)
+                world.cableCacheIdAllocator.delete(cacheId)
+                world.invalidCacheData.markInvalid(cacheId, 2)
+            } else if (code == minCode || code == maxCode) { // 判断被移除的导线是否在端点，是端点的话就无需创建新的缓存
                 if (index >= 0) blockDeque.removeAt(index)
                 if (code == minCode) ++minCode
                 else --maxCode

@@ -27,6 +27,11 @@ class InvalidCacheManager : WorldSavedData(cacheKey) {
         markDirty()
     }
 
+    /** 标记一个 ID 为废弃的 */
+    fun markInvalid(invalidId: Int, count: Int) {
+        markInvalid(invalidId, count, 0, 0, 0)
+    }
+
     /**
      * 标记一个 ID 为废弃的，整条线路的新 ID 为同一个值
      * @param invalidId 被废弃的 ID
