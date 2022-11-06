@@ -367,8 +367,8 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 thatEntity.code = thisEntity.code + if (isNext) 1 else -1
                 thatEntity.cacheId = thisEntity.cacheId
                 update(thatEntity)
-                minCode = min(thisEntity.code, thatEntity.code)
-                maxCode = max(thisEntity.code, thatEntity.code)
+                minCode = minCode.coerceAtMost(min(thisEntity.code, thatEntity.code))
+                maxCode = maxCode.coerceAtLeast(max(thisEntity.code, thatEntity.code))
                 return
             }
             val that = thatEntity.cache
@@ -471,6 +471,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
          * @param cacheId 缓存 ID
          */
         private fun clip(world: World, code: Int, cacheId: Int) {
+            if (code < minCode || code > maxCode) return
             val index = blockDeque.binarySearch { it.code.compareTo(code) }
             if (count == 2) {   // 如果线长为 2 则删除缓存
                 cacheMap[world]!!.remove(cacheId)
