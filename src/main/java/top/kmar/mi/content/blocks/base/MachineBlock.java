@@ -14,11 +14,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import top.kmar.mi.ModernIndustry;
+import top.kmar.mi.api.electricity.EleTileEntity;
 import top.kmar.mi.api.electricity.cables.CableBlock;
 import top.kmar.mi.api.electricity.cables.EleCableEntity;
+import top.kmar.mi.api.utils.container.BooleanWrapper;
 import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 import top.kmar.mi.content.blocks.common.CommonBlocks;
-import top.kmar.mi.api.utils.container.BooleanWrapper;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
@@ -41,14 +42,17 @@ public abstract class MachineBlock extends TEBlockBase {
     }
     
     /** 当临近的方块更新时更新连接状态 */
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({"deprecation", "ConstantConditions"})
     @Override
     public void neighborChanged(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
                                 @Nonnull Block blockIn, @Nonnull BlockPos fromPos) {
-        if (blockIn instanceof CableBlock) {
+        IBlockState fromState = world.getBlockState(fromPos);
+        if (fromState.getBlock() instanceof CableBlock) {
+            EnumFacing facing = WorldExpandsKt.whatFacing(pos, fromPos);
+            EleTileEntity entity = (EleTileEntity) world.getTileEntity(pos);
+            entity.link(facing);
             EleCableEntity cable = (EleCableEntity) world.getTileEntity(fromPos);
-            if (cable != null)
-                cable.linkBlock(WorldExpandsKt.whatFacing(fromPos, pos));
+            cable.linkBlock(facing.getOpposite());
         }
     }
     

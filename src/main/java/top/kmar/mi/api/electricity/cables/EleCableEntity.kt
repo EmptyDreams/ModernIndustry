@@ -3,6 +3,8 @@ package top.kmar.mi.api.electricity.cables
 import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagByte
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumFacing.values
@@ -11,11 +13,18 @@ import net.minecraft.world.World
 import top.kmar.mi.api.araw.interfaces.AutoSave
 import top.kmar.mi.api.electricity.EleEnergy
 import top.kmar.mi.api.electricity.caps.ElectricityCapability.capObj
+import top.kmar.mi.api.net.IAutoNetwork
+import top.kmar.mi.api.net.handler.MessageSender
+import top.kmar.mi.api.net.message.block.BlockAddition
+import top.kmar.mi.api.net.message.block.BlockMessage
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.BaseTileEntity
+import top.kmar.mi.api.utils.TickHelper
 import top.kmar.mi.api.utils.container.CacheContainer
 import top.kmar.mi.api.utils.container.IndexEnumMap
+import top.kmar.mi.api.utils.data.math.Range3D
 import top.kmar.mi.api.utils.expands.clipAt
+import top.kmar.mi.api.utils.expands.isClient
 import top.kmar.mi.api.utils.expands.whatFacing
 import kotlin.math.absoluteValue
 import kotlin.math.max
@@ -26,7 +35,7 @@ import kotlin.math.min
  * @author EmptyDreams
  */
 @AutoTileEntity("cable")
-class EleCableEntity : BaseTileEntity() {
+class EleCableEntity : BaseTileEntity(), IAutoNetwork {
 
     /** 存储指定方向是否连接的有方块 */
     @field:AutoSave
@@ -36,6 +45,9 @@ class EleCableEntity : BaseTileEntity() {
     /** 连接的下一根导线 */
     @field:AutoSave private var nextCable: EnumFacing? = null
 
+    /** 是否需要发送的客户端 */
+    var isSend = false
+        private set
     /**
      * 线缆编号，相连线缆的编号的差值的绝对值一定为 1
      *
@@ -169,6 +181,8 @@ class EleCableEntity : BaseTileEntity() {
         target.linkData[opposite] = true
         if (cacheId != 0) cache.syncCache(this, target)
         else target.cache.syncCache(target, this)
+        sendToPlayers()
+        target.sendToPlayers()
         return true
     }
 
@@ -188,13 +202,15 @@ class EleCableEntity : BaseTileEntity() {
             that?.prevCable = null
             cache.clipAfter(this)
         } else cache.update(this)
+        sendToPlayers()
     }
 
     /** 连接指定方向上的方块 */
     fun linkBlock(facing: EnumFacing) {
-        if (!isLink(facing)) return
+        if (isLink(facing)) return
         linkData[facing] = true
         cache.update(this)
+        sendToPlayers()
     }
 
     /** 更新指定方向上的连接数据 */
@@ -209,6 +225,31 @@ class EleCableEntity : BaseTileEntity() {
     fun isEndpoint(): Boolean =
         (nextCable == null && prevCable == null) ||
                 (nextCable != null && prevCable == null) || nextCable == null
+
+    /**
+     * 将连接信息发送到客户端
+     *
+     * 发送任务会在每 tick 的结尾执行，同一 tick 内不会重复发送信息
+     */
+    fun sendToPlayers() {
+        if (isSend || world.isClient()) return
+        isSend = true
+        TickHelper.addServerTask {
+            isSend = false
+            MessageSender.send2ClientAround(world, Range3D(pos, 128)) {
+                BlockMessage.instance().create(
+                    NBTTagByte(linkData.getValue().toByte()), BlockAddition(this)
+                )
+            }
+            true
+        }
+    }
+
+    /** 接收服务端发送的信息 */
+    override fun receive(reader: NBTBase) {
+        linkData.setValue((reader as NBTTagByte).int)
+        world.markBlockRangeForRenderUpdate(pos, pos)
+    }
 
     override fun getUpdateTag(): NBTTagCompound {
         val nbt = super.getUpdateTag()
