@@ -451,7 +451,10 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                     put(rightCode, newCache)
                 }
                 // 为方块更新 ID
-                world.invalidCacheData.markInvalid(cacheId, count shl 1, code, leftCode, rightCode)
+                if (minCode < newCache.minCode)
+                    world.invalidCacheData.markInvalid(cacheId, count shl 1, code, leftCode, rightCode)
+                else
+                    world.invalidCacheData.markInvalid(cacheId, count shl 1, code, rightCode, leftCode)
             }
         }
 
