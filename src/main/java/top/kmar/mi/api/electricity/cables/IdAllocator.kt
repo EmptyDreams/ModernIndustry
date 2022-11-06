@@ -1,5 +1,6 @@
 package top.kmar.mi.api.electricity.cables
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap
 import it.unimi.dsi.fastutil.ints.IntAVLTreeSet
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
@@ -17,6 +18,8 @@ class IdAllocator(name: String) : WorldSavedData(name) {
     private val loadedId = IntAVLTreeSet()
     /** 分配ID的位置 */
     private val flag = AtomicInteger(1)
+    /** 存储附属信息 */
+    private val infoMap = Int2ObjectRBTreeMap<Any>()
 
     /** 获取下一个ID，当ID碰撞时会随机增加`[1, 8]`的数值 */
     fun next(): Int {
@@ -32,7 +35,18 @@ class IdAllocator(name: String) : WorldSavedData(name) {
     /** 移除指定ID */
     fun delete(id: Int) {
         loadedId.remove(id)
+        infoMap.remove(id)
         markDirty()
+    }
+
+    operator fun <T> get(id: Int, supplier: () -> T): T {
+        assert(id in this)
+        val result = infoMap.get(id)
+        @Suppress("UNCHECKED_CAST")
+        if (result != null) return result as T
+        val value = supplier()
+        infoMap.put(id, value)
+        return value
     }
 
     operator fun contains(id: Int): Boolean = id in loadedId

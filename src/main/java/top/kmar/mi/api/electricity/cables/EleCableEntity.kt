@@ -1,8 +1,5 @@
 package top.kmar.mi.api.electricity.cables
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap
 import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagByte
 import net.minecraft.nbt.NBTTagCompound
@@ -20,7 +17,6 @@ import top.kmar.mi.api.net.message.block.BlockMessage
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.BaseTileEntity
 import top.kmar.mi.api.utils.TickHelper
-import top.kmar.mi.api.utils.container.CacheContainer
 import top.kmar.mi.api.utils.container.IndexEnumMap
 import top.kmar.mi.api.utils.data.math.Range3D
 import top.kmar.mi.api.utils.expands.clipAt
@@ -69,21 +65,17 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         private set(value) {
             if (field == value) return
             field = value
-            _cache.clear()
         }
     /** 线路缓存 */
     private val cache: CableCache
-        get() = _cache.get()
+        get() {
+            if (cacheId == 0) cacheId = world.cableCacheIdAllocator.next()
+            return world.cableCacheIdAllocator[cacheId, {
+                CableCache().apply { update(this@EleCableEntity) }
+            }]
+        }
     /** 电损指数 */
     val lossIndex = 0.0
-
-    private var _cache = CacheContainer {
-        if (cacheId == 0) cacheId = world.cableCacheIdAllocator.next()
-        val map = cacheMap.computeIfAbsent(world) { Int2ObjectAVLTreeMap() }
-        map.computeIfAbsent(cacheId) { CableCache() }.apply {
-            update(this@EleCableEntity)
-        }
-    }
 
     /**
      * 向导线请求能量
@@ -135,19 +127,6 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
 
     /** 判断指定方向是否连接的有方块 */
     fun isLink(facing: EnumFacing) = linkData[facing]
-
-    /**
-     * 连接指定方向的导线
-     *
-     * 连接时会同时修改两根导线的数据
-     *
-     * @return 是否连接成功
-     */
-    fun linkCable(facing: EnumFacing): Boolean {
-        val entity = world.getTileEntity(pos.offset(facing))
-        if (entity !is EleCableEntity) return false
-        return linkCable(facing, entity)
-    }
 
     /**
      * 尝试连接指定导线（不循序环形连接）
@@ -218,11 +197,6 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         else linkBlock(facing)
     }
 
-    /** 判断当前节点是否为端点 */
-    fun isEndpoint(): Boolean =
-        (nextCable == null && prevCable == null) ||
-                (nextCable != null && prevCable == null) || nextCable == null
-
     /**
      * 将连接信息发送到客户端
      *
@@ -259,65 +233,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         linkData.setValue(tag.getByte("link").toInt())
     }
 
-    /**
-     * 从当前位置开始遍历线路，必须保证当前导线为线路端点
-     * @param task 要执行的任务
-     */
-    fun startEach(task: (EleCableEntity) -> Unit) {
-        assert(isEndpoint()) { "当前导线[$pos]不是端点" }
-        startEach(nextCable != null, task)
-    }
-
-    /**
-     * 从当前位置开始遍历线路
-     * @param prev 上一根导线
-     * @param task 要执行的任务
-     */
-    fun startEach(prev: EleCableEntity, task: (EleCableEntity) -> Unit) {
-        val isNext = nextCable != null && pos.offset(nextCable!!) == prev.pos
-        startEach(isNext, task)
-    }
-
-    /**
-     * 从当前位置按照指定方向遍历线路
-     * @param direction 方向，`true` 表示向 [nextCable] 方向
-     * @param task 要执行的任务
-     */
-    fun startEach(direction: Boolean, task: (EleCableEntity) -> Unit) {
-        val next: (EleCableEntity) -> EnumFacing? =
-            if (direction) {
-                { it.nextCable }
-            } else {
-                { it.prevCable }
-            }
-        startEach(next, task)
-    }
-
-    /**
-     * 从当前位置开始遍历线路
-     *
-     * 遍历会在以下情况下正常结束：
-     * + [next] 返回 `null`
-     * + 遇到了未加载的区块
-     *
-     * @param next 或许下一个导线的方向，返回 `null` 表示终止遍历
-     * @param task 要执行的任务
-     */
-    fun startEach(next: (EleCableEntity) -> EnumFacing?, task: (EleCableEntity) -> Unit) {
-        var point = this
-        while (true) {
-            task(point)
-            val facing = next(point) ?: break
-            val nextPos = point.pos.offset(facing)
-            if (!world.isBlockLoaded(nextPos)) break
-            point = world.getTileEntity(nextPos) as EleCableEntity
-        }
-    }
-
     companion object {
-
-        @JvmStatic
-        private val cacheMap = Object2ObjectArrayMap<World, Int2ObjectMap<CableCache>>()
 
         const val storageKey = "CableCacheId"
 
@@ -382,7 +298,6 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 maxCode = max(maxCode, deleteCache.cache.maxCode)
             }
             world.invalidCacheData.markInvalid(deleteCache.cacheId, deleteCache.cache.count, newCache.cacheId)
-            cacheMap[thisEntity.world]!!.remove(deleteCache.cacheId)
             world.cableCacheIdAllocator.delete(deleteCache.cacheId)
         }
 
@@ -416,7 +331,6 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
             if (code < minCode || code > maxCode) return
             val index = blockDeque.binarySearch { it.code.compareTo(code) }
             if (count == 2) {   // 如果线长为 2 则删除缓存
-                cacheMap[world]!!.remove(cacheId)
                 world.cableCacheIdAllocator.delete(cacheId)
                 world.invalidCacheData.markInvalid(cacheId, 1)
             } else if (code == minCode || code == maxCode) { // 判断被移除的导线是否在端点，是端点的话就无需创建新的缓存
@@ -444,11 +358,8 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 allocator.delete(cacheId)
                 val leftCode = if (count == 1) 0 else allocator.next()
                 val rightCode = if (newCache.count == 1) 0 else allocator.next()
-                with(cacheMap[world]!!) {
-                    remove(cacheId)
-                    if (leftCode != 0) put(leftCode, this@CableCache)
-                    if (rightCode != 0) put(rightCode, newCache)
-                }
+                if (leftCode != 0) allocator[leftCode, { this@CableCache }]
+                if (rightCode != 0) allocator[rightCode, { newCache }]
                 // 为方块更新 ID
                 if (minCode < newCache.minCode)
                     world.invalidCacheData.markInvalid(cacheId, count shl 1, code, leftCode, rightCode)
