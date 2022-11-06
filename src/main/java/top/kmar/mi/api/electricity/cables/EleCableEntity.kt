@@ -475,7 +475,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
             if (count == 2) {   // 如果线长为 2 则删除缓存
                 cacheMap[world]!!.remove(cacheId)
                 world.cableCacheIdAllocator.delete(cacheId)
-                world.invalidCacheData.markInvalid(cacheId, 2)
+                world.invalidCacheData.markInvalid(cacheId, 1)
             } else if (code == minCode || code == maxCode) { // 判断被移除的导线是否在端点，是端点的话就无需创建新的缓存
                 if (index >= 0) blockDeque.removeAt(index)
                 if (code == minCode) ++minCode
@@ -483,7 +483,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
             } else {
                 val middle = if (index < 0) -index - 1 else index
                 val newCache = CableCache(count - middle + 10)
-                blockDeque.clipAt(newCache.blockDeque, middle, true)
+                blockDeque.clipAt(newCache.blockDeque, middle, index < 0)
                 val allocator = world.cableCacheIdAllocator
                 allocator.delete(cacheId)
                 val leftCode = allocator.next()
@@ -494,7 +494,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                     put(rightCode, newCache)
                 }
                 // 为方块更新 ID
-                world.invalidCacheData.markInvalid(cacheId, count, code, leftCode, rightCode)
+                world.invalidCacheData.markInvalid(cacheId, count - 1, code, leftCode, rightCode)
             }
         }
 
