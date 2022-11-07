@@ -287,17 +287,23 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
             if (count > that.count) {   // 如果当前缓存大小大于另一个，则将其归并到当前缓存中
                 deleteCache = thatEntity
                 newCache = thisEntity
-                if (isNext) blockDeque.addAll(that.blockDeque)
-                else blockDeque.addAll(0, that.blockDeque)
+                if (isNext) {
+                    blockDeque.addAll(that.blockDeque)
+                    maxCode += that.count
+                } else {
+                    blockDeque.addAll(0, that.blockDeque)
+                    minCode -= that.count
+                }
             } else {    // 如果另一个缓存的大小大于等于当前缓存的大小，则将当前缓存归并到另一个缓存中
                 deleteCache = thisEntity
                 newCache = thatEntity
-                if (isNext) that.blockDeque.addAll(0, blockDeque)
-                else that.blockDeque.addAll(blockDeque)
-            }
-            newCache.cache.apply {
-                minCode = min(minCode, deleteCache.cache.minCode)
-                maxCode = max(maxCode, deleteCache.cache.maxCode)
+                if (isNext) {
+                    that.blockDeque.addAll(0, blockDeque)
+                    that.minCode -= count
+                } else {
+                    that.blockDeque.addAll(blockDeque)
+                    that.maxCode += that.count
+                }
             }
             world.invalidCacheData.markInvalid(deleteCache.cacheId, deleteCache.cache.count, newCache.cacheId)
             world.cableCacheIdAllocator.delete(deleteCache.cacheId)
