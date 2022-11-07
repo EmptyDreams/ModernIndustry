@@ -24,6 +24,7 @@ import net.minecraft.world.World
 import top.kmar.mi.ModernIndustry
 import top.kmar.mi.api.regedits.block.BlockItemHelper
 import top.kmar.mi.api.utils.StringUtil
+import top.kmar.mi.api.utils.expands.isClient
 import top.kmar.mi.api.utils.expands.random
 import top.kmar.mi.api.utils.expands.whatFacing
 import top.kmar.mi.content.items.base.ItemBlockExpand
@@ -119,6 +120,7 @@ class CableBlock(name: String) : BlockContainer(Material.CIRCUITS), BlockItemHel
         world: World, pos: BlockPos, side: EnumFacing,
         hitX: Float, hitY: Float, hitZ: Float
     ): Boolean {
+        if (world.isClient()) return false
         val facing = side.opposite
         val thatEntity = world.getTileEntity(pos.offset(facing))
         if (thatEntity !is EleCableEntity) return false
