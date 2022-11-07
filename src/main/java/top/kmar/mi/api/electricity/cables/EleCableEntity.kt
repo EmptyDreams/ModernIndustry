@@ -3,12 +3,14 @@ package top.kmar.mi.api.electricity.cables
 import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagByte
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumFacing.values
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import top.kmar.mi.api.araw.interfaces.AutoSave
 import top.kmar.mi.api.electricity.EleEnergy
+import top.kmar.mi.api.electricity.cables.InvalidCodeManager.Companion.invalidCodeManager
 import top.kmar.mi.api.electricity.caps.ElectricityCapability.capObj
 import top.kmar.mi.api.net.IAutoNetwork
 import top.kmar.mi.api.net.handler.MessageSender
@@ -38,28 +40,26 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
     @field:AutoSave
     private val linkData = IndexEnumMap(values())
     /** 连接的上一根导线 */
-    @field:AutoSave private var prevCable: EnumFacing? = null
+    @field:AutoSave private var linkedCable0: EnumFacing? = null
     /** 连接的下一根导线 */
-    @field:AutoSave private var nextCable: EnumFacing? = null
+    @field:AutoSave private var linkedCable1: EnumFacing? = null
 
     /** 是否需要发送的客户端 */
     var isSend = false
         private set
-    /**
-     * 线缆编号，相连线缆的编号的差值的绝对值一定为 1
-     *
-     * 编号沿 [nextCable] 方向严格递增，沿 [prevCable] 方向严格递减
-     */
+    /** 线缆编号，相连线缆的编号的差值的绝对值一定为 1 */
     @field:AutoSave
     var code: Int = 0
         private set
     /** 线路缓存的 code */
     @field:AutoSave
     var cacheId: Int = 0
+        private set
         get() {
             if (field == 0) return 0
             val allocator = world.cableCacheIdAllocator
             if (field !in allocator) {
+                code = world.invalidCodeManager.update(field, code)
                 field = world.invalidCacheData.update(field, code)
                 _cache.clear()
             }
@@ -85,8 +85,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
      * @return 获取到的能量 [EleEnergy.capacity] <= [maxEnergy]
      */
     fun requestEnergy(maxEnergy: Int): EleEnergy {
-        if (nextCable == null && prevCable == null)
-            return requestEnergyOnly(code, maxEnergy)
+        if (cacheId == 0) return requestEnergyOnly(code, maxEnergy)
         var result: EleEnergy = EleEnergy.empty
         var energy = maxEnergy
         cache.eachBlock(this) {
@@ -105,7 +104,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         var energy = maxEnergy
         for (facing in values()) {
             if (energy == 0) break
-            if (!isLink(facing) || facing === nextCable || facing === prevCable) continue
+            if (!isLink(facing) || facing === linkedCable0 || facing === linkedCable1) continue
             val cap = world.getTileEntity(pos.offset(facing))?.getCapability(capObj, facing.opposite)
             require(cap != null) { "导线[$this]在指定方向[$facing]上的连接存在异常" }
             val output = cap.extract(energy) {
@@ -122,7 +121,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
     /** 判断当前导线是否连接的有非线缆方块 */
     fun hasLinkedBlock(): Boolean {
         for (facing in values()) {
-            if (isLink(facing) && facing !== nextCable && facing !== prevCable) return true
+            if (isLink(facing) && facing !== linkedCable0 && facing !== linkedCable1) return true
         }
         return false
     }
@@ -144,17 +143,17 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         // 检查两个导线是否在同一个线路中，是则禁止连接
         if (cacheId == target.cacheId && cacheId != 0) return false
         val opposite = facing.opposite
-        if (prevCable == null) {    // 尝试将目标连接到 `prev` 方向
-            if (target.nextCable == null) {
-                prevCable = facing
-                target.nextCable = opposite
-            } else if (target.nextCable !== opposite) return false
-        } else if (nextCable == null) { // 尝试将目标连接到 `next` 方向
-            if (target.prevCable == null) {
-                nextCable = facing
-                target.prevCable = opposite
-            } else if (target.prevCable !== opposite) return false
-        } else return facing === prevCable || facing === nextCable
+        if (linkedCable0 == null) {    // 尝试将目标连接到 `0`
+            if (target.linkedCable0 == null) target.linkedCable0 = opposite
+            else if (target.linkedCable1 == null) target.linkedCable1 = opposite
+            else return false
+            linkedCable0 = facing
+        } else if (linkedCable1 == null) { // 尝试将目标连接到 `1`
+            if (target.linkedCable0 == null) target.linkedCable0 = opposite
+            else if (target.linkedCable1 == null) target.linkedCable1 = opposite
+            else return false
+            linkedCable1 = facing
+        } else return facing === linkedCable0 || facing === linkedCable1
         linkData[facing] = true
         target.linkData[opposite] = true
         if (cacheId != 0) cache.syncCache(this, target)
@@ -168,16 +167,11 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
     fun unlink(facing: EnumFacing) {
         if (!isLink(facing)) return
         linkData[facing] = false
-        val targetPos = pos.offset(facing)
-        if (facing === prevCable) {
-            val that = world.getTileEntity(targetPos) as EleCableEntity?
-            prevCable = null
-            that?.nextCable = null
+        if (facing === linkedCable0) {
+            linkedCable0 = null
             if (cacheId != 0) cache.clipBefore(this)
-        } else if (facing === nextCable) {
-            val that = world.getTileEntity(targetPos) as EleCableEntity?
-            nextCable = null
-            that?.prevCable = null
+        } else if (facing === linkedCable1) {
+            linkedCable1 = null
             if (cacheId != 0) cache.clipAfter(this)
         } else if (cacheId != 0) cache.update(this)
         sendToPlayers()
@@ -235,6 +229,13 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         linkData.setValue(tag.getByte("link").toInt())
     }
 
+    /** 获取下一个导线 */
+    private fun getOtherCable(that: TileEntity): EleCableEntity? {
+        val facing = pos.whatFacing(that.pos)
+        val next = (if (facing === linkedCable0) linkedCable1 else linkedCable0) ?: return null
+        return world.getTileEntity(pos.offset(next)) as EleCableEntity
+    }
+
     companion object {
 
         const val storageKey = "CableCacheId"
@@ -249,7 +250,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         /**
          * 存储线路中连接有方块的电线的坐标
          *
-         * 队列的 `head` 方向为 [prevCable] 方向，`tail` 方向为 [nextCable] 方向
+         * 队列的 `head` 方向为负方向，`tail` 方向为正方向
          */
         private val blockDeque = ArrayDeque<CacheNode>(initialCapacity)
 
@@ -270,8 +271,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
 
         /** 同步两个导线的 code，该方法需要在导线已经完成连接后调用 */
         fun syncCache(thisEntity: EleCableEntity, thatEntity: EleCableEntity) {
-            val facing = thisEntity.pos.whatFacing(thatEntity.pos)
-            val isNext = facing === thisEntity.nextCable
+            val isNext = thisEntity.isPositive(thatEntity)
             if (thatEntity.cacheId == 0) {    // 如果另一个方块还未分配缓存则直接将其归并到当前缓存
                 thatEntity.code = thisEntity.code + if (isNext) 1 else -1
                 thatEntity.cacheId = thisEntity.cacheId
@@ -284,13 +284,27 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
             val world = thisEntity.world
             val deleteCache: EleCableEntity
             val newCache: EleCableEntity
+            val thatIsPositive = thatEntity.isPositive(thisEntity)
+            val codeManager = world.invalidCodeManager
             if (count > that.count) {   // 如果当前缓存大小大于另一个，则将其归并到当前缓存中
                 deleteCache = thatEntity
                 newCache = thisEntity
                 if (isNext) {
+                    if (thatIsPositive)
+                        codeManager.markInvalidFlip(thatEntity.cacheId, that.minCode, that.maxCode)
+                    else {
+                        codeManager.markInvalidLinear(
+                            thatEntity.cacheId, that.count, maxCode - that.minCode + 1
+                        )
+                    }
                     blockDeque.addAll(that.blockDeque)
                     maxCode += that.count
                 } else {
+                    if (thatIsPositive) {
+                        codeManager.markInvalidLinear(
+                            thatEntity.cacheId, that.count, minCode - that.maxCode + 1
+                        )
+                    } else codeManager.markInvalidFlip(thatEntity.cacheId, that.minCode, that.maxCode)
                     blockDeque.addAll(0, that.blockDeque)
                     minCode -= that.count
                 }
@@ -298,9 +312,20 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 deleteCache = thisEntity
                 newCache = thatEntity
                 if (isNext) {
+                    if (thatIsPositive) {
+                        codeManager.markInvalidLinear(
+                            thisEntity.cacheId, count, that.minCode - maxCode + 1
+                        )
+                    } else codeManager.markInvalidFlip(thisEntity.cacheId, minCode, maxCode)
                     that.blockDeque.addAll(0, blockDeque)
                     that.minCode -= count
                 } else {
+                    if (thatIsPositive) codeManager.markInvalidFlip(thisEntity.cacheId, minCode, maxCode)
+                    else {
+                        codeManager.markInvalidLinear(
+                            thisEntity.cacheId, count, that.maxCode - minCode + 1
+                        )
+                    }
                     that.blockDeque.addAll(blockDeque)
                     that.maxCode += that.count
                 }
@@ -312,8 +337,8 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         /**
          * 将缓存从指定位置切分为两份，并为线路中的导线设置新的 [cacheId]
          *
-         * 该操作会将 [entity] 分配到 [prevCable] 方向，
-         * 将 [entity] 的 [nextCable] 方向的导线全部划分到 [nextCable] 方向
+         * 该操作会将 [entity] 分配到负方向，
+         * 将 [entity] 正方向的导线全部划分到正方向
          */
         fun clipAfter(entity: EleCableEntity) {
             clip(entity.world, entity.code + 1, entity.cacheId)
@@ -322,8 +347,8 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         /**
          * 将缓存从指定位置切开分为两份，并为线路中的导线设置新的 [cacheId]
          *
-         * 该操作会将 [entity] 分配到 [nextCable] 方向，
-         * 将 [entity] 的 [prevCable] 方向的导线全部划分到 [prevCable] 方向
+         * 该操作会将 [entity] 分配到正方向，
+         * 将 [entity] 的负方向的导线全部划分到负方向
          */
         fun clipBefore(entity: EleCableEntity) {
             clip(entity.world, entity.code - 1, entity.cacheId)
@@ -425,6 +450,12 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                     if (invoke(block.pos)) break
                 }
             }
+        }
+
+        /** 判断指定导线是否为正方向 */
+        private fun EleCableEntity.isPositive(that: EleCableEntity): Boolean {
+            val next = getOtherCable(that) ?: return true
+            return next.code < code
         }
 
     }
