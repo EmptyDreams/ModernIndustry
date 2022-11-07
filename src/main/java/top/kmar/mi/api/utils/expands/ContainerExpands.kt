@@ -17,22 +17,27 @@ import kotlin.collections.ArrayDeque
  * @param receiver 接受被划分出来的元素的队列
  * @param index 切分位置，切分位置的元素将被划分到右半部分或被丢弃
  * @param retain 是否保留 [index]指向的元素，为 `false` 时会将其移除
+ * @param def 当队列两边元素数量相等时是否将左半部分保留在队列中
+ * @return 是否将左半部分保留在了队列中
  */
-fun <T> ArrayDeque<T>.clipAt(receiver: MutableList<T>, index: Int, retain: Boolean) {
-    if (index < size.floorDiv2()) { // 如果右半部分元素数量多
-        // 将右半部分保留在当前队列中
-        for (i in 0 until index) {
-            receiver.add(first())
-            removeFirst()
-        }
-        if (!retain) removeFirst()
-    } else {
+fun <T> ArrayDeque<T>.clipAt(receiver: MutableList<T>, index: Int, retain: Boolean, def: Boolean): Boolean {
+    val right = size - index    // 右半部分的元素数量
+    if (index > right || (index == right && def)) {
         // 将左半部分保留在当前队列中
         val start = if (retain) index else index + 1
         for (i in start until size)
             receiver.add(this[i])
         for (i in index until size)
             removeLast()
+        return true
+    } else {
+        // 将右半部分保留在当前队列中
+        for (i in 0 until index) {
+            receiver.add(first())
+            removeFirst()
+        }
+        if (!retain) removeFirst()
+        return false
     }
 }
 

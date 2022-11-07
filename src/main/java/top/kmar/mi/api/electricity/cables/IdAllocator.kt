@@ -39,6 +39,10 @@ class IdAllocator(name: String) : WorldSavedData(name) {
         markDirty()
     }
 
+    /**
+     * 获取指定 id 对应的 info，如果不存在则调用 [supplier] 进行创建
+     * @throws ClassCastException 如果 info 类型不为 [T]
+     */
     operator fun <T> get(id: Int, supplier: () -> T): T {
         assert(id in this)
         val result = infoMap.get(id)

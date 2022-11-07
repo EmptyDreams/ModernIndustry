@@ -59,14 +59,11 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         get() {
             if (field == 0) return 0
             val allocator = world.cableCacheIdAllocator
-            if (field !in allocator)
+            if (field !in allocator) {
                 field = world.invalidCacheData.update(field, code)
+                _cache.clear()
+            }
             return field
-        }
-        private set(value) {
-            if (field == value) return
-            field = value
-            _cache.clear()
         }
     /** 线路缓存 */
     private val cache: CableCache
@@ -345,19 +342,20 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
             } else {    // 从中间断开
                 val oldCount = count
                 val middle = if (index < 0) -index - 1 else index
-                val leftIsNew = middle < blockDeque.size    // 左半部分是否存储的是新数据
                 // 将一半的数据转移到新缓存中
                 val newCache = CableCache(count - middle + 10)
-                blockDeque.clipAt(newCache.blockDeque, middle, index < 0)
+                val leftIsOld = blockDeque.clipAt(
+                    newCache.blockDeque, middle, index < 0, code - minCode > maxCode - code
+                )
                 // 更新缓存中的 code
-                if (leftIsNew) {
-                    newCache.minCode = minCode
-                    newCache.maxCode = code - 1
-                    minCode = code + 1
-                } else {
+                if (leftIsOld) {
                     newCache.minCode = code + 1
                     newCache.maxCode = maxCode
                     maxCode = code - 1
+                } else {
+                    newCache.minCode = minCode
+                    newCache.maxCode = code - 1
+                    minCode = code + 1
                 }
                 // 为缓存分配新的 ID，并移除老的缓存
                 val allocator = world.cableCacheIdAllocator
@@ -367,7 +365,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 if (leftCode != 0) allocator[leftCode, { this@CableCache }]
                 if (rightCode != 0) allocator[rightCode, { newCache }]
                 // 为方块更新 ID
-                if (minCode < newCache.minCode)
+                if (leftIsOld)
                     world.invalidCacheData.markInvalid(cacheId, oldCount - 1, code, leftCode, rightCode)
                 else
                     world.invalidCacheData.markInvalid(cacheId, oldCount - 1, code, rightCode, leftCode)
