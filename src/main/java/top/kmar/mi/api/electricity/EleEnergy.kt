@@ -25,9 +25,9 @@ class EleEnergy(capacity: Int, voltage: Int) :
      * 计算公式：`voltage * current`
      */
     val current: Int
-        get() = voltage / capacity
+        get() = if (capacity == 0) 0 else voltage / capacity
     val isEmpty: Boolean
-        get() = current == 0 || voltage == 0
+        get() = capacity == 0 || voltage == 0
 
     fun isNotEmpty(): Boolean {
         return !isEmpty
@@ -56,17 +56,17 @@ class EleEnergy(capacity: Int, voltage: Int) :
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val eleEnergy = other as EleEnergy
-        return if (voltage != eleEnergy.voltage) false else current == eleEnergy.current
+        return if (voltage != eleEnergy.voltage) false else capacity == eleEnergy.capacity
     }
 
     override fun hashCode(): Int {
         var result = voltage
-        result = 31 * result + current
+        result = 31 * result + capacity
         return result
     }
 
     override fun toString(): String {
-        return "voltage=$voltage;current=$current"
+        return "voltage=$voltage;capacity=$capacity"
     }
 
     override fun serializeNBT(): NBTTagCompound {
