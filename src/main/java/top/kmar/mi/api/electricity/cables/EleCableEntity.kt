@@ -47,10 +47,13 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
     /** 是否需要发送的客户端 */
     var isSend = false
         private set
-    /** 线缆编号，相连线缆的编号的差值的绝对值一定为 1 */
+    /**
+     * 线缆编号，相连线缆的编号的差值的绝对值一定为 1
+     *
+     * 访问该变量之前请确保已经访问过 [cacheId]，该变量通过 [cacheId]的 getter 进行更新
+     */
     @field:AutoSave
     var code: Int = 0
-        private set
     /** 线路缓存的 code */
     @field:AutoSave
     var cacheId: Int = 0
@@ -59,8 +62,10 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
             if (field == 0) return 0
             val allocator = world.cableCacheIdAllocator
             if (field !in allocator) {
-                code = world.invalidCodeManager.update(field, code)
-                field = world.invalidCacheData.update(field, code)
+                do {
+                    code = world.invalidCodeManager.update(field, code)
+                    field = world.invalidCacheData.update(field, code)
+                } while (field != 0 && field !in allocator)
                 _cache.clear()
             }
             return field
@@ -168,7 +173,8 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         if (cacheId == 0) return
         cache.clip(world, code, cacheId)
         fun task(facing: EnumFacing) {
-            val cable = world.getTileEntity(pos.offset(facing)) as EleCableEntity
+            val cable = world.getTileEntity(pos.offset(facing)) ?: return
+            cable as EleCableEntity
             if (cable.linkedCable0 === facing.opposite) cable.linkedCable0 = null
             else if (cable.linkedCable1 === facing.opposite) cable.linkedCable1 = null
             cable.sendToPlayers()
