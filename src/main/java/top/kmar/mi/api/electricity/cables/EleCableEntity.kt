@@ -315,7 +315,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 if (isNext) {
                     if (thatIsPositive) {
                         codeManager.markInvalidFlip(
-                            thatEntity.cacheId, that.minCode, that.maxCode, maxCode - that.minCode + 2
+                            thatEntity.cacheId, that.minCode, that.maxCode, maxCode - that.minCode + 1
                         )
                     } else {
                         codeManager.markInvalidLinear(
@@ -331,7 +331,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                         )
                     } else {
                         codeManager.markInvalidFlip(
-                            thatEntity.cacheId, that.minCode, that.maxCode, minCode - that.maxCode
+                            thatEntity.cacheId, that.minCode, that.maxCode, minCode - that.maxCode - 1
                         )
                     }
                     blockDeque.addAll(0, that.blockDeque)
@@ -343,7 +343,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 if (isNext) {
                     if (thatIsPositive) {
                         codeManager.markInvalidFlip(
-                            thisEntity.cacheId, minCode, maxCode, that.maxCode - minCode + 2
+                            thisEntity.cacheId, minCode, maxCode, that.maxCode - minCode + 1
                         )
                     } else {
                         codeManager.markInvalidLinear(
@@ -358,7 +358,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                         )
                     } else {
                         codeManager.markInvalidFlip(
-                            thisEntity.cacheId, minCode, maxCode, that.minCode - maxCode
+                            thisEntity.cacheId, minCode, maxCode, that.minCode - maxCode - 1
                         )
                     }
                     that.blockDeque.addAll(blockDeque)

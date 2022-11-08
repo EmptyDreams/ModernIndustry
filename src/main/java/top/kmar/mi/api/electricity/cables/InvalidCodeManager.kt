@@ -109,7 +109,7 @@ enum class CableCodeTransformEnum {
     /** 翻转 */
     FLIP {
         override fun update(oldCode: Int, min: Int, max: Int, value: Int): Int {
-            val length = max - min
+            val length = max - min + 1
             val mid = min + length.floorDiv2()
             return (mid shl 1) - oldCode - (length.and(1) xor 1) + value
         }
