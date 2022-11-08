@@ -12,6 +12,7 @@ import top.kmar.mi.api.araw.interfaces.AutoSave;
 import top.kmar.mi.api.electricity.EleEnergy;
 import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
+import top.kmar.mi.api.graphics.components.SlotCmpt;
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.expands.WorldExpandsKt;
@@ -102,6 +103,8 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
         event.registryInitTask(key, gui -> {
             EUFurnace furnace = (EUFurnace) gui.getTileEntity();
             gui.initItemStackHandler(furnace.items);
+            SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
+            input.getSlotAttributes().setInputChecker(it -> !MuffleFurnace.getResult(it).isEmpty());
         });
         event.registryLoopTask(key, gui -> {
             EUFurnace furnace = (EUFurnace) gui.getTileEntity();

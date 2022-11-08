@@ -18,10 +18,12 @@ import top.kmar.mi.api.electricity.EleEnergy;
 import top.kmar.mi.api.electricity.caps.IElectricityCap;
 import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
+import top.kmar.mi.api.graphics.components.SlotCmpt;
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
 import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 import top.kmar.mi.content.blocks.BlockGuiList;
+import top.kmar.mi.content.capabilities.nonburn.NonBurnCapability;
 import top.kmar.mi.data.CraftList;
 import top.kmar.mi.data.properties.MIProperty;
 
@@ -147,6 +149,11 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
         event.registryInitTask(BlockGuiList.getFirePower(), gui -> {
             EMFirePower power = (EMFirePower) gui.getTileEntity();
             gui.initItemStackHandler(power.items);
+            SlotCmpt input = (SlotCmpt) gui.getElementByID("input");
+            input.getSlotAttributes().setInputChecker(it ->
+                    TileEntityFurnace.isItemFuel(it) &&
+                            !it.hasCapability(NonBurnCapability.NON_BURN, null)
+            );
         });
         event.registryLoopTask(BlockGuiList.getFirePower(), gui -> {
             EMFirePower power = (EMFirePower) gui.getTileEntity();
