@@ -27,7 +27,7 @@
 | `araw`         | 实现`TileEntity`内容的自动化存储 |                                          |
 | `capabilities` | 各个模块用到的`cap`           |                                          |
 | `craft`        | 独立于MC外的合成表             |                                          |
-| `electricity`  | 电力系统                   |                                          |
+| `electricity`  | 电力系统                   | [工作原理](https://kmar.top/posts/1c61a114/) |
 | `fluid`        | 流体管道                   |                                          |
 | `graphics`     | 实现运行期自动绘制`gui`         | [在线文档](https://kmar.top/posts/e0217013/) |
 | `net`          | 自动化网络通信                |                                          |
