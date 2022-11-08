@@ -1,0 +1,22 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Minecraft Server" type="Application" factoryName="Application" singleton="true">
+    <envs>
+      <env name="MCP_TO_SRG" value="$PROJECT_DIR$/../ModernIndustry\build\createSrgToMcp\output.srg" />
+      <env name="MOD_CLASSES" value="$PROJECT_DIR$/../ModernIndustry\out\production\resources;$PROJECT_DIR$/../ModernIndustry\out\production\classes" />
+      <env name="mainClass" value="net.minecraft.launchwrapper.Launch" />
+      <env name="MCP_MAPPINGS" value="snapshot_20171003-1.12" />
+      <env name="FORGE_VERSION" value="14.23.5.2859" />
+      <env name="FORGE_GROUP" value="net.minecraftforge" />
+      <env name="tweakClass" value="net.minecraftforge.fml.common.launcher.FMLServerTweaker" />
+      <env name="MC_VERSION" value="${MC_VERSION}" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="net.minecraftforge.legacydev.MainServer" />
+    <module name="ModernIndustry.main" />
+    <option name="PROGRAM_PARAMETERS" value="--tweakClass top.kmar.mi.coremod.boot.MIMixinTweaker" />
+    <option name="VM_PARAMETERS" value="-Dnet.minecraftforge.gradle.GradleStart.srg.srg-mcp=D:\Workspace\ModernIndustry\build\createSrgToMcp\output.srg -Dmixin.env.remapRefMap=true -Dmixin.env.refMapRemappingFile=D:\Workspace\ModernIndustry\build\createSrgToMcp\output.srg" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
