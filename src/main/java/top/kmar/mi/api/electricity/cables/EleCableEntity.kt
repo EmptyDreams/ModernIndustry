@@ -302,7 +302,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 } else {
                     if (thatIsPositive) {
                         codeManager.markInvalidLinear(
-                            thatEntity.cacheId, that.count, minCode - that.maxCode + 1
+                            thatEntity.cacheId, that.count, minCode - that.maxCode - 1
                         )
                     } else codeManager.markInvalidFlip(thatEntity.cacheId, that.minCode, that.maxCode)
                     blockDeque.addAll(0, that.blockDeque)
@@ -312,20 +312,22 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 deleteCache = thisEntity
                 newCache = thatEntity
                 if (isNext) {
-                    if (thatIsPositive) {
+                    if (thatIsPositive)
+                        codeManager.markInvalidFlip(thisEntity.cacheId, minCode, maxCode)
+                    else {
                         codeManager.markInvalidLinear(
-                            thisEntity.cacheId, count, that.minCode - maxCode + 1
+                            thisEntity.cacheId, count, that.minCode - maxCode - 1
                         )
-                    } else codeManager.markInvalidFlip(thisEntity.cacheId, minCode, maxCode)
+                    }
                     that.blockDeque.addAll(0, blockDeque)
                     that.minCode -= count
                 } else {
-                    if (thatIsPositive) codeManager.markInvalidFlip(thisEntity.cacheId, minCode, maxCode)
-                    else {
+                    if (thatIsPositive) {
                         codeManager.markInvalidLinear(
                             thisEntity.cacheId, count, that.maxCode - minCode + 1
                         )
                     }
+                    else codeManager.markInvalidFlip(thisEntity.cacheId, minCode, maxCode)
                     that.blockDeque.addAll(blockDeque)
                     that.maxCode += that.count
                 }
