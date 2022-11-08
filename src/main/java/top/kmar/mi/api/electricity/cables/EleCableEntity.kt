@@ -177,6 +177,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
             cable as EleCableEntity
             if (cable.linkedCable0 === facing.opposite) cable.linkedCable0 = null
             else if (cable.linkedCable1 === facing.opposite) cable.linkedCable1 = null
+            else return
             cable.sendToPlayers()
         }
         linkedCable0?.let { task(it) }
@@ -314,7 +315,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 if (isNext) {
                     if (thatIsPositive) {
                         codeManager.markInvalidFlip(
-                            thatEntity.cacheId, that.minCode, that.maxCode, maxCode - that.minCode
+                            thatEntity.cacheId, that.minCode, that.maxCode, maxCode - that.minCode + 2
                         )
                     } else {
                         codeManager.markInvalidLinear(
@@ -342,7 +343,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 if (isNext) {
                     if (thatIsPositive) {
                         codeManager.markInvalidFlip(
-                            thisEntity.cacheId, minCode, maxCode, that.minCode - minCode
+                            thisEntity.cacheId, minCode, maxCode, that.maxCode - minCode + 2
                         )
                     } else {
                         codeManager.markInvalidLinear(
