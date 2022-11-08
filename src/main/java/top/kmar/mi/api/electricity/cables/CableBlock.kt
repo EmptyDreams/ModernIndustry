@@ -111,7 +111,15 @@ class CableBlock(name: String) : BlockContainer(Material.CIRCUITS), BlockItemHel
     ) {
         val facing = pos.whatFacing(fromPos)
         val entity = worldIn.getTileEntity(pos) as EleCableEntity
-        entity.updateLinkData(facing)
+        val thatEntity = worldIn.getTileEntity(fromPos)
+        entity.linkAllOrUnlinkBlock(facing, thatEntity)
+    }
+
+    // 方块被删除时断开与周围导线的连接
+    override fun breakBlock(worldIn: World, pos: BlockPos, state: IBlockState) {
+        val cable = worldIn.getTileEntity(pos) as EleCableEntity
+        cable.removeFromCache()
+        super.breakBlock(worldIn, pos, state)
     }
 
     // 放置时优先连接右键点击的方块
@@ -128,12 +136,6 @@ class CableBlock(name: String) : BlockContainer(Material.CIRCUITS), BlockItemHel
         putBlock(world, pos, defaultState, entity, player, stack)
         entity.linkCable(facing, thatEntity)
         return true
-    }
-
-    override fun breakBlock(worldIn: World, pos: BlockPos, state: IBlockState) {
-        val cable = worldIn.getTileEntity(pos) as EleCableEntity
-        worldIn.invalidCacheData.update(cable.cacheId, cable.code)
-        super.breakBlock(worldIn, pos, state)
     }
 
     override fun createBlockState(): BlockStateContainer =

@@ -163,17 +163,26 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         return true
     }
 
-    /** 移除当前导线与指定方向上的任意方块的连接 */
-    fun unlink(facing: EnumFacing) {
+    /** 将当前导线从缓存中移除，并更新与其连接的导线的数据 */
+    fun removeFromCache() {
+        if (cacheId == 0) return
+        cache.clip(world, code, cacheId)
+        fun task(facing: EnumFacing) {
+            val cable = world.getTileEntity(pos.offset(facing)) as EleCableEntity
+            if (cable.linkedCable0 === facing.opposite) cable.linkedCable0 = null
+            else cable.linkedCable1 = null
+            cable.sendToPlayers()
+        }
+        linkedCable0?.let { task(it) }
+        linkedCable1?.let { task(it) }
+    }
+
+    /** 移除当前导线与指定方向上的非线缆方块的连接 */
+    fun unlinkBlock(facing: EnumFacing) {
         if (!isLink(facing)) return
+        assert(facing !== linkedCable0 && facing !== linkedCable1)
         linkData[facing] = false
-        if (facing === linkedCable0) {
-            linkedCable0 = null
-            if (cacheId != 0) cache.clipBefore(this)
-        } else if (facing === linkedCable1) {
-            linkedCable1 = null
-            if (cacheId != 0) cache.clipAfter(this)
-        } else if (cacheId != 0) cache.update(this)
+        if (cacheId != 0) cache.update(this)
         sendToPlayers()
     }
 
@@ -185,11 +194,18 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         sendToPlayers()
     }
 
-    /** 更新指定方向上的连接数据 */
-    fun updateLinkData(facing: EnumFacing) {
-        val thatEntity = world.getTileEntity(pos.offset(facing)) ?: return unlink(facing)
-        if (thatEntity is EleCableEntity) linkCable(facing, thatEntity)
-        else if (thatEntity.getCapability(capObj, facing.opposite) == null) unlink(facing)
+    /**
+     * 连接指定方块或删除与非导线方块的连接
+     *
+     * 该方法不会移除导线与导线直接的连接
+     */
+    fun linkAllOrUnlinkBlock(facing: EnumFacing, that: TileEntity?) {
+        if (that == null) {
+            if (facing !== linkedCable0 && facing !== linkedCable1) unlinkBlock(facing)
+            return
+        }
+        if (that is EleCableEntity) linkCable(facing, that)
+        else if (that.getCapability(capObj, facing.opposite) == null) unlinkBlock(facing)
         else linkBlock(facing)
     }
 
@@ -337,32 +353,12 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         }
 
         /**
-         * 将缓存从指定位置切分为两份，并为线路中的导线设置新的 [cacheId]
-         *
-         * 该操作会将 [entity] 分配到负方向，
-         * 将 [entity] 正方向的导线全部划分到正方向
-         */
-        fun clipAfter(entity: EleCableEntity) {
-            clip(entity.world, entity.code + 1, entity.cacheId)
-        }
-
-        /**
-         * 将缓存从指定位置切开分为两份，并为线路中的导线设置新的 [cacheId]
-         *
-         * 该操作会将 [entity] 分配到正方向，
-         * 将 [entity] 的负方向的导线全部划分到负方向
-         */
-        fun clipBefore(entity: EleCableEntity) {
-            clip(entity.world, entity.code - 1, entity.cacheId)
-        }
-
-        /**
          * 从指定位置切开缓存
          * @param world 当前世界
          * @param code 分界点（该点会从缓存中移除）
          * @param cacheId 缓存 ID
          */
-        private fun clip(world: World, code: Int, cacheId: Int) {
+        fun clip(world: World, code: Int, cacheId: Int) {
             if (code < minCode || code > maxCode) return
             val index = blockDeque.binarySearch { it.code.compareTo(code) }
             if (count == 2) {   // 如果线长为 2 则删除缓存
