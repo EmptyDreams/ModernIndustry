@@ -25,7 +25,7 @@ class EleEnergy(capacity: Int, voltage: Int) :
      * 计算公式：`voltage * current`
      */
     val current: Int
-        get() = if (capacity == 0) 0 else voltage / capacity
+        get() = if (voltage == 0) 0 else capacity / voltage
     val isEmpty: Boolean
         get() = capacity == 0 || voltage == 0
 
