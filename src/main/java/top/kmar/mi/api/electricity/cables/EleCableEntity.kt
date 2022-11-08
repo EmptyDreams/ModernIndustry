@@ -170,7 +170,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         fun task(facing: EnumFacing) {
             val cable = world.getTileEntity(pos.offset(facing)) as EleCableEntity
             if (cable.linkedCable0 === facing.opposite) cable.linkedCable0 = null
-            else cable.linkedCable1 = null
+            else if (cable.linkedCable1 === facing.opposite) cable.linkedCable1 = null
             cable.sendToPlayers()
         }
         linkedCable0?.let { task(it) }
@@ -306,9 +306,11 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 deleteCache = thatEntity
                 newCache = thisEntity
                 if (isNext) {
-                    if (thatIsPositive)
-                        codeManager.markInvalidFlip(thatEntity.cacheId, that.minCode, that.maxCode)
-                    else {
+                    if (thatIsPositive) {
+                        codeManager.markInvalidFlip(
+                            thatEntity.cacheId, that.minCode, that.maxCode, maxCode - that.minCode
+                        )
+                    } else {
                         codeManager.markInvalidLinear(
                             thatEntity.cacheId, that.count, maxCode - that.minCode + 1
                         )
@@ -320,7 +322,11 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                         codeManager.markInvalidLinear(
                             thatEntity.cacheId, that.count, minCode - that.maxCode - 1
                         )
-                    } else codeManager.markInvalidFlip(thatEntity.cacheId, that.minCode, that.maxCode)
+                    } else {
+                        codeManager.markInvalidFlip(
+                            thatEntity.cacheId, that.minCode, that.maxCode, minCode - that.maxCode
+                        )
+                    }
                     blockDeque.addAll(0, that.blockDeque)
                     minCode -= that.count
                 }
@@ -328,25 +334,30 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 deleteCache = thisEntity
                 newCache = thatEntity
                 if (isNext) {
-                    if (thatIsPositive)
-                        codeManager.markInvalidFlip(thisEntity.cacheId, minCode, maxCode)
-                    else {
+                    if (thatIsPositive) {
+                        codeManager.markInvalidFlip(
+                            thisEntity.cacheId, minCode, maxCode, that.minCode - minCode
+                        )
+                    } else {
                         codeManager.markInvalidLinear(
                             thisEntity.cacheId, count, that.minCode - maxCode - 1
                         )
                     }
                     that.blockDeque.addAll(0, blockDeque)
-                    that.minCode -= count
                 } else {
                     if (thatIsPositive) {
                         codeManager.markInvalidLinear(
                             thisEntity.cacheId, count, that.maxCode - minCode + 1
                         )
+                    } else {
+                        codeManager.markInvalidFlip(
+                            thisEntity.cacheId, minCode, maxCode, that.minCode - maxCode
+                        )
                     }
-                    else codeManager.markInvalidFlip(thisEntity.cacheId, minCode, maxCode)
                     that.blockDeque.addAll(blockDeque)
-                    that.maxCode += that.count
                 }
+                if (thatIsPositive) that.maxCode += count
+                else that.minCode -= count
             }
             world.invalidCacheData.markInvalid(deleteCache.cacheId, deleteCache.cache.count, newCache.cacheId)
             world.cableCacheIdAllocator.delete(deleteCache.cacheId)

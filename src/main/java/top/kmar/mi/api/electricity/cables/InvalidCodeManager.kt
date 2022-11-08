@@ -35,9 +35,9 @@ class InvalidCodeManager(name: String) : WorldSavedData(cacheKey) {
     }
 
     /** 标记某个缓存中的所有导线的 code 为等待翻转更新的状态 */
-    fun markInvalidFlip(id: Int, min: Int, max: Int) {
+    fun markInvalidFlip(id: Int, min: Int, max: Int, value: Int) {
         assert(id !in codeMap)
-        codeMap.put(id, Node(FLIP, max - min + 1, min, max, 0))
+        codeMap.put(id, Node(FLIP, max - min + 1, min, max, value))
     }
 
     override fun readFromNBT(nbt: NBTTagCompound) {
@@ -111,7 +111,7 @@ enum class CableCodeTransformEnum {
         override fun update(oldCode: Int, min: Int, max: Int, value: Int): Int {
             val length = max - min
             val mid = min + length.floorDiv2()
-            return (mid shl 1) - oldCode - (length.and(1) xor 1)
+            return (mid shl 1) - oldCode - (length.and(1) xor 1) + value
         }
     };
 
