@@ -470,6 +470,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         /** 判断指定导线是否为正方向 */
         private fun EleCableEntity.isPositive(that: EleCableEntity): Boolean {
             val next = getOtherCable(that) ?: return true
+            next.cacheId
             return next.code < code
         }
 
