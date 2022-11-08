@@ -16,12 +16,12 @@ public class EUMFurnace extends EUFurnace {
     
     @Override
     public int getNeedEnergy() {
-        return 10;
+        return super.getNeedEnergy() + 800;
     }
     
     @Override
-    public int getNeedTime() {
-        return 100;
+    public int getEfficiency() {
+        return super.getEfficiency() + 70;
     }
     
     @SubscribeEvent

@@ -35,7 +35,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
     /** 输入/输出框 */
     @AutoSave
     private final ItemStackHandler items = new ItemStackHandler(2);
-    @AutoSave private int workingTime = 0;
+    @AutoSave private int workProgress = 0;
     
     @Override
     public void update() {
@@ -48,10 +48,10 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
         if (outStack.getCount() >= outStack.getMaxStackSize()) return;
         ItemStack inputStack = getInputStack();
         if (inputStack.isEmpty()) {
-            workingTime = 0;
+            workProgress = 0;
             return;
         }
-        EleEnergy energy = requestEnergy(getNeedEnergy());
+        EleEnergy energy = requestEnergy(Math.min(getEfficiency(), getNeedEnergy() - workProgress));
         boolean check = checkEnergy(
                 energy, MIN_VOLTAGE, MAX_VOLTAGE,
                 (JvmNoneFunction) () -> updateShow(false),
@@ -59,9 +59,9 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
                 (JvmNoneFunction) () -> explode(1, true)
         );
         if (!check) return;
-        workingTime += energy.getCapacity();
-        if (workingTime >= getNeedTime()) {
-            workingTime = 0;
+        workProgress += energy.getCapacity();
+        if (workProgress >= getNeedEnergy()) {
+            workProgress = 0;
             items.insertItem(1, MuffleFurnace.getResult(inputStack), false);
             inputStack.shrink(1);
         } else updateShow(true);
@@ -77,8 +77,14 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
     
     public ItemStack getInputStack() { return items.getStackInSlot(0); }
     public ItemStack getOutputStack() { return items.getStackInSlot(1); }
-    public int getNeedEnergy() { return 5; }
-    public int getNeedTime() { return 120; }
+    /** 获取制作一个产物需要的能量 */
+    public int getNeedEnergy() {
+        return 5200;
+    }
+    /** 获取每 Tick 做大能够获取的能量 */
+    public int getEfficiency() {
+        return 100;
+    }
     
     @Nullable
     @Override
@@ -100,8 +106,8 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
         event.registryLoopTask(key, gui -> {
             EUFurnace furnace = (EUFurnace) gui.getTileEntity();
             ProgressBarCmpt progress = (ProgressBarCmpt) gui.getElementByID("work");
-            progress.setMax(furnace.getNeedTime());
-            progress.setValue(furnace.workingTime);
+            progress.setMax(furnace.getNeedEnergy());
+            progress.setValue(furnace.workProgress);
         });
     }
     

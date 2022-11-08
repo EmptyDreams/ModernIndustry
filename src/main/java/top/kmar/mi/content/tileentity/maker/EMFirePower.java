@@ -36,7 +36,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
     /** 输出电压 */
     public static final int VOLTAGE = EleEnergy.COMMON;
     /** 最大能量值 */
-    public static final int maxContainer = 500000;
+    public static final int maxContainer = 250000;
     
     /** 输入/输出框 */
     @AutoSave
@@ -97,7 +97,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
     /** 更新燃烧时间 */
     private void updateBurningTime() {
         if ((burningTime += 5) >= maxTime) updateProduction();
-        container += 100;
+        container += 200;
         markDirty();
     }
     
