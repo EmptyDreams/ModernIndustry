@@ -66,7 +66,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
         int maxEnergy = getNeedEnergy();
         EleEnergy energy = requestEnergy(Math.min(50, maxEnergy - workingTime));
         boolean check = checkEnergy(
-                energy, MIN_VOLTAGE, maxEnergy,
+                energy, MIN_VOLTAGE, MAX_VOLTAGE,
                 (JvmNoneFunction) () -> updateShow(false),
                 (JvmNoneFunction) () -> updateShow(true),
                 (JvmNoneFunction) () -> explode(1, true)
