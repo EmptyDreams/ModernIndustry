@@ -41,6 +41,7 @@ class InvalidCodeManager(name: String) : WorldSavedData(cacheKey) {
     /** 标记某个缓存中的所有导线的 code 为等待线性更新更新状态 */
     fun markInvalidLinear(id: Int, count: Int, value: Int) {
         assert(id !in codeMap)
+        if (value == 0) return
         codeMap.put(id, Node(LINEAR, count, 0, 0, value))
     }
 
