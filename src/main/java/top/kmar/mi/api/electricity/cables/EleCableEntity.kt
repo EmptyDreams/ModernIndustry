@@ -199,7 +199,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
     fun linkBlock(facing: EnumFacing) {
         if (isLink(facing)) return
         linkData[facing] = true
-        cache.update(this)
+        if (cacheId != 0) cache.update(this)
         sendToPlayers()
     }
 
