@@ -26,7 +26,7 @@ public class CommonProxy {
         ASM = event.getAsmData();
         AutoRegister.init();
         //noinspection ConstantConditions
-        if ("jar".equals(ModernIndustry.class.getResource("").getProtocol())) {
+        if (!"jar".equals(ModernIndustry.class.getResource("").getProtocol())) {
 			BlockJsonBuilder.build();
 			ItemJsonBuilder.build();
 			FluidJsonBuilder.build();
