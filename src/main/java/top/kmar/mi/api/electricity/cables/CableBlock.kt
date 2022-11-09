@@ -22,6 +22,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import top.kmar.mi.ModernIndustry
+import top.kmar.mi.api.electricity.EleTileEntity
 import top.kmar.mi.api.regedits.block.BlockItemHelper
 import top.kmar.mi.api.utils.StringUtil
 import top.kmar.mi.api.utils.expands.isClient
@@ -112,6 +113,7 @@ class CableBlock(name: String) : BlockContainer(Material.CIRCUITS), BlockItemHel
         val facing = pos.whatFacing(fromPos)
         val entity = worldIn.getTileEntity(pos) as EleCableEntity
         val thatEntity = worldIn.getTileEntity(fromPos)
+        if (thatEntity is EleTileEntity) thatEntity.link(facing.opposite)
         entity.linkAllOrUnlinkBlock(facing, thatEntity)
     }
 
