@@ -68,15 +68,20 @@ class IdAllocator(name: String) : WorldSavedData(name) {
         return compound
     }
 
-}
+    companion object {
 
-/** 当前世界的线缆 ID 分配器 */
-val World.cableCacheIdAllocator: IdAllocator
-    get() {
-        var allocator = perWorldStorage.getOrLoadData(IdAllocator::class.java, EleCableEntity.storageKey)
-        if (allocator == null) {
-            allocator = IdAllocator(EleCableEntity.storageKey)
-            perWorldStorage.setData(EleCableEntity.storageKey, allocator)
-        } else allocator as IdAllocator
-        return allocator
+        /** 当前世界的线缆 ID 分配器 */
+        @JvmStatic
+        val World.cableCacheIdAllocator: IdAllocator
+            get() {
+                var allocator = perWorldStorage.getOrLoadData(IdAllocator::class.java, EleCableEntity.storageKey)
+                if (allocator == null) {
+                    allocator = IdAllocator(EleCableEntity.storageKey)
+                    perWorldStorage.setData(EleCableEntity.storageKey, allocator)
+                } else allocator as IdAllocator
+                return allocator
+            }
+
     }
+
+}

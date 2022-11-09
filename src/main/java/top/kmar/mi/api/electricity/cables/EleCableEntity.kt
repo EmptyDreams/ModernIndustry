@@ -10,6 +10,8 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import top.kmar.mi.api.araw.interfaces.AutoSave
 import top.kmar.mi.api.electricity.EleEnergy
+import top.kmar.mi.api.electricity.cables.IdAllocator.Companion.cableCacheIdAllocator
+import top.kmar.mi.api.electricity.cables.InvalidCacheManager.Companion.invalidCacheData
 import top.kmar.mi.api.electricity.cables.InvalidCodeManager.Companion.invalidCodeManager
 import top.kmar.mi.api.electricity.caps.ElectricityCapability.capObj
 import top.kmar.mi.api.net.IAutoNetwork

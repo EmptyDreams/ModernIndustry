@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
 import net.minecraft.world.storage.WorldSavedData
-import top.kmar.mi.api.electricity.cables.InvalidCacheManager.Companion.cacheKey
 
 /**
  * 废弃 ID 管理器
@@ -74,6 +73,19 @@ class InvalidCacheManager(name: String) : WorldSavedData(cacheKey) {
 
         const val cacheKey = "cable_invalid_cache"
 
+        /** 获取存储在当前世界中的无效缓存的数据 */
+        @JvmStatic
+        val World.invalidCacheData: InvalidCacheManager
+            get() {
+                var saved = perWorldStorage.getOrLoadData(InvalidCacheManager::class.java, cacheKey)
+                if (saved != null) saved as InvalidCacheManager
+                else {
+                    saved = InvalidCacheManager(cacheKey)
+                    perWorldStorage.setData(cacheKey, saved)
+                }
+                return saved
+            }
+
     }
 
     private data class Node(
@@ -84,15 +96,3 @@ class InvalidCacheManager(name: String) : WorldSavedData(cacheKey) {
     )
 
 }
-
-/** 获取存储在当前世界中的无效缓存的数据 */
-val World.invalidCacheData: InvalidCacheManager
-    get() {
-        var saved = perWorldStorage.getOrLoadData(InvalidCacheManager::class.java, cacheKey)
-        if (saved != null) saved as InvalidCacheManager
-        else {
-            saved = InvalidCacheManager(cacheKey)
-            perWorldStorage.setData(cacheKey, saved)
-        }
-        return saved
-    }
