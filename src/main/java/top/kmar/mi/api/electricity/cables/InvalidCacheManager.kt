@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
 import net.minecraft.world.storage.WorldSavedData
+import top.kmar.mi.api.utils.expands.isServer
 
 /**
  * 废弃 ID 管理器
@@ -81,6 +82,7 @@ class InvalidCacheManager(name: String) : WorldSavedData(cacheKey) {
         @JvmStatic
         val World.invalidCacheData: InvalidCacheManager
             get() {
+                assert(isServer())
                 var saved = perWorldStorage.getOrLoadData(InvalidCacheManager::class.java, cacheKey)
                 if (saved != null) saved as InvalidCacheManager
                 else {

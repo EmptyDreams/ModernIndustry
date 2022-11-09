@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.ints.IntAVLTreeSet
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
 import net.minecraft.world.storage.WorldSavedData
+import top.kmar.mi.api.utils.expands.isServer
 import top.kmar.mi.api.utils.expands.random
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -78,6 +79,7 @@ class IdAllocator(name: String) : WorldSavedData(name) {
         @JvmStatic
         val World.cableCacheIdAllocator: IdAllocator
             get() {
+                assert(isServer())
                 var allocator = perWorldStorage.getOrLoadData(IdAllocator::class.java, EleCableEntity.storageKey)
                 if (allocator == null) {
                     allocator = IdAllocator(EleCableEntity.storageKey)

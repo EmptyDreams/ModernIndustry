@@ -7,6 +7,7 @@ import net.minecraft.world.storage.WorldSavedData
 import top.kmar.mi.api.electricity.cables.CableCodeTransformEnum.FLIP
 import top.kmar.mi.api.electricity.cables.CableCodeTransformEnum.LINEAR
 import top.kmar.mi.api.utils.expands.floorDiv2
+import top.kmar.mi.api.utils.expands.isServer
 
 /**
  * 旧导线 code 管理器
@@ -97,6 +98,7 @@ class InvalidCodeManager(name: String) : WorldSavedData(cacheKey) {
         @JvmStatic
         val World.invalidCodeManager: InvalidCodeManager
             get() {
+                assert(isServer())
                 var allocator = perWorldStorage.getOrLoadData(InvalidCacheManager::class.java, cacheKey)
                 if (allocator == null) {
                     allocator = InvalidCodeManager(cacheKey)
