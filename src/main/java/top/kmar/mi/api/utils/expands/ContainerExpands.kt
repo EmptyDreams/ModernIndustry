@@ -18,6 +18,7 @@ import kotlin.collections.ArrayDeque
  * @param def 分隔点左侧（不包括分割点）的元素是否保留在当前对象中
  */
 fun <T> ArrayDeque<T>.clipAt(receiver: MutableList<T>, index: Int, retain: Boolean, def: Boolean) {
+    if (isEmpty()) return
     if (def) {
         // 将左半部分保留在当前队列中
         val start = if (retain) index else index + 1
