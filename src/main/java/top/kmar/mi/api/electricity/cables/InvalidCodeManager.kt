@@ -20,7 +20,17 @@ class InvalidCodeManager(name: String) : WorldSavedData(cacheKey) {
         assert(name == cacheKey)
     }
 
-    /** 更新某个 code，为查询到则返回 [oldCode] */
+    /**
+     * 获取某个 oldCode 对应的新 code，未查询到返回 [oldCode]
+     *
+     * 该方法更新 code 时不会修改 count
+     */
+    fun getNewCode(id: Int, oldCode: Int): Int {
+        val node = codeMap.get(id) ?: return oldCode
+        return node.update(oldCode)
+    }
+
+    /** 更新某个 code，未查询到则返回 [oldCode] */
     fun update(id: Int, oldCode: Int): Int {
         val node = codeMap.get(id) ?: return oldCode
         if (node.count == 1) codeMap.remove(id)

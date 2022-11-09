@@ -366,6 +366,9 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 if (thatIsPositive) that.maxCode += count
                 else that.minCode -= count
             }
+            deleteCache.cache.blockDeque.forEach {
+                it.code = codeManager.getNewCode(deleteCache.cacheId, it.code)
+            }
             world.invalidCacheData.markInvalid(deleteCache.cacheId, deleteCache.cache.count, newCache.cacheId)
             world.cableCacheIdAllocator.delete(deleteCache.cacheId)
         }
