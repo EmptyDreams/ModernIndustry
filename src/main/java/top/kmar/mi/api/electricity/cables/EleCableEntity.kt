@@ -395,7 +395,7 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 // 将一半的数据转移到新缓存中
                 val newCache = CableCache(count - middle + 10)
                 val leftIsOld = code - minCode > maxCode - code
-                blockDeque.clipAt(newCache.blockDeque, middle, index < 0, leftIsOld)
+                blockDeque.clipAt(newCache.blockDeque, middle, false, leftIsOld)
                 // 更新缓存中的 code
                 if (leftIsOld) {
                     newCache.minCode = code + 1
