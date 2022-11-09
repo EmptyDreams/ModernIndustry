@@ -12,24 +12,19 @@ import kotlin.collections.ArrayDeque
 /**
  * 将队列从指定位置分为两部分，一部分在原有基础上修改，另一部分存储到传入的队列中
  *
- * 该函数在切分队列时会将元素数量多的一半保留在当前队列中，元素数量少的一半传入到新的列表中
- *
  * @param receiver 接受被划分出来的元素的队列
  * @param index 切分位置，切分位置的元素将被划分到右半部分或被丢弃
  * @param retain 是否保留 [index]指向的元素，为 `false` 时会将其移除
- * @param def 当队列两边元素数量相等时是否将左半部分保留在队列中
- * @return 是否将左半部分保留在了队列中
+ * @param def 分隔点左侧（不包括分割点）的元素是否保留在当前对象中
  */
-fun <T> ArrayDeque<T>.clipAt(receiver: MutableList<T>, index: Int, retain: Boolean, def: Boolean): Boolean {
-    val right = size - index    // 右半部分的元素数量
-    if (index > right || (index == right && def)) {
+fun <T> ArrayDeque<T>.clipAt(receiver: MutableList<T>, index: Int, retain: Boolean, def: Boolean) {
+    if (def) {
         // 将左半部分保留在当前队列中
         val start = if (retain) index else index + 1
         for (i in start until size)
             receiver.add(this[i])
         for (i in index until size)
             removeLast()
-        return true
     } else {
         // 将右半部分保留在当前队列中
         for (i in 0 until index) {
@@ -37,7 +32,6 @@ fun <T> ArrayDeque<T>.clipAt(receiver: MutableList<T>, index: Int, retain: Boole
             removeFirst()
         }
         if (!retain) removeFirst()
-        return false
     }
 }
 
