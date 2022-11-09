@@ -408,11 +408,14 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
                 }
                 // 为缓存分配新的 ID，并移除老的缓存
                 val allocator = world.cableCacheIdAllocator
-                allocator.delete(cacheId)
-                val leftCode = if (count == 1) 0 else allocator.next()
-                val rightCode = if (newCache.count == 1) 0 else allocator.next()
-                if (leftCode != 0) allocator[leftCode, { this@CableCache }]
-                if (rightCode != 0) allocator[rightCode, { newCache }]
+                val hasNewId = count != 1 && newCache.count != 1    // 是否分配新的 ID
+                if (hasNewId || count == newCache.count) allocator.delete(cacheId)
+                val leftCode =
+                    if (hasNewId) allocator.next() else if (leftIsOld && count != 1) cacheId else 0
+                val rightCode =
+                    if (hasNewId) allocator.next() else if (!leftIsOld && newCache.count != 1) cacheId else 0
+                if (hasNewId) allocator[leftCode, { this@CableCache }]
+                if (hasNewId) allocator[rightCode, { newCache }]
                 // 为方块更新 ID
                 if (leftIsOld)
                     world.invalidCacheData.markInvalid(cacheId, oldCount - 1, code, leftCode, rightCode)
