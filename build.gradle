@@ -100,7 +100,7 @@ jar {
 
     from {
         configurations.runtimeClasspath.findAll {
-            it.name.contains("mixin") || (it.name.contains("kotlin") && !it.name.contains("jdk7"))
+            it.name.contains("mixin") || it.name.contains("kotlin")
         }.collect {
             zipTree(it)
         }
