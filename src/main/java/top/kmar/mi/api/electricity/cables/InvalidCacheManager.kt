@@ -69,6 +69,10 @@ class InvalidCacheManager(name: String) : WorldSavedData(cacheKey) {
         return compound
     }
 
+    override fun toString(): String {
+        return dataMap.toString()
+    }
+
     companion object {
 
         const val cacheKey = "cable_invalid_cache"

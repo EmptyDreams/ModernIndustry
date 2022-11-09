@@ -69,6 +69,10 @@ class InvalidCodeManager(name: String) : WorldSavedData(cacheKey) {
         return compound
     }
 
+    override fun toString(): String {
+        return codeMap.toString()
+    }
+
     private data class Node(
         /** 变换方式 */
         val map: CableCodeTransformEnum,

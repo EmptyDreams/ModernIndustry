@@ -68,6 +68,10 @@ class IdAllocator(name: String) : WorldSavedData(name) {
         return compound
     }
 
+    fun idList() = loadedId.clone() as IntAVLTreeSet
+
+    fun infoList() = infoMap.clone()
+
     companion object {
 
         /** 当前世界的线缆 ID 分配器 */
