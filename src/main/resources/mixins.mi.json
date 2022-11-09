@@ -2,9 +2,11 @@
   "package": "top.kmar.mi.coremod.mixin",
   "mixins": [
     "MixinUniversalBucket",
-    "MixinMinecraft",
     "cap.MixinCapability",
     "cap.MixinCapabilityManager"
+  ],
+  "client": [
+    "MixinMinecraft"
   ],
   "server": [],
   "compatibilityLevel": "JAVA_8",
