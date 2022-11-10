@@ -68,8 +68,8 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
         override fun receive(message: NBTBase) {
             val nbt = message as NBTTagCompound
-            value = nbt.getInteger("v")
             max = nbt.getInteger("m")
+            value = nbt.getInteger("v")
         }
 
         override fun render(graphics: GuiGraphics) {
