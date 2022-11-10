@@ -1,4 +1,4 @@
-package top.kmar.mi.api.newnet.messages
+package top.kmar.mi.api.net.messages
 
 import net.minecraft.client.Minecraft
 import net.minecraft.entity.player.EntityPlayer
@@ -10,11 +10,11 @@ import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext
 import top.kmar.mi.api.graphics.BaseGraphics
-import top.kmar.mi.api.newnet.CommonMessage
-import top.kmar.mi.api.newnet.NetworkLoader
-import top.kmar.mi.api.newnet.handlers.IAutoNetworkHandler
-import top.kmar.mi.api.newnet.handlers.MessageHandlerRegedit
-import top.kmar.mi.api.newnet.handlers.RetryMessage
+import top.kmar.mi.api.net.CommonMessage
+import top.kmar.mi.api.net.NetworkLoader
+import top.kmar.mi.api.net.handlers.IAutoNetworkHandler
+import top.kmar.mi.api.net.handlers.MessageHandlerRegedit
+import top.kmar.mi.api.net.handlers.RetryMessage
 import top.kmar.mi.api.utils.MISysInfo
 import top.kmar.mi.api.utils.TickHelper
 import top.kmar.mi.api.utils.container.SideConcurrentQueue

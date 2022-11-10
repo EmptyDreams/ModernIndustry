@@ -1,4 +1,4 @@
-package top.kmar.mi.api.newnet.messages.block
+package top.kmar.mi.api.net.messages.block
 
 import net.minecraft.client.Minecraft
 import net.minecraft.entity.player.EntityPlayerMP
@@ -13,12 +13,12 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.newnet.CommonMessage
-import top.kmar.mi.api.newnet.NetworkLoader
-import top.kmar.mi.api.newnet.handlers.IAutoNetworkHandler
-import top.kmar.mi.api.newnet.handlers.MessageHandlerRegedit
-import top.kmar.mi.api.newnet.handlers.RetryMessage
-import top.kmar.mi.api.newnet.messages.block.cap.BlockNetworkCapability
+import top.kmar.mi.api.net.CommonMessage
+import top.kmar.mi.api.net.NetworkLoader
+import top.kmar.mi.api.net.handlers.IAutoNetworkHandler
+import top.kmar.mi.api.net.handlers.MessageHandlerRegedit
+import top.kmar.mi.api.net.handlers.RetryMessage
+import top.kmar.mi.api.net.messages.block.cap.BlockNetworkCapability
 import top.kmar.mi.api.regedits.others.AutoLoader
 import top.kmar.mi.api.utils.MISysInfo
 import top.kmar.mi.api.utils.TickHelper

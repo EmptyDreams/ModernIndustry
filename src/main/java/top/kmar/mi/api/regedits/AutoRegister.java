@@ -14,7 +14,7 @@ import top.kmar.mi.api.regedits.machines.FluidRegistryMachine;
 import top.kmar.mi.api.regedits.machines.ItemRegistryMachine;
 import top.kmar.mi.api.regedits.machines.ManagerRegistryMachine;
 import top.kmar.mi.api.regedits.machines.OreCreateRegistryMachine;
-import top.kmar.mi.api.regedits.machines.PlayerHandleRegistryMachine;
+import top.kmar.mi.api.regedits.machines.PlayerHandlerRegistryMachine;
 import top.kmar.mi.api.regedits.machines.TileEntityRegistryMachine;
 import top.kmar.mi.api.utils.MISysInfo;
 import top.kmar.mi.api.utils.StringUtil;
@@ -77,7 +77,7 @@ public final class AutoRegister {
 		event.registryByClass(MODID, new ItemRegistryMachine());
 		event.registryByClass(MODID, new ManagerRegistryMachine());
 		event.registryByClass(MODID, new OreCreateRegistryMachine());
-		event.registryByClass(MODID, new PlayerHandleRegistryMachine());
+		event.registryByClass(MODID, new PlayerHandlerRegistryMachine());
 		event.registryByClass(MODID, new TileEntityRegistryMachine());
 		event.registryByClass(MODID, CmptRegistryMachine.INSTANCE);
 		event.registryByClass(MODID, new AutoTypeRegistryMachine());

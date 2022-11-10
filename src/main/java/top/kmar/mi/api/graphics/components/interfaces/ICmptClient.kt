@@ -7,9 +7,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
-import top.kmar.mi.api.net.handler.MessageSender
-import top.kmar.mi.api.net.message.graphics.GraphicsAddition
-import top.kmar.mi.api.net.message.graphics.GraphicsMessage
+import top.kmar.mi.api.net.messages.GraphicsMessage
 import top.kmar.mi.api.utils.data.math.Point2D
 
 /**
@@ -39,8 +37,7 @@ interface ICmptClient {
         val content = NBTTagCompound()
         content.setBoolean("event", isEvent)
         content.setTag("data", message)
-        val pack = GraphicsMessage.create(content, GraphicsAddition(service.id))
-        MessageSender.send2Server(pack)
+        GraphicsMessage.sendToServer(content, service.id)
     }
 
     /** 渲染所有子控件 */

@@ -1,6 +1,5 @@
 package top.kmar.mi.api.electricity.cables
 
-import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagByte
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
@@ -8,22 +7,20 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumFacing.values
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
+import net.minecraftforge.common.capabilities.Capability
 import top.kmar.mi.api.araw.interfaces.AutoSave
 import top.kmar.mi.api.electricity.EleEnergy
 import top.kmar.mi.api.electricity.cables.IdAllocator.Companion.cableCacheIdAllocator
 import top.kmar.mi.api.electricity.cables.InvalidCacheManager.Companion.invalidCacheData
 import top.kmar.mi.api.electricity.cables.InvalidCodeManager.Companion.invalidCodeManager
 import top.kmar.mi.api.electricity.caps.ElectricityCapability.capObj
-import top.kmar.mi.api.net.IAutoNetwork
-import top.kmar.mi.api.net.handler.MessageSender
-import top.kmar.mi.api.net.message.block.BlockAddition
-import top.kmar.mi.api.net.message.block.BlockMessage
+import top.kmar.mi.api.net.messages.block.BlockMessage
+import top.kmar.mi.api.net.messages.block.cap.BlockNetworkCapability
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.BaseTileEntity
 import top.kmar.mi.api.utils.TickHelper
 import top.kmar.mi.api.utils.container.CacheContainer
 import top.kmar.mi.api.utils.container.IndexEnumMap
-import top.kmar.mi.api.utils.data.math.Range3D
 import top.kmar.mi.api.utils.expands.clipAt
 import top.kmar.mi.api.utils.expands.isClient
 import top.kmar.mi.api.utils.expands.whatFacing
@@ -36,7 +33,7 @@ import kotlin.math.min
  * @author EmptyDreams
  */
 @AutoTileEntity("cable")
-class EleCableEntity : BaseTileEntity(), IAutoNetwork {
+class EleCableEntity : BaseTileEntity() {
 
     /** 存储指定方向是否连接的有方块 */
     @field:AutoSave
@@ -228,19 +225,24 @@ class EleCableEntity : BaseTileEntity(), IAutoNetwork {
         isSend = true
         TickHelper.addServerTask {
             isSend = false
-            MessageSender.send2ClientAround(world, Range3D(pos, 128)) {
-                BlockMessage.instance().create(
-                    NBTTagByte(linkData.getValue().toByte()), BlockAddition(this)
-                )
-            }
+            BlockMessage.sendToClient(this, NBTTagByte(linkData.getValue().toByte()))
             true
         }
     }
 
-    /** 接收服务端发送的信息 */
-    override fun receive(reader: NBTBase) {
-        linkData.setValue((reader as NBTTagByte).int)
-        world.markBlockRangeForRenderUpdate(pos, pos)
+    override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
+        if (capability === BlockNetworkCapability.capObj) return true
+        return super.hasCapability(capability, facing)
+    }
+
+    override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
+        if (capability === BlockNetworkCapability.capObj) {
+            return BlockNetworkCapability.capObj.cast { data, _ ->
+                linkData.setValue((data as NBTTagByte).int)
+                world.markBlockRangeForRenderUpdate(pos, pos)
+            }
+        }
+        return super.getCapability(capability, facing)
     }
 
     override fun getUpdateTag(): NBTTagCompound {

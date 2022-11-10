@@ -1,4 +1,4 @@
-package top.kmar.mi.api.newnet.handlers
+package top.kmar.mi.api.net.handlers
 
 import net.minecraft.nbt.NBTBase
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext

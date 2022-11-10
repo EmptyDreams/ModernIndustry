@@ -2,19 +2,10 @@
 package top.kmar.mi.api.utils.expands
 
 import io.netty.buffer.ByteBuf
-import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.nbt.*
-import net.minecraft.tileentity.TileEntity
 import net.minecraftforge.fml.common.network.ByteBufUtils
 import top.kmar.mi.api.araw.AutoDataRW
-import top.kmar.mi.api.net.handler.MessageSender.send2ClientIf
-import top.kmar.mi.api.net.message.block.BlockAddition
-import top.kmar.mi.api.net.message.block.BlockMessage
-import top.kmar.mi.api.utils.data.math.Point3D
-import top.kmar.mi.api.utils.data.math.Range3D
 import java.nio.charset.StandardCharsets
-import java.util.*
-import java.util.function.Supplier
 
 /**
  * 从[NBTTagCompound]中读取数据到类中
@@ -159,22 +150,4 @@ fun ByteBuf.writeNbt(nbt: NBTBase) {
         }
         else -> throw AssertionError("未知 id：$id")
     }
-}
-
-/**
- * 如果一个玩家没有接收该方块的信息则向其发送信息
- * @param players 存储已经发送过的玩家UUID的列表
- * @param radius 扫描半径，超过该范围的玩家将不会收到信息
- * @param messageSupplier 提供要发送的信息
- */
-fun TileEntity.sendBlockMessageIfNotUpdate(
-    players: MutableCollection<UUID>, radius: Int, messageSupplier: Supplier<NBTBase>
-) {
-    if (world.isClient()) return
-    val netRange = Range3D(pos, radius)
-    send2ClientIf(world, { player: EntityPlayer ->
-        if (players.contains(player.uniqueID) || !netRange.isIn(Point3D(player))) return@send2ClientIf false
-        players.add(player.uniqueID)
-        true
-    }) { BlockMessage.instance().create(messageSupplier.get(), BlockAddition(this)) }
 }

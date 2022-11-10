@@ -1,4 +1,4 @@
-package top.kmar.mi.api.newnet.messages.player
+package top.kmar.mi.api.net.messages.player
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import net.minecraft.entity.player.EntityPlayer

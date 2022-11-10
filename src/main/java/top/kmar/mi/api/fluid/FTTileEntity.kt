@@ -21,7 +21,8 @@ import top.kmar.mi.api.capabilities.fluid.IFluid
 import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.fluid.data.FluidQueue
 import top.kmar.mi.api.fluid.data.TransportReport
-import top.kmar.mi.api.net.IAutoNetwork
+import top.kmar.mi.api.net.messages.block.BlockMessage
+import top.kmar.mi.api.net.messages.block.cap.BlockNetworkCapability
 import top.kmar.mi.api.tools.BaseTileEntity
 import top.kmar.mi.api.utils.*
 import top.kmar.mi.api.utils.container.DoubleIndexEnumMap
@@ -33,7 +34,7 @@ import javax.annotation.Nonnull
  * 流体管道的TileEntity的父类
  * @author EmptyDreams
  */
-abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable {
+abstract class FTTileEntity : BaseTileEntity(), IFluid, ITickable {
 
     companion object {
 
@@ -92,14 +93,26 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
     protected var fluidData = FluidData.empty()
     private var lineCode: BlockPos? = null
 
-    override fun hasCapability(capability: Capability<*>, facing: EnumFacing?) =
-        if (super.hasCapability(capability, facing)) true
-        else capability === FluidCapability.TRANSFER && (facing == null || hasAperture(facing))
+    override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
+        if (super.hasCapability(capability, facing)) return true
+        if (capability === FluidCapability.TRANSFER && (facing == null || hasAperture(facing))) return true
+        return capability === BlockNetworkCapability.capObj
+    }
 
-    override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? =
+    override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         if (capability === FluidCapability.TRANSFER && (facing == null || hasAperture(facing)))
-            FluidCapability.TRANSFER.cast(this)
-        else super.getCapability(capability, facing)
+            return FluidCapability.TRANSFER.cast(this)
+        if (capability === BlockNetworkCapability.capObj) {
+            return BlockNetworkCapability.capObj.cast { data, _ ->
+                val nbt = data as NBTTagCompound
+                linkData.setValue(nbt.getByte("data").toInt())
+                syncClient(nbt.getTag("sync"))
+                updateBlockState(true)
+            }
+        }
+        return super.getCapability(capability, facing)
+    }
+
 
     /**
      * 缺省算法因为自身缺陷，不会维护流体在管道中的顺序，所以有可能有一部分原本在流体管道中的流体逆流回传入的 queue 中。
@@ -336,13 +349,6 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
     /** 判断指定方向上是否可以设置管塞  */
     open fun canSetPlug(facing: EnumFacing) = !(hasPlug(facing) || isLink(facing))
 
-    override fun receive(@Nonnull reader: NBTBase) {
-        val nbt = reader as NBTTagCompound
-        linkData.setValue(nbt.getByte("data").toInt())
-        syncClient(nbt.getTag("sync"))
-        updateBlockState(true)
-    }
-
     /**
      *
      * 存储已经更新过的玩家列表
@@ -363,12 +369,11 @@ abstract class FTTileEntity : BaseTileEntity(), IAutoNetwork, IFluid, ITickable 
     fun send() {
         if (world.isClient()) return
         if (players.size == world.playerEntities.size) return
-        sendBlockMessageIfNotUpdate(players, 128) {
-            val data = NBTTagCompound()
-            data.setByte("data", linkData.getValue().toByte())
-            data.setTag("sync", sync())
-            data
+        val message = NBTTagCompound().apply {
+            setByte("data", linkData.getValue().toByte())
+            setTag("sync", sync())
         }
+        BlockMessage.sendToClient(this, message)
     }
 
     /**

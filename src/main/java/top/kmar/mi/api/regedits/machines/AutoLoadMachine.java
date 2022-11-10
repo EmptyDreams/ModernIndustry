@@ -30,7 +30,7 @@ public class AutoLoadMachine extends AutoRegisterMachine<AutoLoader, Object> {
                 AutoManagerRegistryMachine.class,
                 BlockRegistryMachine.class, FluidRegistryMachine.class,
                 ItemRegistryMachine.class, ManagerRegistryMachine.class,
-                OreCreateRegistryMachine.class, PlayerHandleRegistryMachine.class,
+                OreCreateRegistryMachine.class, PlayerHandlerRegistryMachine.class,
                 TileEntityRegistryMachine.class);
     }
     

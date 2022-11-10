@@ -1,4 +1,4 @@
-package top.kmar.mi.api.newnet
+package top.kmar.mi.api.net
 
 import io.netty.buffer.ByteBuf
 import net.minecraft.nbt.NBTBase

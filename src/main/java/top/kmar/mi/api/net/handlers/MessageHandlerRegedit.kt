@@ -1,4 +1,4 @@
-package top.kmar.mi.api.newnet.handlers
+package top.kmar.mi.api.net.handlers
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import top.kmar.mi.api.utils.expands.isServer

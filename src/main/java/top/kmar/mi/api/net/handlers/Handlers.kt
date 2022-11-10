@@ -1,8 +1,8 @@
-package top.kmar.mi.api.newnet.handlers
+package top.kmar.mi.api.net.handlers
 
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext
-import top.kmar.mi.api.newnet.CommonMessage
+import top.kmar.mi.api.net.CommonMessage
 
 typealias RetryMessage = CommonMessage
 

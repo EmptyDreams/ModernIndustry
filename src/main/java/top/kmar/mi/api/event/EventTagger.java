@@ -12,11 +12,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  */
 @Mod.EventBusSubscriber
 public final class EventTagger {
-	
-	@SubscribeEvent
-	public static void tagger(RegistryEvent.Register<IRecipe> event) {
-		MinecraftForge.EVENT_BUS.post(new NetWorkRegistryEvent());
-		MinecraftForge.EVENT_BUS.post(new CraftGuideRegistryEvent());
-	}
-	
+    
+    @SubscribeEvent
+    public static void tagger(RegistryEvent.Register<IRecipe> event) {
+        MinecraftForge.EVENT_BUS.post(new CraftGuideRegistryEvent());
+    }
+    
 }

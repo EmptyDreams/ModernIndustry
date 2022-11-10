@@ -1,7 +1,6 @@
 package top.kmar.mi.api.regedits.others;
 
-import top.kmar.mi.ModernIndustry;
-import top.kmar.mi.api.net.message.player.IPlayerHandle;
+import top.kmar.mi.api.net.messages.player.IPlayerHandler;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -11,17 +10,18 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * 自动注册有该注解的{@link IPlayerHandle}
+ * 自动注册有该注解的{@link IPlayerHandler}
  * @author EmptyDreams
  */
 @Documented
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface AutoPlayerHandle {
-	
-	String modid() default ModernIndustry.MODID;
-	
-	/** 名称 */
-	String value();
-	
+public @interface AutoPlayerHandler {
+    
+    /** key 值 */
+    String value();
+    
+    /** 静态全局变量名称 */
+    String field() default "INSTANCE";
+    
 }

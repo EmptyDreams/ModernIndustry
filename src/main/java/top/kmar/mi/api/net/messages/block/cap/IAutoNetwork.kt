@@ -1,4 +1,4 @@
-package top.kmar.mi.api.newnet.messages.block.cap
+package top.kmar.mi.api.net.messages.block.cap
 
 import net.minecraft.nbt.NBTBase
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext

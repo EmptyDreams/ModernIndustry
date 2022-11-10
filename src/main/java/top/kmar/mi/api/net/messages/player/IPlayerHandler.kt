@@ -1,4 +1,4 @@
-package top.kmar.mi.api.newnet.messages.player
+package top.kmar.mi.api.net.messages.player
 
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.nbt.NBTBase

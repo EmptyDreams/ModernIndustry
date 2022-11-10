@@ -1,15 +1,12 @@
 package top.kmar.mi.content.tileentity.user
 
 import net.minecraft.client.resources.I18n
-import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ITickable
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.relauncher.Side
-import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.araw.interfaces.AutoSave
 import top.kmar.mi.api.capabilities.fluid.FluidCapability.TRANSFER
 import top.kmar.mi.api.capabilities.fluid.IFluid
@@ -22,13 +19,12 @@ import top.kmar.mi.api.graphics.components.ButtonCmpt
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt
 import top.kmar.mi.api.graphics.components.TextCmpt
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
-import top.kmar.mi.api.net.IAutoNetwork
+import top.kmar.mi.api.net.messages.block.cap.BlockNetworkCapability
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
 import top.kmar.mi.api.utils.*
 import top.kmar.mi.api.utils.expands.isClient
 import top.kmar.mi.api.utils.expands.removeTickable
-import top.kmar.mi.api.utils.expands.sendBlockMessageIfNotUpdate
 import top.kmar.mi.content.blocks.BlockGuiList
 import top.kmar.mi.content.blocks.machine.user.FluidPumpBlock
 import top.kmar.mi.data.properties.RelativeDirectionEnum
@@ -41,7 +37,7 @@ import kotlin.math.min
  */
 @AutoTileEntity(FluidPumpBlock.NAME)
 @EventBusSubscriber
-open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
+open class EUFluidPump : FrontTileEntity(), IFluid, ITickable {
 
     /** 最大存储容量 */
     var maxCapacity = 10000
@@ -74,6 +70,16 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
     private var consume = 0
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
+        if (capability === BlockNetworkCapability.capObj) {
+            return BlockNetworkCapability.capObj.cast { data, _ ->
+                data as NBTTagCompound
+                side = EnumFacing.values()[data.getByte("side").toInt()]
+                panelFacing = EnumFacing.values()[data.getByte("fac").toInt()]
+                working = data.getBoolean("work")
+                start = data.getBoolean("start")
+                world.markBlockRangeForRenderUpdate(pos, pos)
+            }
+        }
         if (capability === TRANSFER)
             return if (facing == null || facing.axis === side.axis) TRANSFER.cast(this) else null
         if (facing?.axis === side.axis) return null
@@ -246,24 +252,12 @@ open class EUFluidPump : FrontTileEntity(), IFluid, ITickable, IAutoNetwork {
 
     private fun send(refresh: Boolean = false) {
         if (refresh) networkRecord.clear()
-        sendBlockMessageIfNotUpdate(networkRecord, 128) {
-            NBTTagCompound().apply {
-                setByte("side", side.ordinal.toByte())
-                setByte("fac", panelFacing.ordinal.toByte())
-                setBoolean("work", working)
-                setBoolean("start", start)
-            }
+        val message = NBTTagCompound().apply {
+            setByte("side", side.ordinal.toByte())
+            setByte("fac", panelFacing.ordinal.toByte())
+            setBoolean("work", working)
+            setBoolean("start", start)
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    override fun receive(reader: NBTBase) {
-        val nbt = reader as NBTTagCompound
-        side = EnumFacing.values()[nbt.getByte("side").toInt()]
-        panelFacing = EnumFacing.values()[nbt.getByte("fac").toInt()]
-        working = nbt.getBoolean("work")
-        start = nbt.getBoolean("start")
-        world.markBlockRangeForRenderUpdate(pos, pos)
     }
 
     @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")

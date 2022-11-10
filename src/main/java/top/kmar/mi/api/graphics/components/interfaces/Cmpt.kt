@@ -3,7 +3,6 @@ package top.kmar.mi.api.graphics.components.interfaces
 import it.unimi.dsi.fastutil.objects.Object2ObjectRBTreeMap
 import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagString
@@ -14,9 +13,7 @@ import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
-import top.kmar.mi.api.net.handler.MessageSender
-import top.kmar.mi.api.net.message.graphics.GraphicsAddition
-import top.kmar.mi.api.net.message.graphics.GraphicsMessage
+import top.kmar.mi.api.net.messages.GraphicsMessage
 import top.kmar.mi.api.utils.MISysInfo
 import top.kmar.mi.api.utils.expands.isClient
 import java.util.*
@@ -86,8 +83,7 @@ abstract class Cmpt(
      * @param message 要传输的信息
      */
     fun send2Client(player: EntityPlayer, message: NBTBase) {
-        val pack = GraphicsMessage.create(message, GraphicsAddition(id))
-        MessageSender.send2Client(player as EntityPlayerMP, pack)
+        GraphicsMessage.sendToClient(message, id, player)
     }
 
     /** 接收网络通信 */
