@@ -86,7 +86,7 @@ object BlockMessage : IAutoNetworkHandler {
         message as NBTTagCompound
         val world = message.getInteger("world")
         val posArray = message.getIntArray("pos")
-        val pos = BlockPos(posArray[0], posArray[1], posArray[1])
+        val pos = BlockPos(posArray[0], posArray[1], posArray[2])
         val data = message.getTag("data")
         queue.add(Node(world, pos, ctx, data))
         return null
