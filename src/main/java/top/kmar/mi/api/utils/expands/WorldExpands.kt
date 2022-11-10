@@ -130,16 +130,11 @@ val clientWorld: WorldClient
 val clientPlayer: EntityPlayerSP
     get() = Minecraft.getMinecraft().player
 
-/**
- * 根据dimension获取世界对象
- * @throws IllegalArgumentException 若客户端当前世界的dimension不为输入值则抛出异常
- */
+/** 根据dimension获取世界对象，客户端直接返回当前世界对象 */
 fun getWorld(dimension: Int): World {
     return if (isServer()) {
         FMLCommonHandler.instance().minecraftServerInstance.getWorld(dimension)
     } else {
-        val dim = Minecraft.getMinecraft().world.provider.dimension
-        require(dim == dimension) { "世界对象[$dim]与目标世界对象[$dimension]不同" }
         Minecraft.getMinecraft().world
     }
 }

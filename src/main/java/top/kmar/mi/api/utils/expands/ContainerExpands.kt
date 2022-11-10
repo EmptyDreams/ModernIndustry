@@ -10,6 +10,22 @@ import java.util.stream.Stream
 import kotlin.collections.ArrayDeque
 
 /**
+ * 处理所有信息
+ *
+ * 处理失败的信息会放回队列中
+ *
+ * **该方法执行时其它线程不能删除元素，否则会发生异常**
+ *
+ * @param task 处理信息，返回 true 表示处理成功，否则表示处理失败
+ */
+inline fun <T> Queue<T>.handleAll(task: (T) -> Boolean) {
+    repeat(size) {
+        val ele = remove()
+        if (!task(ele)) add(ele)
+    }
+}
+
+/**
  * 将队列从指定位置分为两部分，一部分在原有基础上修改，另一部分存储到传入的队列中
  *
  * @param receiver 接受被划分出来的元素的队列

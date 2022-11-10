@@ -7,8 +7,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -18,21 +18,16 @@ import java.util.function.BooleanSupplier;
 @Mod.EventBusSubscriber
 public final class TickHelper {
     
-    private static final Object serverLock = new Object();
-    private static final Object clientLock = new Object();
-    
     /** 存储任务列表 */
-    private static List<BooleanSupplier> clientTaskList = new LinkedList<>();
-    private static List<BooleanSupplier> serverTaskList = new LinkedList<>();
+    private static final Queue<BooleanSupplier> clientTaskQueue = new ConcurrentLinkedQueue<>();
+    private static final Queue<BooleanSupplier> serverTaskQueue = new ConcurrentLinkedQueue<>();
     
     /**
      * 添加一个任务到客户端列表，在Tick结束时执行
      * @param task 任务内容，返回值为执行后是否删除任务
      */
     public static void addClientTask(BooleanSupplier task) {
-        synchronized (clientLock) {
-            clientTaskList.add(StringUtil.checkNull(task, "task"));
-        }
+        clientTaskQueue.add(StringUtil.checkNull(task, "task"));
     }
     
     /**
@@ -40,9 +35,7 @@ public final class TickHelper {
      * @param task 任务内容，返回值为执行后是否删除任务
      */
     public static void addServerTask(BooleanSupplier task) {
-        synchronized (serverLock) {
-            serverTaskList.add(StringUtil.checkNull(task, "task"));
-        }
+        serverTaskQueue.add(StringUtil.checkNull(task, "task"));
     }
     
     /**
@@ -56,25 +49,21 @@ public final class TickHelper {
     
     @SubscribeEvent
     public static void handleServiceAllTask(TickEvent.ServerTickEvent event) {
-        List<BooleanSupplier> old;
-        synchronized (serverLock) {
-            old = serverTaskList;
-            serverTaskList = new LinkedList<>();
+        int size = serverTaskQueue.size();
+        for (int i = 0; i != size; ++i) {
+            BooleanSupplier supplier = serverTaskQueue.remove();
+            if (!supplier.getAsBoolean()) serverTaskQueue.add(supplier);
         }
-        old.removeIf(BooleanSupplier::getAsBoolean);
-        serverTaskList.addAll(old);
     }
     
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public static void handleClientAllTask(TickEvent.ClientTickEvent event) {
-        List<BooleanSupplier> old;
-        synchronized (clientLock) {
-            old = clientTaskList;
-            clientTaskList = new LinkedList<>();
+        int size = clientTaskQueue.size();
+        for (int i = 0; i != size; ++i) {
+            BooleanSupplier supplier = clientTaskQueue.remove();
+            if (!supplier.getAsBoolean()) clientTaskQueue.add(supplier);
         }
-        old.removeIf(BooleanSupplier::getAsBoolean);
-        clientTaskList.addAll(old);
     }
     
 }
