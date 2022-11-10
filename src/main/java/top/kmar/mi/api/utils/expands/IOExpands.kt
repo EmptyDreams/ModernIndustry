@@ -62,8 +62,7 @@ fun ByteBuf.writeVarInt(data: Int) {
 
 /** 读取一个 [NBTBase] */
 fun ByteBuf.readNbt(): NBTBase {
-    val id = readByte().toInt()
-    return when (id) {
+    return when (val id = readByte().toInt()) {
         0 -> NBTTagEnd()
         1 -> NBTTagByte(readByte())
         2 -> NBTTagShort(readShort())
