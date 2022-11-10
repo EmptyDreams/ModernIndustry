@@ -2,6 +2,7 @@ package top.kmar.mi.api.net
 
 import io.netty.buffer.ByteBuf
 import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagEnd
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage
 import top.kmar.mi.api.utils.expands.readNbt
 import top.kmar.mi.api.utils.expands.readString
@@ -23,6 +24,8 @@ class CommonMessage(
     var data = data
         private set
 
+    constructor(): this("", empty)
+
     override fun fromBytes(buf: ByteBuf) {
         key = buf.readString()
         data = buf.readNbt()
@@ -31,6 +34,13 @@ class CommonMessage(
     override fun toBytes(buf: ByteBuf) {
         buf.writeString(key)
         buf.writeNbt(data)
+    }
+
+    companion object {
+
+        @JvmStatic
+        private val empty = NBTTagEnd()
+
     }
 
 }
