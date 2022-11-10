@@ -52,24 +52,12 @@ fun ByteBuf.writeString(data: String) {
 
 /** 读取一个变长整型 */
 fun ByteBuf.readVarInt(): Int {
-    var result = 0
-    while (true) {
-        val content = readByte().toInt()
-        result = (result shl 7) or (content and 0b01111111)
-        if (content shr 7 == 1) break
-    }
-    return result
+    return ByteBufUtils.readVarInt(this, 5)
 }
 
 /** 写入一个变长整型 */
 fun ByteBuf.writeVarInt(data: Int) {
-    var tmp = data
-    do {
-        var content = tmp and 0b01111111
-        tmp = tmp ushr 7
-        if (tmp == 0) content = content or 0b10000000
-        writeByte(content)
-    } while (tmp != 0)
+    ByteBufUtils.writeVarInt(this, data, 5)
 }
 
 /** 读取一个 [NBTBase] */
