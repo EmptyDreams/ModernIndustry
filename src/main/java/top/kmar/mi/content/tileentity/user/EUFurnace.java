@@ -50,6 +50,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
         ItemStack inputStack = getInputStack();
         if (inputStack.isEmpty()) {
             workProgress = 0;
+            updateShow(false);
             return;
         }
         EleEnergy energy = requestEnergy(Math.min(getEfficiency(), getNeedEnergy() - workProgress));
