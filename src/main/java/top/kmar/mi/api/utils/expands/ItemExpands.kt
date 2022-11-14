@@ -3,7 +3,12 @@ package top.kmar.mi.api.utils.expands
 
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
+import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.items.ItemStackHandler
+
+fun FluidStack.copy(amount: Int): FluidStack {
+    return FluidStack(fluid, amount, tag)
+}
 
 /**
  * 将指定物品放入[ItemStackHandler]的指定区域内

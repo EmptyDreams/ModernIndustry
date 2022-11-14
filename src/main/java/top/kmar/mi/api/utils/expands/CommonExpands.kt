@@ -1,7 +1,28 @@
 /** 通用拓展及其它拓展 */
 package top.kmar.mi.api.utils.expands
 
+import net.minecraft.util.EnumFacing
 import top.kmar.mi.api.utils.container.PairIntInt
+
+private val HOR_LIST = ArrayList<Array<EnumFacing>>(24).apply {
+    fun dfs(deep: Int, index: Int, record: BooleanArray, array: Array<EnumFacing>) {
+        array[deep] = EnumFacing.HORIZONTALS[index]
+        if (deep == 3) add(array.clone())
+        else {
+            record[index] = true
+            for (i in EnumFacing.HORIZONTALS.indices) {
+                if (!record[i]) dfs(deep + 1, i, record, array)
+            }
+            record[index] = false
+        }
+    }
+    val record = BooleanArray(EnumFacing.HORIZONTALS.size) {false}
+    val array = Array(EnumFacing.HORIZONTALS.size) { EnumFacing.UP }
+    for (i in EnumFacing.HORIZONTALS.indices) dfs(0, i, record, array)
+}
+
+/** 随机生成一个水平方向的序列 */
+fun randomHorizontals() = HOR_LIST[random.nextInt(HOR_LIST.size)]
 
 /** 移除所有空格 */
 fun String.removeAllSpace(): String {
