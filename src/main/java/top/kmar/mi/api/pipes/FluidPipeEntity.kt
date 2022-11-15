@@ -138,7 +138,7 @@ open class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
                 result!!.amount -= count
                 if (result!!.amount == 0) return null
             }
-        } else if (power >= from.opposite.consume && isNotEmpty) {
+        } else if (nextPower >= from.opposite.consume && isNotEmpty) {
             count = min(count, this.amount)
             if (doEdit) {
                 this.amount -= count
