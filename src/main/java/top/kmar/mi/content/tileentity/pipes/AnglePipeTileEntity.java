@@ -1,6 +1,7 @@
 package top.kmar.mi.content.tileentity.pipes;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import org.jetbrains.annotations.NotNull;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
@@ -62,8 +63,9 @@ public class AnglePipeTileEntity extends FluidPipeEntity {
     }
     
     @Override
-    public boolean linkFluidBlock(@NotNull EnumFacing facing) {
+    public boolean linkFluidBlock(@NotNull TileEntity entity, @NotNull EnumFacing facing) {
         if (isLink(facing)) return true;
+        if (!FluidPipeEntity.tryLink(this, linkedData, entity, facing)) return false;
         if (!hasChannel(facing)) {
             if (isLink(this.facing)) {
                 if (isLink(after)) return false;
@@ -73,7 +75,6 @@ public class AnglePipeTileEntity extends FluidPipeEntity {
                 after = facing;
             } else this.facing = facing;
         }
-        linkedData.set(facing, true);
         return true;
     }
     

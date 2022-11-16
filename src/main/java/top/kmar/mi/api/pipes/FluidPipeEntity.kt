@@ -1,5 +1,6 @@
 package top.kmar.mi.api.pipes
 
+import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumFacing.*
 import net.minecraftforge.common.capabilities.Capability
@@ -11,6 +12,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler
 import net.minecraftforge.fluids.capability.IFluidTankProperties
 import top.kmar.mi.api.araw.interfaces.AutoSave
 import top.kmar.mi.api.tools.BaseTileEntity
+import top.kmar.mi.api.utils.container.IndexEnumMap
 import top.kmar.mi.api.utils.expands.amount
 import top.kmar.mi.api.utils.expands.computeIfAbsent
 import top.kmar.mi.api.utils.expands.copy
@@ -70,7 +72,7 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
      * 将管道中的某个开口旋转到指定方向
      * @return 是否旋转成功
      */
-    abstract fun linkFluidBlock(facing: EnumFacing): Boolean
+    abstract fun linkFluidBlock(entity: TileEntity,  facing: EnumFacing): Boolean
     
     /** 切断管道与指定方向的连接 */
     abstract fun unlinkFluidBlock(facing: EnumFacing)
@@ -347,6 +349,22 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
             }
         
         const val maxPower = 40
+        
+        @JvmStatic
+        protected fun FluidPipeEntity.tryLink(
+            data: IndexEnumMap<EnumFacing>, that: TileEntity, facing: EnumFacing
+        ): Boolean {
+            if (that !is FluidPipeEntity) return true
+            val opposite = facing.opposite
+            data[facing] = true
+            if (!that.isLink(opposite)) {
+                if (!that.linkFluidBlock(this, opposite)) {
+                    data[facing] = false
+                    return false
+                }
+            }
+            return true
+        }
         
     }
     

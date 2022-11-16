@@ -71,14 +71,15 @@ abstract public class Pipe extends TEBlockBase {
         if (thatEntity == null) {
             if (entity.isLink(facing)) {
                 entity.unlinkFluidBlock(facing);
-                entity.markDirty();
+                worldIn.markChunkDirty(pos, entity);
             }
         } else if (
                 thatEntity instanceof FluidPipeEntity ||
                         thatEntity.hasCapability(FLUID_HANDLER_CAPABILITY, facing.getOpposite())
         ) {
-            if (!entity.isLink(facing) && entity.linkFluidBlock(facing)) {
-                entity.markDirty();
+            if (!entity.isLink(facing) && entity.linkFluidBlock(thatEntity, facing)) {
+                worldIn.markChunkDirty(pos, entity);
+                worldIn.markChunkDirty(fromPos, thatEntity);
             }
         }
     }

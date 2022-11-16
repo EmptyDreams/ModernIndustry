@@ -145,7 +145,7 @@ fun getWorld(dimension: Int): World {
 /** 设置[IBlockState]并调用[World.markBlockRangeForRenderUpdate] */
 fun World.setBlockWithMark(pos: BlockPos, state: IBlockState) {
     setBlockState(pos, state, 11)
-    markBlockRangeForRenderUpdate(pos, pos)
+    //markBlockRangeForRenderUpdate(pos, pos)
 }
 
 /**

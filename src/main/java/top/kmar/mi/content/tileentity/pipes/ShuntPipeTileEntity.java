@@ -2,6 +2,7 @@ package top.kmar.mi.content.tileentity.pipes;
 
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import org.jetbrains.annotations.NotNull;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
@@ -36,9 +37,9 @@ public class ShuntPipeTileEntity extends FluidPipeEntity {
     }
     
     @Override
-    public boolean linkFluidBlock(@NotNull EnumFacing facing) {
+    public boolean linkFluidBlock(@NotNull TileEntity entity, @NotNull EnumFacing facing) {
         if (isLink(facing)) return true;
-        linkedData.set(facing, true);
+        if (!FluidPipeEntity.tryLink(this, linkedData, entity, facing)) return false;
         List<Axis> maySides = calculateSides();
         if (maySides.isEmpty()) {
             linkedData.set(facing, false);

@@ -1,13 +1,13 @@
 package top.kmar.mi.content.tileentity.pipes;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import org.jetbrains.annotations.NotNull;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
 import top.kmar.mi.api.pipes.FluidPipeEntity;
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.utils.container.IndexEnumMap;
-import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 import top.kmar.mi.data.properties.MIProperty;
 
 /**
@@ -31,10 +31,10 @@ public class StraightPipeTileEntity extends FluidPipeEntity {
     }
     
     @Override
-    public boolean linkFluidBlock(@NotNull EnumFacing facing) {
+    public boolean linkFluidBlock(@NotNull TileEntity entity, @NotNull EnumFacing facing) {
         if (isLink(facing)) return true;
         if (!hasChannel(facing) && !linkedData.isInit()) return false;
-        linkedData.set(facing, true);
+        if (!FluidPipeEntity.tryLink(this, linkedData, entity, facing)) return false;
         setFacing(facing);
         return true;
     }
@@ -54,7 +54,7 @@ public class StraightPipeTileEntity extends FluidPipeEntity {
         IBlockState old = world.getBlockState(pos);
         if (old.getValue(MIProperty.getAXIS()) == facing.getAxis()) return;
         IBlockState newState = old.withProperty(MIProperty.getAXIS(), facing.getAxis());
-        WorldExpandsKt.setBlockWithMark(world, pos, newState);
+        world.setBlockState(pos, newState, 0b1110);
     }
     
     /** 获取管道正方向 */
