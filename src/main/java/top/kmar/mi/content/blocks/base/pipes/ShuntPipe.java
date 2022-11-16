@@ -8,6 +8,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import top.kmar.mi.content.tileentity.pipes.ShuntPipeTileEntity;
 
 import javax.annotation.Nonnull;
@@ -52,6 +53,19 @@ public class ShuntPipe extends Pipe {
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
 		return new ShuntPipeTileEntity();
+	}
+	
+	@Override
+	public int getMetaFromState(@NotNull IBlockState state) {
+		EnumFacing.Axis axis = state.getValue(getAXIS());
+		return axis.ordinal();
+	}
+	
+	@NotNull
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		EnumFacing.Axis axis = EnumFacing.Axis.values()[meta];
+		return getDefaultState().withProperty(getAXIS(), axis);
 	}
 	
 }

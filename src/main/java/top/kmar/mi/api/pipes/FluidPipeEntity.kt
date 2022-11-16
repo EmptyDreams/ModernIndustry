@@ -10,9 +10,8 @@ import net.minecraftforge.fluids.capability.FluidTankProperties
 import net.minecraftforge.fluids.capability.IFluidHandler
 import net.minecraftforge.fluids.capability.IFluidTankProperties
 import top.kmar.mi.api.araw.interfaces.AutoSave
-import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.BaseTileEntity
-import top.kmar.mi.api.utils.container.IndexEnumMap
+import top.kmar.mi.api.utils.expands.amount
 import top.kmar.mi.api.utils.expands.computeIfAbsent
 import top.kmar.mi.api.utils.expands.copy
 import top.kmar.mi.api.utils.expands.randomHorizontals
@@ -24,12 +23,8 @@ import kotlin.math.min
  * 流体管道通用实现
  * @author EmptyDreams
  */
-@AutoTileEntity("common_pipe")
-open class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
-
-    /** 存储指定方向上是否有开口 */
-    @field:AutoSave
-    protected val openData = IndexEnumMap(values())
+abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
+    
     /** 当前管道中存储的流体 */
     @field:AutoSave
     protected var stack: FluidStack? = null
@@ -45,7 +40,7 @@ open class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
         get() = !isFull
     /** 存储的流体量 */
     var amount: Int
-        get() = if (isEmpty) 0 else stack!!.amount
+        get() = stack.amount
         private set(value) {
             stack!!.amount = value
         }
@@ -63,8 +58,23 @@ open class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
         get() = stack?.copy()
 
     /** 判断指定方向是否有开口 */
-    fun isOpening(facing: EnumFacing) = openData[facing]
+    fun isOpening(facing: EnumFacing) = hasChannel(facing)
 
+    /** 判断指定方向上是否含有通道 */
+    abstract fun hasChannel(facing: EnumFacing): Boolean
+    
+    /** 判断指定方向上是否已经连接方块 */
+    abstract fun isLink(facing: EnumFacing): Boolean
+    
+    /**
+     * 将管道中的某个开口旋转到指定方向
+     * @return 是否旋转成功
+     */
+    abstract fun linkFluidBlock(facing: EnumFacing): Boolean
+    
+    /** 切断管道与指定方向的连接 */
+    abstract fun unlinkFluidBlock(facing: EnumFacing)
+    
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
         return (capability === FLUID_HANDLER_CAPABILITY && facing != null && !isOpening(facing)) ||
                 super.hasCapability(capability, facing)
@@ -80,7 +90,7 @@ open class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
         }
         return super.getCapability(capability, facing)
     }
-
+    
     /**
      * 尝试取出一定量的流体
      * @param amount 要取出的量
@@ -90,7 +100,7 @@ open class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
      * @param doEdit 是否修改内部数据
      */
     open fun export(amount: Int, from: EnumFacing, power: Int, doEdit: Boolean): FluidStack? {
-        if (power > 640) {
+        if (power > maxPower) {
             // TODO 损坏管道的代码
             world.setBlockToAir(pos)
             return null
@@ -335,6 +345,8 @@ open class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
                 UP -> 0
                 else -> 1
             }
+        
+        const val maxPower = 40
         
     }
     

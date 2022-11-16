@@ -13,8 +13,6 @@ import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
-import top.kmar.mi.api.capabilities.fluid.FluidCapability
-import top.kmar.mi.api.capabilities.fluid.IFluid
 import top.kmar.mi.api.regedits.block.annotations.AutoBlockRegister
 import top.kmar.mi.api.utils.expands.getPlacingDirection
 import top.kmar.mi.api.utils.expands.whatFacing
@@ -83,27 +81,9 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
     ) {
         @Suppress("DEPRECATION")
         super.neighborChanged(state, world, pos, blockIn, fromPos)
-        neighborChangedHelper(world, pos, fromPos)
-    }
-
-    protected fun neighborChangedHelper(world: World, pos: BlockPos, fromPos: BlockPos) {
         val facing = pos.whatFacing(fromPos)
         val pump = world.getTileEntity(pos) as EUFluidPump
-        val fromTE = world.getTileEntity(fromPos)
-        if (fromTE === null) pump.unlink(facing)
-        else {
-            val fluid = fromTE.getCapability(FluidCapability.TRANSFER, null) ?: return
-            linkBoth(pump, fluid, facing)
-            fromTE.markDirty()
-        }
-        pump.markDirty()
-    }
-
-    protected fun linkBoth(pump: EUFluidPump, from: IFluid, facing: EnumFacing) {
-        if (pump.isLink(facing)) return
-        if (pump.linkFluid(facing)) {
-            if (!from.linkFluid(facing.opposite)) pump.unlink(facing)
-        }
+        pump.linkFluidBlock(facing)
     }
 
     @Suppress("OVERRIDE_DEPRECATION")

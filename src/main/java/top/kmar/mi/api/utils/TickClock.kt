@@ -7,7 +7,7 @@ package top.kmar.mi.api.utils
  */
 class TickClock(var cycle: Int) {
 
-    private var counter = 0
+    var counter = 0
 
     /** 判断是否不需要执行任务并让计数器加一 */
     fun notContinue(): Boolean {

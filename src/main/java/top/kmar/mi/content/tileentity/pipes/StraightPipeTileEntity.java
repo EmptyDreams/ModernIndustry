@@ -1,76 +1,65 @@
 package top.kmar.mi.content.tileentity.pipes;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByte;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
+import org.jetbrains.annotations.NotNull;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
-import top.kmar.mi.api.fluid.FTTileEntity;
+import top.kmar.mi.api.pipes.FluidPipeEntity;
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
-
-import javax.annotation.Nonnull;
+import top.kmar.mi.api.utils.container.IndexEnumMap;
+import top.kmar.mi.api.utils.expands.WorldExpandsKt;
+import top.kmar.mi.data.properties.MIProperty;
 
 /**
  * 直线型管道的TileEntity
  * @author EmptyDreams
  */
 @AutoTileEntity("StraightPipe")
-public class StraightPipeTileEntity extends FTTileEntity {
-	
-	/** 管道朝向 */
-	@AutoSave protected EnumFacing facing;
-	
-	public StraightPipeTileEntity() {
-		this(EnumFacing.NORTH);
-	}
-	
-	public StraightPipeTileEntity(EnumFacing facing) {
-		this.facing = facing;
-	}
-	
-	@Override
-	protected NBTBase sync() {
-		return new NBTTagByte((byte) facing.ordinal());
-	}
-	
-	@Override
-	public void syncClient(@Nonnull NBTBase reader) {
-		facing = EnumFacing.values()[((NBTTagByte) reader).getInt()];
-	}
-	
-	@Override
-	public boolean hasAperture(EnumFacing facing) {
-		return facing.getAxis() == this.facing.getAxis();
-	}
-	
-	@Override
-	public boolean canLinkFluid(EnumFacing facing) {
-		return isLink(facing) ||
-				(super.canLinkFluid(facing) && (hasAperture(facing) || getLinkData().isInit()));
-	}
-	
-	@Override
-	public boolean linkFluid(EnumFacing facing) {
-		if (!super.linkFluid(facing)) return false;
-		setFacing(facing);
-		updateBlockState(false);
-		return true;
-	}
-	
-	@Override
-	public int getLinkedAmount() {
-		if (isLink(getFacing().getOpposite())) return isLink(getFacing()) ? 2 : 1;
-		else return isLink(getFacing()) ? 1 : 0;
-	}
-	
-	/** 设置管道正方向 */
-	public void setFacing(EnumFacing facing) {
-		//加一个判断是为了防止管道连接时方向倒转导致内容反转
-		if (facing.getAxis() != this.facing.getAxis()) this.facing = facing;
-	}
-	
-	/** 获取管道正方向 */
-	public EnumFacing getFacing() {
-		return facing;
-	}
-	
+public class StraightPipeTileEntity extends FluidPipeEntity {
+    
+    /** 管道连接数据 */
+    @AutoSave
+    private final IndexEnumMap<EnumFacing> linkedData = new IndexEnumMap<>(EnumFacing.values());
+    
+    public StraightPipeTileEntity() {
+        super(1000);
+    }
+    
+    @Override
+    public boolean hasChannel(EnumFacing facing) {
+        return facing.getAxis() == getFacing();
+    }
+    
+    @Override
+    public boolean linkFluidBlock(@NotNull EnumFacing facing) {
+        if (isLink(facing)) return true;
+        if (!hasChannel(facing) && !linkedData.isInit()) return false;
+        linkedData.set(facing, true);
+        setFacing(facing);
+        return true;
+    }
+    
+    @Override
+    public void unlinkFluidBlock(@NotNull EnumFacing facing) {
+        linkedData.set(facing, false);
+    }
+    
+    @Override
+    public boolean isLink(EnumFacing facing) {
+        return linkedData.get(facing);
+    }
+    
+    /** 设置管道正方向 */
+    public void setFacing(EnumFacing facing) {
+        IBlockState old = world.getBlockState(pos);
+        if (old.getValue(MIProperty.getAXIS()) == facing.getAxis()) return;
+        IBlockState newState = old.withProperty(MIProperty.getAXIS(), facing.getAxis());
+        WorldExpandsKt.setBlockWithMark(world, pos, newState);
+    }
+    
+    /** 获取管道正方向 */
+    public EnumFacing.Axis getFacing() {
+        return world.getBlockState(pos).getValue(MIProperty.getAXIS());
+    }
+    
 }

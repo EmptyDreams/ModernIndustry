@@ -15,6 +15,7 @@ import net.minecraft.util.SoundCategory
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.fluids.Fluid
+import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.fluids.FluidUtil
 import net.minecraftforge.fluids.IFluidBlock
 import net.minecraftforge.fluids.capability.IFluidHandler
@@ -24,12 +25,15 @@ import net.minecraftforge.fluids.capability.wrappers.FluidBlockWrapper
 import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.fluid.data.FluidData
 import top.kmar.mi.api.utils.TickHelper
 import top.kmar.mi.api.utils.data.math.Point3D
 import top.kmar.mi.api.utils.data.math.Range3D
 import java.util.*
 import java.util.function.BiConsumer
+
+/** 获取一个方块的的 TE，当区块未加载时不会加载区块而是返回 `null` */
+fun World.getBlockEntity(pos: BlockPos): TileEntity? =
+    if (isBlockLoaded(pos)) getTileEntity(pos) else null
 
 /**
  * 判断当前世界是否为客户端
@@ -50,23 +54,22 @@ fun isClient() = FMLCommonHandler.instance().effectiveSide.isClient
 fun isServer() = FMLCommonHandler.instance().effectiveSide.isServer
 
 /** 检查指定位置是否可以放置指定流体方块 */
-fun World.pushFluid(pos: BlockPos, data: FluidData, simulate: Boolean): Int {
+fun World.pushFluid(pos: BlockPos, data: FluidStack?, simulate: Boolean): Int {
     if (data.isEmpty) return 0
-    val fluid = data.fluid!!
+    val fluid = data!!.fluid
     if (!data.fluid!!.canBePlacedInWorld()) return 0
-    val stack = data.toStack()
-    val fluidSource = FluidUtil.getFluidHandler(FluidUtil.getFilledBucket(stack)) ?: return 0
-    if (fluidSource.drain(stack, false) == null) return 0
+    val fluidSource = FluidUtil.getFluidHandler(FluidUtil.getFilledBucket(data)) ?: return 0
+    if (fluidSource.drain(data, false) == null) return 0
     val state = getBlockState(pos)
     if (!(state.material.isSolid || state.block.isReplaceable(this, pos))) return 0
-    if (provider.doesWaterVaporize() && fluid.doesVaporize(stack)) {
-        val result = fluidSource.drain(stack, !simulate) ?: return 0
+    if (provider.doesWaterVaporize() && fluid.doesVaporize(data)) {
+        val result = fluidSource.drain(data, !simulate) ?: return 0
         result.fluid.vaporize(null, this, pos, result)
         return result.amount
     } else {
         val handler = getFluidBlockHandler(fluid, pos)
-        val result = FluidUtil.tryFluidTransfer(handler, fluidSource, stack, !simulate) ?: return 0
-        playSound(null, pos, fluid.getFillSound(stack), SoundCategory.BLOCKS, 1F, 1F)
+        val result = FluidUtil.tryFluidTransfer(handler, fluidSource, data, !simulate) ?: return 0
+        playSound(null, pos, fluid.getFillSound(data), SoundCategory.BLOCKS, 1F, 1F)
         return result.amount
     }
 }

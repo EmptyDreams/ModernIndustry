@@ -17,6 +17,6 @@ fun interface IAutoNetwork {
      * @param nbt 接收到的信息
      * @param ctx 网络信息
      */
-    fun receive(nbt: NBTBase, ctx: MessageContext)
+    fun receive(nbt: NBTBase, ctx: MessageContext?)
 
 }

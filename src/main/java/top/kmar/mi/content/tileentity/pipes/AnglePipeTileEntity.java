@@ -1,14 +1,12 @@
 package top.kmar.mi.content.tileentity.pipes;
 
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import org.jetbrains.annotations.NotNull;
 import top.kmar.mi.api.araw.interfaces.AutoSave;
-import top.kmar.mi.api.fluid.FTTileEntity;
+import top.kmar.mi.api.pipes.FluidPipeEntity;
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
-import top.kmar.mi.data.properties.AngleFacingEnum;
-
-import javax.annotation.Nonnull;
+import top.kmar.mi.api.utils.container.IndexEnumMap;
 
 import static net.minecraft.util.EnumFacing.*;
 
@@ -17,85 +15,81 @@ import static net.minecraft.util.EnumFacing.*;
  * @author EmptyDreams
  */
 @AutoTileEntity("AnglePipe")
-public class AnglePipeTileEntity extends FTTileEntity {
-	
-	/** 正方向 */
-	@AutoSave protected EnumFacing facing;
-	/** 后侧方向 */
-	@AutoSave protected EnumFacing after;
-	
-	public AnglePipeTileEntity() {
-		this(NORTH, UP);
-	}
-	
-	public AnglePipeTileEntity(EnumFacing facing, EnumFacing after) {
-		if (getMaxAmount() % 2 != 0)
-			throw new IllegalArgumentException("最大容量[" + getMaxAmount() + "]应当能被2整除");
-		this.facing = facing;
-		this.after = after;
-	}
-	
-	@Override
-	protected NBTBase sync() {
-		NBTTagCompound result = new NBTTagCompound();
-		result.setByte("fac", (byte) facing.ordinal());
-		result.setByte("aft", (byte) facing.ordinal());
-		return result;
-	}
-	
-	@Override
-	public void syncClient(@Nonnull NBTBase reader) {
-		NBTTagCompound nbt = (NBTTagCompound) reader;
-		facing = EnumFacing.values()[nbt.getByte("fac")];
-		after = EnumFacing.values()[nbt.getByte("aft")];
-	}
-	
-	@Override
-	public boolean hasAperture(EnumFacing facing) {
-		return facing == this.facing || facing == after;
-	}
-	
-	@Override
-	public boolean canLinkFluid(EnumFacing facing) {
-		if (isLink(facing)) return true;
-		if (!super.canLinkFluid(facing)) return false;
-		if (hasAperture(facing)) return true;
-		if (getLinkData().isInit()) return true;
-		if (isLink(this.facing)) {
-			if (isLink(after)) return false;
-			return AngleFacingEnum.match(this.facing, facing);
-		}
-		return AngleFacingEnum.match(after, facing);
-	}
-	
-	@Override
-	public boolean linkFluid(EnumFacing facing) {
-		if (!super.linkFluid(facing)) return false;
-		if (!hasAperture(facing)) {
-			if (isLink(this.facing)) {
-				after = facing;
-			} else if (facing.getAxis() == Axis.Y) {
-				assert isLink(after);
-				after = facing;
-			} else this.facing = facing;
-			updateBlockState(false);
-		}
-		return true;
-	}
-	
-	@Override
-	public int getLinkedAmount() {
-		if (isLink(getFacing())) return isLink(getAfter()) ? 2 : 1;
-		else return isLink(getAfter()) ? 1 : 0;
-	}
-	
-	public EnumFacing getFacing() {
-		if (facing == UP || facing == DOWN) return after;
-		return facing;
-	}
-	
-	public EnumFacing getAfter() {
-		if (facing == UP || facing == DOWN) return facing;
-		return after;
-	}
+public class AnglePipeTileEntity extends FluidPipeEntity {
+    
+    /** 正方向 */
+    @AutoSave private EnumFacing facing;
+    /** 后侧方向 */
+    @AutoSave private EnumFacing after;
+    /** 连接数据 */
+    @AutoSave
+    private final IndexEnumMap<EnumFacing> linkedData = new IndexEnumMap<>(EnumFacing.values());
+    
+    public AnglePipeTileEntity() {
+        this(NORTH, UP);
+    }
+    
+    public AnglePipeTileEntity(EnumFacing facing, EnumFacing after) {
+        super(1000);
+        this.facing = facing;
+        this.after = after;
+    }
+    
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        NBTTagCompound tag = super.getUpdateTag();
+        int value = (facing.ordinal() << 8) | after.ordinal();
+        tag.setShort("data", (short) value);
+        return tag;
+    }
+    
+    @Override
+    public void handleUpdateTag(NBTTagCompound tag) {
+        super.handleUpdateTag(tag);
+        int value = tag.getShort("data");
+        facing = EnumFacing.values()[value >> 8];
+        after = EnumFacing.values()[value & 0xFF];
+    }
+    
+    @Override
+    public boolean isLink(EnumFacing facing) {
+        return linkedData.get(facing);
+    }
+    
+    @Override
+    public boolean hasChannel(EnumFacing facing) {
+        return facing == this.facing || facing == after;
+    }
+    
+    @Override
+    public boolean linkFluidBlock(@NotNull EnumFacing facing) {
+        if (isLink(facing)) return true;
+        if (!hasChannel(facing)) {
+            if (isLink(this.facing)) {
+                if (isLink(after)) return false;
+                after = facing;
+            } else if (facing.getAxis() == Axis.Y) {
+                assert isLink(after);
+                after = facing;
+            } else this.facing = facing;
+        }
+        linkedData.set(facing, true);
+        return true;
+    }
+    
+    @Override
+    public void unlinkFluidBlock(@NotNull EnumFacing facing) {
+        linkedData.set(facing, false);
+    }
+    
+    public EnumFacing getFacing() {
+        if (facing == UP || facing == DOWN) return after;
+        return facing;
+    }
+    
+    public EnumFacing getAfter() {
+        if (facing == UP || facing == DOWN) return facing;
+        return after;
+    }
+
 }
