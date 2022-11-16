@@ -28,13 +28,6 @@ public class StraightPipe extends Pipe {
         setDefaultState(blockState.getBaseState().withProperty(getAXIS(), EnumFacing.Axis.X));
     }
     
-    @SuppressWarnings("ConstantConditions")
-    @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        StraightPipeTileEntity te = (StraightPipeTileEntity) worldIn.getTileEntity(pos);
-        return state.withProperty(getAXIS(), te.getFacing());
-    }
-    
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         state = state.getActualState(source, pos);

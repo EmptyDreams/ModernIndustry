@@ -33,13 +33,6 @@ public class ShuntPipe extends Pipe {
 	}
 	
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-		ShuntPipeTileEntity te = (ShuntPipeTileEntity) worldIn.getTileEntity(pos);
-		//noinspection ConstantConditions
-		return state.withProperty(getAXIS(), te.getSide());
-	}
-	
-	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		state = state.getActualState(source, pos);
 		switch (state.getValue(getAXIS())) {

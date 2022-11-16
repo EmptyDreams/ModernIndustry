@@ -54,7 +54,7 @@ public class StraightPipeTileEntity extends FluidPipeEntity {
         IBlockState old = world.getBlockState(pos);
         if (old.getValue(MIProperty.getAXIS()) == facing.getAxis()) return;
         IBlockState newState = old.withProperty(MIProperty.getAXIS(), facing.getAxis());
-        world.setBlockState(pos, newState, 0b1110);
+        world.setBlockState(pos, newState, 0b10000);
     }
     
     /** 获取管道正方向 */
