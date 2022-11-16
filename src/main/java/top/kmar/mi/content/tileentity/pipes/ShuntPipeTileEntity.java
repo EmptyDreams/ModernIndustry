@@ -39,12 +39,12 @@ public class ShuntPipeTileEntity extends FluidPipeEntity {
     @Override
     public boolean linkFluidBlock(@NotNull TileEntity entity, @NotNull EnumFacing facing) {
         if (isLink(facing)) return true;
-        if (!FluidPipeEntity.tryLink(this, linkedData, entity, facing)) return false;
-        List<Axis> maySides = calculateSides();
+        List<Axis> maySides = calculateSides(facing);
         if (maySides.isEmpty()) {
             linkedData.set(facing, false);
             return false;
         }
+        if (!FluidPipeEntity.tryLink(this, linkedData, entity, facing)) return false;
         if (!maySides.contains(getSide())) {
             IBlockState old = world.getBlockState(pos);
             IBlockState newState = old.withProperty(MIProperty.getAXIS(), maySides.get(0));
@@ -64,11 +64,12 @@ public class ShuntPipeTileEntity extends FluidPipeEntity {
     }
     
     /** 计算side应该在哪个方向 */
-    protected List<Axis> calculateSides() {
+    protected List<Axis> calculateSides(EnumFacing facing) {
         List<Axis> all = Lists.newArrayList(Axis.values());
         for (EnumFacing value : values()) {
             if (isLink(value)) all.remove(value.getAxis());
         }
+        all.remove(facing.getAxis());
         return all;
     }
     
