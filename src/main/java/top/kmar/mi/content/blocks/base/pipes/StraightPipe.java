@@ -14,7 +14,6 @@ import top.kmar.mi.content.tileentity.pipes.StraightPipeTileEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static top.kmar.mi.data.properties.MIProperty.getALL_FACING;
 import static top.kmar.mi.data.properties.MIProperty.getAXIS;
 
 /**
@@ -39,16 +38,16 @@ public class StraightPipe extends Pipe {
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         state = state.getActualState(source, pos);
-        EnumFacing facing = state.getValue(getALL_FACING());
-        switch (facing) {
-            case DOWN: case UP:
+        EnumFacing.Axis axis = state.getValue(getAXIS());
+        switch (axis) {
+            case Y:
                 return new AxisAlignedBB(1 / 4d, 0, 1 / 4d, 3 / 4d, 1, 3 / 4d);
-            case NORTH: case SOUTH:
+            case Z:
                 return new AxisAlignedBB(1 / 4d, 1 / 4d, 0, 3 / 4d, 3 / 4d, 1);
-            case WEST: case EAST:
+            case X:
                 return new AxisAlignedBB(0, 1 / 4d, 1 / 4d, 1, 3 / 4d, 3 / 4d);
             default:
-                throw new IllegalArgumentException("facing[" + facing + "]不属于任何一个方向");
+                throw new IllegalArgumentException("facing[" + axis + "]不属于任何一个方向");
         }
     }
     
