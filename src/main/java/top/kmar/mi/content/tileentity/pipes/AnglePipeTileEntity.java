@@ -84,13 +84,15 @@ public class AnglePipeTileEntity extends FluidPipeEntity {
     @Override
     public boolean linkFluidBlock(@NotNull TileEntity entity, @NotNull EnumFacing facing) {
         if (isLink(facing)) return true;
+        if (isLink(this.facing) && (isLink(after) || facing == this.facing.getOpposite()))
+            return false;
+        if (isLink(after) && facing == after.getOpposite()) return false;
         if (!FluidPipeEntity.tryLink(this, linkedData, entity, facing)) return false;
         if (!hasChannel(facing)) {
             if (isLink(this.facing)) {
                 if (isLink(after)) return false;
                 after = facing;
             } else if (facing.getAxis() == Axis.Y) {
-                assert !isLink(after);
                 after = facing;
             } else this.facing = facing;
             int value = (this.facing.ordinal() << 8) | after.ordinal();
