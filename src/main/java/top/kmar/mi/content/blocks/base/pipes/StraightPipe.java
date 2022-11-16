@@ -26,7 +26,7 @@ public class StraightPipe extends Pipe {
     
     public StraightPipe(String name, String... ores) {
         super(name, ores);
-        setDefaultState(blockState.getBaseState().withProperty(getALL_FACING(), EnumFacing.NORTH));
+        setDefaultState(blockState.getBaseState().withProperty(getAXIS(), EnumFacing.Axis.X));
     }
     
     @SuppressWarnings("ConstantConditions")
