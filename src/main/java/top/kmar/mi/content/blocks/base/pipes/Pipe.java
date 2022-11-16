@@ -39,7 +39,7 @@ abstract public class Pipe extends TEBlockBase {
     
     public Pipe(String name, String... ores) {
         super(Material.IRON);
-        setSoundType(SoundType.SNOW);
+        setSoundType(SoundType.METAL);
         setHardness(0.5F);
         setCreativeTab(ModernIndustry.TAB_WIRE);
         setRegistryName(ModernIndustry.MODID, name);
