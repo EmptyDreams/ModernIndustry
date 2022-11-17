@@ -49,6 +49,7 @@ public class ShuntPipeTileEntity extends FluidPipeEntity {
             IBlockState old = world.getBlockState(pos);
             IBlockState newState = old.withProperty(MIProperty.getAXIS(), maySides.get(0));
             WorldExpandsKt.setBlockWithMark(world, pos, newState);
+            clearCapCache();
         }
         return true;
     }

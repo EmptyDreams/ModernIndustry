@@ -77,6 +77,7 @@ open class EUFluidPump : FrontTileEntity(), ITickable {
                 val value = (data as NBTTagShort).int
                 side = EnumFacing.values()[value ushr 8]
                 panelFacing = EnumFacing.values()[value and 0xFF]
+                world.markBlockRangeForRenderUpdate(pos, pos)
             }
         }
         if (facing?.axis === side.axis) return null

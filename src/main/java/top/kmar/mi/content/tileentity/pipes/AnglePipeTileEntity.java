@@ -91,10 +91,19 @@ public class AnglePipeTileEntity extends FluidPipeEntity {
         if (!hasChannel(facing)) {
             if (isLink(this.facing)) {
                 if (isLink(after)) return false;
-                after = facing;
+                if (after != facing) {
+                    after = facing;
+                    clearCapCache();
+                }
             } else if (facing.getAxis() == Axis.Y) {
-                after = facing;
-            } else this.facing = facing;
+                if (after != facing) {
+                    after = facing;
+                    clearCapCache();
+                }
+            } else if (this.facing != facing) {
+                this.facing = facing;
+                clearCapCache();
+            }
             int value = (this.facing.ordinal() << 8) | after.ordinal();
             BlockMessage.sendToClient(this, new NBTTagShort((short) value));
         }

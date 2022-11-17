@@ -314,6 +314,10 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
 
     private val capArray = Array<IFluidHandler?>(6) { null }
 
+    protected fun clearCapCache() {
+        capArray.fill(null)
+    }
+    
     fun getFluidCap(facing: EnumFacing): IFluidHandler? {
         if (!isOpening(facing)) return null
         return capArray.computeIfAbsent(facing.index) {
