@@ -83,7 +83,9 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
         super.neighborChanged(state, world, pos, blockIn, fromPos)
         val facing = pos.whatFacing(fromPos)
         val pump = world.getTileEntity(pos) as EUFluidPump
-        pump.linkFluidBlock(facing)
+        val entity = world.getTileEntity(fromPos)
+        if (entity == null) pump.unlinkFluidBlock(facing)
+        else pump.linkFluidBlock(entity, facing)
     }
 
     @Suppress("OVERRIDE_DEPRECATION")
@@ -112,9 +114,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
         side: EnumFacing,
         hitX: Float, hitY: Float, hitZ: Float
     ): Boolean {
-        val result = EUFluidPump().apply {
-            this.world = world
-        }
+        val result = EUFluidPump()
         result.panelFacing = player.getPlacingDirection(pos).opposite
         result.side = when (result.panelFacing) {
             EnumFacing.DOWN -> result.side

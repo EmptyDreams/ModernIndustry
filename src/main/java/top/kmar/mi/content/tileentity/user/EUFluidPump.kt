@@ -3,6 +3,7 @@ package top.kmar.mi.content.tileentity.user
 import net.minecraft.client.resources.I18n
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagShort
+import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ITickable
 import net.minecraftforge.common.capabilities.Capability
@@ -22,6 +23,7 @@ import top.kmar.mi.api.pipes.FluidPipeEntity
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity
 import top.kmar.mi.api.tools.FrontTileEntity
 import top.kmar.mi.api.utils.*
+import top.kmar.mi.api.utils.container.IndexEnumMap
 import top.kmar.mi.api.utils.expands.*
 import top.kmar.mi.content.blocks.BlockGuiList
 import top.kmar.mi.content.blocks.machine.user.FluidPumpBlock
@@ -43,7 +45,7 @@ open class EUFluidPump : FrontTileEntity(), ITickable {
     var energyRequirement = 150
     /** 水泵面板方向 */
     @field:AutoSave
-    var panelFacing = EnumFacing.WEST
+    internal var panelFacing = EnumFacing.WEST
         set(value) {
             field = value
             val list = maySide(value)
@@ -52,7 +54,7 @@ open class EUFluidPump : FrontTileEntity(), ITickable {
         }
     /** 水泵输出方向 */
     @field:AutoSave
-    var side = EnumFacing.NORTH
+    internal var side = EnumFacing.NORTH
         set(value) {
             field = value
             val list = mayPanel(value)
@@ -61,14 +63,18 @@ open class EUFluidPump : FrontTileEntity(), ITickable {
         }
     /** 是否工作 */
     @field:AutoSave
-    var start = false
+    private var start = false
         set(value) {
             if (value) addTickable()
             field = value
         }
+    /** 存储连接的方块的数量 */
+    @field:AutoSave(local = Byte::class)
+    private var linkedData = IndexEnumMap(EnumFacing.values())
     /** 是否正在工作 */
     var working = false
         get() = field && start
+        private set
     private var consume = 0
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
@@ -91,18 +97,28 @@ open class EUFluidPump : FrontTileEntity(), ITickable {
     }
 
     /** 连接一个流体方块 */
-    fun linkFluidBlock(facing: EnumFacing): Boolean {
-        val that = pos.offset(facing)
-        val entity = world.getTileEntity(that) ?: return false
-        if (entity.hasCapability(FLUID_HANDLER_CAPABILITY, facing.opposite)) {
+    fun linkFluidBlock(entity: TileEntity,  facing: EnumFacing): Boolean {
+        if (linkedData[facing]) return true
+        if (
+            entity.hasCapability(FLUID_HANDLER_CAPABILITY, facing.opposite) &&
+            entity !is EUFluidPump
+        ) {
             if (side.axis !== facing.axis) {
+                if (!linkedData.isInit()) return false
                 side = facing
                 markDirty()
             }
+            linkedData[facing] = true
             if (entity is FluidPipeEntity) entity.linkFluidBlock(this, facing.opposite)
             return true
         }
         return false
+    }
+    
+    /** 断开与指定方向的连接 */
+    fun unlinkFluidBlock(facing: EnumFacing) {
+        linkedData[facing] = false
+        world.markChunkDirty(pos, this)
     }
     
     override fun update() {
@@ -195,7 +211,7 @@ open class EUFluidPump : FrontTileEntity(), ITickable {
     private var _sendFlag = false
     
     private fun send() {
-        if (_sendFlag || world.isClient()) return
+        if (_sendFlag || world == null || world.isClient()) return
         _sendFlag = true
         TickHelper.addServerTask {
             _sendFlag = false
