@@ -85,7 +85,8 @@ open class EUFluidPump : FrontTileEntity(), ITickable {
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
         if (capability === BlockNetworkCapability.capObj) return true
-        return facing?.axis !== side.axis && super.hasCapability(capability, facing)
+        if (capability === FLUID_HANDLER_CAPABILITY && facing?.axis === side.axis) return true
+        return super.hasCapability(capability, facing)
     }
 
     /** 连接一个流体方块 */

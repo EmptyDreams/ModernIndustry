@@ -112,7 +112,9 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
         side: EnumFacing,
         hitX: Float, hitY: Float, hitZ: Float
     ): Boolean {
-        val result = EUFluidPump()
+        val result = EUFluidPump().apply {
+            this.world = world
+        }
         result.panelFacing = player.getPlacingDirection(pos).opposite
         result.side = when (result.panelFacing) {
             EnumFacing.DOWN -> result.side
