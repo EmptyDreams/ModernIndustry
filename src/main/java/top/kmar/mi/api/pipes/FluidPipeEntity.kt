@@ -78,8 +78,8 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
     abstract fun unlinkFluidBlock(facing: EnumFacing)
     
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return (capability === FLUID_HANDLER_CAPABILITY && facing != null && !isOpening(facing)) ||
-                super.hasCapability(capability, facing)
+        if (capability === FLUID_HANDLER_CAPABILITY) return true
+        return super.hasCapability(capability, facing)
     }
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {

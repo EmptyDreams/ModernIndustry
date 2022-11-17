@@ -99,6 +99,7 @@ open class EUFluidPump : FrontTileEntity(), ITickable {
                 side = facing
                 markDirty()
             }
+            if (entity is FluidPipeEntity) entity.linkFluidBlock(this, facing.opposite)
             return true
         }
         return false
