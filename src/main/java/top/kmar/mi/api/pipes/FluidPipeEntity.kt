@@ -181,7 +181,7 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
         }
         if (nextFacings.size == 1) return chainInsert(stack, from, doEdit)
         var amount = stack.amount - inputFluid(stack, stack.amount, from, doEdit)
-        if (amount != stack.amount) {
+        if (amount != 0) {
             eachInsertOpening { it, _ ->
                 if (it === from) return@eachInsertOpening
                 val that = pos.offset(it)
@@ -200,7 +200,7 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
                 if (amount == stack.amount) return amount
             }
         }
-        return amount
+        return stack.amount - amount
     }
 
     /** 向当前管道插入流体，当且仅当当前管道内的流体与插入的流体不同时才会向周围方块输送流体 */
