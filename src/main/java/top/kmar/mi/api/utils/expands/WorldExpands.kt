@@ -53,8 +53,13 @@ fun isClient() = FMLCommonHandler.instance().effectiveSide.isClient
 /** 是否为服务端 */
 fun isServer() = FMLCommonHandler.instance().effectiveSide.isServer
 
-/** 检查指定位置是否可以放置指定流体方块 */
-fun World.pushFluid(pos: BlockPos, data: FluidStack?, simulate: Boolean): Int {
+/** 获取指定方块的 [IFluidHandler] */
+fun World.getFluidCapability(pos: BlockPos, side: EnumFacing): IFluidHandler? {
+    return FluidUtil.getFluidHandler(this, pos, side)
+}
+
+/** 向指定位置放置流体方块 */
+fun World.setFluid(pos: BlockPos, data: FluidStack?, doEdit: Boolean): Int {
     if (data.isEmpty) return 0
     val fluid = data!!.fluid
     if (!data.fluid!!.canBePlacedInWorld()) return 0
@@ -63,13 +68,13 @@ fun World.pushFluid(pos: BlockPos, data: FluidStack?, simulate: Boolean): Int {
     val state = getBlockState(pos)
     if (!(state.material.isSolid || state.block.isReplaceable(this, pos))) return 0
     if (provider.doesWaterVaporize() && fluid.doesVaporize(data)) {
-        val result = fluidSource.drain(data, !simulate) ?: return 0
+        val result = fluidSource.drain(data, doEdit) ?: return 0
         result.fluid.vaporize(null, this, pos, result)
         return result.amount
     } else {
         val handler = getFluidBlockHandler(fluid, pos)
-        val result = FluidUtil.tryFluidTransfer(handler, fluidSource, data, !simulate) ?: return 0
-        playSound(null, pos, fluid.getFillSound(data), SoundCategory.BLOCKS, 1F, 1F)
+        val result = FluidUtil.tryFluidTransfer(handler, fluidSource, data, doEdit) ?: return 0
+        playSound(null, pos, data.emptySound, SoundCategory.BLOCKS, 1F, 1F)
         return result.amount
     }
 }

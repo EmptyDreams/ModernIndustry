@@ -3,6 +3,7 @@ package top.kmar.mi.api.pipes
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumFacing.*
+import net.minecraft.util.SoundCategory
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidStack
@@ -13,10 +14,7 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties
 import top.kmar.mi.api.araw.interfaces.AutoSave
 import top.kmar.mi.api.tools.BaseTileEntity
 import top.kmar.mi.api.utils.container.IndexEnumMap
-import top.kmar.mi.api.utils.expands.amount
-import top.kmar.mi.api.utils.expands.computeIfAbsent
-import top.kmar.mi.api.utils.expands.copy
-import top.kmar.mi.api.utils.expands.randomHorizontals
+import top.kmar.mi.api.utils.expands.*
 import top.kmar.mi.api.utils.interfaces.BreakConsumer
 import java.util.*
 import kotlin.math.min
@@ -77,6 +75,12 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
     /** 切断管道与指定方向的连接 */
     abstract fun unlinkFluidBlock(facing: EnumFacing)
     
+    /** 判断指定流体能否和管道内存储的流体合并 */
+    fun matchFluid(stack: FluidStack?): Boolean {
+        if (isEmpty || stack == null) return true
+        return stack.isFluidEqual(this.stack)
+    }
+    
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
         if (capability === FLUID_HANDLER_CAPABILITY) return true
         return super.hasCapability(capability, facing)
@@ -110,36 +114,38 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
         var result: FluidStack? = stack?.copy(0)
         var nextPower = power
         var count = amount
+        // 从周边的方块中提取流体
         eachExportOpening { it, stop ->
             if (it === from) return@eachExportOpening
             if (it.consume > nextPower) return@eachExportOpening stop()
             val that = pos.offset(it)
             if (!world.isBlockLoaded(that)) return@eachExportOpening
-            val entity = world.getTileEntity(that) ?: return@eachExportOpening
-            if (entity is FluidPipeEntity) {
-                if (result != null && entity.isNotEmpty && !result!!.isFluidEqual(entity.stack))
-                    return@eachExportOpening
-                nextPower -= it.consume
-                val output = entity.export(count, it.opposite, nextPower, doEdit) ?: return@eachExportOpening
-                if (result == null) result = output
-                else result!!.amount += output.amount
-                count -= output.amount
-            } else {
-                val cap = entity.getCapability(
-                    FLUID_HANDLER_CAPABILITY, it.opposite
-                ) ?: return@eachExportOpening
-                nextPower -= it.consume
-                val output = if (result == null) cap.drain(count, doEdit)
-                else cap.drain(result!!.copy(count), doEdit)
-                if (output == null) return@eachExportOpening
-                if (result == null) result = output
-                else result!!.amount += output.amount
-                count -= output.amount
+            nextPower -= it.consume
+            val entity = world.getTileEntity(that)
+            nextPower -= it.consume
+            val drainStack = if (entity == null) {
+                val handler = world.getFluidCapability(that, it.opposite)
+                if (handler == null) null
+                else if (result == null) handler.drain(count, doEdit)
+                else handler.drain(result!!.copy(count), doEdit)
+            } else entity.exportFluid(result, count, it.opposite, nextPower, doEdit)
+            if (drainStack.isEmpty) {
+                nextPower += it.consume
+                return@eachExportOpening
             }
+            if (entity == null) world.playSound(
+                null, that,
+                drainStack!!.fillSound, SoundCategory.BLOCKS,
+                1F, 1F
+            )
+            if (result == null) result = drainStack
+            else result!!.amount += drainStack.amount
+            count -= drainStack.amount
             if (count == 0) stop()
         }
         if (result == null) return null
-        if (count == 0) {
+        // 修改当前管道的数据
+        if (count == 0) {   // 如果流体已经提取足够的量，则将一部分补充到当前管道中
             if (isNotFull) {
                 count = min(result!!.amount, freeSpace)
                 if (doEdit) {
@@ -151,6 +157,7 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
                 if (result!!.amount == 0) return null
             }
         } else if (nextPower >= from.opposite.consume && isNotEmpty) {
+            // 如果流体未提取足够的量且能够继续提取流体，则将当前管道中的一部分流体补充到结果中
             count = min(count, this.amount)
             if (doEdit) {
                 this.amount -= count
@@ -180,8 +187,16 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
                 val that = pos.offset(it)
                 if (!world.isBlockLoaded(that)) return@eachInsertOpening
                 val entity = world.getTileEntity(pos.offset(it))
-                val cap = entity?.getCapability(FLUID_HANDLER_CAPABILITY, it.opposite) ?: return@eachInsertOpening
-                amount += cap.fill(stack.copy(stack.amount - amount), doEdit)
+                if (entity == null) {
+                    if (amount < 1000) return@eachInsertOpening
+                    val block = world.getBlockState(pos).block
+                    if (!block.isReplaceable(world, that)) return@eachInsertOpening
+                    amount -= world.setFluid(that, stack.copy(amount), doEdit)
+                } else {
+                    val cap = entity.getCapability(FLUID_HANDLER_CAPABILITY, it.opposite)
+                        ?: return@eachInsertOpening
+                    amount += cap.fill(stack.copy(stack.amount - amount), doEdit)
+                }
                 if (amount == stack.amount) return amount
             }
         }
