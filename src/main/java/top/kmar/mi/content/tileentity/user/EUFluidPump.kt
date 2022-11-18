@@ -158,8 +158,12 @@ open class EUFluidPump : FrontTileEntity(), ITickable {
         val toEntity = world.getBlockEntity(pos.offset(from.opposite)) ?: return
         val stack = fromEntity.exportFluid(
             maxCapability, from.opposite, FluidPipeEntity.maxPower, false
-        ) ?: return
-        val amount = toEntity.insertFluid(stack, from, true)
+        )
+        if (stack.isEmpty) {
+            fromEntity.exportFluid(maxCapability, from.opposite, FluidPipeEntity.maxPower, true)
+            return
+        }
+        val amount = toEntity.insertFluid(stack!!, from, true)
         if (amount != 0)
             fromEntity.exportFluid(amount, from.opposite, FluidPipeEntity.maxPower, true)
     }

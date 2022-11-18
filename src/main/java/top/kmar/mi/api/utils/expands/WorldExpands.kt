@@ -74,7 +74,8 @@ fun World.setFluid(pos: BlockPos, data: FluidStack?, doEdit: Boolean): Int {
     } else {
         val handler = getFluidBlockHandler(fluid, pos)
         val result = FluidUtil.tryFluidTransfer(handler, fluidSource, data, doEdit) ?: return 0
-        playSound(null, pos, data.emptySound, SoundCategory.BLOCKS, 1F, 1F)
+        if (doEdit)
+            playSound(null, pos, data.fillSound, SoundCategory.BLOCKS, 1F, 1F)
         return result.amount
     }
 }
