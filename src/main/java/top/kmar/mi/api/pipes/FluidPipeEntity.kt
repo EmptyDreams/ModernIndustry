@@ -7,6 +7,7 @@ import net.minecraft.util.SoundCategory
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidStack
+import net.minecraftforge.fluids.FluidUtil
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
 import net.minecraftforge.fluids.capability.FluidTankProperties
 import net.minecraftforge.fluids.capability.IFluidHandler
@@ -188,10 +189,16 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
                 if (!world.isBlockLoaded(that)) return@eachInsertOpening
                 val entity = world.getTileEntity(pos.offset(it))
                 if (entity == null) {
-                    if (amount < 1000) return@eachInsertOpening
-                    val block = world.getBlockState(pos).block
-                    if (!block.isReplaceable(world, that)) return@eachInsertOpening
-                    amount -= world.setFluid(that, stack.copy(amount), doEdit)
+                    if (amount < Fluid.BUCKET_VOLUME) return@eachInsertOpening
+                    val insertPoint = world.bfsSearch(that, false, 1024) {
+                        val state = world.getBlockState(it)
+                        val block = state.block
+                        if (!block.isReplaceable(world, it)) return@bfsSearch null
+                        val handler = FluidUtil.getFluidHandler(world, it, null) ?: return@bfsSearch true
+                        handler.drain(Fluid.BUCKET_VOLUME, false).amount != Fluid.BUCKET_VOLUME
+                    } ?: return@eachInsertOpening
+                    val handler = world.getFluidBlockHandler(stack.fluid, insertPoint)
+                    amount -= handler.fill(stack.copy(amount), doEdit)
                 } else {
                     val cap = entity.getCapability(FLUID_HANDLER_CAPABILITY, it.opposite)
                         ?: return@eachInsertOpening

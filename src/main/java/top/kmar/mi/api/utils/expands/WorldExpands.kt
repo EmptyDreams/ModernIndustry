@@ -1,7 +1,9 @@
 /** 与世界相关的操作的封装 */
 package top.kmar.mi.api.utils.expands
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap
+import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet
 import net.minecraft.block.BlockLiquid
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
@@ -176,6 +178,56 @@ fun BlockPos.whatFacing(pos: BlockPos): EnumFacing {
         if (offset(facing) == pos) return facing
     }
     throw IllegalArgumentException("now[$this]和other[$pos]不相邻！")
+}
+
+/**
+ * 以广度优先搜索在世界中搜索第一个满足条件的方块
+ * @param startPos 起始的搜索位点
+ * @param priorityUp 是否优先向上搜索，为 `false` 时优先向下搜索
+ * @param deep 扫描深度限制
+ * @param check 检查指定方块是否满足要求，返回 `null` 表示该方块不再作为新的节点继续拓展
+ * @return 搜索到的方块坐标，未搜索到则返回 `null`
+ */
+fun World.bfsSearch(
+    startPos: BlockPos, priorityUp: Boolean, deep: Int,
+    check: (BlockPos) -> Boolean?
+): BlockPos? {
+    val map = Int2ObjectRBTreeMap<LinkedList<BlockPos>> { left, right ->
+        if (priorityUp) right.compareTo(left)
+        else left.compareTo(right)
+    }.apply {
+        put(startPos.y, LinkedList<BlockPos>().apply { addLast(startPos) })
+    }
+    val record = ObjectRBTreeSet<BlockPos>().apply { add(startPos) }
+    val facings = ArrayList<EnumFacing>(6).apply {
+        addAll(randomHorizontals())
+        add(EnumFacing.UP)
+        add(EnumFacing.DOWN)
+    }
+    do {
+        val list = map.get(map.firstIntKey())
+        val pos = list.removeFirst()
+        val result = check(pos)
+        if (result != null) {
+            if (result) return pos
+            // 添加下一次要扫描的坐标
+            facings.forEach {
+                val next = pos.offset(it)
+                if (next !in record) {
+                    val target: LinkedList<BlockPos>
+                    if (map.containsKey(next.y)) {
+                        target = map.get(next.y)
+                    } else {
+                        target = LinkedList()
+                        map.put(next.y, target)
+                    }
+                    target.addLast(next)
+                }
+            }
+        }
+        if (list.isEmpty()) map.remove(pos.y)
+    } while (record.size < deep && map.isNotEmpty())
+    return null
 }
 
 //---------------------私有内容---------------------//
