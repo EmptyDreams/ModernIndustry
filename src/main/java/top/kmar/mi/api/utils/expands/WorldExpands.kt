@@ -56,7 +56,7 @@ fun isClient() = FMLCommonHandler.instance().effectiveSide.isClient
 fun isServer() = FMLCommonHandler.instance().effectiveSide.isServer
 
 /** 获取指定方块的 [IFluidHandler] */
-fun World.getFluidCapability(pos: BlockPos, side: EnumFacing): IFluidHandler? {
+fun World.getFluidCapability(pos: BlockPos, side: EnumFacing?): IFluidHandler? {
     return FluidUtil.getFluidHandler(this, pos, side)
 }
 

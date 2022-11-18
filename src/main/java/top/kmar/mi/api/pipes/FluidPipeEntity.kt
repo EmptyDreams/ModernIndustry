@@ -121,14 +121,20 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
             if (it.consume > nextPower) return@eachExportOpening stop()
             val that = pos.offset(it)
             if (!world.isBlockLoaded(that)) return@eachExportOpening
-            nextPower -= it.consume
             val entity = world.getTileEntity(that)
             nextPower -= it.consume
             val drainStack = if (entity == null) {
-                val handler = world.getFluidCapability(that, it.opposite)
-                if (handler == null) null
-                else if (result == null) handler.drain(count, doEdit)
-                else handler.drain(result!!.copy(count), doEdit)
+                val exportPoint = world.bfsSearch(that, true, 8192) {
+                    val handler = FluidUtil.getFluidHandler(world, it, null) ?: return@bfsSearch null
+                    val tmp = handler.drain(Fluid.BUCKET_VOLUME, false) ?: return@bfsSearch false
+                    tmp.amount == Fluid.BUCKET_VOLUME && (result == null || tmp.isFluidEqual(result))
+                }
+                if (exportPoint == null) null
+                else {
+                    val handler = world.getFluidCapability(exportPoint, null)!!
+                    if (result == null) handler.drain(count, doEdit)
+                    else handler.drain(result!!.copy(count), doEdit)
+                }
             } else entity.exportFluid(result, count, it.opposite, nextPower, doEdit)
             if (drainStack.isEmpty) {
                 nextPower += it.consume
@@ -190,12 +196,12 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
                 val entity = world.getTileEntity(pos.offset(it))
                 if (entity == null) {
                     if (amount < Fluid.BUCKET_VOLUME) return@eachInsertOpening
-                    val insertPoint = world.bfsSearch(that, false, 1024) {
+                    val insertPoint = world.bfsSearch(that, false, 8192) {
                         val state = world.getBlockState(it)
                         val block = state.block
                         if (!block.isReplaceable(world, it)) return@bfsSearch null
                         val handler = FluidUtil.getFluidHandler(world, it, null) ?: return@bfsSearch true
-                        handler.drain(Fluid.BUCKET_VOLUME, false).amount != Fluid.BUCKET_VOLUME
+                        handler.drain(Fluid.BUCKET_VOLUME, false).amount == 0
                     } ?: return@eachInsertOpening
                     val handler = world.getFluidBlockHandler(stack.fluid, insertPoint)
                     amount -= handler.fill(stack.copy(amount), doEdit)
