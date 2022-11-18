@@ -41,7 +41,7 @@ import java.util.*
 open class EUFluidPump : FrontTileEntity(), ITickable {
     
     /** 一次性最多运送的流体量 */
-    var maxCapability = 500
+    var maxCapability = 1000
     /** 电能消耗 */
     var energyRequirement = 150
     /** 水泵面板方向 */
