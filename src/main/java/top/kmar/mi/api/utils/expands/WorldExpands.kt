@@ -222,6 +222,7 @@ fun World.bfsSearch(
                         map.put(next.y, target)
                     }
                     target.addLast(next)
+                    record.add(next)
                 }
             }
         }
