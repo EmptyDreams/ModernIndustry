@@ -69,7 +69,7 @@ open class EUFluidPump : FrontTileEntity(), ITickable {
             field = value
         }
     /** 存储连接的方块的数量 */
-    @field:AutoSave(local = Byte::class)
+    @field:AutoSave
     private var linkedData = IndexEnumMap(EnumFacing.values())
     /** 是否正在工作 */
     var working = false
