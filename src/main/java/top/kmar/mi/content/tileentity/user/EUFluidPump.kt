@@ -1,8 +1,9 @@
 package top.kmar.mi.content.tileentity.user
 
 import net.minecraft.client.resources.I18n
+import net.minecraft.nbt.NBTBase
+import net.minecraft.nbt.NBTTagByte
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.nbt.NBTTagShort
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ITickable
@@ -80,9 +81,10 @@ open class EUFluidPump : FrontTileEntity(), ITickable {
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         if (capability === BlockNetworkCapability.capObj) {
             return BlockNetworkCapability.capObj.cast { data, _ ->
-                val value = (data as NBTTagShort).int
-                side = EnumFacing.values()[value ushr 8]
-                panelFacing = EnumFacing.values()[value and 0xFF]
+                val value = (data as NBTTagByte).int
+                side = EnumFacing.values()[(value shr 3) and 0b111]
+                panelFacing = EnumFacing.values()[value and 0b111]
+                start = (value shr 6) == 1
                 world.markBlockRangeForRenderUpdate(pos, pos)
             }
         }
@@ -95,7 +97,14 @@ open class EUFluidPump : FrontTileEntity(), ITickable {
         if (capability === FLUID_HANDLER_CAPABILITY && facing?.axis === side.axis) return true
         return super.hasCapability(capability, facing)
     }
-
+    
+    private fun buildNetworkTag(): NBTBase {
+        var value = panelFacing.ordinal
+        value = value or (side.ordinal shl 3)
+        if (start) value = value or (1 shl 6)
+        return NBTTagByte(value.toByte())
+    }
+    
     /** 连接一个流体方块 */
     fun linkFluidBlock(entity: TileEntity,  facing: EnumFacing): Boolean {
         if (linkedData[facing]) return true
@@ -196,15 +205,14 @@ open class EUFluidPump : FrontTileEntity(), ITickable {
     override fun getFront() = panelFacing
     
     override fun getUpdateTag(): NBTTagCompound = super.getUpdateTag().apply {
-        setByte("side", side.ordinal.toByte())
-        setByte("fac", panelFacing.ordinal.toByte())
+        setTag("data", buildNetworkTag())
     }
     
     override fun handleUpdateTag(tag: NBTTagCompound) {
         super.handleUpdateTag(tag)
-        if (tag.hasKey("fac")) {
+        if (tag.hasKey("data")) {
             val cap = getCapability(BlockNetworkCapability.capObj, null)!!
-            cap.receive(tag, null)
+            cap.receive(tag.getTag("data"), null)
         }
     }
     
@@ -215,7 +223,7 @@ open class EUFluidPump : FrontTileEntity(), ITickable {
         _sendFlag = true
         TickHelper.addServerTask {
             _sendFlag = false
-            val data = NBTTagShort((side.ordinal.shl(8) or panelFacing.ordinal).toShort())
+            val data = buildNetworkTag()
             BlockMessage.sendToClient(this, data)
             true
         }
