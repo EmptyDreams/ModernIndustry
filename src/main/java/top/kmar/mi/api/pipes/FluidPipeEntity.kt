@@ -142,8 +142,8 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
             }
             if (entity == null && doEdit) world.playSound(
                 null, that,
-                drainStack!!.fillSound, SoundCategory.BLOCKS,
-                1F, 1F
+                drainStack!!.emptySound, SoundCategory.BLOCKS,
+                0.4F, 0.4F
             )
             if (result == null) result = drainStack
             else result!!.amount += drainStack.amount
@@ -201,10 +201,16 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
                         val block = state.block
                         if (!block.isReplaceable(world, it)) return@bfsSearch null
                         val handler = FluidUtil.getFluidHandler(world, it, null) ?: return@bfsSearch true
-                        handler.drain(Fluid.BUCKET_VOLUME, false).amount == 0
+                        handler.drain(Int.MAX_VALUE, false).amount == 0
                     } ?: return@eachInsertOpening
                     val handler = world.getFluidBlockHandler(stack.fluid, insertPoint)
-                    amount -= handler.fill(stack.copy(amount), doEdit)
+                    val dif = handler.fill(stack.copy(amount), doEdit)
+                    amount -= dif
+                    if (doEdit && dif != 0) world.playSound(
+                        null, that,
+                        stack.fillSound, SoundCategory.BLOCKS,
+                        0.5F, 0.5F
+                    )
                 } else {
                     val cap = entity.getCapability(FLUID_HANDLER_CAPABILITY, it.opposite)
                         ?: return@eachInsertOpening
