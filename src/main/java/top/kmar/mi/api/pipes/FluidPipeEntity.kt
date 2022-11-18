@@ -133,7 +133,7 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
                 nextPower += it.consume
                 return@eachExportOpening
             }
-            if (entity == null) world.playSound(
+            if (entity == null && doEdit) world.playSound(
                 null, that,
                 drainStack!!.fillSound, SoundCategory.BLOCKS,
                 1F, 1F
