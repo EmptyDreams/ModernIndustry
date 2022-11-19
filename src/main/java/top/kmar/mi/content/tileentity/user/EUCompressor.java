@@ -50,7 +50,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
     @Override
     public void update() {
         if (world.isRemote) {
-            WorldExpandsKt.removeTickable(this);
+            removeTickable();
             return;
         }
         if (output == null) {
@@ -58,7 +58,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
                 workingTime = 0;
                 markDirty();
             }
-            WorldExpandsKt.removeTickable(this);
+            removeTickable();
             updateShow(false);
             return;
         }
@@ -171,7 +171,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
         if (other.isEmpty()) return true;
         output = findOutput(input, other);
         if (output == null) return false;
-        WorldExpandsKt.addTickable(this);
+        addTickable();
         return true;
     }
     

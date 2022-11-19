@@ -18,7 +18,6 @@ import top.kmar.mi.api.graphics.GuiLoader;
 import top.kmar.mi.api.graphics.components.ProgressBarCmpt;
 import top.kmar.mi.api.regedits.block.annotations.AutoTileEntity;
 import top.kmar.mi.api.tools.FrontTileEntity;
-import top.kmar.mi.api.utils.expands.WorldExpandsKt;
 import top.kmar.mi.content.blocks.BlockGuiList;
 import top.kmar.mi.data.properties.MIProperty;
 
@@ -52,7 +51,7 @@ public class EMRedStoneConverter extends FrontTileEntity implements ITickable {
     @Override
     public void update() {
         if (world.isRemote) {
-            WorldExpandsKt.removeTickable(this);
+            removeTickable();
             return;
         }
         if (maxTime == 0) {

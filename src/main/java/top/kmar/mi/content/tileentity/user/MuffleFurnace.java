@@ -39,7 +39,7 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
     @Override
     public void update() {
         if (world.isRemote) {
-            WorldExpandsKt.removeTickable(this);
+            removeTickable();
             return;
         }
         ItemStack output = getOutputStack();

@@ -47,7 +47,7 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
     @Override
     public void update() {
         if (world.isRemote) {
-            WorldExpandsKt.removeTickable(this);
+            removeTickable();
             return;
         }
         if (checkInputAndOutput()) {

@@ -49,6 +49,7 @@ public final class TickHelper {
     
     @SubscribeEvent
     public static void handleServiceAllTask(TickEvent.ServerTickEvent event) {
+        WorldExpandsKt.callTickableListUpdateTask(null);
         int size = serverTaskQueue.size();
         for (int i = 0; i != size; ++i) {
             BooleanSupplier supplier = serverTaskQueue.remove();
@@ -59,6 +60,7 @@ public final class TickHelper {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public static void handleClientAllTask(TickEvent.ClientTickEvent event) {
+        WorldExpandsKt.callTickableListUpdateTask(null);
         int size = clientTaskQueue.size();
         for (int i = 0; i != size; ++i) {
             BooleanSupplier supplier = clientTaskQueue.remove();

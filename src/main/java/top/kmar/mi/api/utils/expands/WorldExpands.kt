@@ -2,7 +2,7 @@
 package top.kmar.mi.api.utils.expands
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap
+import it.unimi.dsi.fastutil.objects.Object2ObjectRBTreeMap
 import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet
 import net.minecraft.block.BlockLiquid
 import net.minecraft.block.state.IBlockState
@@ -12,7 +12,6 @@ import net.minecraft.client.multiplayer.WorldClient
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
-import net.minecraft.util.ITickable
 import net.minecraft.util.SoundCategory
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -27,7 +26,6 @@ import net.minecraftforge.fluids.capability.wrappers.FluidBlockWrapper
 import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.utils.TickHelper
 import top.kmar.mi.api.utils.data.math.Point3D
 import top.kmar.mi.api.utils.data.math.Range3D
 import java.util.*
@@ -101,35 +99,6 @@ fun World.forEachPlayersAround(range: Range3D, consumer: (EntityPlayer) -> Unit)
  * @receiver [World]
  */
 fun World.forEachPlayers(consumer: (EntityPlayer) -> Unit) = playerEntities.forEach(consumer)
-
-/**
- * 将TE从tick任务列表中移除
- * @receiver [TileEntity]
- */
-fun TileEntity.removeTickable() {
-    if (world.isClient()) {
-        CLIENT_REMOVES.computeIfAbsent(world) { LinkedList() }.add(this)
-        TickHelper.addClientTask { clearClientTickableList() }
-    } else {
-        SERVER_REMOVES.computeIfAbsent(world) { LinkedList() }.add(this)
-        TickHelper.addServerTask { clearServerTickableList() }
-    }
-}
-
-/**
- * 将TE添加到世界的tick任务列表中
- * @receiver [TileEntity]
- */
-fun TileEntity.addTickable()  {
-    require(this is ITickable) { "输入的参数应当实现ITickable接口：$javaClass" }
-    if (world.isRemote) {
-        CLIENT_ADDS.computeIfAbsent(world) { LinkedList() }.add(this)
-        TickHelper.addClientTask { clearClientTickableList() }
-    } else {
-        SERVER_ADDS.computeIfAbsent(world) { LinkedList() }.add(this)
-        TickHelper.addServerTask { clearServerTickableList() }
-    }
-}
 
 /** 客户端世界对象 */
 @get:SideOnly(Side.CLIENT)
@@ -228,43 +197,59 @@ fun World.bfsSearch(
 
 //---------------------私有内容---------------------//
 
-/** 客户端移除列表  */
-private val CLIENT_REMOVES: MutableMap<World, MutableList<TileEntity>> = Object2ObjectArrayMap(3)
-/** 服务端移除列表  */
-private val SERVER_REMOVES: MutableMap<World, MutableList<TileEntity>> = Object2ObjectArrayMap(3)
-
-/** 客户端添加列表  */
-private val CLIENT_ADDS: MutableMap<World, MutableList<TileEntity>> = Object2ObjectArrayMap(3)
-/** 服务端添加列表  */
-private val SERVER_ADDS: MutableMap<World, MutableList<TileEntity>> = Object2ObjectArrayMap(3)
-
-private fun clearServerTickableList(): Boolean {
-    SERVER_REMOVES.forEach { (key, value) ->
-        key.tickableTileEntities.removeAll(value)
-    }
-    SERVER_REMOVES.clear()
-    SERVER_ADDS.forEach { (key, value) ->
-        value.stream()
-            .distinct()
-            .filter { !key.tickableTileEntities.contains(it) }
-            .forEach { key.tickableTileEntities.add(it) }
-    }
-    SERVER_ADDS.clear()
-    return true
+/** 移除列表 */
+private val tickableRemoves = Object2ObjectRBTreeMap<World, MutableSet<TileEntity>> { left, right ->
+    left.provider.dimension.compareTo(right.provider.dimension)
+}
+/** 添加列表 */
+private val tickableAdds = Object2ObjectRBTreeMap<World, MutableSet<TileEntity>> { left, right ->
+    left.provider.dimension.compareTo(right.provider.dimension)
 }
 
-@SideOnly(Side.CLIENT)
-private fun clearClientTickableList(): Boolean {
-    CLIENT_REMOVES.forEach { (key, value) ->
-        key.tickableTileEntities.removeAll(value)
+/** 从世界中移除一个 Tick 任务 */
+fun World.removeTickable(entity: TileEntity) {
+    tickableRemoves.computeIfAbsent(this) {
+        ObjectRBTreeSet { left, right -> left.pos.compareTo(right.pos) }
+    }.add(entity)
+    tickableAdds[this]?.remove(entity)
+}
+
+/**
+ * 向世界添加一个 Tick 任务
+ *
+ * **注意：该方法不能在世界中已包含当前任务的情况下调用，否则会导致世界中重复包含指定任务**
+ */
+fun World.addTickable(entity: TileEntity) {
+    tickableAdds.computeIfAbsent(this) {
+        ObjectRBTreeSet { left, right -> left.pos.compareTo(right.pos) }
+    }.add(entity)
+    tickableRemoves[this]?.remove(entity)
+}
+
+/** 执行 tick 任务列表更新任务 */
+@Suppress("UnusedReceiverParameter")
+fun World?.callTickableListUpdateTask() {
+    clearTickableRemoves()
+    clearTickableAdds()
+}
+
+/** 清空移除任务列表 */
+private fun clearTickableRemoves() {
+    tickableRemoves.forEach { (world, list) ->
+        val itor = world.tickableTileEntities.listIterator(world.tickableTileEntities.size)
+        while (itor.hasPrevious()) {
+            val value = itor.previous()
+            if (list.remove(value)) itor.remove()
+        }
+        if (list.isNotEmpty()) throw AssertionError("列表没有正确清零：$list")
     }
-    CLIENT_REMOVES.clear()
-    CLIENT_ADDS.forEach { (key, value) ->
-        value.stream()
-            .distinct()
-            .filter { !key.tickableTileEntities.contains(it) }
-            .forEach { key.tickableTileEntities.add(it) }
+    tickableRemoves.clear()
+}
+
+/** 清空添加任务列表 */
+private fun clearTickableAdds() {
+    tickableAdds.forEach { (world, list) ->
+        world.tickableTileEntities.addAll(list)
     }
-    CLIENT_ADDS.clear()
-    return true
+    tickableAdds.clear()
 }

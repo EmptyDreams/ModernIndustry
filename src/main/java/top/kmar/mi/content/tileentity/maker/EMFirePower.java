@@ -62,7 +62,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
     @Override
     public void update() {
         if (world.isRemote) {
-            WorldExpandsKt.removeTickable(this);
+            removeTickable();
             return;
         }
         if (maxTime <= 0) burnItem();
