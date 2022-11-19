@@ -199,11 +199,6 @@ fun World.bfsSearch(
         put(startPos.y, LinkedList<BlockPos>().apply { addLast(startPos) })
     }
     val record = ObjectRBTreeSet<BlockPos>().apply { add(startPos) }
-    val facings = ArrayList<EnumFacing>(6).apply {
-        addAll(randomHorizontals())
-        add(EnumFacing.UP)
-        add(EnumFacing.DOWN)
-    }
     do {
         val list = map.get(map.firstIntKey())
         val pos = list.removeFirst()
@@ -211,9 +206,9 @@ fun World.bfsSearch(
         if (result != null) {
             if (result) return pos
             // 添加下一次要扫描的坐标
-            facings.forEach {
+            EnumFacing.values().forEach {
                 val next = pos.offset(it)
-                if (next !in record) {
+                if (isBlockLoaded(next) && next !in record) {
                     val target: LinkedList<BlockPos>
                     if (map.containsKey(next.y)) {
                         target = map.get(next.y)
