@@ -260,9 +260,7 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
                     0.5F, 0.5F
                 )
             } else {
-                val cap = entity.getCapability(FLUID_HANDLER_CAPABILITY, it.opposite)
-                    ?: return@eachInsertOpening
-                amount += cap.fill(stack.copy(stack.amount - amount), doEdit)
+                amount -= entity.insertFluid(stack.copy(amount), it.opposite, doEdit)
             }
             if (amount == stack.amount) return amount
         }
