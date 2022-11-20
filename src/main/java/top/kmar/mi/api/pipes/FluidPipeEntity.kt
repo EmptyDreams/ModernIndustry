@@ -188,37 +188,8 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
         }
         if (nextFacings.size == 1) return chainInsert(stack, from, doEdit)
         var amount = stack.amount - inputFluid(stack, stack.amount, from, doEdit)
-        if (amount != 0) {
-            eachInsertOpening { it, _ ->
-                if (it === from) return@eachInsertOpening
-                val that = pos.offset(it)
-                if (!world.isBlockLoaded(that)) return@eachInsertOpening
-                val entity = world.getTileEntity(pos.offset(it))
-                if (entity == null) {
-                    if (amount < Fluid.BUCKET_VOLUME) return@eachInsertOpening
-                    val insertPoint = world.bfsSearch(that, false, 8192) {
-                        val state = world.getBlockState(it)
-                        val block = state.block
-                        if (!block.isReplaceable(world, it)) return@bfsSearch null
-                        val handler = FluidUtil.getFluidHandler(world, it, null) ?: return@bfsSearch true
-                        handler.drain(Int.MAX_VALUE, false).amount == 0
-                    } ?: return@eachInsertOpening
-                    val handler = world.getFluidBlockHandler(stack.fluid, insertPoint)
-                    val dif = handler.fill(stack.copy(amount), doEdit)
-                    amount -= dif
-                    if (doEdit && dif != 0) world.playSound(
-                        null, that,
-                        stack.fillSound, SoundCategory.BLOCKS,
-                        0.5F, 0.5F
-                    )
-                } else {
-                    val cap = entity.getCapability(FLUID_HANDLER_CAPABILITY, it.opposite)
-                        ?: return@eachInsertOpening
-                    amount += cap.fill(stack.copy(stack.amount - amount), doEdit)
-                }
-                if (amount == stack.amount) return amount
-            }
-        }
+        if (amount != 0)
+            amount -= recursionInsert(stack.copy(amount), from, doEdit)
         return stack.amount - amount
     }
 
@@ -263,6 +234,41 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
         }
     }
 
+    /** 使用递归的方式插入流体 */
+    private fun recursionInsert(stack: FluidStack, from: EnumFacing, doEdit: Boolean): Int {
+        var amount = stack.amount
+        eachInsertOpening { it, _ ->
+            if (it === from) return@eachInsertOpening
+            val that = pos.offset(it)
+            if (!world.isBlockLoaded(that)) return@eachInsertOpening
+            val entity = world.getTileEntity(pos.offset(it))
+            if (entity == null) {
+                if (amount < Fluid.BUCKET_VOLUME) return@eachInsertOpening
+                val insertPoint = world.bfsSearch(that, false, 8192) {
+                    val state = world.getBlockState(it)
+                    val block = state.block
+                    if (!block.isReplaceable(world, it)) return@bfsSearch null
+                    val handler = FluidUtil.getFluidHandler(world, it, null) ?: return@bfsSearch true
+                    handler.drain(Int.MAX_VALUE, false).amount == 0
+                } ?: return@eachInsertOpening
+                val handler = world.getFluidBlockHandler(stack.fluid, insertPoint)
+                val dif = handler.fill(stack.copy(amount), doEdit)
+                amount -= dif
+                if (doEdit && dif != 0) world.playSound(
+                    null, that,
+                    stack.fillSound, SoundCategory.BLOCKS,
+                    0.5F, 0.5F
+                )
+            } else {
+                val cap = entity.getCapability(FLUID_HANDLER_CAPABILITY, it.opposite)
+                    ?: return@eachInsertOpening
+                amount += cap.fill(stack.copy(stack.amount - amount), doEdit)
+            }
+            if (amount == stack.amount) return amount
+        }
+        return stack.amount - amount
+    }
+    
     /**
      * 使用循环代替递归
      *
@@ -280,15 +286,7 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
             pipe = pair.second!!
         }
         if (spare == 0) return stack.amount
-        pipe.eachInsertOpening { it, _ ->
-            if (it === prevFacing) return@eachInsertOpening
-            val that = pipe.pos.offset(it)
-            if (!world.isBlockLoaded(that)) return@eachInsertOpening
-            val entity = world.getTileEntity(that)
-            val cap = entity?.getCapability(FLUID_HANDLER_CAPABILITY, it.opposite) ?: return@eachInsertOpening
-            spare -= cap.fill(stack.copy(spare), doEdit)
-            if (spare == 0) return stack.amount
-        }
+        spare -= pipe.recursionInsert(stack.copy(spare), prevFacing, doEdit)
         return stack.amount - spare
     }
 
@@ -310,7 +308,9 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
     }
 
     private inline fun eachOpening(consumer: (EnumFacing) -> Unit) {
-        values().forEach(consumer)
+        values().asSequence()
+            .filter { isOpening(it) }
+            .forEach(consumer)
     }
     
     private inline fun eachExportOpening(consumer: BreakConsumer<EnumFacing>) {
