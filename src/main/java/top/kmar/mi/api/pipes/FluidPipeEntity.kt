@@ -262,7 +262,7 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
             } else {
                 amount -= entity.insertFluid(stack.copy(amount), it.opposite, doEdit)
             }
-            if (amount == stack.amount) return amount
+            if (amount == 0) return stack.amount
         }
         return stack.amount - amount
     }
