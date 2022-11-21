@@ -229,6 +229,11 @@ fun World.addTickable(entity: TileEntity) {
 /** 执行 tick 任务列表更新任务 */
 @Suppress("UnusedReceiverParameter")
 fun World?.callTickableListUpdateTask() {
+    if (isClient() && Minecraft.getMinecraft().world == null) {
+        tickableRemoves.clear()
+        tickableAdds.clear()
+        return
+    }
     clearTickableRemoves()
     clearTickableAdds()
 }
