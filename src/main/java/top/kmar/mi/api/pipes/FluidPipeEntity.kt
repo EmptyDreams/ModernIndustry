@@ -103,7 +103,7 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
      * @param amount 要取出的量
      * @param from 取出的方向
      * @param power 动力值，水平方向吸一格取流体需要 1 动力，
-     *              垂直方向吸取一格流体需要 10 动力（注：此处一格为 [maxCapability]），最大值为 640
+     *   垂直方向吸取一格流体需要 10 动力（注：此处一格为 [maxCapability]），最大值为 640
      * @param doEdit 是否修改内部数据
      */
     open fun export(amount: Int, from: EnumFacing, power: Int, doEdit: Boolean): FluidStack? {
@@ -123,11 +123,13 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
             if (!world.isBlockLoaded(that)) return@eachExportOpening
             val entity = world.getTileEntity(that)
             nextPower -= it.consume
+            // 如果方块不包含 TE 则从该方块开始在世界中搜索第一个可以提取液体的流体方块
             val drainStack = if (entity == null) {
+                val tmpCount = count    // 拷贝一份避免闭包时影响性能
                 val exportPoint = world.bfsSearch(that, true, 8192) {
                     val handler = FluidUtil.getFluidHandler(world, it, null) ?: return@bfsSearch null
-                    val tmp = handler.drain(Fluid.BUCKET_VOLUME, false) ?: return@bfsSearch false
-                    tmp.amount == Fluid.BUCKET_VOLUME && (result == null || tmp.isFluidEqual(result))
+                    val tmp = handler.drain(tmpCount, false) ?: return@bfsSearch false
+                    tmp.amount != 0 && (result == null || tmp.isFluidEqual(result))
                 }
                 if (exportPoint == null) null
                 else {
@@ -136,10 +138,11 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
                     else handler.drain(result!!.copy(count), doEdit)
                 }
             } else entity.exportFluid(result, count, it.opposite, nextPower, doEdit)
-            if (drainStack.isEmpty) {
+            if (drainStack.isEmpty) {   // 如果没有提取到液体则恢复修改的数据
                 nextPower += it.consume
                 return@eachExportOpening
             }
+            // 如果是从世界中提取的液体且需要进行实际修改，则播放音效
             if (entity == null && doEdit) world.playSound(
                 null, that,
                 drainStack!!.emptySound, SoundCategory.BLOCKS,
@@ -242,7 +245,9 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
             val that = pos.offset(it)
             if (!world.isBlockLoaded(that)) return@eachInsertOpening
             val entity = world.getTileEntity(pos.offset(it))
-            if (entity == null) {
+            // 如果 TileEntity 不为空则尝试将流体放入其中
+            if (entity != null) amount -= entity.insertFluid(stack.copy(amount), it.opposite, doEdit)
+            else {  // 否则在世界中搜索第一个可以放置流体的方块
                 if (amount < Fluid.BUCKET_VOLUME) return@eachInsertOpening
                 val insertPoint = world.bfsSearch(that, false, 8192) {
                     val state = world.getBlockState(it)
@@ -254,13 +259,12 @@ abstract class FluidPipeEntity(val maxCapability: Int) : BaseTileEntity() {
                 val handler = world.getFluidBlockHandler(stack.fluid, insertPoint)
                 val dif = handler.fill(stack.copy(amount), doEdit)
                 amount -= dif
+                // 如果放置成功且需要修改实际数据则播放音效
                 if (doEdit && dif != 0) world.playSound(
                     null, that,
                     stack.fillSound, SoundCategory.BLOCKS,
                     0.5F, 0.5F
                 )
-            } else {
-                amount -= entity.insertFluid(stack.copy(amount), it.opposite, doEdit)
             }
             if (amount == 0) return stack.amount
         }
