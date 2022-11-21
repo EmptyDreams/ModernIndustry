@@ -24,7 +24,7 @@ import top.kmar.mi.content.blocks.common.CommonBlocks;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-import static top.kmar.mi.data.properties.MIProperty.getHORIZONTAL;
+import static top.kmar.mi.data.properties.MIProperty.getHorizontal;
 
 /**
  * MI中所有耗电机器的父类
@@ -69,11 +69,11 @@ public abstract class MachineBlock extends TEBlockBase {
                                             EntityLivingBase placer, EnumHand hand) {
         if (hasFacing == null) {
             IBlockState state = getDefaultState();
-            hasFacing = new BooleanWrapper(state.getProperties().containsKey(getHORIZONTAL()));
+            hasFacing = new BooleanWrapper(state.getProperties().containsKey(getHorizontal()));
         }
         if (hasFacing.get())
             return getDefaultState().withProperty(
-                    getHORIZONTAL(), placer.getHorizontalFacing().getOpposite());
+                    getHorizontal(), placer.getHorizontalFacing().getOpposite());
         return getDefaultState();
     }
     

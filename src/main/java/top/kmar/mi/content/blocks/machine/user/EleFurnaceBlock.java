@@ -40,8 +40,8 @@ public class EleFurnaceBlock extends MachineBlock {
 		super(Material.IRON);
 		setCreativeTab(ModernIndustry.TAB_BLOCK);
 		setDefaultState(blockState.getBaseState()
-				.withProperty(MIProperty.getHORIZONTAL(), NORTH)
-				.withProperty(MIProperty.getWORKING(), false));
+				.withProperty(MIProperty.getHorizontal(), NORTH)
+				.withProperty(MIProperty.getWorking(), false));
 		setHardness(3.5F);
 	}
 

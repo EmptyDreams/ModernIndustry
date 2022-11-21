@@ -14,7 +14,7 @@ import top.kmar.mi.content.tileentity.pipes.StraightPipeTileEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static top.kmar.mi.data.properties.MIProperty.getAXIS;
+import static top.kmar.mi.data.properties.MIProperty.getAxis;
 
 /**
  * <p>直线型管道
@@ -25,13 +25,13 @@ public class StraightPipe extends Pipe {
     
     public StraightPipe(String name, String... ores) {
         super(name, ores);
-        setDefaultState(blockState.getBaseState().withProperty(getAXIS(), EnumFacing.Axis.X));
+        setDefaultState(blockState.getBaseState().withProperty(getAxis(), EnumFacing.Axis.X));
     }
     
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         state = state.getActualState(source, pos);
-        EnumFacing.Axis axis = state.getValue(getAXIS());
+        EnumFacing.Axis axis = state.getValue(getAxis());
         switch (axis) {
             case Y:
                 return new AxisAlignedBB(1 / 4d, 0, 1 / 4d, 3 / 4d, 1, 3 / 4d);
@@ -47,7 +47,7 @@ public class StraightPipe extends Pipe {
     @Nonnull
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, getAXIS());
+        return new BlockStateContainer(this, getAxis());
     }
     
     @Nullable
@@ -58,14 +58,14 @@ public class StraightPipe extends Pipe {
     
     @Override
     public int getMetaFromState(@NotNull IBlockState state) {
-        return state.getValue(getAXIS()).ordinal();
+        return state.getValue(getAxis()).ordinal();
     }
     
     @NotNull
     @Override
     public IBlockState getStateFromMeta(int meta) {
         EnumFacing.Axis facing = EnumFacing.Axis.values()[meta];
-        return getDefaultState().withProperty(getAXIS(), facing);
+        return getDefaultState().withProperty(getAxis(), facing);
     }
     
 }

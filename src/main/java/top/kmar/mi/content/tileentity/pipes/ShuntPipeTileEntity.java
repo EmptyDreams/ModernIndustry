@@ -47,7 +47,7 @@ public class ShuntPipeTileEntity extends FluidPipeEntity {
         if (!FluidPipeEntity.tryLink(this, linkedData, entity, facing)) return false;
         if (!maySides.contains(getSide())) {
             IBlockState old = world.getBlockState(pos);
-            IBlockState newState = old.withProperty(MIProperty.getAXIS(), maySides.get(0));
+            IBlockState newState = old.withProperty(MIProperty.getAxis(), maySides.get(0));
             WorldExpandsKt.setBlockWithMark(world, pos, newState);
             clearCapCache();
         }
@@ -75,7 +75,7 @@ public class ShuntPipeTileEntity extends FluidPipeEntity {
     }
     
     public Axis getSide() {
-        return world.getBlockState(pos).getValue(MIProperty.getAXIS());
+        return world.getBlockState(pos).getValue(MIProperty.getAxis());
     }
 
 }

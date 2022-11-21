@@ -49,7 +49,7 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
             workingTime = maxWorkingTime = 0;
         }
         IBlockState oldState = world.getBlockState(pos);
-        IBlockState newState = oldState.withProperty(MIProperty.getWORKING(), isWorking());
+        IBlockState newState = oldState.withProperty(MIProperty.getWorking(), isWorking());
         WorldExpandsKt.setBlockWithMark(world, pos, newState);
         markDirty();
     }
@@ -86,7 +86,7 @@ public class MuffleFurnace extends BaseTileEntity implements ITickable {
     public boolean isWorking() { return maxBurningTime != 0; }
     /** 获取正面 */
     public EnumFacing getFront() {
-        return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
+        return world.getBlockState(pos).getValue(MIProperty.getHorizontal());
     }
     
     public ItemStack getInputStack() {

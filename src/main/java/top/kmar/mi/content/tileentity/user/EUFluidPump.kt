@@ -171,7 +171,7 @@ open class EUFluidPump : FrontTileEntity(), ITickable {
     private fun updateShow(working: Boolean) {
         this.working = working
         val old = world.getBlockState(pos)
-        val new = old.withProperty(MIProperty.WORKING, working)
+        val new = old.withProperty(MIProperty.working, working)
         world.setBlockWithMark(pos, new)
     }
 

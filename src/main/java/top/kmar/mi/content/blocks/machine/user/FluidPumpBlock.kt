@@ -21,7 +21,7 @@ import top.kmar.mi.content.blocks.CommonUtil
 import top.kmar.mi.content.blocks.base.MachineBlock
 import top.kmar.mi.content.items.base.ItemBlockExpand
 import top.kmar.mi.content.tileentity.user.EUFluidPump
-import top.kmar.mi.data.properties.MIProperty.Companion.WORKING
+import top.kmar.mi.data.properties.MIProperty.Companion.working
 import top.kmar.mi.data.properties.MIProperty.Companion.createAllDirection
 import top.kmar.mi.data.properties.MIProperty.Companion.createRelativeDirection
 import top.kmar.mi.data.properties.RelativeDirectionEnum
@@ -48,7 +48,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
         defaultState = blockState.baseState
             .withProperty(PROPERTY_SIDE, RelativeDirectionEnum.LEFT)
             .withProperty(PROPERTY_PANEL, EnumFacing.WEST)
-            .withProperty(WORKING, false)
+            .withProperty(working, false)
     }
 
     override fun getStateForPlacement(
@@ -64,7 +64,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
 
     override fun getMetaFromState(state: IBlockState) = 0
 
-    override fun createBlockState() = BlockStateContainer(this, PROPERTY_SIDE, PROPERTY_PANEL, WORKING)
+    override fun createBlockState() = BlockStateContainer(this, PROPERTY_SIDE, PROPERTY_PANEL, working)
 
     override fun createNewTileEntity(worldIn: World, meta: Int) = EUFluidPump()
 
@@ -94,7 +94,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
         if (te !is EUFluidPump) return state
         return defaultState.withProperty(PROPERTY_SIDE, te.calculateFront())
             .withProperty(PROPERTY_PANEL, te.panelFacing)
-            .withProperty(WORKING, te.working)
+            .withProperty(working, te.working)
     }
 
     override fun onBlockActivated(

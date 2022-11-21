@@ -36,8 +36,8 @@ public class RedStoneConverterBlock extends MachineBlock {
 	public RedStoneConverterBlock() {
 		super(Material.IRON);
 		setDefaultState(blockState.getBaseState()
-									.withProperty(MIProperty.getHORIZONTAL(), EnumFacing.NORTH)
-									.withProperty(MIProperty.getWORKING(), false));
+									.withProperty(MIProperty.getHorizontal(), EnumFacing.NORTH)
+									.withProperty(MIProperty.getWorking(), false));
 	}
 
 	@Override

@@ -94,8 +94,8 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
      */
     private void updateShow(boolean isWorking) {
         IBlockState old = world.getBlockState(pos);
-        IBlockState state = old.withProperty(MIProperty.getEMPTY(), isEmpty())
-                .withProperty(MIProperty.getWORKING(), isWorking);
+        IBlockState state = old.withProperty(MIProperty.getEmpty(), isEmpty())
+                .withProperty(MIProperty.getWorking(), isWorking);
         WorldExpandsKt.setBlockWithMark(world, pos, state);
     }
     
@@ -131,7 +131,7 @@ public class EUCompressor extends FrontTileEntity implements ITickable {
     
     @Override
     public EnumFacing getFront() {
-        return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
+        return world.getBlockState(pos).getValue(MIProperty.getHorizontal());
     }
     
     @SuppressWarnings("ConstantConditions")

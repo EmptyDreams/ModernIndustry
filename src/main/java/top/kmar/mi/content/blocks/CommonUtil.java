@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
-import static top.kmar.mi.data.properties.MIProperty.getWORKING;
+import static top.kmar.mi.data.properties.MIProperty.getWorking;
 
 /**
  * 封装了对于State的常用操作
@@ -78,13 +78,13 @@ public final class CommonUtil {
     
     /** 为指定方块生成一个带方向与工作状态的{@link BlockStateContainer} */
     public static BlockStateContainer createBlockState(Block block) {
-        return new BlockStateContainer(block, MIProperty.getHORIZONTAL(), getWORKING());
+        return new BlockStateContainer(block, MIProperty.getHorizontal(), getWorking());
     }
     
     /** 依据IBlockState获取meta */
     public static int getMetaFromState(@Nonnull IBlockState state) {
         return state.getValue(getFacing(state)).ordinal() |
-                (state.getValue(getWORKING()) ? 0b1000 : 0b0000);
+                (state.getValue(getWorking()) ? 0b1000 : 0b0000);
     }
     
     /**
@@ -100,7 +100,7 @@ public final class CommonUtil {
         }
         return block.getDefaultState()
                 .withProperty(getFacing(block.getDefaultState()), facing)
-                .withProperty(getWORKING(), (meta & 0b1000) == 0b1000);
+                .withProperty(getWorking(), (meta & 0b1000) == 0b1000);
     }
     
     @Nonnull

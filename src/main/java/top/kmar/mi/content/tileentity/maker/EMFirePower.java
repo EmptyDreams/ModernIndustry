@@ -78,10 +78,10 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
             maxTime = TileEntityFurnace.getItemBurnTime(stack);
             burnItem = stack.copy();
             stack.shrink(1);
-            state = old.withProperty(MIProperty.getWORKING(), true);
+            state = old.withProperty(MIProperty.getWorking(), true);
         } else {
             burnItem = null;
-            state = old.withProperty(MIProperty.getWORKING(), false);
+            state = old.withProperty(MIProperty.getWorking(), false);
         }
         WorldExpandsKt.setBlockWithMark(world, pos, state);
         markDirty();
@@ -113,7 +113,7 @@ public class EMFirePower extends FrontTileEntity implements ITickable {
     
     @Override
     public EnumFacing getFront() {
-        return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
+        return world.getBlockState(pos).getValue(MIProperty.getHorizontal());
     }
     
     private IElectricityCap _cap = null;

@@ -44,9 +44,9 @@ public class CompressorBlock extends MachineBlock {
     public CompressorBlock() {
         super(Material.ROCK);
         setDefaultState(blockState.getBaseState().withProperty(
-                        MIProperty.getHORIZONTAL(), EnumFacing.EAST)
-                .withProperty(getWORKING(), false)
-                .withProperty(getEMPTY(), true));
+                        MIProperty.getHorizontal(), EnumFacing.EAST)
+                .withProperty(getWorking(), false)
+                .withProperty(getEmpty(), true));
     }
     
     @Nonnull
@@ -75,7 +75,7 @@ public class CompressorBlock extends MachineBlock {
     @Nonnull
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, getHORIZONTAL(), getWORKING(), getEMPTY());
+        return new BlockStateContainer(this, getHorizontal(), getWorking(), getEmpty());
     }
     
     @Override
@@ -92,9 +92,9 @@ public class CompressorBlock extends MachineBlock {
         if (enumfacing.getAxis() == EnumFacing.Axis.Y) {
             enumfacing = EnumFacing.NORTH;
         }
-        return getDefaultState().withProperty(getHORIZONTAL(), enumfacing)
-                .withProperty(getWORKING(), burning)
-                .withProperty(getEMPTY(), isEmpty);
+        return getDefaultState().withProperty(getHorizontal(), enumfacing)
+                .withProperty(getWorking(), burning)
+                .withProperty(getEmpty(), isEmpty);
     }
     
     /**
@@ -104,9 +104,9 @@ public class CompressorBlock extends MachineBlock {
      */
     @Override
     public int getMetaFromState(@Nonnull IBlockState state) {
-        return state.getValue(getHORIZONTAL()).getHorizontalIndex()
-                | (state.getValue(getWORKING()) ? 0b0100 : 0b0000)
-                | (state.getValue(getEMPTY()) ? 0b1000 : 0b0000);
+        return state.getValue(getHorizontal()).getHorizontalIndex()
+                | (state.getValue(getWorking()) ? 0b0100 : 0b0000)
+                | (state.getValue(getEmpty()) ? 0b1000 : 0b0000);
     }
     
     @Override

@@ -72,8 +72,8 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
     
     private void updateShow(boolean isWorking) {
         IBlockState old = world.getBlockState(pos);
-        if (old.getValue(MIProperty.getWORKING()) == isWorking) return;
-        IBlockState state = old.withProperty(MIProperty.getWORKING(), isWorking);
+        if (old.getValue(MIProperty.getWorking()) == isWorking) return;
+        IBlockState state = old.withProperty(MIProperty.getWorking(), isWorking);
         WorldExpandsKt.setBlockWithMark(world, pos, state);
     }
     
@@ -91,7 +91,7 @@ public class EUFurnace extends FrontTileEntity implements ITickable {
     @Nullable
     @Override
     public EnumFacing getFront() {
-        return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
+        return world.getBlockState(pos).getValue(MIProperty.getHorizontal());
     }
     
     @SubscribeEvent

@@ -42,8 +42,8 @@ public class PulverizerBlock extends MachineBlock {
 	public PulverizerBlock() {
 		super(Material.IRON);
 		setDefaultState(blockState.getBaseState()
-									.withProperty(MIProperty.getHORIZONTAL(), NORTH)
-									.withProperty(MIProperty.getWORKING(), false));
+									.withProperty(MIProperty.getHorizontal(), NORTH)
+									.withProperty(MIProperty.getWorking(), false));
 	}
 
 	@Override

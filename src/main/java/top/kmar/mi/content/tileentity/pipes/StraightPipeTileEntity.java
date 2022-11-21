@@ -52,15 +52,15 @@ public class StraightPipeTileEntity extends FluidPipeEntity {
     /** 设置管道正方向 */
     public void setFacing(EnumFacing facing) {
         IBlockState old = world.getBlockState(pos);
-        if (old.getValue(MIProperty.getAXIS()) == facing.getAxis()) return;
-        IBlockState newState = old.withProperty(MIProperty.getAXIS(), facing.getAxis());
+        if (old.getValue(MIProperty.getAxis()) == facing.getAxis()) return;
+        IBlockState newState = old.withProperty(MIProperty.getAxis(), facing.getAxis());
         world.setBlockState(pos, newState, 0b10010);
         clearCapCache();
     }
     
     /** 获取管道正方向 */
     public EnumFacing.Axis getFacing() {
-        return world.getBlockState(pos).getValue(MIProperty.getAXIS());
+        return world.getBlockState(pos).getValue(MIProperty.getAxis());
     }
     
 }

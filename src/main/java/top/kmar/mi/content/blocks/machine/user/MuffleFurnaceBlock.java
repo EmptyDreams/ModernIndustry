@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-import static top.kmar.mi.data.properties.MIProperty.getHORIZONTAL;
+import static top.kmar.mi.data.properties.MIProperty.getHorizontal;
 
 /**
  * 高温熔炉
@@ -42,8 +42,8 @@ public class MuffleFurnaceBlock extends TEBlockBase {
     public MuffleFurnaceBlock() {
         super(Material.ROCK);
         setDefaultState(blockState.getBaseState()
-                .withProperty(getHORIZONTAL(), EnumFacing.NORTH)
-                .withProperty(MIProperty.getWORKING(), false));
+                .withProperty(getHorizontal(), EnumFacing.NORTH)
+                .withProperty(MIProperty.getWorking(), false));
         setCreativeTab(ModernIndustry.TAB_BLOCK);
         setSoundType(SoundType.STONE);
         setHardness(3.5F);
@@ -85,7 +85,7 @@ public class MuffleFurnaceBlock extends TEBlockBase {
                                             float hitX, float hitY, float hitZ, int meta,
                                             EntityLivingBase placer, EnumHand hand) {
         return getDefaultState().withProperty(
-                getHORIZONTAL(), placer.getHorizontalFacing().getOpposite());
+                getHorizontal(), placer.getHorizontalFacing().getOpposite());
     }
     
     @Override

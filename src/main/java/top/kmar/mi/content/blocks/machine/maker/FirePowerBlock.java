@@ -46,8 +46,8 @@ public class FirePowerBlock extends MachineBlock {
         super(Material.IRON);
         setHarvestLevel(CommonBlocks.TC_PICKAXE, 2);
         setDefaultState(blockState.getBaseState()
-                .withProperty(MIProperty.getHORIZONTAL(), EnumFacing.NORTH)
-                .withProperty(MIProperty.getWORKING(), false));
+                .withProperty(MIProperty.getHorizontal(), EnumFacing.NORTH)
+                .withProperty(MIProperty.getWorking(), false));
         ITEM = new ItemBlock(this).setRegistryName(ModernIndustry.MODID, "fire_power");
     }
     

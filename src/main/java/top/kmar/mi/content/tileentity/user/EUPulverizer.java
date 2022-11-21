@@ -77,8 +77,8 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
     
     private void updateShow(boolean isWorking) {
         IBlockState old = world.getBlockState(pos);
-        if (old.getValue(MIProperty.getWORKING()) == isWorking) return;
-        IBlockState newState = old.withProperty(MIProperty.getWORKING(), isWorking);
+        if (old.getValue(MIProperty.getWorking()) == isWorking) return;
+        IBlockState newState = old.withProperty(MIProperty.getWorking(), isWorking);
         WorldExpandsKt.setBlockWithMark(world, pos, newState);
     }
     
@@ -127,7 +127,7 @@ public class EUPulverizer extends FrontTileEntity implements ITickable {
     @Nullable
     @Override
     public EnumFacing getFront() {
-        return world.getBlockState(pos).getValue(MIProperty.getHORIZONTAL());
+        return world.getBlockState(pos).getValue(MIProperty.getHorizontal());
     }
     
     @SuppressWarnings("ConstantConditions")

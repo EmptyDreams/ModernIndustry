@@ -21,7 +21,7 @@ import top.kmar.mi.api.utils.*
 import top.kmar.mi.api.utils.expands.*
 import top.kmar.mi.content.blocks.BlockGuiList.synthesizer
 import top.kmar.mi.data.CraftList
-import top.kmar.mi.data.properties.MIProperty.Companion.WORKING
+import top.kmar.mi.data.properties.MIProperty.Companion.working
 import kotlin.math.min
 
 /**
@@ -134,8 +134,8 @@ class EUElectronSynthesizer : FrontTileEntity(), ITickable {
     /** 更新方块显示状态 */
     fun updateBlockState(isWorking: Boolean) {
         val old = world.getBlockState(pos)
-        if (old.getValue(WORKING) == isWorking) return
-        val newState = old.withProperty(WORKING, isWorking)
+        if (old.getValue(working) == isWorking) return
+        val newState = old.withProperty(working, isWorking)
         world.setBlockWithMark(pos, newState)
     }
 

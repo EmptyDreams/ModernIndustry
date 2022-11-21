@@ -15,7 +15,7 @@ import top.kmar.mi.data.properties.PropertyAngleFacing;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static top.kmar.mi.data.properties.MIProperty.getHORIZONTAL;
+import static top.kmar.mi.data.properties.MIProperty.getHorizontal;
 
 /**
  * <p>直角拐弯的管道
@@ -28,14 +28,14 @@ public class AnglePipe extends Pipe {
     
     public AnglePipe(String name, String... ores) {
         super(name, ores);
-        setDefaultState(blockState.getBaseState().withProperty(getHORIZONTAL(), EnumFacing.NORTH)
+        setDefaultState(blockState.getBaseState().withProperty(getHorizontal(), EnumFacing.NORTH)
                 .withProperty(ANGLE_FACING, AngleFacingEnum.UP));
     }
     
     @Nonnull
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, getHORIZONTAL(), ANGLE_FACING);
+        return new BlockStateContainer(this, getHorizontal(), ANGLE_FACING);
     }
     
     @Override
@@ -44,14 +44,14 @@ public class AnglePipe extends Pipe {
         if (!(te instanceof AnglePipeTileEntity)) return state;
         AnglePipeTileEntity entity = (AnglePipeTileEntity) te;
         AngleFacingEnum after = AngleFacingEnum.valueOf(entity.getFacing(), entity.getAfter());
-        return state.withProperty(getHORIZONTAL(), entity.getFacing())
+        return state.withProperty(getHorizontal(), entity.getFacing())
                 .withProperty(ANGLE_FACING, after);
     }
     
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         state = state.getActualState(source, pos);
-        EnumFacing facing = state.getValue(getHORIZONTAL());
+        EnumFacing facing = state.getValue(getHorizontal());
         EnumFacing after = state.getValue(ANGLE_FACING).toEnumFacing(facing);
         switch (facing) {
             case EAST:
