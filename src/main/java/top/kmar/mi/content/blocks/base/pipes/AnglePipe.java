@@ -40,10 +40,11 @@ public class AnglePipe extends Pipe {
     
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        AnglePipeTileEntity te = (AnglePipeTileEntity) worldIn.getTileEntity(pos);
-        if (te == null) return state;
-        AngleFacingEnum after = AngleFacingEnum.valueOf(te.getFacing(), te.getAfter());
-        return state.withProperty(getHORIZONTAL(), te.getFacing())
+        TileEntity te = worldIn.getTileEntity(pos);
+        if (!(te instanceof AnglePipeTileEntity)) return state;
+        AnglePipeTileEntity entity = (AnglePipeTileEntity) te;
+        AngleFacingEnum after = AngleFacingEnum.valueOf(entity.getFacing(), entity.getAfter());
+        return state.withProperty(getHORIZONTAL(), entity.getFacing())
                 .withProperty(ANGLE_FACING, after);
     }
     

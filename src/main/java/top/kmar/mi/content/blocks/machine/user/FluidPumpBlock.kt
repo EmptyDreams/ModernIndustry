@@ -91,8 +91,7 @@ open class FluidPumpBlock : MachineBlock(Material.IRON) {
     @Suppress("OVERRIDE_DEPRECATION")
     override fun getActualState(state: IBlockState, worldIn: IBlockAccess, pos: BlockPos): IBlockState {
         val te = worldIn.getTileEntity(pos)
-        @Suppress("DEPRECATION")
-        if (te !is EUFluidPump) return super.getActualState(state, worldIn, pos)
+        if (te !is EUFluidPump) return state
         return defaultState.withProperty(PROPERTY_SIDE, te.calculateFront())
             .withProperty(PROPERTY_PANEL, te.panelFacing)
             .withProperty(WORKING, te.working)

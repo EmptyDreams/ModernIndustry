@@ -56,7 +56,7 @@ class CableBlock(name: String) : BlockContainer(Material.CIRCUITS), BlockItemHel
 
     // 根据 TE 数据获取 `state`
     override fun getActualState(state: IBlockState, worldIn: IBlockAccess, pos: BlockPos): IBlockState {
-        val cable = worldIn.getTileEntity(pos) as EleCableEntity
+        val cable = worldIn.getTileEntity(pos) as? EleCableEntity ?: return state
         return state.withProperty(UP, cable.isLink(EnumFacing.UP))
             .withProperty(DOWN, cable.isLink(EnumFacing.DOWN))
             .withProperty(EAST, cable.isLink(EnumFacing.EAST))
