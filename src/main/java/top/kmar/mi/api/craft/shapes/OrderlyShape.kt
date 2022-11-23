@@ -4,14 +4,13 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.Ingredient
 import top.kmar.mi.api.craft.elements.ElementList
 import java.util.*
-import java.util.function.Predicate
 
 /**
  * 有序列表
  * @author EmptyDreams
  */
 class OrderlyShape private constructor(
-    private val content: Array<Array<Predicate<ItemStack>>>
+    private val content: Array<Array<Ingredient>>
 ) : IShape {
 
     val height = content.size
@@ -28,15 +27,22 @@ class OrderlyShape private constructor(
         }
         return true
     }
-
+    
+    override fun getAllInput(maxWidth: Int): Array<Array<Array<ItemStack>>> {
+        assert(maxWidth >= width)
+        return Array(height) { y ->
+            Array(width) { content[y][it].matchingStacks }
+        }
+    }
+    
     class Builder {
 
         private var width = 0
         private var height = 0
-        private val list = ArrayList<MutableList<Predicate<ItemStack>>>(5)
+        private val list = ArrayList<MutableList<Ingredient>>(5)
 
         /** 向最后一行末尾插入一个元素 */
-        fun insert(predicate: Predicate<ItemStack>): Builder {
+        fun insert(predicate: Ingredient): Builder {
             val endLine = list.last()
             endLine.add(predicate)
             width = width.coerceAtLeast(endLine.size)

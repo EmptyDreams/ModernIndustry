@@ -20,7 +20,7 @@ class ItemPredicateMap {
     private val map = Char2ObjectOpenHashMap<LazyNode>()
 
     /** 获取指定`key`对应的`predicate` */
-    fun getPredicate(key: Char): Predicate<ItemStack> {
+    fun getPredicate(key: Char): Ingredient {
         if (key == ' ') return Ingredient.EMPTY
         return map.get(key)?.predicate ?: throw IllegalArgumentException("指定的值[$key]没有找到对应的key")
     }
@@ -52,7 +52,7 @@ class ItemPredicateMap {
         }
 
         /** 将一个JSON对象解析为[Predicate]对象 */
-        fun parserPredicate(json: JsonObject): Predicate<ItemStack> =
+        fun parserPredicate(json: JsonObject): Ingredient =
             CraftingHelper.getIngredient(json, getContent())
 
         /** 将一个JSON对象解析为[ItemStack]对象 */
