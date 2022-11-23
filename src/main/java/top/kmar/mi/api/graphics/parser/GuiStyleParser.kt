@@ -78,7 +78,6 @@ object GuiStyleParser {
                 if (valueList.isEmpty()) return
                 val tmp = ArrayList(valueList)
                 builder.toExp { result.add(Node(it, tmp)) }
-                builder.goto(-1)
                 if (clear) valueList.clear()
             }
 
@@ -116,7 +115,7 @@ object GuiStyleParser {
                 try {
                     handleContent(it)
                 } catch (e: Exception) {
-                    throw TransferException.instance("处理字符串[$prevContent]时发生了异常", e)
+                    throw TransferException.instance("处理字符串[prev: $prevContent\t next: $it]时发生了异常", e)
                 }
             }
             if (preLevel != -1) {

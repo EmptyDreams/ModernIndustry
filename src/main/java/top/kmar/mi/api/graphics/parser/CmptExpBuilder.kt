@@ -15,8 +15,8 @@ class CmptExpBuilder {
     fun goto(level: Int) {
         if (level == -1) list.clear()
         else {
+            while (level < list.size || (level == list.size && level != 0)) prev()
             while (level > list.size - 1) next()
-            while (level < list.size - 1) prev()
         }
     }
 
