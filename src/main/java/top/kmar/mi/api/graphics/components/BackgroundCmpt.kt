@@ -6,6 +6,7 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
+import top.kmar.mi.api.graphics.utils.AutoSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.regedits.others.AutoCmpt
@@ -25,6 +26,7 @@ class BackgroundCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
         override val service = this@BackgroundCmpt
         override val style = GraphicsStyle(service).apply {
+            heightCalculator = AutoSizeMode(service, true)
             borderTop.color = IntColor.white
             borderRight.color = IntColor(85, 85, 85)
             borderBottom.color = borderRight.color

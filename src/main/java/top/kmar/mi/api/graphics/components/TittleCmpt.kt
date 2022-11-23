@@ -30,7 +30,7 @@ class TittleCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             widthCalculator = InheritSizeMode { it.width }
             heightCalculator = FixedSizeMode(Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT)
             marginTop = 8
-            position = PositionEnum.ABSOLUTE
+            marginBottom = 2
         }
 
         override fun render(graphics: GuiGraphics) {

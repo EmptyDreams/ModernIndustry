@@ -80,15 +80,15 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
 
         override val service = this@BackpackCmpt
         override val style = GraphicsStyle(service).apply {
-            position = PositionEnum.ABSOLUTE
             widthCalculator = InheritSizeMode { it.width }
             heightCalculator = FixedSizeMode(18 * 4 + 4 + Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 1)
-            bottom = 8
             backgroundColor = IntColor.gray
             borderTop.color = IntColor(55, 55, 55)
             borderLeft.color = borderTop.color
             borderBottom.color = IntColor.white
             borderRight.color = IntColor.white
+            marginBottom = 7
+            marginTop = 5
         }
 
         override fun render(graphics: GuiGraphics) {
