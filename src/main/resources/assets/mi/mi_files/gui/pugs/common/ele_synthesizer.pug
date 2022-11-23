@@ -1,7 +1,8 @@
 mask
     background
         title(value = "i18n:tile.mi.electron_synthesizer.name")
+        div
+            matrix#input(xCount = 5, yCount = 5)
+            progress#work
+            matrix#output(index = 25, xCount = 2, yCount = 2, forbidInput)
         backpack#player
-        matrix#input(xCount = 5, yCount = 5)
-        progress#work
-        matrix#output(index = 25, xCount = 2, yCount = 2, forbidInput)
