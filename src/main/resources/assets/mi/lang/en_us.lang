@@ -1,0 +1,104 @@
+#author:灰风(GreyWind)
+#agreeToUse=true
+
+#锭
+item.mi.copper_ingot.name=copper ingot
+item.mi.tin_ingot.name=tin ingot
+item.mi.bronze_ingot.name=bronze ingot
+#粉
+item.mi.copper_powder.name=copper powder
+item.mi.tin_powder.name=tin powder
+item.mi.coal_powder.name=coal powder
+item.mi.coal_burn_powder.name=coal burn powder
+item.mi.iron_powder.name=iron powder
+item.mi.gold_powder.name=gold powder
+item.mi.diamond_powder.name=diamond powder
+item.mi.stone_powder.name=stone powder
+item.mi.bronze_powder.name=bronze powder
+#粉碎矿石
+item.mi.copper_crush.name=粉碎铜矿石
+item.mi.tin_crush.name=粉碎锡矿石
+item.mi.coal_crush.name=粉碎煤矿石
+item.mi.iron_crush.name=粉碎铁矿石
+item.mi.gold_crush.name=粉碎金矿石
+item.mi.diamond_crush.name=粉碎钻石矿石
+#工具
+item.mi.spanner.name=扳手
+item.mi.copper_pickaxe.name=铜镐
+item.mi.copper_axe.name=铜斧
+item.mi.copper_shovel.name=铜铲
+item.mi.copper_sword.name=铜剑
+item.mi.copper_hoe.name=铜锄
+item.mi.bronze_pickaxe.name=青铜镐
+item.mi.bronze_axe.name=青铜斧
+item.mi.bronze_shovel.name=青铜铲
+item.mi.bronze_sword.name=青铜剑
+item.mi.bronze_hoe.name=青铜锄
+#装备
+item.mi.copper_helmet.name=铜头盔
+item.mi.copper_chestplate.name=铜盔甲
+item.mi.copper_leggings.name=铜护腿
+item.mi.copper_boots.name=铜靴子
+item.mi.bronze_helmet.name=青铜头盔
+item.mi.bronze_chestplate.name=青铜盔甲
+item.mi.bronze_leggings.name=青铜护腿
+item.mi.bronze_boots.name=青铜靴子
+#棒
+item.mi.bronze_stick.name=青铜棒
+item.mi.copper_stick.name=铜棒
+item.mi.iron_stick.name=铁棒
+#流体
+tile.mi.iron_melt.name=铁水
+fluid.iron_melt Bucket=铁水
+#管道
+tile.mi.iron_straight_ft.name=铁质管道（直线）
+tile.mi.iron_angle_ft.name=铁质管道（直角）
+tile.mi.iron_shunt_ft.name=铁质管道（十字）
+#调试物品
+item.mi.class_info_viewer.name=TileEntity信息查看器
+#矿物方块
+tile.mi.copper_ore_block.name=铜矿
+tile.mi.tin_ore_block.name=锡矿
+#电器
+tile.mi.machine_shell.name=机器外壳
+tile.mi.compressor.name=压缩机
+tile.mi.perpetual.name=无限电能方块
+tile.mi.fire_power.name=火力发电机
+tile.mi.muffle_furnace.name=高温熔炉
+tile.mi.ele_furnace.name=电炉
+tile.mi.pulverizer.name=粉碎机
+tile.mi.ele_mfurnace.name=高温电炉
+tile.mi.red_stone_converter.name=红石能转换机
+tile.mi.electron_synthesizer.name=电子合成台
+tile.mi.fluid_pump.name=水泵
+#线缆
+tile.mi.wire_copper.name=铜线
+#TAB
+itemGroup.mi_item=物品
+itemGroup.mi_block=方块
+itemGroup.mi_tool=工具
+itemGroup.mi_debug=测试
+itemGroup.mi_wire=线缆
+#零件
+item.mi.blade.name=机械刀片
+item.mi.bronze_rod.name=青铜棍
+item.mi.iron_rod.name=铁棍
+item.mi.copper_rod.name=铜棍
+item.mi.motor.name=电动机
+item.mi.circuit.name=电路板
+item.mi.coil.name=线圈
+item.mi.electromagnet.name=电磁铁
+item.mi.iron_plate.name=铁板
+item.mi.copper_plate.name=铜板
+item.mi.bronze_plate.name=青铜板
+item.mi.tin_plate.name=锡板
+item.mi.gold_plate.name=金板
+#属性
+mi.property.poor_quality.name=劣质
+#GUI
+mi.gui.open=开
+mi.gui.close=关
+mi.gui.fluid_pump.energy=能量存储（%s）
+mi.gui.fluid_pump.consume=瞬时能量消耗（%s）
+mi.gui.fluid_pump.fluid=流体存储（%s）：%s
+mi.gui.fluid_pump.null=空
