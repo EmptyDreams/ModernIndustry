@@ -16,12 +16,12 @@ item.mi.diamond_powder.name=diamond powder
 item.mi.stone_powder.name=stone powder
 item.mi.bronze_powder.name=bronze powder
 #粉碎矿石
-item.mi.copper_crush.name=粉碎铜矿石
-item.mi.tin_crush.name=粉碎锡矿石
-item.mi.coal_crush.name=粉碎煤矿石
-item.mi.iron_crush.name=粉碎铁矿石
-item.mi.gold_crush.name=粉碎金矿石
-item.mi.diamond_crush.name=粉碎钻石矿石
+item.mi.copper_crush.name=copper crush
+item.mi.tin_crush.name=tin crush
+item.mi.coal_crush.name=coal crush
+item.mi.iron_crush.name=iron crush
+item.mi.gold_crush.name=gold crush
+item.mi.diamond_crush.name=diamond crush
 #工具
 item.mi.spanner.name=扳手
 item.mi.copper_pickaxe.name=铜镐
