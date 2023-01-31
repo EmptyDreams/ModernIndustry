@@ -46,11 +46,12 @@ object GuiLoader : IGuiHandler {
     }
 
     /** 构建一个服务端的GUI对象 */
-    override fun getServerGuiElement(ID: Int,
-                                     player: EntityPlayer, world: World,
-                                     x: Int, y: Int, z: Int
+    override fun getServerGuiElement(
+        id: Int,
+        player: EntityPlayer, world: World,
+        x: Int, y: Int, z: Int
     ): BaseGraphics {
-        val key = regedit.getKey(ID)
+        val key = regedit.getKey(id)
         val pos = BlockPos(x, y, z)
         val gui = regedit.buildGui(key, player, pos)
         regedit.invokeInitTask(gui)
@@ -61,11 +62,11 @@ object GuiLoader : IGuiHandler {
     /** 构建一个客户端的GUI对象 */
     @SideOnly(Side.CLIENT)
     override fun getClientGuiElement(
-        ID: Int,
+        id: Int,
         player: EntityPlayer, world: World,
         x: Int, y: Int, z: Int
     ): BaseGraphicsClient {
-        val client = getServerGuiElement(ID, player, world, x, y, z).client
+        val client = getServerGuiElement(id, player, world, x, y, z).client
         client.addInitTask { client.updateStyle() }
         return client
     }
