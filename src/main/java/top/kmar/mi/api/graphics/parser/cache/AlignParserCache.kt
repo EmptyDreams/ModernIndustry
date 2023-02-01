@@ -3,8 +3,8 @@ package top.kmar.mi.api.graphics.parser.cache
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
-import top.kmar.mi.api.graphics.utils.HorizontalAlignModeEnum
-import top.kmar.mi.api.graphics.utils.VerticalAlignModeEnum
+import top.kmar.mi.api.graphics.utils.modes.HorizontalAlignModeEnum
+import top.kmar.mi.api.graphics.utils.modes.VerticalAlignModeEnum
 
 /**
  * 排版表达式

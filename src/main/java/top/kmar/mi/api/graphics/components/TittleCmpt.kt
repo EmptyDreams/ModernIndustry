@@ -8,6 +8,8 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
 import top.kmar.mi.api.graphics.utils.*
+import top.kmar.mi.api.graphics.utils.modes.FixedSizeMode
+import top.kmar.mi.api.graphics.utils.modes.InheritSizeMode
 import top.kmar.mi.api.regedits.others.AutoCmpt
 import top.kmar.mi.api.utils.expands.floorDiv2
 

@@ -1,10 +1,11 @@
 @file:Suppress("unused")
 
-package top.kmar.mi.api.graphics.utils
+package top.kmar.mi.api.graphics.utils.modes
 
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
+import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import java.util.function.IntSupplier
 
 /**

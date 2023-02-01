@@ -13,7 +13,7 @@ import top.kmar.mi.api.graphics.listeners.*
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardPressed
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardReleased
 import top.kmar.mi.api.graphics.parser.GuiStyleParser
-import top.kmar.mi.api.graphics.utils.FixedSizeMode
+import top.kmar.mi.api.graphics.utils.modes.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.utils.data.math.Point2D

@@ -6,7 +6,7 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
-import top.kmar.mi.api.graphics.utils.AutoSizeMode
+import top.kmar.mi.api.graphics.utils.modes.AutoSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.regedits.others.AutoCmpt

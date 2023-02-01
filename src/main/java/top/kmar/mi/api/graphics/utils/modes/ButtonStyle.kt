@@ -1,9 +1,11 @@
-package top.kmar.mi.api.graphics.utils
+package top.kmar.mi.api.graphics.utils.modes
 
 import net.minecraft.util.ResourceLocation
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.components.interfaces.IntColor.Companion.shadow
 import top.kmar.mi.api.graphics.components.interfaces.IntColor.Companion.white
+import top.kmar.mi.api.graphics.utils.GraphicsStyle
+import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.utils.container.PairIntInt
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
 import top.kmar.mi.api.utils.expands.floorDiv2

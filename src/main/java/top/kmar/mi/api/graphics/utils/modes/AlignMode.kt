@@ -1,7 +1,8 @@
 @file:Suppress("unused")
 
-package top.kmar.mi.api.graphics.utils
+package top.kmar.mi.api.graphics.utils.modes
 
+import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.utils.expands.floorDiv2
 import java.util.*
 

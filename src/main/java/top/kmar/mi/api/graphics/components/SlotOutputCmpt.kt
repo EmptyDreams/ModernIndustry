@@ -1,7 +1,7 @@
 package top.kmar.mi.api.graphics.components
 
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
-import top.kmar.mi.api.graphics.utils.FixedSizeMode
+import top.kmar.mi.api.graphics.utils.modes.FixedSizeMode
 import top.kmar.mi.api.regedits.others.AutoCmpt
 
 /**

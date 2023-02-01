@@ -1,4 +1,4 @@
-package top.kmar.mi.api.graphics.components.interfaces.exps
+package top.kmar.mi.api.graphics.utils.exps
 
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.utils.expands.compareTo

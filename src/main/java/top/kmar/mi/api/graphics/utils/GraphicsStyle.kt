@@ -7,6 +7,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
+import top.kmar.mi.api.graphics.utils.modes.*
 import top.kmar.mi.api.utils.container.CacheContainer
 import top.kmar.mi.api.utils.data.math.Rect2D
 import top.kmar.mi.api.utils.expands.clientPlayer

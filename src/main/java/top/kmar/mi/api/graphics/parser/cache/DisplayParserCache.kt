@@ -2,7 +2,7 @@ package top.kmar.mi.api.graphics.parser.cache
 
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.graphics.utils.DisplayModeEnum
+import top.kmar.mi.api.graphics.utils.modes.DisplayModeEnum
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 
 /**

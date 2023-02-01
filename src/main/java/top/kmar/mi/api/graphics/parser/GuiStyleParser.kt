@@ -16,7 +16,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.exception.TransferException
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
-import top.kmar.mi.api.graphics.components.interfaces.exps.ComplexCmptExp
+import top.kmar.mi.api.graphics.utils.exps.ComplexCmptExp
 import top.kmar.mi.api.graphics.parser.cache.IParserCache
 import top.kmar.mi.api.utils.MISysInfo
 import top.kmar.mi.api.utils.expands.countStartSpace

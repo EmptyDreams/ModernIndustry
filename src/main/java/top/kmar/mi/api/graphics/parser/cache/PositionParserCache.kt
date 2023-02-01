@@ -3,7 +3,7 @@ package top.kmar.mi.api.graphics.parser.cache
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
-import top.kmar.mi.api.graphics.utils.PositionEnum
+import top.kmar.mi.api.graphics.utils.modes.PositionEnum
 
 /**
  * 排版方式表达式

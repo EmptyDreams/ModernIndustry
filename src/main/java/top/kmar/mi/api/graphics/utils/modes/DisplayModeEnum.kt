@@ -1,4 +1,4 @@
-package top.kmar.mi.api.graphics.utils
+package top.kmar.mi.api.graphics.utils.modes
 
 /**
  * 显示模式

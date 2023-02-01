@@ -4,6 +4,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.utils.*
+import top.kmar.mi.api.graphics.utils.modes.*
 import top.kmar.mi.api.utils.expands.removeAllSpace
 
 /**
@@ -33,7 +34,7 @@ class SizeParserCache(exp: String, isHeight: Boolean) : IParserCache {
         } else if (this[0].isDigit()) {    // 如果字符串格式为“num”
             return@run { _, _ -> FixedSizeMode(toInt()) }
         } else if (startsWith('a')) {   // auto
-            return@run { it, _ -> AutoSizeMode(it, isHeight)}
+            return@run { it, _ -> AutoSizeMode(it, isHeight) }
         } else {    // 如果字符串格式为“calc(num%[+-]num)”
             // 截取括号中间的部分
             val mid = substring(5 until length - 1)
