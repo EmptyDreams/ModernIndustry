@@ -5,6 +5,7 @@ package top.kmar.mi.api.utils.expands
 
 import top.kmar.mi.api.utils.iterators.ArrayFlipIterator
 import java.util.*
+import java.util.function.Consumer
 import java.util.function.Supplier
 import java.util.stream.Stream
 import kotlin.collections.ArrayDeque

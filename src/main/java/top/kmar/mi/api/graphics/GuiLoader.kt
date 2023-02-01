@@ -12,6 +12,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.ModernIndustry
 import top.kmar.mi.api.event.GuiRegistryFinishedEvent
+import top.kmar.mi.api.graphics.components.interfaces.exps.ICmptExp
 import top.kmar.mi.api.graphics.parser.GuiFileParser
 import top.kmar.mi.api.graphics.utils.GuiRegedit
 import top.kmar.mi.api.regedits.others.AutoLoader

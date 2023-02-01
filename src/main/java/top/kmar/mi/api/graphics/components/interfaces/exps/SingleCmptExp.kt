@@ -1,13 +1,15 @@
-package top.kmar.mi.api.graphics.components.interfaces
+package top.kmar.mi.api.graphics.components.interfaces.exps
 
 import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet
+import top.kmar.mi.api.graphics.components.interfaces.Cmpt
+import top.kmar.mi.api.graphics.components.interfaces.CmptRegister
 import top.kmar.mi.api.utils.expands.compareTo
 
 /**
  * 单个[Cmpt]匹配表达式
  * @author EmptyDreams
  */
-class SingleCmptExp(exp: String) : Comparable<SingleCmptExp> {
+class SingleCmptExp(exp: String) : Comparable<SingleCmptExp>, ICmptExp {
 
     private val list = ObjectAVLTreeSet<Node>().apply {
         var left = -1
@@ -23,7 +25,7 @@ class SingleCmptExp(exp: String) : Comparable<SingleCmptExp> {
             add(Node(exp.substring(left.coerceAtLeast(0))))
     }
 
-    fun match(cmpt: Cmpt): Boolean {
+    override fun match(cmpt: Cmpt): Boolean {
         for (node in list) {
             when {
                 node.className -> if (node.content !in cmpt.classList) return false

@@ -10,6 +10,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import net.minecraftforge.items.ItemStackHandler
 import top.kmar.mi.api.graphics.BaseGraphics
+import top.kmar.mi.api.graphics.components.interfaces.exps.ComplexCmptExp
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
 import top.kmar.mi.api.graphics.utils.GraphicsStyle

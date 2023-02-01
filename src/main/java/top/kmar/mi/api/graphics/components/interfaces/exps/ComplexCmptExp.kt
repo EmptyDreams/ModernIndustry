@@ -1,5 +1,6 @@
-package top.kmar.mi.api.graphics.components.interfaces
+package top.kmar.mi.api.graphics.components.interfaces.exps
 
+import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.utils.expands.compareTo
 import java.lang.ref.WeakReference
 import java.util.*
@@ -19,7 +20,7 @@ import java.util.*
  *
  * @author EmptyDreams
  */
-class ComplexCmptExp constructor(val list: List<SingleCmptExp>) : Comparable<ComplexCmptExp> {
+class ComplexCmptExp constructor(val list: List<SingleCmptExp>) : Comparable<ComplexCmptExp>, ICmptExp {
 
     constructor(exp: String) : this(
         Collections.unmodifiableList(
@@ -47,6 +48,26 @@ class ComplexCmptExp constructor(val list: List<SingleCmptExp>) : Comparable<Com
 
     /** 判断第一个匹配表达式是否能够匹配指定控件 */
     fun matchFirst(cmpt: Cmpt) = list.first().match(cmpt)
+
+    override fun match(cmpt: Cmpt): Boolean {
+        var num = 0
+        var target = cmpt
+        o@ for (exp in list.asReversed()) {
+            if (num == 0) {
+                if (exp.match(cmpt)) {
+                    num = 1
+                    target = cmpt.parent
+                } else return false
+            } else {
+                while (!exp.match(target)) {
+                    target = cmpt.parent
+                    if (target === Cmpt.EMPTY_CMPT) break@o
+                }
+            }
+            if (num == list.size) return true
+        }
+        return num == list.size
+    }
 
     val size: Int
         get() = list.size

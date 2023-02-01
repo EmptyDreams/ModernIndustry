@@ -11,7 +11,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import net.minecraftforge.items.ItemStackHandler
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
-import top.kmar.mi.api.graphics.components.interfaces.ComplexCmptExp
+import top.kmar.mi.api.graphics.components.interfaces.exps.ComplexCmptExp
 import top.kmar.mi.api.graphics.components.interfaces.slots.IGraphicsSlot
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
