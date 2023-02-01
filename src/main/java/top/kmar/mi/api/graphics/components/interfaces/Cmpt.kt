@@ -14,6 +14,7 @@ import top.kmar.mi.api.graphics.utils.exps.ComplexCmptExp
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
+import top.kmar.mi.api.graphics.utils.exps.ICmptExp
 import top.kmar.mi.api.net.messages.GraphicsMessage
 import top.kmar.mi.api.utils.MISysInfo
 import top.kmar.mi.api.utils.expands.isClient
@@ -143,7 +144,7 @@ abstract class Cmpt(
      * @param limit 数量限制
      * @return 所有匹配的控件（按控件出现顺序排序）
      */
-    fun queryCmptLimit(exp: ComplexCmptExp, limit: Int): LinkedList<Cmpt> {
+    fun queryCmptLimit(exp: ICmptExp, limit: Int): LinkedList<Cmpt> {
         val list = LinkedList<Cmpt>()
         if (limit == 0) return list
         eachChildren {
@@ -161,7 +162,7 @@ abstract class Cmpt(
      * 通过匹配表达式匹配GUI中所有与该表达式相匹配的控件
      * @see queryCmptLimit
      */
-    fun queryCmptAll(exp: ComplexCmptExp): LinkedList<Cmpt> = queryCmptLimit(exp, Int.MAX_VALUE)
+    fun queryCmptAll(exp: ICmptExp): LinkedList<Cmpt> = queryCmptLimit(exp, Int.MAX_VALUE)
 
     /**
      * 通过匹配表达式匹配GUI中所有与该表达式相匹配的控件
@@ -174,7 +175,7 @@ abstract class Cmpt(
      * @return 未查询到则返回`null`
      * @see queryCmptLimit
      */
-    fun queryCmpt(exp: ComplexCmptExp): Cmpt? {
+    fun queryCmpt(exp: ICmptExp): Cmpt? {
         val result = queryCmptLimit(exp, 1)
         return if (result.isEmpty()) null else result.first
     }

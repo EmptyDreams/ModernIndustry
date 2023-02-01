@@ -22,6 +22,9 @@ import java.util.*
  */
 class ComplexCmptExp constructor(val list: List<SingleCmptExp>) : Comparable<ComplexCmptExp>, ICmptExp {
 
+    override val size: Int
+        get() = list.size
+
     constructor(exp: String) : this(
         Collections.unmodifiableList(
             LinkedList<SingleCmptExp>().apply {
@@ -35,8 +38,7 @@ class ComplexCmptExp constructor(val list: List<SingleCmptExp>) : Comparable<Com
     /** 存储移除第一个表达式后的结果 */
     private var firstCache: WeakReference<ComplexCmptExp>? = null
 
-    /** 移除第一个匹配表达式，生成一个新的 */
-    fun removeFirst(): ComplexCmptExp {
+    override fun removeFirst(): ComplexCmptExp {
         val cache = firstCache?.get()
         if (cache != null) return cache
         val newList = LinkedList(list)
@@ -46,8 +48,7 @@ class ComplexCmptExp constructor(val list: List<SingleCmptExp>) : Comparable<Com
         return result
     }
 
-    /** 判断第一个匹配表达式是否能够匹配指定控件 */
-    fun matchFirst(cmpt: Cmpt) = list.first().match(cmpt)
+    override fun matchFirst(cmpt: Cmpt) = list.first().match(cmpt)
 
     override fun match(cmpt: Cmpt): Boolean {
         var num = 0
@@ -68,9 +69,6 @@ class ComplexCmptExp constructor(val list: List<SingleCmptExp>) : Comparable<Com
         }
         return num == list.size
     }
-
-    val size: Int
-        get() = list.size
 
     override fun compareTo(other: ComplexCmptExp) = list.compareTo(other.list)
 

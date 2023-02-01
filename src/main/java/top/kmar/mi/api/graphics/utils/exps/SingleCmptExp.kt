@@ -6,7 +6,7 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptRegister
 import top.kmar.mi.api.utils.expands.compareTo
 
 /**
- * 单个[Cmpt]匹配表达式
+ * 单个 [Cmpt] 匹配表达式
  * @author EmptyDreams
  */
 class SingleCmptExp(exp: String) : Comparable<SingleCmptExp>, ICmptExp {
@@ -25,6 +25,9 @@ class SingleCmptExp(exp: String) : Comparable<SingleCmptExp>, ICmptExp {
             add(Node(exp.substring(left.coerceAtLeast(0))))
     }
 
+    override val size: Int
+        get() = if (list.isEmpty()) 0 else 1
+
     override fun match(cmpt: Cmpt): Boolean {
         for (node in list) {
             when {
@@ -39,6 +42,10 @@ class SingleCmptExp(exp: String) : Comparable<SingleCmptExp>, ICmptExp {
         }
         return true
     }
+
+    override fun matchFirst(cmpt: Cmpt) = match(cmpt)
+
+    override fun removeFirst() = EmptyCmptExp
 
     fun match(exp: String) = this == SingleCmptExp(exp)
 
