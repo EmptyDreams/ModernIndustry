@@ -15,6 +15,7 @@ import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import top.kmar.mi.ModernIndustry
 import top.kmar.mi.api.graphics.GuiLoader
+import top.kmar.mi.api.graphics.utils.exps.ICmptExp
 import kotlin.math.abs
 import kotlin.math.sqrt
 
@@ -24,9 +25,19 @@ private var oldGui: GuiScreen? = null
 @field:SideOnly(Side.CLIENT)
 private var isOpenClientGui = false
 
-/** 打开一个客户端GUI */
+/**
+ * 打开一个客户端 GUI
+ * @param key GUI 名称
+ * @param x 触发 GUI 打开的方块的 X 轴坐标
+ * @param y 触发 GUI 打开的方块的 Y 轴坐标
+ * @param z 触发 GUI 打开的方块的 Z 轴坐标
+ * @param exps 忽略表达式，满足表达式的控件将被移除
+ */
 @Suppress("ControlFlowWithEmptyBody")
-fun EntityPlayer.openClientGui(key: ResourceLocation, x: Int, y: Int, z: Int) {
+fun EntityPlayer.openClientGui(
+    key: ResourceLocation, x: Int, y: Int, z: Int,
+    vararg exps: ICmptExp
+) {
     if (world.isServer()) return
     val id = GuiLoader.getID(key)
     if (id > 0) throw IllegalArgumentException("指定GUI[$key]不是客户端GUI")
@@ -40,6 +51,10 @@ fun EntityPlayer.openClientGui(key: ResourceLocation, x: Int, y: Int, z: Int) {
     else oldGui = mc.currentScreen
     isOpenClientGui = true
     val newGui = GuiLoader.getClientGuiElement(id, this, world, x, y, z)
+    exps.asSequence()
+        .map { newGui.service.queryCmptAll(it) }
+        .flatten()
+        .forEach { newGui.service.deleteCmpt(it) }
     val scaled = ScaledResolution(mc)
     val i = scaled.scaledWidth
     val j = scaled.scaledHeight

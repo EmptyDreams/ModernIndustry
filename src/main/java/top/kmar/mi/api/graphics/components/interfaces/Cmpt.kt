@@ -118,10 +118,22 @@ abstract class Cmpt(
         cmpt.parent = this
     }
 
-    /** 从控件中移除一个子控件 */
+    /**
+     * 从控件中移除一个子控件
+     * 该函数只能移除与当前控件为直接父子关系的控件
+     */
     fun removeChild(cmpt: Cmpt) {
         childrenList.remove(cmpt)
         cmpt.uninstallParent(this, gui!!)
+    }
+
+    /** 从控件中移除指定控件 */
+    fun deleteCmpt(cmpt: Cmpt): Boolean {
+        if (childrenList.remove(cmpt)) return true
+        for (child in childrenList) {
+            if (child.deleteCmpt(cmpt)) return true
+        }
+        return false
     }
 
     /** 通过ID获取控件，不存在则返回`null` */
