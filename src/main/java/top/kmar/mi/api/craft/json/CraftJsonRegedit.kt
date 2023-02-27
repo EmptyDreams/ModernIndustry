@@ -2,7 +2,6 @@ package top.kmar.mi.api.craft.json
 
 import com.google.gson.*
 import net.minecraft.item.ItemStack
-import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.crafting.CraftingHelper
 import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber
@@ -50,7 +49,7 @@ object CraftJsonRegedit {
     /** 解析指定JSON对象并将结果传递到注册机中 */
     private fun parserTarget(json: JsonObject, defID: String) {
         val group = json["group"].asString
-        val id = ResourceLocation(json["id"]?.asString ?: defID)
+        val id = json["id"]?.asString ?: defID
         val keyMap = getKeyMap(json)
         val shape = getShape(json["input"], keyMap)
         val output = getOutput(json["output"], keyMap)

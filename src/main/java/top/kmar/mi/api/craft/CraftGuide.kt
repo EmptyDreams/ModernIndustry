@@ -1,7 +1,6 @@
 package top.kmar.mi.api.craft
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
-import net.minecraft.util.ResourceLocation
 import top.kmar.mi.api.craft.elements.CraftOutput
 import top.kmar.mi.api.craft.elements.ElementList
 import top.kmar.mi.api.craft.shapes.IShape
@@ -24,7 +23,7 @@ object CraftGuide {
      * @throws IllegalArgumentException 如果 ID 重复
      */
     @JvmStatic
-    fun registry(group: String, id: ResourceLocation, shape: IShape, output: CraftOutput) {
+    fun registry(group: String, id: String, shape: IShape, output: CraftOutput) {
         regeditMap.computeIfAbsent(group) { CraftRegedit() }.registry(id, shape, output)
     }
 
@@ -34,7 +33,7 @@ object CraftGuide {
 
     /** 获取指定合成表的输出 */
     @JvmStatic
-    fun findOutput(group: String, id: ResourceLocation) =
+    fun findOutput(group: String, id: String) =
         getRegedit(group)?.findOutput(id)
 
     /** 通过输入获取合成表输出 */

@@ -1,13 +1,12 @@
 package top.kmar.mi.api.craft
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
-import net.minecraft.util.ResourceLocation
 import top.kmar.mi.api.craft.elements.CraftOutput
 import top.kmar.mi.api.craft.elements.ElementList
 import top.kmar.mi.api.craft.shapes.IShape
 import top.kmar.mi.api.craft.shapes.OrderlyShape
 
-private typealias HashMap = Object2ObjectOpenHashMap<ResourceLocation, Pair<IShape, CraftOutput>>
+private typealias HashMap = Object2ObjectOpenHashMap<String, Pair<IShape, CraftOutput>>
 
 /**
  * 合成表注册机
@@ -26,7 +25,7 @@ class CraftRegedit {
      * @param shape 合成规则
      * @param output 产物
      */
-    fun registry(id: ResourceLocation, shape: IShape, output: CraftOutput) {
+    fun registry(id: String, shape: IShape, output: CraftOutput) {
         val pair = Pair(shape, output.copy())
         if (shape is OrderlyShape) {
             require(id !in orderlyRegistry) { "指定的key[$id]已经被注册" }
@@ -38,13 +37,13 @@ class CraftRegedit {
     }
 
     /** 移除指定合成表 */
-    fun delete(id: ResourceLocation) {
+    fun delete(id: String) {
         orderlyRegistry.remove(id)
         disorderlyRegistry.remove(id)
     }
 
     /** 删除满足指定条件的合成表 */
-    fun deleteIf(predicate: (ResourceLocation, LazyNode) -> Boolean) {
+    fun deleteIf(predicate: (String, LazyNode) -> Boolean) {
         fun deleteTask(map: HashMap) {
             val itor = map.iterator()
             while (itor.hasNext()) {
@@ -58,7 +57,7 @@ class CraftRegedit {
     }
 
     /** 通过 ID 查找合成表输出，未查询到返回`null` */
-    fun findOutput(id: ResourceLocation) =
+    fun findOutput(id: String) =
         (orderlyRegistry[id] ?: disorderlyRegistry[id])?.second?.copy()
 
     /** 通过输入查询合成表输出，未查询到返回`null` */
