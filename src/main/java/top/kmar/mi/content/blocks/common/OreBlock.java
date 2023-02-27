@@ -19,48 +19,48 @@ import java.util.Random;
  */
 public class OreBlock extends BlockBase {
 
-	/** 存储方块列表 */
-	public static final Map<String, OreBlock> LIST = new HashMap<>(10);
-	public static final String NAME_COPPER = "copper_ore_block";
-	public static final String NAME_TIN = "tin_ore_block";
+    /** 存储方块列表 */
+    public static final Map<String, OreBlock> LIST = new HashMap<>(10);
+    public static final String NAME_COPPER = "copper_ore_block";
+    public static final String NAME_TIN = "tin_ore_block";
 
-	public static OreBlock getInstance(String name) {
-		return LIST.get(name);
-	}
+    public static OreBlock getInstance(String name) {
+        return LIST.get(name);
+    }
 
-	private final Item ITEM;
-	private final Item OUT;
-	
-	/**
-	 * @param name 方块注册名称
-	 * @param out 方块破坏时掉落的物品
-	 */
-	public OreBlock(String name, Item out) {
-		super(Material.ROCK);
-		setRegistryName(ModernIndustry.MODID, name);
-		setUnlocalizedName(StringUtil.getUnlocalizedName(name));
-		setCreativeTab(ModernIndustry.TAB_BLOCK);
-		setSoundType(SoundType.STONE);
-		setHardness(2.5F);
-		setHarvestLevel("pickaxe", 1);
-		OUT = out;
-		ITEM = new ItemBlock(this).setRegistryName(name);
-		LIST.put(name, this);
-	}
+    private final Item ITEM;
+    private final Item OUT;
 
-	@Nonnull
-	@Override
-	public Item getBlockItem() {
-		return ITEM;
-	}
+    /**
+     * @param name 方块注册名称
+     * @param out 方块破坏时掉落的物品
+     */
+    public OreBlock(String name, Item out) {
+        super(Material.ROCK);
+        setRegistryName(ModernIndustry.MODID, name);
+        setUnlocalizedName(StringUtil.getUnlocalizedName(name));
+        setCreativeTab(ModernIndustry.TAB_BLOCK);
+        setSoundType(SoundType.STONE);
+        setHardness(2.5F);
+        setHarvestLevel("pickaxe", 1);
+        OUT = out;
+        ITEM = new ItemBlock(this).setRegistryName(name);
+        LIST.put(name, this);
+    }
 
-	@Override
-	public int quantityDropped(Random random) {
-		return 1;
-	}
-	
-	public Item getBurnOut() {
-		return OUT;
-	}
-	
+    @Nonnull
+    @Override
+    public Item getBlockItem() {
+        return ITEM;
+    }
+
+    @Override
+    public int quantityDropped(Random random) {
+        return 1;
+    }
+
+    public Item getBurnOut() {
+        return OUT;
+    }
+
 }

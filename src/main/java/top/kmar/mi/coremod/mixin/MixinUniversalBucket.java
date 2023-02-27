@@ -16,17 +16,17 @@ import top.kmar.mi.ModernIndustry;
  */
 @Mixin(UniversalBucket.class)
 public abstract class MixinUniversalBucket {
-	
-	@Inject(method = "getItemStackDisplayName", at = @At("HEAD"), cancellable = true, remap = false)
-	private void getItemStackDisplayName(ItemStack stack, CallbackInfoReturnable<String> cir) {
-		FluidStack fluidStack = getFluid(stack);
-		if (fluidStack == null) return;
-		Block block = fluidStack.getFluid().getBlock();
-		if (!block.getRegistryName().getResourceDomain().equals(ModernIndustry.MODID)) return;
-		cir.setReturnValue(fluidStack.getLocalizedName());
-	}
-	
-	@Shadow(remap = false)
-	public abstract FluidStack getFluid(ItemStack stack);
-	
+
+    @Inject(method = "getItemStackDisplayName", at = @At("HEAD"), cancellable = true, remap = false)
+    private void getItemStackDisplayName(ItemStack stack, CallbackInfoReturnable<String> cir) {
+        FluidStack fluidStack = getFluid(stack);
+        if (fluidStack == null) return;
+        Block block = fluidStack.getFluid().getBlock();
+        if (!block.getRegistryName().getResourceDomain().equals(ModernIndustry.MODID)) return;
+        cir.setReturnValue(fluidStack.getLocalizedName());
+    }
+
+    @Shadow(remap = false)
+    public abstract FluidStack getFluid(ItemStack stack);
+
 }

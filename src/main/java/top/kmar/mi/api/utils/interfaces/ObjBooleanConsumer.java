@@ -6,7 +6,7 @@ package top.kmar.mi.api.utils.interfaces;
  */
 @FunctionalInterface
 public interface ObjBooleanConsumer<T> {
-	
-	void accept(T t, boolean bool);
-	
+
+    void accept(T t, boolean bool);
+
 }

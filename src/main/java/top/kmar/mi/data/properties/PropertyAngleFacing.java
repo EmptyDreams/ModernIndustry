@@ -8,13 +8,13 @@ import java.util.Arrays;
  * @author EmptyDreams
  */
 public class PropertyAngleFacing extends PropertyEnum<AngleFacingEnum> {
-	
-	public static PropertyAngleFacing create(String name) {
-		return new PropertyAngleFacing(name);
-	}
-	
-	private PropertyAngleFacing(String name) {
-		super(name, AngleFacingEnum.class, Arrays.asList(AngleFacingEnum.values()));
-	}
-	
+
+    public static PropertyAngleFacing create(String name) {
+        return new PropertyAngleFacing(name);
+    }
+
+    private PropertyAngleFacing(String name) {
+        super(name, AngleFacingEnum.class, Arrays.asList(AngleFacingEnum.values()));
+    }
+
 }

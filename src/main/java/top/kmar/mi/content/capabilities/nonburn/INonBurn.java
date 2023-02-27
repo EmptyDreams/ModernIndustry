@@ -5,5 +5,5 @@ package top.kmar.mi.content.capabilities.nonburn;
  * @author EmptyDreams
  */
 public interface INonBurn {
-	INonBurn SRC = new INonBurn() { };
+    INonBurn SRC = new INonBurn() { };
 }

@@ -5,7 +5,7 @@ package top.kmar.mi.api.utils.interfaces;
  */
 @FunctionalInterface
 public interface IntInt2IntFunction {
-	
-	int apply(int arg0, int arg1);
-	
+
+    int apply(int arg0, int arg1);
+
 }

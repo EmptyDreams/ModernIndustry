@@ -13,18 +13,18 @@ import javax.annotation.Nonnull;
  * @author EmptyDreams
  */
 public class TileEntityRegistryMachine extends AutoRegisterMachine<AutoTileEntity, Object> {
-	
-	@Nonnull
-	@Override
-	public Class<AutoTileEntity> getTargetClass() {
-		return AutoTileEntity.class;
-	}
-	
-	@Override
-	public void registry(Class<?> clazz, AutoTileEntity annotation, Object data) {
-		//noinspection unchecked
-		GameRegistry.registerTileEntity((Class<? extends TileEntity>) clazz,
-				new ResourceLocation(annotation.modid(), annotation.value()));
-	}
-	
+
+    @Nonnull
+    @Override
+    public Class<AutoTileEntity> getTargetClass() {
+        return AutoTileEntity.class;
+    }
+
+    @Override
+    public void registry(Class<?> clazz, AutoTileEntity annotation, Object data) {
+        //noinspection unchecked
+        GameRegistry.registerTileEntity((Class<? extends TileEntity>) clazz,
+                new ResourceLocation(annotation.modid(), annotation.value()));
+    }
+
 }

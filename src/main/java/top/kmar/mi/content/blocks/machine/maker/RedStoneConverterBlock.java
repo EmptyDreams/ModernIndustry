@@ -31,57 +31,57 @@ import java.util.List;
 @AutoBlockRegister(registryName = "red_stone_converter")
 public class RedStoneConverterBlock extends MachineBlock {
 
-	private final Item ITEM = new ItemBlock(this);
+    private final Item ITEM = new ItemBlock(this);
 
-	public RedStoneConverterBlock() {
-		super(Material.IRON);
-		setDefaultState(blockState.getBaseState()
-									.withProperty(MIProperty.getHorizontal(), EnumFacing.NORTH)
-									.withProperty(MIProperty.getWorking(), false));
-	}
+    public RedStoneConverterBlock() {
+        super(Material.IRON);
+        setDefaultState(blockState.getBaseState()
+                .withProperty(MIProperty.getHorizontal(), EnumFacing.NORTH)
+                .withProperty(MIProperty.getWorking(), false));
+    }
 
-	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
-	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
-	                                float hitX, float hitY, float hitZ) {
-		return CommonUtil.openGui(playerIn, BlockGuiList.getRedStoneConverter(), pos);
-	}
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
+                                    EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
+                                    float hitX, float hitY, float hitZ) {
+        return CommonUtil.openGui(playerIn, BlockGuiList.getRedStoneConverter(), pos);
+    }
 
-	@Nullable
-	@Override
-	public List<ItemStack> dropItems(World world, BlockPos pos) {
-		EMRedStoneConverter converter = (EMRedStoneConverter) world.getTileEntity(pos);
-		//noinspection ConstantConditions
-		return Lists.newArrayList(converter.getInputStack());
-	}
+    @Nullable
+    @Override
+    public List<ItemStack> dropItems(World world, BlockPos pos) {
+        EMRedStoneConverter converter = (EMRedStoneConverter) world.getTileEntity(pos);
+        //noinspection ConstantConditions
+        return Lists.newArrayList(converter.getInputStack());
+    }
 
-	@Nonnull
-	@Override
-	protected BlockStateContainer createBlockState() {
-		return CommonUtil.createBlockState(this);
-	}
+    @Nonnull
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return CommonUtil.createBlockState(this);
+    }
 
-	@Override
-	public int getMetaFromState(@Nonnull IBlockState state) {
-		return CommonUtil.getMetaFromState(state);
-	}
+    @Override
+    public int getMetaFromState(@Nonnull IBlockState state) {
+        return CommonUtil.getMetaFromState(state);
+    }
 
-	@Nonnull
-	@Override
-	public IBlockState getStateFromMeta(int meta) {
-		return CommonUtil.getStateFromMeta(this, meta);
-	}
+    @Nonnull
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return CommonUtil.getStateFromMeta(this, meta);
+    }
 
-	@Nullable
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new EMRedStoneConverter();
-	}
+    @Nullable
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        return new EMRedStoneConverter();
+    }
 
-	@Nonnull
-	@Override
-	public Item getBlockItem() {
-		return ITEM;
-	}
+    @Nonnull
+    @Override
+    public Item getBlockItem() {
+        return ITEM;
+    }
 
 }

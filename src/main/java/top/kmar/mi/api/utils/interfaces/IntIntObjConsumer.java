@@ -6,7 +6,7 @@ package top.kmar.mi.api.utils.interfaces;
  */
 @FunctionalInterface
 public interface IntIntObjConsumer<T> {
-	
-	void accept(int arg0, int arg1, T arg2);
-	
+
+    void accept(int arg0, int arg1, T arg2);
+
 }

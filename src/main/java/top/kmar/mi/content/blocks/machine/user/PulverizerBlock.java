@@ -32,66 +32,66 @@ import static net.minecraft.util.EnumFacing.NORTH;
  */
 @AutoBlockRegister(registryName = "pulverizer", field = "INSTANCE")
 public class PulverizerBlock extends MachineBlock {
-	
-	//该字段通过反射赋值
-	@SuppressWarnings("unused")
-	private static PulverizerBlock INSTANCE;
-	
-	private final Item ITEM = new ItemBlock(this);
-	
-	public PulverizerBlock() {
-		super(Material.IRON);
-		setDefaultState(blockState.getBaseState()
-									.withProperty(MIProperty.getHorizontal(), NORTH)
-									.withProperty(MIProperty.getWorking(), false));
-	}
 
-	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
-	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
-	                                float hitX, float hitY, float hitZ) {
-		return CommonUtil.openGui(playerIn, BlockGuiList.getPulverizer(), pos);
-	}
+    //该字段通过反射赋值
+    @SuppressWarnings("unused")
+    private static PulverizerBlock INSTANCE;
 
-	@Nullable
-	@Override
-	public List<ItemStack> dropItems(World world, BlockPos pos) {
-		EUPulverizer pulverizer = (EUPulverizer) world.getTileEntity(pos);
-		//noinspection ConstantConditions
-		return Lists.newArrayList(pulverizer.getInputStack(), pulverizer.getOutputStack());
-	}
+    private final Item ITEM = new ItemBlock(this);
 
-	@Nonnull
-	@Override
-	protected BlockStateContainer createBlockState() {
-		return CommonUtil.createBlockState(this);
-	}
+    public PulverizerBlock() {
+        super(Material.IRON);
+        setDefaultState(blockState.getBaseState()
+                .withProperty(MIProperty.getHorizontal(), NORTH)
+                .withProperty(MIProperty.getWorking(), false));
+    }
 
-	@Override
-	public int getMetaFromState(@Nonnull IBlockState state) {
-		return CommonUtil.getMetaFromState(state);
-	}
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
+                                    EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
+                                    float hitX, float hitY, float hitZ) {
+        return CommonUtil.openGui(playerIn, BlockGuiList.getPulverizer(), pos);
+    }
 
-	@Nonnull
-	@Override
-	public IBlockState getStateFromMeta(int meta) {
-		return CommonUtil.getStateFromMeta(this, meta);
-	}
+    @Nullable
+    @Override
+    public List<ItemStack> dropItems(World world, BlockPos pos) {
+        EUPulverizer pulverizer = (EUPulverizer) world.getTileEntity(pos);
+        //noinspection ConstantConditions
+        return Lists.newArrayList(pulverizer.getInputStack(), pulverizer.getOutputStack());
+    }
 
-	@Nullable
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new EUPulverizer();
-	}
+    @Nonnull
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return CommonUtil.createBlockState(this);
+    }
 
-	@Nonnull
-	@Override
-	public Item getBlockItem() {
-		return ITEM;
-	}
+    @Override
+    public int getMetaFromState(@Nonnull IBlockState state) {
+        return CommonUtil.getMetaFromState(state);
+    }
 
-	public static PulverizerBlock instance() {
-		return INSTANCE;
-	}
-	
+    @Nonnull
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return CommonUtil.getStateFromMeta(this, meta);
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        return new EUPulverizer();
+    }
+
+    @Nonnull
+    @Override
+    public Item getBlockItem() {
+        return ITEM;
+    }
+
+    public static PulverizerBlock instance() {
+        return INSTANCE;
+    }
+
 }

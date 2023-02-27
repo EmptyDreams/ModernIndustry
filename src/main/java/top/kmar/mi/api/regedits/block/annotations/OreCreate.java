@@ -16,18 +16,18 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD })
 public @interface OreCreate {
-	
-	/** 生成规模 */
-	int count() default 8;
-	/** 生成次数 */
-	int time() default 4;
-	/** 最低高度 */
-	int yMin() default 16;
-	/** 高度范围 */
-	int yRange() default 64;
-	/** 生成成功几率 */
-	float probability() default 1.0F;
-	/** 方块名称（不包括MODID） */
-	String name();
-	
+
+    /** 生成规模 */
+    int count() default 8;
+    /** 生成次数 */
+    int time() default 4;
+    /** 最低高度 */
+    int yMin() default 16;
+    /** 高度范围 */
+    int yRange() default 64;
+    /** 生成成功几率 */
+    float probability() default 1.0F;
+    /** 方块名称（不包括MODID） */
+    String name();
+
 }

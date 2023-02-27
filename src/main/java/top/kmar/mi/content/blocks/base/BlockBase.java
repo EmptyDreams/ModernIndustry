@@ -18,24 +18,24 @@ import java.util.Random;
  * @author EmptyDremas
  */
 public abstract class BlockBase extends Block implements BlockItemHelper {
-	
-	public BlockBase(Material materialIn) {
-		super(materialIn);
-	}
-	
-	@Nonnull
+
+    public BlockBase(Material materialIn) {
+        super(materialIn);
+    }
+
+    @Nonnull
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         return getBlockItem();
     }
-	
-	@Override
-	public abstract int quantityDropped(Random random);
-	
-	@Nullable
-	@Override
-	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
-		return getBoundingBox(blockState, worldIn, pos);
-	}
-	
+
+    @Override
+    public abstract int quantityDropped(Random random);
+
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
+        return getBoundingBox(blockState, worldIn, pos);
+    }
+
 }

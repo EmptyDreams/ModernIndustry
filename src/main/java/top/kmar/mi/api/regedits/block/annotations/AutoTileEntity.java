@@ -17,9 +17,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface AutoTileEntity {
-	
-	String value();
-	
-	String modid() default ModernIndustry.MODID;
-	
+
+    String value();
+
+    String modid() default ModernIndustry.MODID;
+
 }

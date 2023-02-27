@@ -9,20 +9,20 @@ import top.kmar.mi.api.utils.StringUtil;
  * @author EmptyDreams
  */
 public class MISpade extends ItemSpade implements IToolMaterial {
-	
-	public MISpade(ToolMaterial material) {
-		super(material);
-		setCreativeTab(ModernIndustry.TAB_TOOL);
-	}
 
-	public MISpade setRegistry(String modid, String name) {
-		setRegistryName(modid, name).setUnlocalizedName(StringUtil.getUnlocalizedName(modid, name));
-		return this;
-	}
-	
-	@Override
-	public String toString() {
-		return getRegistryName().toString();
-	}
-	
+    public MISpade(ToolMaterial material) {
+        super(material);
+        setCreativeTab(ModernIndustry.TAB_TOOL);
+    }
+
+    public MISpade setRegistry(String modid, String name) {
+        setRegistryName(modid, name).setUnlocalizedName(StringUtil.getUnlocalizedName(modid, name));
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return getRegistryName().toString();
+    }
+
 }

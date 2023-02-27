@@ -21,45 +21,45 @@ import java.util.Random;
  */
 @AutoBlockRegister(registryName = "perpetual")
 public class PerpetualBlock extends MachineBlock {
-	
-	private final Item ITEM = new ItemBlock(this).setRegistryName("perpetual");
-	
-	public PerpetualBlock() {
-		super(Material.IRON);
-	}
-	
-	@Override
-	public int quantityDropped(@Nonnull Random random) {
-		return 1;
-	}
 
-	@Nonnull
-	@Override
-	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this);
-	}
+    private final Item ITEM = new ItemBlock(this).setRegistryName("perpetual");
 
-	@Override
-	public int getMetaFromState(@Nonnull IBlockState state) {
-		return 0;
-	}
+    public PerpetualBlock() {
+        super(Material.IRON);
+    }
 
-	@Nonnull
-	@Override
-	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState();
-	}
+    @Override
+    public int quantityDropped(@Nonnull Random random) {
+        return 1;
+    }
 
-	@Nonnull
-	@Override
-	public Item getBlockItem() {
-		return ITEM;
-	}
-	
-	@Nullable
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new EMPerpetual();
-	}
-	
+    @Nonnull
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this);
+    }
+
+    @Override
+    public int getMetaFromState(@Nonnull IBlockState state) {
+        return 0;
+    }
+
+    @Nonnull
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState();
+    }
+
+    @Nonnull
+    @Override
+    public Item getBlockItem() {
+        return ITEM;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        return new EMPerpetual();
+    }
+
 }

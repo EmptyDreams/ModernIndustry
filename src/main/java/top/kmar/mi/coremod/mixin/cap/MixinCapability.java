@@ -9,19 +9,19 @@ import top.kmar.mi.coremod.other.ICapStorageType;
  */
 @Mixin(Capability.class)
 public class MixinCapability implements ICapStorageType {
-	
-	private Class<?> storageType;
-	
-	@Override
-	public Class<?> getStorageType() {
-		return storageType;
-	}
-	
-	@Override
-	public void setStorageType(Class<?> type) {
-		if (storageType != null)
-			throw new IllegalStateException("类型已经完成初始化");
-		storageType = type;
-	}
-	
+
+    private Class<?> storageType;
+
+    @Override
+    public Class<?> getStorageType() {
+        return storageType;
+    }
+
+    @Override
+    public void setStorageType(Class<?> type) {
+        if (storageType != null)
+            throw new IllegalStateException("类型已经完成初始化");
+        storageType = type;
+    }
+
 }

@@ -29,63 +29,63 @@ import static top.kmar.mi.data.properties.MIProperty.getWorking;
  */
 @AutoBlockRegister(registryName = "electron_synthesizer", field = "INSTANCE")
 public class ElectronSynthesizerBlock extends MachineBlock {
-	
-	//该字段通过反射赋值
-	@SuppressWarnings("unused")
-	private static ElectronSynthesizerBlock INSTANCE;
-	private final Item ITEM = new ItemBlock(this);
-	
-	public ElectronSynthesizerBlock() {
-		super(Material.IRON);
-		setDefaultState(blockState.getBaseState().withProperty(getWorking(), false));
-	}
-	
-	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
-	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
-	                                float hitX, float hitY, float hitZ) {
-		return CommonUtil.openGui(playerIn, BlockGuiList.getSynthesizer(), pos);
-	}
-	
-	@Nullable
-	@Override
-	public List<ItemStack> dropItems(World world, BlockPos pos) {
-		EUElectronSynthesizer synthesizer = (EUElectronSynthesizer) world.getTileEntity(pos);
-		//noinspection ConstantConditions
-		return synthesizer.getAllStacks();
-	}
-	
-	@Nonnull
-	@Override
-	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, getWorking());
-	}
-	
-	@Override
-	public int getMetaFromState(@Nonnull IBlockState state) {
-		return state.getValue(getWorking()) ? 1 : 0;
-	}
-	
-	@Nonnull
-	@Override
-	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState().withProperty(getWorking(), meta == 1);
-	}
-	
-	@Nullable
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new EUElectronSynthesizer();
-	}
-	
-	@Nonnull
-	@Override
-	public Item getBlockItem() {
-		return ITEM;
-	}
-	
-	public static ElectronSynthesizerBlock instance() {
-		return INSTANCE;
-	}
-	
+
+    //该字段通过反射赋值
+    @SuppressWarnings("unused")
+    private static ElectronSynthesizerBlock INSTANCE;
+    private final Item ITEM = new ItemBlock(this);
+
+    public ElectronSynthesizerBlock() {
+        super(Material.IRON);
+        setDefaultState(blockState.getBaseState().withProperty(getWorking(), false));
+    }
+
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
+                                    EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
+                                    float hitX, float hitY, float hitZ) {
+        return CommonUtil.openGui(playerIn, BlockGuiList.getSynthesizer(), pos);
+    }
+
+    @Nullable
+    @Override
+    public List<ItemStack> dropItems(World world, BlockPos pos) {
+        EUElectronSynthesizer synthesizer = (EUElectronSynthesizer) world.getTileEntity(pos);
+        //noinspection ConstantConditions
+        return synthesizer.getAllStacks();
+    }
+
+    @Nonnull
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, getWorking());
+    }
+
+    @Override
+    public int getMetaFromState(@Nonnull IBlockState state) {
+        return state.getValue(getWorking()) ? 1 : 0;
+    }
+
+    @Nonnull
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState().withProperty(getWorking(), meta == 1);
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        return new EUElectronSynthesizer();
+    }
+
+    @Nonnull
+    @Override
+    public Item getBlockItem() {
+        return ITEM;
+    }
+
+    public static ElectronSynthesizerBlock instance() {
+        return INSTANCE;
+    }
+
 }

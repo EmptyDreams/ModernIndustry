@@ -12,9 +12,9 @@ import top.kmar.mi.api.regedits.others.AutoManager;
 @SuppressWarnings("unused")
 @AutoManager(block = true)
 public final class PipeManager {
-	
-	public static final StraightPipe IRON_STRAIGHT = new StraightPipe("iron_straight_ft");
-	public static final AnglePipe IRON_ANGLE = new AnglePipe("iron_angle_ft");
-	public static final ShuntPipe IRON_SHUNT = new ShuntPipe("iron_shunt_ft");
-	
+
+    public static final StraightPipe IRON_STRAIGHT = new StraightPipe("iron_straight_ft");
+    public static final AnglePipe IRON_ANGLE = new AnglePipe("iron_angle_ft");
+    public static final ShuntPipe IRON_SHUNT = new ShuntPipe("iron_shunt_ft");
+
 }

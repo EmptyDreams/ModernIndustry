@@ -18,33 +18,33 @@ import java.util.function.Predicate;
  */
 @Mixin(CapabilityManager.class)
 public class MixinCapabilityManager implements ICapManagerCheck {
-	
-	@Redirect(method = "register(Ljava/lang/Class;" +
-								"Lnet/minecraftforge/common/capabilities/Capability$IStorage;" +
-								"Ljava/util/concurrent/Callable;)V",
-			  at = @At(value = "INVOKE",
-					  target = "Ljava/util/IdentityHashMap;" +
-							   "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"),
-	          remap = false)
-	private <K, V> V register_put(IdentityHashMap<K, V> identityHashMap, K key, V value) {
-		try {
-			ICapStorageType cap = (ICapStorageType) value;
-			Class<?> clazz = Class.forName((String) key);
-			cap.setStorageType(clazz);
-		} catch (Exception e) {
-			throw TransferException.instance("MixinCapabilityManager", e);
-		}
-		return identityHashMap.put(key, value);
-	}
-	
-	@Shadow(remap = false)
-	private IdentityHashMap<String, Capability<?>> providers;
-	
-	@Override
-	public void forEachCaps(Predicate<Capability<?>> test) {
-		for (Capability<?> cap : providers.values()) {
-			if (test.test(cap)) break;
-		}
-	}
-	
+
+    @Redirect(method = "register(Ljava/lang/Class;" +
+            "Lnet/minecraftforge/common/capabilities/Capability$IStorage;" +
+            "Ljava/util/concurrent/Callable;)V",
+            at = @At(value = "INVOKE",
+                    target = "Ljava/util/IdentityHashMap;" +
+                            "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"),
+            remap = false)
+    private <K, V> V register_put(IdentityHashMap<K, V> identityHashMap, K key, V value) {
+        try {
+            ICapStorageType cap = (ICapStorageType) value;
+            Class<?> clazz = Class.forName((String) key);
+            cap.setStorageType(clazz);
+        } catch (Exception e) {
+            throw TransferException.instance("MixinCapabilityManager", e);
+        }
+        return identityHashMap.put(key, value);
+    }
+
+    @Shadow(remap = false)
+    private IdentityHashMap<String, Capability<?>> providers;
+
+    @Override
+    public void forEachCaps(Predicate<Capability<?>> test) {
+        for (Capability<?> cap : providers.values()) {
+            if (test.test(cap)) break;
+        }
+    }
+
 }

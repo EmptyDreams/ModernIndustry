@@ -12,16 +12,16 @@ import javax.annotation.Nullable;
  */
 public class NonBurnProvider implements ICapabilityProvider {
 
-	public static final NonBurnProvider SRC = new NonBurnProvider();
+    public static final NonBurnProvider SRC = new NonBurnProvider();
 
-	@Override
-	public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-		return capability == NonBurnCapability.NON_BURN;
-	}
+    @Override
+    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+        return capability == NonBurnCapability.NON_BURN;
+    }
 
-	@Nullable
-	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-		return null;
-	}
+    @Nullable
+    @Override
+    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+        return null;
+    }
 }

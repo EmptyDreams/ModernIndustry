@@ -18,18 +18,18 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber
 final class CommonItemHelper {
 
-	//---------------用于添加能力---------------//
+    //---------------用于添加能力---------------//
 
-	static final Map<Item, Supplier<ICapabilityProvider>> CAPS = new HashMap<>();
+    static final Map<Item, Supplier<ICapabilityProvider>> CAPS = new HashMap<>();
 
-	@SubscribeEvent
-	public static void addCapabilityToItem(AttachCapabilitiesEvent<ItemStack> event) {
-		Item item = event.getObject().getItem();
-		Supplier<ICapabilityProvider> supplier = CAPS.getOrDefault(item, null);
-		if (supplier == null) return;
-		ICapabilityProvider provider = supplier.get();
-		event.addCapability(StringUtil.revampAddToRL(item.getRegistryName(),
-				provider.getClass().getSimpleName()), provider);
-	}
+    @SubscribeEvent
+    public static void addCapabilityToItem(AttachCapabilitiesEvent<ItemStack> event) {
+        Item item = event.getObject().getItem();
+        Supplier<ICapabilityProvider> supplier = CAPS.getOrDefault(item, null);
+        if (supplier == null) return;
+        ICapabilityProvider provider = supplier.get();
+        event.addCapability(StringUtil.revampAddToRL(item.getRegistryName(),
+                provider.getClass().getSimpleName()), provider);
+    }
 
 }

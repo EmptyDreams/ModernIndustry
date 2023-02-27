@@ -9,20 +9,20 @@ import top.kmar.mi.api.utils.StringUtil;
  * @author EmptyDreams
  */
 public class MIPickaxe extends ItemPickaxe implements IToolMaterial {
-	
-	public MIPickaxe(ToolMaterial material) {
-		super(material);
-		setCreativeTab(ModernIndustry.TAB_TOOL);
-	}
 
-	public MIPickaxe setRegistry(String modid, String name) {
-		setRegistryName(modid, name).setUnlocalizedName(StringUtil.getUnlocalizedName(modid, name));
-		return this;
-	}
-	
-	@Override
-	public String toString() {
-		return getRegistryName().toString();
-	}
-	
+    public MIPickaxe(ToolMaterial material) {
+        super(material);
+        setCreativeTab(ModernIndustry.TAB_TOOL);
+    }
+
+    public MIPickaxe setRegistry(String modid, String name) {
+        setRegistryName(modid, name).setUnlocalizedName(StringUtil.getUnlocalizedName(modid, name));
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return getRegistryName().toString();
+    }
+
 }

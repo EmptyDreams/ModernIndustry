@@ -16,21 +16,21 @@ import javax.annotation.Nullable;
 @AutoLoader
 public class NonBurnCapability {
 
-	@CapabilityInject(INonBurn.class)
-	public static Capability<INonBurn> NON_BURN;
+    @CapabilityInject(INonBurn.class)
+    public static Capability<INonBurn> NON_BURN;
 
-	static {
-		CapabilityManager.INSTANCE.register(INonBurn.class, new Capability.IStorage<INonBurn>() {
-			@Nullable
-			@Override
-			public NBTBase writeNBT(Capability<INonBurn> capability, INonBurn instance, EnumFacing side) {
-				return null;
-			}
+    static {
+        CapabilityManager.INSTANCE.register(INonBurn.class, new Capability.IStorage<INonBurn>() {
+            @Nullable
+            @Override
+            public NBTBase writeNBT(Capability<INonBurn> capability, INonBurn instance, EnumFacing side) {
+                return null;
+            }
 
-			@Override
-			public void readNBT(Capability<INonBurn> capability, INonBurn instance, EnumFacing side, NBTBase nbt) {
-			}
-		}, () -> INonBurn.SRC);
-	}
+            @Override
+            public void readNBT(Capability<INonBurn> capability, INonBurn instance, EnumFacing side, NBTBase nbt) {
+            }
+        }, () -> INonBurn.SRC);
+    }
 
 }

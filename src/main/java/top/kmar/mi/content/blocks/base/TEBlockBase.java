@@ -24,62 +24,62 @@ import java.util.Random;
 @SuppressWarnings("deprecation")
 abstract public class TEBlockBase extends BlockContainer implements BlockItemHelper {
 
-	protected TEBlockBase(Material materialIn) {
-		super(materialIn);
-	}
+    protected TEBlockBase(Material materialIn) {
+        super(materialIn);
+    }
 
-	/**
-	 * 当方块被破坏时掉落额外物品.
-	 * 用户覆盖该方法时应该调用该方法，否则会导致{@link #dropItems(World, BlockPos)}方法失效
-	 * @param worldIn 所在世界
-	 * @param pos 当前坐标
-	 * @param state 当前State
-	 */
-	@Override
-	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-		List<ItemStack> drops = dropItems(worldIn, pos);
-		if (drops != null)
-			drops.forEach(it -> Block.spawnAsEntity(worldIn, pos, it));
-		super.breakBlock(worldIn, pos, state);
-	}
-	
-	/**
-	 * 获取方块额外的凋落物，用于在方块破坏的时候掉落方块内存储的物品
-	 * @param world 所在世界
-	 * @param pos 方块坐标
-	 * @return 若无需要掉落的物品则返回null
-	 */
-	@Nullable
-	public List<ItemStack> dropItems(World world, BlockPos pos) {
-		return null;
-	}
+    /**
+     * 当方块被破坏时掉落额外物品.
+     * 用户覆盖该方法时应该调用该方法，否则会导致{@link #dropItems(World, BlockPos)}方法失效
+     * @param worldIn 所在世界
+     * @param pos 当前坐标
+     * @param state 当前State
+     */
+    @Override
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+        List<ItemStack> drops = dropItems(worldIn, pos);
+        if (drops != null)
+            drops.forEach(it -> Block.spawnAsEntity(worldIn, pos, it));
+        super.breakBlock(worldIn, pos, state);
+    }
 
-	/** 获取凋落物 */
-	@Nonnull
-	@Override
-	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-		return getBlockItem();
-	}
-	
-	/** 渲染方式 */
-	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state) {
-		return EnumBlockRenderType.MODEL;
-	}
-	
-	/** 掉落数量 */
-	@Override
-	abstract public int quantityDropped(@Nonnull Random random);
+    /**
+     * 获取方块额外的凋落物，用于在方块破坏的时候掉落方块内存储的物品
+     * @param world 所在世界
+     * @param pos 方块坐标
+     * @return 若无需要掉落的物品则返回null
+     */
+    @Nullable
+    public List<ItemStack> dropItems(World world, BlockPos pos) {
+        return null;
+    }
 
-	@Override
-	@Nonnull
-	abstract protected BlockStateContainer createBlockState();
+    /** 获取凋落物 */
+    @Nonnull
+    @Override
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+        return getBlockItem();
+    }
 
-	@Override
-	abstract public int getMetaFromState(@Nonnull IBlockState state);
+    /** 渲染方式 */
+    @Override
+    public EnumBlockRenderType getRenderType(IBlockState state) {
+        return EnumBlockRenderType.MODEL;
+    }
 
-	@Override
-	@Nonnull
-	abstract public IBlockState getStateFromMeta(int meta);
+    /** 掉落数量 */
+    @Override
+    abstract public int quantityDropped(@Nonnull Random random);
+
+    @Override
+    @Nonnull
+    abstract protected BlockStateContainer createBlockState();
+
+    @Override
+    abstract public int getMetaFromState(@Nonnull IBlockState state);
+
+    @Override
+    @Nonnull
+    abstract public IBlockState getStateFromMeta(int meta);
 
 }

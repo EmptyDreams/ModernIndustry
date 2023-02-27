@@ -20,30 +20,30 @@ import java.lang.reflect.Method;
  */
 @Mod.EventBusSubscriber
 public class ItemRegister {
-	
-	@SubscribeEvent
-	public static void registryItems(@Nonnull RegistryEvent.Register<Item> event) {
-		MISysInfo.print("注册MOD物品......");
-		IForgeRegistry<Item> register = event.getRegistry();
-		for (Item i : ItemRegistryMachine.Items.autoItems) register.register(i);
-	}
 
-	@SubscribeEvent
-	public static void registryModel(ModelRegistryEvent event) {
-		for (Item item : ItemRegistryMachine.Items.autoItems) {
-			String methodName = ItemRegistryMachine.Items.customModelItems.getOrDefault(item, null);
-			if (methodName == null) {
-				ModelLoader.setCustomModelResourceLocation(
-						item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
-			} else if (!methodName.equals("null")) {
-				try {
-					Method method = item.getClass().getMethod(methodName, Item.class);
-					method.invoke(null, item);
-				} catch (Exception e) {
-					MISysInfo.err("注册[" + item.getRegistryName() + "]的customModel时出现意外的错误", e);
-				}
-			}
-		}
-	}
+    @SubscribeEvent
+    public static void registryItems(@Nonnull RegistryEvent.Register<Item> event) {
+        MISysInfo.print("注册MOD物品......");
+        IForgeRegistry<Item> register = event.getRegistry();
+        for (Item i : ItemRegistryMachine.Items.autoItems) register.register(i);
+    }
+
+    @SubscribeEvent
+    public static void registryModel(ModelRegistryEvent event) {
+        for (Item item : ItemRegistryMachine.Items.autoItems) {
+            String methodName = ItemRegistryMachine.Items.customModelItems.getOrDefault(item, null);
+            if (methodName == null) {
+                ModelLoader.setCustomModelResourceLocation(
+                        item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
+            } else if (!methodName.equals("null")) {
+                try {
+                    Method method = item.getClass().getMethod(methodName, Item.class);
+                    method.invoke(null, item);
+                } catch (Exception e) {
+                    MISysInfo.err("注册[" + item.getRegistryName() + "]的customModel时出现意外的错误", e);
+                }
+            }
+        }
+    }
 
 }

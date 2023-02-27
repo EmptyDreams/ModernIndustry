@@ -8,10 +8,10 @@ package top.kmar.mi.api.utils.interfaces;
 @FunctionalInterface
 public interface ThFunction<T, U, V, R> {
 
-	/**
-	 * @see java.util.function.Function#apply(Object)
-	 * @see java.util.function.BiFunction#apply(Object, Object)
-	 */
-	R apply(T t, U u, V v);
+    /**
+     * @see java.util.function.Function#apply(Object)
+     * @see java.util.function.BiFunction#apply(Object, Object)
+     */
+    R apply(T t, U u, V v);
 
 }

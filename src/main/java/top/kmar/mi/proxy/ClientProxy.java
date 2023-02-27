@@ -11,24 +11,24 @@ import javax.annotation.Nonnull;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
-	
-	@Nonnull
-	public static ASMDataTable getAsm() {
-		return ASM;
-	}
-	
-	@Override
-	public void preInit(@Nonnull FMLPreInitializationEvent event){
-		super.preInit(event);
-	}
 
-	@Override
-	public void init(FMLInitializationEvent event){
-		super.init(event);
-	}
+    @Nonnull
+    public static ASMDataTable getAsm() {
+        return ASM;
+    }
 
-	@Override
-	public void postInit(FMLPostInitializationEvent event){
-		super.postInit(event);
-	}
+    @Override
+    public void preInit(@Nonnull FMLPreInitializationEvent event){
+        super.preInit(event);
+    }
+
+    @Override
+    public void init(FMLInitializationEvent event){
+        super.init(event);
+    }
+
+    @Override
+    public void postInit(FMLPostInitializationEvent event){
+        super.postInit(event);
+    }
 }

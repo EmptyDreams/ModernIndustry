@@ -12,16 +12,16 @@ import static top.kmar.mi.api.regedits.machines.RegisterHelp.*;
  * @author EmptyDreams
  */
 public class ManagerRegistryMachine extends AutoRegisterMachine<RegisterManager, Object> {
-	
-	@Nonnull
-	@Override
-	public Class<RegisterManager> getTargetClass() {
-		return RegisterManager.class;
-	}
-	
-	@Override
-	public void registry(Class<?> clazz, RegisterManager annotation, Object data) {
-		invokeStaticMethod(clazz, annotation.value(), (Object[]) null);
-	}
-	
+
+    @Nonnull
+    @Override
+    public Class<RegisterManager> getTargetClass() {
+        return RegisterManager.class;
+    }
+
+    @Override
+    public void registry(Class<?> clazz, RegisterManager annotation, Object data) {
+        invokeStaticMethod(clazz, annotation.value(), (Object[]) null);
+    }
+
 }

@@ -34,58 +34,58 @@ import static net.minecraft.util.EnumFacing.NORTH;
 @AutoBlockRegister(registryName = "ele_furnace")
 public class EleFurnaceBlock extends MachineBlock {
 
-	private final Item ITEM = new ItemBlock(this);
+    private final Item ITEM = new ItemBlock(this);
 
-	public EleFurnaceBlock() {
-		super(Material.IRON);
-		setCreativeTab(ModernIndustry.TAB_BLOCK);
-		setDefaultState(blockState.getBaseState()
-				.withProperty(MIProperty.getHorizontal(), NORTH)
-				.withProperty(MIProperty.getWorking(), false));
-		setHardness(3.5F);
-	}
+    public EleFurnaceBlock() {
+        super(Material.IRON);
+        setCreativeTab(ModernIndustry.TAB_BLOCK);
+        setDefaultState(blockState.getBaseState()
+                .withProperty(MIProperty.getHorizontal(), NORTH)
+                .withProperty(MIProperty.getWorking(), false));
+        setHardness(3.5F);
+    }
 
-	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
-	                                EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
-	                                float hitX, float hitY, float hitZ) {
-		return CommonUtil.openGui(playerIn, BlockGuiList.getEleFurnace(), pos);
-	}
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
+                                    EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
+                                    float hitX, float hitY, float hitZ) {
+        return CommonUtil.openGui(playerIn, BlockGuiList.getEleFurnace(), pos);
+    }
 
-	@Nullable
-	@Override
-	public List<ItemStack> dropItems(World world, BlockPos pos) {
-		EUFurnace furnace = (EUFurnace) world.getTileEntity(pos);
-		//noinspection ConstantConditions
-		return Lists.newArrayList(furnace.getInputStack(), furnace.getOutputStack());
-	}
+    @Nullable
+    @Override
+    public List<ItemStack> dropItems(World world, BlockPos pos) {
+        EUFurnace furnace = (EUFurnace) world.getTileEntity(pos);
+        //noinspection ConstantConditions
+        return Lists.newArrayList(furnace.getInputStack(), furnace.getOutputStack());
+    }
 
-	@Nullable
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new EUFurnace();
-	}
+    @Nullable
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        return new EUFurnace();
+    }
 
-	@Nonnull
-	@Override
-	public Item getBlockItem() {
-		return ITEM;
-	}
+    @Nonnull
+    @Override
+    public Item getBlockItem() {
+        return ITEM;
+    }
 
-	@Nonnull
-	@Override
-	protected BlockStateContainer createBlockState() {
-		return CommonUtil.createBlockState(this);
-	}
+    @Nonnull
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return CommonUtil.createBlockState(this);
+    }
 
-	@Override
-	public int getMetaFromState(@Nonnull IBlockState state) {
-		return CommonUtil.getMetaFromState(state);
-	}
+    @Override
+    public int getMetaFromState(@Nonnull IBlockState state) {
+        return CommonUtil.getMetaFromState(state);
+    }
 
-	@Nonnull
-	@Override
-	public IBlockState getStateFromMeta(int meta) {
-		return CommonUtil.getStateFromMeta(this, meta);
-	}
+    @Nonnull
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return CommonUtil.getStateFromMeta(this, meta);
+    }
 }

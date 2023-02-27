@@ -15,8 +15,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface RegisterManager {
-	
-	/** 注册时调用的方法名称（无参，可私有） */
-	String value() default "registry";
-	
+
+    /** 注册时调用的方法名称（无参，可私有） */
+    String value() default "registry";
+
 }

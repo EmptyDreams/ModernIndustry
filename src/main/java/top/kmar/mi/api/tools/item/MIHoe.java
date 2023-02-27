@@ -9,20 +9,20 @@ import top.kmar.mi.api.utils.StringUtil;
  * @author EmptyDreams
  */
 public class MIHoe extends ItemHoe implements IToolMaterial {
-	
-	public MIHoe(ToolMaterial material) {
-		super(material);
-		setCreativeTab(ModernIndustry.TAB_TOOL);
-	}
 
-	public MIHoe setRegistry(String modid, String name) {
-		setRegistryName(modid, name).setUnlocalizedName(StringUtil.getUnlocalizedName(modid, name));
-		return this;
-	}
-	
-	@Override
-	public String toString() {
-		return getRegistryName().toString();
-	}
-	
+    public MIHoe(ToolMaterial material) {
+        super(material);
+        setCreativeTab(ModernIndustry.TAB_TOOL);
+    }
+
+    public MIHoe setRegistry(String modid, String name) {
+        setRegistryName(modid, name).setUnlocalizedName(StringUtil.getUnlocalizedName(modid, name));
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return getRegistryName().toString();
+    }
+
 }
