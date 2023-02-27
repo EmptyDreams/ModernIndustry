@@ -77,6 +77,7 @@ public final class ModernIndustry {
         }
     };
     //内部物品，用于加载图片
+    @SuppressWarnings("NoTranslation")
     public static final Item DEBUG = new Item().setRegistryName(MODID, "debug_").setUnlocalizedName("debug_");
     /** 物品栏-测试 */
     public static final CreativeTabs TAB_DEBUG = new CreativeTabs(MODID + "_debug") {
