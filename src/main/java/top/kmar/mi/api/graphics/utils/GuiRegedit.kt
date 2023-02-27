@@ -26,7 +26,7 @@ class GuiRegedit {
 
     /** 注册一个双端GUI */
     fun registryGui(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
-        if (key in registry) throw IllegalArgumentException("指定key[$key]已经被注册")
+        require(key !in registry) { "指定key[$key]已经被注册" }
         val id = idIndex.incrementAndGet()
         registry[key] = Node(id, root, LinkedList(), LinkedList(), LinkedList())
         oppositeRegistry[id] = key
@@ -34,7 +34,7 @@ class GuiRegedit {
 
     /** 注册一个客户端GUI */
     fun registryClientGui(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
-        if (key in registry) throw IllegalArgumentException("指定key[$key]已经被注册")
+        require(key !in registry) { "指定key[$key]已经被注册" }
         val id = clientIdIndex.decrementAndGet()
         registry[key] = Node(id, root, LinkedList(), LinkedList(), LinkedList())
         oppositeRegistry[id] = key

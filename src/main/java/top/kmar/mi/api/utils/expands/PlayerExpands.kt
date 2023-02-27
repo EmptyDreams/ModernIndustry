@@ -40,7 +40,7 @@ fun EntityPlayer.openClientGui(
 ) {
     if (world.isServer()) return
     val id = GuiLoader.getID(key)
-    if (id > 0) throw IllegalArgumentException("指定GUI[$key]不是客户端GUI")
+    require(id < 0) { "指定GUI[$key]不是客户端GUI" }
     // 清除键盘和鼠标输入
     KeyBinding.unPressAllKeys()
     while (Mouse.next()) { }

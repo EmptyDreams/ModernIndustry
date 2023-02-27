@@ -29,10 +29,10 @@ class CraftRegedit {
     fun registry(id: ResourceLocation, shape: IShape, output: CraftOutput) {
         val pair = Pair(shape, output.copy())
         if (shape is OrderlyShape) {
-            if (id in orderlyRegistry) throw IllegalArgumentException("指定的key[$id]已经被注册")
+            require(id !in orderlyRegistry) { "指定的key[$id]已经被注册" }
             orderlyRegistry[id] = pair
         } else {
-            if (id in disorderlyRegistry) throw IllegalArgumentException("指定的key[$id]已经被注册")
+            require(id !in disorderlyRegistry) { "指定的key[$id]已经被注册" }
             disorderlyRegistry[id] = pair
         }
     }

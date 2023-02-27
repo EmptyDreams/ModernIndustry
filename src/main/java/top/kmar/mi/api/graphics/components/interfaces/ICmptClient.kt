@@ -32,8 +32,7 @@ interface ICmptClient {
      * @param isEvent 是否为事件通信
      */
     fun send2Service(message: NBTBase, isEvent: Boolean = false) {
-        if (isEvent && message !is NBTTagString)
-            throw IllegalArgumentException("当进行事件通信时message应当为NBTTagString")
+        require(!isEvent || message is NBTTagString) { "当进行事件通信时 message 应当为 NBTTagString" }
         val content = NBTTagCompound()
         content.setBoolean("event", isEvent)
         content.setTag("data", message)

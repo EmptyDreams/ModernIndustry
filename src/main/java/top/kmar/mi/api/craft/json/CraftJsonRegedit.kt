@@ -62,7 +62,7 @@ object CraftJsonRegedit {
         if (json.has("key")) {
             val keys = json.getAsJsonObject("key")
             keys.entrySet().forEach { (key, value) ->
-                if (key.length != 1) throw IllegalArgumentException("包含错误的键：$key，key的键只能为长度为 1 的字符串")
+                require(key.length == 1) { "包含错误的键：$key，key的键只能为长度为 1 的字符串" }
                 result[key.first()] = value.asJsonObject
             }
         }
