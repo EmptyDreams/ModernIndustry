@@ -25,7 +25,7 @@
 | 包名            | 作用                     | 文档                                       |
 |---------------|------------------------|------------------------------------------|
 | `araw`        | 实现`TileEntity`内容的自动化存储 |                                          |
-| `craft`       | 独立于MC外的合成表             |                                          |
+| `craft`       | 独立于MC外的合成表             | [基本介绍](https://kmar.top/posts/95a18f1a/) |
 | `electricity` | 电力系统                   | [工作原理](https://kmar.top/posts/1c61a114/) |
 | `pipes`       | 流体管道                   |                                          |
 | `graphics`    | 实现运行期自动绘制`gui`         | [在线文档](https://kmar.top/posts/e0217013/) |
