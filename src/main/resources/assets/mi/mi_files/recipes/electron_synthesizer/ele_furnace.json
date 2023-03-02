@@ -1,5 +1,5 @@
 {
-  "group": "mi:synthesizer",
+  "group": "synthesizer",
   "output": "*",
   "input": [
     "#===#",

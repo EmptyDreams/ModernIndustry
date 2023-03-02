@@ -5,9 +5,9 @@ package top.kmar.mi.data
  */
 object CraftList {
 
-    const val compressor = "mi:compressor"
-    const val synthesizer = "mi:synthesizer"
-    const val pulverizer = "mi:pulverizer"
-    const val firePower = "mi:firePower"
+    const val compressor = "compressor"
+    const val synthesizer = "synthesizer"
+    const val pulverizer = "pulverizer"
+    const val firePower = "firePower"
 
 }
