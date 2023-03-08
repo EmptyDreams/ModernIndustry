@@ -5,6 +5,7 @@ import top.kmar.mi.api.craft.elements.CraftOutput
 import top.kmar.mi.api.craft.elements.ElementList
 import top.kmar.mi.api.craft.shapes.IShape
 import top.kmar.mi.api.craft.shapes.OrderlyShape
+import java.util.*
 
 private typealias HashMap = Object2ObjectOpenHashMap<String, Pair<IShape, CraftOutput>>
 
@@ -12,12 +13,14 @@ private typealias HashMap = Object2ObjectOpenHashMap<String, Pair<IShape, CraftO
  * 合成表注册机
  * @author EmptyDreams
  */
-class CraftRegedit {
+class CraftRegedit : Iterable<CraftRegedit.LazyNode> {
 
     /** 存储有序合成表 */
     private val orderlyRegistry = HashMap()
     /** 存储无序合成表 */
     private val disorderlyRegistry = HashMap()
+    /** 存储所有 ID */
+    private val idList = LinkedList<String>()
 
     /**
      * 注册一个合成表
@@ -26,14 +29,15 @@ class CraftRegedit {
      * @param output 产物
      */
     fun registry(id: String, shape: IShape, output: CraftOutput) {
+        require(id !in orderlyRegistry) { "指定的key[$id]已经被注册" }
+        require(id !in disorderlyRegistry) { "指定的key[$id]已经被注册" }
         val pair = Pair(shape, output.copy())
         if (shape is OrderlyShape) {
-            require(id !in orderlyRegistry) { "指定的key[$id]已经被注册" }
             orderlyRegistry[id] = pair
         } else {
-            require(id !in disorderlyRegistry) { "指定的key[$id]已经被注册" }
             disorderlyRegistry[id] = pair
         }
+        idList += id
     }
 
     /** 移除指定合成表 */
@@ -84,10 +88,43 @@ class CraftRegedit {
 
     class LazyNode(
         val shape: IShape,
-        private val craftOutput: CraftOutput
+        craftOutput: CraftOutput
     ) {
 
         val output by lazy(LazyThreadSafetyMode.NONE) { craftOutput.copy() }
+
+        operator fun component1() = shape
+
+        operator fun component2() = output
+
+    }
+
+    /** 获取迭代器，遍历时按照注册顺序遍历 */
+    override fun iterator(): ListIterator<LazyNode> = CraftIterator()
+
+    private inner class CraftIterator : ListIterator<LazyNode> {
+
+        private val itor = idList.listIterator()
+
+        override fun hasNext() = itor.hasNext()
+
+        override fun hasPrevious() = itor.hasPrevious()
+
+        override fun next(): LazyNode {
+            val id = itor.next()
+            val (shape, output) = orderlyRegistry[id] ?: disorderlyRegistry[id]!!
+            return LazyNode(shape, output)
+        }
+
+        override fun nextIndex() = itor.nextIndex()
+
+        override fun previous(): LazyNode {
+            val id = itor.previous()
+            val (shape, output) = orderlyRegistry[id] ?: disorderlyRegistry[id]!!
+            return LazyNode(shape, output)
+        }
+
+        override fun previousIndex() = itor.previousIndex()
 
     }
 
