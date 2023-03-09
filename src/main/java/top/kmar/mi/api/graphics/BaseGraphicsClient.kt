@@ -13,9 +13,9 @@ import top.kmar.mi.api.graphics.listeners.*
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardPressed
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardReleased
 import top.kmar.mi.api.graphics.parser.GuiStyleParser
-import top.kmar.mi.api.graphics.utils.modes.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
+import top.kmar.mi.api.graphics.utils.modes.FixedSizeMode
 import top.kmar.mi.api.utils.data.math.Point2D
 import java.util.*
 
@@ -147,6 +147,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
 
     override fun render(graphics: GuiGraphics) {
         taskList.forEach { it() }
+        taskList.clear()
         style.alignChildren()
         renderChildren(graphics)
         val inventorySlots = this.inventorySlots as BaseGraphics

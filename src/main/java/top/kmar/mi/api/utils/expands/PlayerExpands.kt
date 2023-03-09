@@ -73,7 +73,11 @@ fun EntityPlayer.closeClientGui(): Boolean {
         isOpenClientGui = false
         val mc = Minecraft.getMinecraft()
         mc.currentScreen!!.onGuiClosed()
-        mc.currentScreen = oldGui
+        if (oldGui == null) mc.setIngameFocus()
+        else {
+            mc.currentScreen = oldGui
+            oldGui = null
+        }
         return true
     }
     return false
