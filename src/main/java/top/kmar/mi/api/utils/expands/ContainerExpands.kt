@@ -5,10 +5,25 @@ package top.kmar.mi.api.utils.expands
 
 import top.kmar.mi.api.utils.iterators.ArrayFlipIterator
 import java.util.*
-import java.util.function.Consumer
+import java.util.function.Predicate
 import java.util.function.Supplier
 import java.util.stream.Stream
 import kotlin.collections.ArrayDeque
+
+/**
+ * 移除集合中第一个符合规则的元素
+ * @return 是否移除成功
+ */
+fun <T> MutableCollection<T>.removeFirst(filter: Predicate<T>): Boolean {
+    val itor = iterator()
+    while (itor.hasNext()) {
+        if (filter.test(itor.next())) {
+            itor.remove()
+            return true
+        }
+    }
+    return false
+}
 
 /**
  * 处理所有信息
