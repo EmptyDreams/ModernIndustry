@@ -23,6 +23,7 @@
           <stringArguments>
             <stringArg name="classpath">
               <args>
+                <arg>$MODULE_DIR$/../../../../Tools/.gradle/caches/forge_gradle/deobf_dependencies/mezz/jei/jei_1.12.2/4.13.1.222_mapped_snapshot_20171003-1.12/jei_1.12.2-4.13.1.222_mapped_snapshot_20171003-1.12-api.jar</arg>
                 <arg>$MODULE_DIR$/../../../../Tools/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar</arg>
                 <arg>$MODULE_DIR$/../../../../Tools/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.8.0/1796921c7a3e2e2665a83e6c8d33399336cd39bc/kotlin-stdlib-1.8.0.jar</arg>
                 <arg>$MODULE_DIR$/../../../../Tools/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.12.2-14.23.5.2859_mapped_snapshot_20171003-1.12/forge-1.12.2-14.23.5.2859_mapped_snapshot_20171003-1.12-recomp.jar</arg>
