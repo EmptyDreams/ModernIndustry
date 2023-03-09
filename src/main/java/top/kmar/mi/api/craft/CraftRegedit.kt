@@ -6,9 +6,8 @@ import top.kmar.mi.api.craft.elements.ElementList
 import top.kmar.mi.api.craft.shapes.IShape
 import top.kmar.mi.api.craft.shapes.OrderlyShape
 import top.kmar.mi.api.utils.expands.removeFirst
-import java.util.*
 
-private typealias List = LinkedList<Pair<String, Pair<IShape, CraftOutput>>>
+private typealias List = ArrayList<Pair<String, Pair<IShape, CraftOutput>>>
 
 /**
  * 合成表注册机
@@ -17,9 +16,9 @@ private typealias List = LinkedList<Pair<String, Pair<IShape, CraftOutput>>>
 class CraftRegedit : Iterable<CraftRegedit.LazyNode> {
 
     /** 存储有序合成表 */
-    private val orderlyRegistry = List()
+    private val orderlyRegistry = List(64)
     /** 存储无序合成表 */
-    private val disorderlyRegistry = List()
+    private val disorderlyRegistry = List(64)
     /** 存储所有 ID */
     private val idRecord = ObjectRBTreeSet<String>()
 
@@ -51,6 +50,13 @@ class CraftRegedit : Iterable<CraftRegedit.LazyNode> {
     fun deleteIf(predicate: (String, LazyNode) -> Boolean) {
         orderlyRegistry.removeIf { predicate(it.first, LazyNode(it.second.first, it.second.second)) }
         disorderlyRegistry.removeIf { predicate(it.first, LazyNode(it.second.first, it.second.second)) }
+    }
+
+    /** 通过下标获取合成表元素 */
+    operator fun get(index: Int): LazyNode {
+        val (shape, output) = (if (index < orderlyRegistry.size) orderlyRegistry[index]
+                    else disorderlyRegistry[index]).second
+        return LazyNode(shape, output)
     }
 
     /** 通过 ID 查找合成表输出，未查询到返回`null` */
@@ -95,7 +101,7 @@ class CraftRegedit : Iterable<CraftRegedit.LazyNode> {
 
     }
 
-    /** 获取迭代器，遍历时按照注册顺序遍历 */
+    /** 获取迭代器，遍历时按照注册顺序遍历（优先遍历有序合成表） */
     override fun iterator(): MutableListIterator<LazyNode> = CraftIterator()
 
     private inner class CraftIterator : MutableListIterator<LazyNode> {
