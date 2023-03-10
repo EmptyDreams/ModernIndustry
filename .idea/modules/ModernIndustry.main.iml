@@ -32,7 +32,6 @@
                 <arg>$MODULE_DIR$/../../../../Tools/.gradle/caches/forge_gradle/minecraft_repo/versions/1.12.2/client-extra.jar</arg>
                 <arg>$MODULE_DIR$/../../../../Tools/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.1/f7be08ec23c21485b9b5a1cf1654c2ec8c58168d/jsr305-3.0.1.jar</arg>
                 <arg>$MODULE_DIR$/../../../../Tools/.gradle/caches/modules-2/files-2.1/net.minecraftforge/mergetool/1.0.13/c18446ec4d5814f447d7a79b314ba9a27cc8dbc8/mergetool-1.0.13-forge.jar</arg>
-                <arg>$MODULE_DIR$/../../../../Tools/.gradle/caches/forge_gradle/maven_downloader/de/oceanlabs/mcp/mcp_snapshot/20171003-1.12/mcp_snapshot-20171003-1.12.zip</arg>
                 <arg>$MODULE_DIR$/../../../../Tools/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-debug-all/5.2/3354e11e2b34215f06dab629ab88e06aca477c19/asm-debug-all-5.2.jar</arg>
                 <arg>$MODULE_DIR$/../../../../Tools/.gradle/caches/modules-2/files-2.1/net.minecraft/launchwrapper/1.12/111e7bea9c968cdb3d06ef4632bf7ff0824d0f36/launchwrapper-1.12.jar</arg>
                 <arg>$MODULE_DIR$/../../../../Tools/.gradle/caches/modules-2/files-2.1/org.jline/jline/3.5.1/51800e9d7a13608894a5a28eed0f5c7fa2f300fb/jline-3.5.1.jar</arg>

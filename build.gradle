@@ -124,18 +124,23 @@ compileJava {
     targetCompatibility '1.8'
 }
 
+kotlin {
+    targetCompatibility = "1.8"
+}
+
 compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs += [
+    compilerOptions {
+        freeCompilerArgs.addAll(
                 "-Xuse-k2",             // k2
                 "-Xjvm-default=all"     // 接口 default 方法
-        ]
-        if (!debug) freeCompilerArgs += [
-                "-Xlambdas=indy",               // indy
-                "-Xassertions=always-disable",  // 禁用断言
-                "-Xsam-conversions=indy",
-                "-Xvalidate-bytecode"           // 优化
-        ]
+        )
+        if (!debug) {
+            freeCompilerArgs.addAll(
+                    "-Xlambdas=indy",               // indy
+                    "-Xassertions=always-disable",  // 禁用断言
+                    "-Xsam-conversions=indy",
+                    "-Xvalidate-bytecode"           // 优化
+            )
+        }
     }
 }
