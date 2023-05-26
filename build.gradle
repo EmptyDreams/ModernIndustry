@@ -1,9 +1,6 @@
 buildscript {
-    ext.kotlin_version = '1.8.0'
     repositories {
-        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
         maven { url = "https://maven.aliyun.com/repository/public" }
-        mavenLocal()
         mavenCentral()
         maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
@@ -11,19 +8,17 @@ buildscript {
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7.+'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20"
     }
 }
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'kotlin'
+apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
 version = '1.0'
-group = 'top.kmar.mi' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = 'top.kmar.mi'
 archivesBaseName = 'mi'
-
-sourceCompatibility = targetCompatibility = '1.8'
 
 /** 是否为调试 */
 ext.debug = true
@@ -64,6 +59,7 @@ minecraft {
 }
 
 repositories {
+    maven { url = "https://maven.aliyun.com/repository/public" }
     mavenCentral()
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
@@ -78,7 +74,6 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2859'
     implementation 'org.spongepowered:mixin:0.8.5'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -114,22 +109,26 @@ jar {
 
 compileJava {
     options.encoding 'UTF-8'
-    sourceCompatibility '1.8'
-    targetCompatibility '1.8'
 }
 
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs += [
-                "-Xuse-k2",             // k2
-                "-Xjvm-default=all"     // 接口 default 方法
-        ]
-        if (!debug) freeCompilerArgs += [
-                "-Xlambdas=indy",               // indy
-                "-Xassertions=always-disable",  // 禁用断言
-                "-Xsam-conversions=indy",
-                "-Xvalidate-bytecode"           // 优化
-        ]
+kotlin {
+    jvmToolchain(8)
+    sourceSets.configureEach {
+        languageSettings {
+            languageVersion = "2.0"
+        }
     }
+}
+
+compileKotlin.compilerOptions {
+    freeCompilerArgs.addAll(
+            "-Xuse-k2",             // k2
+            "-Xjvm-default=all"     // 接口 default 方法
+    )
+    if (!debug) freeCompilerArgs.addAll(
+            "-Xlambdas=indy",               // indy
+            "-Xassertions=always-disable",  // 禁用断言
+            "-Xsam-conversions=indy",
+            "-Xvalidate-bytecode"           // 优化
+    )
 }
