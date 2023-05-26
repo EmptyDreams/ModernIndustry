@@ -6,7 +6,7 @@ buildscript {
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+'
         classpath 'org.spongepowered:mixingradle:0.7.+'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20"
     }
@@ -122,11 +122,10 @@ kotlin {
 
 compileKotlin.compilerOptions {
     freeCompilerArgs.addAll(
-            "-Xuse-k2",             // k2
-            "-Xjvm-default=all"     // 接口 default 方法
+            "-Xjvm-default=all",        // 接口 default 方法
+            "-Xlambdas=indy"            // indy
     )
     if (!debug) freeCompilerArgs.addAll(
-            "-Xlambdas=indy",               // indy
             "-Xassertions=always-disable",  // 禁用断言
             "-Xsam-conversions=indy",
             "-Xvalidate-bytecode"           // 优化
