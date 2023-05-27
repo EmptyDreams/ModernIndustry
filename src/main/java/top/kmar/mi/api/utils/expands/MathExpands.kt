@@ -9,6 +9,31 @@ import java.util.*
 /** 独立于世界的随机数生成器 */
 val random = Random()
 
+/** 将字符串转换为整型，在遇到第一个非数字的字符（空格除外）时停止 */
+fun String.toDecInt(start: Int = 0): Int {
+    var symbol = 1
+    var result = 0
+    var head = start
+    while (!this[head].isDigit()) {
+        when (this[head++]) {
+            '-' -> {
+                symbol = -1
+                break
+            }
+            '+' -> break
+            ' ' -> continue
+            else -> return 0
+        }
+    }
+    for (i in head until length) {
+        val item = this[i]
+        if (item == ' ') continue
+        if (!item.isDigit()) break
+        result = (result shl 1) + (result shl 3) + (item.code xor 48)
+    }
+    return symbol * result
+}
+
 /** 判断是否为偶数 */
 inline fun Int.isEven() = this and 1 == 0
 

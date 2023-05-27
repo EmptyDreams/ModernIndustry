@@ -14,15 +14,15 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.exception.TransferException
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.utils.exps.ComplexCmptExp
-import top.kmar.mi.api.graphics.parser.cache.IParserCache
+import top.kmar.mi.api.graphics.utils.style.StyleNode
+import top.kmar.mi.api.graphics.utils.style.StyleSheet
 import top.kmar.mi.api.utils.MISysInfo
 import top.kmar.mi.api.utils.expands.countStartSpace
 import top.kmar.mi.api.utils.expands.floorDiv2
+import top.kmar.mi.api.utils.expands.trimEndAt
 import java.io.BufferedReader
-import java.io.FileNotFoundException
 import java.util.*
 
 /**
@@ -36,9 +36,10 @@ import java.util.*
 @EventBusSubscriber(Side.CLIENT)
 object GuiStyleParser {
 
-    private val expMap = Object2ObjectOpenHashMap<ResourceLocation, MutableList<Node>>()
+    private val expMap = Object2ObjectOpenHashMap<ResourceLocation, StyleSheet>()
 
-    fun load(key: ResourceLocation): List<Node>? {
+    /** 加载指定样式文件 */
+    fun load(key: ResourceLocation): StyleSheet? {
         if (key in expMap) return expMap[key]
         return try {
             val location = ResourceLocation(
@@ -54,79 +55,52 @@ object GuiStyleParser {
     /** 初始化指定树中的所有控件的样式表 */
     fun initStyle(key: ResourceLocation, root: Cmpt) {
         val list = load(key) ?: return
-        for ((exp, values) in list) {
-            root.queryCmptAll(exp).stream()
-                .map { it.client.style }
-                .forEach {
-                    for (parse in values) {
-                        parse(it)
-                    }
-                }
-        }
     }
 
-    private fun parseTargetFile(location: ResourceLocation, key: ResourceLocation): List<Node> {
+    private fun parseTargetFile(location: ResourceLocation, key: ResourceLocation): StyleSheet {
         val resourceManager = Minecraft.getMinecraft().resourceManager
-        val result = expMap.computeIfAbsent(key) { LinkedList() }
+        val result = expMap.computeIfAbsent(key) { StyleSheet() }
         BufferedReader(ReaderUTF8(resourceManager.getResource(location).inputStream)).use { reader ->
             val builder = CmptExpBuilder()
-            var preLevel = -1
-            val valueList = LinkedList<IParserCache>()
-            var prevContent = ""
+            val lines = LinkedList<String>()
 
-            fun export(clear: Boolean) {
-                if (valueList.isEmpty()) return
-                val tmp = ArrayList(valueList)
-                builder.toExp { result.add(Node(it, tmp)) }
-                if (clear) valueList.clear()
+            fun parseStyle() {
+                val node = StyleNode()
+                lines.forEach { StyleStatementParser(it, node) }
+                builder.toExp { result.add(it, node) }
             }
 
-            fun handleContent(content: String) {
-                val (_, length) = content.countStartSpace()
-                val level = length.floorDiv2()
-                if (length == 0 && content.startsWith("@import")) {
-                    val startIndex = content.indexOf('"') + 1
-                    val endIndex = content.lastIndexOf('"')
-                    val path = content.substring(startIndex until endIndex)
-                    val splitIndex = path.indexOf(':')
-                    val thatKey = if (splitIndex == -1)
-                                        ResourceLocation(key.resourceDomain, path)
-                                    else ResourceLocation(path)
-                    val thatStyl = load(thatKey) ?: throw FileNotFoundException("指定样式表[$path]不存在")
-                    result.addAll(thatStyl)
-                    return
-                }
-                // 判断上一条语句是属性还是exp
-                if (!prevContent.endsWith(',') && level <= preLevel) {
-                    valueList.add(IParserCache.build(prevContent))
-                } else {
-                    export(true)
-                    builder.goto(preLevel)
-                    prevContent.split(',')
+            fun parseCmptExp(level: Int) {
+                builder.goto(level)
+                lines.forEach { line ->
+                    line.splitToSequence(',')
                         .filter { it.isNotBlank() }
-                        .map { ComplexCmptExp(it) }
-                        .forEach { builder.addExp(it) }
+                        .forEach { builder.addExp(ComplexCmptExp(it)) }
                 }
-                preLevel = level
-                prevContent = content.trim()
             }
 
-            reader.lines().filter { it.isNotBlank() }.forEachOrdered {
-                try {
-                    handleContent(it)
-                } catch (e: Exception) {
-                    throw TransferException.instance("处理字符串[prev: $prevContent\t next: $it]时发生了异常", e)
+            var preLevel = 0
+            reader.lines()
+                .filter { it.isNotBlank() }
+                .forEachOrdered {
+                    val (index, count) = it.countStartSpace()
+                    val level = count.floorDiv2()
+                    when {
+                        level == preLevel -> lines += it.trimEndAt(index)
+                        level > preLevel -> {
+                            parseCmptExp(preLevel)
+                            lines.clear()
+                        }
+                        else -> {
+                            parseStyle()
+                            lines.clear()
+                        }
+                    }
+                    preLevel = level
                 }
-            }
-            if (preLevel != -1) {
-                valueList.add(IParserCache.build(prevContent.trim()))
-                export(false)
-            }
         }
         return result
     }
-
-    data class Node(val exp: ComplexCmptExp, val cache: List<IParserCache>)
 
     // 在切换资源包时清空缓存
     @JvmStatic
@@ -137,7 +111,7 @@ object GuiStyleParser {
 
     init {
         ClientCommandHandler.instance.registerCommand(object : CommandBase() {
-            override fun getName() = "clearMiGraphics"
+            override fun getName() = "clear-mi-graphics"
 
             override fun getUsage(sender: ICommandSender) = "commands.debug.usage"
 
@@ -145,7 +119,7 @@ object GuiStyleParser {
                 if (args.isEmpty()) expMap.clear()
                 else args.forEach { expMap.remove(ResourceLocation(it)) }
                 sender.sendMessage(object : TextComponentBase() {
-                    override fun getUnformattedComponentText() = "成功清理graphics缓存"
+                    override fun getUnformattedComponentText() = "成功清理 graphics 缓存"
                     override fun createCopy() = this
                 })
             }

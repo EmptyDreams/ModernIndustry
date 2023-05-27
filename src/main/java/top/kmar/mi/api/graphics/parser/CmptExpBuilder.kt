@@ -12,26 +12,33 @@ class CmptExpBuilder {
 
     private val list = LinkedList<LinkedList<ComplexCmptExp>>()
 
+    /**
+     * 将构建器转移到指定层级（该层级一定为空层级）
+     *
+     * + 若 level 小于等于活跃层级，则会将 >= level 的层级移除，然后添加一个空的层级
+     * + 若 level 大于活跃层级，则会添加新的层级，直到活跃层级为 level
+     */
     fun goto(level: Int) {
-        if (level == -1) list.clear()
-        else {
-            while (level < list.size) prev()
-            while (level > list.size - 1) next()
-        }
+        while (level < list.size) prev()
+        while (level > list.size - 1) next()
     }
 
+    /** 新建一个层级 */
     fun next() {
         list.addLast(LinkedList())
     }
 
+    /** 移除活跃层级并移动到上一层 */
     fun prev() {
         list.removeLast()
     }
 
+    /** 向活跃层级添加一个表达式 */
     fun addExp(exp: ComplexCmptExp) {
         list.last.add(exp)
     }
 
+    /** 导出表达式 */
     fun toExp(consumer: (ComplexCmptExp) -> Unit) {
         var resultList = LinkedList<LinkedList<SingleCmptExp>>()
         resultList.add(LinkedList())

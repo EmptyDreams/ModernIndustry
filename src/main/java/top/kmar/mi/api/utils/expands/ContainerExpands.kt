@@ -3,12 +3,38 @@
 
 package top.kmar.mi.api.utils.expands
 
+import it.unimi.dsi.fastutil.ints.IntList
 import top.kmar.mi.api.utils.iterators.ArrayFlipIterator
 import java.util.*
 import java.util.function.Predicate
 import java.util.function.Supplier
 import java.util.stream.Stream
 import kotlin.collections.ArrayDeque
+
+/**
+ * 从起始位点开始去除字符串尾部的指定字符
+ * @param start 起始下标（包含）
+ * @param dist 要去除的字符
+ */
+inline fun String.trimEndAt(start: Int, dist: Char = ' '): String {
+    var end = length
+    for (i in end - 1 downTo start) {
+        if (this[i] == dist) --end
+        else break
+    }
+    if (start == 0 && end == length) return this
+    return substring(start, end)
+}
+
+/** 避免拆箱和装箱的迭代整个集合 */
+        inline
+
+fun IntList.forEachFast(consumer: (Int) -> Unit) {
+    val itor = this.iterator()
+    while (itor.hasNext()) {
+        consumer(itor.nextInt())
+    }
+}
 
 /**
  * 移除集合中第一个符合规则的元素
