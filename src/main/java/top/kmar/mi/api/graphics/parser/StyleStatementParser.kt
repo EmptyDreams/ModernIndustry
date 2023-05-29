@@ -28,7 +28,7 @@ object StyleStatementParser {
         val item: Any = when (key) {
             "width" -> parserCalcStatement(value, false) { it.width }
             "height" -> parserCalcStatement(value, true) { it.height }
-            "padding", "margin" -> parserIntDirection(value, node.getValue(key))
+            "padding", "margin" -> parserIntDirection(value, node.getManager(key))
             "padding-left", "padding-right", "padding-top", "padding-bottom",
             "margin-left",  "margin-right",  "margin-top",  "margin-bottom" -> {
                 assert(value.checkInt()) { "值不是整数：$value" }
@@ -36,20 +36,20 @@ object StyleStatementParser {
             }
             "display" -> parserDisplay(value)
             "position" -> parserPosition(value)
-            "align" -> parserAlign(value, node.getValue(key))
+            "align" -> parserAlign(value, node.getManager(key))
             "align-vertical" -> VerticalAlignModeEnum.from(value)
             "align-horizontal" -> HorizontalAlignModeEnum.from(value)
             "color", "background-color" -> IntColor(value)
-            "border" -> parserBorderAll(value, node.getValue(key))
+            "border" -> parserBorderAll(value, node.getManager(key))
             "border-left", "border-right", "border-top", "border-bottom" -> {
-                val border = node.getValue<BorderStyle>(key)
+                val border = node.getBorderValue(key)
                 parserBorderContent(
                     value,
                     { color -> border.color = color },
                     { weight -> border.weight = weight }
                 )
             }
-            "button" -> parserButton(value, node.getValue("button"))
+            "button" -> parserButton(value, node.getButtonValue())
             "button-style" -> ButtonStyleEnum.from(value)
             "button-direction", "progress-direction" -> Direction2DEnum.from(value)
             "progress-style" -> ProgressBarStyle.from(value)
@@ -156,7 +156,7 @@ object StyleStatementParser {
     }
 
     /** 解析 align 表达式 */
-    private fun parserAlign(value: String, manager: Direction2StyleManager<AlignMode>): Direction2StyleManager<AlignMode> {
+    private fun parserAlign(value: String, manager: Direction2StyleManager<IAlignMode>): Direction2StyleManager<IAlignMode> {
         val list = value.split(' ').filter { it.isNotBlank() }
         assert(list.size == 2)
         manager.vertical = VerticalAlignModeEnum.from(list.first())

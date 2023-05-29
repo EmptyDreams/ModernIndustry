@@ -1,18 +1,16 @@
-@file:Suppress("unused")
-
 package top.kmar.mi.api.graphics.utils.modes
 
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.utils.expands.floorDiv2
 import java.util.*
 
-sealed interface AlignMode
+sealed interface IAlignMode
 
 /**
  * 水平对齐方式
  * @author EmptyDreams
  */
-enum class HorizontalAlignModeEnum : AlignMode {
+enum class HorizontalAlignModeEnum : IAlignMode {
 
     /** 左对齐 */
     LEFT {
@@ -95,7 +93,7 @@ enum class HorizontalAlignModeEnum : AlignMode {
  * 垂直对齐方式
  * @author EmptyDreams
  */
-enum class VerticalAlignModeEnum : AlignMode {
+enum class VerticalAlignModeEnum : IAlignMode {
 
     /** 靠上排列 */
     TOP {
