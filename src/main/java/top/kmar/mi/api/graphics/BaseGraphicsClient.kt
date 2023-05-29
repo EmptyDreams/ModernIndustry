@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
-import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
+import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.listeners.*
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardPressed
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardReleased
@@ -25,7 +25,7 @@ import java.util.*
  * @author EmptyDreams
  */
 @SideOnly(Side.CLIENT)
-class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventorySlots), ICmptClient {
+class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventorySlots), CmptClient {
 
     override val service = inventorySlots.document
     override val style = GraphicsStyle(service).apply {

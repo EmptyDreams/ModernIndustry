@@ -3,7 +3,7 @@ package top.kmar.mi.api.graphics.utils.style
 import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.ints.IntList
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
-import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
+import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.exps.ICmptExp
 import top.kmar.mi.api.utils.expands.floorDiv2
 import top.kmar.mi.api.utils.expands.forEachFast
@@ -44,7 +44,7 @@ class StyleSheet {
     }
 
     /** 获取指定组件满足的所有表达式 */
-    fun getIndex(cmpt: ICmptClient) = getIndex(cmpt.service)
+    fun getIndex(cmpt: CmptClient) = getIndex(cmpt.service)
 
     /** 获取指定下标的表达式 */
     @JvmName("getNode")

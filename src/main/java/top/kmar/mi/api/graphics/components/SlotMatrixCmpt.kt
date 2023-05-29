@@ -8,7 +8,7 @@ import net.minecraftforge.items.ItemStackHandler
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
-import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
+import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.components.interfaces.slots.ItemSlot
 import top.kmar.mi.api.graphics.utils.modes.CodeSizeMode
@@ -88,7 +88,7 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     }
 
     @SideOnly(Side.CLIENT)
-    inner class SlotMatrixCmptClient : ICmptClient {
+    inner class SlotMatrixCmptClient : CmptClient {
 
         override val service = this@SlotMatrixCmpt
         override val style = GraphicsStyle(service).apply {

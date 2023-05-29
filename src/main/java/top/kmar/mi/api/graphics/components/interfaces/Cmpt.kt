@@ -59,7 +59,7 @@ abstract class Cmpt(
 
     /** 初始化客户端对象 */
     @SideOnly(Side.CLIENT)
-    abstract fun initClientObj(): ICmptClient
+    abstract fun initClientObj(): CmptClient
 
     /** 构建一个新的对象，属性列表拷贝当前属性列表 */
     abstract fun buildNewObj(): Cmpt
@@ -278,7 +278,7 @@ abstract class Cmpt(
 
             override fun buildNewObj() = this
 
-            inner class EmptyClient(cmpt: Cmpt) : ICmptClient {
+            inner class EmptyClient(cmpt: Cmpt) : CmptClient {
 
                 override val service = cmpt
                 override val style = GraphicsStyle(cmpt)

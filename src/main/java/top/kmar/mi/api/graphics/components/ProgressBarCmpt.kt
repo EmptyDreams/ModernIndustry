@@ -7,7 +7,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
-import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
+import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
@@ -56,7 +56,7 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     }
 
     @SideOnly(Side.CLIENT)
-    inner class ProgressBarCmptClient : ICmptClient {
+    inner class ProgressBarCmptClient : CmptClient {
 
         override val service = this@ProgressBarCmpt
         override val style = GraphicsStyle(service).apply {

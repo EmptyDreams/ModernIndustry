@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
-import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
+import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.utils.modes.ButtonStyleEnum
@@ -46,7 +46,7 @@ class ButtonCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     }
 
     @SideOnly(Side.CLIENT)
-    inner class ButtonCmptClient : ICmptClient {
+    inner class ButtonCmptClient : CmptClient {
 
         override val service = this@ButtonCmpt
         override val style = GraphicsStyle(service).apply {

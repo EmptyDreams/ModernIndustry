@@ -6,7 +6,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
-import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
+import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.*
 import top.kmar.mi.api.graphics.utils.modes.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.modes.InheritSizeMode
@@ -25,7 +25,7 @@ class TittleCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     override fun buildNewObj() = TittleCmpt(attributes.copy())
 
     @SideOnly(Side.CLIENT)
-    inner class TittleCmptClient : ICmptClient {
+    inner class TittleCmptClient : CmptClient {
 
         override val service = this@TittleCmpt
         override val style = GraphicsStyle(service).apply {

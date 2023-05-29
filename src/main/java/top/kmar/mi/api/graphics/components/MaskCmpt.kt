@@ -5,7 +5,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
-import top.kmar.mi.api.graphics.components.interfaces.ICmptClient
+import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.utils.modes.CodeSizeMode
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
@@ -24,7 +24,7 @@ class MaskCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     override fun buildNewObj() = MaskCmpt(attributes.copy())
 
     @SideOnly(Side.CLIENT)
-    inner class MaskClient : ICmptClient {
+    inner class MaskClient : CmptClient {
 
         override val service = this@MaskCmpt
         override val style = GraphicsStyle(service).apply {

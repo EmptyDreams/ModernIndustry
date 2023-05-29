@@ -14,7 +14,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.utils.exps.ComplexCmptExp
 import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.graphics.utils.style.StyleSheet
@@ -50,11 +49,6 @@ object GuiStyleParser {
             MISysInfo.err("为[$key]加载样式表的过程中出现错误", e)
             null
         }
-    }
-
-    /** 初始化指定树中的所有控件的样式表 */
-    fun initStyle(key: ResourceLocation, root: Cmpt) {
-        val list = load(key) ?: return
     }
 
     private fun parseTargetFile(location: ResourceLocation, key: ResourceLocation): StyleSheet {
