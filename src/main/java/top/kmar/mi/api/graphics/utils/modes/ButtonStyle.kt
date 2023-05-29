@@ -357,4 +357,16 @@ enum class ButtonStyleEnum {
 
     abstract fun render(graphics: GuiGraphics, style: GraphicsStyle, mouseOn: Boolean)
 
+    companion object {
+
+        @JvmStatic
+        fun from(name: String): ButtonStyleEnum =
+            when (name) {
+                "rect" -> RECT
+                "triangle" -> TRIANGLE
+                else -> throw IllegalArgumentException("未知名称：$name")
+            }
+
+    }
+
 }

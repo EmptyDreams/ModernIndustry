@@ -5,10 +5,10 @@ package top.kmar.mi.api.graphics.utils.modes
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
-import top.kmar.mi.api.utils.expands.ceilDiv2
 import top.kmar.mi.api.utils.container.PairIntInt
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
 import top.kmar.mi.api.utils.data.enums.VerticalDirectionEnum
+import top.kmar.mi.api.utils.expands.ceilDiv2
 import top.kmar.mi.api.utils.expands.swapIf
 import kotlin.math.max
 import kotlin.math.min
@@ -39,6 +39,26 @@ class ProgressBarData(private val graphicsStyle: GraphicsStyle) {
     var minWidth = 3
 
     fun render(graphics: GuiGraphics, percent: Float) = style.render(graphics, graphicsStyle, percent)
+
+}
+
+enum class ProgressBarDirection {
+
+    HEAD, MIDDLE, TAIL, NONE;
+
+    companion object {
+
+        @JvmStatic
+        fun from(name: String): ProgressBarDirection =
+            when (name) {
+                "head" -> HEAD
+                "middle", "center" -> MIDDLE
+                "tail" -> TAIL
+                "none", "0" -> NONE
+                else -> throw IllegalArgumentException("未知名称：$name")
+            }
+
+    }
 
 }
 
@@ -228,5 +248,17 @@ enum class ProgressBarStyle {
     };
 
     abstract fun render(graphics: GuiGraphics, style: GraphicsStyle, percent: Float)
+
+    companion object {
+
+        @JvmStatic
+        fun from(name: String): ProgressBarStyle =
+            when (name) {
+                "rect" -> RECT
+                "arrow" -> ARROW
+                else -> throw IllegalArgumentException("未知名称：$name")
+            }
+
+    }
 
 }

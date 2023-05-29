@@ -31,4 +31,18 @@ enum class Direction2DEnum {
 
     fun isHorizontal() = !isVertical()
 
+    companion object {
+
+        @JvmStatic
+        fun from(name: String): Direction2DEnum =
+            when (name) {
+                "top", "up" -> UP
+                "right" -> RIGHT
+                "bottom", "down" -> DOWN
+                "left" -> LEFT
+                else -> throw IllegalArgumentException("未知名称：$name")
+            }
+
+    }
+
 }

@@ -42,6 +42,19 @@ fun <T : Comparable<T>> Collection<T>.compareTo(other: Collection<T>): Int {
 }
 
 /**
+ * 检查一个字符串指定区域内的字符是否为可以转换为 Int
+ * @param start 起始下标（包含）
+ * @param end 终止下标（不包含）
+ */
+fun String.checkInt(start: Int = 0, end: Int = this.length): Boolean {
+    val head = if (this[start] == '-' || this[start] == '+') start + 1 else start
+    for (i in head until end) {
+        if (!this[i].isDigit()) return false
+    }
+    return true
+}
+
+/**
  * 计算一个字符串的开头有多少个空格，一个制表符当作4个空格
  * @return `first` - 第一个非空白符字符的下标，`second` - 空白符长度
  */

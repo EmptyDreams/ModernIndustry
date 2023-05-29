@@ -6,11 +6,13 @@ import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.utils.expands.floorDiv2
 import java.util.*
 
+sealed interface AlignMode
+
 /**
  * 水平对齐方式
  * @author EmptyDreams
  */
-enum class HorizontalAlignModeEnum {
+enum class HorizontalAlignModeEnum : AlignMode {
 
     /** 左对齐 */
     LEFT {
@@ -21,6 +23,7 @@ enum class HorizontalAlignModeEnum {
             callbackHelper(parentStyle.x + parentStyle.paddingLeft, list, callback)
         }
     },
+
     /** 居中对齐 */
     MIDDLE {
         override fun invoke(
@@ -31,11 +34,12 @@ enum class HorizontalAlignModeEnum {
                 it.spaceWidth
             }.sum()
             val base = parentStyle.x + parentStyle.paddingLeft +
-                            (parentStyle.contentWidth - size).floorDiv2()
+                    (parentStyle.contentWidth - size).floorDiv2()
             callbackHelper(base, list, callback)
         }
 
     },
+
     /** 右对齐 */
     RIGHT {
         override fun invoke(
@@ -64,6 +68,14 @@ enum class HorizontalAlignModeEnum {
 
     companion object {
 
+        fun from(name: String): HorizontalAlignModeEnum =
+            when (name) {
+                "left" -> LEFT
+                "middle" -> MIDDLE
+                "right" -> RIGHT
+                else -> throw IllegalArgumentException("未知名称：$name")
+            }
+
         private fun callbackHelper(
             base: Int, list: Collection<GraphicsStyle>,
             callback: (GraphicsStyle, Int) -> Unit
@@ -83,7 +95,7 @@ enum class HorizontalAlignModeEnum {
  * 垂直对齐方式
  * @author EmptyDreams
  */
-enum class VerticalAlignModeEnum {
+enum class VerticalAlignModeEnum : AlignMode {
 
     /** 靠上排列 */
     TOP {
@@ -98,6 +110,7 @@ enum class VerticalAlignModeEnum {
             callbackHelper(parentStyle.y + parentStyle.paddingTop, list, heightList, callback)
         }
     },
+
     /** 居中排列 */
     MIDDLE {
         override fun invoke(
@@ -110,10 +123,11 @@ enum class VerticalAlignModeEnum {
             }.toArray()
             val size = heightList.sum()
             val base = parentStyle.y + parentStyle.paddingTop +
-                            (parentStyle.contentHeight - size).floorDiv2()
+                    (parentStyle.contentHeight - size).floorDiv2()
             callbackHelper(base, list, heightList, callback)
         }
     },
+
     /** 靠下排列 */
     BOTTOM {
         override fun invoke(
@@ -145,6 +159,14 @@ enum class VerticalAlignModeEnum {
     )
 
     companion object {
+
+        fun from(name: String): VerticalAlignModeEnum =
+            when (name) {
+                "top" -> TOP
+                "middle" -> MIDDLE
+                "bottom" -> BOTTOM
+                else -> throw IllegalArgumentException("未知名称：$name")
+            }
 
         private fun callbackHelper(
             base: Int,

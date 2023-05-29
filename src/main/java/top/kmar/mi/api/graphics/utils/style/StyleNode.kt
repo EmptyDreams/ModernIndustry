@@ -22,7 +22,9 @@ class StyleNode {
         sheet[key] = value
     }
 
-    fun getIntValue(key: String): Int = sheet[key]!! as Int
+    // Int 类型的 getter
+
+    fun getIntValue(key: String): Int = sheet[key] as Int
 
     fun getIntOrElse(key: String, def: Int): Int =
         sheet.getOrDefault(key, def) as Int
@@ -30,7 +32,15 @@ class StyleNode {
     fun getIntOrElse(key: String, supplier: () -> Int): Int =
         sheet.getOrElse(key, supplier) as Int
 
-    fun getStringValue(key: String): String = sheet[key]!! as String
+    fun getIntOrPut(key: String, def: Int): Int =
+        sheet.computeIfAbsent(key) { def } as Int
+
+    fun getIntOrPut(key: String, supplier: () -> Int): Int =
+        sheet.computeIfAbsent(key) { supplier() } as Int
+
+    // String 类型的 getter
+
+    fun getStringValue(key: String): String = sheet[key] as String
 
     fun getStringOrElse(key: String, def: String): String =
         sheet.getOrDefault(key, def) as String
@@ -38,7 +48,15 @@ class StyleNode {
     fun getStringOrElse(key: String, supplier: () -> String): String =
         sheet.getOrElse(key, supplier) as String
 
-    fun getColorValue(key: String): IntColor = sheet[key]!! as IntColor
+    fun getStringOrPut(key: String, def: String): String =
+        sheet.computeIfAbsent(key) { def } as String
+
+    fun getStringOrPut(key: String, supplier: () -> String): String =
+        sheet.computeIfAbsent(key) { supplier() } as String
+
+    // IntColor 类型的 getter
+
+    fun getColorValue(key: String): IntColor = sheet[key] as IntColor
 
     fun getColorOrElse(key: String, def: IntColor): IntColor =
         sheet.getOrDefault(key, def) as IntColor
@@ -46,8 +64,16 @@ class StyleNode {
     fun getColorOrElse(key: String, supplier: () -> IntColor): IntColor =
         sheet.getOrElse(key, supplier) as IntColor
 
+    fun getColorOrPut(key: String, def: IntColor): IntColor =
+        sheet.computeIfAbsent(key) { def } as IntColor
+
+    fun getColorOrPut(key: String, supplier: () -> IntColor): IntColor =
+        sheet.computeIfAbsent(key) { supplier() } as IntColor
+
+    // T 类型的 getter
+
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> getValue(key: String): T = sheet[key]!! as T
+    fun <T : Any> getValue(key: String): T = sheet[key] as T
 
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> getOrElse(key: String, def: T): T =
@@ -57,16 +83,27 @@ class StyleNode {
     fun <T : Any> getOrElse(key: String, supplier: () -> T): T =
         sheet.getOrElse(key, supplier) as T
 
-    /**
-     * 获取一个任意类型的数据
-     * @throws NullPointerException 如果 key 不存在
-     */
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Any> getOrPut(key: String, def: T): T =
+        sheet.computeIfAbsent(key) { def } as T
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Any> getOrPut(key: String, supplier: () -> T): T =
+        sheet.computeIfAbsent(key) { supplier() } as T
+
+    // Any 类型的 getter
+
     fun getAnyValue(key: String): Any = sheet[key]!!
 
-    /** 获取一个任意类型的数据 */
     fun getAnyOrElse(key: String, def: Any): Any = sheet.getOrDefault(key, def)
 
     fun getAnyOrElse(key: String, supplier: () -> Any): Any = sheet.getOrElse(key, supplier)
+
+    fun getAnyOrPut(key: String, def: Any): Any =
+        sheet.computeIfAbsent(key) { def }!!
+
+    fun getAnyOrPut(key: String, supplier: () -> Any): Any =
+        sheet.computeIfAbsent(key) { supplier() }!!
 
     fun copy(): StyleNode {
         val result = StyleNode()
