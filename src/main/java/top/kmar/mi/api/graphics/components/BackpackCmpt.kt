@@ -12,12 +12,13 @@ import top.kmar.mi.api.graphics.BaseGraphics
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
-import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.components.interfaces.slots.BackpackSlot
 import top.kmar.mi.api.graphics.utils.*
 import top.kmar.mi.api.graphics.utils.modes.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.modes.InheritSizeMode
+import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.regedits.others.AutoCmpt
+import top.kmar.mi.api.utils.expands.floorDiv2
 import kotlin.LazyThreadSafetyMode.NONE
 
 /**
@@ -78,27 +79,21 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
     }
 
     @SideOnly(Side.CLIENT)
-    inner class BackpackCmptClient : CmptClient {
+    inner class BackpackCmptClient : CmptClient(this) {
 
-        override val service = this@BackpackCmpt
-        override val style = GraphicsStyle(service).apply {
-            widthCalculator = InheritSizeMode { it.width }
-            heightCalculator = FixedSizeMode(18 * 4 + 4 + Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 1)
-            backgroundColor = IntColor.gray
-            borderTop.color = IntColor(55, 55, 55)
-            borderLeft.color = borderTop.color
-            borderBottom.color = IntColor.white
-            borderRight.color = IntColor.white
-            marginBottom = 7
+        override fun defaultStyle() = StyleNode().apply {
+            width = InheritSizeMode { it.width }
+            height = FixedSizeMode(18 * 4 + 4 + Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 1)
             marginTop = 5
+            marginBottom = 7
         }
 
         override fun render(graphics: GuiGraphics) {
             val firstSlot = mainSlots[0][0]
-            val offsetX = (style.width - (18 * 9)) shr 1
+            val offsetX = (width - (18 * 9)).floorDiv2()
             val fontHeight = graphics.fontRenderer.FONT_HEIGHT + 1
-            val startX = offsetX + style.x + 1
-            val startY = style.y + 1 + fontHeight
+            val startX = offsetX + x + 1
+            val startY = y + 1 + fontHeight
             // 网络通信
             if (startX != firstSlot.xPos || startY != firstSlot.yPos) {
                 initSlotsPos(startX, startY)

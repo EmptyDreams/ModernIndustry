@@ -10,9 +10,9 @@ import top.kmar.mi.ModernIndustry
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
-import top.kmar.mi.api.graphics.utils.modes.FixedSizeMode
-import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
+import top.kmar.mi.api.graphics.utils.modes.FixedSizeMode
+import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.regedits.others.AutoCmpt
 import top.kmar.mi.api.utils.MISysInfo
 import kotlin.math.roundToInt
@@ -60,12 +60,11 @@ class BurnCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     }
 
     @SideOnly(Side.CLIENT)
-    inner class BurnCmptClient : CmptClient {
+    inner class BurnCmptClient : CmptClient(this) {
 
-        override val service = this@BurnCmpt
-        override val style = GraphicsStyle(service).apply {
-            widthCalculator = FixedSizeMode(14)
-            heightCalculator = FixedSizeMode(13)
+        override fun defaultStyle() = StyleNode().apply {
+            width = FixedSizeMode(14)
+            height = FixedSizeMode(13)
         }
 
         override fun receive(message: NBTBase) {
@@ -75,8 +74,6 @@ class BurnCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
 
         override fun render(graphics: GuiGraphics) {
-            val width = style.width
-            val height = style.height
             if (width != 14 || height != 13)
                 return MISysInfo.err("[BurnCmpt] 控件仅支持绘制14*13的尺寸")
             with(graphics) {

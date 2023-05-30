@@ -8,8 +8,8 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.utils.modes.CodeSizeMode
-import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.modes.PositionEnum
+import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.regedits.others.AutoCmpt
 import top.kmar.mi.api.utils.expands.clientPlayer
 
@@ -24,15 +24,14 @@ class MaskCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     override fun buildNewObj() = MaskCmpt(attributes.copy())
 
     @SideOnly(Side.CLIENT)
-    inner class MaskClient : CmptClient {
+    inner class MaskClient : CmptClient(this) {
 
-        override val service = this@MaskCmpt
-        override val style = GraphicsStyle(service).apply {
-            backgroundColor = IntColor(0, 0, 0, 120)
+        override fun defaultStyle() = StyleNode().apply {
             position = PositionEnum.FIXED
+            backgroundColor = IntColor(0, 0, 0, 120)
             val container = (clientPlayer.openContainer as BaseGraphics).client
-            widthCalculator = CodeSizeMode { container.width }
-            heightCalculator = CodeSizeMode { container.height }
+            width = CodeSizeMode { container.width }
+            height = CodeSizeMode { container.height }
         }
 
     }

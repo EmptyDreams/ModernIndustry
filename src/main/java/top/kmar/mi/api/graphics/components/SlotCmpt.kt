@@ -11,9 +11,9 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.components.interfaces.slots.ItemSlot
-import top.kmar.mi.api.graphics.utils.modes.FixedSizeMode
-import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
+import top.kmar.mi.api.graphics.utils.modes.FixedSizeMode
+import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.regedits.others.AutoCmpt
 import top.kmar.mi.api.utils.expands.floorDiv2
 import kotlin.LazyThreadSafetyMode.NONE
@@ -68,23 +68,22 @@ open class SlotCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     }
 
     @SideOnly(Side.CLIENT)
-    inner class SlotCmptClient : CmptClient {
+    open inner class SlotCmptClient() : CmptClient(this) {
 
-        override val service = this@SlotCmpt
-        override val style = GraphicsStyle(service).apply {
-            widthCalculator = FixedSizeMode(18)
-            heightCalculator = widthCalculator
+        override fun defaultStyle() = StyleNode().apply {
+            width = sizeMode
+            height = sizeMode
             backgroundColor = IntColor.gray
-            borderTop.color = IntColor(55, 55, 55)
-            borderLeft.color = borderTop.color
+            borderTop.color = IntColor.lightBlack
+            borderLeft.color = IntColor.lightBlack
             borderBottom.color = IntColor.white
             borderRight.color = IntColor.white
         }
 
-        override fun render(graphics: GuiGraphics) {
+        final override fun render(graphics: GuiGraphics) {
             val style = client.style
-            val x = style.x + style.width.floorDiv2() + style.borderLeft.weight - 9
-            val y = style.y + style.height.floorDiv2() + style.borderTop.weight - 9
+            val x = x + width.floorDiv2() + style.borderLeft.weight - 9
+            val y = y + height.floorDiv2() + style.borderTop.weight - 9
             if (x != slot.xPos && y != slot.yPos) {
                 val message = NBTTagCompound().apply {
                     setInteger("x", x)
@@ -96,6 +95,13 @@ open class SlotCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             }
             super.render(graphics)
         }
+
+    }
+
+    companion object {
+
+        @JvmStatic
+        private val sizeMode = FixedSizeMode(18)
 
     }
 

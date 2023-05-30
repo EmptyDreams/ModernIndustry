@@ -2,11 +2,8 @@ package top.kmar.mi.api.graphics.utils.modes
 
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.utils.interfaces.Obj2IntFunction
-import java.util.function.IntFunction
-import java.util.function.IntSupplier
 import kotlin.math.roundToInt
 
 /**
@@ -132,9 +129,10 @@ class AutoSizeMode(
     override val relyOnParent = false
     override val relyOnChild = true
 
-    override fun invoke(dist: CmptClient): Int {
-
-    }
+    override fun invoke(dist: CmptClient): Int =
+        dist.group.get().stream()
+            .mapToInt { it.stream().mapToInt { cmpt -> if (isHeight) cmpt.spaceHeight else cmpt.spaceWidth }.sum() }
+            .max().orElse(0)
 
 }
 

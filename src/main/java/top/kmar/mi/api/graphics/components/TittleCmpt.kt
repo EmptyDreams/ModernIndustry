@@ -10,6 +10,7 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.*
 import top.kmar.mi.api.graphics.utils.modes.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.modes.InheritSizeMode
+import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.regedits.others.AutoCmpt
 import top.kmar.mi.api.utils.expands.floorDiv2
 
@@ -25,12 +26,11 @@ class TittleCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     override fun buildNewObj() = TittleCmpt(attributes.copy())
 
     @SideOnly(Side.CLIENT)
-    inner class TittleCmptClient : CmptClient {
+    inner class TittleCmptClient : CmptClient(this) {
 
-        override val service = this@TittleCmpt
-        override val style = GraphicsStyle(service).apply {
-            widthCalculator = InheritSizeMode { it.width }
-            heightCalculator = FixedSizeMode(Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT)
+        override fun defaultStyle() = StyleNode().apply {
+            width = InheritSizeMode { it.width }
+            height = FixedSizeMode(Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT)
             marginTop = 8
             marginBottom = 2
         }
@@ -41,8 +41,8 @@ class TittleCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
                 else this
             }
             graphics.drawStringCenter(
-                style.width.floorDiv2(), style.height.floorDiv2(),
-                text, style.fontColor
+                width.floorDiv2(), height.floorDiv2(),
+                text, style.color
             )
             super.render(graphics)
         }

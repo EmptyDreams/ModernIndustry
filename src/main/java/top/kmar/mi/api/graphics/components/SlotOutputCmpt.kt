@@ -15,13 +15,24 @@ class SlotOutputCmpt(attributes: CmptAttributes) : SlotCmpt(attributes) {
         slotAttributes.forbidInput = true
     }
 
-    override fun initClientObj() = super.initClientObj().apply {
-        with(style) {
-            widthCalculator = FixedSizeMode(26)
-            heightCalculator = widthCalculator
-        }
-    }
+    override fun initClientObj() = SlotOutputCmptClient()
 
     override fun buildNewObj() = SlotOutputCmpt(attributes.copy())
+
+    inner class SlotOutputCmptClient : SlotCmptClient() {
+
+        override fun defaultStyle() = super.defaultStyle().apply {
+            width = sizeMode
+            height = sizeMode
+        }
+
+    }
+
+    companion object {
+
+        @JvmStatic
+        private val sizeMode = FixedSizeMode(26)
+
+    }
 
 }

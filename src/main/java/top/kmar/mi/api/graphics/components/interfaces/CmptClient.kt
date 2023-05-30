@@ -47,7 +47,7 @@ abstract class CmptClient(
     /** 纵向布局更新标记，当值为 flag 时，访问 height 会重新计算值 */
     private var yLayoutUpdateFlag = true
     /** 分组信息 */
-    private val group = CacheContainer<List<List<CmptClient>>> {
+    internal val group = CacheContainer<List<List<CmptClient>>> {
         val result = LinkedList<LinkedList<CmptClient>>()
         var prevDisplay = DisplayModeEnum.NONE
         for (cmpt in service.childrenIterator()) {
@@ -143,7 +143,7 @@ abstract class CmptClient(
         group.clear()
     }
 
-    /** 获取缺省的样式 */
+    /** 获取缺省的样式，该函数的结果不应当被缓存 */
     protected open fun defaultStyle(): StyleNode = StyleNode()
 
     /** 接收从服务端发送的信息 */

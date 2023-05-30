@@ -11,9 +11,9 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.components.interfaces.slots.ItemSlot
-import top.kmar.mi.api.graphics.utils.modes.CodeSizeMode
-import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
+import top.kmar.mi.api.graphics.utils.modes.CodeSizeMode
+import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.regedits.others.AutoCmpt
 import top.kmar.mi.api.utils.expands.floorDiv2
 import top.kmar.mi.api.utils.expands.isClient
@@ -88,22 +88,21 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     }
 
     @SideOnly(Side.CLIENT)
-    inner class SlotMatrixCmptClient : CmptClient {
+    inner class SlotMatrixCmptClient : CmptClient(this) {
 
-        override val service = this@SlotMatrixCmpt
-        override val style = GraphicsStyle(service).apply {
+        override fun defaultStyle() = StyleNode().apply {
+            width = CodeSizeMode { size * xCount }
+            height = CodeSizeMode { size * yCount }
             backgroundColor = IntColor.gray
             borderTop.color = IntColor.lightBlack
             borderLeft.color = IntColor.lightBlack
             borderRight.color = IntColor.white
             borderBottom.color = IntColor.white
-            widthCalculator = CodeSizeMode { size * xCount }
-            heightCalculator = CodeSizeMode { size * yCount }
         }
 
         override fun render(graphics: GuiGraphics) {
             val offset = (size - 18).floorDiv2() + 1
-            syncPos(style.x + offset, style.y + offset)
+            syncPos(x + offset, y + offset)
             super.render(graphics)
         }
 
@@ -111,14 +110,16 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             with(style) {
                 val left = borderLeft.weight
                 val top = borderTop.weight
-                val width = this.width - left - borderRight.weight
-                val height = this.height - top - borderBottom.weight
+                val width = this@SlotMatrixCmptClient.width - left - borderRight.weight
+                val height = this@SlotMatrixCmptClient.height - top - borderBottom.weight
                 graphics.fillRect(left, top, width, height, backgroundColor)
             }
         }
 
         override fun renderBorder(graphics: GuiGraphics) {
-            val size = service.size
+            val size = this@SlotMatrixCmpt.size
+            val width = width
+            val height = height
             with(style) {
                 for (i in 0 until yCount) {
                     // 绘制上边框
