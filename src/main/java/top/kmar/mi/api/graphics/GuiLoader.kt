@@ -66,9 +66,7 @@ object GuiLoader : IGuiHandler {
         player: EntityPlayer, world: World,
         x: Int, y: Int, z: Int
     ): BaseGraphicsClient {
-        val client = getServerGuiElement(id, player, world, x, y, z).client
-        client.addInitTask { client.updateStyle() }
-        return client
+        return getServerGuiElement(id, player, world, x, y, z).client
     }
 
     fun getID(key: ResourceLocation) = regedit.getID(key)

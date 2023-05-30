@@ -11,8 +11,8 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.listeners.*
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardPressed
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardReleased
+import top.kmar.mi.api.graphics.parser.GuiStyleParser
 import top.kmar.mi.api.graphics.utils.GuiGraphics
-import top.kmar.mi.api.graphics.utils.style.StyleSheet
 import top.kmar.mi.api.utils.data.math.Point2D
 import java.util.*
 
@@ -26,8 +26,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
 
     val service = inventorySlots.document
     val client = service.client
-    val style = StyleSheet()
-    private val taskList = LinkedList<() -> Unit>()
+    val style = GuiStyleParser.load(inventorySlots.key)!!
 
     override fun initGui() {
         xSize = width
@@ -82,8 +81,6 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
     }
 
     override fun drawGuiContainerBackgroundLayer(partialTicks: Float, mouseX: Int, mouseY: Int) {
-        taskList.forEach { it() }
-        taskList.clear()
         val graphics = GuiGraphics(0, 0, width, height, this)
         client.renderChildren(graphics)
         val inventorySlots = this.inventorySlots as BaseGraphics
@@ -141,11 +138,6 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
         if (scroll == 0) return
         service.dispatchEvent(IGraphicsListener.mouseScroll,
             MouseScrollEventData(scroll, mouseX, mouseY, mouseX, mouseY))
-    }
-
-    /** 添加一个初始化任务 */
-    fun addInitTask(task: () -> Unit) {
-        taskList.add(task)
     }
 
 }
