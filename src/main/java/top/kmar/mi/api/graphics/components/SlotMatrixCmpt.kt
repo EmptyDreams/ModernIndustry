@@ -93,8 +93,8 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         override val service = this@SlotMatrixCmpt
         override val style = GraphicsStyle(service).apply {
             backgroundColor = IntColor.gray
-            borderTop.color = IntColor.darkGray
-            borderLeft.color = IntColor.darkGray
+            borderTop.color = IntColor.lightBlack
+            borderLeft.color = IntColor.lightBlack
             borderRight.color = IntColor.white
             borderBottom.color = IntColor.white
             widthCalculator = CodeSizeMode { size * xCount }

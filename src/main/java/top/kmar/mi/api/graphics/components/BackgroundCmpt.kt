@@ -6,9 +6,8 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
-import top.kmar.mi.api.graphics.utils.modes.AutoSizeMode
-import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
+import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.regedits.others.AutoCmpt
 
 /**
@@ -22,22 +21,20 @@ class BackgroundCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     override fun buildNewObj() = BackgroundCmpt(attributes.copy())
 
     @SideOnly(Side.CLIENT)
-    inner class BackgroundGraphicsClient : CmptClient {
+    inner class BackgroundGraphicsClient : CmptClient(this) {
 
-        override val service = this@BackgroundCmpt
-        override val style = GraphicsStyle(service).apply {
-            heightCalculator = AutoSizeMode(service, true)
+        override fun defaultStyle() = StyleNode().apply {
             borderTop.color = IntColor.white
-            borderRight.color = IntColor(85, 85, 85)
-            borderBottom.color = borderRight.color
-            borderLeft.color = borderTop.color
+            borderRight.color = IntColor.darkGray
+            borderBottom.color = IntColor.darkGray
+            borderLeft.color = IntColor.white
             backgroundColor = IntColor.black
-            color = IntColor(198, 198, 198)
+            color = IntColor.lightGray
         }
 
         override fun render(graphics: GuiGraphics) {
             with(graphics) {
-                fillRect(3, 3, style.width - 6, style.height - 6, style.color)
+                fillRect(3, 3, width - 6, height - 6, style.color)
                 renderBorder(this)
                 renderBackground(this)
                 renderChildren(this)
@@ -46,8 +43,8 @@ class BackgroundCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
         override fun renderBackground(graphics: GuiGraphics) {
             val background = style.backgroundColor
-            val width = style.width
-            val height = style.height
+            val width = width
+            val height = height
             with(graphics) {
                 // 上边框
                 fillRect(3, 0, width - 7, 2, background)
@@ -75,8 +72,8 @@ class BackgroundCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             val borderRight = style.borderRight.color
             val borderBottom = style.borderBottom.color
             val borderLeft = style.borderLeft.color
-            val width = style.width
-            val height = style.height
+            val width = width
+            val height = height
             with(graphics) {
                 fillRect(1, 2, width - 5, 3, borderTop)
                 fillRect(width - 4, 5, 3, height - 7, borderRight)

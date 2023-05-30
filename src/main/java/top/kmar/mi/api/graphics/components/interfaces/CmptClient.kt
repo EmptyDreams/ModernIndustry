@@ -35,7 +35,9 @@ abstract class CmptClient(
         get() {
             if (styleIdList.isEmpty()) {
                 styleIdList = sheet.getIndex(this)
-                field = sheet.getStyle(styleIdList)
+                val style = defaultStyle()
+                style.merge(sheet.getStyle(styleIdList))
+                field = style
             }
             return field
         }
@@ -140,6 +142,9 @@ abstract class CmptClient(
         yLayoutUpdateFlag = true
         group.clear()
     }
+
+    /** 获取缺省的样式 */
+    protected open fun defaultStyle(): StyleNode = StyleNode()
 
     /** 接收从服务端发送的信息 */
     open fun receive(message: NBTBase) {}
