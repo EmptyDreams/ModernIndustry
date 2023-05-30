@@ -2,12 +2,12 @@
 
 package top.kmar.mi.api.graphics.utils.modes
 
+import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
-import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
+import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.utils.container.PairIntInt
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
-import top.kmar.mi.api.utils.data.enums.VerticalDirectionEnum
 import top.kmar.mi.api.utils.expands.ceilDiv2
 import top.kmar.mi.api.utils.expands.swapIf
 import kotlin.math.max
@@ -18,38 +18,49 @@ import kotlin.math.roundToInt
  * 进度条样式数据
  * @author EmptyDreams
  */
-class ProgressBarData(private val graphicsStyle: GraphicsStyle) {
+class ProgressBarData(private val node: StyleNode) {
 
     /** 进度条方向 */
-    var direction = Direction2DEnum.RIGHT
+    var direction: Direction2DEnum
+        get() = node.progressDirection
+        set(value) { node.progressDirection = value }
 
     /** 进度条样式 */
-    var style = ProgressBarStyle.ARROW
+    var style: ProgressBarStyle
+        get() = node.progressStyle
+        set(value) { node.progressStyle = value }
 
     /** 是否显示进度 */
-    var showText = false
+    val showText: Boolean
+        get() = text != ProgressBarTextEnum.NONE
 
     /** 文本位置 */
-    var textLocation = VerticalDirectionEnum.CENTER
+    var text: ProgressBarTextEnum
+        get() = node.progressText
+        set(value) { node.progressText = value }
 
     /** 最小高度 */
-    var minHeight = 3
+    var minHeight
+        get() = node.progressMinHeight
+        set(value) { node.progressMinHeight = value }
 
     /** 最小宽度 */
-    var minWidth = 3
+    var minWidth
+        get() = node.progressMinWidth
+        set(value) { node.progressMinWidth = value }
 
-    fun render(graphics: GuiGraphics, percent: Float) = style.render(graphics, graphicsStyle, percent)
+    fun render(cmpt: CmptClient, graphics: GuiGraphics, percent: Float) = style.render(graphics, cmpt, percent)
 
 }
 
-enum class ProgressBarDirection {
+enum class ProgressBarTextEnum {
 
     HEAD, MIDDLE, TAIL, NONE;
 
     companion object {
 
         @JvmStatic
-        fun from(name: String): ProgressBarDirection =
+        fun from(name: String): ProgressBarTextEnum =
             when (name) {
                 "head" -> HEAD
                 "middle", "center" -> MIDDLE
@@ -65,17 +76,18 @@ enum class ProgressBarDirection {
 enum class ProgressBarStyle {
 
     ARROW {
-        override fun render(graphics: GuiGraphics, style: GraphicsStyle, percent: Float) {
-            with(style) {
-                if (progress.direction.isVertical()) {
+        override fun render(graphics: GuiGraphics, cmpt: CmptClient, percent: Float) {
+            with(cmpt.style) {
+                val direction = progressDirection
+                if (direction.isVertical()) {
                     renderHelper(
-                        graphics, percent, width, height, progress.minWidth,
-                        progress.direction, backgroundColor, color
+                        graphics, percent, cmpt.width, cmpt.height, progress.minWidth,
+                        direction, backgroundColor, color
                     )
                 } else {
                     renderHelper(
-                        graphics, percent, width, height, progress.minHeight,
-                        progress.direction, backgroundColor, color
+                        graphics, percent, cmpt.width, cmpt.height, progress.minHeight,
+                        direction, backgroundColor, color
                     )
                 }
             }
@@ -189,18 +201,19 @@ enum class ProgressBarStyle {
         }
     },
     RECT {
-        override fun render(graphics: GuiGraphics, style: GraphicsStyle, percent: Float) {
-            with(style) {
-                if (progress.direction.isVertical()) {
+        override fun render(graphics: GuiGraphics, cmpt: CmptClient, percent: Float) {
+            with(cmpt.style) {
+                val direction = progressDirection
+                if (direction.isVertical()) {
                     renderHelper(
-                        graphics, percent, height, width, progress.minWidth,
-                        borderRight, progress.direction,
+                        graphics, percent, cmpt.height, cmpt.width, progress.minWidth,
+                        borderRight, direction,
                         backgroundColor, color
                     )
                 } else {
                     renderHelper(
-                        graphics, percent, height, width, progress.minHeight,
-                        borderBottom, progress.direction,
+                        graphics, percent, cmpt.height, cmpt.width, progress.minHeight,
+                        borderBottom, direction,
                         backgroundColor, color
                     )
                 }
@@ -247,7 +260,7 @@ enum class ProgressBarStyle {
 
     };
 
-    abstract fun render(graphics: GuiGraphics, style: GraphicsStyle, percent: Float)
+    abstract fun render(graphics: GuiGraphics, cmpt: CmptClient, percent: Float)
 
     companion object {
 

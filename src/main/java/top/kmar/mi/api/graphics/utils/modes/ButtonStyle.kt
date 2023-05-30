@@ -1,11 +1,12 @@
 package top.kmar.mi.api.graphics.utils.modes
 
 import net.minecraft.util.ResourceLocation
+import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.components.interfaces.IntColor.Companion.shadow
 import top.kmar.mi.api.graphics.components.interfaces.IntColor.Companion.white
-import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
+import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.utils.container.PairIntInt
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
 import top.kmar.mi.api.utils.expands.floorDiv2
@@ -18,15 +19,17 @@ import kotlin.math.roundToInt
  * 按钮样式数据
  * @author EmptyDreams
  */
-class ButtonStyleData(private val graphicsStyle: GraphicsStyle) {
+class ButtonStyleData(private val node: StyleNode) {
 
-    /** 按钮风格 */
-    var style = ButtonStyleEnum.RECT
+    var style: ButtonStyleEnum
+        get() = node.buttonStyle
+        set(value) { node.buttonStyle = value }
 
-    /** 按钮方向 */
-    var direction = Direction2DEnum.RIGHT
+    var direction: Direction2DEnum
+        get() = node.buttonDirection
+        set(value) { node.buttonDirection = value }
 
-    fun render(graphics: GuiGraphics, mouseOn: Boolean) = style.render(graphics, graphicsStyle, mouseOn)
+    fun render(cmpt: CmptClient, graphics: GuiGraphics, mouseOn: Boolean) = style.render(graphics, cmpt, mouseOn)
 
 }
 
@@ -39,15 +42,17 @@ enum class ButtonStyleEnum {
     RECT {
         val textureLib = ResourceLocation("textures/gui/widgets.png")
 
-        override fun render(graphics: GuiGraphics, style: GraphicsStyle, mouseOn: Boolean) {
+        override fun render(graphics: GuiGraphics, cmpt: CmptClient, mouseOn: Boolean) {
             val rectSize = 15
+            val style = cmpt.style
             with(graphics) {
-                if (!style.overflowHidden) scissor()
+                //if (!cmpt.overflowHidden)
+                scissor()
                 // 中央区域坐标
                 val startX = style.borderTop.weight
                 val startY = style.borderLeft.weight
-                val endX = style.width - style.borderRight.weight
-                val endY = style.height - style.borderBottom.weight
+                val endX = cmpt.width - style.borderRight.weight
+                val endY = cmpt.height - style.borderBottom.weight
                 bindTexture(textureLib)
                 // 绘制中央材质
                 for (y in startX until endY step rectSize) {
@@ -55,7 +60,6 @@ enum class ButtonStyleEnum {
                         drawTexture256(x, y, 2, 68, rectSize, rectSize)
                     }
                 }
-                if (!style.overflowHidden) graphics.unscissor()
                 // 中央区域尺寸
                 val centerWidth = endX - startX
                 val centerHeight = endY - startX
@@ -68,12 +72,15 @@ enum class ButtonStyleEnum {
                 fillRect(startX, endY - 2, centerWidth, 2, darkColor)
                 fillRect(endX - 1, startY, 1, centerHeight - 2, darkColor)
                 // 如果被鼠标覆盖则绘制覆盖图层
-                if (mouseOn) fillRect(startX, startY, centerWidth, centerHeight, style.color)
+                if (mouseOn) fillRect(startX, startY, centerWidth, centerHeight, hoverColor)
+                //if (!cmpt.overflowHidden)
+                graphics.unscissor()
             }
         }
     },
     TRIANGLE {
-        override fun render(graphics: GuiGraphics, style: GraphicsStyle, mouseOn: Boolean) {
+        override fun render(graphics: GuiGraphics, cmpt: CmptClient, mouseOn: Boolean) {
+            val style = cmpt.style
             val top = style.borderTop
             val bottom = style.borderBottom
             val left = style.borderLeft
@@ -81,10 +88,10 @@ enum class ButtonStyleEnum {
             val background = style.backgroundColor
             val color = style.color
 
-            when (style.button.direction) {
+            when (style.buttonDirection) {
                 Direction2DEnum.UP -> {
-                    val width = style.width.minusIf(1) { isEven() }
-                    val height = style.height
+                    val width = cmpt.width.minusIf(1) { isEven() }
+                    val height = cmpt.height
                     val x = width.floorDiv2()   // 中央坐标
                     renderHelper(
                         graphics,
@@ -126,11 +133,11 @@ enum class ButtonStyleEnum {
                         fillRect(width - right.weight - 1, y, 1, plusHeight - 1, shadow)
                         // 鼠标覆盖
                         if (mouseOn) {
-                            fillTriangle(left.weight + 1, 1, y - 2, Direction2DEnum.UP, color)
+                            fillTriangle(left.weight + 1, 1, y - 2, Direction2DEnum.UP, hoverColor)
                             fillRect(
                                 left.weight, y - 1,
                                 width - left.weight - right.weight, plusHeight + 1,
-                                color
+                                hoverColor
                             )
                         }
                         // 高亮
@@ -143,8 +150,8 @@ enum class ButtonStyleEnum {
                     }
                 }
                 Direction2DEnum.DOWN -> {
-                    val width = style.width.minusIf(1) { isEven() }
-                    val height = style.height
+                    val width = cmpt.width.minusIf(1) { isEven() }
+                    val height = cmpt.height
                     val x = width.floorDiv2()   // 中央坐标
                     renderHelper(
                         graphics,
@@ -189,12 +196,12 @@ enum class ButtonStyleEnum {
                             fillTriangle(
                                 left.weight + 1, y + top.weight + 1,
                                 height - y - 2 - top.weight,
-                                Direction2DEnum.DOWN, color
+                                Direction2DEnum.DOWN, hoverColor
                             )
                             fillRect(
                                 left.weight, top.weight,
                                 width - left.weight - right.weight, y + 1,
-                                color
+                                hoverColor
                             )
                         }
                         // 高亮
@@ -207,8 +214,8 @@ enum class ButtonStyleEnum {
                     }
                 }
                 Direction2DEnum.LEFT -> {
-                    val width = style.width
-                    val height = style.height.minusIf(1) { isEven() }
+                    val width = cmpt.width
+                    val height = cmpt.height.minusIf(1) { isEven() }
                     val y = height.floorDiv2()
                     renderHelper(
                         graphics,
@@ -243,11 +250,11 @@ enum class ButtonStyleEnum {
                         }
                         fillRect(x, height - bottom.weight - 1, plusWidth, 1, shadow)
                         if (mouseOn) {
-                            fillTriangle(1, top.weight + 1, x - 2, Direction2DEnum.LEFT, color)
+                            fillTriangle(1, top.weight + 1, x - 2, Direction2DEnum.LEFT, hoverColor)
                             fillRect(
                                 x - 1, top.weight,
                                 plusWidth + 1, height - top.weight - bottom.weight,
-                                color
+                                hoverColor
                             )
                         }
                         // 高亮
@@ -258,8 +265,8 @@ enum class ButtonStyleEnum {
                     }
                 }
                 Direction2DEnum.RIGHT -> {
-                    val width = style.width
-                    val height = style.height.minusIf(1) { isEven() }
+                    val width = cmpt.width
+                    val height = cmpt.height.minusIf(1) { isEven() }
                     val y = height.floorDiv2()
                     renderHelper(
                         graphics,
@@ -305,12 +312,12 @@ enum class ButtonStyleEnum {
                             fillTriangle(
                                 x + left.weight + 1, top.weight + 1,
                                 width - x - 3,
-                                Direction2DEnum.RIGHT, color
+                                Direction2DEnum.RIGHT, hoverColor
                             )
                             fillRect(
                                 left.weight, top.weight,
                                 x + 1, height - top.weight - bottom.weight,
-                                color
+                                hoverColor
                             )
                         }
                         // 高亮
@@ -355,9 +362,12 @@ enum class ButtonStyleEnum {
         }
     };
 
-    abstract fun render(graphics: GuiGraphics, style: GraphicsStyle, mouseOn: Boolean)
+    abstract fun render(graphics: GuiGraphics, cmpt: CmptClient, mouseOn: Boolean)
 
     companion object {
+
+        @JvmStatic
+        private val hoverColor = IntColor(0, 127, 255, 75)
 
         @JvmStatic
         fun from(name: String): ButtonStyleEnum =

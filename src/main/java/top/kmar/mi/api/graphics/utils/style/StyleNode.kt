@@ -1,12 +1,10 @@
 package top.kmar.mi.api.graphics.utils.style
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
-import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.utils.modes.*
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
 import java.util.function.Function
-import java.util.function.IntSupplier
 import kotlin.reflect.KProperty
 
 /**
@@ -27,6 +25,15 @@ class StyleNode {
     @JvmName("putValue")
     operator fun set(key: String, value: Any) {
         sheet[key] = value
+    }
+
+    fun <T : Any> getValue(key: String): T {
+        val def = DEF_VALUE_MAP[key]!!
+        return if (def is Function<*, *>) {
+            sheet.getOrPut(key) { (def as Function<StyleNode, Any>).apply(this) } as T
+        } else {
+            sheet.getOrDefault(key, def) as T
+        }
     }
 
     /** 判断当前节点是否显示声明了指定的属性 */
@@ -60,8 +67,10 @@ class StyleNode {
     var buttonStyle: ButtonStyleEnum by ValueDelegate
     var buttonDirection: Direction2DEnum by ValueDelegate
     val progress: ProgressBarData by ObjectDelegate
+    var progressDirection: Direction2DEnum by ValueDelegate
     var progressStyle: ProgressBarStyle by ValueDelegate
-    var progressText: ProgressBarDirection by ValueDelegate
+    var progressTextColor: IntColor by ValueDelegate
+    var progressText: ProgressBarTextEnum by ValueDelegate
     var progressMinWidth: Int by ValueDelegate
     var progressMinHeight: Int by ValueDelegate
 
@@ -70,12 +79,6 @@ class StyleNode {
         result.sheet.putAll(sheet)
         return result
     }
-
-    private fun <T : Any> getValue(key: String): T =
-        sheet.getOrElse(key) { DEF_VALUE_MAP[key] } as T
-
-    private fun <T : Any> getObject(key: String): T =
-        sheet.getOrPut(key) { (DEF_VALUE_MAP[key] as Function<StyleNode, Any>).apply(this) } as T
 
     companion object {
 
@@ -106,12 +109,14 @@ class StyleNode {
                 this["border-right"] = Function<StyleNode, Any> { BorderStyle() }
                 this["border-bottom"] = Function<StyleNode, Any> { BorderStyle() }
                 this["border-left"] = Function<StyleNode, Any> { BorderStyle() }
-                this["button"] = Function<StyleNode, Any> { ButtonStyleData(GraphicsStyle(Cmpt.EMPTY_CMPT)) }
+                this["button"] = Function<StyleNode, Any> { ButtonStyleData(it) }
                 this["button-style"] = ButtonStyleEnum.RECT
                 this["button-direction"] = Direction2DEnum.RIGHT
-                this["progress"] = Function<StyleNode, Any> { ProgressBarData(GraphicsStyle(Cmpt.EMPTY_CMPT)) }
+                this["progress"] = Function<StyleNode, Any> { ProgressBarData(it) }
+                this["progress-direction"] = Direction2DEnum.RIGHT
                 this["progress-style"] = ProgressBarStyle.ARROW
-                this["progress-text"] = ProgressBarDirection.NONE
+                this["progress-text-color"] = IntColor.black
+                this["progress-text"] = ProgressBarTextEnum.NONE
                 this["progress-min-height"] = 3
                 this["progress-min-width"] = 3
             }

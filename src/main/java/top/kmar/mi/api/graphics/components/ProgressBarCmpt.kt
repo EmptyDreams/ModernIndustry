@@ -9,10 +9,10 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
-import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
+import top.kmar.mi.api.graphics.utils.modes.ProgressBarTextEnum
+import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.regedits.others.AutoCmpt
-import top.kmar.mi.api.utils.data.enums.VerticalDirectionEnum
 import top.kmar.mi.api.utils.expands.floorDiv2
 
 /**
@@ -56,14 +56,14 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     }
 
     @SideOnly(Side.CLIENT)
-    inner class ProgressBarCmptClient : CmptClient {
+    inner class ProgressBarCmptClient : CmptClient(this) {
 
-        override val service = this@ProgressBarCmpt
-        override val style = GraphicsStyle(service).apply {
+        override fun defaultStyle() = StyleNode().apply {
             backgroundColor = IntColor.gray
             color = IntColor.white
-            borderBottom.color = IntColor(104, 104, 104)
-            borderRight.color = borderBottom.color
+            val borderColor = IntColor(104, 104, 104)
+            borderBottom.color = borderColor
+            borderRight.color = borderColor
         }
 
         override fun receive(message: NBTBase) {
@@ -73,17 +73,18 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
 
         override fun render(graphics: GuiGraphics) {
-            with(style) {
-                progress.render(graphics, percent)
-                if (progress.showText) {
-                    val textY = when (progress.textLocation) {
-                        VerticalDirectionEnum.UP -> - graphics.fontRenderer.FONT_HEIGHT - 1
-                        VerticalDirectionEnum.DOWN -> height + graphics.fontRenderer.FONT_HEIGHT.floorDiv2()
-                        VerticalDirectionEnum.CENTER -> height.floorDiv2()
-                    }
-                    val textX = width.floorDiv2()
-                    graphics.drawStringCenter(textX, textY, "${service.value} / $max", fontColor)
+            val progress = style.progress
+            progress.render(this, graphics, percent)
+            if (progress.showText) {
+                val textY = when (progress.text) {
+                    ProgressBarTextEnum.HEAD -> - graphics.fontRenderer.FONT_HEIGHT - 1
+                    ProgressBarTextEnum.TAIL -> height + graphics.fontRenderer.FONT_HEIGHT.floorDiv2()
+                    ProgressBarTextEnum.MIDDLE -> height.floorDiv2()
+                    else -> throw AssertionError()
                 }
+                val textX = width.floorDiv2()
+                val bar = service as ProgressBarCmpt
+                graphics.drawStringCenter(textX, textY, "${bar.value} / $max", style.progressTextColor)
             }
             renderChildren(graphics)
         }

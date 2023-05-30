@@ -1,7 +1,7 @@
 package top.kmar.mi.api.graphics.parser
 
+import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
-import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.modes.*
 import top.kmar.mi.api.graphics.utils.style.Direction2StyleManager
 import top.kmar.mi.api.graphics.utils.style.Direction4StyleManager
@@ -28,7 +28,8 @@ object StyleStatementParser {
         val item: Any = when (key) {
             "width" -> parserCalcStatement(value, false) { it.width }
             "height" -> parserCalcStatement(value, true) { it.height }
-            "padding", "margin" -> parserIntDirection(value, node.getManager(key))
+            "padding" -> parserIntDirection(value, node.padding)
+            "margin" -> parserIntDirection(value, node.margin)
             "padding-left", "padding-right", "padding-top", "padding-bottom",
             "margin-left",  "margin-right",  "margin-top",  "margin-bottom" -> {
                 assert(value.checkInt()) { "值不是整数：$value" }
@@ -36,24 +37,24 @@ object StyleStatementParser {
             }
             "display" -> parserDisplay(value)
             "position" -> parserPosition(value)
-            "align" -> parserAlign(value, node.getManager(key))
+            "align" -> parserAlign(value, node.align)
             "align-vertical" -> VerticalAlignModeEnum.from(value)
             "align-horizontal" -> HorizontalAlignModeEnum.from(value)
             "color", "background-color" -> IntColor(value)
-            "border" -> parserBorderAll(value, node.getManager(key))
+            "border" -> parserBorderAll(value, node.border)
             "border-left", "border-right", "border-top", "border-bottom" -> {
-                val border = node.getBorderValue(key)
+                val border = node.getValue<BorderStyle>(key)
                 parserBorderContent(
                     value,
                     { color -> border.color = color },
                     { weight -> border.weight = weight }
                 )
             }
-            "button" -> parserButton(value, node.getButtonValue())
+            "button" -> parserButton(value, node.button)
             "button-style" -> ButtonStyleEnum.from(value)
             "button-direction", "progress-direction" -> Direction2DEnum.from(value)
             "progress-style" -> ProgressBarStyle.from(value)
-            "progress-text" -> ProgressBarDirection.from(value)
+            "progress-text" -> ProgressBarTextEnum.from(value)
             "progress-min-width", "progress-max-height" -> {
                 assert(value.checkInt()) { "值不是整数：$value" }
                 value.toDecInt()
@@ -204,7 +205,7 @@ object StyleStatementParser {
 
     /** 解析计算表达式 */
     private fun parserCalcStatement(
-        value: String, isHeight: Boolean, function: Obj2IntFunction<GraphicsStyle>
+        value: String, isHeight: Boolean, function: Obj2IntFunction<CmptClient>
     ): ISizeMode =
         when {
             // 百分比计算（x%）
