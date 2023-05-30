@@ -54,7 +54,7 @@ object StyleStatementParser {
             "button-direction", "progress-direction" -> Direction2DEnum.from(value)
             "progress-style" -> ProgressBarStyle.from(value)
             "progress-text" -> ProgressBarDirection.from(value)
-            "progress-min-height", "progress-max-height" -> {
+            "progress-min-width", "progress-max-height" -> {
                 assert(value.checkInt()) { "值不是整数：$value" }
                 value.toDecInt()
             }

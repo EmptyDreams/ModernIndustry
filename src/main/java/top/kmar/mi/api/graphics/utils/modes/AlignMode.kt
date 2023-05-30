@@ -1,8 +1,8 @@
 package top.kmar.mi.api.graphics.utils.modes
 
-import top.kmar.mi.api.graphics.utils.GraphicsStyle
-import top.kmar.mi.api.utils.expands.floorDiv2
-import java.util.*
+import top.kmar.mi.api.graphics.components.interfaces.CmptClient
+import top.kmar.mi.api.utils.expands.eachWith
+import top.kmar.mi.api.utils.expands.flip
 
 sealed interface IAlignMode
 
@@ -14,55 +14,51 @@ enum class HorizontalAlignModeEnum : IAlignMode {
 
     /** 左对齐 */
     LEFT {
-        override fun invoke(
-            parentStyle: GraphicsStyle, list: LinkedList<GraphicsStyle>,
-            callback: (GraphicsStyle, Int) -> Unit
-        ) {
-            callbackHelper(parentStyle.x + parentStyle.paddingLeft, list, callback)
+        override fun typesetting(parent: CmptClient, list: List<CmptClient>) {
+            var x = 0
+            for (item in list) {
+                item.x = x
+                x += item.spaceWidth
+            }
         }
     },
 
     /** 居中对齐 */
     MIDDLE {
-        override fun invoke(
-            parentStyle: GraphicsStyle, list: LinkedList<GraphicsStyle>,
-            callback: (GraphicsStyle, Int) -> Unit
-        ) {
-            val size = list.stream().mapToInt {
-                it.spaceWidth
-            }.sum()
-            val base = parentStyle.x + parentStyle.paddingLeft +
-                    (parentStyle.contentWidth - size).floorDiv2()
-            callbackHelper(base, list, callback)
+        override fun typesetting(parent: CmptClient, list: List<CmptClient>) {
+            var width = 0
+            list.forEach { width += it.spaceWidth }
+            var x = (parent.contentWidth - width) / 2
+            for (item in list) {
+                item.x = x
+                x += item.spaceWidth
+            }
         }
 
     },
 
     /** 右对齐 */
     RIGHT {
-        override fun invoke(
-            parentStyle: GraphicsStyle, list: LinkedList<GraphicsStyle>,
-            callback: (GraphicsStyle, Int) -> Unit
-        ) {
-            var pos = parentStyle.endX - parentStyle.paddingRight
-            for (style in list.descendingIterator()) {
-                pos -= style.spaceWidth
-                callback(style, pos)
+        override fun typesetting(parent: CmptClient, list: List<CmptClient>) {
+            var x = parent.contentWidth
+            for (item in list.flip()) {
+                x -= item.spaceWidth
+                item.x = x
             }
         }
 
     };
 
+    protected abstract fun typesetting(parent: CmptClient, list: List<CmptClient>)
+
     /**
      * 排序指定列表中的控件
-     * @param parentStyle 父控件样式表
+     * @param parent 父控件
      * @param list 要排序的控件列表
-     * @param callback 为指定控件设置X轴坐标
      */
-    abstract operator fun invoke(
-        parentStyle: GraphicsStyle, list: LinkedList<GraphicsStyle>,
-        callback: (GraphicsStyle, Int) -> Unit
-    )
+    operator fun invoke(parent: CmptClient, list: List<List<CmptClient>>) {
+        list.forEach { typesetting(parent, it) }
+    }
 
     companion object {
 
@@ -73,17 +69,6 @@ enum class HorizontalAlignModeEnum : IAlignMode {
                 "right" -> RIGHT
                 else -> throw IllegalArgumentException("未知名称：$name")
             }
-
-        private fun callbackHelper(
-            base: Int, list: Collection<GraphicsStyle>,
-            callback: (GraphicsStyle, Int) -> Unit
-        ) {
-            var pos = base
-            for (style in list) {
-                callback(style, pos)
-                pos += style.spaceWidth
-            }
-        }
 
     }
 
@@ -98,62 +83,59 @@ enum class VerticalAlignModeEnum : IAlignMode {
     /** 靠上排列 */
     TOP {
         override fun invoke(
-            parentStyle: GraphicsStyle,
-            list: LinkedList<out Collection<GraphicsStyle>>,
-            callback: (GraphicsStyle, Int) -> Unit
+            parent: CmptClient, list: List<Collection<CmptClient>>
         ) {
-            val heightList = list.stream().mapToInt { style ->
-                style.stream().mapToInt { it.spaceHeight }.max().orElse(0)
+            val heightList = list.stream().mapToInt { line ->
+                line.stream().mapToInt { it.spaceHeight }.max().orElse(0)
             }.toArray()
-            callbackHelper(parentStyle.y + parentStyle.paddingTop, list, heightList, callback)
+            var y = 0
+            for ((height, line) in heightList eachWith list) {
+                line.forEach { it.y = y }
+                y += height
+            }
         }
     },
 
     /** 居中排列 */
     MIDDLE {
         override fun invoke(
-            parentStyle: GraphicsStyle,
-            list: LinkedList<out Collection<GraphicsStyle>>,
-            callback: (GraphicsStyle, Int) -> Unit
+            parent: CmptClient, list: List<Collection<CmptClient>>
         ) {
-            val heightList = list.stream().mapToInt { style ->
-                style.stream().mapToInt { it.spaceHeight }.max().orElse(0)
+            val heightList = list.stream().mapToInt { line ->
+                line.stream().mapToInt { it.spaceHeight }.max().orElse(0)
             }.toArray()
-            val size = heightList.sum()
-            val base = parentStyle.y + parentStyle.paddingTop +
-                    (parentStyle.contentHeight - size).floorDiv2()
-            callbackHelper(base, list, heightList, callback)
+            val sum = heightList.sum()
+            var y = (parent.contentHeight - sum) / 2
+            for ((height, line) in heightList eachWith list) {
+                line.forEach { it.y = y }
+                y += height
+            }
         }
     },
 
     /** 靠下排列 */
     BOTTOM {
         override fun invoke(
-            parentStyle: GraphicsStyle,
-            list: LinkedList<out Collection<GraphicsStyle>>,
-            callback: (GraphicsStyle, Int) -> Unit
+            parent: CmptClient, list: List<Collection<CmptClient>>
         ) {
-            var pos = parentStyle.endY - parentStyle.paddingRight
-            for (collection in list.descendingIterator()) {
-                pos -= collection.stream().mapToInt { it.spaceHeight }.max().orElse(0)
-                collection.forEach {
-                    callback(it, pos)
-                    it.markYChange()
-                }
+            val heightList = list.stream().mapToInt { line ->
+                line.stream().mapToInt { it.spaceHeight }.max().orElse(0)
+            }.toArray()
+            var y = parent.contentHeight
+            for ((height, line) in heightList eachWith list) {
+                y -= height
+                line.forEach { it.y = y }
             }
         }
     };
 
     /**
      * 对齐指定控件内的子控件
-     * @param parentStyle 父控件样式表
+     * @param parent 父控件
      * @param list 要排序的控件列表
-     * @param callback 回调函数（子控件对象，子控件左上角相对于窗体的X轴坐标）
      */
     abstract operator fun invoke(
-        parentStyle: GraphicsStyle,
-        list: LinkedList<out Collection<GraphicsStyle>>,
-        callback: (GraphicsStyle, Int) -> Unit
+        parent: CmptClient, list: List<Collection<CmptClient>>
     )
 
     companion object {
@@ -165,23 +147,6 @@ enum class VerticalAlignModeEnum : IAlignMode {
                 "bottom" -> BOTTOM
                 else -> throw IllegalArgumentException("未知名称：$name")
             }
-
-        private fun callbackHelper(
-            base: Int,
-            list: LinkedList<out Collection<GraphicsStyle>>,
-            heightList: IntArray,
-            callback: (GraphicsStyle, Int) -> Unit
-        ) {
-            var pos = base
-            for ((index, collection) in list.withIndex()) {
-                val height = heightList[index]
-                collection.forEach {
-                    callback(it, pos + (height - it.spaceHeight).floorDiv2())
-                    it.markYChange()
-                }
-                pos += height
-            }
-        }
 
     }
 

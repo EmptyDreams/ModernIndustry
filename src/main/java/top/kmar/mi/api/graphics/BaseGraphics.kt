@@ -11,12 +11,10 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import net.minecraftforge.items.ItemStackHandler
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
-import top.kmar.mi.api.graphics.utils.exps.ComplexCmptExp
 import top.kmar.mi.api.graphics.components.interfaces.slots.IGraphicsSlot
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
-import top.kmar.mi.api.graphics.parser.GuiStyleParser
-import top.kmar.mi.api.utils.expands.applyClient
+import top.kmar.mi.api.graphics.utils.exps.ComplexCmptExp
 import top.kmar.mi.api.utils.expands.copy
 import top.kmar.mi.api.utils.expands.isClient
 import java.util.*
@@ -122,13 +120,6 @@ open class BaseGraphics(
     fun queryCmptAll(exp: String) = document.queryCmptAll(exp)
     /** @see Cmpt.queryCmpt */
     fun queryCmpt(exp: String) = document.queryCmpt(exp)
-
-    /** 更新控件样式 */
-    fun updateStyle() {
-        applyClient {
-            GuiStyleParser.initStyle(key, document)
-        }
-    }
 
     /** 添加一个slot，并返回其序列号 */
     fun installSlot(slot: IGraphicsSlot): Int {

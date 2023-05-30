@@ -49,7 +49,10 @@ inline fun Int.swapIf(other: Int, bool: Boolean): PairIntInt {
 }
 
 /** 除2，向下取整 */
-inline fun Int.floorDiv2() = this shr 1
+inline fun Int.floorDiv2(): Int {
+    assert(this >= 0)
+    return this shr 1
+}
 
 /** 向上取整的整除2 */
 inline fun Int.ceilDiv2(): Int {

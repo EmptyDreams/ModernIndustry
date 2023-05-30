@@ -4,6 +4,7 @@
 package top.kmar.mi.api.utils.expands
 
 import it.unimi.dsi.fastutil.ints.IntList
+import top.kmar.mi.api.utils.container.PairIntObj
 import top.kmar.mi.api.utils.iterators.ArrayFlipIterator
 import java.util.*
 import java.util.function.Predicate
@@ -113,3 +114,32 @@ infix fun <T> Array<T>.flip(startIndex: Int) =
 /** 获取倒序遍历的迭代器 */
 fun <T> Array<T>.flip() =
     Iterable { ArrayFlipIterator(this, this.size - 1) }
+
+/** 获取列表的倒序迭代器 */
+fun <T> List<T>.flip() =
+    Iterable {
+        val itor = listIterator(size)
+        object : Iterator<T> {
+
+            override fun hasNext(): Boolean = itor.hasPrevious()
+
+            override fun next(): T = itor.previous()
+        }
+    }
+
+/** 同时遍历两个集合的迭代器 */
+infix fun <T> IntArray.eachWith(other: Iterable<T>) =
+    Iterable {
+        object : Iterator<PairIntObj<T>> {
+
+            val itor = other.iterator()
+            var index = 0
+
+            override fun hasNext(): Boolean =
+                index != size && itor.hasNext()
+
+            override fun next(): PairIntObj<T> =
+                PairIntObj(this@eachWith[index++], itor.next())
+
+        }
+    }

@@ -1,12 +1,11 @@
-@file:Suppress("unused")
-
 package top.kmar.mi.api.graphics.utils.modes
 
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
-import top.kmar.mi.api.graphics.utils.GraphicsStyle
+import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.utils.interfaces.Obj2IntFunction
+import java.util.function.IntFunction
 import java.util.function.IntSupplier
 import kotlin.math.roundToInt
 
@@ -26,7 +25,20 @@ sealed interface ISizeMode {
      * 获取尺寸
      * @param dist 当前节点对象
      */
-    operator fun invoke(dist: Cmpt): Int
+    operator fun invoke(dist: CmptClient): Int
+
+    companion object {
+
+        /** 查找第一个不依赖子节点的父亲节点 */
+        @JvmStatic
+        fun findParent(dist: CmptClient): CmptClient {
+            var parent = dist.parent
+            while (parent.style.width.relyOnChild)
+                parent = parent.parent
+            return parent
+        }
+
+    }
 
 }
 
@@ -45,7 +57,7 @@ class FixedSizeMode(
     /**
      * @param dist 当前节点的父节点样式表
      */
-    override fun invoke(dist: Cmpt) = value
+    override fun invoke(dist: CmptClient) = value
 
 }
 
@@ -57,13 +69,16 @@ class FixedSizeMode(
 class PercentSizeMode(
     val value: Double,
     val plus: Int,
-    val parentSize: Obj2IntFunction<GraphicsStyle>
+    val parentSize: Obj2IntFunction<CmptClient>
 ): ISizeMode {
 
     override val relyOnParent = true
     override val relyOnChild = false
 
-    override fun invoke(dist: Cmpt) = (value * parentSize(dist.parent.client.style)).roundToInt() + plus
+    override fun invoke(dist: CmptClient): Int {
+        val parent = ISizeMode.findParent(dist)
+        return (value * parentSize(parent)).roundToInt() + plus
+    }
 
 }
 
@@ -73,13 +88,16 @@ class PercentSizeMode(
  */
 class RelativeSizeMode(
     val plus: Int,
-    val parentSize: Obj2IntFunction<GraphicsStyle>
+    val parentSize: Obj2IntFunction<CmptClient>
 ): ISizeMode {
 
     override val relyOnParent = true
     override val relyOnChild = false
 
-    override fun invoke(dist: Cmpt) = parentSize(dist.parent.client.style) + plus
+    override fun invoke(dist: CmptClient): Int {
+        val parent = ISizeMode.findParent(dist)
+        return parentSize(parent) + plus
+    }
 
 }
 
@@ -89,13 +107,16 @@ class RelativeSizeMode(
  */
 @SideOnly(Side.CLIENT)
 class InheritSizeMode(
-    val parentSize: Obj2IntFunction<GraphicsStyle>
+    val parentSize: Obj2IntFunction<CmptClient>
 ): ISizeMode {
 
     override val relyOnParent = true
     override val relyOnChild = false
 
-    override fun invoke(dist: Cmpt) = parentSize(dist.parent.client.style)
+    override fun invoke(dist: CmptClient): Int {
+        val parent = ISizeMode.findParent(dist)
+        return parentSize(parent)
+    }
 
 }
 
@@ -111,20 +132,20 @@ class AutoSizeMode(
     override val relyOnParent = false
     override val relyOnChild = true
 
-    override fun invoke(dist: Cmpt): Int = dist.client.style.run {
-        if (isHeight) childrenHeight else childrenWidth
+    override fun invoke(dist: CmptClient): Int {
+
     }
 
 }
 
 /** 由代码计算控件尺寸，不得依赖其它控件的尺寸 */
 class CodeSizeMode(
-    val calculator: IntSupplier
+    val calculator: Obj2IntFunction<CmptClient>
 ) : ISizeMode {
 
     override val relyOnParent = false
     override val relyOnChild = false
 
-    override fun invoke(dist: Cmpt) = calculator.asInt
+    override fun invoke(dist: CmptClient) = calculator(dist)
 
 }
