@@ -12,7 +12,7 @@ import top.kmar.mi.api.utils.expands.forEachFast
  * GUI 样式表
  * @author EmptyDreams
  */
-class StyleSheet {
+class StyleSheet : Iterable<Pair<ICmptExp, StyleNode>> {
 
     private val sheetKey = ArrayList<ICmptExp>()
     private val sheetValue = ArrayList<StyleNode>()
@@ -59,6 +59,21 @@ class StyleSheet {
         } else {
             sheetValue[old].merge(node)
         }
+    }
+
+    override fun iterator() = object : Iterator<Pair<ICmptExp, StyleNode>> {
+
+        var index = 0
+
+        override fun hasNext(): Boolean = index != sheetKey.size
+
+        override fun next(): Pair<ICmptExp, StyleNode> {
+            val exp = sheetKey[index]
+            val node = sheetValue[index]
+            ++index
+            return Pair(exp, node)
+        }
+
     }
 
 }

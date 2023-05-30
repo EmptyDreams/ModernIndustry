@@ -20,7 +20,9 @@ import java.util.*
  *
  * @author EmptyDreams
  */
-class ComplexCmptExp constructor(val list: List<SingleCmptExp>) : Comparable<ComplexCmptExp>, ICmptExp {
+class ComplexCmptExp(
+    val list: List<SingleCmptExp>
+) : Comparable<ComplexCmptExp>, ICmptExp {
 
     override val size: Int
         get() = list.size
@@ -34,6 +36,8 @@ class ComplexCmptExp constructor(val list: List<SingleCmptExp>) : Comparable<Com
                     .forEach { add(it) }
             })
     )
+
+    constructor(first: ICmptExp, second: ICmptExp) : this(merge(first, second))
 
     /** 存储移除第一个表达式后的结果 */
     private var firstCache: WeakReference<ComplexCmptExp>? = null
@@ -80,5 +84,26 @@ class ComplexCmptExp constructor(val list: List<SingleCmptExp>) : Comparable<Com
     override fun hashCode() = list.hashCode()
 
     override fun toString() = list.toString()
+
+    companion object {
+
+        private fun merge(first: ICmptExp, second: ICmptExp): List<SingleCmptExp> {
+            val result = LinkedList<SingleCmptExp>()
+            when (first) {
+                is SingleCmptExp -> result += first
+                is ComplexCmptExp -> result.addAll(first.list)
+                is EmptyCmptExp -> {}
+                else -> throw AssertionError()
+            }
+            when (second) {
+                is SingleCmptExp -> result += second
+                is ComplexCmptExp -> result.addAll(second.list)
+                is EmptyCmptExp -> {}
+                else -> throw AssertionError()
+            }
+            return result
+        }
+
+    }
 
 }

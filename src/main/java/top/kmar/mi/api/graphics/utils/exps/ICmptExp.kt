@@ -20,4 +20,7 @@ interface ICmptExp {
     /** 返回一个不包含第一个表达式的对象，返回的对象与当前对象相互独立 */
     fun removeFirst(): ICmptExp
 
+    operator fun plus(that: ICmptExp): ICmptExp =
+        ComplexCmptExp(this, that)
+
 }

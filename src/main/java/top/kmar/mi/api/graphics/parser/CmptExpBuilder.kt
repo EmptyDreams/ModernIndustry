@@ -1,6 +1,8 @@
 package top.kmar.mi.api.graphics.parser
 
 import top.kmar.mi.api.graphics.utils.exps.ComplexCmptExp
+import top.kmar.mi.api.graphics.utils.exps.EmptyCmptExp
+import top.kmar.mi.api.graphics.utils.exps.ICmptExp
 import top.kmar.mi.api.graphics.utils.exps.SingleCmptExp
 import java.util.*
 
@@ -39,7 +41,7 @@ class CmptExpBuilder {
     }
 
     /** 导出表达式 */
-    fun toExp(consumer: (ComplexCmptExp) -> Unit) {
+    fun toExp(consumer: (ICmptExp) -> Unit) {
         var resultList = LinkedList<LinkedList<SingleCmptExp>>()
         resultList.add(LinkedList())
         for (external in list) {
@@ -58,7 +60,10 @@ class CmptExpBuilder {
                 }
             }
         }
-        resultList.forEach { consumer(ComplexCmptExp(Collections.unmodifiableList(it))) }
+        resultList.forEach {
+            if (it.isEmpty()) consumer(EmptyCmptExp)
+            else consumer(ComplexCmptExp(Collections.unmodifiableList(it)))
+        }
     }
 
 }

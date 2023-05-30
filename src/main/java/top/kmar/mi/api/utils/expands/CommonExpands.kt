@@ -2,6 +2,7 @@
 package top.kmar.mi.api.utils.expands
 
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.ResourceLocation
 import top.kmar.mi.api.utils.container.PairIntInt
 
 private val HOR_LIST = ArrayList<Array<EnumFacing>>(24).apply {
@@ -55,6 +56,17 @@ fun String.checkInt(start: Int = 0, end: Int = this.length): Boolean {
 }
 
 /**
+ * 截取两个字符之间的字符串（不包含起始和终止字符）
+ * @param start 起始字符（若字符串中包含多个起始字符，则以第一次出现的为准）
+ * @param end 终止字符（若字符串中包含多个终止字符，则以最后一次出现的为准）
+ */
+fun String.substringBetween(start: Char, end: Char = start): String {
+    val head = indexOf(start)
+    val tail = indexOf(end)
+    return substring(head + 1, tail)
+}
+
+/**
  * 计算一个字符串的开头有多少个空格，一个制表符当作4个空格
  * @return `first` - 第一个非空白符字符的下标，`second` - 空白符长度
  */
@@ -87,3 +99,6 @@ inline fun <T> T.applyClient(block: T.() -> Unit): T {
     if (isClient()) block()
     return this
 }
+
+fun ResourceLocation.copy(domain: String = resourceDomain, path: String = resourcePath) =
+    ResourceLocation(domain, path)

@@ -18,10 +18,9 @@ import top.kmar.mi.api.graphics.utils.exps.ComplexCmptExp
 import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.graphics.utils.style.StyleSheet
 import top.kmar.mi.api.utils.MISysInfo
-import top.kmar.mi.api.utils.expands.countStartSpace
-import top.kmar.mi.api.utils.expands.floorDiv2
-import top.kmar.mi.api.utils.expands.trimEndAt
+import top.kmar.mi.api.utils.expands.*
 import java.io.BufferedReader
+import java.io.FileNotFoundException
 import java.util.*
 
 /**
@@ -58,18 +57,41 @@ object GuiStyleParser {
             val builder = CmptExpBuilder()
             val lines = LinkedList<String>()
 
+            /** 解析样式 */
             fun parseStyle() {
                 val node = StyleNode()
                 lines.forEach { StyleStatementParser(it, node) }
                 builder.toExp { result.add(it, node) }
             }
 
+            /** 解析选择表达式 */
             fun parseCmptExp(level: Int) {
                 builder.goto(level)
                 lines.forEach { line ->
                     line.splitToSequence(',')
                         .filter { it.isNotBlank() }
                         .forEach { builder.addExp(ComplexCmptExp(it)) }
+                }
+            }
+
+            /** 解析 @ 语句 */
+            fun parseAt(content: String) {
+                val list = content.split(' ').filter { it.isNotBlank() }
+                if (list.size != 2) throw IllegalArgumentException("@ 语句格式固定为 @xxx xxx")
+                val (command, value) = list
+                when (command) {
+                    "import" -> {
+                        val path = value.substringBetween('"')
+                        val split = path.indexOf(':')
+                        val otherKey =
+                            if (split == -1) key.copy(path = path)
+                            else ResourceLocation(path.substring(0, split), path.substring(split + 1))
+                        val otherSheet = load(otherKey) ?: throw FileNotFoundException("没有找到指定的样式文件：$path")
+                        builder.toExp {
+                            otherSheet.forEach { (exp, node) -> result.add(it + exp, node) }
+                        }
+                    }
+                    else -> throw IllegalArgumentException("不支持的 @ 语句：$command")
                 }
             }
 
@@ -80,6 +102,7 @@ object GuiStyleParser {
                     val (index, count) = it.countStartSpace()
                     val level = count.floorDiv2()
                     when {
+                        it.startsWith("@", index) -> parseAt(it.substring(index + 1))
                         level == preLevel -> lines += it.trimEndAt(index)
                         level > preLevel -> {
                             parseCmptExp(preLevel)
