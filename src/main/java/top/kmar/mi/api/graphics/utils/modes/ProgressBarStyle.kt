@@ -39,6 +39,11 @@ class ProgressBarData(private val node: StyleNode) {
         get() = node.progressText
         set(value) { node.progressText = value }
 
+    /** 文本颜色 */
+    var color: IntColor
+        get() = node.progressTextColor
+        set(value) { node.progressTextColor = value }
+
     /** 最小高度 */
     var minHeight
         get() = node.progressMinHeight
@@ -60,13 +65,17 @@ enum class ProgressBarTextEnum {
     companion object {
 
         @JvmStatic
-        fun from(name: String): ProgressBarTextEnum =
-            when (name) {
+        fun from(name: String) =
+            tryFrom(name) ?: throw IllegalArgumentException("未知名称：$name")
+
+        @JvmStatic
+        internal fun tryFrom(name: String): ProgressBarTextEnum? =
+            when(name) {
                 "head" -> HEAD
                 "middle", "center" -> MIDDLE
                 "tail" -> TAIL
                 "none", "0" -> NONE
-                else -> throw IllegalArgumentException("未知名称：$name")
+                else -> null
             }
 
     }

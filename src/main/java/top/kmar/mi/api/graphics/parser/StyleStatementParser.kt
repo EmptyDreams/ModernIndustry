@@ -40,7 +40,7 @@ object StyleStatementParser {
             "align" -> parserAlign(value, node.align)
             "align-vertical" -> VerticalAlignModeEnum.from(value)
             "align-horizontal" -> HorizontalAlignModeEnum.from(value)
-            "color", "background-color" -> IntColor(value)
+            "color", "background-color", "progress-text-color" -> IntColor(value)
             "border" -> parserBorderAll(value, node.border)
             "border-left", "border-right", "border-top", "border-bottom" -> {
                 val border = node.getValue<BorderStyle>(key)
@@ -53,6 +53,7 @@ object StyleStatementParser {
             "button" -> parserButton(value, node.button)
             "button-style" -> ButtonStyleEnum.from(value)
             "button-direction", "progress-direction" -> Direction2DEnum.from(value)
+            "progress" -> parserProgress(value, node.progress)
             "progress-style" -> ProgressBarStyle.from(value)
             "progress-text" -> ProgressBarTextEnum.from(value)
             "progress-min-width", "progress-max-height" -> {
@@ -62,6 +63,30 @@ object StyleStatementParser {
             else -> throw IllegalArgumentException("未知的属性名称：$key")
         }
         node[key] = item
+    }
+
+    private fun parserProgress(value: String, progress: ProgressBarData): ProgressBarData {
+        var numIndex = 0
+        value.splitToSequence(' ')
+            .filter { it.isNotBlank() }
+            .forEach { item ->
+                when (item) {
+                    "rect" -> progress.style = ProgressBarStyle.RECT
+                    "arrow" -> progress.style = ProgressBarStyle.ARROW
+                    else -> {
+                        val text = ProgressBarTextEnum.tryFrom(item)
+                        if (text != null) {
+                            progress.text = text
+                        } else if (item.checkInt()) {
+                            if (numIndex++ == 0) progress.minWidth = item.toDecInt()
+                            else progress.minHeight = item.toDecInt()
+                        } else {
+                            progress.color = IntColor(item)
+                        }
+                    }
+                }
+            }
+        return progress
     }
 
     private fun parserButton(value: String, button: ButtonStyleData): ButtonStyleData {
