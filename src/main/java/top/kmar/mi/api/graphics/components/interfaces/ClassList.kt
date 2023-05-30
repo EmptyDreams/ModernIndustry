@@ -20,4 +20,6 @@ class ClassList(
         list.remove(name)
     }
 
+    operator fun contains(name: String): Boolean = name in list
+
 }

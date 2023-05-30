@@ -28,12 +28,8 @@ abstract class CmptClient(
 ) {
 
     /** 样式表 ID */
-    private var styleIdList: IntList = IntArrayList(0)
+    internal var styleIdList: IntList = IntArrayList(0)
     private lateinit var sheet: StyleSheet
-    /** 类名列表 */
-    val classList = ClassList {
-        styleIdList.clear()
-    }
     /** 样式表 */
     var style = StyleNode()
         get() {
@@ -45,9 +41,9 @@ abstract class CmptClient(
         }
 
     /** 横向布局更新标记，当值为 flag 时，访问 width 会重新计算值 */
-    private var widthLayoutUpdateFlag = true
+    private var xLayoutUpdateFlag = true
     /** 纵向布局更新标记，当值为 flag 时，访问 height 会重新计算值 */
-    private var heightLayoutUpdateFlag = true
+    private var yLayoutUpdateFlag = true
     /** 分组信息 */
     private val group = CacheContainer<List<List<CmptClient>>> {
         val result = LinkedList<LinkedList<CmptClient>>()
@@ -85,10 +81,10 @@ abstract class CmptClient(
     /** 控件宽度（content + padding） */
     var width: Int = 0
         get() {
-            if (widthLayoutUpdateFlag) {
+            if (xLayoutUpdateFlag) {
                 field = style.width(this)
                 style.alignHorizontal(this, group.get())
-                widthLayoutUpdateFlag = false
+                xLayoutUpdateFlag = false
             }
             return field
         }
@@ -96,16 +92,16 @@ abstract class CmptClient(
             if (value != field) {
                 field = value
                 group.clear()
-                widthLayoutUpdateFlag = true
+                xLayoutUpdateFlag = true
             }
         }
     /** 控件高度（content + padding） */
     var height: Int = 0
         get() {
-            if (heightLayoutUpdateFlag) {
+            if (yLayoutUpdateFlag) {
                 field = style.height(this)
                 style.alignVertical(this, group.get())
-                heightLayoutUpdateFlag = false
+                yLayoutUpdateFlag = false
             }
             return field
         }
@@ -113,7 +109,7 @@ abstract class CmptClient(
             if (value != field) {
                 field = value
                 group.clear()
-                heightLayoutUpdateFlag = true
+                yLayoutUpdateFlag = true
             }
         }
 
@@ -132,6 +128,18 @@ abstract class CmptClient(
 
     val parent: CmptClient
         get() = service.parent.client
+
+    /** 标记横向布局更新 */
+    fun markXLayoutUpdate() {
+        xLayoutUpdateFlag = true
+        group.clear()
+    }
+
+    /** 标记纵向布局更新 */
+    fun markYLayoutUpdate() {
+        yLayoutUpdateFlag = true
+        group.clear()
+    }
 
     /** 接收从服务端发送的信息 */
     open fun receive(message: NBTBase) {}

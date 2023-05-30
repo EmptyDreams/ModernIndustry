@@ -10,7 +10,6 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import net.minecraftforge.items.ItemStackHandler
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
-import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.slots.IGraphicsSlot
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
@@ -41,7 +40,7 @@ open class BaseGraphics(
      * 保证在第一次尝试获取该对象时客户端GUI已经完成初始化
      */
     @get:SideOnly(Side.CLIENT)
-    val client by lazy(NONE) { document.client as BaseGraphicsClient }
+    val client by lazy(NONE) { (document.client as DocumentCmptClient).client }
     private val graphicsSlots = ArrayList<IGraphicsSlot>(40)
 
     val tileEntity: TileEntity
@@ -160,37 +159,6 @@ open class BaseGraphics(
 
     fun installParent() {
         document.installParent(Cmpt.EMPTY_CMPT, this)
-    }
-
-    class DocumentCmpt(
-        attributes: CmptAttributes = CmptAttributes().apply {
-            id = "document"
-            this["level"] = "-1"
-        }
-    ) : Cmpt(attributes) {
-
-        @SideOnly(Side.CLIENT)
-        override fun initClientObj() = BaseGraphicsClient(gui!!)
-
-        override fun installParent(parent: Cmpt, gui: BaseGraphics) {
-            super.installParent(parent, gui)
-            val list = LinkedList<Cmpt>()
-            list.add(gui.document)
-            do {
-                val node = list.pop()
-                node.eachAllChildren {
-                    if (!it.isInstallParent) {
-                        it.isInstallParent = true
-                        it.installParent(node, gui)
-                    }
-                    list.add(it)
-                }
-            } while (list.isNotEmpty())
-            isInstallParent = true
-        }
-
-        override fun buildNewObj() = DocumentCmpt(attributes.copy())
-
     }
 
 }

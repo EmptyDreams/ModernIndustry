@@ -1,7 +1,6 @@
 package top.kmar.mi.api.graphics.components.interfaces
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectRBTreeMap
-import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
@@ -10,13 +9,13 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import net.minecraftforge.items.ItemStackHandler
 import top.kmar.mi.api.graphics.BaseGraphics
-import top.kmar.mi.api.graphics.utils.exps.ComplexCmptExp
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
-import top.kmar.mi.api.graphics.utils.GraphicsStyle
+import top.kmar.mi.api.graphics.utils.exps.ComplexCmptExp
 import top.kmar.mi.api.graphics.utils.exps.ICmptExp
 import top.kmar.mi.api.net.messages.GraphicsMessage
 import top.kmar.mi.api.utils.MISysInfo
+import top.kmar.mi.api.utils.expands.applyClient
 import top.kmar.mi.api.utils.expands.isClient
 import java.util.*
 import kotlin.LazyThreadSafetyMode.NONE
@@ -54,8 +53,12 @@ abstract class Cmpt(
         private set
     /** 是否安装过父节点 */
     var isInstallParent = false
-    /** 类名列表，内部元素不重复 */
-    val classList = ObjectRBTreeSet<String>()
+    /** 类名列表 */
+    val classList = ClassList {
+        applyClient {
+            client.styleIdList.clear()
+        }
+    }
 
     /** 初始化客户端对象 */
     @SideOnly(Side.CLIENT)
@@ -103,7 +106,7 @@ abstract class Cmpt(
     fun hasParent(): Boolean = parent != EMPTY_CMPT
 
     /** 初始化父节点信息 */
-    internal open fun installParent(parent: Cmpt, gui: BaseGraphics) {
+    open fun installParent(parent: Cmpt, gui: BaseGraphics) {
         this.gui = gui
     }
 
@@ -274,16 +277,9 @@ abstract class Cmpt(
         /** 无效的控件对象 */
         val EMPTY_CMPT = object : Cmpt(CmptAttributes.valueOfID("null")) {
 
-            override fun initClientObj() = EmptyClient(this)
+            override fun initClientObj() = object : CmptClient(this) {}
 
             override fun buildNewObj() = this
-
-            inner class EmptyClient(cmpt: Cmpt) : CmptClient {
-
-                override val service = cmpt
-                override val style = GraphicsStyle(cmpt)
-
-            }
 
         }
 

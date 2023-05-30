@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.BaseGraphics
+import top.kmar.mi.api.graphics.DocumentCmpt
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
@@ -25,7 +26,7 @@ class GuiRegedit {
     private val clientIdIndex = AtomicInteger(0)
 
     /** 注册一个双端GUI */
-    fun registryGui(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
+    fun registryGui(key: ResourceLocation, root: DocumentCmpt) {
         require(key !in registry) { "指定key[$key]已经被注册" }
         val id = idIndex.incrementAndGet()
         registry[key] = Node(id, root, LinkedList(), LinkedList(), LinkedList())
@@ -33,7 +34,7 @@ class GuiRegedit {
     }
 
     /** 注册一个客户端GUI */
-    fun registryClientGui(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
+    fun registryClientGui(key: ResourceLocation, root: DocumentCmpt) {
         require(key !in registry) { "指定key[$key]已经被注册" }
         val id = clientIdIndex.decrementAndGet()
         registry[key] = Node(id, root, LinkedList(), LinkedList(), LinkedList())
@@ -103,7 +104,7 @@ class GuiRegedit {
 
     private data class Node(
         val id: Int,
-        val root: BaseGraphics.DocumentCmpt,
+        val root: DocumentCmpt,
         val loopList: MutableList<Consumer<BaseGraphics>>,
         val initList: MutableList<Consumer<BaseGraphics>>,
         val clientLoopList: MutableList<Consumer<BaseGraphics>>

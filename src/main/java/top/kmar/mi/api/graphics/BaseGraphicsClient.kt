@@ -8,14 +8,11 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
-import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.listeners.*
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardPressed
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardReleased
-import top.kmar.mi.api.graphics.parser.GuiStyleParser
-import top.kmar.mi.api.graphics.utils.GraphicsStyle
 import top.kmar.mi.api.graphics.utils.GuiGraphics
-import top.kmar.mi.api.graphics.utils.modes.FixedSizeMode
+import top.kmar.mi.api.graphics.utils.style.StyleSheet
 import top.kmar.mi.api.utils.data.math.Point2D
 import java.util.*
 
@@ -25,13 +22,11 @@ import java.util.*
  * @author EmptyDreams
  */
 @SideOnly(Side.CLIENT)
-class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventorySlots), CmptClient {
+class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventorySlots) {
 
-    override val service = inventorySlots.document
-    override val style = GraphicsStyle(service).apply {
-        widthCalculator = FixedSizeMode(this@BaseGraphicsClient.width)
-        heightCalculator = FixedSizeMode(this@BaseGraphicsClient.height)
-    }
+    val service = inventorySlots.document
+    val client = service.client
+    val style = StyleSheet()
     private val taskList = LinkedList<() -> Unit>()
 
     override fun initGui() {
@@ -41,15 +36,15 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
     }
 
     override fun setWorldAndResolution(mc: Minecraft, width: Int, height: Int) {
-        if (this.width != width) style.markXChange()
-        if (this.height != height) style.markYChange()
+        if (this.width != width) client.markXLayoutUpdate()
+        if (this.height != height) client.markYLayoutUpdate()
         super.setWorldAndResolution(mc, width, height)
     }
 
-    override fun setGuiSize(w: Int, h: Int) {
-        if (this.width != width) style.markXChange()
-        if (this.height != height) style.markYChange()
-        super.setGuiSize(w, h)
+    override fun setGuiSize(width: Int, height: Int) {
+        if (this.width != width) client.markXLayoutUpdate()
+        if (this.height != height) client.markYLayoutUpdate()
+        super.setGuiSize(width, height)
     }
 
     /** 发布鼠标事件 */
@@ -58,7 +53,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
         val state = MouseEventData.getEventName(mouseButton)
         val srcMessage = state.build(mouseX, mouseY, mouseX, mouseY)
         val eventName = if (isClick) state.clickEventName else state.releasedEventName
-        searchCmpt(mouseX, mouseY).dispatchEvent(eventName, srcMessage)
+        client.searchCmpt(mouseX, mouseY).dispatchEvent(eventName, srcMessage)
     }
 
     /** 鼠标按下时触发 */
@@ -87,8 +82,12 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
     }
 
     override fun drawGuiContainerBackgroundLayer(partialTicks: Float, mouseX: Int, mouseY: Int) {
+        taskList.forEach { it() }
+        taskList.clear()
         val graphics = GuiGraphics(0, 0, width, height, this)
-        render(graphics)
+        client.renderChildren(graphics)
+        val inventorySlots = this.inventorySlots as BaseGraphics
+        GuiLoader.invokeClientLoopTask(inventorySlots)
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
@@ -118,8 +117,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
                 }
             }
             return null == cmpt.eachChildren {
-                val style = it.client.style
-                if (Point2D(mouseX, mouseY) in style.area) {
+                if (Point2D(mouseX, mouseY) in it.client) {
                     if (it.id !in mouseEnterList) {
                         mouseEnterList.add(it.id)
                         if (enter) helper(it, true)
@@ -145,24 +143,9 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
             MouseScrollEventData(scroll, mouseX, mouseY, mouseX, mouseY))
     }
 
-    override fun render(graphics: GuiGraphics) {
-        taskList.forEach { it() }
-        taskList.clear()
-        style.alignChildren()
-        renderChildren(graphics)
-        val inventorySlots = this.inventorySlots as BaseGraphics
-        GuiLoader.invokeClientLoopTask(inventorySlots)
-    }
-
     /** 添加一个初始化任务 */
     fun addInitTask(task: () -> Unit) {
         taskList.add(task)
-    }
-
-    /** 更新样式表 */
-    fun updateStyle() {
-        val inventorySlots = this.inventorySlots as BaseGraphics
-        GuiStyleParser.initStyle(inventorySlots.key, service)
     }
 
 }

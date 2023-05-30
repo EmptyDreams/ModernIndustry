@@ -74,7 +74,7 @@ object GuiLoader : IGuiHandler {
     fun getID(key: ResourceLocation) = regedit.getID(key)
 
     /** 注册一个客户端GUI，该函数不能在事件注册阶段调用 */
-    fun registryClientGui(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
+    fun registryClientGui(key: ResourceLocation, root: DocumentCmpt) {
         regedit.registryClientGui(key, root)
     }
 
@@ -94,12 +94,12 @@ object GuiLoader : IGuiHandler {
         constructor() : this(null)
 
         /** 注册一个客户端服务端通用的GUI，注册阶段过后不能调用该函数 */
-        fun registry(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
+        fun registry(key: ResourceLocation, root: DocumentCmpt) {
             regedit!!.registryGui(key, root)
         }
 
         /** 注册一个客户端GUI */
-        fun registryClient(key: ResourceLocation, root: BaseGraphics.DocumentCmpt) {
+        fun registryClient(key: ResourceLocation, root: DocumentCmpt) {
             regedit!!.registryClientGui(key, root)
         }
 

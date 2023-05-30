@@ -5,7 +5,7 @@ import net.minecraftforge.common.crafting.CraftingHelper
 import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.Loader
 import top.kmar.mi.api.exception.TransferException
-import top.kmar.mi.api.graphics.BaseGraphics
+import top.kmar.mi.api.graphics.DocumentCmpt
 import top.kmar.mi.api.graphics.GuiLoader
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
@@ -65,8 +65,8 @@ object GuiFileParser {
         else event.registry(key, root)
     }
 
-    private fun parseTargetFile(path: Path): BaseGraphics.DocumentCmpt {
-        val root = BaseGraphics.DocumentCmpt()
+    private fun parseTargetFile(path: Path): DocumentCmpt {
+        val root = DocumentCmpt()
         var preEle: Cmpt = root
         var preLevel = -1
         fun parseLine(content: String) {
