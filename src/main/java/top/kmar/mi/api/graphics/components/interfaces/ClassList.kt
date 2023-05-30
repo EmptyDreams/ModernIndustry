@@ -7,17 +7,19 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
  * @author EmptyDreams
  */
 class ClassList(
-    onEdit: () -> Unit
+    private val onEdit: () -> Unit
 ) {
 
     private val list = ObjectOpenHashSet<String>()
 
     operator fun plusAssign(name: String) {
         list += name
+        onEdit()
     }
 
     fun remove(name: String) {
         list.remove(name)
+        onEdit()
     }
 
     operator fun contains(name: String): Boolean = name in list
