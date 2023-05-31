@@ -63,12 +63,14 @@ class ComplexCmptExp(
                 if (exp.match(cmpt)) {
                     num = 1
                     target = cmpt.parent
+                    if (target === Cmpt.EMPTY_CMPT) break
                 } else return false
             } else {
                 while (!exp.match(target)) {
                     target = target.parent
                     if (target === Cmpt.EMPTY_CMPT) break@o
                 }
+                ++num
             }
             if (num == list.size) return true
         }
