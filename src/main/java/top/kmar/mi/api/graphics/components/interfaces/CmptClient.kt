@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagString
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
+import top.kmar.mi.api.graphics.BaseGraphicsClient
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.graphics.utils.modes.DisplayModeEnum
 import top.kmar.mi.api.graphics.utils.modes.PositionEnum
@@ -27,10 +28,14 @@ abstract class CmptClient(
     val service: Cmpt
 ) {
 
+    val gui: BaseGraphicsClient
+        get() = service.gui!!.client
+
     /** 样式表 ID */
     internal var styleIdList: IntList = IntArrayList(0)
-    private lateinit var sheet: StyleSheet
-    /** 样式表 */
+    private val sheet: StyleSheet
+        get() = gui.style
+    /** 样式 */
     var style = StyleNode()
         get() {
             if (styleIdList.isEmpty()) {
