@@ -6,6 +6,7 @@ import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptAttributes
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.modes.CodeSizeMode
+import top.kmar.mi.api.graphics.utils.style.StyleNode
 import java.util.*
 
 /**
@@ -51,9 +52,9 @@ class DocumentCmptClient(gui: BaseGraphics) : CmptClient(gui.document) {
 
     val client = BaseGraphicsClient(gui)
 
-    init {
-        style.width = CodeSizeMode { client.width }
-        style.height = CodeSizeMode { client.height }
+    override fun defaultStyle() = StyleNode().apply {
+        width = CodeSizeMode { client.width }
+        height = CodeSizeMode { client.height }
     }
 
 }
