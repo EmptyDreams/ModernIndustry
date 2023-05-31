@@ -101,9 +101,10 @@ object GuiStyleParser {
                 .forEachOrdered {
                     val (index, count) = it.countStartSpace()
                     val level = count.floorDiv2()
+                    val isAt = it.startsWith("@", index)
                     when {
-                        it.startsWith("@", index) -> parseAt(it.substring(index + 1))
-                        level == preLevel -> lines += it.trimEndAt(index)
+                        isAt -> parseAt(it.substring(index + 1))
+                        level == preLevel -> {}
                         level > preLevel -> {
                             parseCmptExp(preLevel)
                             lines.clear()
@@ -113,6 +114,8 @@ object GuiStyleParser {
                             lines.clear()
                         }
                     }
+                    if (!isAt)
+                        lines += it.trimEndAt(index)
                     preLevel = level
                 }
         }
