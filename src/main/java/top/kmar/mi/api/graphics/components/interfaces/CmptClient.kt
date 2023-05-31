@@ -36,7 +36,7 @@ abstract class CmptClient(
     private val sheet: StyleSheet
         get() = gui.style
     /** 样式 */
-    var style = StyleNode()
+    open var style = StyleNode()
         get() {
             if (styleIdList.isEmpty()) {
                 styleIdList = sheet.getIndex(this)

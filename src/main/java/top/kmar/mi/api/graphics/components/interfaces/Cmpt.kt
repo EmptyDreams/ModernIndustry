@@ -13,6 +13,8 @@ import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.listeners.ListenerData
 import top.kmar.mi.api.graphics.utils.exps.ComplexCmptExp
 import top.kmar.mi.api.graphics.utils.exps.ICmptExp
+import top.kmar.mi.api.graphics.utils.modes.FixedSizeMode
+import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.net.messages.GraphicsMessage
 import top.kmar.mi.api.utils.MISysInfo
 import top.kmar.mi.api.utils.expands.applyClient
@@ -277,7 +279,14 @@ abstract class Cmpt(
         /** 无效的控件对象 */
         val EMPTY_CMPT = object : Cmpt(CmptAttributes.valueOfID("null")) {
 
-            override fun initClientObj() = object : CmptClient(this) {}
+            override fun initClientObj() = object : CmptClient(this) {
+
+                override var style: StyleNode = StyleNode().apply {
+                    width = FixedSizeMode(0)
+                    height = FixedSizeMode(0)
+                }
+
+            }
 
             override fun buildNewObj() = this
 
