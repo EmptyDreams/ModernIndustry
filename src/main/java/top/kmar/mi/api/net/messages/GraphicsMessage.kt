@@ -89,7 +89,7 @@ object GraphicsMessage : IAutoNetworkHandler {
         val container = node.player.openContainer as? BaseGraphics
         if (container == null || container.key != node.key) {
             if (node.count >= maxTryCount) {
-                MISysInfo.err("[GraphicsMessage] 信息由于玩家未打开对应的呃 GUI 而被抛弃：\n\t\t$node")
+                MISysInfo.err("[GraphicsMessage] 信息由于玩家未打开对应的 GUI 而被抛弃：\n\t\t$node")
                 return true
             }
             ++node.count
