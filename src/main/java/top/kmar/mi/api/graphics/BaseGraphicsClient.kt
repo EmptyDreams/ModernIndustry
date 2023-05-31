@@ -15,6 +15,7 @@ import top.kmar.mi.api.graphics.parser.GuiStyleParser
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.utils.data.math.Point2D
 import java.util.*
+import kotlin.LazyThreadSafetyMode.NONE
 
 /**
  * 客户端GUI对象
@@ -25,7 +26,7 @@ import java.util.*
 class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventorySlots) {
 
     val service = inventorySlots.document
-    val client = service.client
+    val client by lazy(NONE) { service.client }
     val style = GuiStyleParser.load(inventorySlots.key)!!
 
     override fun initGui() {
