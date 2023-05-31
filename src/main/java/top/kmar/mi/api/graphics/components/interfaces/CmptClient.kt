@@ -74,7 +74,7 @@ abstract class CmptClient(
         /** 请勿手动修改 */
         internal set
         get() {
-            parent.width
+            parent.typesetting()
             return field
         }
     /** 相对于其父元素的 Y 轴坐标 */
@@ -82,7 +82,7 @@ abstract class CmptClient(
         /** 请勿手动修改 */
         internal set
         get() {
-            parent.height
+            parent.typesetting()
             return field
         }
     /** 控件宽度（content + padding） */
@@ -90,7 +90,6 @@ abstract class CmptClient(
         get() {
             if (xLayoutUpdateFlag) {
                 field = style.width(this)
-                style.alignHorizontal(this, group.get())
                 xLayoutUpdateFlag = false
             }
             return field
@@ -107,7 +106,6 @@ abstract class CmptClient(
         get() {
             if (yLayoutUpdateFlag) {
                 field = style.height(this)
-                style.alignVertical(this, group.get())
                 yLayoutUpdateFlag = false
             }
             return field
@@ -146,6 +144,13 @@ abstract class CmptClient(
     fun markYLayoutUpdate() {
         yLayoutUpdateFlag = true
         group.clear()
+    }
+
+    open fun typesetting() {
+        if (group.isInit) return
+        val list = group.get()
+        style.alignHorizontal(this, list)
+        style.alignVertical(this, list)
     }
 
     /** 获取缺省的样式，该函数的结果不应当被缓存 */

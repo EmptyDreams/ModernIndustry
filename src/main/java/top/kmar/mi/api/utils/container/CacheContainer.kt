@@ -8,6 +8,9 @@ class CacheContainer<T>(private val supplier: () -> T) {
 
     private var value: T? = null
 
+    val isInit: Boolean
+        get() = value != null
+
     fun get() = invoke()
 
     operator fun invoke(): T =
@@ -23,10 +26,6 @@ class CacheContainer<T>(private val supplier: () -> T) {
 
     fun clear() {
         value = null
-    }
-
-    fun reset() {
-        value = supplier()
     }
 
 }

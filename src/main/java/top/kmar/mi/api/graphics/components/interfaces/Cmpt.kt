@@ -286,6 +286,8 @@ abstract class Cmpt(
                     height = FixedSizeMode(0)
                 }
 
+                override fun typesetting() { }
+
             }
 
             override fun buildNewObj() = this
