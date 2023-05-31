@@ -2,6 +2,7 @@ package top.kmar.mi.api.graphics.utils.exps
 
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.utils.expands.compareTo
+import top.kmar.mi.api.utils.expands.flip
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -57,7 +58,7 @@ class ComplexCmptExp(
     override fun match(cmpt: Cmpt): Boolean {
         var num = 0
         var target = cmpt
-        o@ for (exp in list.asReversed()) {
+        o@ for (exp in list.flip()) {
             if (num == 0) {
                 if (exp.match(cmpt)) {
                     num = 1
@@ -65,7 +66,7 @@ class ComplexCmptExp(
                 } else return false
             } else {
                 while (!exp.match(target)) {
-                    target = cmpt.parent
+                    target = target.parent
                     if (target === Cmpt.EMPTY_CMPT) break@o
                 }
             }
