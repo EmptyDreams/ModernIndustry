@@ -117,12 +117,12 @@ class StyleNode {
                 this["border-right"] = Function<StyleNode, Any> { BorderStyle() }
                 this["border-bottom"] = Function<StyleNode, Any> { BorderStyle() }
                 this["border-left"] = Function<StyleNode, Any> { BorderStyle() }
-                this["button"] = Function<StyleNode, Any> { ButtonStyleData(it) }
-                this["button-style"] = ButtonStyleEnum.RECT
+                this["button-style"] = Function<StyleNode, Any> { ButtonStyleData(it) }
+                this["button-variety"] = ButtonStyleEnum.RECT
                 this["button-direction"] = Direction2DEnum.RIGHT
-                this["progress"] = Function<StyleNode, Any> { ProgressBarData(it) }
+                this["progress-style"] = Function<StyleNode, Any> { ProgressBarData(it) }
                 this["progress-direction"] = Direction2DEnum.RIGHT
-                this["progress-style"] = ProgressBarStyle.ARROW
+                this["progress-variety"] = ProgressBarStyle.ARROW
                 this["progress-text-color"] = IntColor.black
                 this["progress-text"] = ProgressBarTextEnum.NONE
                 this["progress-min-height"] = 3
