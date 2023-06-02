@@ -28,7 +28,9 @@ object StyleStatementParser {
      */
     @JvmName("parser")
     operator fun invoke(statement: String, node: StyleNode): Boolean {
-        val (key, value) = statement.split(' ', ':', limit = 2).map { it.trim() }
+        val list = statement.split(' ', ':', limit = 2).map { it.trim() }
+        if (list.size != 2) return false
+        val (key, value) = list
         val item: Any = when (key) {
             "width" -> parserCalcStatement(value, false) { it.width }
             "height" -> parserCalcStatement(value, true) { it.height }
