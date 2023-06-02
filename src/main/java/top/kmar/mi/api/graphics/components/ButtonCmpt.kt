@@ -54,8 +54,8 @@ class ButtonCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
 
         override fun render(graphics: GuiGraphics) {
-            style.button.render(this, graphics, mouseOn)
-            if (style.button.style == ButtonStyleEnum.RECT) renderBorder(graphics)
+            style.buttonStyle.render(this, graphics, mouseOn)
+            if (style.buttonStyle.style == ButtonStyleEnum.RECT) renderBorder(graphics)
             val text = attributes["value", ""].run {
                 if (startsWith("i18n:", true)) {
                     I18n.format(substring(5))

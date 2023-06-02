@@ -22,8 +22,8 @@ import kotlin.math.roundToInt
 class ButtonStyleData(private val node: StyleNode) {
 
     var style: ButtonStyleEnum
-        get() = node.buttonStyle
-        set(value) { node.buttonStyle = value }
+        get() = node.buttonVariety
+        set(value) { node.buttonVariety = value }
 
     var direction: Direction2DEnum
         get() = node.buttonDirection

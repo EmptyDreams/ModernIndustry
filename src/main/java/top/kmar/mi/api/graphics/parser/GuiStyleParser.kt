@@ -55,30 +55,32 @@ object GuiStyleParser {
         val result = expMap.computeIfAbsent(key) { StyleSheet() }
         BufferedReader(ReaderUTF8(resourceManager.getResource(location).inputStream)).use { reader ->
             val builder = CmptExpBuilder()
-            val lines = LinkedList<String>()
+            var node = StyleNode()
+            var editStyle = false
 
-            /** 解析样式 */
-            fun parseStyle() {
-                val node = StyleNode()
-                lines.forEach { StyleStatementParser(it, node) }
-                builder.toExp { result.add(it, node) }
-            }
-
-            /** 解析选择表达式 */
-            fun parseCmptExp(level: Int) {
-                builder.goto(level)
-                lines.forEach { line ->
-                    line.splitToSequence(',')
+            /** 解析选择表达式或样式表达式 */
+            fun parseExpAndStyle(str: String, level: Int) {
+                val isStyle = StyleStatementParser(str, node)
+                if (isStyle) editStyle = true
+                else {
+                    if (editStyle) {
+                        builder.toExp { result.add(it, node) }
+                        node = StyleNode()
+                        editStyle = false
+                    }
+                    builder.goto(level)
+                    str.splitToSequence(',')
                         .filter { it.isNotBlank() }
                         .forEach { builder.addExp(ComplexCmptExp(it)) }
                 }
             }
 
             /** 解析 @ 语句 */
-            fun parseAt(content: String) {
+            fun parseAt(content: String, level: Int) {
                 val list = content.split(' ').filter { it.isNotBlank() }
                 if (list.size != 2) throw IllegalArgumentException("@ 语句格式固定为 @xxx xxx")
                 val (command, value) = list
+                builder.goto(level)
                 when (command) {
                     "import" -> {
                         val path = value.substringBetween('"')
@@ -95,28 +97,13 @@ object GuiStyleParser {
                 }
             }
 
-            var preLevel = 0
             reader.lines()
                 .filter { it.isNotBlank() }
                 .forEachOrdered {
                     val (index, count) = it.countStartSpace()
                     val level = count.floorDiv2()
-                    val isAt = it.startsWith("@", index)
-                    when {
-                        isAt -> parseAt(it.substring(index + 1))
-                        level == preLevel -> {}
-                        level > preLevel -> {
-                            parseCmptExp(preLevel)
-                            lines.clear()
-                        }
-                        else -> {
-                            parseStyle()
-                            lines.clear()
-                        }
-                    }
-                    if (!isAt)
-                        lines += it.trimEndAt(index)
-                    preLevel = level
+                    if (it[index] == '@') parseAt(it, level)
+                    else parseExpAndStyle(it, level)
                 }
         }
         return result

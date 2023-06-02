@@ -63,12 +63,12 @@ class StyleNode {
     val borderRight: BorderStyle by ObjectDelegate
     val borderBottom: BorderStyle by ObjectDelegate
     val borderLeft: BorderStyle by ObjectDelegate
-    val button: ButtonStyleData by ObjectDelegate
-    var buttonStyle: ButtonStyleEnum by ValueDelegate
+    val buttonStyle: ButtonStyleData by ObjectDelegate
+    var buttonVariety: ButtonStyleEnum by ValueDelegate
     var buttonDirection: Direction2DEnum by ValueDelegate
-    val progress: ProgressBarData by ObjectDelegate
+    val progressStyle: ProgressBarData by ObjectDelegate
     var progressDirection: Direction2DEnum by ValueDelegate
-    var progressStyle: ProgressBarStyle by ValueDelegate
+    var progressVariety: ProgressBarStyle by ValueDelegate
     var progressTextColor: IntColor by ValueDelegate
     var progressText: ProgressBarTextEnum by ValueDelegate
     var progressMinWidth: Int by ValueDelegate
@@ -81,6 +81,11 @@ class StyleNode {
     }
 
     companion object {
+
+        /** 判断指定字符串是否为样式名称 */
+        @JvmName("isStyleKey")
+        @JvmStatic
+        operator fun contains(key: String): Boolean = key in DEF_VALUE_MAP
 
         @JvmStatic
         private val DEF_VALUE_MAP =

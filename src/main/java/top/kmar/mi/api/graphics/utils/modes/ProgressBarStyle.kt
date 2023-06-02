@@ -27,8 +27,8 @@ class ProgressBarData(private val node: StyleNode) {
 
     /** 进度条样式 */
     var style: ProgressBarStyle
-        get() = node.progressStyle
-        set(value) { node.progressStyle = value }
+        get() = node.progressVariety
+        set(value) { node.progressVariety = value }
 
     /** 是否显示进度 */
     val showText: Boolean
@@ -90,12 +90,12 @@ enum class ProgressBarStyle {
                 val direction = progressDirection
                 if (direction.isVertical()) {
                     renderHelper(
-                        graphics, percent, cmpt.width, cmpt.height, progress.minWidth,
+                        graphics, percent, cmpt.width, cmpt.height, progressStyle.minWidth,
                         direction, backgroundColor, color
                     )
                 } else {
                     renderHelper(
-                        graphics, percent, cmpt.width, cmpt.height, progress.minHeight,
+                        graphics, percent, cmpt.width, cmpt.height, progressStyle.minHeight,
                         direction, backgroundColor, color
                     )
                 }
@@ -215,13 +215,13 @@ enum class ProgressBarStyle {
                 val direction = progressDirection
                 if (direction.isVertical()) {
                     renderHelper(
-                        graphics, percent, cmpt.height, cmpt.width, progress.minWidth,
+                        graphics, percent, cmpt.height, cmpt.width, progressStyle.minWidth,
                         borderRight, direction,
                         backgroundColor, color
                     )
                 } else {
                     renderHelper(
-                        graphics, percent, cmpt.height, cmpt.width, progress.minHeight,
+                        graphics, percent, cmpt.height, cmpt.width, progressStyle.minHeight,
                         borderBottom, direction,
                         backgroundColor, color
                     )

@@ -21,9 +21,10 @@ object StyleStatementParser {
      * 解析一条语句
      * @param statement 要解析的语句
      * @param node 结果存放的节点
+     * @return 是否解析成功
      */
     @JvmName("parser")
-    operator fun invoke(statement: String, node: StyleNode) {
+    operator fun invoke(statement: String, node: StyleNode): Boolean {
         val (key, value) = statement.split(' ', ':', limit = 2).map { it.trim() }
         val item: Any = when (key) {
             "width" -> parserCalcStatement(value, false) { it.width }
@@ -50,19 +51,20 @@ object StyleStatementParser {
                     { weight -> border.weight = weight }
                 )
             }
-            "button" -> parserButton(value, node.button)
-            "button-style" -> ButtonStyleEnum.from(value)
+            "button-style" -> parserButton(value, node.buttonStyle)
+            "button-variety" -> ButtonStyleEnum.from(value)
             "button-direction", "progress-direction" -> Direction2DEnum.from(value)
-            "progress" -> parserProgress(value, node.progress)
-            "progress-style" -> ProgressBarStyle.from(value)
+            "progress-style" -> parserProgress(value, node.progressStyle)
+            "progress-variety" -> ProgressBarStyle.from(value)
             "progress-text" -> ProgressBarTextEnum.from(value)
             "progress-min-width", "progress-max-height" -> {
                 assert(value.checkInt()) { "值不是整数：$value" }
                 value.toDecInt()
             }
-            else -> throw IllegalArgumentException("未知的属性名称：$key")
+            else -> return false
         }
         node[key] = item
+        return true
     }
 
     private fun parserProgress(value: String, progress: ProgressBarData): ProgressBarData {

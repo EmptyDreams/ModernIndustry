@@ -73,7 +73,7 @@ class ProgressBarCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         }
 
         override fun render(graphics: GuiGraphics) {
-            val progress = style.progress
+            val progress = style.progressStyle
             progress.render(this, graphics, percent)
             if (progress.showText) {
                 val textY = when (progress.text) {
