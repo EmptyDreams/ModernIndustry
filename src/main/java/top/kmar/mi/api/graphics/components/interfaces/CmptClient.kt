@@ -178,8 +178,8 @@ abstract class CmptClient(
             val client = it.client
             val style = client.style
             if (!style.display.isDisplay()) return@eachAllChildren
-            val width = contentWidth
-            val height = contentHeight
+            val width = client.width
+            val height = client.height
             if (width <= 0 || height <= 0) return@eachAllChildren
             val g = graphics.createGraphics(x + style.paddingLeft, y + style.paddingTop, width, height)
             //if (style.overflowHidden)
