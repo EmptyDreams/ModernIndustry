@@ -74,7 +74,7 @@ abstract class CmptClient(
         /** 请勿手动修改 */
         internal set
         get() {
-            parent.typesetting()
+            parent.typeset()
             return field
         }
     /** 相对于其父元素的 Y 轴坐标 */
@@ -82,7 +82,7 @@ abstract class CmptClient(
         /** 请勿手动修改 */
         internal set
         get() {
-            parent.typesetting()
+            parent.typeset()
             return field
         }
     /** 控件宽度（content + padding） */
@@ -146,8 +146,10 @@ abstract class CmptClient(
         group.clear()
     }
 
-    open fun typesetting() {
-        if (group.isInit) return
+    private var isTypeset = false
+    /** 自动排版 */
+    open fun typeset() {
+        if (isTypeset) return
         val list = group.get()
         style.alignHorizontal(this, list)
         style.alignVertical(this, list)
