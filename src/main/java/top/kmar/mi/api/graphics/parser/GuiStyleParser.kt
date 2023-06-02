@@ -106,6 +106,7 @@ object GuiStyleParser {
                     if (content.startsWith('@')) parseAt(content, level)
                     else parseExpAndStyle(content, level)
                 }
+            if (editStyle) builder.toExp { result.add(it, node) }
         }
         return result
     }
