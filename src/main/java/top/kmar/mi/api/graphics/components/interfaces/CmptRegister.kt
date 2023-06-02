@@ -1,6 +1,9 @@
 package top.kmar.mi.api.graphics.components.interfaces
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
+import top.kmar.mi.api.graphics.utils.style.StyleNode
+import top.kmar.mi.api.utils.MISysInfo
+import top.kmar.mi.api.utils.expands.applyClient
 
 /**
  * 控件注册机
@@ -20,6 +23,12 @@ object CmptRegister {
      */
     fun registry(key: String, component: Class<Cmpt>): Boolean {
         if (key in componentMap) return false
+        applyClient {
+            if (key in StyleNode) {
+                MISysInfo.err("警告：禁止将属性名称作为控件名称注册！该控件[$key]已被跳过注册。")
+                return false
+            }
+        }
         componentMap[key] = component
         return true
     }
@@ -28,8 +37,14 @@ object CmptRegister {
      * 强制注册一个控件，如果`key`已被注册则覆盖原有值
      *
      * 注意：非MI内置控件均应采用`modid:name`的格式命名，以防名称冲突
+     *
+     * @throws IllegalArgumentException 如果 [key] 的值属于样式的属性名称
      */
     fun registryForce(key: String, component: Class<Cmpt>) {
+        applyClient {
+            if (key in StyleNode)
+                throw IllegalArgumentException("警告：禁止将属性名称作为控件名称注册！")
+        }
         componentMap[key] = component
     }
 
