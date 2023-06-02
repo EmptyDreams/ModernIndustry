@@ -1,15 +1,15 @@
 package top.kmar.mi.api.graphics.utils.modes
 
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.utils.expands.eachWith
 import top.kmar.mi.api.utils.expands.flip
 
+@SideOnly(Side.CLIENT)
 sealed interface IAlignMode
 
-/**
- * 水平对齐方式
- * @author EmptyDreams
- */
+
 enum class HorizontalAlignModeEnum : IAlignMode {
 
     /** 左对齐 */

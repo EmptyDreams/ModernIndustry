@@ -2,6 +2,8 @@
 
 package top.kmar.mi.api.graphics.utils.modes
 
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.utils.GuiGraphics
@@ -18,6 +20,7 @@ import kotlin.math.roundToInt
  * 进度条样式数据
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 class ProgressBarData(private val node: StyleNode) {
 
     /** 进度条方向 */
@@ -58,9 +61,21 @@ class ProgressBarData(private val node: StyleNode) {
 
 }
 
+/**
+ * 进度条文本位置
+ * @author EmptyDreams
+ */
+@SideOnly(Side.CLIENT)
 enum class ProgressBarTextEnum {
 
-    HEAD, MIDDLE, TAIL, NONE;
+    /** 当进度条为横向时在进度条上方，否则在左侧 */
+    HEAD,
+    /** 在进度条中央 */
+    MIDDLE,
+    /** 当进度条为横向时在进度条下方，否则在右侧 */
+    TAIL,
+    /** 不显示文字 */
+    NONE;
 
     companion object {
 
@@ -82,6 +97,11 @@ enum class ProgressBarTextEnum {
 
 }
 
+/**
+ * 进度条样式
+ * @author EmptyDreams
+ */
+@SideOnly(Side.CLIENT)
 enum class ProgressBarStyle {
 
     ARROW {

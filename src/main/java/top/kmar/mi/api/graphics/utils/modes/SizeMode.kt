@@ -43,7 +43,6 @@ sealed interface ISizeMode {
  * 固定尺寸
  * @author EmptyDreams
  */
-@SideOnly(Side.CLIENT)
 class FixedSizeMode(
     val value: Int
 ) : ISizeMode {
@@ -62,7 +61,6 @@ class FixedSizeMode(
  * 百分比尺寸
  * @author EmptyDreams
  */
-@SideOnly(Side.CLIENT)
 class PercentSizeMode(
     val value: Double,
     val plus: Int,
@@ -102,7 +100,6 @@ class RelativeSizeMode(
  * 继承尺寸
  * @author EmptyDreams
  */
-@SideOnly(Side.CLIENT)
 class InheritSizeMode(
     val parentSize: Obj2IntFunction<CmptClient>
 ): ISizeMode {
@@ -121,7 +118,6 @@ class InheritSizeMode(
  * 根据子节点确定该节点尺寸
  * @author EmptyDreams
  */
-@SideOnly(Side.CLIENT)
 class AutoSizeMode(
     val isHeight: Boolean
 ) : ISizeMode {

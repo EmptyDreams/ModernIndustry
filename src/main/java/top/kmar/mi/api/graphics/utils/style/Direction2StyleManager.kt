@@ -1,9 +1,13 @@
 package top.kmar.mi.api.graphics.utils.style
 
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
+
 /**
  * 用于管理两个方向的样式数据
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 class Direction2StyleManager<T : Any>(
     private val node: StyleNode,
     val name: String

@@ -2,6 +2,8 @@ package top.kmar.mi.api.graphics.utils.style
 
 import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.ints.IntList
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.exps.ICmptExp
@@ -12,6 +14,7 @@ import top.kmar.mi.api.utils.expands.forEachFast
  * GUI 样式表
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 class StyleSheet : Iterable<Pair<ICmptExp, StyleNode>> {
 
     private val sheetKey = ArrayList<ICmptExp>()

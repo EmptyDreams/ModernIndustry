@@ -1,5 +1,7 @@
 package top.kmar.mi.api.graphics.parser
 
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.utils.modes.*
@@ -15,6 +17,7 @@ import top.kmar.mi.api.utils.interfaces.Obj2IntFunction
  * 样式表语句解析器
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 object StyleStatementParser {
 
     /**

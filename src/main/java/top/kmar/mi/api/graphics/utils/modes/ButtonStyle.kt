@@ -1,6 +1,8 @@
 package top.kmar.mi.api.graphics.utils.modes
 
 import net.minecraft.util.ResourceLocation
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.components.interfaces.IntColor.Companion.shadow
@@ -19,6 +21,7 @@ import kotlin.math.roundToInt
  * 按钮样式数据
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 class ButtonStyleData(private val node: StyleNode) {
 
     var style: ButtonStyleEnum
@@ -37,6 +40,7 @@ class ButtonStyleData(private val node: StyleNode) {
  * 按钮样式
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 enum class ButtonStyleEnum {
 
     RECT {

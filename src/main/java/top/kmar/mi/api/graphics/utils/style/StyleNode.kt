@@ -1,6 +1,8 @@
 package top.kmar.mi.api.graphics.utils.style
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.utils.modes.*
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
@@ -12,6 +14,7 @@ import kotlin.reflect.KProperty
  * @author EmptyDreams
  */
 @Suppress("UNCHECKED_CAST")
+@SideOnly(Side.CLIENT)
 class StyleNode {
 
     private val sheet = Object2ObjectOpenHashMap<String, Any>(16)

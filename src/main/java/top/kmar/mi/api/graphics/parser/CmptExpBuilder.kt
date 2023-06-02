@@ -1,5 +1,7 @@
 package top.kmar.mi.api.graphics.parser
 
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.utils.exps.ComplexCmptExp
 import top.kmar.mi.api.graphics.utils.exps.EmptyCmptExp
 import top.kmar.mi.api.graphics.utils.exps.ICmptExp
@@ -10,6 +12,7 @@ import java.util.*
  * 表达式构建器
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 class CmptExpBuilder {
 
     private val list = LinkedList<LinkedList<ComplexCmptExp>>()

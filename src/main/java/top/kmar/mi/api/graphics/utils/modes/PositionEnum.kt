@@ -1,11 +1,14 @@
 package top.kmar.mi.api.graphics.utils.modes
 
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.utils.expands.equalsIgnoreCase
 
 /**
  * 控件定位方法
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 enum class PositionEnum {
 
     /**

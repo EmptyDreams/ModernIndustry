@@ -1,9 +1,13 @@
 package top.kmar.mi.api.graphics.utils.modes
 
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
+
 /**
  * 显示模式
  * @author EmptyDreams
  */
+@SideOnly(Side.CLIENT)
 enum class DisplayModeEnum {
 
     /** 不显示 */
