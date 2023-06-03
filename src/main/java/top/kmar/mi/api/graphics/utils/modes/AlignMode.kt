@@ -3,9 +3,10 @@ package top.kmar.mi.api.graphics.utils.modes
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
+import top.kmar.mi.api.graphics.utils.CmptClientGroup
 import top.kmar.mi.api.utils.expands.eachWith
-import top.kmar.mi.api.utils.expands.flip
 import top.kmar.mi.api.utils.expands.floorDiv2
+import top.kmar.mi.api.utils.expands.stream
 
 @SideOnly(Side.CLIENT)
 sealed interface IAlignMode
@@ -15,9 +16,9 @@ enum class HorizontalAlignModeEnum : IAlignMode {
 
     /** 左对齐 */
     LEFT {
-        override fun typesetting(parent: CmptClient, list: List<CmptClient>) {
+        override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
             var x = 0
-            for (item in list) {
+            for (item in line) {
                 item.x = x
                 x += item.spaceWidth
             }
@@ -26,11 +27,10 @@ enum class HorizontalAlignModeEnum : IAlignMode {
 
     /** 居中对齐 */
     MIDDLE {
-        override fun typesetting(parent: CmptClient, list: List<CmptClient>) {
-            var width = 0
-            list.forEach { width += it.spaceWidth }
+        override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
+            val width = line.width
             var x = (parent.contentWidth - width) / 2
-            for (item in list) {
+            for (item in line) {
                 item.x = x
                 x += item.spaceWidth
             }
@@ -40,9 +40,9 @@ enum class HorizontalAlignModeEnum : IAlignMode {
 
     /** 右对齐 */
     RIGHT {
-        override fun typesetting(parent: CmptClient, list: List<CmptClient>) {
+        override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
             var x = parent.contentWidth
-            for (item in list.flip()) {
+            for (item in line.flip()) {
                 x -= item.spaceWidth
                 item.x = x
             }
@@ -50,15 +50,15 @@ enum class HorizontalAlignModeEnum : IAlignMode {
 
     };
 
-    protected abstract fun typesetting(parent: CmptClient, list: List<CmptClient>)
+    protected abstract fun typesetting(parent: CmptClient, line: CmptClientGroup.Line)
 
     /**
      * 排序指定列表中的控件
      * @param parent 父控件
-     * @param list 要排序的控件列表
+     * @param group 要排序的控件列表
      */
-    operator fun invoke(parent: CmptClient, list: List<List<CmptClient>>) {
-        list.forEach { typesetting(parent, it) }
+    operator fun invoke(parent: CmptClient, group: CmptClientGroup) {
+        group.forEach { typesetting(parent, it) }
     }
 
     companion object {
@@ -84,15 +84,12 @@ enum class VerticalAlignModeEnum : IAlignMode {
     /** 靠上排列 */
     TOP {
         override fun invoke(
-            parent: CmptClient, list: List<Collection<CmptClient>>
+            parent: CmptClient, group: CmptClientGroup
         ) {
-            val heightList = list.stream().mapToInt { line ->
-                line.stream().mapToInt { it.spaceHeight }.max().orElse(0)
-            }.toArray()
             var y = 0
-            for ((height, line) in heightList eachWith list) {
+            group.forEach { line ->
                 line.forEach { it.y = y }
-                y += height
+                y += line.height
             }
         }
     },
@@ -100,14 +97,14 @@ enum class VerticalAlignModeEnum : IAlignMode {
     /** 居中排列 */
     MIDDLE {
         override fun invoke(
-            parent: CmptClient, list: List<Collection<CmptClient>>
+            parent: CmptClient, group: CmptClientGroup
         ) {
-            val heightList = list.stream().mapToInt { line ->
-                line.stream().mapToInt { it.spaceHeight }.max().orElse(0)
+            val heightList = group.stream().mapToInt {
+                it.height
             }.toArray()
             val sum = heightList.sum()
             var y = (parent.contentHeight - sum) / 2
-            for ((height, line) in heightList eachWith list) {
+            for ((height, line) in heightList eachWith group) {
                 line.forEach {
                     it.y = y + (height - it.height).floorDiv2()
                 }
@@ -119,14 +116,11 @@ enum class VerticalAlignModeEnum : IAlignMode {
     /** 靠下排列 */
     BOTTOM {
         override fun invoke(
-            parent: CmptClient, list: List<Collection<CmptClient>>
+            parent: CmptClient, group: CmptClientGroup
         ) {
-            val heightList = list.stream().mapToInt { line ->
-                line.stream().mapToInt { it.spaceHeight }.max().orElse(0)
-            }.toArray()
             var y = parent.contentHeight
-            for ((height, line) in heightList eachWith list) {
-                y -= height
+            group.forEach { line ->
+                y -= line.height
                 line.forEach { it.y = y }
             }
         }
@@ -135,10 +129,10 @@ enum class VerticalAlignModeEnum : IAlignMode {
     /**
      * 对齐指定控件内的子控件
      * @param parent 父控件
-     * @param list 要排序的控件列表
+     * @param group 要排序的控件列表
      */
     abstract operator fun invoke(
-        parent: CmptClient, list: List<Collection<CmptClient>>
+        parent: CmptClient, group: CmptClientGroup
     )
 
     companion object {

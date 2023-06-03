@@ -10,6 +10,7 @@ import java.util.*
 import java.util.function.Predicate
 import java.util.function.Supplier
 import java.util.stream.Stream
+import java.util.stream.StreamSupport
 import kotlin.collections.ArrayDeque
 
 /**
@@ -102,6 +103,9 @@ inline fun <T> Array<T>.computeIfAbsent(index: Int, supplier: Supplier<T>): T {
 }
 
 inline fun <T> Array<T>.stream(): Stream<T> = Arrays.stream(this)
+
+inline fun <T> Iterable<T>.stream(): Stream<T> =
+    StreamSupport.stream(spliterator(), false)
 
 /** 如果表达式为真则倒序遍历，否则正序遍历 */
 infix fun <T> Array<T>.flipIf(isFlip: Boolean) =

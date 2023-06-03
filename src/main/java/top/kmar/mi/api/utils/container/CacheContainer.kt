@@ -1,5 +1,7 @@
 package top.kmar.mi.api.utils.container
 
+import kotlin.reflect.KProperty
+
 /**
  * 存储缓存内容
  * @author EmptyDreams
@@ -26,6 +28,12 @@ class CacheContainer<T>(private val supplier: () -> T) {
 
     fun clear() {
         value = null
+    }
+
+    operator fun getValue(obj: Any, property: KProperty<*>): T = invoke()
+
+    operator fun setValue(obj: Any, property: KProperty<*>, value: T?) {
+        this.value = value
     }
 
 }

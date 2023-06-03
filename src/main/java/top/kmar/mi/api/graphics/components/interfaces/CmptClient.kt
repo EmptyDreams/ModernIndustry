@@ -8,13 +8,11 @@ import net.minecraft.nbt.NBTTagString
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.BaseGraphicsClient
+import top.kmar.mi.api.graphics.utils.CmptClientGroup
 import top.kmar.mi.api.graphics.utils.GuiGraphics
-import top.kmar.mi.api.graphics.utils.modes.DisplayModeEnum
-import top.kmar.mi.api.graphics.utils.modes.PositionEnum
 import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.graphics.utils.style.StyleSheet
 import top.kmar.mi.api.net.messages.GraphicsMessage
-import top.kmar.mi.api.utils.container.CacheContainer
 import top.kmar.mi.api.utils.data.math.Point2D
 import java.util.*
 
@@ -52,22 +50,7 @@ abstract class CmptClient(
     /** 纵向布局更新标记，当值为 flag 时，访问 height 会重新计算值 */
     private var yLayoutUpdateFlag = true
     /** 分组信息 */
-    internal val group = CacheContainer<List<List<CmptClient>>> {
-        val result = LinkedList<LinkedList<CmptClient>>()
-        var prevDisplay = DisplayModeEnum.NONE
-        for (cmpt in service.childrenIterator()) {
-            val style = cmpt.client.style
-            val display = style.display
-            if (display == DisplayModeEnum.NONE || style.position != PositionEnum.RELATIVE)
-                continue
-            if (display == DisplayModeEnum.DEF || display != prevDisplay) {
-                result.add(LinkedList())
-                prevDisplay = display
-            }
-            result.last += cmpt.client
-        }
-        result
-    }
+    internal val group = CmptClientGroup(service)
 
     /** 相对于其父元素的 X 轴坐标 */
     var x: Int = 0
@@ -153,9 +136,8 @@ abstract class CmptClient(
     open fun typeset() {
         if (isTypeset) return
         isTypeset = true
-        val list = group.get()
-        style.alignHorizontal(this, list)
-        style.alignVertical(this, list)
+        style.alignHorizontal(this, group)
+        style.alignVertical(this, group)
     }
 
     /** 获取缺省的样式，该函数的结果不应当被缓存 */
