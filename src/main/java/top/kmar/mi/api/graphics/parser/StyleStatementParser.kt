@@ -209,7 +209,7 @@ object StyleStatementParser {
     /** 解析 display 表达式 */
     private fun parserDisplay(value: String): DisplayModeEnum =
         when (value) {
-            "block" -> DisplayModeEnum.DEF
+            "block" -> DisplayModeEnum.BLOCK
             "inline" -> DisplayModeEnum.INLINE
             "none" -> DisplayModeEnum.NONE
             else -> throw IllegalArgumentException("未知的表达式：$value")

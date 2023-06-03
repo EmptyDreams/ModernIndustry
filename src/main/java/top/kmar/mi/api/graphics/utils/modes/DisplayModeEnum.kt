@@ -13,7 +13,7 @@ enum class DisplayModeEnum {
     /** 不显示 */
     NONE,
     /** 独自一行 */
-    DEF,
+    BLOCK,
     /** 行内显示 */
     INLINE;
 
