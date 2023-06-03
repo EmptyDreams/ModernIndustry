@@ -85,7 +85,6 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
             width = InheritSizeMode { it.width }
             height = FixedSizeMode(18 * 4 + 4 + Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 1)
             marginTop = 5
-            marginBottom = 7
         }
 
         override fun render(graphics: GuiGraphics) {

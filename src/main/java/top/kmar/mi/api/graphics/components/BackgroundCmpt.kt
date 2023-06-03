@@ -1,5 +1,6 @@
 package top.kmar.mi.api.graphics.components
 
+import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
@@ -30,6 +31,8 @@ class BackgroundCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             borderLeft.color = IntColor.white
             backgroundColor = IntColor.black
             color = IntColor.lightGray
+            paddingTop = Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 8
+            paddingBottom = 7
         }
 
         override fun render(graphics: GuiGraphics) {
