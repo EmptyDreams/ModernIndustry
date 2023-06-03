@@ -44,6 +44,10 @@ class StyleNode {
 
     var width: ISizeMode by ValueDelegate
     var height: ISizeMode by ValueDelegate
+    var top: Int by ValueDelegate
+    var right: Int by ValueDelegate
+    var bottom: Int by ValueDelegate
+    var left: Int by ValueDelegate
     val padding: Direction4StyleManager<Int> by ObjectDelegate
     val margin: Direction4StyleManager<Int> by ObjectDelegate
     var paddingTop: Int by ValueDelegate
@@ -95,6 +99,10 @@ class StyleNode {
             Object2ObjectOpenHashMap<String, Any>(64).apply {
                 this["width"] = AutoSizeMode(false)
                 this["height"] = AutoSizeMode(true)
+                this["top"] = 0
+                this["right"] = 0
+                this["bottom"] = 0
+                this["left"] = 0
                 this["padding"] = Function<StyleNode, Any> { Direction4StyleManager<Int>(it, "padding") }
                 this["margin"] = Function<StyleNode, Any> { Direction4StyleManager<Int>(it, "margin") }
                 this["padding-top"] = 0

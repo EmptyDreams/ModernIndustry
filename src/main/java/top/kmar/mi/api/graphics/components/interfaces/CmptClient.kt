@@ -138,6 +138,19 @@ abstract class CmptClient(
         isTypeset = true
         style.alignHorizontal(this, group)
         style.alignVertical(this, group)
+        group.absoluteList.forEach {
+            val style = it.style
+            when {
+                "left" in style -> it.x = style.left + style.marginLeft
+                "right" in style -> it.x = contentWidth - it.width - style.right - style.marginRight
+                else -> it.x = style.marginLeft
+            }
+            when {
+                "top" in style -> it.y = style.top + style.marginTop
+                "bottom" in style -> it.y = contentHeight - it.height - style.bottom - style.marginBottom
+                else -> it.y = style.marginTop
+            }
+        }
     }
 
     /** 获取缺省的样式，该函数的结果不应当被缓存 */
