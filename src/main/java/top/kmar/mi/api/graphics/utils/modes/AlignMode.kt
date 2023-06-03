@@ -17,7 +17,7 @@ enum class HorizontalAlignModeEnum : IAlignMode {
     /** 左对齐 */
     LEFT {
         override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
-            var x = 0
+            var x = parent.style.paddingLeft
             for (item in line) {
                 item.x = x
                 x += item.spaceWidth
@@ -29,7 +29,7 @@ enum class HorizontalAlignModeEnum : IAlignMode {
     MIDDLE {
         override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
             val width = line.width
-            var x = (parent.contentWidth - width) / 2
+            var x = (parent.contentWidth - width) / 2 + parent.style.paddingLeft
             for (item in line) {
                 item.x = x
                 x += item.spaceWidth
@@ -41,7 +41,7 @@ enum class HorizontalAlignModeEnum : IAlignMode {
     /** 右对齐 */
     RIGHT {
         override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
-            var x = parent.contentWidth
+            var x = parent.contentWidth + parent.style.paddingLeft
             for (item in line.flip()) {
                 x -= item.spaceWidth
                 item.x = x
@@ -86,7 +86,7 @@ enum class VerticalAlignModeEnum : IAlignMode {
         override fun invoke(
             parent: CmptClient, group: CmptClientGroup
         ) {
-            var y = 0
+            var y = parent.style.paddingTop
             group.forEach { line ->
                 line.forEach { it.y = y }
                 y += line.height
@@ -103,7 +103,7 @@ enum class VerticalAlignModeEnum : IAlignMode {
                 it.height
             }.toArray()
             val sum = heightList.sum()
-            var y = (parent.contentHeight - sum) / 2
+            var y = (parent.contentHeight - sum) / 2 + parent.style.paddingTop
             for ((height, line) in heightList eachWith group) {
                 line.forEach {
                     it.y = y + (height - it.height).floorDiv2()
@@ -118,7 +118,7 @@ enum class VerticalAlignModeEnum : IAlignMode {
         override fun invoke(
             parent: CmptClient, group: CmptClientGroup
         ) {
-            var y = parent.contentHeight
+            var y = parent.contentHeight + parent.style.paddingLeft
             group.forEach { line ->
                 y -= line.height
                 line.forEach { it.y = y }
