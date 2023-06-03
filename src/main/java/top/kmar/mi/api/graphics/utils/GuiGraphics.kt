@@ -168,7 +168,7 @@ class GuiGraphics(
      */
     fun createGraphics(x: Int, y: Int, width: Int, height: Int): GuiGraphics {
         val thisRect = Rect2D(this.x, this.y, this.width, this.height)
-        val thatRect = Rect2D(x, y, width, height)
+        val thatRect = Rect2D(x + this.x, y + this.y, width, height)
         val rect = thisRect.intersect(thatRect)
         return GuiGraphics(rect.x, rect.y, rect.width, rect.height, container)
     }
@@ -191,6 +191,7 @@ class GuiGraphics(
      * @return 是否进行了裁剪
      */
     fun scissor(): Boolean {
+        return false
         GL11.glEnable(GL11.GL_SCISSOR_TEST)
         GL11.glScissor(clipRect.x, clipRect.y, clipRect.width, clipRect.height)
         return true

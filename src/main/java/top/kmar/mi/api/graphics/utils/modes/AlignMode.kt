@@ -5,6 +5,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.utils.expands.eachWith
 import top.kmar.mi.api.utils.expands.flip
+import top.kmar.mi.api.utils.expands.floorDiv2
 
 @SideOnly(Side.CLIENT)
 sealed interface IAlignMode
@@ -107,7 +108,9 @@ enum class VerticalAlignModeEnum : IAlignMode {
             val sum = heightList.sum()
             var y = (parent.contentHeight - sum) / 2
             for ((height, line) in heightList eachWith list) {
-                line.forEach { it.y = y }
+                line.forEach {
+                    it.y = y + (height - it.height).floorDiv2()
+                }
                 y += height
             }
         }

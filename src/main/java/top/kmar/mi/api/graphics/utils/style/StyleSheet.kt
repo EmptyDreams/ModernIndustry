@@ -20,9 +20,13 @@ class StyleSheet : Iterable<Pair<ICmptExp, StyleNode>> {
     private val sheetKey = ArrayList<ICmptExp>()
     private val sheetValue = ArrayList<StyleNode>()
 
-    /** 根据 ID 获取样式 */
+    /**
+     * 根据 ID 获取样式
+     * @param list 列表为空或元素数量为 1 且元素值为 -1 时表明获取空的样式
+     */
     fun getStyle(list: IntList): StyleNode {
         val result = StyleNode()
+        if (list.isEmpty() || (list.size == 1 && list.getInt(0) == -1)) return result
         list.forEachFast { result.merge(sheetValue[it]) }
         return result
     }
@@ -42,6 +46,7 @@ class StyleSheet : Iterable<Pair<ICmptExp, StyleNode>> {
         sheetKey.forEachIndexed { index, exp ->
             if (exp.match(cmpt)) result += index
         }
+        if (result.isEmpty) result.add(-1)
         result.trim()
         return result
     }

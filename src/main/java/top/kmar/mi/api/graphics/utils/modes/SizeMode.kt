@@ -126,9 +126,18 @@ class AutoSizeMode(
     override val relyOnChild = true
 
     override fun invoke(dist: CmptClient): Int =
-        dist.group.get().stream()
-            .mapToInt { it.stream().mapToInt { cmpt -> if (isHeight) cmpt.spaceHeight else cmpt.spaceWidth }.sum() }
-            .max().orElse(0)
+        if (isHeight) dist.group.get().stream()
+            .mapToInt {
+                it.stream().mapToInt { cmpt ->
+                    cmpt.spaceHeight
+                }.max().orElse(0)
+            }.sum()
+        else dist.group().stream()
+            .mapToInt {
+                it.stream().mapToInt {
+                    cmpt -> cmpt.spaceWidth
+                }.sum()
+            }.max().orElse(0)
 
 }
 

@@ -108,8 +108,8 @@ class StyleNode {
                 this["display"] = DisplayModeEnum.DEF
                 this["position"] = PositionEnum.RELATIVE
                 this["align"] = Function<StyleNode, Any> { Direction2StyleManager<IAlignMode>(it, "align") }
-                this["align-vertical"] = VerticalAlignModeEnum.TOP
-                this["align-horizontal"] = HorizontalAlignModeEnum.LEFT
+                this["align-vertical"] = VerticalAlignModeEnum.MIDDLE
+                this["align-horizontal"] = HorizontalAlignModeEnum.MIDDLE
                 this["color"] = IntColor.black
                 this["background-color"] = IntColor.transparent
                 this["border"] = Function<StyleNode, Any> { Direction4StyleManager<BorderStyle>(it, "border") }

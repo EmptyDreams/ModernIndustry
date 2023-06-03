@@ -59,17 +59,20 @@ class ComplexCmptExp(
         var num = 0
         var target = cmpt
         o@ for (exp in list.flip()) {
+            if (target === Cmpt.EMPTY_CMPT) break
             if (num == 0) {
                 if (exp.match(cmpt)) {
                     num = 1
                     target = cmpt.parent
-                    if (target === Cmpt.EMPTY_CMPT) break
                 } else return false
+            } else if (exp.match(target)) {
+                target = target.parent
+                ++num
             } else {
-                while (!exp.match(target)) {
+                do {
                     target = target.parent
                     if (target === Cmpt.EMPTY_CMPT) break@o
-                }
+                } while (!exp.match(target))
                 ++num
             }
             if (num == list.size) return true

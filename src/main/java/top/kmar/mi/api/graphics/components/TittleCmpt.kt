@@ -10,6 +10,7 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.*
 import top.kmar.mi.api.graphics.utils.modes.FixedSizeMode
 import top.kmar.mi.api.graphics.utils.modes.InheritSizeMode
+import top.kmar.mi.api.graphics.utils.modes.PositionEnum
 import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.regedits.others.AutoCmpt
 import top.kmar.mi.api.utils.expands.floorDiv2
@@ -31,6 +32,7 @@ class TittleCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         override fun defaultStyle() = StyleNode().apply {
             width = InheritSizeMode { it.width }
             height = FixedSizeMode(Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT)
+            position = PositionEnum.ABSOLUTE
             marginTop = 8
             marginBottom = 2
         }

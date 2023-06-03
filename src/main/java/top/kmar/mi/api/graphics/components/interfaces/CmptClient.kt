@@ -60,7 +60,7 @@ abstract class CmptClient(
             val display = style.display
             if (display == DisplayModeEnum.NONE || style.position != PositionEnum.RELATIVE)
                 continue
-            if (display != prevDisplay) {
+            if (display == DisplayModeEnum.DEF || display != prevDisplay) {
                 result.add(LinkedList())
                 prevDisplay = display
             }
@@ -97,8 +97,8 @@ abstract class CmptClient(
         set(value) {
             if (value != field) {
                 field = value
-                group.clear()
                 xLayoutUpdateFlag = true
+                isTypeset = false
             }
         }
     /** 控件高度（content + padding） */
@@ -113,8 +113,8 @@ abstract class CmptClient(
         set(value) {
             if (value != field) {
                 field = value
-                group.clear()
                 yLayoutUpdateFlag = true
+                isTypeset = false
             }
         }
 
@@ -138,18 +138,21 @@ abstract class CmptClient(
     fun markXLayoutUpdate() {
         xLayoutUpdateFlag = true
         group.clear()
+        isTypeset = false
     }
 
     /** 标记纵向布局更新 */
     fun markYLayoutUpdate() {
         yLayoutUpdateFlag = true
         group.clear()
+        isTypeset = false
     }
 
     private var isTypeset = false
     /** 自动排版 */
     open fun typeset() {
         if (isTypeset) return
+        isTypeset = true
         val list = group.get()
         style.alignHorizontal(this, list)
         style.alignVertical(this, list)
