@@ -125,8 +125,13 @@ class AutoSizeMode(
     override val relyOnParent = false
     override val relyOnChild = true
 
-    override fun invoke(dist: CmptClient): Int =
-        if (isHeight) dist.group.height else dist.group.width
+    override fun invoke(dist: CmptClient): Int {
+        val style = dist.style
+        return if (isHeight)
+            dist.group.height + style.paddingTop + style.paddingBottom
+        else
+            dist.group.width + style.paddingLeft + style.paddingRight
+    }
 
 }
 
