@@ -57,9 +57,10 @@ abstract class Cmpt(
     var isInstallParent = false
     /** 类名列表 */
     val classList = ClassList {
-        applyClient {
-            client.styleIdList.clear()
-        }
+        if (isInstallParent)
+            applyClient {
+                client.styleIdList.clear()
+            }
     }
 
     /** 初始化客户端对象 */

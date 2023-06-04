@@ -15,6 +15,7 @@ import top.kmar.mi.api.utils.container.PairIntObj
 import top.kmar.mi.api.utils.expands.countStartSpace
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.*
 import kotlin.io.path.extension
 import kotlin.io.path.nameWithoutExtension
 
@@ -74,11 +75,13 @@ object GuiFileParser {
             val (index0, length) = content.countStartSpace()
             val (index1, tag) = content.getTag(index0)
             val (index2, id) = content.getID(index1)
-            val attributes = content.getAttributes(index2)
+            val (index3, classList) = content.getClassList(index2)
+            val attributes = content.getAttributes(index3)
             val level = length shr 2
             attributes.id = id
             attributes["level"] = level.toString()
             val cmptObj = CmptRegister.buildServiceCmpt<Cmpt>(tag, attributes)
+            classList.forEach { cmptObj.classList += it }
             // 将Cmpt插入到树中
             if (level > preLevel) {
                 preEle.addChild(cmptObj)
@@ -120,6 +123,31 @@ object GuiFileParser {
                 return PairIntObj(i, substring(start + 1 until i))
         }
         return PairIntObj(length, substring(start + 1))
+    }
+
+    /** 获取字符串中的类名 */
+    private fun String.getClassList(start: Int): PairIntObj<Collection<String>> {
+        if (length == start || this[start] != '.') return PairIntObj(start, emptyList())
+        val list = LinkedList<String>()
+        val sb = StringBuilder()
+        for (i in start + 1 until length) {
+            val it = this[i]
+            when {
+                it.isLetter() || it.isDigit() || it == '-' -> {
+                    sb.append(it)
+                }
+                it == '.' -> {
+                    list += sb.toString()
+                    sb.clear()
+                }
+                else -> {
+                    list += sb.toString()
+                    return PairIntObj(i, list)
+                }
+            }
+        }
+        if (sb.isNotEmpty()) list += sb.toString()
+        return PairIntObj(length, list)
     }
 
     /** 获取属性列表 */
