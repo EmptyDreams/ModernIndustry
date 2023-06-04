@@ -48,6 +48,9 @@ inline fun Int.swapIf(other: Int, bool: Boolean): PairIntInt {
     return if (bool) PairIntInt(other, this) else PairIntInt(this, other)
 }
 
+/** 乘 2 */
+inline fun Int.times2(): Int = this shl 1
+
 /** 除2，向下取整 */
 inline fun Int.floorDiv2(): Int {
     assert(this >= 0)

@@ -7,6 +7,8 @@ import top.kmar.mi.api.graphics.utils.CmptClientGroup
 import top.kmar.mi.api.utils.expands.eachWith
 import top.kmar.mi.api.utils.expands.floorDiv2
 import top.kmar.mi.api.utils.expands.stream
+import top.kmar.mi.api.utils.expands.times2
+import kotlin.math.roundToInt
 
 @SideOnly(Side.CLIENT)
 sealed interface IAlignMode
@@ -17,19 +19,8 @@ sealed interface IAlignMode
  */
 enum class HorizontalAlignModeEnum : IAlignMode {
 
-    /** 左对齐 */
-    LEFT {
-        override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
-            var x = parent.style.paddingLeft
-            for (item in line) {
-                item.x = x + item.style.marginLeft
-                x += item.spaceWidth
-            }
-        }
-    },
-
     /** 居中对齐 */
-    MIDDLE {
+    CENTER {
         override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
             val width = line.width
             var x = (parent.contentWidth - width) / 2 + parent.style.paddingLeft
@@ -40,9 +31,18 @@ enum class HorizontalAlignModeEnum : IAlignMode {
         }
 
     },
-
+    /** 左对齐 */
+    START {
+        override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
+            var x = parent.style.paddingLeft
+            for (item in line) {
+                item.x = x + item.style.marginLeft
+                x += item.spaceWidth
+            }
+        }
+    },
     /** 右对齐 */
-    RIGHT {
+    END {
         override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
             var x = parent.contentWidth + parent.style.paddingLeft
             for (item in line.flip()) {
@@ -51,6 +51,47 @@ enum class HorizontalAlignModeEnum : IAlignMode {
             }
         }
 
+    },
+    /** 两端对齐，若只有一个元素，则将元素放置在最左侧 */
+    BETWEEN {
+        override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
+            val amount = line.size - 1
+            if (amount == 0) {
+                line.forEach { it.x = parent.style.paddingLeft }
+            } else {
+                val interval = (parent.contentWidth - line.width) / amount.toFloat()
+                var x = parent.style.paddingLeft.toFloat()
+                line.forEach {
+                    it.x = x.roundToInt()
+                    x += it.spaceWidth + interval
+                }
+            }
+        }
+    },
+    /** 均匀的排列元素，每个元素之间的间隔相同，若只有一个元素，则将该元素居中 */
+    EVENLY {
+        override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
+            val amount = line.size + 1
+            val interval = (parent.contentWidth - line.width) / amount.toFloat()
+            var x = parent.style.paddingLeft + interval
+            line.forEach {
+                it.x = x.roundToInt()
+                x += it.spaceWidth + interval
+            }
+        }
+    },
+    /** 均匀地排列元素，为每个元素左右分配相同的间隙，若只有一个元素，则将该元素居中 */
+    AROUND {
+        override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
+            val amount = line.size.times2()
+            val interval = (parent.contentWidth - line.width) / amount.toFloat()
+            var x = parent.style.paddingLeft.toFloat()
+            line.forEach {
+                x += interval
+                it.x = x.roundToInt()
+                x += it.spaceWidth + interval
+            }
+        }
     };
 
     protected abstract fun typesetting(parent: CmptClient, line: CmptClientGroup.Line)
@@ -69,9 +110,12 @@ enum class HorizontalAlignModeEnum : IAlignMode {
         @JvmStatic
         fun of(name: String): HorizontalAlignModeEnum =
             when (name) {
-                "left" -> LEFT
-                "middle" -> MIDDLE
-                "right" -> RIGHT
+                "center" -> CENTER
+                "start", "flex-start" -> START
+                "end", "flex-end" -> END
+                "space-between" -> BETWEEN
+                "space-around" -> AROUND
+                "space-evenly" -> EVENLY
                 else -> throw IllegalArgumentException("未知名称：$name")
             }
 
@@ -85,24 +129,9 @@ enum class HorizontalAlignModeEnum : IAlignMode {
  */
 enum class VerticalAlignModeEnum : IAlignMode {
 
-    /** 靠上排列 */
-    TOP {
-        override fun invoke(
-            parent: CmptClient, group: CmptClientGroup
-        ) {
-            var y = parent.style.paddingTop
-            group.forEach { line ->
-                line.forEach { it.y = y + it.style.marginTop }
-                y += line.height
-            }
-        }
-    },
-
     /** 居中排列 */
-    MIDDLE {
-        override fun invoke(
-            parent: CmptClient, group: CmptClientGroup
-        ) {
+    CENTER {
+        override fun invoke(parent: CmptClient, group: CmptClientGroup) {
             val heightList = group.stream().mapToInt {
                 it.height
             }.toArray()
@@ -116,16 +145,67 @@ enum class VerticalAlignModeEnum : IAlignMode {
             }
         }
     },
-
+    /** 靠上排列 */
+    START {
+        override fun invoke(parent: CmptClient, group: CmptClientGroup) {
+            var y = parent.style.paddingTop
+            group.forEach { line ->
+                line.forEach { it.y = y + it.style.marginTop }
+                y += line.height
+            }
+        }
+    },
     /** 靠下排列 */
-    BOTTOM {
-        override fun invoke(
-            parent: CmptClient, group: CmptClientGroup
-        ) {
+    END {
+        override fun invoke(parent: CmptClient, group: CmptClientGroup) {
             var y = parent.contentHeight + parent.style.paddingLeft
             group.forEach { line ->
                 y -= line.height
                 line.forEach { it.y = y + it.style.marginTop }
+            }
+        }
+    },
+    /** 两端排列，若只有一行元素，则将该行元素放置在顶部 */
+    BETWEEN {
+        override fun invoke(parent: CmptClient, group: CmptClientGroup) {
+            val amount = group.size - 1
+            if (amount == 0) {
+                group.forEach { line -> line.forEach { it.y = parent.style.paddingTop } }
+            } else {
+                val interval = (parent.contentHeight - group.height) / amount.toFloat()
+                var y = parent.style.paddingTop.toFloat()
+                group.forEach { line ->
+                    val ty = y.roundToInt()
+                    line.forEach { it.y = ty }
+                    y += line.height + interval
+                }
+            }
+        }
+    },
+    /** 均匀地排列行，每行之间的间隔相同，若只有一行，则将该行居中 */
+    EVENLY {
+        override fun invoke(parent: CmptClient, group: CmptClientGroup) {
+            val amount = group.size + 1
+            val interval = (parent.contentHeight - group.height) / amount.toFloat()
+            var y = parent.style.paddingTop + interval
+            group.forEach { line ->
+                val ty = y.roundToInt()
+                line.forEach { it.y = ty }
+                y += line.height + interval
+            }
+        }
+    },
+    /** 均匀地排列行，为每行上下分配相同地空隙，若只有一行，则将该行居中 */
+    AROUND {
+        override fun invoke(parent: CmptClient, group: CmptClientGroup) {
+            val amount = group.size.times2()
+            val interval = (parent.contentHeight - group.height) / amount.toFloat()
+            var y = parent.style.paddingTop.toFloat()
+            group.forEach { line ->
+                y += interval
+                val ty = y.roundToInt()
+                line.forEach { it.y = ty }
+                y += line.height + interval
             }
         }
     };
@@ -144,9 +224,12 @@ enum class VerticalAlignModeEnum : IAlignMode {
         @JvmStatic
         fun of(name: String): VerticalAlignModeEnum =
             when (name) {
-                "top" -> TOP
-                "middle" -> MIDDLE
-                "bottom" -> BOTTOM
+                "center" -> CENTER
+                "start", "flex-start" -> START
+                "end", "flex-end" -> END
+                "space-between" -> BETWEEN
+                "space-around" -> AROUND
+                "space-evenly" -> EVENLY
                 else -> throw IllegalArgumentException("未知名称：$name")
             }
 

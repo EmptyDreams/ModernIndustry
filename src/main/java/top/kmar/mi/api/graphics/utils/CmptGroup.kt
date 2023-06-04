@@ -23,6 +23,12 @@ class CmptClientGroup(private val cmpt: Cmpt) : Iterable<CmptClientGroup.Line> {
     private lateinit var absolute: MutableList<CmptClient>
     private lateinit var fixed: MutableList<CmptClient>
 
+    /** 获取行数 */
+    val size: Int
+        get() {
+            group()
+            return list.size
+        }
     /** 获取最大宽度 */
     val width: Int
         get() {
@@ -94,6 +100,9 @@ class CmptClientGroup(private val cmpt: Cmpt) : Iterable<CmptClientGroup.Line> {
 
         private val list = LinkedList<CmptClient>()
 
+        /** 获取元素个数 */
+        val size: Int
+            get() = list.size
         /** 获取宽度之和 */
         val width: Int
             get() = list.stream().mapToInt {
