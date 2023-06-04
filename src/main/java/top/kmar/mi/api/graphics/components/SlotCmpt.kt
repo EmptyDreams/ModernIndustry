@@ -82,8 +82,8 @@ open class SlotCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
         final override fun render(graphics: GuiGraphics) {
             val style = client.style
-            val x = x + width.floorDiv2() + style.borderLeft.weight - 9
-            val y = y + height.floorDiv2() + style.borderTop.weight - 9
+            val x = localX + width.floorDiv2() + style.borderLeft.weight - 9
+            val y = localY + height.floorDiv2() + style.borderTop.weight - 9
             if (x != slot.xPos && y != slot.yPos) {
                 val message = NBTTagCompound().apply {
                     setInteger("x", x)

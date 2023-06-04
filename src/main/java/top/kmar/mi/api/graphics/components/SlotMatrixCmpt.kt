@@ -102,7 +102,7 @@ class SlotMatrixCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
 
         override fun render(graphics: GuiGraphics) {
             val offset = (size - 18).floorDiv2() + 1
-            syncPos(x + offset, y + offset)
+            syncPos(localX + offset, localY + offset)
             super.render(graphics)
         }
 

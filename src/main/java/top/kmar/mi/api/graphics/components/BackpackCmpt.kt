@@ -91,8 +91,8 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
             val firstSlot = mainSlots[0][0]
             val offsetX = (width - (18 * 9)).floorDiv2()
             val fontHeight = graphics.fontRenderer.FONT_HEIGHT + 1
-            val startX = offsetX + x + 1
-            val startY = y + 1 + fontHeight
+            val startX = offsetX + localX + 1
+            val startY = localY + 1 + fontHeight
             // 网络通信
             if (startX != firstSlot.xPos || startY != firstSlot.yPos) {
                 initSlotsPos(startX, startY)
