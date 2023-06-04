@@ -89,7 +89,7 @@ enum class ProgressBarTextEnum {
                 "head" -> HEAD
                 "middle", "center" -> MIDDLE
                 "tail" -> TAIL
-                "none", "0" -> NONE
+                "none" -> NONE
                 else -> null
             }
 

@@ -80,6 +80,10 @@ object StyleStatementParser {
                 when (item) {
                     "rect" -> progress.style = ProgressBarStyle.RECT
                     "arrow" -> progress.style = ProgressBarStyle.ARROW
+                    "top" -> progress.direction = Direction2DEnum.UP
+                    "right" -> progress.direction = Direction2DEnum.RIGHT
+                    "bottom" -> progress.direction = Direction2DEnum.DOWN
+                    "left" -> progress.direction = Direction2DEnum.LEFT
                     else -> {
                         val text = ProgressBarTextEnum.tryFrom(item)
                         if (text != null) {
