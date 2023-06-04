@@ -23,4 +23,16 @@ enum class DisplayModeEnum {
     /** 是否进行绘制 */
     fun isDisplay() = this != NONE
 
+    companion object {
+
+        @JvmStatic
+        fun of(name: String): DisplayModeEnum = when (name) {
+            "block" -> BLOCK
+            "inline" -> INLINE
+            "none" -> NONE
+            else -> throw IllegalArgumentException("未知的名称：$name")
+        }
+
+    }
+
 }

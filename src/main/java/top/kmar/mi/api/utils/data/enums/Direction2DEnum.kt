@@ -34,7 +34,7 @@ enum class Direction2DEnum {
     companion object {
 
         @JvmStatic
-        fun from(name: String): Direction2DEnum =
+        fun of(name: String): Direction2DEnum =
             when (name) {
                 "top", "up" -> UP
                 "right" -> RIGHT

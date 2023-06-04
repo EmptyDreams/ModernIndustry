@@ -66,7 +66,8 @@ enum class HorizontalAlignModeEnum : IAlignMode {
 
     companion object {
 
-        fun from(name: String): HorizontalAlignModeEnum =
+        @JvmStatic
+        fun of(name: String): HorizontalAlignModeEnum =
             when (name) {
                 "left" -> LEFT
                 "middle" -> MIDDLE
@@ -140,7 +141,8 @@ enum class VerticalAlignModeEnum : IAlignMode {
 
     companion object {
 
-        fun from(name: String): VerticalAlignModeEnum =
+        @JvmStatic
+        fun of(name: String): VerticalAlignModeEnum =
             when (name) {
                 "top" -> TOP
                 "middle" -> MIDDLE

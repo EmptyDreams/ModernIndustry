@@ -80,11 +80,11 @@ enum class ProgressBarTextEnum {
     companion object {
 
         @JvmStatic
-        fun from(name: String) =
-            tryFrom(name) ?: throw IllegalArgumentException("未知名称：$name")
+        fun of(name: String) =
+            tryOf(name) ?: throw IllegalArgumentException("未知名称：$name")
 
         @JvmStatic
-        internal fun tryFrom(name: String): ProgressBarTextEnum? =
+        internal fun tryOf(name: String): ProgressBarTextEnum? =
             when(name) {
                 "head" -> HEAD
                 "middle", "center" -> MIDDLE
@@ -294,7 +294,7 @@ enum class ProgressBarStyle {
     companion object {
 
         @JvmStatic
-        fun from(name: String): ProgressBarStyle =
+        fun of(name: String): ProgressBarStyle =
             when (name) {
                 "rect" -> RECT
                 "arrow" -> ARROW

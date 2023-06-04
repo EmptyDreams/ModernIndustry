@@ -41,11 +41,11 @@ object StyleStatementParser {
                 assert(value.checkInt()) { "值不是整数：$value" }
                 value.toDecInt()
             }
-            "display" -> parserDisplay(value)
+            "display" -> DisplayModeEnum.of(value)
             "position" -> PositionEnum.of(value)
             "align" -> parserAlign(value, node.align)
-            "align-vertical" -> VerticalAlignModeEnum.from(value)
-            "align-horizontal" -> HorizontalAlignModeEnum.from(value)
+            "align-vertical" -> VerticalAlignModeEnum.of(value)
+            "align-horizontal" -> HorizontalAlignModeEnum.of(value)
             "color", "background-color", "progress-text-color" -> IntColor(value)
             "border" -> parserBorderAll(value, node.border)
             "border-left", "border-right", "border-top", "border-bottom" -> {
@@ -57,11 +57,11 @@ object StyleStatementParser {
                 )
             }
             "button-style" -> parserButton(value, node.buttonStyle)
-            "button-variety" -> ButtonStyleEnum.from(value)
-            "button-direction", "progress-direction" -> Direction2DEnum.from(value)
+            "button-variety" -> ButtonStyleEnum.of(value)
+            "button-direction", "progress-direction" -> Direction2DEnum.of(value)
             "progress-style" -> parserProgress(value, node.progressStyle)
-            "progress-variety" -> ProgressBarStyle.from(value)
-            "progress-text" -> ProgressBarTextEnum.from(value)
+            "progress-variety" -> ProgressBarStyle.of(value)
+            "progress-text" -> ProgressBarTextEnum.of(value)
             "progress-min-width", "progress-max-height" -> {
                 assert(value.checkInt()) { "值不是整数：$value" }
                 value.toDecInt()
@@ -85,7 +85,7 @@ object StyleStatementParser {
                     "bottom" -> progress.direction = Direction2DEnum.DOWN
                     "left" -> progress.direction = Direction2DEnum.LEFT
                     else -> {
-                        val text = ProgressBarTextEnum.tryFrom(item)
+                        val text = ProgressBarTextEnum.tryOf(item)
                         if (text != null) {
                             progress.text = text
                         } else if (item.checkInt()) {
@@ -107,12 +107,12 @@ object StyleStatementParser {
                 when (val name = list.first()) {
                     "rect" -> button.style = ButtonStyleEnum.RECT
                     "triangle" -> button.style = ButtonStyleEnum.TRIANGLE
-                    else -> button.direction = Direction2DEnum.from(name)
+                    else -> button.direction = Direction2DEnum.of(name)
                 }
             }
             2 -> {
-                button.style = ButtonStyleEnum.from(list.first())
-                button.direction = Direction2DEnum.from(list.last())
+                button.style = ButtonStyleEnum.of(list.first())
+                button.direction = Direction2DEnum.of(list.last())
             }
             else -> throw IllegalArgumentException("非法表达式：$value")
         }
@@ -196,28 +196,10 @@ object StyleStatementParser {
     private fun parserAlign(value: String, manager: Direction2StyleManager<IAlignMode>): Direction2StyleManager<IAlignMode> {
         val list = value.split(' ').filter { it.isNotBlank() }
         assert(list.size == 2)
-        manager.vertical = VerticalAlignModeEnum.from(list.first())
-        manager.horizontal = HorizontalAlignModeEnum.from(list.last())
+        manager.vertical = VerticalAlignModeEnum.of(list.first())
+        manager.horizontal = HorizontalAlignModeEnum.of(list.last())
         return manager
     }
-
-    /** 解析 position 表达式 */
-    private fun parserPosition(value: String): PositionEnum =
-        when (value) {
-            "static" -> PositionEnum.STATIC
-            "absolute" -> PositionEnum.ABSOLUTE
-            "fixed" -> PositionEnum.FIXED
-            else -> throw IllegalArgumentException("未知的表达式：$value")
-        }
-
-    /** 解析 display 表达式 */
-    private fun parserDisplay(value: String): DisplayModeEnum =
-        when (value) {
-            "block" -> DisplayModeEnum.BLOCK
-            "inline" -> DisplayModeEnum.INLINE
-            "none" -> DisplayModeEnum.NONE
-            else -> throw IllegalArgumentException("未知的表达式：$value")
-        }
 
     /** 解析带方向的数字表达式 */
     private fun parserIntDirection(value: String, manager: Direction4StyleManager<Int>): Direction4StyleManager<Int> {

@@ -374,7 +374,7 @@ enum class ButtonStyleEnum {
         private val hoverColor = IntColor(0, 127, 255, 75)
 
         @JvmStatic
-        fun from(name: String): ButtonStyleEnum =
+        fun of(name: String): ButtonStyleEnum =
             when (name) {
                 "rect" -> RECT
                 "triangle" -> TRIANGLE
