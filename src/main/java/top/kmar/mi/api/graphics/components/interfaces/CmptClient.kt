@@ -55,7 +55,11 @@ abstract class CmptClient(
     /** 相对于其父元素的 X 轴坐标 */
     var x: Int = 0
         /** 请勿手动修改 */
-        internal set
+        internal set(value) {
+            field = value
+            localX = Int.MIN_VALUE
+            localY = Int.MIN_VALUE
+        }
         get() {
             parent.typeset()
             return field
@@ -63,7 +67,11 @@ abstract class CmptClient(
     /** 相对于其父元素的 Y 轴坐标 */
     var y: Int = 0
         /** 请勿手动修改 */
-        internal set
+        internal set(value) {
+            field = value
+            localY = Int.MIN_VALUE
+            globalY = Int.MIN_VALUE
+        }
         get() {
             parent.typeset()
             return field
@@ -113,6 +121,39 @@ abstract class CmptClient(
     /** 控件 content 区域高度 */
     val contentHeight: Int
         get() = height - style.paddingTop - style.paddingBottom
+
+    /** 组件相对于 GUI 的 X 坐标 */
+    var localX: Int = Int.MIN_VALUE
+        private set
+        get() {
+            if (field == Int.MIN_VALUE)
+                field = parent.localX + x
+            return field
+        }
+    /** 组件相对于 GUI 的 Y 坐标 */
+    var localY: Int = Int.MIN_VALUE
+        private set
+        get() {
+            if (field == Int.MIN_VALUE)
+                field = parent.localY + y
+            return field
+        }
+    /** 组件相对于窗体的 X 坐标 */
+    var globalX: Int = Int.MIN_VALUE
+        private set
+        get() {
+            if (field == Int.MIN_VALUE)
+                field = parent.globalX + x
+            return field
+        }
+    /** 组件相对于窗体的 Y 坐标 */
+    var globalY: Int = Int.MIN_VALUE
+        private set
+        get() {
+            if (field == Int.MIN_VALUE)
+                field = parent.globalY + y
+            return field
+        }
 
     val parent: CmptClient
         get() = service.parent.client
