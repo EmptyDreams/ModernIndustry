@@ -20,7 +20,7 @@ import kotlin.math.roundToInt
 /**
  * 燃烧进度条
  *
- * 注意：该控件仅支持14*13(width*height)尺寸
+ * 注意：该控件仅支持`14*13(width*height)`尺寸
  *
  * @author EmptyDreams
  */
@@ -43,7 +43,7 @@ class BurnCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
             attributes["max"] = new.toString()
         }
     val percent: Float
-        get() = 1 - (value.toFloat() / max.coerceAtLeast(1))
+        get() = if (max == 0) 0.0f else 1 - (value.toFloat() / max)
 
     private var _progressCache = -1
     private var _maxCache = -1
