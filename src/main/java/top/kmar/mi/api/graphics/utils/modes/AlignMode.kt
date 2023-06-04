@@ -19,7 +19,7 @@ enum class HorizontalAlignModeEnum : IAlignMode {
         override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
             var x = parent.style.paddingLeft
             for (item in line) {
-                item.x = x
+                item.x = x + item.style.marginLeft
                 x += item.spaceWidth
             }
         }
@@ -31,7 +31,7 @@ enum class HorizontalAlignModeEnum : IAlignMode {
             val width = line.width
             var x = (parent.contentWidth - width) / 2 + parent.style.paddingLeft
             for (item in line) {
-                item.x = x
+                item.x = x + item.style.marginLeft
                 x += item.spaceWidth
             }
         }
@@ -44,7 +44,7 @@ enum class HorizontalAlignModeEnum : IAlignMode {
             var x = parent.contentWidth + parent.style.paddingLeft
             for (item in line.flip()) {
                 x -= item.spaceWidth
-                item.x = x
+                item.x = x + item.style.marginLeft
             }
         }
 
@@ -88,7 +88,7 @@ enum class VerticalAlignModeEnum : IAlignMode {
         ) {
             var y = parent.style.paddingTop
             group.forEach { line ->
-                line.forEach { it.y = y }
+                line.forEach { it.y = y + it.style.marginTop }
                 y += line.height
             }
         }
@@ -106,7 +106,7 @@ enum class VerticalAlignModeEnum : IAlignMode {
             var y = (parent.contentHeight - sum) / 2 + parent.style.paddingTop
             for ((height, line) in heightList eachWith group) {
                 line.forEach {
-                    it.y = y + (height - it.height).floorDiv2()
+                    it.y = y + (height - it.spaceHeight).floorDiv2() + it.style.marginTop
                 }
                 y += height
             }
@@ -121,7 +121,7 @@ enum class VerticalAlignModeEnum : IAlignMode {
             var y = parent.contentHeight + parent.style.paddingLeft
             group.forEach { line ->
                 y -= line.height
-                line.forEach { it.y = y }
+                line.forEach { it.y = y + it.style.marginTop }
             }
         }
     };
