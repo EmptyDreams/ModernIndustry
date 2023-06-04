@@ -62,7 +62,7 @@ fun String.checkInt(start: Int = 0, end: Int = this.length): Boolean {
  */
 fun String.substringBetween(start: Char, end: Char = start): String {
     val head = indexOf(start)
-    val tail = indexOf(end)
+    val tail = lastIndexOf(end)
     return substring(head + 1, tail)
 }
 
