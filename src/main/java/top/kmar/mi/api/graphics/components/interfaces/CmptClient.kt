@@ -192,6 +192,21 @@ abstract class CmptClient(
                 else -> it.y = style.marginTop
             }
         }
+        group.fixedList.forEach {
+            val style = it.style
+            val offsetX = when {
+                "left" in style -> style.left
+                "right" in style -> gui.width - it.width - style.right - style.marginRight
+                else -> 0
+            }
+            it.x = offsetX - parent.localX
+            val offsetY = when {
+                "top" in style -> style.top
+                "bottom" in style -> gui.height - it.height - style.bottom - style.marginBottom
+                else -> 0
+            }
+            it.y = offsetY - parent.localY
+        }
     }
 
     /** 获取缺省的样式，该函数的结果不应当被缓存 */
