@@ -42,6 +42,14 @@ fun <T : Comparable<T>> Collection<T>.compareTo(other: Collection<T>): Int {
     return 0
 }
 
+/** 判断字符串是否以指定字符中的任意一个字符为开头 */
+fun String.startsWiths(vararg args: Char): Boolean {
+    for (item in args) {
+        if (this[0] == item) return true
+    }
+    return false
+}
+
 /**
  * 检查一个字符串指定区域内的字符是否为可以转换为 Int
  * @param start 起始下标（包含）

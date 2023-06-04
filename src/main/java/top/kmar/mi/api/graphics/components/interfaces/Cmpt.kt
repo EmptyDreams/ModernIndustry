@@ -73,6 +73,7 @@ abstract class Cmpt(
     /** 深度拷贝自身 */
     fun copy(): Cmpt {
         val result = buildNewObj()
+        result.classList.addAll(classList)
         eachAllChildren {
             result.addChild(it.copy())
         }

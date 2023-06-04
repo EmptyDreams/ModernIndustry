@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.components.interfaces.CmptRegister
 import top.kmar.mi.api.utils.expands.compareTo
+import top.kmar.mi.api.utils.expands.startsWiths
 
 /**
  * 单个 [Cmpt] 匹配表达式
@@ -33,8 +34,7 @@ class SingleCmptExp(exp: String) : Comparable<SingleCmptExp>, ICmptExp {
             when {
                 node.className -> if (node.content !in cmpt.classList) return false
                 node.id -> {
-                    if (node.content.length != cmpt.id.length + 1) return false
-                    if (!node.content.endsWith(cmpt.id)) return false
+                    if (node.content != cmpt.id) return false
                 }
                 node.tag -> if (CmptRegister.find(node.content) != cmpt.javaClass) return false
                 else -> return true
@@ -60,16 +60,22 @@ class SingleCmptExp(exp: String) : Comparable<SingleCmptExp>, ICmptExp {
 
     override fun toString() = list.joinToString(" ")
 
-    private class Node(val content: String): Comparable<Node> {
+    private class Node(value: String): Comparable<Node> {
+
+        /** 表达式内容（去除了前缀） */
+        val content = when {
+            value.startsWiths('.', '#') -> value.substring(1)
+            else -> value
+        }
 
         /** 是否是类名表达式 */
-        val className = content[0] == '.'
+        val className = value[0] == '.'
 
         /** 是否是类名表达式 */
-        val id = content[0] == '#'
+        val id = value[0] == '#'
 
         /** 是否是类型名表达式 */
-        val tag = !className && !id && !content.startsWith('*')
+        val tag = !className && !id && !value.startsWiths('*')
 
         override fun compareTo(other: Node) = content.compareTo(other.content)
 

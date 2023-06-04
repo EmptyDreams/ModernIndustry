@@ -17,6 +17,10 @@ class ClassList(
         onEdit()
     }
 
+    fun addAll(that: ClassList) {
+        this.list += that.list
+    }
+
     fun remove(name: String) {
         list.remove(name)
         onEdit()
