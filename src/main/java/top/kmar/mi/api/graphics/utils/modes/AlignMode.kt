@@ -4,9 +4,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.CmptClientGroup
-import top.kmar.mi.api.utils.expands.eachWith
 import top.kmar.mi.api.utils.expands.floorDiv2
-import top.kmar.mi.api.utils.expands.stream
 import top.kmar.mi.api.utils.expands.times2
 import kotlin.math.roundToInt
 
@@ -62,7 +60,7 @@ enum class HorizontalAlignModeEnum : IAlignMode {
                 val interval = (parent.contentWidth - line.width) / amount.toFloat()
                 var x = parent.style.paddingLeft.toFloat()
                 line.forEach {
-                    it.x = x.roundToInt()
+                    it.x = x.roundToInt() + it.style.marginLeft
                     x += it.spaceWidth + interval
                 }
             }
@@ -75,7 +73,7 @@ enum class HorizontalAlignModeEnum : IAlignMode {
             val interval = (parent.contentWidth - line.width) / amount.toFloat()
             var x = parent.style.paddingLeft + interval
             line.forEach {
-                it.x = x.roundToInt()
+                it.x = x.roundToInt() + it.style.marginLeft
                 x += it.spaceWidth + interval
             }
         }
@@ -88,7 +86,7 @@ enum class HorizontalAlignModeEnum : IAlignMode {
             var x = parent.style.paddingLeft.toFloat()
             line.forEach {
                 x += interval
-                it.x = x.roundToInt()
+                it.x = x.roundToInt() + it.style.marginLeft
                 x += it.spaceWidth + interval
             }
         }
@@ -132,16 +130,12 @@ enum class VerticalAlignModeEnum : IAlignMode {
     /** 居中排列 */
     CENTER {
         override fun invoke(parent: CmptClient, group: CmptClientGroup) {
-            val heightList = group.stream().mapToInt {
-                it.height
-            }.toArray()
-            val sum = heightList.sum()
-            var y = (parent.contentHeight - sum) / 2 + parent.style.paddingTop
-            for ((height, line) in heightList eachWith group) {
+            var y = (parent.contentHeight - group.height) / 2 + parent.style.paddingTop
+            group.forEach { line ->
                 line.forEach {
-                    it.y = y + (height - it.spaceHeight).floorDiv2() + it.style.marginTop
+                    it.y = y + (line.height - it.spaceHeight).floorDiv2() + it.style.marginTop
                 }
-                y += height
+                y += line.height
             }
         }
     },
@@ -176,7 +170,9 @@ enum class VerticalAlignModeEnum : IAlignMode {
                 var y = parent.style.paddingTop.toFloat()
                 group.forEach { line ->
                     val ty = y.roundToInt()
-                    line.forEach { it.y = ty }
+                    line.forEach {
+                        it.y = ty + (line.height - it.spaceHeight).floorDiv2() + it.style.marginTop
+                    }
                     y += line.height + interval
                 }
             }
@@ -190,12 +186,14 @@ enum class VerticalAlignModeEnum : IAlignMode {
             var y = parent.style.paddingTop + interval
             group.forEach { line ->
                 val ty = y.roundToInt()
-                line.forEach { it.y = ty }
+                line.forEach {
+                    it.y = ty + (line.height - it.spaceHeight).floorDiv2() + it.style.marginTop
+                }
                 y += line.height + interval
             }
         }
     },
-    /** 均匀地排列行，为每行上下分配相同地空隙，若只有一行，则将该行居中 */
+    /** 均匀地排列行，为每行上下分配相同的空隙，若只有一行，则将该行居中 */
     AROUND {
         override fun invoke(parent: CmptClient, group: CmptClientGroup) {
             val amount = group.size.times2()
@@ -204,7 +202,9 @@ enum class VerticalAlignModeEnum : IAlignMode {
             group.forEach { line ->
                 y += interval
                 val ty = y.roundToInt()
-                line.forEach { it.y = ty }
+                line.forEach {
+                    it.y = ty + (line.height - it.spaceHeight).floorDiv2() + it.style.marginTop
+                }
                 y += line.height + interval
             }
         }

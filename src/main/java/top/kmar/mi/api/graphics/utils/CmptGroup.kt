@@ -7,6 +7,7 @@ import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.utils.modes.DisplayModeEnum
 import top.kmar.mi.api.graphics.utils.modes.PositionEnum
 import java.util.*
+import kotlin.LazyThreadSafetyMode.NONE
 
 /**
  * 控件分组器。
@@ -104,15 +105,17 @@ class CmptClientGroup(private val cmpt: Cmpt) : Iterable<CmptClientGroup.Line> {
         val size: Int
             get() = list.size
         /** 获取宽度之和 */
-        val width: Int
-            get() = list.stream().mapToInt {
+        val width: Int by lazy(NONE) {
+            list.stream().mapToInt {
                 it.spaceWidth
             }.sum()
+        }
         /** 获取最大高度 */
-        val height: Int
-            get() = list.stream().mapToInt {
+        val height: Int by lazy(NONE) {
+            list.stream().mapToInt {
                 it.spaceHeight
             }.max().orElse(0)
+        }
 
         internal operator fun plusAssign(item: CmptClient) {
             list += item
