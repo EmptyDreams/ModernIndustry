@@ -11,7 +11,10 @@ import top.kmar.mi.api.utils.expands.stream
 @SideOnly(Side.CLIENT)
 sealed interface IAlignMode
 
-
+/**
+ * 水平排版
+ * @author EmptyDreams
+ */
 enum class HorizontalAlignModeEnum : IAlignMode {
 
     /** 左对齐 */

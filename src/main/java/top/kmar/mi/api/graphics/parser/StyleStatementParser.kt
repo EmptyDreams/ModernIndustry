@@ -42,7 +42,7 @@ object StyleStatementParser {
                 value.toDecInt()
             }
             "display" -> parserDisplay(value)
-            "position" -> parserPosition(value)
+            "position" -> PositionEnum.of(value)
             "align" -> parserAlign(value, node.align)
             "align-vertical" -> VerticalAlignModeEnum.from(value)
             "align-horizontal" -> HorizontalAlignModeEnum.from(value)
@@ -204,7 +204,7 @@ object StyleStatementParser {
     /** 解析 position 表达式 */
     private fun parserPosition(value: String): PositionEnum =
         when (value) {
-            "relative" -> PositionEnum.RELATIVE
+            "static" -> PositionEnum.STATIC
             "absolute" -> PositionEnum.ABSOLUTE
             "fixed" -> PositionEnum.FIXED
             else -> throw IllegalArgumentException("未知的表达式：$value")

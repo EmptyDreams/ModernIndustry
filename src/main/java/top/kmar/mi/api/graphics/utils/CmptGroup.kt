@@ -71,7 +71,7 @@ class CmptClientGroup(private val cmpt: Cmpt) : Iterable<CmptClientGroup.Line> {
                 val display = style.display
                 if (display == DisplayModeEnum.NONE) return@forEachOrdered
                 when (style.position) {
-                    PositionEnum.RELATIVE -> {
+                    PositionEnum.STATIC -> {
                         if (display == DisplayModeEnum.BLOCK || display != prevDisplay) {
                             list.add(Line())
                             prevDisplay = display

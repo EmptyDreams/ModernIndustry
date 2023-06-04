@@ -114,7 +114,7 @@ class StyleNode {
                 this["margin-bottom"] = 0
                 this["margin-left"] = 0
                 this["display"] = DisplayModeEnum.BLOCK
-                this["position"] = PositionEnum.RELATIVE
+                this["position"] = PositionEnum.STATIC
                 this["align"] = Function<StyleNode, Any> { Direction2StyleManager<IAlignMode>(it, "align") }
                 this["align-vertical"] = VerticalAlignModeEnum.MIDDLE
                 this["align-horizontal"] = HorizontalAlignModeEnum.MIDDLE

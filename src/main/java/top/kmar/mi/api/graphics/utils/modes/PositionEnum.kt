@@ -2,7 +2,6 @@ package top.kmar.mi.api.graphics.utils.modes
 
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.utils.expands.equalsIgnoreCase
 
 /**
  * 控件定位方法
@@ -12,13 +11,13 @@ import top.kmar.mi.api.utils.expands.equalsIgnoreCase
 enum class PositionEnum {
 
     /**
-     * 相对定位
+     * 静态定位
      *
-     * 可通过`top`、`right`、`bottom`、`left`参数基于当前位置移动控件
+     * 在该定位模式下`top`、`right`、`bottom`、`left`将不可用
      *
-     * 定位顺序：自动定位 -> 参数调整
+     * 定位顺序：自动定位
      */
-    RELATIVE,
+    STATIC,
     /**
      * 绝对定位
      *
@@ -36,7 +35,7 @@ enum class PositionEnum {
      */
     FIXED;
 
-    fun isRelative() = this == RELATIVE
+    fun isStatic() = this == STATIC
 
     fun isAbs() = this == ABSOLUTE
 
@@ -45,12 +44,13 @@ enum class PositionEnum {
     companion object {
 
         @JvmStatic
-        fun of(name: String): PositionEnum {
-            for (value in values()) {
-                if (value.name.equalsIgnoreCase(name)) return value
+        fun of(name: String): PositionEnum =
+            when (name) {
+                "static" -> STATIC
+                "absolute" -> ABSOLUTE
+                "fixed" -> FIXED
+                else -> throw IllegalArgumentException("指定名称[$name]不存在")
             }
-            throw IllegalArgumentException("指定名称[$name]不存在")
-        }
 
     }
 
