@@ -55,6 +55,7 @@ abstract class CmptClient(
     /** 相对于其父元素的 X 轴坐标 */
     var x: Int = 0
         /** 请勿手动修改 */
+        @JvmName("_set x")
         internal set(value) {
             field = value
             localX = Int.MIN_VALUE
@@ -67,6 +68,7 @@ abstract class CmptClient(
     /** 相对于其父元素的 Y 轴坐标 */
     var y: Int = 0
         /** 请勿手动修改 */
+        @JvmName("_set y")
         internal set(value) {
             field = value
             localY = Int.MIN_VALUE
@@ -78,6 +80,15 @@ abstract class CmptClient(
         }
     /** 控件宽度（content + padding） */
     var width: Int = 0
+        /** 请勿手动调用该函数 */
+        @JvmName("_set width")
+        internal set(value) {
+            if (value != field) {
+                field = value
+                xLayoutUpdateFlag = true
+                isTypeset = false
+            }
+        }
         get() {
             if (xLayoutUpdateFlag) {
                 field = style.width(this)
@@ -85,28 +96,23 @@ abstract class CmptClient(
             }
             return field
         }
-        set(value) {
+    /** 控件高度（content + padding） */
+    var height: Int = 0
+        /** 请勿手动调用该函数 */
+        @JvmName("_set height")
+        internal set(value) {
             if (value != field) {
                 field = value
-                xLayoutUpdateFlag = true
+                yLayoutUpdateFlag = true
                 isTypeset = false
             }
         }
-    /** 控件高度（content + padding） */
-    var height: Int = 0
         get() {
             if (yLayoutUpdateFlag) {
                 field = style.height(this)
                 yLayoutUpdateFlag = false
             }
             return field
-        }
-        set(value) {
-            if (value != field) {
-                field = value
-                yLayoutUpdateFlag = true
-                isTypeset = false
-            }
         }
 
     /** 控件占用空间的宽度（content + padding + margin） */
