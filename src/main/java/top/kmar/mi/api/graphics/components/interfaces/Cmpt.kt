@@ -286,6 +286,19 @@ abstract class Cmpt(
                     height = FixedSizeMode(0)
                 }
 
+                override var localX: Int
+                    get() = 0
+                    set(value) {}
+                override var localY: Int
+                    get() = 0
+                    set(value) {}
+                override var globalX: Int
+                    get() = 0
+                    set(value) {}
+                override var globalY: Int
+                    get() = 0
+                    set(value) {}
+
                 override fun typeset() { }
 
             }

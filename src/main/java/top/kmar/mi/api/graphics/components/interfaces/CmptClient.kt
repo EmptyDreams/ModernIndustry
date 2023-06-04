@@ -123,32 +123,32 @@ abstract class CmptClient(
         get() = height - style.paddingTop - style.paddingBottom
 
     /** 组件相对于 GUI 的 X 坐标 */
-    var localX: Int = Int.MIN_VALUE
-        private set
+    open var localX: Int = Int.MIN_VALUE
+        internal set
         get() {
             if (field == Int.MIN_VALUE)
                 field = parent.localX + x
             return field
         }
     /** 组件相对于 GUI 的 Y 坐标 */
-    var localY: Int = Int.MIN_VALUE
-        private set
+    open var localY: Int = Int.MIN_VALUE
+        internal set
         get() {
             if (field == Int.MIN_VALUE)
                 field = parent.localY + y
             return field
         }
     /** 组件相对于窗体的 X 坐标 */
-    var globalX: Int = Int.MIN_VALUE
-        private set
+    open var globalX: Int = Int.MIN_VALUE
+        internal set
         get() {
             if (field == Int.MIN_VALUE)
                 field = parent.globalX + x
             return field
         }
     /** 组件相对于窗体的 Y 坐标 */
-    var globalY: Int = Int.MIN_VALUE
-        private set
+    open var globalY: Int = Int.MIN_VALUE
+        internal set
         get() {
             if (field == Int.MIN_VALUE)
                 field = parent.globalY + y
