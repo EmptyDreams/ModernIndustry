@@ -104,6 +104,7 @@ class GuiGraphics(
     /** 绘制一个点 */
     fun drawPoint(x: Int, y: Int, color: IntColor) {
         GL11.glBegin(GL11.GL_POINT)
+        GL11.glColor4b(color.red.toByte(), color.green.toByte(), color.blue.toByte(), color.alpha.toByte())
         GL11.glVertex2i(x, y)
         GL11.glEnd()
     }
