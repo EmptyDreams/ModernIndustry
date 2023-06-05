@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
+import top.kmar.mi.api.exception.TransferException
 import top.kmar.mi.api.graphics.utils.exps.ComplexCmptExp
 import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.graphics.utils.style.StyleSheet
@@ -97,14 +98,20 @@ object GuiStyleParser {
                 }
             }
 
+            var lineCode = 0
             reader.lines()
                 .filter { it.isNotBlank() }
                 .forEachOrdered {
+                    ++lineCode
                     val (index, count) = it.countStartSpace()
                     val level = count.floorDiv2()
                     val content = it.trimEndAt(index)
-                    if (content.startsWiths('@')) parseAt(content.substring(1), level)
-                    else parseExpAndStyle(content, level)
+                    try {
+                        if (content.startsWiths('@')) parseAt(content.substring(1), level)
+                        else parseExpAndStyle(content, level)
+                    } catch (e: Exception) {
+                        throw TransferException.instance("处理样式文件[$key]第 $lineCode 行时出现异常！", e)
+                    }
                 }
             if (editStyle) builder.toExp { result.add(it, node) }
         }
