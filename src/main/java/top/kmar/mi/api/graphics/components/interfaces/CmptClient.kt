@@ -244,11 +244,12 @@ abstract class CmptClient(
             val height = client.height
             if (width <= 0 || height <= 0) return@eachAllChildren
             val g = graphics.createGraphics(client.x, client.y, width, height)
-            //if (style.overflowHidden)
-            g.scissor()
+            val overflowX = style.overflowX
+            val overflowY = style.overflowY
+            val clip = overflowX.isClip || overflowY.isClip
+            if (clip) g.scissor()
             client.render(g)
-            //if (style.overflowHidden)
-            g.unscissor()
+            if (clip) g.unscissor()
         }
     }
 

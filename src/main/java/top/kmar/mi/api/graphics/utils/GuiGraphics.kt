@@ -11,8 +11,10 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.opengl.GL11
 import top.kmar.mi.api.graphics.BaseGraphicsClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
+import top.kmar.mi.api.utils.MISysInfo
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
 import top.kmar.mi.api.utils.data.math.Rect2D
+import java.util.*
 import kotlin.math.max
 
 /**
@@ -191,13 +193,34 @@ class GuiGraphics(
      * @return 是否进行了裁剪
      */
     fun scissor(): Boolean {
-        return false
+        clipList += this
         GL11.glEnable(GL11.GL_SCISSOR_TEST)
         GL11.glScissor(clipRect.x, clipRect.y, clipRect.width, clipRect.height)
         return true
     }
 
     /** 通知GL结束裁剪 */
-    fun unscissor() = GL11.glDisable(GL11.GL_SCISSOR_TEST)
+    @Suppress("SpellCheckingInspection")
+    fun unscissor() {
+        var last = clipList.removeLast()
+        if (last !== this) {
+            MISysInfo.err("警告：结束裁剪时部分画笔被跳过，或对没有裁剪的画笔进行了结束裁剪操作！")
+            do {
+                last = clipList.removeLast()
+            } while (last !== this)
+        }
+        if (clipList.isNotEmpty()) {
+            last = clipList.last
+            last.apply {
+                GL11.glScissor(clipRect.x, clipRect.y, clipRect.width, clipRect.height)
+            }
+        } else GL11.glDisable(GL11.GL_SCISSOR_TEST)
+    }
+
+    companion object {
+
+        private val clipList = LinkedList<GuiGraphics>()
+
+    }
 
 }
