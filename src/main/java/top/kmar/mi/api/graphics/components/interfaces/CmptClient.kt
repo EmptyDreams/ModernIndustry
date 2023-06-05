@@ -183,8 +183,8 @@ abstract class CmptClient(
     open fun typeset() {
         if (isTypeset) return
         isTypeset = true
-        style.alignHorizontal(this, group)
-        style.alignVertical(this, group)
+        style.alignX(this, group)
+        style.alignY(this, group)
         group.absoluteList.forEach {
             val style = it.style
             when {

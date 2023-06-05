@@ -61,8 +61,8 @@ class StyleNode {
     var display: DisplayModeEnum by ValueDelegate
     var position: PositionEnum by ValueDelegate
     val align: Direction2StyleManager<IAlignMode> by ObjectDelegate
-    var alignVertical: VerticalAlignModeEnum by ValueDelegate
-    var alignHorizontal: HorizontalAlignModeEnum by ValueDelegate
+    var alignX: HorizontalAlignModeEnum by ValueDelegate
+    var alignY: VerticalAlignModeEnum by ValueDelegate
     var color: IntColor by ValueDelegate
     var backgroundColor: IntColor by ValueDelegate
     val border: Direction4StyleManager<BorderStyle> by ObjectDelegate
@@ -80,6 +80,9 @@ class StyleNode {
     var progressText: ProgressBarTextEnum by ValueDelegate
     var progressMinWidth: Int by ValueDelegate
     var progressMinHeight: Int by ValueDelegate
+    val overflow: Direction2StyleManager<OverflowMode> by ObjectDelegate
+    var overflowX: OverflowMode by ValueDelegate
+    var overflowY: OverflowMode by ValueDelegate
 
     fun copy(): StyleNode {
         val result = StyleNode()
@@ -116,8 +119,8 @@ class StyleNode {
                 this["display"] = DisplayModeEnum.BLOCK
                 this["position"] = PositionEnum.STATIC
                 this["align"] = Function<StyleNode, Any> { Direction2StyleManager<IAlignMode>(it, "align") }
-                this["align-vertical"] = VerticalAlignModeEnum.EVENLY
-                this["align-horizontal"] = HorizontalAlignModeEnum.EVENLY
+                this["align-x"] = HorizontalAlignModeEnum.EVENLY
+                this["align-y"] = VerticalAlignModeEnum.EVENLY
                 this["color"] = IntColor.black
                 this["background-color"] = IntColor.transparent
                 this["border"] = Function<StyleNode, Any> { Direction4StyleManager<BorderStyle>(it, "border") }
@@ -135,6 +138,9 @@ class StyleNode {
                 this["progress-text"] = ProgressBarTextEnum.NONE
                 this["progress-min-height"] = 3
                 this["progress-min-width"] = 3
+                this["overflow"] = Function<StyleNode, Any> { Direction2StyleManager<OverflowMode>(it, "overflow") }
+                this["overflow-x"] = OverflowMode.VISIBLE
+                this["overflow-y"] = OverflowMode.VISIBLE
             }
 
         @JvmStatic

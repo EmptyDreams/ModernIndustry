@@ -64,10 +64,27 @@ object StyleStatementParser {
                 assert(value.checkInt()) { "值不是整数：$value" }
                 value.toDecInt()
             }
+            "overflow" -> parserOverflow(value, node.overflow)
+            "overflow-x", "overflow-y" -> OverflowMode.of(value)
             else -> return false
         }
         node[key] = item
         return true
+    }
+
+    private fun parserOverflow(
+        value: String, manager: Direction2StyleManager<OverflowMode>
+    ): Direction2StyleManager<OverflowMode> {
+        val list = value.split(' ').filter { it.isNotBlank() }
+        when (list.size) {
+            1 -> manager.setAll(OverflowMode.of(list.first()))
+            2 -> {
+                manager.x = OverflowMode.of(list.first())
+                manager.y = OverflowMode.of(list.last())
+            }
+            else -> throw IllegalArgumentException("无效的参数数量：$value")
+        }
+        return manager
     }
 
     private fun parserProgress(value: String, progress: ProgressBarData): ProgressBarData {
@@ -194,8 +211,8 @@ object StyleStatementParser {
     private fun parserAlign(value: String, manager: Direction2StyleManager<IAlignMode>): Direction2StyleManager<IAlignMode> {
         val list = value.split(' ').filter { it.isNotBlank() }
         assert(list.size == 2)
-        manager.vertical = VerticalAlignModeEnum.of(list.first())
-        manager.horizontal = HorizontalAlignModeEnum.of(list.last())
+        manager.y = VerticalAlignModeEnum.of(list.first())
+        manager.x = HorizontalAlignModeEnum.of(list.last())
         return manager
     }
 

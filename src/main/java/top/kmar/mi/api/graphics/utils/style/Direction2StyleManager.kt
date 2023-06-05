@@ -13,17 +13,17 @@ class Direction2StyleManager<T : Any>(
     val name: String
 ) {
 
-    var horizontal: T
-        get() = node.getValue("${name}-horizontal")
-        set(value) { node["${name}-horizontal"] = value }
+    var x: T
+        get() = node.getValue("${name}-x")
+        set(value) { node["${name}-x"] = value }
 
-    var vertical: T
-        get() = node.getValue("${name}-vertical")
-        set(value) { node["${name}-vertical"] = value }
+    var y: T
+        get() = node.getValue("${name}-y")
+        set(value) { node["${name}-y"] = value }
 
     fun setAll(value: T) {
-        horizontal = value
-        vertical = value
+        x = value
+        y = value
     }
 
 }
