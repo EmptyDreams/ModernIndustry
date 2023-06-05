@@ -13,6 +13,7 @@ import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener
 import top.kmar.mi.api.graphics.utils.GuiGraphics
 import top.kmar.mi.api.graphics.utils.modes.ButtonStyleEnum
+import top.kmar.mi.api.graphics.utils.modes.OverflowMode
 import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.regedits.others.AutoCmpt
 import top.kmar.mi.api.utils.expands.applyClient
@@ -51,6 +52,7 @@ class ButtonCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
         override fun defaultStyle() = StyleNode().apply {
             backgroundColor = IntColor.gray
             border.forEachAll { it.color = IntColor.black }
+            overflowX = OverflowMode.HIDDEN
         }
 
         override fun render(graphics: GuiGraphics) {

@@ -50,7 +50,6 @@ enum class ButtonStyleEnum {
             val rectSize = 15
             val style = cmpt.style
             with(graphics) {
-                //if (!cmpt.overflowHidden)
                 scissor()
                 // 中央区域坐标
                 val startX = style.borderTop.weight
@@ -77,8 +76,7 @@ enum class ButtonStyleEnum {
                 fillRect(endX - 1, startY, 1, centerHeight - 2, darkColor)
                 // 如果被鼠标覆盖则绘制覆盖图层
                 if (mouseOn) fillRect(startX, startY, centerWidth, centerHeight, hoverColor)
-                //if (!cmpt.overflowHidden)
-                graphics.unscissor()
+                unscissor()
             }
         }
     },
@@ -90,7 +88,6 @@ enum class ButtonStyleEnum {
             val left = style.borderLeft
             val right = style.borderRight
             val background = style.backgroundColor
-            val color = style.color
 
             when (style.buttonDirection) {
                 Direction2DEnum.UP -> {
