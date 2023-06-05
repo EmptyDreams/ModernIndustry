@@ -86,6 +86,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
         client.renderChildren(graphics)
         val inventorySlots = this.inventorySlots as BaseGraphics
         GuiLoader.invokeClientLoopTask(inventorySlots)
+        GuiGraphics.unscissorAll()
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {

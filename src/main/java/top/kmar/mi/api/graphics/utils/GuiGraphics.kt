@@ -189,18 +189,14 @@ class GuiGraphics(
         Rect2D(realX, realY, realWidth, realHeight)
     }
 
-    /**
-     * 通知GL开启裁剪
-     * @return 是否进行了裁剪
-     */
+    /** 通知 GL 开启裁剪 */
     fun scissor() {
         clipList += this
         GL11.glEnable(GL11.GL_SCISSOR_TEST)
         GL11.glScissor(clipRect.x, clipRect.y, clipRect.width, clipRect.height)
     }
 
-    /** 通知GL结束裁剪 */
-    @Suppress("SpellCheckingInspection")
+    /** 通知 GL 结束裁剪 */
     fun unscissor() {
         var last = clipList.removeLast()
         if (last !== this) {
@@ -219,7 +215,15 @@ class GuiGraphics(
 
     companion object {
 
+        @JvmStatic
         private val clipList = LinkedList<GuiGraphics>()
+
+        /** 结束所有区域的裁剪 */
+        @JvmStatic
+        fun unscissorAll() {
+            clipList.clear()
+            GL11.glDisable(GL11.GL_SCISSOR_TEST)
+        }
 
     }
 
