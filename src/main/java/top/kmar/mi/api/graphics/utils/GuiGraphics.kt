@@ -192,11 +192,10 @@ class GuiGraphics(
      * 通知GL开启裁剪
      * @return 是否进行了裁剪
      */
-    fun scissor(): Boolean {
+    fun scissor() {
         clipList += this
         GL11.glEnable(GL11.GL_SCISSOR_TEST)
         GL11.glScissor(clipRect.x, clipRect.y, clipRect.width, clipRect.height)
-        return true
     }
 
     /** 通知GL结束裁剪 */
