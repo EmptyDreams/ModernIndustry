@@ -2,7 +2,6 @@ package top.kmar.mi.api.graphics.parser
 
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import top.kmar.mi.api.graphics.components.interfaces.CmptClient
 import top.kmar.mi.api.graphics.components.interfaces.IntColor
 import top.kmar.mi.api.graphics.utils.modes.*
 import top.kmar.mi.api.graphics.utils.style.Direction2StyleManager
@@ -11,7 +10,6 @@ import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.utils.data.enums.Direction2DEnum
 import top.kmar.mi.api.utils.expands.checkInt
 import top.kmar.mi.api.utils.expands.toDecInt
-import top.kmar.mi.api.utils.interfaces.Obj2IntFunction
 
 /**
  * 样式表语句解析器
@@ -32,8 +30,8 @@ object StyleStatementParser {
         if (list.size != 2) return false
         val (key, value) = list
         val item: Any = when (key) {
-            "width" -> parserCalcStatement(value, false) { it.width }
-            "height" -> parserCalcStatement(value, true) { it.height }
+            "width" -> parserCalcStatement(value, false)
+            "height" -> parserCalcStatement(value, true)
             "padding" -> parserIntDirection(value, node.padding)
             "margin" -> parserIntDirection(value, node.margin)
             "padding-left", "padding-right", "padding-top", "padding-bottom",
@@ -223,13 +221,13 @@ object StyleStatementParser {
 
     /** 解析计算表达式 */
     private fun parserCalcStatement(
-        value: String, isHeight: Boolean, function: Obj2IntFunction<CmptClient>
+        value: String, isHeight: Boolean
     ): ISizeMode =
         when {
             // 百分比计算（x%）
             value.endsWith('%') -> {
                 val percent = value.toDecInt() / 100.0
-                PercentSizeMode(percent, 0, function)
+                PercentSizeMode(percent, 0, isHeight)
             }
             // calc 公式计算（calc(x% +- y)）
             value.startsWith("calc") -> {
@@ -240,7 +238,7 @@ object StyleStatementParser {
                     // calc(x%)
                     assert(calc.checkInt(end = calc.length - 1)) { "calc(x%) 中的 x 仅支持整数" }
                     val percent = calc.toDecInt() / 100.0
-                    PercentSizeMode(percent, 0, function)
+                    PercentSizeMode(percent, 0, isHeight)
                 } else {
                     val index = calc.indexOfFirst { it == '-' || it == '+' }
                     if (index == -1) {
@@ -255,17 +253,17 @@ object StyleStatementParser {
                         if (xStr.endsWith('%')) {
                             // calc(x% +- y)
                             assert(xStr.checkInt(end = xStr.length - 1)) { "calc(x% +- y) 中的 x 仅支持整数" }
-                            PercentSizeMode(x / 100.0, y, function)
+                            PercentSizeMode(x / 100.0, y, isHeight)
                         } else {
                             // calc(x +- y)
                             assert(xStr.checkInt()) { "calc(x +- y) 中的 x 仅支持整数" }
-                            RelativeSizeMode(y, function)
+                            RelativeSizeMode(y, isHeight)
                         }
                     }
                 }
             }
-            value == "inherit" -> InheritSizeMode(function)
-            value == "auto" -> AutoSizeMode(isHeight)
+            value == "inherit" -> InheritSizeMode.instance(isHeight)
+            value == "auto" -> AutoSizeMode.instance(isHeight)
             else -> FixedSizeMode(value.toDecInt())
         }
 

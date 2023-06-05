@@ -97,8 +97,8 @@ class StyleNode {
         @JvmStatic
         private val DEF_VALUE_MAP =
             Object2ObjectOpenHashMap<String, Any>(64).apply {
-                this["width"] = AutoSizeMode(false)
-                this["height"] = AutoSizeMode(true)
+                this["width"] = AutoSizeMode.width
+                this["height"] = AutoSizeMode.height
                 this["top"] = 0
                 this["right"] = 0
                 this["bottom"] = 0

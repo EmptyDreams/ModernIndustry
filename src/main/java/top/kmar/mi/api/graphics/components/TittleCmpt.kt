@@ -30,7 +30,7 @@ class TittleCmpt(attributes: CmptAttributes) : Cmpt(attributes) {
     inner class TittleCmptClient : CmptClient(this) {
 
         override fun defaultStyle() = StyleNode().apply {
-            width = InheritSizeMode { it.width }
+            width = InheritSizeMode.width
             height = FixedSizeMode(Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT)
             position = PositionEnum.ABSOLUTE
             marginTop = 8

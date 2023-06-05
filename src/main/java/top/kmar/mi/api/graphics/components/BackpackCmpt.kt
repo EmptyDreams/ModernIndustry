@@ -82,7 +82,7 @@ class BackpackCmpt(attribute: CmptAttributes) : Cmpt(attribute) {
     inner class BackpackCmptClient : CmptClient(this) {
 
         override fun defaultStyle() = StyleNode().apply {
-            width = InheritSizeMode { it.width }
+            width = InheritSizeMode.width
             height = FixedSizeMode(18 * 4 + 4 + Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 1)
             marginTop = 5
         }

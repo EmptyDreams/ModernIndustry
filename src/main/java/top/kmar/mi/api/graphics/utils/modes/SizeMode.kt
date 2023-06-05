@@ -64,7 +64,7 @@ class FixedSizeMode(
 class PercentSizeMode(
     val value: Double,
     val plus: Int,
-    val parentSize: Obj2IntFunction<CmptClient>
+    val isHeight: Boolean
 ): ISizeMode {
 
     override val relyOnParent = true
@@ -72,7 +72,8 @@ class PercentSizeMode(
 
     override fun invoke(dist: CmptClient): Int {
         val parent = ISizeMode.findParent(dist)
-        return (value * parentSize(parent)).roundToInt() + plus
+        val parentSize = if (isHeight) parent.contentHeight else parent.contentWidth
+        return (value * parentSize).roundToInt() + plus
     }
 
 }
@@ -83,7 +84,7 @@ class PercentSizeMode(
  */
 class RelativeSizeMode(
     val plus: Int,
-    val parentSize: Obj2IntFunction<CmptClient>
+    val isHeight: Boolean
 ): ISizeMode {
 
     override val relyOnParent = true
@@ -91,7 +92,8 @@ class RelativeSizeMode(
 
     override fun invoke(dist: CmptClient): Int {
         val parent = ISizeMode.findParent(dist)
-        return parentSize(parent) + plus
+        val parentSize = if (isHeight) parent.contentHeight else parent.contentWidth
+        return parentSize + plus
     }
 
 }
@@ -100,8 +102,8 @@ class RelativeSizeMode(
  * 继承尺寸
  * @author EmptyDreams
  */
-class InheritSizeMode(
-    val parentSize: Obj2IntFunction<CmptClient>
+class InheritSizeMode private constructor(
+    val isHeight: Boolean
 ): ISizeMode {
 
     override val relyOnParent = true
@@ -109,7 +111,20 @@ class InheritSizeMode(
 
     override fun invoke(dist: CmptClient): Int {
         val parent = ISizeMode.findParent(dist)
-        return parentSize(parent)
+        return if (isHeight) parent.contentHeight else parent.contentWidth
+    }
+
+    companion object {
+
+        @JvmStatic
+        val height = InheritSizeMode(true)
+        @JvmStatic
+        val width = InheritSizeMode(false)
+
+        @JvmStatic
+        fun instance(isHeight: Boolean) =
+            if (isHeight) height else width
+
     }
 
 }
@@ -118,7 +133,7 @@ class InheritSizeMode(
  * 根据子节点确定该节点尺寸
  * @author EmptyDreams
  */
-class AutoSizeMode(
+class AutoSizeMode private constructor(
     val isHeight: Boolean
 ) : ISizeMode {
 
@@ -131,6 +146,19 @@ class AutoSizeMode(
             dist.group.height + style.paddingTop + style.paddingBottom
         else
             dist.group.width + style.paddingLeft + style.paddingRight
+    }
+
+    companion object {
+
+        @JvmStatic
+        val height = AutoSizeMode(true)
+        @JvmStatic
+        val width = AutoSizeMode(false)
+
+        @JvmStatic
+        fun instance(isHeight: Boolean) =
+            if (isHeight) height else width
+
     }
 
 }
