@@ -10,11 +10,16 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import top.kmar.mi.api.graphics.BaseGraphicsClient
 import top.kmar.mi.api.graphics.utils.CmptClientGroup
 import top.kmar.mi.api.graphics.utils.GuiGraphics
+import top.kmar.mi.api.graphics.utils.modes.AutoSizeMode
 import top.kmar.mi.api.graphics.utils.style.StyleNode
 import top.kmar.mi.api.graphics.utils.style.StyleSheet
 import top.kmar.mi.api.net.messages.GraphicsMessage
+import top.kmar.mi.api.utils.container.CacheContainer
 import top.kmar.mi.api.utils.data.math.Point2D
+import top.kmar.mi.api.utils.data.mutable.MutableData2D
+import top.kmar.mi.api.utils.expands.correct
 import java.util.*
+import kotlin.math.roundToInt
 
 /**
  * 控件的客户端接口
@@ -87,6 +92,7 @@ abstract class CmptClient(
                 field = value
                 xLayoutUpdateFlag = true
                 isTypeset = false
+                scrollRange.clear()
             }
         }
         get() {
@@ -105,6 +111,7 @@ abstract class CmptClient(
                 field = value
                 yLayoutUpdateFlag = true
                 isTypeset = false
+                scrollRange.clear()
             }
         }
         get() {
@@ -115,6 +122,49 @@ abstract class CmptClient(
             return field
         }
 
+    /** 滚动范围限制 */
+    private val scrollRange = CacheContainer {
+        val yRange: IntRange = if (style.height is AutoSizeMode) {
+            0 .. 0
+        } else {
+            val childrenHeight = group.height
+            0 .. (childrenHeight - contentHeight).coerceAtLeast(0)
+        }
+        val xRange: IntRange = if (style.width is AutoSizeMode) {
+            0 .. 0
+        } else {
+            val childrenWidth = group.width
+            0 .. (childrenWidth - contentWidth).coerceAtLeast(0)
+        }
+        MutableData2D(xRange, yRange)
+    }
+    /** Y 轴滚动条 */
+    @Suppress("DuplicatedCode")
+    var scrollY: Int = 0
+        set(value) {
+            val item = scrollRange().y.correct(value)
+            if (item != field) {
+                val dif = item - field
+                group.forEach { line ->
+                    line.forEach { it.y -= dif }
+                }
+                field = item
+            }
+        }
+    /** X 轴滚动条 */
+    @Suppress("DuplicatedCode")
+    var scrollX: Int = 0
+        set(value) {
+            val item = scrollRange().x.correct(value)
+            if (item != field) {
+                val dif = item - field
+                group.forEach { line ->
+                    line.forEach { it.x -= dif }
+                }
+                field = item
+            }
+        }
+
     /** 控件占用空间的宽度（content + padding + margin） */
     val spaceWidth: Int
         get() = width + style.marginLeft + style.marginRight
@@ -123,10 +173,16 @@ abstract class CmptClient(
         get() = height + style.marginTop + style.marginBottom
     /** 控件 content 区域宽度 */
     val contentWidth: Int
-        get() = width - style.paddingLeft - style.paddingRight
+        get() {
+            val scroll = if (style.overflowX.isScroll) 14 else 0
+            return width - style.paddingLeft - style.paddingRight - scroll
+        }
     /** 控件 content 区域高度 */
     val contentHeight: Int
-        get() = height - style.paddingTop - style.paddingBottom
+        get() {
+            val scroll = if (style.overflowY.isScroll) 14 else 0
+            return height - style.paddingTop - style.paddingBottom - scroll
+        }
 
     /** 组件相对于 GUI 的 X 坐标 */
     open var localX: Int = Int.MIN_VALUE
@@ -240,13 +296,13 @@ abstract class CmptClient(
             val client = it.client
             val style = client.style
             if (!style.display.isDisplay()) return@eachAllChildren
-            val width = client.width
-            val height = client.height
+            val width = client.contentWidth
+            val height = client.contentHeight
             if (width <= 0 || height <= 0) return@eachAllChildren
-            val g = graphics.createGraphics(client.x, client.y, width, height)
             val overflowX = style.overflowX
             val overflowY = style.overflowY
             val clip = overflowX.isClip || overflowY.isClip
+            val g = graphics.createGraphics(client.x, client.y, width, height)
             if (clip) g.scissor()
             client.render(g)
             if (clip) g.unscissor()
@@ -258,6 +314,10 @@ abstract class CmptClient(
         renderBackground(graphics)
         renderBorder(graphics)
         renderChildren(graphics)
+        if (style.overflowX.isScroll)
+            renderScrollX(graphics.createGraphics(0, height - 14, width, 14))
+        if (style.overflowY.isScroll)
+            renderScrollY(graphics.createGraphics(width - 14, 0, width, height))
     }
 
     /** 渲染背景 */
@@ -292,5 +352,47 @@ abstract class CmptClient(
 
     operator fun contains(pos: Point2D): Boolean =
         pos.x >= x && pos.y >= y && pos.x < x + width && pos.y < y + height
+
+    /** 绘制垂直的滚动条 */
+    private fun renderScrollY(graphics: GuiGraphics) {
+        val percent = scrollY.toFloat() / scrollRange().y.last
+        val blockPos = (percent * (contentHeight - 17)).roundToInt() + 1
+        renderBackground(graphics)
+        with(graphics) {
+            bindTexture(BaseGraphicsClient.textureKey)
+            if (scrollRange().y.last == 0)
+                drawTexture64(1, blockPos, 12, 13, 12, 15)
+            else
+                drawTexture64(1, blockPos, 0, 13, 12, 15)
+        }
+    }
+
+    /** 绘制水平的滚动条 */
+    private fun renderScrollX(graphics: GuiGraphics) {
+        val percent = scrollX.toFloat() / scrollRange().x.last
+        val blockPos = (percent * (contentWidth - 17)).roundToInt() + 1
+        renderBackground(graphics)
+        with(graphics) {
+            bindTexture(BaseGraphicsClient.textureKey)
+            if (scrollRange().x.last == 0)
+                drawTexture64(blockPos, 1, 0, 28 , 15, 12)
+            else
+                drawTexture64(blockPos, 1, 0, 40, 15, 12)
+        }
+    }
+
+    /** 绘制滚动条背景 */
+    private fun renderScrollBackground(graphics: GuiGraphics) {
+        with(graphics) {
+            // 绘制中央背景色块
+            fillRect(0, 0, width, height, IntColor.gray)
+            // 绘制左侧和顶部的阴影
+            fillRect(0, 1, 1, height - 2, IntColor.lightBlack)
+            fillRect(0, 0, width - 1, 1, IntColor.lightBlack)
+            // 绘制右侧和底部的高亮
+            fillRect(width - 1, 1, 1, height - 2, IntColor.white)
+            fillRect(1, height - 1, width - 1, 1, IntColor.white)
+        }
+    }
 
 }

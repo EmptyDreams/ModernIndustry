@@ -21,7 +21,7 @@ enum class HorizontalAlignModeEnum : IAlignMode {
     CENTER {
         override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
             val width = line.width
-            var x = (parent.contentWidth - width) / 2 + parent.style.paddingLeft
+            var x = (parent.contentWidth - width) / 2 + parent.style.paddingLeft - parent.scrollX
             for (item in line) {
                 item.x = x + item.style.marginLeft
                 x += item.spaceWidth
@@ -32,7 +32,7 @@ enum class HorizontalAlignModeEnum : IAlignMode {
     /** 左对齐 */
     START {
         override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
-            var x = parent.style.paddingLeft
+            var x = parent.style.paddingLeft - parent.scrollX
             for (item in line) {
                 item.x = x + item.style.marginLeft
                 x += item.spaceWidth
@@ -42,7 +42,7 @@ enum class HorizontalAlignModeEnum : IAlignMode {
     /** 右对齐 */
     END {
         override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
-            var x = parent.contentWidth + parent.style.paddingLeft
+            var x = parent.contentWidth + parent.style.paddingLeft - parent.scrollX
             for (item in line.flip()) {
                 x -= item.spaceWidth
                 item.x = x + item.style.marginLeft
@@ -55,10 +55,10 @@ enum class HorizontalAlignModeEnum : IAlignMode {
         override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
             val amount = line.size - 1
             if (amount == 0) {
-                line.forEach { it.x = parent.style.paddingLeft }
+                line.forEach { it.x = parent.style.paddingLeft - parent.scrollX }
             } else {
                 val interval = (parent.contentWidth - line.width) / amount.toFloat()
-                var x = parent.style.paddingLeft.toFloat()
+                var x = (parent.style.paddingLeft - parent.scrollX).toFloat()
                 line.forEach {
                     it.x = x.roundToInt() + it.style.marginLeft
                     x += it.spaceWidth + interval
@@ -71,7 +71,7 @@ enum class HorizontalAlignModeEnum : IAlignMode {
         override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
             val amount = line.size + 1
             val interval = (parent.contentWidth - line.width) / amount.toFloat()
-            var x = parent.style.paddingLeft + interval
+            var x = parent.style.paddingLeft + interval - parent.scrollX
             line.forEach {
                 it.x = x.roundToInt() + it.style.marginLeft
                 x += it.spaceWidth + interval
@@ -83,7 +83,7 @@ enum class HorizontalAlignModeEnum : IAlignMode {
         override fun typesetting(parent: CmptClient, line: CmptClientGroup.Line) {
             val amount = line.size.times2()
             val interval = (parent.contentWidth - line.width) / amount.toFloat()
-            var x = parent.style.paddingLeft.toFloat()
+            var x = (parent.style.paddingLeft - parent.scrollX).toFloat()
             line.forEach {
                 x += interval
                 it.x = x.roundToInt() + it.style.marginLeft
@@ -130,7 +130,7 @@ enum class VerticalAlignModeEnum : IAlignMode {
     /** 居中排列 */
     CENTER {
         override fun invoke(parent: CmptClient, group: CmptClientGroup) {
-            var y = (parent.contentHeight - group.height) / 2 + parent.style.paddingTop
+            var y = (parent.contentHeight - group.height) / 2 + parent.style.paddingTop - parent.scrollY
             group.forEach { line ->
                 line.forEach {
                     it.y = y + (line.height - it.spaceHeight).floorDiv2() + it.style.marginTop
@@ -142,7 +142,7 @@ enum class VerticalAlignModeEnum : IAlignMode {
     /** 靠上排列 */
     START {
         override fun invoke(parent: CmptClient, group: CmptClientGroup) {
-            var y = parent.style.paddingTop
+            var y = parent.style.paddingTop - parent.scrollY
             group.forEach { line ->
                 line.forEach { it.y = y + it.style.marginTop }
                 y += line.height
@@ -152,7 +152,7 @@ enum class VerticalAlignModeEnum : IAlignMode {
     /** 靠下排列 */
     END {
         override fun invoke(parent: CmptClient, group: CmptClientGroup) {
-            var y = parent.contentHeight + parent.style.paddingLeft
+            var y = parent.contentHeight + parent.style.paddingLeft - parent.scrollY
             group.forEach { line ->
                 y -= line.height
                 line.forEach { it.y = y + it.style.marginTop }
@@ -164,10 +164,11 @@ enum class VerticalAlignModeEnum : IAlignMode {
         override fun invoke(parent: CmptClient, group: CmptClientGroup) {
             val amount = group.size - 1
             if (amount == 0) {
-                group.forEach { line -> line.forEach { it.y = parent.style.paddingTop } }
+                val y = parent.style.paddingTop - parent.scrollY
+                group.forEach { line -> line.forEach { it.y = y } }
             } else {
                 val interval = (parent.contentHeight - group.height) / amount.toFloat()
-                var y = parent.style.paddingTop.toFloat()
+                var y = (parent.style.paddingTop - parent.scrollY).toFloat()
                 group.forEach { line ->
                     val ty = y.roundToInt()
                     line.forEach {
@@ -183,7 +184,7 @@ enum class VerticalAlignModeEnum : IAlignMode {
         override fun invoke(parent: CmptClient, group: CmptClientGroup) {
             val amount = group.size + 1
             val interval = (parent.contentHeight - group.height) / amount.toFloat()
-            var y = parent.style.paddingTop + interval
+            var y = parent.style.paddingTop + interval - parent.scrollY
             group.forEach { line ->
                 val ty = y.roundToInt()
                 line.forEach {
@@ -198,7 +199,7 @@ enum class VerticalAlignModeEnum : IAlignMode {
         override fun invoke(parent: CmptClient, group: CmptClientGroup) {
             val amount = group.size.times2()
             val interval = (parent.contentHeight - group.height) / amount.toFloat()
-            var y = parent.style.paddingTop.toFloat()
+            var y = (parent.style.paddingTop - parent.scrollY).toFloat()
             group.forEach { line ->
                 y += interval
                 val ty = y.roundToInt()

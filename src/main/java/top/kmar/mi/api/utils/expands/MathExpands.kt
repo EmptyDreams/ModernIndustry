@@ -34,6 +34,13 @@ fun String.toDecInt(start: Int = 0): Int {
     return symbol * result
 }
 
+/** 将指定值纠正到 IntRange 的区间内 */
+fun IntRange.correct(value: Int): Int {
+    return if (value < start) start
+        else if (value > endInclusive) endInclusive
+        else value
+}
+
 /** 判断是否为偶数 */
 inline fun Int.isEven() = this and 1 == 0
 

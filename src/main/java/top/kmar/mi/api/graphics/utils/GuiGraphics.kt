@@ -58,14 +58,20 @@ class GuiGraphics(
     /** 装载指定材质 */
     fun bindTexture(location: ResourceLocation) {
         container.mc.textureManager.bindTexture(location)
+        GlStateManager.color(1f, 1f, 1f)
     }
 
-    /** 绘制256*256的材质 */
+    /** 绘制 256*256 的材质 */
     fun drawTexture256(x: Int, y: Int, u: Int, v: Int, width: Int, height: Int) {
         drawTexture(x, y, u, v, width, height, 256, 256)
     }
 
-    /** 绘制32*32的材质 */
+    /** 绘制 64*64 的材质 */
+    fun drawTexture64(x: Int, y: Int, u: Int, v: Int, width: Int, height: Int) {
+        drawTexture(x, y, u, v, width, height, 64, 64)
+    }
+
+    /** 绘制 32*32 的材质 */
     fun drawTexture32(x: Int, y: Int, u: Int, v: Int, width: Int, height: Int) {
         drawTexture(x, y, u, v, width, height, 32, 32)
     }
@@ -84,7 +90,6 @@ class GuiGraphics(
     fun drawTexture(x: Int, y: Int, u: Int, v: Int, width: Int, height: Int, textureWidth: Int, textureHeight: Int) {
         val left = this.x + x
         val top = this.y + y
-        GlStateManager.color(1f, 1f, 1f)
         Gui.drawModalRectWithCustomSizedTexture(
             left, top, u.toFloat(), v.toFloat(),
             width, height, textureWidth.toFloat(), textureHeight.toFloat()

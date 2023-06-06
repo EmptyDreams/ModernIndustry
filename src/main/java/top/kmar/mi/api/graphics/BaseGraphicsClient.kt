@@ -3,10 +3,12 @@ package top.kmar.mi.api.graphics
 import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiContainer
+import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
+import top.kmar.mi.ModernIndustry
 import top.kmar.mi.api.graphics.components.interfaces.Cmpt
 import top.kmar.mi.api.graphics.listeners.*
 import top.kmar.mi.api.graphics.listeners.IGraphicsListener.Companion.keyboardPressed
@@ -140,6 +142,13 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
         if (scroll == 0) return
         service.dispatchEvent(IGraphicsListener.mouseScroll,
             MouseScrollEventData(scroll, mouseX, mouseY, mouseX, mouseY))
+    }
+
+    companion object {
+
+        @JvmStatic
+        val textureKey = ResourceLocation(ModernIndustry.MODID, "textures/gui/graph.png")
+
     }
 
 }
