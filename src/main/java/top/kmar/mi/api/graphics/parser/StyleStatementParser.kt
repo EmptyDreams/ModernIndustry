@@ -42,8 +42,8 @@ object StyleStatementParser {
             "display" -> DisplayModeEnum.of(value)
             "position" -> PositionEnum.of(value)
             "align" -> parserAlign(value, node.align)
-            "align-vertical" -> VerticalAlignModeEnum.of(value)
-            "align-horizontal" -> HorizontalAlignModeEnum.of(value)
+            "align-y" -> VerticalAlignModeEnum.of(value)
+            "align-x" -> HorizontalAlignModeEnum.of(value)
             "color", "background-color", "progress-text-color" -> IntColor(value)
             "border" -> parserBorderAll(value, node.border)
             "border-left", "border-right", "border-top", "border-bottom" -> {
