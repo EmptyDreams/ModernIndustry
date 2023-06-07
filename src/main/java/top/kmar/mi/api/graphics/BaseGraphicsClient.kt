@@ -118,7 +118,8 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
                 }
             }
             return null == cmpt.eachChildren {
-                if (Point2D(mouseX, mouseY) in it.client) {
+                val client = it.client
+                if (Point2D(x, y) in client) {
                     if (it.id !in mouseEnterList) {
                         mouseEnterList.add(it.id)
                         if (enter) helper(it, true)
@@ -129,7 +130,7 @@ class BaseGraphicsClient(inventorySlots: BaseGraphics) : GuiContainer(inventoryS
                         if (exit) helper(it, false)
                     }
                 }
-                task(it, x, y)
+                task(it, x - client.x, y - client.y)
                 if (!(enter || exit)) it else null
             }
         }
