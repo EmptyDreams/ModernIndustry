@@ -345,7 +345,7 @@ abstract class CmptClient(
         val pos = Point2D(x, y)
         val result = service.eachChildren {
             val cl = it.client
-            if (pos in cl) cl.searchCmpt(x, y) else null
+            if (pos in cl) cl.searchCmpt(x - cl.x, y - cl.y) else null
         }
         return result ?: service
     }
